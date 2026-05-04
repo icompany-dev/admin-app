@@ -11,8 +11,6 @@ export class LayoutController {
   lastY: Ref<number> = ref<number>(0)
   deltaY: Ref<number> = ref<number>(0)
 
-  onboardingWelcomeRef: any | null = null
-
   eventManager = useEventManagerStore()
 
   constructor() {
@@ -39,10 +37,6 @@ export class LayoutController {
       return
     }
     this.onboardingWelcomeRef.show()
-  }
-
-  setOnboardingWelcomeRef(onboardingWelcomeRef: any | null): void {
-    this.onboardingWelcomeRef = onboardingWelcomeRef
   }
 
   handleEventManagerChanges(): void {
