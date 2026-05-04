@@ -47,6 +47,8 @@
           :periods="pageController.periods"
           :selected-period="pageController.selectedUsersPeriod.value"
           :count="pageController.usersCount.value"
+          @status-selected="pageController.onUserStatusSelected($event)"
+          @period-selected="pageController.onUserPeriodSelected($event)"
         />
       </div>
     </div>

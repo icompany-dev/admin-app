@@ -1,5 +1,7 @@
 import { FilterPeriod } from "../constants/FilterValues"
 import { Filter } from "../library/Filter"
+import { User } from "../models/User"
+import { StringUtil } from "../utils/String"
 import { PageController } from "./PageController"
 
 export class PageCommandCentreController extends PageController {
@@ -18,6 +20,7 @@ export class PageCommandCentreController extends PageController {
   usersCount: Ref<number> = ref<number>(0)
   selectedUsersStatus: Ref<string> = ref<string>("paid")
   selectedUsersPeriod: Ref<string> = ref<string>("month")
+  users = ref<User[]>([])
 
   nameReservationStatisticRef: any | null = null
   newIncorporationStatisticRef: any | null = null
@@ -38,6 +41,7 @@ export class PageCommandCentreController extends PageController {
 
   async init(): Promise<void> {
     this.fetchNewIncorporations()
+    this.fetchUsers()
   }
 
   setNameReservationStatisticRef(nameReservationStatisticRef: any): void {
@@ -89,6 +93,29 @@ export class PageCommandCentreController extends PageController {
     this.newIncorporationCount.value = response.totalRecords
   }
 
+  async fetchUsers(): Promise<void> {
+    let repository = useUserStore()
+    let filter = new Filter()
+    filter.startDate = this.startDateForPeriod(this.selectedUsersPeriod.value)
+    filter.endDate = this.endDateForPeriod(this.selectedUsersPeriod.value)
+    filter.takeAll = true
+
+    let response = await repository.fetchAll(filter)
+    this.users.value = response.data.map((d: any) => {
+      return new User(d)
+    })
+
+    if (this.selectedUsersStatus.value === "registered") {
+      this.usersCount.value = this.users.value.filter((u: User) => {
+        return u.detail !== null && !StringUtil.isNullOrEmpty(u.detail.identification)
+      }).length
+    } else {
+      this.usersCount.value = this.users.value.filter((u: User) => {
+        return u.detail === null || StringUtil.isNullOrEmpty(u.detail.identification)
+      }).length
+    }
+  }
+
   async onNameReservationStatusSelected(value: string): Promise<void> {
     this.selectedNameReservationStatus.value = value
   }
@@ -105,6 +132,25 @@ export class PageCommandCentreController extends PageController {
   async onNewIncorporationPeriodSelected(value: string): Promise<void> {
     this.selectedNewIncorporationPeriod.value = value
     await this.fetchNewIncorporations()
+  }
+
+  async onUserStatusSelected(value: string): Promise<void> {
+    this.selectedUsersStatus.value = value
+
+    if (this.selectedUsersStatus.value === "registered") {
+      this.usersCount.value = this.users.value.filter((u: User) => {
+        return u.detail !== null && !StringUtil.isNullOrEmpty(u.detail.identification)
+      }).length
+    } else {
+      this.usersCount.value = this.users.value.filter((u: User) => {
+        return u.detail === null || StringUtil.isNullOrEmpty(u.detail.identification)
+      }).length
+    }
+  }
+
+  async onUserPeriodSelected(value: string): Promise<void> {
+    this.selectedUsersPeriod.value = value
+    await this.fetchUsers()
   }
 
   startDateForPeriod(period: string): string {
