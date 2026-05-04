@@ -1,0 +1,24 @@
+#popup-annual-return-lodgement {
+  .popup {
+    z-index: 12; // Display popup on top of document zoom
+  }
+
+  ul {
+    padding-left: 15px;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    
+    li {
+      font-size: 1rem;
+      line-height: 1.2rem;
+    }
+  }
+
+  .body {
+    text-align: justify;
+
+    .action {
+      text-align: justify;
+    }
+  }
+}

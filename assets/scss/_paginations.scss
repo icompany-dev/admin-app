@@ -1,0 +1,119 @@
+.arrow-pagination {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  .arrow-left {
+    width: 10%;
+    text-align: left;
+
+    i {
+      cursor: pointer;
+    }
+
+    &.disabled {
+      color: var(--bs-gray-400);
+    }
+  }
+
+  .page-number {
+    width: 80%;
+    text-align: center;
+  }
+
+  .arrow-right {
+    width: 10%;
+    text-align: end;
+
+    i {
+      cursor: pointer;
+    }
+
+    &.disabled {
+      color: var(--bs-gray-400);
+    }
+  }
+}
+
+.bubble-pagination {
+  padding: 5px 10px;
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  background-color: var(--pagination-bubble-container-bg-color);
+  border-radius: 10px;
+  opacity: 0.3;
+  margin: auto;
+  transition: all 0.3s ease;
+
+  .bubble {
+    content: ' ';
+    width: 10px;
+    height: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--pagination-bubble-border-color);
+    background-color: var(--pagination-bubble-bg-color);
+    cursor: pointer;
+    transition: all 0.7s ease;
+
+    &.dot {
+      width: 6px;
+      height: 6px;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    &:hover:not(.current):not(.dot) {
+      background-color: var(--pagination-bubble-selected-bg-color);
+      transform: scale(1.2);
+    }
+
+    &.current {
+      width: 30px;
+      border-radius: 15px;
+      background-color: var(--pagination-bubble-selected-bg-color);
+      cursor: default;
+    }
+  }
+
+  .list-move,
+  .list-enter-active,
+  .list-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  .list-enter-from,
+  .list-leave-to {
+    opacity: 0;
+    transform: scale(0.1);
+  }
+
+  .list-leave-active {
+    position: absolute; 
+  }
+
+  &.vertical {
+    flex-direction: column;
+    width: auto;
+    height: fit-content;
+    padding: 10px 5px;
+
+    .bubble {
+      &.current {
+        width: 10px;
+        height: 30px;
+      }
+    }
+  }
+
+  &.active, 
+  &:hover {
+    opacity: 1;
+  }
+}

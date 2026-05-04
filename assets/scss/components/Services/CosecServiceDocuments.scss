@@ -1,0 +1,84 @@
+.cosec-service-documents {
+  width: 100%; //Follow parent
+  height: calc(100% - 30px); //Follow parent
+  padding-bottom: 30px;
+  overflow: hidden;
+  transition: all 0.7s ease;
+  position: relative;
+
+  .back-button {
+    width: 100%;
+    max-width: 210mm;
+    margin: auto;
+    padding: 0px;
+    height: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    opacity: 0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.7s ease;
+
+    &.show {
+      height: auto;
+      transform: scaleY(1);
+      opacity: 1;
+      color: var(--bs-gray-200);
+      padding: 20px;
+
+      i,
+      span {
+        font-size: 1.3rem;
+      }
+    }
+  }
+
+  .documents-section {
+    width: 100%;
+    max-width: 210mm;
+    margin: auto;
+    transform-origin: top;
+    transition: all 0.7s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    &.invert {
+      flex-direction: column-reverse;
+    }
+
+    .document-transition-wrapper {
+      display: contents;
+    }
+
+    .flip-move {
+      transition: transform 1s ease;
+    }
+  }
+
+  .document-toggler {
+    height: 0;
+  }
+
+  &.full-size {
+    margin: auto;
+
+    .document-toggler {
+      display: none; // Remove Document Toggler
+      height: 265px;
+      opacity: 1;
+      z-index: 8;
+    }
+  }
+
+  .btn {
+    &:hover {
+      background-color: var(--bs-white); //Override default bg colors - ensure that it will stay white
+    }
+  }
+}

@@ -1,0 +1,29 @@
+.user-profile-image {
+  grid-area: profile-image;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: var(--bs-gray-400);
+  box-shadow: 0 .1rem 1rem var(--bs-white);
+  border: solid 5px var(--bs-white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    height: 100%;
+    max-height: 200px;
+    max-width: 200px;
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  i {
+    font-size: 100px;
+    color: var(--bs-gray-700);
+  }
+}

@@ -1,0 +1,120 @@
+.section-14 {
+
+  p,
+  span,
+  div,
+  td {
+    font-family: 'Arial', sans-serif;
+  }
+
+  .table-spaced {
+    margin-bottom: 25px;
+  }
+
+  .declaration-name {
+    margin-top: 15px;
+  }
+
+  .document-title {
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+  }
+
+  .document-section {
+    margin: 13px 0;
+    width: 100%;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      thead {
+        tr {
+          td {
+            padding: 5px;
+            background-color: var(--bs-ssm-blue);
+            color: var(--bs-white);
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-color: var(--bs-ssm-blue);
+            border-style: solid;
+            border-bottom-width: 0;
+            border-left-width: 0;
+            border-right-width: 1px;
+            border-top-width: 1px;
+
+            &:first-child {
+              border-left-width: 1px;
+            }
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            vertical-align: middle;
+            border-color: var(--bs-black);
+            border-style: solid;
+            border-right-width: 1px;
+            border-bottom-width: 1px;
+            border-top-width: 0;
+            border-left-width: 0;
+            padding: 5px;
+
+            &:first-child {
+              width: 308px;
+              min-width: 308px;
+              font-weight: 600;
+              border-left-width: 1px;
+            }
+
+            &.counter {
+              width: 25px;
+              min-width: 25px;
+            }
+          }
+
+          &.header {
+            td {
+              font-weight: 600;
+
+              &:first-child {
+                width: fit-content;
+              }
+            }
+          }
+
+          &.promoter {
+            td {
+              &:first-child {
+                font-weight: normal;
+                width: fit-content;
+              }
+            }
+          }
+
+          &.declaration {
+            td {
+              font-weight: 600;
+
+              &:first-child {
+                width: 100%;
+              }
+            }
+          }
+
+          &:first-child {
+            td {
+              border-top-width: 1px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

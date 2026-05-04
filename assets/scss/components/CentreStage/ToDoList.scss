@@ -1,0 +1,145 @@
+#centre-stage-to-do-list {
+  height: 100%;
+  max-height: 450px;
+
+  .to-do-title {
+    width: calc(100% - 30px);
+    padding: 0 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .title {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 10px;
+
+      .copywriting {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .number-badge {
+        display: inline-block;
+        width: 1.5rem;
+        height: 1.5rem;
+        font-size: 1.1rem;
+        border-radius: 50%;
+        background-color: var(--bs-icompany-orange-dark);
+        padding: 5px;
+        color: var(--bs-white);
+        text-align: center;
+      }
+
+      &.expanded {
+        width: calc(100% - 2rem);
+        justify-content: center;
+      }
+    }
+
+    .expand-icon {
+      cursor: pointer;
+      font-size: 2rem;
+    }
+  }
+
+  .empty-to-do-list {
+    width: calc(100% - 30px);
+    height: calc(100% - 30px);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .ask-saira {
+      color: var(--bs-icompany-blue-light);
+      font-weight: bold;
+      cursor: pointer;
+    }
+  }
+
+  .to-do-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    opacity: 0;
+    height: 0;
+    transform-origin: top;
+    transition: transform 0.3s ease;
+
+    &.show {
+      height: 100%;
+      opacity: 1;
+    }
+
+    .to-dos {
+      width: calc(100% - 30px);
+      padding: 0 15px;
+      padding-top: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+
+      .card-animation-enter-active {
+        opacity: 0;
+        $total: 5; //Given the max height, the max items that can fit in here is 5
+
+        @for $i from 1 through $total {
+          &:nth-child(#{$i}) {
+            animation: cardAnimationEnterActive 1s ease-out calc(($total - $i) * 0.25s);
+          }
+        }
+
+        @keyframes cardAnimationEnterActive {
+          0% {
+            opacity: 0;
+            transform: translateY(-100%);
+          }
+
+          100% {
+            opacity: 1;
+            transform: translateY(0%);
+          }
+        }
+      }
+    }
+
+    .arrow-pagination {
+      width: calc(100% - 30px);
+      margin-top: 15px;
+      padding: 0 15px;
+      padding-bottom: 10px;
+    }
+  }
+
+  .to-do-container-documents {
+    height: 0;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
+    opacity: 0;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+
+    &.show {
+      height: calc(100% - 40px);
+      opacity: 1;
+      transform: scaleX(1);
+    }
+  }
+
+  &.is-enlarged {
+    display: none;
+  }
+}

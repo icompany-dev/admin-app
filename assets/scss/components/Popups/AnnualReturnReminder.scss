@@ -1,0 +1,27 @@
+#popup-annual-return-reminder {
+  .popup {
+    .popup-content {
+      .popup-details {
+        .body {
+          .action {
+            text-align: justify;
+
+            ul,
+            ol {
+              padding-left: 15px;
+
+              li {
+                text-align: left;
+              }
+            }
+          }
+
+          .learn-more {
+            width: 100%;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}

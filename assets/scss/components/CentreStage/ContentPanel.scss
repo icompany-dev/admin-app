@@ -1,0 +1,10 @@
+#centre-stage-content-panel {
+  position: relative;
+  margin: auto;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.7s ease;
+}

@@ -1,0 +1,16 @@
+#popup-reserve-name-first {
+  position: relative;
+  width: calc(100dvw - var(--scrollbar-width));
+  z-index: 10; //arbitrary number
+
+  .body {
+    margin: auto;
+    margin-bottom: 10px;
+
+    .action {
+      font-size: 1.2rem;
+      line-height: 1.5rem;
+      padding-bottom: 10px;
+    }
+  }
+}

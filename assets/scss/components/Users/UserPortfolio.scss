@@ -1,0 +1,99 @@
+#user-portfolio {
+  padding: 45px 30px;
+  height: calc(100% - 90px);
+  overflow: auto;
+
+  .portfolio-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+
+    .label {
+      .first-label, 
+      .second-label {
+        font-size: 1.3rem;
+      }
+  
+      .first-label {
+        font-weight: 700;
+      }
+    }
+  
+    .company-list-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+
+      .company-wrapper {
+        width: 100%;
+
+        .company-box {
+          cursor: pointer;
+          aspect-ratio: 1/1;
+          overflow: scroll;
+          border: 1px solid var(--bs-gray-400);
+          border-radius: 5px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          transition: all 0.3s ease-out;
+  
+          img {
+            width: 80%;
+            object-fit: contain;
+            margin: auto;
+
+            &.placeholder {
+              filter: grayscale(1);
+              opacity: 0.1;
+            }
+          }
+        }
+
+        .company-name {
+          text-align: center;
+          font-size: 0.8rem;
+          text-transform: uppercase;
+          width: 100%;
+          margin-top: 5px;
+
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        &:hover {
+          .company-box {
+            background-color: var(--bs-icompany-purple-lightest);
+            border-color: var(--bs-primary);
+          }
+
+          .company-name {
+            font-weight: 600;
+            color: var(--bs-primary);
+          }
+        }
+      }
+    }
+  }
+
+  .empty-portfolio-container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 45px;
+
+    .empty-portfolio-label {
+      font-weight: 900;
+      text-align: center;
+      font-size: 3rem;
+    }
+
+    .empty-portfolio-sublabel {
+      text-align: center;
+    }
+  }
+}

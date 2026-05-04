@@ -1,0 +1,102 @@
+#popup-bank-account-opening {
+  .body {
+    ul {
+      li {
+        text-align: start;
+      }
+    }
+
+    select {
+      margin-top: 5px;
+      background-color: var(--bs-white);
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+
+    .requirement-body {
+      width: 100%;
+      text-align: justify;
+
+      &.fixed-height {
+        min-height: 220px;
+        max-height: 220px;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: transparent;
+          border-radius: 10px;
+          transition: background 0.3s ease;
+        }
+
+        scrollbar-width: thin;
+        scrollbar-color: transparent transparent;
+
+        &:hover {
+          &::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2); // Visible thumb
+          }
+
+          scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+        }
+      }
+
+      .requirement-title {
+        text-align: left;
+        font-weight: 600;
+        font-size: 1.4rem;
+      }
+
+      ul,
+      ol {
+        padding-left: 15px;
+
+        li {
+          margin-bottom: 10px;
+
+          .list-content {
+            font-size: 1rem;
+          }
+
+          .list-notes {
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      .bank-comparison-link-trigger {
+        color: var(--bs-icompany-blue);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .recommendation {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .action-buttons {
+    margin-top: 10px;
+
+    .btn-submit {
+      background-color: var(--bs-icompany-blue);
+      color: white;
+
+      &:hover {
+        background-color: var(--bs-icompany-blue-dark);
+      }
+    }
+  }
+}

@@ -1,0 +1,92 @@
+#popup-consent-to-act-required {
+  position: relative;
+  z-index: 14;
+
+  .body {
+    min-height: 165px;
+    align-items: center;
+
+    &.appointer {
+      min-height: 218px;
+    }
+  }
+
+  .director-email {
+    width: fit-content;
+    min-width: 200px;
+    margin: auto;
+    padding: 4px 8px;
+    text-align: center;
+    background-color: var(--director-email-bg-color);
+    min-height: 16px;
+    border: 1px solid var(--director-email-border-color);
+  }
+
+  .to-complete-list {
+    width: 80%;
+    margin: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    ul {
+      li {
+        text-align: left;
+
+        span {
+          font-size: 13px;
+        }
+      }
+    }
+  }
+
+  .note {
+    font-size: 11px;
+
+    .clickable {
+      cursor: pointer;
+      transition: all 0.5s ease;
+
+      &:hover {
+        color: var(--bs-icompany-blue);
+      }
+    }
+  }
+
+  .next-action {
+    font-size: 1.5rem;
+    line-height: 1.6rem;
+    font-weight: 600;
+  }
+
+  .action-list {
+    width: 80%;
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 0;
+
+    .form-check {
+      margin-bottom: 10px;
+      gap: 15px;
+      align-items: center;
+
+      .label {
+        font-size: 1.2rem;
+        line-height: 1.2rem;
+
+        &.selected {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+.hidden-document {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -99;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}

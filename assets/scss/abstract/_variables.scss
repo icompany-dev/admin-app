@@ -1,0 +1,170 @@
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$gray-1000: #141618;
+
+$black: #000000;
+$white: #fff;
+$offwhite: #dbdbdb;
+$background: #f5f6f8;
+$darkmode-background: #343a40;
+$purple: #491f46;
+$primary: #6A095C;
+$primary-neon: #ba00ff;
+$purple-gray: #3f354e;
+$cyan: #0dcaf0;
+$cyan-alt: #45cefc;
+$white-blue: #aee5ff;
+$blue: #0d6efd;
+$orange: #ff914d;
+$red: #dc3545;
+$red-alt: #c1272d;
+$yellow: #ffc107;
+$yellow-alt: #fce83b;
+$yellow-light: #fdf9b4;
+$green: #198754;
+$green-alt: #479d19;
+$dark-green: #006837;
+
+$ssm-blue: #20558A;
+$ssm-dark-gray: #A6A6A6;
+$ssm-mid-gray: #D9D9D9;
+$ssm-light-gray: #F2F2F2;
+
+$icompany-purple-darker: #240f22;
+$icompany-purple-dark: #361734;
+$icompany-purple: #491f46;
+$icompany-purple-light: #8f3d89;
+$icompany-purple-lighter: #b34dac;
+$icompany-purple-lightest: #e1cede;
+
+$icompany-orange-darker: #cf2a1a;
+$icompany-orange-dark: #e14b1f;
+$icompany-orange: #f69055;
+$icompany-orange-light: #f8874b;
+$icompany-orange-lighter: #fca174;
+
+$icompany-blue-darker: #063dd5;
+$icompany-blue-dark: #0954ea;
+$icompany-blue: #0d6efd;
+$icompany-blue-light: #388dff;
+$icompany-blue-lighter: #66abff;
+
+$icompany-green-darker: #005915;
+$icompany-green-dark: #006125;
+$icompany-green: #006837;
+$icompany-green-light: #32875d;
+$icompany-green-lighter: #64a583;
+
+$icompany-yellow: #FADD7D;
+
+$secondary: $gray-600;
+$secondary-alt: $gray-500;
+$success: $green;
+$success-alt: $green-alt;
+$info: $cyan;
+$info-alt: $cyan-alt;
+$warning: $yellow;
+$warning-alt: $yellow-alt;
+$danger: $red;
+$danger-alt: $red-alt;
+$disabled: $gray-200;
+$table-bg: transparent;
+
+$theme-colors: (
+  "primary": $primary,
+  "primary-neon": $primary-neon,
+  "secondary": $secondary,
+  "secondary-alt": $secondary-alt,
+  "secondary-400": $gray-400,
+  "success": $success,
+  "success-alt": $success-alt,
+  "info": $info,
+  "info-alt": $info-alt,
+  "warning": $warning,
+  "warning-alt": $warning-alt,
+  "danger": $danger,
+  "danger-alt": $danger-alt,
+  "black": $black,
+  "blue": $blue,
+  "green": $dark-green,
+  "orange": $orange,
+  "yellow": $yellow,
+  "yellow-light": $yellow-light,
+  "icompany-purple-darker": $icompany-purple-darker,
+  "icompany-purple-dark": $icompany-purple-dark,
+  "icompany-purple": $icompany-purple,
+  "icompany-purple-light": $icompany-purple-light,
+  "icompany-purple-lighter": $icompany-purple-lighter,
+  "icompany-purple-lightest": $icompany-purple-lightest,
+  "icompany-orange-darker": $icompany-orange-darker,
+  "icompany-orange-dark": $icompany-orange-dark,
+  "icompany-orange": $icompany-orange,
+  "icompany-orange-light": $icompany-orange-light,
+  "icompany-orange-lighter": $icompany-orange-lighter,
+  "icompany-green-darker": $icompany-green-darker,
+  "icompany-green-dark": $icompany-green-dark,
+  "icompany-green": $icompany-green,
+  "icompany-green-light": $icompany-green-light,
+  "icompany-green-lighter": $icompany-green-lighter,
+  "icompany-blue-darker": $icompany-blue-darker,
+  "icompany-blue-dark": $icompany-blue-dark,
+  "icompany-blue": $icompany-blue,
+  "icompany-blue-light": $icompany-blue-light,
+  "icompany-blue-lighter": $icompany-blue-lighter,
+  "icompany-yellow": $icompany-yellow,
+  "light": $gray-100,
+  "light-200": $gray-200,
+  "light-300": $gray-300,
+  "light-400": $gray-400,
+  "dark": $gray-900,
+  "darker": $gray-1000,
+  "purple": $purple,
+  "purple-gray": $purple-gray,
+  "white": $white,
+  "white-blue": $white-blue,
+  "disabled": $disabled,
+  "offwhite": $offwhite,
+  "super-light": $background,
+  "super-darkmode": $darkmode-background,
+  "gray-100": $gray-100,
+  "gray-200": $gray-200,
+  "gray-300": $gray-300,
+  "gray-400": $gray-400,
+  "gray-500": $gray-500,
+  "gray-600": $gray-600,
+  "gray-700": $gray-700,
+  "gray-800": $gray-800,
+  "gray-900": $gray-900,
+  "gray-1000": $gray-1000,
+  "ssm-blue": $ssm-blue,
+  "ssm-dark-gray": $ssm-dark-gray,
+  "ssm-mid-gray": $ssm-mid-gray,
+  "ssm-light-gray": $ssm-light-gray,
+);
+
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+  6: $spacer * 6
+);
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px
+);

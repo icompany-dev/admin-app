@@ -1,0 +1,51 @@
+#name-reservation {
+  position: relative;
+
+  .incorporate-action-buttons {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: 10px;
+    z-index: 2;
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-start;
+      gap: 10px;
+
+      .btn {
+        transform: scaleY(1);
+        transform-origin: top;
+        transition: all 0.7s ease;
+
+        &.hide {
+          transform: scaleY(0);
+        }
+      }
+
+      .parent-button {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+
+        .fa-caret-down {
+          transition: all 0.7s ease;
+
+          &.fa-rotate-180 {
+            transition: all 0.7s ease;
+          }
+        }
+      }
+    }
+  }
+}

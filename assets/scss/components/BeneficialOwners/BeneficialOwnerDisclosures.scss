@@ -1,0 +1,115 @@
+#beneficial-owner-disclosures {
+  padding: 2rem;
+
+  .beneficial-owner-content {
+    margin-top: 2rem;
+  }
+
+  .declarations-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .declaration-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .shareholder-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f0f0f0;
+
+    h4 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #333;
+    }
+  }
+
+  .declaration-status {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+
+    &.is-beneficial-owner {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    &.not-beneficial-owner {
+      background-color: #fff3e0;
+      color: #e65100;
+    }
+  }
+
+  .beneficial-owner-info,
+  .not-beneficial-owner {
+    margin-top: 1rem;
+  }
+
+  .info-row {
+    display: flex;
+    padding: 0.5rem 0;
+    gap: 1rem;
+
+    .label {
+      font-weight: 600;
+      color: #666;
+      min-width: 150px;
+    }
+
+    .value {
+      color: #333;
+    }
+  }
+
+  .not-beneficial-owner {
+    p {
+      margin: 0.5rem 0;
+      color: #666;
+    }
+  }
+
+  .declaration-footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f0f0f0;
+
+    small {
+      color: #999;
+    }
+  }
+
+  .no-declarations {
+    text-align: center;
+    padding: 3rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 2rem;
+
+    p {
+      margin: 0.5rem 0;
+      color: #666;
+
+      &.help-text {
+        font-size: 0.875rem;
+        color: #999;
+      }
+    }
+  }
+}

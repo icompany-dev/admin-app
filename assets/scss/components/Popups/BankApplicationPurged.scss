@@ -1,0 +1,36 @@
+#popup-bank-application-purged {
+  .bank-image-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 30px;
+
+    .bank-info {
+      .bank-image {
+        width: 125px;
+        background-color: var(--bs-white);
+        border-radius: 15px;
+      }
+  
+      .bank-name {
+        width: 125px;
+        margin-top: 5px;
+        text-transform: uppercase;
+        font-weight: bold;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .bank-branch-name {
+        width: 125px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+}

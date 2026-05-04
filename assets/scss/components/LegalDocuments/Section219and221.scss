@@ -1,0 +1,275 @@
+#legal-documents-section-219-221 {
+  .action-link {
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    color: var(--bs-icompany-blue);
+
+    &.remove {
+      color: var(--bs-danger);
+    }
+  }
+}
+
+.legal-document {
+  .company-details {
+    padding-bottom: 20px;
+  }
+
+  .section {
+    .header {
+      padding: 10px 0;
+    }
+
+    div {
+      text-align: justify;
+    }
+  }
+
+  .signature-section {
+    max-width: 30%;
+
+    .sign-off {
+      width: 100%;
+    }
+  }
+
+  table {
+    border-collapse: collapse !important;
+
+    tbody {
+      tr {
+        td {
+          border-top: none;
+          border-left: none;
+          border-right: 1px solid var(--bs-black);
+          border-bottom: 1px solid var(--bs-black);
+
+          &:first-of-type {
+            border-left: 1px solid var(--bs-black);
+          }
+        }
+
+        &:first-of-type {
+          td {
+            border-top: 1px solid var(--bs-black);
+          }
+        }
+      }
+    }
+  }
+}
+
+.section219-221-table {
+  margin-bottom: 20px;
+
+  tbody {
+    tr {
+      td {
+        vertical-align: top;
+
+        &:first-child,
+        &:nth-child(1),
+        &:nth-child(4) {
+          width: 30px;
+        }
+
+        &:nth-child(2),
+        &:nth-child(5) {
+          width: 170px;
+        }
+
+        &:nth-child(3),
+        &:nth-child(6) {
+          width: calc(100% - 60px - 340px);
+        }
+
+        &.span-5 {
+          width: calc(100% - 30px);
+        }
+
+        &.span-4 {
+          width: calc(100% - 200px);
+        }
+
+        .form-control {
+          // border: none;
+          width: calc(100% - 30px);
+          padding: 4px 8px;
+        }
+
+        .empty-fields {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 10px;
+          padding-left: 5px;
+          padding-top: 10px;
+
+          .empty-field {
+            width: calc(50% - 10px);
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+
+            .number {
+              width: 20px;
+            }
+
+            .field {
+              width: calc(100% - 30px);
+              border-bottom: 1px solid var(--bs-black);
+              // height: 16px;
+            }
+          }
+        }
+
+
+      }
+    }
+  }
+}
+
+.section-59-table {
+  tbody {
+    tr {
+      td {
+        width: 20%;
+        text-align: center;
+        font-size: 10px;
+
+        span {
+          font-size: 10px;
+        }
+
+        &.span-2 {
+          width: 40%;
+        }
+
+        &.span-4,
+        &.span-6 {
+          width: 80%;
+        }
+
+        &:first-child {
+          text-align: left;
+          font-size: 12px;
+        }
+      }
+
+      &.header-row {
+        td {
+          text-align: center;
+          padding: 2px 5px;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+
+  &.small-columns {
+    margin-bottom: 20px;
+
+    tbody {
+      tr {
+        td {
+          width: calc(80% / 6);
+
+          &.span-2 {
+            width: calc(80% / 3);
+          }
+
+          &:first-child {
+            width: 20%;
+          }
+
+          .form-control {
+            width: 100px;
+          }
+        }
+
+        &.header-row {
+          td {
+            width: calc(80% / 6);
+          }
+        }
+      }
+    }
+  }
+}
+
+.section-221-table {
+  margin-top: 20px;
+
+  tbody {
+    tr {
+      td {
+        width: calc(100% / 3);
+        text-align: center;
+
+        .form-control {
+          width: 90%;
+          text-align: center;
+        }
+
+        &:has(.action-link) {
+          .form-control {
+            width: 75%;
+          }
+        }
+
+        &:only-child {
+          &:has(.action-link) {
+            border: none;
+          }
+        }
+      }
+
+      &.header-row {
+        td {
+          padding: 2px 5px;
+          text-align: center;
+
+          &.text-left {
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}
+
+.property-declaration-table {
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  tbody {
+    tr {
+      td {
+        padding: 2px 5px;
+        min-height: 16px;
+        height: 16px;
+
+        &:first-child {
+          width: 20px;
+        }
+
+        .form-control {
+          width: 90%;
+        }
+
+        &:has(.action-link) {
+          &:first-child {
+            padding: 5px;
+            text-align: center;
+            border: none;
+          }
+        }
+      }
+    }
+  }
+}

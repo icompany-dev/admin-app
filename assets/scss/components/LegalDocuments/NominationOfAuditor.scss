@@ -1,0 +1,83 @@
+#legal-documents-nomination-of-auditor {
+  // Styles go here
+}
+
+.auditor-nomination-letter {
+  .company-letter-header {
+    text-align: center;
+    font-size: 13px;
+    line-height: 20px;
+    margin-bottom: 20px;
+
+    div {
+      font-size: 13px;
+      line-height: 18px;
+    }
+  }
+
+  .letter-title {
+    text-align: left;
+    padding-bottom: 18px;
+
+    div {
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    textarea {
+      border-radius: 5px;
+      border: 1px solid var(--bs-gray-500);
+      padding: 2px 8px;
+      outline: none;
+      font-size: 13px; //Resolution size
+      line-height: 16px;
+
+      &::placeholder {
+        color: var(--bs-gray-500);
+      }
+    }
+
+    input[type=text],
+    input[type=date] {
+      border-radius: 5px;
+      border-color: var(--bs-gray-500);
+      padding: 2px 8px;
+      outline: none;
+      font-size: 13px; //Resolution size
+      line-height: 16px;
+      color: var(--bs-black);
+      font-weight: normal;
+
+      &::placeholder {
+        color: var(--bs-gray-500);
+      }
+    }
+  }
+
+  .letter-content {
+
+    div,
+    p,
+    span {
+      text-align: justify;
+      font-size: 13px;
+      line-height: 18px;
+    }
+
+    input[type=text],
+    input[type=date] {
+      border-radius: 5px;
+      border-color: var(--bs-gray-500);
+      padding: 2px 8px;
+      outline: none;
+      font-size: 13px; //Resolution size
+      line-height: 16px;
+      color: var(--bs-black);
+      font-weight: normal;
+
+      &::placeholder {
+        color: var(--bs-gray-500);
+      }
+    }
+  }
+}

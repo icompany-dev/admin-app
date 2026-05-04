@@ -1,0 +1,59 @@
+#popup-switch-application {
+  position: relative;
+  width: calc(100dvw - var(--scrollbar-width));
+  z-index: 10; //arbitrary number
+
+  .body {
+    .input-wrapper {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 10px;
+
+      .form-check {
+        input[type=checkbox] {
+          width: 18px;
+          height: 18px;
+        }
+
+        label {
+          width: calc(100% - 30px);
+          text-align: justify;
+          font-size: 13px;
+        }
+
+        &.selected {
+          label {
+            font-weight: 600;
+          }
+        }
+
+        &:not(.selected) {
+          label {
+            opacity: 0.5;
+          }
+        }
+      }
+    }
+
+    .action {
+      margin-bottom: 15px;
+    }
+
+    &.additional-step {
+
+      div,
+      p,
+      li {
+        text-align: justify;
+      }
+
+      ul,
+      ol {
+        padding-left: 15px;
+      }
+    }
+  }
+}

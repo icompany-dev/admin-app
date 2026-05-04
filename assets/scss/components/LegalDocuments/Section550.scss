@@ -1,0 +1,178 @@
+#striking-off-application-printables {
+  display: contents;
+
+  .paper-wrapper {
+    &.striking-off-application {
+      box-shadow: 0 2px 4px rgba(15, 34, 58, 0.12);
+      width: 210mm;
+      height: 297mm;
+      background-color: var(--bs-white);
+      padding: 0mm;
+      margin: auto;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.paper {
+  .paper-content {
+    position: relative;
+    height: 100%;
+
+    .striking-off-application-header {
+      position: absolute;
+      top: 0mm;
+      left: 0mm;
+
+      .header-label {
+        font-weight: 600;
+        font-size: 12px;
+      }
+
+      .header-content {
+        font-size: 12px;
+      }
+    }
+
+    .application-content {
+      padding-bottom: 20px;
+      padding-top: 30px;
+
+      &.first-page {
+        height: calc(100% - 50px);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-end;
+      }
+
+      .title {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        gap: 15px;
+        margin-bottom: 20px;
+
+        .title-content {
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+
+      .document-content {
+
+        p,
+        span {
+          font-size: 13px;
+          text-align: justify;
+        }
+
+        ol,
+        ul {
+          padding-left: 15px;
+        }
+
+        .condition-list-alpha-2 {
+          margin: 1mm 0mm;
+
+          li {
+            padding-left: 10px;
+            margin: 3mm 0mm;
+            text-align: justify;
+
+            &::marker {
+              content: "(" counter(list-item, lower-alpha) ") ";
+            }
+          }
+
+          .holding-company-input {
+            width: 50%;
+          }
+        }
+
+        .blank-space {
+          display: inline-block;
+          min-width: 100px;
+          border-bottom: 1px solid var(--bs-black);
+          text-decoration: line-through;
+
+          .placeholder {
+            color: var(--bs-gray-500);
+          }
+
+          &.blank-out {
+            max-width: 150px;
+
+            .placeholder {
+              color: var(--bs-white);
+              max-width: 150px;
+              overflow: hidden;
+              text-wrap: nowrap;
+            }
+          }
+        }
+
+        .form-control {
+          &.wide {
+            width: 350px;
+          }
+        }
+
+        .lodger-info-table {
+          width: 100%;
+          font-size: 12px;
+
+          td {
+            vertical-align: top;
+            padding-bottom: 1mm;
+          }
+
+          td:nth-child(2) {
+            padding: 0 2mm;
+          }
+
+          td:first-child {
+            min-width: 100px;
+          }
+
+          .lodger-input {
+            width: 100%;
+          }
+        }
+
+        .signature-section {
+          width: 45%;
+
+          .sign-off {
+            display: none;
+          }
+
+          .applicant-sign-off {
+            width: 100%;
+            border-top: 1px solid var(--bs-black);
+            padding: 5px;
+
+            .details {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-start;
+              align-items: flex-start;
+              gap: 5px;
+              padding-bottom: 5px;
+
+              .label {
+                width: 40px;
+              }
+
+              span {
+                text-align: start;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

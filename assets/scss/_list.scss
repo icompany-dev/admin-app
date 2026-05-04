@@ -1,0 +1,29 @@
+ol,
+ul {
+  &.no-bullet {
+    list-style: none;
+    padding-left: 0 !important;
+  }
+
+  &.padding-zero {
+    padding: 0px;
+    padding-left: 15px;
+  }
+}
+
+ol {
+  &.number-list {
+    padding: 5px 0;
+    padding-left: 15px;
+
+    li {
+      margin-bottom: 5px;
+    }
+  }
+
+  &.alpha-list {
+    padding: 5px 0;
+    padding-left: 15px;
+    list-style: lower-alpha;
+  }
+}

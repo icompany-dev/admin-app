@@ -1,0 +1,38 @@
+.responsibility-statement {
+  width: 100%;
+
+  .header {
+    padding: 10px;
+    text-align: center;
+    background-color: var(--responsibility-statement-header-bg-color);
+    color: var(--responsibility-statement-header-color);
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 20px;
+  }
+
+  .content {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+
+    .statement {
+      text-align: justify;
+    }
+
+    ul,
+    ol {
+      margin: 0px;
+      padding-left: 15px;
+
+      li {
+        padding-bottom: 5px;
+        line-height: 1.5rem;
+      }
+    }
+  }
+}

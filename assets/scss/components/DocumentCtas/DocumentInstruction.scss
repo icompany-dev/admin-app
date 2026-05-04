@@ -1,0 +1,44 @@
+#document-instruction {
+  position: absolute;
+  bottom: 60px;
+  left: -5mm;
+  width: 100%;
+  max-width: 240mm;
+  margin: auto;
+  background-color: var(--sdn-bhd-service-cta-bg-color);
+  padding: 20px;
+  z-index: 2;
+  border-radius: 5px;
+  box-shadow: var(--box-shadow);
+
+  .title {
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: bold;
+    font-size: 2rem;
+    line-height: 2.1rem;
+    letter-spacing: 0.1pt;
+  }
+
+  .content {
+    width: 100%;
+    font-size: 1.2rem;
+
+    ul {
+      li {
+        font-size: 1.2rem;
+        padding-bottom: 2px;
+      }
+    }
+  }
+
+  .action-buttons {
+    margin-bottom: 5px;
+    gap: 10px;
+
+    .btn {
+      width: 150px;
+      padding: 8px 16px;
+    }
+  }
+}

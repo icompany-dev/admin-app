@@ -1,0 +1,34 @@
+#popup-purchase-certificate-of-incorporation {
+  position: relative;
+  z-index: 6;
+
+  .popup {
+    .popup-content {
+      .popup-details {
+        .body {
+          .latest-copy {
+            width: 80%;
+            margin: auto;
+            margin-top: 10px;
+
+            .input-label {
+              text-align: justify;
+              font-weight: 600;
+
+              .disclaimer {
+                font-size: 0.9rem;
+                font-weight: normal;
+              }
+            }
+          }
+
+          .third-party-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+          }
+        }
+      }
+    }
+  }
+}

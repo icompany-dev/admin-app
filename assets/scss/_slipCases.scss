@@ -1,0 +1,124 @@
+// The position of the slip case will be determined by its parent container.
+.slip-case {
+  background-color: var(--slip-case-bg-color);
+  padding: 20px 15px;
+  margin-left: -5px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+
+  .title {
+    font-weight: bold;
+    letter-spacing: 0.1pt;
+    font-size: 1.6rem;
+    text-align: center;
+    margin-bottom: 15px;
+
+    ul,
+    ol {
+      li {
+        text-align: left;
+        font-size: 1.3rem;
+        line-height: 1.5rem;
+        padding-bottom: 5px;
+      }
+    }
+  }
+
+  .content {
+
+    ol,
+    ul {
+      padding-left: 15px;
+
+      li {
+        font-size: 1.1rem;
+        line-height: 1.5rem;
+        padding-bottom: 15px;
+
+        span {
+          font-size: 1.1rem;
+          line-height: 1.5rem;
+        }
+      }
+    }
+
+    .clickable-span {
+      cursor: pointer;
+      color: var(--bs-icompany-blue);
+      font-weight: 600;
+      padding: 0 5px;
+    }
+
+    .action-buttons {
+      margin: 10px 0;
+    }
+
+    .action-buttons {
+      margin-bottom: 5px;
+      gap: 10px;
+
+      .btn {
+        width: 120px;
+        padding: 8px 16px;
+      }
+
+      .btn-submit {
+        transition: all 1.2s ease;
+        overflow: hidden;
+        text-wrap: nowrap;
+
+        .hovered-text {
+          display: block;
+          width: 0;
+          height: 0;
+          opacity: 0;
+          margin-left: 0;
+          margin-right: 0;
+          padding-left: 0;
+          padding-right: 0;
+          overflow: hidden;
+          transform: scale(0);
+          transform-origin: left;
+          transition: all 1.2s ease;
+        }
+
+        &:hover {
+          width: fit-content;
+          background-color: var(--bs-icompany-blue);
+          color: var(--bs-white);
+
+          .hovered-text {
+            display: inline;
+            transform: scale(1);
+            opacity: 1;
+            width: fit-content;
+            height: auto;
+            margin-left: initial;
+            margin-right: initial;
+            padding-left: initial;
+            padding-right: initial;
+            overflow: visible;
+          }
+        }
+      }
+
+      .btn-danger {
+        transform: scale(1);
+        transform-origin: left;
+        opacity: 1;
+        transition: all 1.2s ease;
+
+        &.hide {
+          width: 0;
+          opacity: 0;
+          margin-left: 0;
+          margin-right: 0;
+          padding-left: 0;
+          padding-right: 0;
+          overflow: hidden;
+          transform: scale(0);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,269 @@
+#legal-document-letter-change-reassign-cosec {
+  .paper {
+    &.print {
+      padding: 20mm;
+    }
+  }
+}
+
+.letter-change-reassign-cosec {
+  position: relative;
+
+  .input-group-text,
+  .input-group-dual-text {
+    border-color: var(--bs-gray-400);
+    border-width: 1px;
+  }
+
+  .letter-head {
+    max-width: 70%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+
+    .company-name {
+      width: 100%;
+      text-align: center;
+
+      input[type=text] {
+        text-transform: uppercase;
+      }
+
+      span {
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+    }
+
+    .company-registration-number {
+      width: 60%;
+      text-align: center;
+
+      .input-group-dual-text {
+        input[type=text] {
+          text-align: center;
+        }
+      }
+    }
+
+    .validated-message {
+      color: var(--bs-danger);
+      font-weight: 600;
+    }
+
+    .incorporated-location {
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+  }
+
+  .document-date {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+
+    .label {
+      font-weight: 600;
+    }
+
+    .placeholder {
+      font-weight: normal;
+      font-style: italic;
+      color: var(--bs-gray-600);
+    }
+  }
+
+  .cosec-company-address {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-bottom: 10px;
+
+    .input-field {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 3px;
+
+      .form-control {
+        width: 100%;
+        padding: 5px 10px;
+        border-radius: 5px;
+        border-color: var(--bs-gray-400);
+        border-width: 1px;
+
+        &::placeholder {
+          color: var(--bs-gray-400);
+        }
+
+        &.postcode {
+          width: 100px;
+        }
+
+        &.city {
+          width: calc(100% - 110px);
+        }
+      }
+
+      .cosec-company-name {
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .attention-to {
+    width: 70%;
+    margin-bottom: 15px;
+
+    .input-group-text {
+      justify-content: flex-start;
+      gap: 10px;
+
+      .input-group-pre-append {
+        width: 80px;
+
+        input[type=text] {
+          width: calc(100% - 90px);
+        }
+      }
+    }
+
+    .cosec-name {
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .cosec-contact-details {
+      padding-left: 80px;
+      margin-bottom: 3px;
+    }
+
+    .non-editable-details {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 10px;
+
+      .label {
+        font-weight: 600;
+      }
+
+      .details {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 1px;
+
+        .cosec-name {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  .greeting {
+    margin-bottom: 10px;
+  }
+
+  .letter-title {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.1pt;
+    margin-bottom: 10px;
+  }
+
+  .letter-content {
+    p {
+      text-align: justify;
+      padding-bottom: 5px;
+
+      .link {
+        color: var(--bs-icompany-blue);
+      }
+    }
+
+    ol {
+      padding-left: 15px !important;
+      list-style-position: inside !important;
+      margin: 10px 0;
+      counter-reset: legal-counter;
+
+      li {
+        counter-increment: legal-counter;
+        padding-bottom: 3px;
+        display: flex;
+
+        &::before {
+          content: counter(legal-counter) ".";
+          counter-increment: list-item;
+          padding-right: 10px;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+
+  .letter-sign-off {
+    margin-top: 30px;
+    width: 50%;
+    position: relative;
+
+    .sign-off-title {
+      .company-name {
+        margin-top: 5px;
+        font-weight: bold;
+        text-transform: uppercase;
+
+        span {
+          padding-right: 3px;
+        }
+
+        .placeholder {
+          font-weight: normal;
+          text-transform: none;
+          font-style: italic;
+          color: var(--bs-gray-600);
+        }
+      }
+    }
+
+    .signature-pad {
+      width: 80%;
+
+      .sign-off {
+        width: 100%;
+      }
+
+      .enlarged-signature-container {
+        &.show {
+          .signature-container {
+            left: 15px;
+          }
+
+          .sign-off {
+            width: 90%;
+          }
+
+          .close-button {
+            right: -10px;
+            top: -10px;
+          }
+        }
+      }
+    }
+  }
+}

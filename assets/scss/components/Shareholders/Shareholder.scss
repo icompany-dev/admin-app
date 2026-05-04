@@ -1,0 +1,86 @@
+.shareholder {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  .name {
+    color: var(--shareholder-name);
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+    letter-spacing: 0.1pt;
+    font-weight: bold;
+    text-transform: capitalize;
+    width: 100%;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-align: center;
+
+    .name-type {
+      font-weight: normal;
+    }
+  }
+
+  .membership {
+    text-align: center;
+    font-size: 1.2rem;
+
+    .member-since {
+      margin-top: 5px;
+      font-size: 1.5rem;
+      line-height: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 0.1pt;
+    }
+  }
+
+  .corp-rep-details {
+    transform: scaleY(0);
+    transform-origin: top;
+    height: 0;
+    opacity: 0;
+    width: 100%;
+    text-align: center;
+    transition: all 0.7s ease;
+
+    &.show {
+      transform: scaleY(1);
+      height: auto;
+      opacity: 1;
+    }
+
+    .corp-rep-label {
+      text-transform: uppercase;
+      letter-spacing: 0.1pt;
+    }
+
+    .corp-rep-name {
+      color: var(--shareholder-name);
+      font-size: 2.5rem;
+      line-height: 2.5rem;
+      letter-spacing: 0.1pt;
+      font-weight: bold;
+      text-transform: capitalize;
+      width: 100%;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+      overflow: hidden;
+      text-align: center;
+    }
+  }
+
+  .profile-image-container {
+    position: relative;
+    width: 210px;
+    height: 210px;
+    cursor: pointer;
+
+    .user-profile-image {
+      width: 200px;
+      height: 200px;
+    }
+  }
+}

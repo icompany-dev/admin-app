@@ -1,0 +1,240 @@
+#incorporation-step-one {
+  .name-reservations {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+
+    .name-reservation-container {
+      width: 100%;
+      position: relative;
+
+      .label {
+        margin-bottom: 5px;
+        font-weight: 600;
+        letter-spacing: 0.1pt;
+
+        .required-field {
+          color: var(--bs-danger);
+          font-size: 1.2rem;
+        }
+      }
+
+      .name-reservation {
+        width: 100%;
+
+        .input-wrapper {
+          border-radius: 5px;
+          background-color: var(--bs-white); //set using variables
+          transition: all 0.7s ease;
+          border: 2px solid transparent;
+
+          .input-group {
+            width: calc(100% - 24px);
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+
+            input[type=text] {
+              background-color: transparent;
+              border: none;
+              width: calc(100% - 60px);
+            }
+
+            .input-group-append {
+              width: 60px;
+              font-weight: 500;
+            }
+          }
+
+          .input-notes {
+            padding: 0px 18px;
+            margin-bottom: 5px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+
+            ul {
+              margin: 0;
+              padding-left: 0px;
+              list-style-type: none;
+            }
+          }
+
+          &.focused,
+          &.success {
+            border-color: var(--bs-icompany-purple-lighter); // Set using variables
+          }
+
+          &.warning {
+            border-color: var(--bs-icompany-orange);
+          }
+
+          &.danger {
+            border-color: var(--bs-danger);
+          }
+        }
+
+        .availability-notice {
+          font-size: 1rem;
+          padding: 5px 0;
+          margin-top: 0px;
+          width: 100%;
+          height: 0;
+          opacity: 0;
+          transform: scaleY(0);
+          transform-origin: top;
+          transition: all 0.7s ease;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: flex-start;
+          gap: 5px;
+
+          i {
+            padding-top: 2px;
+            font-size: 1rem;
+          }
+
+          .notice-content {
+            width: 100%;
+
+            ul {
+              margin: 0;
+              padding-left: 5px;
+              list-style-type: none;
+            }
+
+            .input-area {
+              margin-top: 10px;
+              padding: 15px;
+              background-color: var(--bs-white); //set using variables
+              transition: all 0.7s ease;
+              border: 2px solid transparent;
+              border-radius: 5px;
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              align-items: flex-start;
+              gap: 10px;
+
+              .label-ask-saira-button {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+
+                .textarea-label {
+                  color: var(--bs-icompany-purple);
+                }
+              }
+
+              .in-name-reservation {
+                background-color: transparent;
+                border: none;
+                width: 100%;
+                padding: 0;
+                resize: none;
+                text-transform: uppercase;
+              }
+            }
+          }
+
+          &.show {
+            height: auto;
+            opacity: 1;
+            transform: scaleY(1);
+            margin-top: 5px;
+          }
+
+          &.checking {
+            color: var(--bs-icompany-purple);
+          }
+
+          &.warning,
+          &.success {
+            .notice-content {
+
+              p,
+              div,
+              span {
+                font-weight: 600;
+              }
+            }
+          }
+
+          &.danger {
+            .notice-content {
+
+              p,
+              div,
+              span {
+                color: var(--bs-danger);
+                font-weight: 600;
+              }
+            }
+          }
+
+          .file-uploader {
+            &.shake {
+              .link-label {
+                display: inline-block; // Ensures transform works correctly on inline elements
+                animation: shake-vertical 2s cubic-bezier(.36, .07, .19, .97) infinite;
+                backface-visibility: hidden;
+                perspective: 1000px;
+              }
+            }
+          }
+        }
+
+        .ask-saira-container {
+          margin-top: 10px;
+
+          .ask-saira-button {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+          }
+
+          .ask-saira-suggestion {
+            margin-top: 10px;
+            padding-left: 10px;
+
+            ul {
+              padding-left: 1rem;
+
+              li {
+                &.ask-saira-select {
+                  cursor: pointer;
+                  color: var(--bs-icompany-blue);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .instruction-container {
+    border-top: 1px solid var(--bs-gray-600);
+    margin-top: 15px;
+  }
+
+  .reserve-first-container {
+    text-align: center;
+
+    .link {
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--bs-icompany-blue);
+    }
+  }
+}

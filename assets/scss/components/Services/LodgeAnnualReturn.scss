@@ -1,0 +1,11 @@
+.service-wrapper-document {
+  &:has(#lodge-annual-return) {
+    width: 297mm;
+  }
+}
+
+#lodge-annual-return {
+  .documents-section {
+    max-width: 297mm;
+  }
+}

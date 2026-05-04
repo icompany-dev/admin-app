@@ -1,0 +1,56 @@
+.document-to-preview {
+  .document-container {
+    width: 21mm; //25% of 220mm
+    height: 29.7mm;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: var(--bs-gray-200);
+    padding: 10px;
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1pt;
+    transition: color 0.7s ease;
+
+    &:hover {
+      color: var(--bs-icompany-orange);
+    }
+  }
+
+  .paid-document-container {
+    width: calc(0.1 * 210mm);
+    height: calc(0.1 * 297mm);
+    cursor: pointer;
+    // overflow: hidden;
+    position: relative;
+
+    .document {
+      pointer-events: none;
+      transform: scale(10%);
+      transform-origin: top left;
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      .paper-wrapper {
+        display: none;
+
+        &:first-of-type {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .document-name {
+    margin-top: 5px;
+    width: 21mm;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.1pt;
+  }
+}

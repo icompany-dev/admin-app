@@ -1,0 +1,45 @@
+#my-sdn-bhd-header {
+  z-index: 1;
+  top: 80px;
+  left: 50%;
+  width: 100%;
+  text-align: center;
+
+  .company-name {
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 3rem;
+    line-height: 3rem;
+    text-transform: uppercase;
+    color: var(--sdn-bhd-sidebar-header-heading-color);
+    cursor: pointer;
+  }
+
+  .registration-number {
+    color: var(--sdn-bhd-sidebar-header-heading-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+
+  .striking-off-label {
+    color: var(--sdn-bhd-sidebar-header-heading-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    opacity: 0.5;
+  }
+
+  &.is-striking-off {
+    .company-name {
+      opacity: 0.5;
+      cursor: auto;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .company-name {
+      font-size: 1.8rem;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+#popup-post-payment-purchase-corporate-profile {
+  position: relative;
+  z-index: 6; //arbitrary number
+
+  .body {
+    .prepare-content-loader {
+      margin-top: 10px;
+      margin-bottom: 10px;
+
+      .loader-wrapper {
+        i {
+          font-size: 5rem;
+        }
+      }
+
+      .loader-notice {
+        margin-top: 24px;
+
+        .loader-label {
+          font-size: 24px;
+          line-height: 26px;
+        }
+
+        .loader-sublabel {
+          font-size: 29px;
+          line-height: 31px;
+        }
+
+        .loader-dots {
+          font-size: 9px;
+        }
+      }
+    }
+  }
+}

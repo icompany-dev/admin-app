@@ -1,0 +1,110 @@
+#company-services-cta {
+  position: absolute;
+  bottom: 80px;
+  min-height: 50px;
+  width: calc(100% - 30px); // slight extrude from content
+  max-width: calc(220mm * 0.8 - 30px);
+  left: -5px;
+  margin: auto;
+  background-color: var(--sdn-bhd-service-cta-bg-color);
+  padding: 20px;
+  z-index: 2;
+  border-radius: 2px;
+  box-shadow: var(--box-shadow);
+
+  &.enlarged {
+    position: fixed;
+    max-width: calc(220mm - 40px);
+    left: 50%;
+    transform: translateX(-51%);
+    background-color: var(--sdn-bhd-service-cta-enlarged-bg-color);
+  }
+
+  .items-to-pay {
+    margin-bottom: 10px;
+
+    .recommended-title {
+      font-family: 'Poppins', sans-serif;
+      font-weight: bold;
+      letter-spacing: 0.1pt;
+      text-align: center;
+      padding-bottom: 10px;
+      font-size: 1.1rem;
+      line-height: 1.2rem;
+    }
+
+    .form-check {
+      padding-bottom: 5px;
+    }
+  }
+
+  .action-buttons {
+    margin-bottom: 5px;
+    gap: 10px;
+
+    .btn {
+      width: 150px;
+      padding: 8px 16px;
+    }
+
+    .btn-submit {
+      transition: all 1.2s ease;
+      overflow: hidden;
+      text-wrap: nowrap;
+
+      .hovered-text {
+        display: block;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        overflow: hidden;
+        transform: scale(0);
+        transform-origin: left;
+        transition: all 1.2s ease;
+      }
+
+      &:hover {
+        // width: fit-content;
+        background-color: var(--bs-icompany-blue);
+        color: var(--bs-white);
+
+        .hovered-text {
+          display: inline;
+          transform: scale(1);
+          opacity: 1;
+          // width: fit-content;
+          height: auto;
+          margin-left: initial;
+          margin-right: initial;
+          padding-left: initial;
+          padding-right: initial;
+          overflow: visible;
+        }
+      }
+    }
+
+    .btn-back {
+      transform: scale(1);
+      transform-origin: left;
+      opacity: 1;
+      transition: all 1.2s ease;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+
+      &.hide {
+        width: 0;
+        opacity: 0;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        transform: scale(0);
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+#subscription-invoice {
+  background-color: var(--bs-white);
+  height: 100%;
+  width: 100%;
+
+  .receipt-invoice {
+    display: block !important;
+
+    .paper-wrapper {
+      transform: scale(0.81);
+      transform-origin: top left;
+
+      .paper {
+        padding: 0mm !important;
+      }
+    }
+  }
+}

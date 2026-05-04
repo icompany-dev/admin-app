@@ -1,0 +1,90 @@
+#striking-off-checklist-printables {
+  display: contents;
+
+  .paper-wrapper {
+    box-shadow: 0 2px 4px rgba(15, 34, 58, 0.12);
+    width: 210mm;
+    height: 297mm;
+    background-color: var(--bs-white);
+    padding: 0mm;
+    margin: auto;
+    margin-bottom: 10px;
+  }
+}
+
+.striking-off-application {
+  .tick-box {
+    display: inline-block;
+    width: 22px;
+    min-width: 22px;
+    height: 18px;
+    border: 1px solid var(--bs-black);
+    vertical-align: middle;
+    position: relative;
+    cursor: pointer;
+
+    &.disabled {
+      cursor: default !important;
+      pointer-events: none;
+    }
+
+    &.is-checked::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 4px;
+      width: 9px;
+      height: 5px;
+      border: solid var(--bs-black);
+      border-width: 0 0 2px 2px;
+      transform: rotate(-45deg);
+    }
+  }
+
+  .notice-instruction {
+    margin: 10px 0;
+  }
+
+  .striking-off-application-table {
+    width: 100%;
+
+    tr {
+      td {
+        padding-bottom: 15px;
+        vertical-align: top;
+
+        &:first-child {
+          width: 20px;
+        }
+      }
+    }
+
+    &.company-details {
+      tr {
+        td {
+          &:first-child {
+            width: 100px;
+          }
+
+          &:nth-child(2) {
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+
+  .signature-section {
+    width: 45%;
+    max-width: unset !important;
+
+    .sign-off {
+      width: 100%;
+
+      .signee-name {
+        padding: 5px 0 0 0;
+      }
+
+    }
+  }
+}

@@ -1,0 +1,129 @@
+// This should handle styles shared to display company documents
+.company-documents-container {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  position: relative;
+
+  .documents {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 0px;
+    perspective: 1200px; // Enable 3D perspective for card tilt effect
+
+    .document {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0px;
+      transform-origin: top;
+      transition: all 0.7s ease;
+
+      .company-documents-document {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+        .placeholder {
+          height: calc(0.5 * 297mm);
+        }
+      }
+    }
+
+    .action-buttons {
+      position: absolute;
+      bottom: 20px;
+      width: calc(100% - 30px);
+      padding: 0 15px;
+      z-index: 6;
+    }
+  }
+
+  .empty-to-do-list {
+    margin: auto;
+    width: 75%;
+    height: calc(100% - 40px);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .emphasis {
+      font-size: 2.6rem;
+    }
+
+    .subnote {
+      font-size: 1.6rem;
+    }
+
+    .ask-saira {
+      color: var(--bs-icompany-blue);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.6rem;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .documents {
+      &.is-grid-mode {
+        gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: auto; //repeat(2, minmax(0, 1fr));
+        padding: 15px;
+        width: calc(183px * 4);
+        height: auto;
+        margin: auto;
+
+        .document {
+          position: relative;
+          display: none;
+          transform: none;
+          opacity: 0;
+          height: 0;
+          z-index: -1;
+          box-shadow: none;
+
+          &.is-visible {
+            opacity: 1;
+            display: block;
+            width: 100%;
+            height: 100%;
+            z-index: auto;
+          }
+
+          .company-documents-document {
+            box-shadow: none;
+
+            .placeholder {
+              height: 210px;
+            }
+          }
+        }
+
+        .action-buttons {
+          display: none;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 990px) {
+    max-width: unset;
+    margin-left: 0px;
+    margin-right: 0px;
+
+    .documents {
+      width: 100%;
+    }
+  }
+}

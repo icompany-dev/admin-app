@@ -1,0 +1,49 @@
+#ask-saira {
+  position: relative;
+
+  .additional-input {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 420px;
+    height: 0;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.7s ease;
+    padding: 5px;
+    border-radius: 0 10px 10px 10px;
+    background-color: var(--ask-saira-additional-input-bg-color);
+    border: 2px solid var(--bs-icompany-blue);
+
+    &.show {
+      height: fit-content;
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    .additional-input-area {
+      padding: 5px 10px;
+
+      .label {
+        color: var(--ask-saira-label-color);
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      textarea {
+        margin-top: 10px;
+        width: calc(100% - 30px);
+        min-width: 370px;
+        padding: 5px 15px;
+        color: var(--color-text-primary);
+        outline: none;
+        resize: vertical;
+      }
+    }
+
+    .action-buttons {
+      padding: 5px;
+    }
+  }
+}

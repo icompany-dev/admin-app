@@ -1,0 +1,116 @@
+#my-sdn-bhd-main {
+  position: relative;
+  width: 100%;
+  position: relative;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 700px;
+
+  .option-buttons {
+    width: 100%;
+
+    .name-buttons {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      gap: 5px;
+
+      &.column-reverse {
+        flex-direction: column-reverse;
+      }
+
+      .btn-sub-option {
+        opacity: 0;
+        height: 0;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: all 0.5s ease;
+
+        &.show {
+          height: auto;
+          opacity: 1;
+          transform: scaleY(1);
+        }
+      }
+
+      .caret {
+        opacity: 1;
+        height: auto;
+        transform: scaleY(1);
+        transform-origin: top;
+        transition: all 0.5s ease;
+        text-align: center;
+        cursor: pointer;
+
+        &.hide {
+          height: 0;
+          opacity: 0;
+          transform: scaleY(0);
+        }
+      }
+    }
+
+    .btn {
+      width: 180px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .option-buttons {
+      width: calc(100% - 60px - var(--scrollbar-width));
+      padding: 0px 30px;
+      gap: 5px;
+
+      .btn:not(.option-button-dropdown .btn) {
+        max-width: 180px;
+        flex: 1;
+        min-width: 50px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .name-buttons {
+        max-width: 180px;
+        flex: 1;
+        min-width: 50px;
+
+        .btn {
+          width: calc(100% - 10px);
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  .document-wrapper {
+    height: fit-content;
+
+    .corporate-profile-container {
+      min-height: 60dvh;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .alert-action {
+        .subtitle {
+          font-family: "Poppins", sans-serif;
+          font-weight: bold;
+          font-size: 4rem;
+          line-height: 3.5rem;
+          letter-spacing: 0.1pt;
+          padding: 5px 0;
+          color: var(--bs-gray-200);
+          margin-bottom: 10px;
+        }
+      }
+    }
+  }
+}

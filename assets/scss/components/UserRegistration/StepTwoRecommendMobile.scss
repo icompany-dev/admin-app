@@ -1,0 +1,65 @@
+.step-recommend-mobile {
+  display: contents;
+
+  .body {
+    margin-bottom: 10px;
+    box-sizing: border-box !important;
+
+    .instruction {
+      width: 100%;
+      font-size: 1.2rem;
+
+      &.text-center {
+        text-align: center;
+      }
+
+      .action-link {
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--bs-icompany-blue);
+
+        &:hover {
+          color: var(--bs-primary);
+        }
+      }
+    }
+  }
+
+  .mobile-icon {
+    font-size: 10rem;
+    margin-bottom: 30px;
+    color: var(--bs-primary);
+  }
+
+  .step-label {
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  .option-group {
+    .option-button {
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .option-notes {
+      margin-bottom: 5px;
+    }
+  }
+
+  .divider {
+    border-color: var(--bs-gray-100);
+    width: 90%;
+  }
+
+  .notes {
+    margin-bottom: 15px;
+
+    .continue-link {
+      color: var(--bs-blue);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}

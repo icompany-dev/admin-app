@@ -1,0 +1,23 @@
+.striking-off-resolution-header {
+  text-align: center;
+}
+
+.striking-off-resolution-topic {
+  text-align: justify;
+  border-bottom: 1px solid var(--bs-black);
+}
+
+.striking-off-resolution-title {
+  text-transform: uppercase;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.striking-off-resolution-content,
+.striking-off-resolution-list-content {
+  text-align: justify;
+}
+
+.striking-off-resolution-list-content {
+  margin-bottom: 15px;
+}

@@ -1,0 +1,12 @@
+@use "sass:color";
+
+@function get-rgb($color) {
+  @return color.channel($color, "red"), color.channel($color, "green"), color.channel($color, "blue");
+}
+
+@mixin generate-bs-derived($name, $color) {
+  --bs-#{$name}-rgb: #{get-rgb($color)};
+  --bs-#{$name}-bg-subtle: #{color.mix(white, $color, 90%)};
+  --bs-#{$name}-border-subtle: #{color.mix(white, $color, 75%)};
+  --bs-#{$name}-text-emphasis: #{color.mix(black, $color, 50%)};
+}

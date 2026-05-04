@@ -1,0 +1,100 @@
+.activity-register-yearly {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  max-width: 700px;
+
+  .year {
+    width: calc(100% - 14px);
+    text-align: center;
+    background-color: var(--bs-icompany-purple);
+    color: var(--bs-white);
+    border: 2px solid var(--bs-icompany-purple);
+    font-size: 1.3rem;
+    line-height: 1.5rem;
+    font-weight: 600;
+    padding: 5px;
+    border-radius: 5px;
+  }
+
+  .records {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+
+    .record {
+      width: 100%;
+
+      .record-header {
+        font-size: 1.1rem;
+        line-height: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .record-details {
+        ul {
+          padding: 0;
+          padding-left: 15px;
+          margin: 0;
+
+          li {
+            .record-detail {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-start;
+              align-items: flex-start;
+              gap: 5px;
+              width: 100%;
+
+              .time {
+                font-weight: 600;
+                width: 60px;
+              }
+
+              .gap-dash {
+                width: 10px;
+                text-align: center;
+              }
+
+              .action-description {
+                width: calc(100% - 80px);
+                text-wrap: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+          }
+        }
+
+        .record-detail {
+          &.no-record {
+            text-align: left !important;
+
+          }
+        }
+      }
+    }
+  }
+
+  &.hidden {
+    .year {
+      cursor: pointer;
+      background-color: transparent;
+      color: var(--bs-icompany-purple);
+    }
+
+    .records {
+      display: none;
+    }
+  }
+}

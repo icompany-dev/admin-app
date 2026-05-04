@@ -1,0 +1,53 @@
+.step-ekyc-preparation {
+  display: contents;
+
+  .step-content {
+    text-align: start;
+    width: 100%;
+
+    &.step-title {
+      margin-bottom: 0;
+    }
+  }
+
+  .preparation-list {
+    margin: 0;
+    margin-top: 5px;
+    padding-left: 1rem;
+    text-align: start;
+  }
+
+  .checkbox-wrapper {
+    margin-top: 5px;
+    display: flex;
+    gap: 5px;
+    width: 100%;
+    align-items: center;
+    cursor: pointer;
+
+    input {
+      min-width: 16px;
+    }
+
+    label {
+      cursor: pointer;
+      margin: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .checkbox-wrapper {
+      align-items: start;
+      gap: 10px;
+      margin-top: 15px;
+
+      input {
+        margin-top: 5px;
+      }
+
+      label {
+        text-align: justify;
+      }
+    }
+  }
+}

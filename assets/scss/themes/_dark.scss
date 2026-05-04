@@ -1,0 +1,446 @@
+@use "sass:color";
+@use "../abstract/variables" as *;
+
+[data-theme="dark"] {
+  --logo-url: url("https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/landing-res/logos/icompany_long_white.png");
+  --logo-minimal-url: url("https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/landing-res/logos/logo_minimal.png");
+
+  --color-text-primary: #{$offwhite};
+  --color-text-secondary: #{$gray-400};
+  --default-bg-color: #{$icompany-purple};
+  --link-color: #{$icompany-orange};
+  --link-hover-color: #{$icompany-orange-light};
+  --bs-table-bg: #{$table-bg};
+
+  --box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  --paper-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+  // 1. LAYOUT
+  --default-layout-bg-gradient-from: rgba(255, 255, 255, 0.7);
+  --default-layout-bg-gradient-to: rgba(73, 31, 70, 1);
+  --default-layout-color-overlay-gradient-from: #{$icompany-purple};
+  --default-layout-color-overlay-gradient-to: rgba(73, 31, 70, 0.8);
+
+  --sdnbhd-layout-bg-gradient-from: rgba(255, 255, 255, 0.7);
+  --sdnbhd-layout-bg-gradient-to: rgba(73, 31, 70, 1);
+  --sdnbhd-layout-color-overlay-gradient-from: #{$icompany-purple};
+  --sdnbhd-layout-color-overlay-gradient-to: rgba(73, 31, 70, 0.8);
+
+  // 2. HEADER
+  --default-header-scroll-bg-color-from: rgba(0, 0, 0, 1);
+  --default-header-scroll-bg-color-mid: rgba(0, 0, 0, 0.5);
+  --default-header-scroll-bg-color-to: rgba(0, 0, 0, 0);
+  --default-header-mobile-menu-bg-color: rgba(0, 0, 0, 0.5);
+
+  --header-tool-color: #{$offwhite};
+  --header-tool-color-hover: #{$gray-500};
+  --header-tool-language-color: #{$offwhite};
+  --header-tool-language-color-hover: #{$gray-500};
+
+  // 3. LOADER
+  --prepare-content-loader-icon-color: #{$white};
+  --prepare-content-loader-notice-color: #{$gray-200};
+
+  // 4. CENTRE STAGE
+  --centre-stage-loader-icon-color: #{$white};
+  --centre-stage-loader-notice-color: #{$gray-200};
+
+  --centre-stage-icon-button-bg-color: rgba(0, 0, 0, 0.7);
+  --centre-stage-icon-button-border-color: rgba(0, 0, 0, 0.7);
+  --centre-stage-icon-button-color: #{$white};
+  --centre-stage-icon-button-hover-color: #{$white};
+  --centre-stage-icon-button-hover-bg-color: #{$icompany-purple-lighter};
+  --centre-stage-icon-button-hover-border-color: #{$white};
+
+  --centre-stage-panel-bg-color: rgba(0, 0, 0, 0.8);
+  --centre-stage-content-panel-bg-color: rgba(0, 0, 0, 0.5);
+  --centre-stage-content-panel-has-action-border-color: #{$icompany-purple-lightest};
+  --centre-stage-content-panel-has-action-box-shadow: 0 0.1rem 1rem #{$icompany-purple-lightest};
+
+  --centre-stage-to-do-list-bg-color: rgba(0, 0, 0, 0.5);
+  --centre-stage-to-do-card-bg-color: #{$black};
+  --centre-stage-to-do-card-incomplete-border-color: #{$icompany-purple};
+  --centre-stage-to-do-card-sign-required-border-color: #{$icompany-orange};
+  --centre-stage-to-do-card-response-required-border-color: #{$red};
+  --centre-stage-to-do-card-success-border-color: #{$icompany-green};
+  --centre-stage-to-do-card-in-progress-border-color: #{$icompany-orange};
+
+  --centre-stage-heading: #{$icompany-orange};
+  --to-do-list-has-action-border-color: #{$icompany-purple-lightest};
+
+  --centre-stage-action-button-tooltip-bg-color: rgba(0, 0, 0, 0.9);
+  --centre-stage-action-button-tooltip-color: #{$icompany-purple-lightest};
+  --centre-stage-action-button-tooltip-title-color: #{$icompany-purple-light};
+  --centre-stage-action-button-tooltip-pointer-color: #{$icompany-purple-lighter};
+  --centre-stage-action-button-more-filter-bg-color: #{$black};
+
+  --centre-stage-company-panel-bg-color: #{$black};
+  --centre-stage-company-panel-box-shadow: 0 4px 8px 0 rgba(73, 31, 70, 0.2), 0 6px 20px 0 rgba(73, 31, 70, 0.19);
+  --centre-stage-company-panel-hover-bg-color: #{$icompany-purple-darker};
+  --centre-stage-company-panel-border-color: #{$icompany-purple-darker};
+  --centre-stage-company-panel-hover-border-color: #{$white};
+  --centre-stage-company-panel-hover-box-shadow: 0 4px 8px 0 #{$icompany-purple},
+  0 6px 20px 0 #{$icompany-purple};
+  --centre-stage-company-panels-navigation-arrow-color: #{$white};
+  --centre-stage-company-panels-navigation-arrow-bg-color: #{color.mix(transparent, $icompany-purple-light, 50%)};
+
+  --centre-stage-company-panel-strike-off-bg-color: #{color.mix($black, $icompany-orange, 85%)};
+  --centre-stage-company-panel-strike-off-box-shadow: #{color.mix(transparent, $icompany-orange, 70%)};
+  --centre-stage-company-panel-strike-off-border-color: #{color.mix($black, $icompany-orange, 85%)};
+
+  --centre-stage-company-panel-strike-off-hover-bg-color: #{color.mix($black, $icompany-orange, 80%)};
+  --centre-stage-company-panel-strike-off-hover-box-shadow: #{color.mix(transparent, $icompany-orange, 30%)};
+  --centre-stage-company-panel-strike-off-hover-border-color: #{color.mix($white, $icompany-orange, 90%)};
+
+  // 5. DOCUMENT TOGGLER
+  --document-button-color: #{$white};
+  --document-button-bg-color: rgba(0, 0, 0, 0.7);
+  --document-button-border-color: rgba(0, 0, 0, 0.7);
+
+  // 6. SIDE BAR
+  --sdn-bhd-sidebar-action-button-color: #{$primary};
+  --sdn-bhd-sidebar-action-button-label-color: #{$white};
+  --sdn-bhd-sidebar-action-button-bg-color: #{$white};
+  --sdn-bhd-sidebar-action-button-border-color: #{$white};
+  --sdn-bhd-sidebar-action-button-hover-color: #{$white};
+  --sdn-bhd-sidebar-action-button-hover-bg-color: #{$primary};
+  --sdn-bhd-sidebar-action-button-hover-border-color: #{$white};
+  --sdn-bhd-sidebar-header-heading-color: #{$white};
+
+  --sdn-bhd-sidebar-action-button-option-category-border-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-category-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-category-bg-color: #{$gray-800};
+  --sdn-bhd-sidebar-action-button-option-border-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-color: #{$primary};
+  --sdn-bhd-sidebar-action-button-option-bg-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-hover-bg-color: #{$icompany-purple-lightest};
+
+  // 7. SERVICE CTA
+  --sdn-bhd-service-cta-bg-color: #{$black};
+  --sdn-bhd-service-cta-enlarged-bg-color: #{$black};
+
+  // 8. SERVICE STEP NODE
+  --sdn-bhd-service-step-node-container-default-color: #{$gray-300};
+  --sdn-bhd-service-step-node-container-completed-color: #{$icompany-purple};
+  --sdn-bhd-service-step-node-outer-border-color: #{$icompany-purple};
+  --sdn-bhd-service-step-node-inner-border-color: #{$white};
+  --sdn-bhd-service-step-node-bg-color: #{$white};
+  --sdn-bhd-service-step-node-active-bg-color: #{$icompany-orange};
+  --sdn-bhd-service-step-node-completed-bg-color: #{$icompany-purple};
+  --sdn-bhd-service-step-label-color: #{$icompany-purple};
+
+  // 9. DOCUMENTS
+  --sdn-bhd-documents-name-color: #{$white};
+  --sdn-bhd-documents-placeholder-bg-color: rgba(0, 0, 0, 0.7);
+  --sdn-bhd-documents-placeholder-bg-color: #{$black};
+  --sdn-bhd-documents-placeholder-color: #{$white};
+
+  // 10. BUTTONS
+  --btn-disabled-color: #{$gray-500};
+  --btn-disabled-bg-color: #{$gray-900};
+  --btn-disabled-border-color: #{$gray-900};
+
+  --btn-primary-bg-color: #{$black};
+  --btn-primary-color: #{$icompany-purple-lighter};
+  --btn-primary-border-color: #{$icompany-purple-lighter};
+  --btn-primary-hover-bg-color: #{$icompany-purple-lighter};
+  --btn-primary-hover-color: #{$white};
+
+  --btn-danger-bg-color: #{$red};
+  --btn-danger-color: #{$white};
+  --btn-danger-border-color: #{$red};
+  --btn-danger-hover-bg-color: #{$black};
+  --btn-danger-hover-color: #{$red};
+
+  --btn-back-bg-color: #{$red};
+  --btn-back-color: #{$white};
+  --btn-back-border-color: #{$red};
+  --btn-back-hover-bg-color: #{$white};
+  --btn-back-hover-color: #{$red};
+
+  --btn-pay-bg-color: #{$icompany-blue};
+  --btn-pay-color: #{$white};
+  --btn-pay-border-color: #{$icompany-blue};
+  --btn-pay-hover-bg-color: #{$black};
+  --btn-pay-hover-color: #{$icompany-blue};
+
+  --btn-submit-bg-color: #{$icompany-blue};
+  --btn-submit-color: #{$white};
+  --btn-submit-border-color: #{$icompany-blue};
+  --btn-submit-hover-bg-color: #{$black};
+  --btn-submit-hover-color: #{$icompany-blue};
+
+  --btn-option-bg-color: transparent;
+  --btn-option-color: #{$white};
+  --btn-option-border-color: #{$white};
+  --btn-option-hover-bg-color: #{$icompany-orange};
+  --btn-option-hover-color: #{$white};
+  --btn-option-hover-border-color: #{$white};
+  --btn-option-active-bg-color: #{$icompany-orange};
+  --btn-option-active-color: #{$white};
+  --btn-option-active-border-color: #{$white};
+
+  --btn-sub-option-bg-color: #{$black};
+  --btn-sub-option-color: #{$icompany-orange-lighter};
+  --btn-sub-option-border-color: #{$icompany-orange-lighter};
+  --btn-sub-option-hover-bg-color: #{$icompany-orange};
+  --btn-sub-option-hover-color: #{$white};
+  --btn-sub-option-hover-border-color: #{$white};
+
+  --btn-continue-bg-color: #{$white};
+  --btn-continue-color: #{$icompany-blue};
+  --btn-continue-border-color: #{$icompany-blue};
+  --btn-continue-hover-bg-color: #{$icompany-blue};
+  --btn-continue-hover-color: #{$white};
+
+  --btn-ask-saira-bg-color: transparent;
+  --btn-ask-saira-color: #{$icompany-blue};
+  --btn-ask-saira-border-color: #{$icompany-blue};
+  --btn-ask-saira-hover-bg-color: #{$icompany-blue};
+  --btn-ask-saira-hover-color: #{$white};
+  --btn-ask-saira-hover-border-color: #{$icompany-blue};
+
+  --btn-download-bg-color: transparent;
+  --btn-download-color: #{$icompany-blue};
+  --btn-download-border-color: #{$icompany-blue};
+  --btn-download-hover-bg-color: #{$icompany-blue};
+  --btn-download-hover-color: #{$white};
+  --btn-download-hover-border-color: #{$icompany-blue};
+
+  --btn-abstain-bg-color: #{$gray-700};
+  --btn-abstain-color: #{$white};
+  --btn-abstain-border-color: #{$gray-700};
+  --btn-abstain-hover-bg-color: #{$gray-700};
+  --btn-abstain-hover-color: #{$white};
+
+  --btn-hover-label-color: #{$white};
+
+  --btn-ai-assist-bg-color: transparent;
+  --btn-ai-assist-color: #{$icompany-purple-light};
+  --btn-ai-assist-border-color: #{$icompany-purple-light};
+  --btn-ai-assist-hover-bg-color: #{$icompany-purple-light};
+  --btn-ai-assist-hover-color: #{$purple-gray};
+  --btn-ai-assist-hover-border-color: #{$icompany-purple-light};
+
+  // 11. PAGINATION
+  --pagination-bubble-bg-color: #{$white};
+  --pagination-bubble-selected-bg-color: #{$icompany-orange};
+  --pagination-bubble-border-color: #{$white};
+  --pagination-bubble-container-bg-color: #{color.mix($white, transparent, 10%)};
+
+  // 12. POPUP
+  --popup-bg-color: #{$black};
+  --popup-title-bg-color: #{$icompany-purple};
+  --popup-title-color: #{$white};
+  --popup-body-bg-color: #{$gray-900};
+  --popup-additional-notes-bg-color: #{$gray-700};
+
+  --compliance-alert-title-bg-color: #{$danger};
+
+  // 13. TABLE
+  --default-table-header-color: #{$white};
+  --default-table-header-bg-color: #{$icompany-purple-darker};
+  --default-table-bg-color: #{$black};
+  --default-table-action-button-color: #{$icompany-purple-lightest};
+  --default-table-action-button-hover-color: #{$icompany-purple-lighter};
+
+  --transactions-year-title-color: #{$white};
+  --transactions-year-active-bg-color: #{$icompany-purple-darker};
+  --transactions-year-hover-bg-color: #{$icompany-purple-dark};
+
+  --transactions-storyline-timeline-line: rgba(0, 0, 0, 0.7);
+  --transactions-storyline-timeline-point-bg-color: #{$black};
+  --transactions-storyline-timeline-point-border-color: #{$icompany-purple-lighter};
+  --transactions-storyline-timeline-card-bg-color: #{$black};
+  --transactions-storyline-timeline-card-date-color: #{$gray-200};
+
+  --transactions-archive-year-border-color: #{$white};
+  --transaction-archive-color: #{$icompany-purple-lightest};
+  --transaction-archive-hover-color: #{$icompany-purple-light};
+  --transaction-year-color: #{$icompany-orange};
+
+  // 14. PAYMENT
+  --cart-bg-color: #{$black};
+  --cart-form-label-color: #{$icompany-purple-lightest};
+
+  --payment-gateway-logo-bg-color: #{$icompany-purple-darker};
+  --payment-gateway-logo-hover-bg-color: #{$icompany-purple};
+  --payment-gateway-logo-border-color: #{$icompany-purple-light};
+  --payment-gateway-logo-selected-bg-color: #{$icompany-purple};
+
+  --payment-cart-bg-color: #{$black};
+  --payment-cart-hover-bg-color: #{$icompany-purple};
+
+  // 15. FORMS
+  --form-control-border-color: #{$gray-200};
+  --form-control-checkbox-bg-color: #{$icompany-purple-lightest};
+  --form-control-checkbox-disabled-bg-color: #{$gray-400};
+  --form-control-disabled-bg-color: #{$gray-100};
+
+  --file-drop-zone-bg-color: transparent;
+  --file-drop-zone-border: 1px solid #{$white};
+
+  // 16. TYPOGRAPHY
+  --large-title-text-gray: #{$gray-200};
+  --large-title-text-purple: #{$icompany-purple-light};
+
+  --page-header-title-color: #{$gray-200};
+
+  --director-name: #{$gray-200};
+  --shareholder-name: #{$gray-200};
+
+  // 17. ACTION TRAY
+  --action-tray-bg-color: #{$black};
+  --action-tray-hover-bg-color: #{$icompany-purple-darker};
+  --action-tray-disabled-bg-color: #{$gray-900};
+  --action-tray-color: #{$white};
+  --action-tray-hover-color: #{$icompany-purple-lightest};
+  --action-tray-disabled-color: #{$gray-700};
+
+  // 18. PDF FILTER
+  --pdf-document-filter-bg-color: #{$black};
+  --pdf-document-filter-color: #{$white};
+  --pdf-document-filter-disabled-color: #{$gray-700};
+
+  // 19. RESPONSIBILITY STATEMENT
+  --responsibility-statement-header-bg-color: #{$icompany-purple};
+  --responsibility-statement-header-color: #{$white};
+
+  // 20. SWITCH TOGGLE
+  --switch-toggle-bg-color: #{color.mix(white, $icompany-purple, 50%)};
+  --switch-toggle-color: #{$white};
+  --switch-toggle-checked-bg-color: #{$icompany-purple};
+
+  // 21. SLIDER
+  --slider-container-border-color: #{$icompany-purple-lighter};
+  --slider-container-bottom-border-color: #{$black};
+
+  // 22. COLLAPSIBLE
+  --collapsible-ring-border-color: #{$icompany-purple-light};
+  --collapsible-ring-hover-bg-color: #{$icompany-purple};
+  --collapsible-box-shadow: 2px 2px 8px #{$icompany-purple};
+
+  // 23. MAILROOM
+  --mailroom-service-notice-link-color: #{$icompany-orange};
+
+  // 24. DRAWER
+  --drawer-wrapper-bg-color: #{$black};
+  --drawer-wrapper-overlay-bg-color: rgba(0, 0, 0, 0.5);
+
+  // 25. POST OCR
+  --post-ocr-select-option-group-bg-color: rgba(255, 255, 255, 0.1);
+  --post-ocr-select-option-button-bg-color: transparent;
+  --post-ocr-select-option-button-border-color: #{$white};
+  --post-ocr-select-option-button-hover-color: #{$white};
+  --post-ocr-select-option-button-hover-bg-color: #{$gray-400};
+  --post-ocr-select-option-button-selected-bg-color: #{$gray-700};
+  --post-ocr-select-option-button-selected-color: #{$white};
+  --post-ocr-select-option-button-selected-border-color: #{$gray-700};
+  --post-ocr-sub-select-option-button-bg-color: transparent;
+  --post-ocr-sub-select-option-button-border-color: #{$white};
+  --post-ocr-sub-select-option-button-hover-color: #{$white};
+  --post-ocr-sub-select-option-button-hover-bg-color: #{$gray-300};
+  --post-ocr-sub-select-option-button-selected-bg-color: #{$gray-500};
+  --post-ocr-sub-select-option-button-selected-color: #{$white};
+  --post-ocr-sub-select-option-button-selected-border-color: #{$gray-500};
+  --post-ocr-select-option-form-control-color: #{$white};
+
+  --post-ocr-option-bg-color: transparent;
+  --post-ocr-option-color: #{$white};
+  --post-ocr-option-border-color: #{$white};
+  --post-ocr-option-hover-bg-color: #{$icompany-purple-lightest};
+  --post-ocr-option-hover-color: #{$icompany-purple};
+  --post-ocr-option-hover-border-color: #{$icompany-purple};
+  --post-ocr-option-active-bg-color: #{$icompany-purple};
+  --post-ocr-option-active-color: #{$white};
+  --post-ocr-option-active-border-color: #{$icompany-purple};
+  --post-ocr-dislaimer-bg-color: #{$gray-900};
+
+  // 26. INCORPORATION
+  --incorporation-page-title-color: #{$white};
+  --incorporation-promoter-background-color: #{$purple-gray};
+  --incorporation-step-active-bg-color: rgba(0, 0, 0, 0.2);
+  --incorporation-step-five-checkbox-border-color: #{$white};
+
+  // 27. ASK SAIRA
+  --ask-saira-additional-input-bg-color: #{$black};
+  --ask-saira-additional-input-textarea-bg-color: rgba(255, 255, 255, 0.1);
+  --ask-saira-label-color: #{$icompany-purple-lightest};
+
+  // 28. SLIP CASE
+  --slip-case-bg-color: #{$black};
+
+  // 29. TRANSFER OF SHARES
+  --process-of-transfer-step-color: #{$gray-400};
+  --process-of-transfer-step-active-bg-color: rgba(0, 0, 0, 0.2);
+  --process-of-transfer-step-active-color: #{$white};
+  --process-of-transfer-step-inactive-color: #{$gray-400};
+
+  // 30. STRIKING OFF
+  --striking-off-page-title-color: #{$white};
+  --striking-off-promoter-background-color: #{$purple-gray};
+  --striking-off-step-active-bg-color: rgba(0, 0, 0, 0.2);
+
+  // 31. ALLOTMENT OF SHARE
+  --process-of-allotment-step-color: #{$gray-400};
+  --process-of-allotment-step-active-bg-color: rgba(0, 0, 0, 0.2);
+  --process-of-allotment-step-active-color: #{$white};
+  --process-of-allotment-step-inactive-color: #{$gray-400};
+
+  // 32. BANK COMPARISON
+  --bank-comparison-fixed-header-bg: #{$gray-200};
+  --bank-comparison-subtext-color: #{$gray-400};
+  --bank-comparison-border-color: #{$gray-400};
+  --bank-comparison-highlight-bg: rgba(179, 77, 172, 0.15);
+  --bank-comparison-icon-color: #{$primary};
+  --bank-comparison-tooltip-color: #{$primary};
+
+  // 33. PROCESS STEPS
+  --process-step-header-color: #{$white};
+  --process-step-active-bg-color: rgba(0, 0, 0, 0.2);
+  --process-step-form-control-bg-color: transparent;
+  --process-step-form-control-border: 1px solid #{$white};
+
+  // 34. PASCA
+  --pasca-node-container-default-color: #{$gray-300};
+  --pasca-node-container-completed-color: #{$icompany-purple};
+  --pasca-node-outer-border-color: #{$icompany-purple};
+  --pasca-node-inner-border-color: #{$white};
+  --pasca-node-bg-color: #{$white};
+  --pasca-node-active-bg-color: #{$icompany-orange};
+  --pasca-node-completed-bg-color: #{$icompany-purple};
+  --pasca-label-color: #{$icompany-purple};
+
+  // 33. BANK COMPARISON
+  --bank-comparison-fixed-header-bg: #{$gray-200};
+  --bank-comparison-subtext-color: #{$gray-400};
+  --bank-comparison-border-color: #{$gray-400};
+  --bank-comparison-highlight-bg: rgba(179, 77, 172, 0.15);
+  --bank-comparison-icon-color: #{$primary};
+  --bank-comparison-tooltip-color: #{$primary};
+
+  // 34. DELIVERY BUTTONS
+  --delivery-buttons-card-bg: #{$gray-800};
+  --delivery-buttons-card-box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+
+  // 35. ACTION REQUIRED POPUP
+  --director-email-bg-color: transparent;
+  --director-email-border-color: #{$white};
+
+  // 36. COMMON SEAL REGISTER
+  --common-seal-register-table-header-bg-color: #{$black};
+  --common-seal-register-table-header-color: #{$white};
+  --common-seal-register-table-bg-color: transparent;
+
+  // 37. SEARCH BAR
+  --search-bar-summarised-result-bg-color: #{$black};
+
+  // 38. STRIKING OFF
+  --striking-off-page-title-color: #{$white};
+  --striking-off-promoter-background-color: #{$purple-gray};
+  --striking-off-step-active-bg-color: rgba(0, 0, 0, 0.2);
+
+  // 39. PAPER TAGS
+  --paper-tag-sign-bg-color: #ffd699;
+  --paper-tag-wet-ink-bg-color: #99ff99;
+}

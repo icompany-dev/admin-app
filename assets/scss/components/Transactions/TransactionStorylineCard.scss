@@ -1,0 +1,144 @@
+.transactions-storyline-card {
+  position: relative;
+  width: calc(50% - 30px);
+  max-width: 400px;
+  container-type: inline-size;
+  container-name: timeline-card;
+
+  .card-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+    background-color: var(--transactions-storyline-timeline-card-bg-color);
+    padding: 10px 15px;
+    width: calc(100% - 20px);
+    border-radius: 10px;
+
+    &::before {
+      position: absolute;
+      top: 50%;
+      right: calc((100% - 40px) - 100%);
+      content: ' ';
+      display: block;
+      width: 12px;
+      height: 12px;
+      margin-top: -10px;
+      background: var(--transactions-storyline-timeline-point-bg-color);
+      border-radius: 50%;
+      border: 4px solid var(--transactions-storyline-timeline-point-border-color);
+      z-index: 10;
+    }
+
+    .date-side {
+      width: 30px;
+      text-align: center;
+      color: var(--transactions-storyline-timeline-card-date-color);
+
+      .date {
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+      }
+
+      .month {
+        font-size: 1.3rem;
+        line-height: 1.3rem;
+      }
+    }
+
+    .service-description {
+      width: calc(100% - 180px);
+
+      .company-name {
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 5px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-wrap: nowrap;
+        width: 100%;
+      }
+
+      .service-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-wrap: nowrap;
+        width: 100%;
+      }
+    }
+
+    .action-buttons {
+      width: 100px;
+
+      .btn {
+        width: 100px;
+      }
+    }
+  }
+
+  &.left {
+    float: left;
+
+    .card-wrapper {
+      justify-content: flex-end;
+
+      &::before {
+        right: calc((100% - 40px) - 100%);
+      }
+    }
+  }
+
+  &.right {
+    float: right;
+
+    .card-wrapper {
+      flex-direction: row-reverse;
+      justify-content: flex-start;
+
+      &::before {
+        left: calc((100% - 40px) - 100%);
+        right: unset;
+      }
+    }
+  }
+
+  @media (max-width: 500px) {
+
+    &.left,
+    &.right {
+      .card-wrapper {
+        flex-direction: column;
+        gap: 10px;
+
+        .date-side,
+        .service-description,
+        .action-buttons {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
+@container (min-width: 400px) {
+  .left {
+    .card-wrapper {
+      &::before {
+        right: -50px !important;
+      }
+    }
+  }
+
+  .right {
+    .card-wrapper {
+      &::before {
+        left: -50px !important;
+      }
+    }
+  }
+}

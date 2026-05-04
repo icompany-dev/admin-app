@@ -1,0 +1,200 @@
+.centre-stage-to-do-document {
+  width: 100%;
+  max-width: 210mm;
+  height: 100%;
+  position: relative;
+  margin: auto;
+  user-select: none;
+  transition: all 0.7s ease;
+  cursor: pointer;
+
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 50%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 50%);
+  -webkit-mask-size: 100% 200%;
+  mask-size: 100% 200%;
+  -webkit-mask-position: 0% 100%;
+  mask-position: 0% 100%;
+
+  .star-favourite {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 26px;
+    color: var(--bs-gray-200);
+    transition: all 0.7s ease;
+    z-index: 30;
+    cursor: pointer;
+
+    &.favourited {
+      color: var(--bs-yellow);
+      rotate: 45deg;
+    }
+
+    &:hover {
+      color: var(--bs-icompany-purple);
+      rotate: 45deg;
+    }
+  }
+
+  &.is-faded-top {
+    -webkit-mask-position: 0% 0%;
+    mask-position: 0% 0%;
+  }
+
+  .delete-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--bs-danger);
+    color: var(--bs-white);
+    cursor: default;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.7s ease;
+
+    i {
+      font-size: 20px;
+    }
+
+    &:hover {
+      background-color: var(--bs-icompany-orange);
+    }
+
+    &.show {
+      pointer-events: all;
+      cursor: pointer;
+      opacity: 1;
+      z-index: 2;
+    }
+  }
+
+  .document-content {
+    cursor: pointer;
+    height: 100%;
+    color: var(--bs-black);
+    position: relative;
+
+    .cosec-service-documents {
+      width: 100% !important;
+      max-width: 100%;
+
+      .documents-section {
+        width: 100% !important;
+        max-width: 100%;
+
+        .paper-wrapper {
+          width: 100% !important;
+          max-width: 100%;
+
+          .paper {
+            width: 100% !important;
+            max-width: 100%;
+            padding-left: 5%;
+            padding-right: 5%;
+            box-sizing: border-box !important;
+          }
+        }
+      }
+    }
+  }
+
+  .content {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+
+    .cosec-service-documents {
+      width: 100% !important;
+      max-width: 100%;
+
+      .documents-section {
+        width: 100% !important;
+        max-width: 100%;
+
+        .paper-wrapper {
+          width: 100% !important;
+          max-width: 100%;
+
+          .paper {
+            width: 100% !important;
+            max-width: 100%;
+            padding-left: 5%;
+            padding-right: 5%;
+            box-sizing: border-box !important;
+
+            .resolution-content {
+              width: 100%;
+              min-width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .document-info {
+    display: none;
+  }
+
+  @media (min-width: 990px) {
+    &.is-minimize {
+      background-color: var(--bs-white);
+      border-radius: 5px;
+      width: calc(90% - 20px);
+      height: calc(90% - 20px);
+      max-height: 225px;
+      overflow: hidden;
+      padding: 10px;
+      margin: auto;
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+      -webkit-mask-image: none;
+      mask-image: none;
+
+      .content {
+        display: none;
+      }
+
+      .document-content,
+      .delete-button {
+        display: none;
+      }
+
+      .cosec-service-documents {
+        display: none;
+      }
+
+      .document-info {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        width: calc(100% - 20px);
+        height: calc(100% - 20px);
+        position: absolute;
+        top: 10px;
+        left: 10px;
+
+        .document-grid-title {
+          text-align: center;
+          font-weight: bold;
+          text-transform: uppercase;
+        }
+
+        .document-grid-company-name {
+          text-align: center;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+#popup-sign-all-confirmation {
+  .popup {
+    &.show {
+      z-index: 50; // always at the top
+    }
+  }
+}

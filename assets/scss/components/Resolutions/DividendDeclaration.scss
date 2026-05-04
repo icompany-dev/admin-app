@@ -1,0 +1,12 @@
+#dcr-dividend-declaration {
+  .form-control {
+    &.currency {
+      text-align: right;
+    }
+
+    &.width-fit {
+      width: fit-content;
+      min-width: 250px;
+    }
+  }
+}

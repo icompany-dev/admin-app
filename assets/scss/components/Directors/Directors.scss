@@ -1,0 +1,107 @@
+#directors {
+  width: 100%;
+  margin: auto;
+  margin-top: 0px;
+
+  .board-composition {
+    width: 90%;
+    max-width: 800px;
+    min-height: 60dvh;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    height: 0;
+    opacity: 0;
+    transform-origin: top;
+    transition: all 0.7s ease;
+
+    .action-buttons {
+      margin-bottom: 30px;
+    }
+
+    .director-containers {
+      width: fit-content;
+      max-width: calc(280px * 3);
+      margin: auto;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 20px;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 1s ease;
+
+      .director-container {
+        width: 250px;
+      }
+    }
+
+    #alert-container {
+      width: 90%;
+      max-width: 700px;
+      margin: auto;
+      text-align: justify;
+
+      .section-header {
+        .section-title {
+          font-size: 1.2rem;
+          line-height: 2rem;
+        }
+
+        .help-container {
+          top: 0;
+          right: -370px;
+        }
+      }
+    }
+
+    &:has(.director-container:nth-child(2)) {
+      max-width: calc(200px * 3);
+
+      .director-container {
+        width: 180px;
+
+        .director {
+          .name {
+            font-size: 2rem;
+            line-height: 2rem;
+          }
+
+          .appointment {
+            font-size: 1rem;
+
+            .appointment-date {
+              font-size: 1.2rem;
+              line-height: 1.2rem;
+            }
+          }
+
+          .profile-image-container {
+            width: 160px;
+            height: 160px;
+
+            .user-profile-image {
+              width: 150px;
+              height: 150px;
+            }
+          }
+        }
+      }
+    }
+
+    &.show {
+      height: fit-content;
+      opacity: 1;
+
+      .director-containers {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  }
+}
