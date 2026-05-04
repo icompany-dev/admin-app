@@ -42,6 +42,7 @@ export class PageCommandCentreController extends PageController {
   async init(): Promise<void> {
     this.fetchNewIncorporations()
     this.fetchUsers()
+    this.fetchNewSwitches()
   }
 
   setNameReservationStatisticRef(nameReservationStatisticRef: any): void {
@@ -93,6 +94,21 @@ export class PageCommandCentreController extends PageController {
     this.newIncorporationCount.value = response.totalRecords
   }
 
+  async fetchNewSwitches(): Promise<void> {
+    let repository = useApplicationSwitchStore()
+    let filter = new Filter()
+    filter.statuses = [this.selectedReassignmentStatus.value]
+    if (this.selectedReassignmentStatus.value !== "paid") {
+      filter.includeDeleted = true
+    }
+    filter.startDate = this.startDateForPeriod(this.selectedReassignmentPeriod.value)
+    filter.endDate = this.endDateForPeriod(this.selectedReassignmentPeriod.value)
+    filter.take = 1
+
+    let response = await repository.fetchAll(filter)
+    this.reassignmentCount.value = response.totalRecords
+  }
+
   async fetchUsers(): Promise<void> {
     let repository = useUserStore()
     let filter = new Filter()
@@ -132,6 +148,16 @@ export class PageCommandCentreController extends PageController {
   async onNewIncorporationPeriodSelected(value: string): Promise<void> {
     this.selectedNewIncorporationPeriod.value = value
     await this.fetchNewIncorporations()
+  }
+
+  async onReassignmentStatusSelected(value: string): Promise<void> {
+    this.selectedReassignmentStatus.value = value
+    await this.fetchNewSwitches()
+  }
+
+  async onReassignmentPeriodSelected(value: string): Promise<void> {
+    this.selectedReassignmentPeriod.value = value
+    await this.fetchNewSwitches()
   }
 
   async onUserStatusSelected(value: string): Promise<void> {

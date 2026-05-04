@@ -36,6 +36,8 @@
           :periods="pageController.periods"
           :selected-period="pageController.selectedReassignmentPeriod.value"
           :count="pageController.reassignmentCount.value"
+          @status-selected="pageController.onReassignmentStatusSelected($event)"
+          @period-selected="pageController.onReassignmentPeriodSelected($event)"
         />
       </div>
       <div class="statistic">
