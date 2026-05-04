@@ -1,0 +1,11 @@
+.search-result-faq {
+  min-height: var(--header-search-result-min-height);
+  transition: all 1s ease-in-out;
+
+  .result-list {
+    margin-top: 15px;
+    max-height: calc(70dvh - 200px);
+    overflow: auto;
+    color: var(--bs-black);
+  }
+}

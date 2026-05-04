@@ -1,0 +1,32 @@
+#past-business-template-item {
+  .checkbox-section {
+    input {
+      margin: auto;
+    }
+  }
+
+  .version-section {
+    text-align: center;
+    width: 75px;
+  }
+
+  .date-section {
+    text-align: center;
+    width: 125px;
+  }
+
+  .status-section {
+    text-align: center;
+    text-transform: capitalize;
+
+    &.is-expired {
+      color: var(--bs-gray-700);
+    }
+  }
+
+  &.is-expired {
+    td {
+      background: var(--bs-gray-200);
+    }
+  }
+}

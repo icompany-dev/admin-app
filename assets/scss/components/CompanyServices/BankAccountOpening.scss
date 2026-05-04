@@ -1,0 +1,274 @@
+#company-service-bank-account-opening {
+  .company-documents-container {
+    width: 100%;
+    height: 0;
+    margin: auto;
+    position: relative;
+    opacity: 0;
+    transform-origin: top;
+    overflow: hidden;
+    transform: scaleY(0);
+    transition: all 0.3s ease-in-out;
+
+    &.show {
+      height: 100%;
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    .documents {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      margin: auto;
+      overflow: visible;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 0px;
+      perspective: 1200px; // Enable 3D perspective for card tilt effect
+
+      .document {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform-origin: top center;
+        transition: all 0.7s ease;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+
+        .canvas-content {
+          width: 100%;
+          height: 100%;
+        }
+
+        .company-documents-document {
+          box-shadow:
+            0 4px 8px 0 rgba(0, 0, 0, 0.2),
+            0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+          .placeholder {
+            height: calc(0.5 * 297mm);
+          }
+        }
+
+        > div {
+          width: 100%;
+          height: 100%;
+
+          #resolution {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        .paper-wrapper {
+          width: 100% !important;
+          height: 100% !important;
+          max-width: 100%;
+
+          &:not(:first-child) {
+            display: none;
+          }
+
+          .paper {
+            box-shadow:
+              0 4px 8px 0 rgba(0, 0, 0, 0.2),
+              0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            width: calc(100% - 20mm) !important;
+            height: calc(100% - 20mm) !important;
+            padding: 10mm;
+            max-width: 100%;
+          }
+        }
+      }
+
+      .action-buttons {
+        position: absolute;
+        bottom: 20px;
+        width: calc(100% - 30px);
+        padding: 0 15px;
+        z-index: 6;
+      }
+
+      &.show-required {
+        .document {
+          &.not-required {
+            display: none !important;
+          }
+        }
+      }
+    }
+
+    .empty-to-do-list {
+      margin: auto;
+      width: 75%;
+      height: calc(100% - 40px);
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+
+      .emphasis {
+        font-size: 2.6rem;
+      }
+
+      .subnote {
+        font-size: 1.6rem;
+      }
+
+      .ask-saira {
+        color: var(--bs-icompany-blue);
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (min-width: 990px) {
+      .documents {
+        &.is-grid-mode {
+          gap: 20px;
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          grid-template-rows: repeat(2, minmax(0, 1fr));
+          padding: 15px;
+          width: calc(183px * 3);
+          height: 490px;
+          margin: auto;
+
+          .document {
+            position: relative;
+            display: none;
+            transform: none;
+            opacity: 0;
+            height: 0;
+            z-index: -1;
+            box-shadow: none;
+
+            &.is-visible {
+              opacity: 1;
+              display: block;
+              width: 100%;
+              height: 100%;
+              z-index: auto;
+            }
+
+            .company-documents-document {
+              box-shadow: none;
+
+              .placeholder {
+                height: 210px;
+              }
+            }
+          }
+
+          .action-buttons {
+            display: none;
+          }
+        }
+      }
+    }
+
+    @media (max-width: 990px) {
+      max-width: unset;
+      margin-left: 0px;
+      margin-right: 0px;
+
+      .documents {
+        width: 100%;
+      }
+    }
+
+    // Stack view mode (used by bank account opening)
+    &.show-full {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 50px;
+
+      .documents {
+        cursor: pointer;
+        overflow: visible;
+        transform-style: preserve-3d;
+
+        .document {
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          cursor: pointer;
+
+          // Scale down the paper wrapper to fit
+          .paper-wrapper {
+            transform-origin: top center;
+
+            &:not(:first-child) {
+              display: none;
+            }
+
+            .paper {
+              box-shadow:
+                0 4px 8px 0 rgba(0, 0, 0, 0.2),
+                0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.document-view {
+  display: flex;
+  position: fixed;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  opacity: 0;
+  overflow: auto;
+  z-index: -99;
+  background-color: rgba(0, 0, 0, 0.8);
+  transform-origin: bottom;
+  transition: opacity 0.7s ease 0.2s;
+
+  &.show {
+    // padding: 30px 0;
+    padding-top: 70px;
+    opacity: 1;
+    z-index: 11; //Payment carts are set to z-index 10
+  }
+
+  .wrapper {
+    width: fit-content;
+
+    .statutory-form {
+      opacity: 0;
+      transform: scaleY(0);
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.3s ease-in-out;
+
+      &.show {
+        opacity: 1;
+        height: 100%;
+        transform: scaleY(1);
+      }
+    }
+  }
+
+  .paper-wrapper {
+    .paper {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+  }
+}

@@ -1,0 +1,71 @@
+#striking-off-supporting-letter-printables {
+  .paper-wrapper {
+    box-shadow: 0 2px 4px rgba(15, 34, 58, 0.12);
+    width: 210mm;
+    height: 297mm;
+    background-color: var(--bs-white);
+    padding: 0mm;
+    overflow: auto;
+    margin: auto;
+    margin-bottom: 10px;
+  }
+}
+
+.striking-off-supporting-letter {
+
+  p,
+  span {
+    font-size: 13px;
+    text-align: justify;
+  }
+
+  .letter-head {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+    border-bottom: solid 1px var(--bs-black);
+
+    .company-name {
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  }
+
+  .document-title {
+    font-weight: 600;
+    width: 100%;
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--bs-black);
+    margin-bottom: 10px;
+  }
+
+  .form-check {
+    margin-bottom: 10px;
+    align-items: center;
+
+    .form-check-input {
+      width: 18px;
+      min-width: 18px;
+      height: 18px;
+      min-height: 18px;
+    }
+
+    .detail {
+      text-align: justify;
+    }
+  }
+
+  .signature-section {
+    width: 45%;
+    max-width: unset;
+
+    .sign-off {
+      width: 100%;
+
+      .signee-name {
+        padding: 0;
+      }
+    }
+  }
+}

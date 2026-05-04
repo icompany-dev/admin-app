@@ -1,0 +1,22 @@
+#no-auth-header {
+    position: fixed;
+    z-index: 3;
+    top: 0;
+    left: 0;
+    width: calc(100dvw - 60px);
+    height: 50px;
+    padding: 20px 30px;
+
+    .logo {
+        height: 50px;
+        width: auto;
+        cursor: pointer;
+    }
+
+    @media only screen and (max-width: 768px) {
+        .logo {
+            height: 42px;
+            margin-top: 8px; // visually centered with other element
+        }
+    }
+}

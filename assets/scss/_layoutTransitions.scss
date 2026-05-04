@@ -1,0 +1,12 @@
+.layout-fade-enter-active,
+.layout-fade-leave-active {
+    transition: all 1s ease-out;
+}
+
+.layout-fade-enter-from {
+    opacity: 0;
+}
+
+.layout-fade-leave-to {
+    opacity: 0;
+}

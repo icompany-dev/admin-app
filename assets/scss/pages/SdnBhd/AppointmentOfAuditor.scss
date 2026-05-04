@@ -1,0 +1,18 @@
+.page-appointment-of-auditor {
+  .sdn-bhd-content {
+    .document-container {
+      position: relative;
+      width: fit-content;
+      min-width: 700px;
+
+      .pasca {
+        position: absolute;
+        top: 50%;
+        left: 100%; // Set By JS
+        transform: translateY(-50%);
+        transition: all 0.5s ease-in-out;
+      }
+    }
+  }
+
+}

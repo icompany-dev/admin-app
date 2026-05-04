@@ -1,0 +1,100 @@
+#legal-documents-section68 {
+  .section68-document {
+    position: relative;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+
+    .company-no-header {
+      position: absolute;
+      top: -10mm !important;
+      left: 0mm !important;
+    }
+
+    .document-title-section {
+      margin: 10px 0;
+      width: 100%;
+
+      .document-title {
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 3px;
+      }
+
+      .section-name {
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+        margin-bottom: 3px;
+      }
+
+      .document-name {
+        font-weight: 600;
+        text-align: center;
+        width: 100%;
+      }
+    }
+
+    .section68-info {
+      width: 100%;
+      margin-bottom: 20px;
+
+      .section68-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+
+        thead {
+          tr {
+            td {
+              background-color: var(--bs-ssm-blue);
+              color: var(--bs-white);
+              padding: 5px;
+              font-weight: 600;
+              border: 1px solid var(--bs-gray-300);
+            }
+          }
+        }
+
+        tbody {
+          tr {
+            td {
+              vertical-align: top;
+              padding: 5px;
+              border: 2px solid var(--bs-gray-300);
+              text-wrap: wrap;
+              word-wrap: break-word;
+
+              &.text-right {
+                text-align: right;
+              }
+            }
+
+            &.columns-bold {
+              td {
+                font-weight: 600;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .directors-details,
+  .shareholders-details {
+    padding: 20mm 10mm !important;
+    width: 277mm;
+    height: 170mm;
+
+    .company-no-header {
+      position: absolute;
+      top: 10mm;
+      left: 10mm;
+    }
+
+    .paper-page-number {
+      bottom: 5mm;
+      right: 10mm;
+    }
+  }
+}

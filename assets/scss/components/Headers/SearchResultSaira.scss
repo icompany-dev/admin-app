@@ -1,0 +1,120 @@
+.search-result-saira {
+  padding: 15px 0px;
+  height: calc(60dvh - 200px);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .chat-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    max-width: calc(100% - 70px);
+
+    .user-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      width: 40px;
+
+      .user-image {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        font-weight: bold;
+        flex-shrink: 0;
+        font-size: 25px;
+
+        img {
+          width: 100%;
+          height: auto;
+          object-fit: contain;
+        }
+      }
+
+      .user-name {
+        text-transform: uppercase;
+        text-align: center;
+        font-weight: 600;
+        color: var(--bs-primary);
+        font-size: 0.8rem;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
+        overflow: hidden;
+      }
+    }
+
+    .message-bubble {
+      padding: 10px 15px;
+      border-radius: 5px;
+      word-break: break-word;
+      text-align: justify;
+
+      ol,
+      ul {
+        padding-left: 15px;
+
+        li {
+          &:has(> :first-child strong),
+          &:has(> :first-child b),
+          &:has(> strong:first-child),
+          &:has(> b:first-child) {
+            &::marker {
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+
+    &.saira {
+      align-self: flex-start;
+
+      .user-image {
+        background-color: var(--bs-icompany-purple-lighter);
+        color: var(--bs-white);
+      }
+
+      .message-bubble {
+        background-color: var(--bs-icompany-purple-lightest);
+        color: var(--bs-primary);
+      }
+    }
+
+    &.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+
+      .user-image {
+        background-color: var(--bs-white);
+        color: var(--bs-primary);
+      }
+
+      .message-bubble {
+        background-color: var(--bs-white);
+        border-color: var(--bs-primary);
+        color: var(--bs-primary);
+      }
+    }
+
+    &.draft-message {
+      .message-bubble {
+        &.is-text-loading {
+          background-color: transparent;
+          align-self: center;
+        }
+      }
+    }
+  }
+
+  #placeholder-no-record {
+    min-height: calc(60dvh - 200px);
+  }
+}

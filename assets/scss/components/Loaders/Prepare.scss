@@ -1,0 +1,62 @@
+.prepare-content-loader {
+  min-height: 150px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  user-select: none;
+  min-height: calc(70dvh - 200px);
+
+  .loader-wrapper {
+    color: var(--prepare-content-loader-icon-color);
+
+    i {
+      font-size: 10rem;
+    }
+  }
+
+  .loader-notice {
+    text-align: center;
+    margin-top: 30px;
+
+    .loader-label {
+      color: var(--prepare-content-loader-notice-color);
+      font-size: 30px;
+      line-height: 32px;
+    }
+
+    .loader-sublabel {
+      color: var(--prepare-content-loader-notice-color);
+      font-weight: 600;
+      font-size: 35px;
+      line-height: 37px;
+    }
+
+    .loader-dots {
+      color: var(--prepare-content-loader-notice-color);
+      font-size: 15px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    .loader-notice {
+      .loader-label {
+        font-size: 20px;
+      }
+
+      .loader-sublabel {
+        font-size: 20px;
+      }
+
+      .loader-dots {
+        font-size: 10px;
+      }
+    }
+  }
+}

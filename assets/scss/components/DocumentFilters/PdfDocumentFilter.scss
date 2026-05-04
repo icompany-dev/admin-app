@@ -1,0 +1,50 @@
+#pdf-document-filter {
+  position: fixed;
+  bottom: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  width: 100%;
+  padding: 10px 0;
+  transition: all 0.5s ease-in-out;
+
+  &.is-hidden {
+    opacity: 0;
+    bottom: 0px;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .document-filter-container {
+    width: fit-content;
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding: 10px 40px;
+    border-radius: 20px;
+    background-color: var(--pdf-document-filter-bg-color);
+    transition: all 0.7s ease;
+
+    .filter-option {
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      font-size: 1.1rem;
+      color: var(--pdf-document-filter-color);
+
+      &.more {
+        font-size: 1.5rem;
+      }
+
+      &.disabled {
+        color: var(--pdf-document-filter-disabled-color);
+      }
+    }
+  }
+}

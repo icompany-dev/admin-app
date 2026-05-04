@@ -1,0 +1,67 @@
+h1 {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+h3 {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+h4,
+h5 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.page-header {
+  .page-title {
+    font-family: "Poppins", sans-serif;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 10px;
+    font-size: 3rem;
+    line-height: 3rem;
+    color: var(--page-header-title-color);
+    // letter-spacing: 1.4pt;
+  }
+
+  .page-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--page-header-title-color);
+  }
+
+  @media (max-width: 500px) {
+    .page-title {
+      font-size: 1.8rem;
+    }
+  }
+}
+
+// this will be for the sections that has 'help' after the header
+.section-header {
+  position: relative;
+
+  .section-title {
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
+    font-size: 4rem;
+    line-height: 4.1rem;
+    letter-spacing: 0.1pt;
+    padding: 5px 0;
+  }
+
+  .help-container {
+    position: absolute;
+    right: -420px; //Help button size + gap
+    top: 20%;
+    // transform: translateY(-50%);
+  }
+}

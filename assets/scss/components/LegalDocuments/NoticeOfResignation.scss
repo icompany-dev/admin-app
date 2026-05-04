@@ -1,0 +1,65 @@
+#legal-document-notice-of-resignation {
+  .paper {
+    &.print {
+      padding: 20mm;
+    }
+  }
+}
+
+.notice-of-resignation {
+
+  div,
+  p,
+  span {
+    font-size: 13px;
+    line-height: 19px;
+    text-align: justify;
+  }
+
+  .document-date {
+    margin-bottom: 15px;
+
+    &.placeholder {
+      padding: 5px 10px;
+      background-color: var(--bs-gray-200);
+      color: var(--bs-gray-500);
+      width: fit-content;
+    }
+  }
+
+  .recipient {
+    margin-bottom: 15px;
+
+    .company-name {
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+      text-transform: uppercase;
+    }
+  }
+
+  .greeting {
+    margin-bottom: 15px;
+  }
+
+  .letter-title {
+    padding: 5px 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.1pt;
+    border-bottom: 2px solid var(--bs-black);
+  }
+
+  .letter-content {
+    .form-check {
+      margin-bottom: 5px;
+    }
+  }
+
+  .letter-sign-off {
+    width: 40%;
+
+    .sign-off {
+      width: 100%;
+    }
+  }
+}

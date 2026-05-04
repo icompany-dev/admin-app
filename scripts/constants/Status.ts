@@ -1,0 +1,29 @@
+//NOTE (Bahiyah): This status constants apply to all status in our app. Keep them as they are.
+//  There shouldn't be any customization in here. If it is for a niche class -- create another constant class or variable.
+//  ** They are arranged in alphabetical order to easily manage this.
+export class StatusConstants {
+  static ACTIVE: string = "active"
+  static APPROVED: string = "approved"
+  static COMPLETED: string = "completed"
+  static CONVERTED: string = "converted"
+  static DELIVERED: string = "delivered"
+  static DRAFT: string = "draft"
+  static EXTENDED: string = "extended"
+  static FAILED: string = "failed"
+  static ISSUED: string = "issued"
+  static NAME_REJECTED: string = "name-rejected"
+  static NOTIFIED: string = "notified"
+  static ONGOING: string = "ongoing"
+  static OUTCOME: string = "outcome"
+  static PAID: string = "paid"
+  static PENDING: string = "pending"
+  static PROCESSING: string = "processing"
+  static READY_FOR_PICKUP: string = "ready-for-pickup"
+  static REJECTED: string = "rejected"
+  static RESPONDED: string = "responded"
+  static SHIPPED: string = "shipped"
+  static SUBMITTED: string = "submitted"
+  static SWITCHED_OUT: string = "switched-out"
+  static TO_DISPOSE: string = "to-dispose"
+  static WITHDRAWN: string = "withdrawn"
+}

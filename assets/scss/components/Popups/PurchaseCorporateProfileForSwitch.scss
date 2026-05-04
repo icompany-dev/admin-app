@@ -1,0 +1,31 @@
+#popup-purchase-corporate-profile-for-switch {
+  position: relative;
+  width: calc(100dvw - var(--scrollbar-width));
+  // height: 100dvh;
+  z-index: 14; //arbitrary number
+
+  .body {
+    .action {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+
+    .result {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+
+      span {
+        font-weight: bold;
+        font-size: 1.2rem;
+
+        &.verified {
+          color: var(--bs-icompany-green);
+        }
+
+        &.unverified {
+          color: var(--bs-danger);
+        }
+      }
+    }
+  }
+}

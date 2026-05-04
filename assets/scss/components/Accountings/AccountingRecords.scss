@@ -1,0 +1,60 @@
+#accountings-record {
+  position: relative;
+
+  .record-containers {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 30px;
+
+    .record-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+      width: calc((100% / 4) - 30px);
+      max-width: calc((800px / 4) - 30px);
+    }
+
+    &.highlighting {
+      max-height: 80dvh;
+    }
+  }
+
+  .selected-documents {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-height: 50dvh;
+    overflow: hidden;
+    visibility: hidden;
+    z-index: -999;
+  }
+}
+
+.highlight-document-display {
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding-top: 100px;
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100dvw;
+  height: 100dvh;
+  opacity: 0;
+  margin: auto;
+  z-index: -999;
+  overflow: hidden;
+  transition: all 0.7s ease 0.4s;
+
+  &.show {
+    opacity: 1;
+    z-index: 99;
+    overflow-y: auto;
+    padding-bottom: 50px;
+  }
+}

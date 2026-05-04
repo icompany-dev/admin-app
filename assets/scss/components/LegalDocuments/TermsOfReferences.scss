@@ -1,0 +1,206 @@
+#legal-document-terms-of-references {
+  .paper {
+    &.print {
+      padding: 20mm;
+    }
+  }
+}
+
+.terms-of-reference {
+
+  div,
+  p,
+  span {
+    font-size: 13px;
+    line-height: 19px;
+    text-align: justify;
+  }
+
+  .form-check {
+    width: 100%;
+    margin: 5px 0;
+
+    input[type=checkbox] {
+      width: 16px;
+      height: 16px;
+    }
+
+    span {
+      width: calc(100% - 30px);
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tbody {
+      border: none !important;
+
+      tr {
+        border: none !important;
+
+        td {
+          padding: 5px 0px;
+          border: none !important;
+          vertical-align: top;
+          font-size: 13px;
+
+          p {
+            font-size: 13px;
+            margin-top: 0px;
+          }
+
+          .form-check {
+            input {
+              font-size: 13px;
+            }
+          }
+
+          &:first-child {
+            width: 30px;
+            border: none !important;
+          }
+        }
+
+        &.section-title {
+          td {
+            padding-top: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+          }
+
+          &.capitalize {
+            td {
+              text-transform: none;
+            }
+          }
+        }
+
+        &.section-subtitle {
+          td {
+            color: var(--bs-gray-600);
+          }
+        }
+
+        &:first-of-type {
+          td {
+            border: none !important;
+          }
+        }
+      }
+    }
+  }
+
+  .document-header {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 10px;
+
+    .company-name {
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  }
+
+  .document-title {
+    margin-top: 5px;
+    padding: 5px 0;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.1pt;
+    border-bottom: 2px solid var(--bs-black);
+    text-align: center;
+  }
+
+  .document-sign-off {
+    width: 40%;
+
+    .sign-off {
+      width: 100%;
+    }
+  }
+
+  .document-date {
+    margin-top: 150px;
+  }
+
+  ol {
+    list-style: none;
+    counter-reset: item;
+    padding-left: 0;
+    margin: 10px 0;
+
+    li {
+      counter-increment: item;
+      margin-bottom: 5px;
+      padding-left: 30px;
+      position: relative;
+
+      &::before {
+        content: "(" counter(item, lower-roman) ")";
+        position: absolute;
+        left: 0;
+      }
+    }
+  }
+
+  ul {
+    padding-left: 15px;
+
+    li {
+      margin-bottom: 5px;
+    }
+  }
+
+  .signatures-section {
+    margin-top: 30px;
+    width: 100%;
+    max-width: unset;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+
+    .continued-section {
+      width: 100%;
+      text-align: left;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+
+    .signature-title {
+      width: 100%;
+      font-weight: 600;
+      text-align: center;
+      text-transform: uppercase;
+      padding-bottom: 20px;
+    }
+
+    .signature-item {
+      width: calc(50% - 55px);
+      padding-left: 15px;
+      padding-right: 15px;
+
+      &:nth-child(2n) {
+        padding-left: 0;
+        padding-right: 30px;
+
+        &:last-of-type {
+          padding: 0 15px;
+        }
+      }
+
+      &:nth-child(2n-1) {
+        padding-left: 30px;
+        padding-right: 0;
+      }
+    }
+
+    .signee-name {
+      padding: 0px;
+    }
+  }
+}

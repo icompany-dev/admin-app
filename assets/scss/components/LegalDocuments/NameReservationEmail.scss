@@ -1,0 +1,38 @@
+.name-reservation-email {
+  .email-header {
+    border-top: 1px solid var(--bs-gray-500);
+    border-bottom: 1px solid var(--bs-gray-500);
+    padding: 10px 20px;
+    margin-bottom: 20px;
+
+    table {
+      tbody {
+        tr {
+          td {
+            border: none;
+            padding: 3px 5px;
+            font-family: 'Verdana', sans-serif; //Match the one from SSM
+            vertical-align: top;
+
+            &:first-child {
+              width: 100px;
+              text-align: right;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .email-content {
+    padding: 20px;
+    border: 1px solid var(--bs-gray-500);
+
+    p,
+    span,
+    div {
+      font-family: 'Verdana', sans-serif; //Match the one from SSM - MyCoID
+    }
+  }
+}

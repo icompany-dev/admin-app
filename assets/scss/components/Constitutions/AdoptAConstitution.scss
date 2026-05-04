@@ -1,0 +1,432 @@
+#adopt-a-constitution {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  transition: all 0.7s ease;
+
+  .documents-to-preview {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .documents-container {
+    height: 0;
+    overflow: hidden;
+    transform: scaleY(0);
+    opacity: 0;
+    transform-origin: top;
+    transition: all 0.5s ease;
+
+    &.show {
+      height: auto;
+      overflow: visible;
+      transform: scaleY(1);
+      opacity: 1;
+    }
+
+    #alert-container {
+      width: calc(100% - 70px);
+      margin: auto;
+      margin-bottom: 20px;
+
+      .action-buttons {
+        margin-top: 20px;
+
+        //NOTE: This is needed to override the styling in _alert.scss
+        // --- remove this if _alerts.scss has remove styling on btn
+        .btn {
+          &:disabled {
+            background-color: var(--btn-disabled-bg-color);
+            border-color: var(--btn-disabled-border-color);
+            color: var(--btn-disabled-color);
+            cursor: pointer;
+          }
+        }
+
+        .btn-danger {
+          background-color: var(--btn-danger-bg-color);
+          color: var(--btn-danger-color);
+          border-color: var(--btn-danger-border-color);
+
+          &:hover {
+            background-color: var(--btn-danger-hover-bg-color);
+            color: var(--btn-danger-hover-color);
+          }
+        }
+
+        .btn-submit {
+          background-color: var(--btn-submit-bg-color);
+          color: var(--btn-submit-color);
+          border-color: var(--btn-submit-border-color);
+
+          &:hover {
+            background-color: var(--btn-submit-hover-bg-color);
+            color: var(--btn-submit-hover-color);
+          }
+        }
+      }
+    }
+  }
+
+  .paper {
+    padding: 20mm;
+  }
+}
+
+.constitution {
+
+  div,
+  span {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.5rem;
+    font-size: 13px;
+  }
+
+  .watermark-text {
+    font-size: 18rem !important;
+    font-weight: 900 !important;
+  }
+
+  &.cover-page {
+    .paper-content {
+      height: 100%;
+      max-height: 257mm;
+      width: 100%;
+      max-width: 170mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+    }
+
+    div {
+      font-size: 2.5rem;
+      font-weight: 200;
+      letter-spacing: 0.1pt;
+      line-height: 3rem;
+    }
+
+    .location {
+      padding-bottom: 50px;
+    }
+
+    .type-company {
+      padding-bottom: 100px;
+    }
+
+    .company-name {
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+  }
+
+  .registration-number {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 2px;
+    margin-bottom: 10px;
+
+    .box {
+      padding: 5px 10px;
+      border: solid 1px var(--bs-gray-900);
+    }
+  }
+
+  .constitution-header {
+    width: 90%;
+    margin: auto;
+    text-align: center;
+
+    .constitution-of {
+      margin-top: 20px;
+    }
+
+    .company-name {
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+      text-transform: uppercase;
+    }
+  }
+
+  .constitution-section {
+    margin-top: 10px;
+
+    .section-title {
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+      margin: 10px 0;
+      padding-bottom: 5px;
+    }
+
+    .section-content {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 20px;
+      padding-bottom: 5px;
+      transform: scaleY(1);
+      transform-origin: top;
+      height: fit-content;
+      // overflow: auto;
+      opacity: 1;
+      transition: height 0.7s ease, opacity 0.5s ease 0.2s;
+
+      .number {
+        line-height: 1.8rem;
+        min-width: 15px;
+
+        &:has(input[type="checkbox"]) {
+          margin-top: 5px; // align the box with the text line. Must change if line height changes
+        }
+      }
+
+      .detail {
+        position: relative;
+        text-align: justify;
+        padding-bottom: 5px;
+        line-height: 1.5rem;
+
+        .text-help {
+          color: var(--bs-gray-500);
+          cursor: pointer;
+          display: inline-block;
+          width: 20px;
+          text-align: center;
+        }
+
+        .help-button-wrapper {
+          position: fixed;
+          width: fit-content;
+          top: 0;
+          z-index: 20;
+
+          .post-it {
+            width: fit-content;
+            max-width: 500px;
+            padding: 5px;
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            font-size: 13px;
+
+            &.show {
+              z-index: 20;
+            }
+
+            .close-button {
+              position: static;
+              cursor: pointer;
+              font-size: 13px;
+            }
+          }
+        }
+
+        .company-name {
+          text-transform: uppercase;
+          font-weight: 600;
+          letter-spacing: 0.1pt;
+        }
+
+        .constitution-definition-table {
+          margin-top: 20px;
+          margin-bottom: 10px;
+
+          tbody {
+            tr {
+              td {
+                padding: 8px 10px;
+                vertical-align: top;
+                line-height: 1.5rem;
+              }
+            }
+          }
+        }
+
+        .form-control {
+          &.in-line {
+            width: 80px;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid var(--bs-gray-900);
+            text-align: center;
+
+            &.large {
+              width: 200px;
+            }
+          }
+        }
+
+        .form-check {
+          input[type=checkbox] {
+            margin-top: 3px; // align the box with the text line. Must change if line height changes
+          }
+
+          div,
+          span {
+            line-height: 1.5rem;
+          }
+        }
+
+        .section-checkbox-list {
+          list-style: none;
+          padding-left: 0px;
+
+          li {
+            margin-bottom: 5px;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+
+        .alpha-list {
+          margin: 0;
+          margin-top: 5px;
+          list-style: lower-alpha;
+          padding-left: 15px;
+
+          li {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.5rem;
+            font-size: 13px;
+            margin-bottom: 5px;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+        }
+
+        .nested-list {
+          .section-checkbox-list {
+            padding-top: 10px;
+          }
+        }
+
+        .section-list {
+          li {
+            padding-bottom: 5px;
+          }
+        }
+      }
+
+      &.hide {
+        transform: scaleY(0);
+        height: 0;
+        overflow: hidden;
+        opacity: 0;
+      }
+    }
+
+    .add-more {
+      font-style: italic;
+      color: var(--bs-icompany-blue);
+      font-size: 10px;
+      cursor: pointer;
+    }
+
+    .remove-item {
+      font-style: italic;
+      color: var(--bs-danger);
+      font-size: 10px;
+      cursor: pointer;
+    }
+  }
+
+  .constitution-divider-title {
+    margin-top: 35px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 1.2rem;
+    letter-spacing: 0.1pt;
+  }
+
+  .registration-number+.constitution-clause {
+    .constitution-divider-title {
+      margin-top: 0px;
+    }
+  }
+
+  .constitution-clause.hide+.constitution-clause {
+    .constitution-divider-title {
+      margin-top: 0px;
+    }
+  }
+
+  .constitution-clause {
+    height: auto;
+    transform: none;
+    opacity: 1;
+    overflow: auto;
+    transform-origin: top;
+
+    &.hide {
+      transform: translateY(-100%);
+      opacity: 0;
+      height: 0;
+      transition:
+        transform 0.5s ease,
+        opacity 0.5s ease 0.2s,
+        height 0.4s ease 0.3s,
+        overflow 0.3s ease 0.5s;
+    }
+
+    &.show {
+      opacity: 1;
+      height: auto;
+      overflow: auto;
+      transition:
+        transform 0.5s ease,
+        opacity 0.5s ease 0.2s,
+        height 0.4s ease 0.3s,
+        overflow 0.3s ease 0.5s;
+    }
+  }
+
+  .constitution-lodger {
+    .lodger-title {
+      margin-top: 50px;
+      text-align: center;
+      font-size: 1.2rem;
+      letter-spacing: 0.1pt;
+      font-weight: 600;
+    }
+
+    .lodger-detail {
+      .lodger-detail-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        tbody {
+          tr {
+            td {
+              border: none;
+              vertical-align: top;
+
+              &:first-child {
+                width: 80px;
+              }
+
+              &:nth-child(2) {
+                width: 15px;
+                text-align: center;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

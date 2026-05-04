@@ -1,0 +1,41 @@
+@use "sass:color";
+@use "../abstract/variables" as *;
+@use "../abstract/mixins" as *;
+
+:root {
+  --bg-url: url('https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/img/background-image.webp');
+  --scrollbar-width: calc(100vw - 100%);
+
+  --phone-screen: 500px;
+  --tablet-screen: 768px;
+  --medium-screen: 1280px;
+  --large-screens: 1440px;
+
+  --header-item-height: 50px;
+  --header-burger-width: 25px;
+  --header-burger-height: 25px;
+  --header-burger-line-height: 4px;
+  --header-burger-line-spacing: 6px;
+  --header-burger-line-open-offset: 2px;
+
+  --header-search-bar-card-max-height: calc(70dvh - 110px);
+  --header-search-bar-glossary-result-max-height: calc(var(--header-search-bar-card-max-height) - 170px);
+  --header-search-result-min-height: 50dvh;
+
+  --to-do-list-enlarged-height-offset: 250px;
+  --max-width-centre-stage: 1280px;
+
+  --document-toggler-more-option-bg-color: #{$gray-200};
+  --document-toggler-more-option-color: #{$gray-900};
+
+  @each $key, $value in $theme-colors {
+    --bs-#{$key}: #{$value};
+  }
+
+  @include generate-bs-derived('primary', $primary);
+  @include generate-bs-derived('orange', $orange);
+  @include generate-bs-derived('green', $dark-green);
+  @include generate-bs-derived('blue', $blue);
+  @include generate-bs-derived('danger', $danger);
+  @include generate-bs-derived('icompany-purple', $icompany-purple);
+}

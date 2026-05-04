@@ -1,0 +1,60 @@
+.legal-document-section-85 {
+  .paper-wrapper {
+    .paper {
+      padding: 20mm;
+    }
+  }
+}
+
+.section-85 {
+  .letter-head {
+    padding: 10px;
+    text-align: center;
+
+    .company-name {
+      font-weight: bold;
+    }
+  }
+
+  .document-date {
+    padding-bottom: 10px;
+    font-weight: bold;
+  }
+
+  .title-address {
+    padding-bottom: 15px;
+  }
+
+  .attention-to {
+    padding-bottom: 15px;
+    font-weight: bold;
+  }
+
+  .greeting {
+    padding-bottom: 10px;
+  }
+
+  .title {
+    text-align: left;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--bs-black);
+  }
+
+  .content {
+    p {
+      text-align: justify;
+    }
+
+    .form-check {
+      padding-bottom: 5px;
+    }
+  }
+
+  .signature-container {
+    width: 40%;
+
+    .sign-off {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,46 @@
+#popup-delegation-new-resolution {
+  position: relative;
+  width: calc(100dvw - var(--scrollbar-width));
+  z-index: 10; //arbitrary number
+
+  .popup-details {
+    .heading {
+      width: 100%;
+      text-align: center;
+      font-size: 2.5rem;
+      line-height: 2.6rem;
+      font-weight: bold;
+      font-family: 'Poppins', sans-serif;
+      margin-bottom: 15px;
+    }
+
+    .body {
+      width: 90%;
+      text-align: center;
+      line-height: 1.5rem;
+
+      .heading {
+        width: 100%;
+        text-align: center;
+        font-size: 2.5rem;
+        line-height: 2.6rem;
+        font-weight: bold;
+        font-family: 'Poppins', sans-serif;
+      }
+
+      .action {
+        margin: 15px 0px;
+        text-align: center;
+      }
+    }
+  }
+
+  .cta-notice {
+    width: 100%;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+    margin: 15px 0px;
+  }
+}

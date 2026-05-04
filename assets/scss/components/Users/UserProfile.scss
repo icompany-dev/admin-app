@@ -1,0 +1,209 @@
+#user-profile {
+  height: calc(100% - 90px);
+  overflow-y: auto;
+  gap: 45px;
+  padding: 45px 30px;
+
+  .profile-image-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .profile-image-upload {
+      position: relative;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+
+      &:hover {
+        .upload-overlay {
+          opacity: 1;
+        }
+      }
+
+      &.is-dragging {
+        transform: scale(1.05);
+
+        .upload-overlay {
+          opacity: 1;
+          background-color: rgba(0, 123, 255, 0.8);
+        }
+      }
+
+      .upload-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        color: white;
+
+        i {
+          font-size: 5rem;
+          margin-bottom: 10px;
+        }
+
+        .upload-text {
+          font-size: 1.75em;
+          text-align: center;
+          padding: 0 10px;
+        }
+      }
+    }
+
+    .file-input-hidden {
+      display: none;
+    }
+
+    .image-upload-error {
+      color: var(--bs-danger);
+      font-size: 0.875rem;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .display-name {
+      margin-top: 10px;
+      font-size: 2rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      text-align: center;
+      border: unset;
+      width: 100%;
+
+      &::placeholder {
+        color: var(--bs-gray-400);
+      }
+    }
+  }
+
+  .user-profile-content-split {
+    display: grid;
+    grid-template-columns: calc(50% - 5px) calc(50% - 5px);
+    gap: 10px;
+  }
+
+  .user-profile-content, 
+  .user-profile-content .address-inputs {
+    width: 100%;
+    margin-top: 15px;
+
+    .label {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .content {
+      background-color: var(--bs-gray-100);
+      padding: 8px 12px;
+      border-radius: 5px;
+      margin: 2px 0px;
+      width: calc(100% - 24px);
+      text-transform: uppercase;
+      text-align: left;
+    }
+
+    input {
+      &.form-control {
+        width: calc(100% - 24px);
+        background-color: var(--bs-gray-100);
+        padding: 8px 12px;
+        border-radius: 5px;
+        margin: 2px 0px;
+        text-transform: uppercase;
+        border: unset;
+        text-align: left;
+      }
+    }
+
+    .toggler {
+      border: unset;
+      width: 100%;
+      background-color: var(--bs-gray-100);
+      padding: 8px 12px;
+      border-radius: 5px;
+      margin: 2px 0px;
+      min-height: 28px;
+      text-transform: uppercase;
+      text-align: left;
+    }
+
+    .address-inputs {
+      margin-top: 0;
+    }
+
+    .action-link {
+      cursor: pointer;
+      color: var(--bs-blue);
+
+      &:hover {
+        font-weight: 600;
+      }
+    }
+
+    .race-input {
+      width: calc(100% - 24px);
+      background-color: var(--bs-gray-100);
+      padding: 8px 12px;
+      border-radius: 5px;
+      margin: 2px 0px;
+      text-transform: uppercase;
+      border: unset;
+      text-align: left;
+
+      &:focus {
+        outline: 2px solid var(--bs-blue);
+        outline-offset: 1px;
+      }
+    }
+
+    .race-select {
+      width: 100%;
+      background-color: var(--bs-gray-100);
+      padding: 8px 12px;
+      border-radius: 5px;
+      margin: 2px 0px;
+      text-transform: uppercase;
+      border: unset;
+      text-align: left;
+      cursor: pointer;
+
+      &:focus {
+        outline: 2px solid var(--bs-blue);
+        outline-offset: 1px;
+      }
+
+      option {
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .responsibility-wrapper {
+    margin: 30px auto;
+
+    .action-link {
+      cursor: pointer;
+      color: var(--bs-blue);
+      text-align: center;
+      font-weight: 600;
+    }
+  }
+
+  .action-buttons {
+    margin-bottom: 50px;
+
+    .btn {
+      min-width: 100px;
+    }
+  }
+}

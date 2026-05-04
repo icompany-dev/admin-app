@@ -1,0 +1,58 @@
+#popup-non-beneficial-owner {
+  position: relative;
+  z-index: 14;
+
+  .contact-details {
+    width: 60%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+
+    .form-group {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+
+      label {
+        display: block;
+        width: 90px;
+        text-align: left;
+      }
+
+      .form-control {
+        width: calc(100% - 110px);
+        padding: 4px 8px;
+        border-radius: 5px;
+      }
+
+      .input-subnote {
+        width: calc(100% - 110px);
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        align-items: flex-start;
+        gap: 4px;
+
+        .form-control {
+          width: 100%;
+        }
+
+        .subnote {
+          font-size: 11px;
+          text-align: justify;
+        }
+      }
+
+      &:has(.input-subnote) {
+        align-items: flex-start;
+      }
+    }
+  }
+}

@@ -1,0 +1,202 @@
+.action-tray-element {
+  position: relative;
+  width: 100%;
+
+  .action-cta {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+
+    .action-tray-element-label {
+      text-align: center;
+      color: var(--action-tray-color);
+      text-wrap: nowrap;
+      font-size: 1.1rem;
+    }
+
+    .action-tray-element-sublabel {
+      text-align: center;
+      color: var(--action-tray-color);
+      font-size: 0.8rem;
+      font-weight: 300;
+    }
+
+    .action-tray-element-select {
+      .form-control {
+        padding: 2px;
+        border-radius: 5px;
+        background-color: var(--bs-white);
+        font-weight: 400;
+      }
+    }
+
+    .action-tray-icon {
+      &.icon-only,
+      &.icon-large {
+        font-size: 1.5rem;
+      }
+    }
+
+    &.is-select-element {
+      cursor: auto;
+    }
+
+    &:hover {
+      &:not(.is-select-element) {
+        .action-tray-element-label {
+          color: var(--action-tray-hover-color);
+          font-weight: 600;
+        }
+
+        .action-tray-element-sublabel {
+          color: var(--action-tray-hover-color);
+          font-weight: 400;
+        }
+
+        .action-tray-icon {
+          color: var(--action-tray-hover-color);
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    &.disabled {
+      cursor: auto;
+
+      .action-tray-element-label {
+        color: var(--action-tray-disabled-color);
+        font-weight: 400;
+      }
+
+      .action-tray-element-sublabel {
+        color: var(--action-tray-disabled-color);
+        font-weight: 300;
+      }
+
+      .action-tray-icon {
+        color: var(--action-tray-disabled-color);
+        transform: scale(1);
+      }
+
+      &:hover {
+        .action-tray-element-label {
+          color: var(--action-tray-disabled-color);
+          font-weight: 400;
+        }
+
+        .action-tray-element-sublabel {
+          color: var(--action-tray-disabled-color);
+          font-weight: 300;
+        }
+
+        .action-tray-icon {
+          color: var(--action-tray-disabled-color);
+          transform: scale(1);
+        }
+      }
+    }
+  }
+
+  .action-tray-dropdowns {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 5px;
+    bottom: calc(100% + 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 100px;
+
+    .action-tray-dropdown-action {
+      width: 100%;
+      height: 100%;
+      min-height: 30px;
+      min-width: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--action-tray-bg-color);
+      padding: 5px 10px;
+      border-radius: 5px;
+      box-shadow: var(--box-shadow);
+
+      .action-tray-element {
+        .action-cta {
+          .action-tray-element-label {
+            min-width: 75px;
+          }
+        }
+      }
+
+      &:hover {
+        &:not(.is-select-element) {
+          background-color: var(--action-tray-hover-bg-color);
+        }
+      }
+
+      &.disabled {
+        background-color: var(--action-tray-disabled-bg-color);
+
+        &:hover {
+          background-color: var(--action-tray-disabled-bg-color);
+        }
+      }
+    }
+  }
+
+  .action-tray-search {
+    display: flex;
+    font-size: 1rem;
+    gap: 10px;
+    background-color: var(--bs-white);
+    padding: 4px 8px;
+    border-radius: 5px;
+    width: calc(100% - 16px);
+    min-width: 300px;
+    border: 1px solid var(--bs-gray-500);
+    transition: 0.3s ease-in-out;
+    user-select: none;
+
+    .action-search-input {
+      all: unset;
+      width: 100%;
+
+      &::placeholder {
+        color: var(--bs-gray-400);
+      }
+    }
+
+    .action-search-icon {
+      color: var(--bs-gray-500);
+      transition: 1s ease-in-out;
+    }
+
+    .action-search-close-button {
+      cursor: pointer;
+      color: var(--bs-gray-500);
+      transition: 1s ease-in-out;
+
+      &:hover {
+        color: var(--bs-gray-700);
+      }
+    }
+
+    &.is-searching {
+      background-color: var(--bs-gray-200);
+    }
+
+    &:focus-within {
+      border-color: var(--bs-icompany-purple-light);
+
+      .search-bar-icon {
+        color: var(--bs-icompany-purple-light);
+      }
+    }
+  }
+}

@@ -1,0 +1,162 @@
+#financial-statement-setup {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  padding-bottom: 30px;
+
+  .audit-assessment-result {
+    margin: 10px 0;
+    padding: 0 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    transform: scaleY(0);
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: all 0.7s ease;
+
+    &.show {
+      transform: scaleY(1);
+      opacity: 1;
+      height: fit-content;
+    }
+
+    .result-row {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+
+      .control-label {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      span {
+        font-size: 1.1rem;
+
+        &.result-highlight {
+          font-weight: 600;
+        }
+      }
+
+      .audit-assessment {
+        transition: all 0.7s ease;
+
+        .details {
+          display: -webkit-box;
+          -webkit-line-clamp: 4;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+          text-align: justify;
+        }
+
+        &.show-all {
+          .details {
+            display: block;
+            text-align: justify;
+          }
+
+        }
+
+        .more-less-toggle {
+          cursor: pointer;
+          font-style: italic;
+          color: var(--bs-icompany-blue);
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+
+  .action-buttons {
+    align-items: flex-start;
+
+    .btn-danger {
+      background-color: var(--btn-danger-bg-color) !important;
+      color: var(--btn-danger-color) !important;
+      border-color: var(--btn-danger-border-color) !important;
+
+      &:hover {
+        background-color: var(--btn-danger-hover-bg-color) !important;
+        color: var(--btn-danger-hover-color) !important;
+      }
+    }
+
+    .btn-primary {
+      background-color: var(--btn-primary-hover-bg-color) !important;
+      color: var(--btn-primary-hover-color) !important;
+      border-color: var(--btn-primary-border-color) !important;
+
+      &:hover {
+        background-color: var(--btn-primary-bg-color) !important;
+        color: var(--btn-primary-color) !important;
+      }
+    }
+
+    .btn-submit {
+      background-color: var(--btn-submit-bg-color) !important;
+      color: var(--btn-submit-color) !important;
+      border-color: var(--btn-submit-border-color) !important;
+
+      &:hover {
+        background-color: var(--btn-submit-hover-bg-color) !important;
+        color: var(--btn-submit-hover-color) !important;
+      }
+    }
+
+    .btn {
+      &:disabled {
+        background-color: var(--bs-gray-500) !important;
+        border-color: var(--bs-gray-500) !important;
+      }
+    }
+  }
+
+  .action-link {
+    &.completed {
+      color: inherit !important;
+    }
+  }
+
+  .caret-expand {
+    font-size: 2rem;
+
+    i {
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &.rotate {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+
+  .step-container {
+    .step-content-container {
+      transform: scaleY(1);
+      max-height: fit-content;
+      transform-origin: top;
+      transition: transform 0.5s ease, max-height 0.1s ease 0.5s;
+      opacity: 1;
+    }
+
+    &.hide {
+      margin-bottom: 0px;
+
+      .step-content-container {
+        transform: scaleY(0);
+        max-height: 0;
+        opacity: 0;
+
+        #alert-container {
+          display: none;
+        }
+      }
+    }
+  }
+}

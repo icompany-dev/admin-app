@@ -1,0 +1,68 @@
+#legal-documents-third-schedule {
+  .paper-wrapper {
+    .legal-document {
+      .document-title {
+        margin-bottom: 25px;
+        text-align: center;
+
+        div {
+          line-height: 20px;
+        }
+      }
+
+      .document-content {
+        margin-bottom: 15px;
+
+        .document-section {
+          padding-bottom: 15px;
+
+          .title {
+            font-style: italic;
+            padding-bottom: 20px;
+            margin: 0px 20px;
+            font-weight: normal;
+            text-transform: none;
+            text-align: left;
+          }
+
+          .content {
+            .item {
+              margin-left: 20px;
+              margin-right: 20px;
+              margin-bottom: 20px;
+              text-align: justify;
+              line-height: 20px;
+              display: flex;
+              gap: 20px;
+
+              .item-number {
+                min-width: 20px;
+                position: relative;
+              }
+
+              .item-list {
+                list-style: none;
+                padding: 0;
+                padding-left: 0px;
+                counter-reset: item-number;
+
+                li {
+                  position: relative;
+                  padding-left: 30px;
+                  margin-bottom: 5px;
+
+                  &::before {
+                    counter-increment: item-number;
+                    content: "(" counter(item-number, lower-alpha) ")";
+                    position: absolute;
+                    left: 0;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

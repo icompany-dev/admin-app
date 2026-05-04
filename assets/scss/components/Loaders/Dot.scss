@@ -1,0 +1,39 @@
+#loader-dot {
+  width: 6px;
+  height: 6px;
+  margin-left: auto;
+  margin-right: calc(6px * 5);
+  border-radius: 50%;
+  animation: dotloader 1s linear infinite alternate;
+  position: relative;
+
+  @keyframes dotloader {
+    0% {
+      background-color: var(--bs-icompany-purple);
+      box-shadow:
+        12px 0 0 0 rgba(106, 9, 92, 0.5),
+        24px 0 0 0 rgba(106, 9, 92, 0.5);
+    }
+
+    25% {
+      background-color: rgba(106, 9, 92, 0.5);
+      box-shadow:
+        12px 0 0 0 var(--bs-icompany-purple),
+        24px 0 0 0 rgba(106, 9, 92, 0.5);
+    }
+
+    50% {
+      background-color: rgba(106, 9, 92, 0.5);
+      box-shadow:
+        12px 0 0 0 rgba(106, 9, 92, 0.5),
+        24px 0 0 0 var(--bs-icompany-purple);
+    }
+
+    100% {
+      background-color: var(--bs-icompany-purple);
+      box-shadow:
+        12px 0 0 0 rgba(106, 9, 92, 0.5),
+        24px 0 0 0 rgba(106, 9, 92, 0.5);
+    }
+  }
+}

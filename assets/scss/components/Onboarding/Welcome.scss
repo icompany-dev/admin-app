@@ -1,0 +1,55 @@
+#onboarding-welcome {
+  position: fixed;
+  z-index: 12;
+  left: 0;
+  top: 0;
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+  justify-content: center;
+  align-items:  center;
+  background-color: rgba(0,0,0,0.9);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 1s ease-in-out;
+
+  .welcome-note-wrapper {
+    width: 80%;
+    max-width: 1000px;
+
+    .title {
+      color: var(--bs-white);
+      font-size: 3.25rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .description, .highlight {
+       color: var(--bs-white);
+       font-size: 1.8rem;
+       text-align: center;
+       margin-top: 15px;
+    }
+
+    .highlight {
+      color: var(--bs-orange);
+    }
+
+    &.thin-content {
+      .title {
+        font-weight: 300;
+      }
+
+      .description {
+        font-weight: 200;
+      }
+    }
+  }
+
+  &.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
