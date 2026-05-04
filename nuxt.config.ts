@@ -104,6 +104,19 @@ export default defineNuxtConfig({
 
   plugins: ["~/plugins/pdf.client.ts", "~/plugins/openai-agents.ts"],
 
+  future: {
+    compatibilityVersion: 3,
+  },
+
+  vite: {
+    devBundler: "legacy", // This bypasses the buggy IPC socket path
+  },
+
+  devServer: {
+    port: 4000,
+    host: "localhost",
+  },
+
   router: {
     options: {
       hashMode: false,

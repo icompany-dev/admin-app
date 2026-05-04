@@ -134,7 +134,7 @@
 </template>
 
 <script lang="ts" setup>
-  import HelpButtonWithBorder from "../Buttons/HelpButtonWithBorder.vue"
+  import HelpButtonWithBorder from "@/components/Buttons/HelpButtonWithBorder.vue"
   import { LoginFormController } from "~/scripts/components/login/LoginFormController"
 
   const pageController = new LoginFormController()
