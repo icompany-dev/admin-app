@@ -1,5 +1,8 @@
 <template>
-  <div id="command-centre-statistic">
+  <div
+    id="command-centre-statistic"
+    @click.self="controller.hideOptions()"
+  >
     <div class="statistic-title">
       <div class="statistic-status-selection">
         <i
@@ -39,7 +42,7 @@
     </div>
     <div class="statistic-period">
       <span class="statistic-selected-period">
-        {{ controller.selectedPeriod.value }}
+        {{ controller.periodPrepend }} {{ controller.selectedPeriod.value }} {{ controller.periodAppend }}
       </span>
       <div class="statistic-period-selection">
         <i
@@ -118,6 +121,12 @@
       controller.setSeletedPeriod(newVal)
     }
   )
+
+  defineExpose({
+    onStatusSelectionClicked: controller.onStatusSelectionClicked.bind(controller),
+    onPeriodSelectionClicked: controller.onPeriodSelectionClicked.bind(controller),
+    hideOptions: controller.hideOptions.bind(controller),
+  })
 </script>
 
 <style lang="scss">

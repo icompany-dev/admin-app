@@ -6,6 +6,7 @@ import { SeoTools } from "../utils/SeoTools"
 export class PageController {
   pageAlias: string = "centre stage"
   eventManager = useEventManagerStore()
+  language = useLanguage()
 
   constructor(title: string, description: string, pageAlias: string) {
     SeoTools.addMetadata(title, description)

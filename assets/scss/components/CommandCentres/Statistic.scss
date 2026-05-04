@@ -6,11 +6,17 @@
   gap: 10px;
   padding: 20px;
   width: calc(100% - 40px);
-  border: 10px;
+  border-radius: 10px;
   background-color: var(--bs-white);
 
   .statistic-title {
     background-color: var(--bs-icompany-purple);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
 
     .statistic-status-selection {
       position: relative;
@@ -23,10 +29,10 @@
       }
 
       .statistic-status-options {
-        width: 200px;
+        width: fit-content;
         position: absolute;
-        top: 25px;
-        left: 50%;
+        top: 30px;
+        left: -10px;
         max-height: 0;
         overflow: hidden;
         transform: scaleY(0);
@@ -34,13 +40,26 @@
         transition: all 0.7s ease;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-start;
+        align-items: flex-start;
         gap: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 0 0 5px 5px;
 
         &.show {
           max-height: fit-content;
           transform: scaleY(1);
+        }
+
+        .statistic-status-option {
+          color: var(--bs-white);
+          padding: 2px;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--bs-icompany-orange);
+          }
         }
       }
     }
@@ -49,14 +68,12 @@
       color: var(--bs-icompany-orange);
       font-weight: 600;
       font-size: 1.2rem;
-      line-height: 1.2rem;
     }
 
     .statistic-name {
       color: var(--bs-white);
       font-weight: 600;
       font-size: 1.2rem;
-      line-height: 1.2rem;
     }
   }
 
@@ -65,10 +82,13 @@
     text-align: right;
 
     .statistic-count {
-      font-size: 3rem;
-      line-height: 3rem;
-      font-weight: 600;
       color: var(--bs-icompany-purple);
+
+      span {
+        font-size: 3rem;
+        line-height: 3rem;
+        font-weight: 600;
+      }
     }
   }
 
@@ -100,10 +120,10 @@
       }
 
       .statistic-period-options {
-        width: 200px;
+        width: fit-content;
         position: absolute;
-        top: 25px;
-        left: 50%;
+        top: 20px;
+        right: 0px;
         max-height: 0;
         overflow: hidden;
         transform: scaleY(0);
@@ -111,13 +131,26 @@
         transition: all 0.7s ease;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        justify-content: flex-start;
+        align-items: flex-start;
         gap: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 5px;
 
         &.show {
           max-height: fit-content;
           transform: scaleY(1);
+        }
+
+        .statistic-period-option {
+          color: var(--bs-white);
+          padding: 2px;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--bs-icompany-orange);
+          }
         }
       }
     }

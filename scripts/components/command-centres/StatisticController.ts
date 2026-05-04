@@ -13,6 +13,8 @@ export class StatisticController {
   selectedPeriod: Ref<string> = ref<string>("")
   isShowPeriodOptions: Ref<boolean> = ref<boolean>(false)
 
+  language = useLanguage()
+
   emitEvents: any | null = null
 
   constructor(props: IPropsCommandCentreStatistic, emitEvents: any) {
@@ -51,21 +53,38 @@ export class StatisticController {
 
   onSelectStatus(value: string): void {
     this.emitEvents("statusSelected", value)
+    this.isShowStatusOptions.value = false
   }
 
   onSelectPeriod(value: string): void {
     this.emitEvents("periodSelected", value)
+    this.isShowPeriodOptions.value = false
   }
 
   onStatusSelectionClicked(): void {
+    this.isShowPeriodOptions.value = false
     this.isShowStatusOptions.value = !this.isShowStatusOptions.value
   }
 
   onPeriodSelectionClicked(): void {
+    this.isShowStatusOptions.value = false
     this.isShowPeriodOptions.value = !this.isShowPeriodOptions.value
+  }
+
+  hideOptions(): void {
+    this.isShowStatusOptions.value = false
+    this.isShowPeriodOptions.value = false
   }
 
   get status(): string {
     return StringUtil.capitalize(this.selectedStatus.value)
+  }
+
+  get periodPrepend(): string {
+    return this.language.isMalay() ? "bagi" : "for this"
+  }
+
+  get periodAppend(): string {
+    return this.language.isMalay() ? "ini" : ""
   }
 }
