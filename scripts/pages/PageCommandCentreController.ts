@@ -1,6 +1,7 @@
 import { FilterPeriod } from "../constants/FilterValues"
 import { Filter } from "../library/Filter"
 import { User } from "../models/User"
+import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
 import { StringUtil } from "../utils/String"
 import { PageController } from "./PageController"
 
@@ -261,5 +262,9 @@ export class PageCommandCentreController extends PageController {
 
   get periods(): string[] {
     return ["week", "month", "quarter", "year"]
+  }
+
+  get breadCrumbProps(): PropsBreadCrumb {
+    return new PropsBreadCrumb([new PropsBreadCrumbItem("Command Center", "command-centre")])
   }
 }

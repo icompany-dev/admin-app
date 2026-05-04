@@ -1,5 +1,6 @@
 <template>
   <div id="page-command-centre">
+    <BreadCrumb v-bind="pageController.breadCrumbProps" />
     <div class="statistics-row">
       <div class="statistic">
         <Statistic
@@ -58,6 +59,7 @@
 </template>
 
 <script setup lang="ts">
+  import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
   import Statistic from "~/components/CommandCentres/Statistic.vue"
   import { PageCommandCentreController } from "~/scripts/pages/PageCommandCentreController"
 
