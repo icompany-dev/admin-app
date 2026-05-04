@@ -42,6 +42,21 @@ export const useAuthStore = defineStore("auth", () => {
       setIpAddress()
       const response: any = await $repositories.auth.login(credentials.email, credentials.password)
 
+      let userData = new User(response.data)
+      if (!userData.isAdmin()) {
+        $iziToast.error({
+          title: "You are not authorised.",
+          message: "Contact your System Administrator to get access.",
+          icon: "lock-key",
+          iconColor: "transparent",
+          position: "bottomRight",
+          pauseOnHover: true,
+          close: false,
+          timeout: 5000,
+        })
+        return false
+      }
+
       authToken.value = response.data.token
       user.value = new User(response.data)
       userId.value = response.data.id
