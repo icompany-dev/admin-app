@@ -74,7 +74,7 @@ export class Error {
 
   setForFetchAll(): void {
     this.icon = "no-info"
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay() ? "Sila log masuk dan cuba semula." : "Please re-login and try again."
 
     this.type = Error.ERROR_TYPE_API
@@ -82,7 +82,7 @@ export class Error {
 
   setForFetch(): void {
     this.icon = "no-info"
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay() ? "Sila log masuk dan cuba semula." : "Please re-login and try again."
 
     this.type = Error.ERROR_TYPE_API
@@ -90,7 +90,7 @@ export class Error {
 
   setForFetchOngoing(): void {
     this.icon = "no-info"
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay() ? "Sila log masuk dan cuba semula." : "Please re-login and try again."
 
     this.type = Error.ERROR_TYPE_API
@@ -98,7 +98,7 @@ export class Error {
 
   setForFetchLatest(): void {
     this.icon = "no-info"
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay() ? "Sila log masuk dan cuba semula." : "Please re-login and try again."
 
     this.type = Error.ERROR_TYPE_API
@@ -137,7 +137,7 @@ export class Error {
   }
 
   setForGenerateReceipt(): void {
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay()
       ? "Kami tidak dapat memaut resit anda. Sila cuba lagi."
       : "We are unable to retrieve your receipt. Please try again."
@@ -146,7 +146,7 @@ export class Error {
   }
 
   setForDocumentPrint(): void {
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay()
       ? "Kami tidak berjaya jana dokumen untuk dicetak. Sila cuba sekali lagi."
       : "We are unable to generate the document to print. Please try again."
@@ -155,7 +155,7 @@ export class Error {
   }
 
   setForDocumentDownload(): void {
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay()
       ? "Kami tidak berjaya jana dokumen untuk dimuat turun. Sila cuba sekali lagi."
       : "We are unable to generate the document for download. Please try again."
@@ -164,7 +164,7 @@ export class Error {
   }
 
   setForDocumentToPurchase(): void {
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay()
       ? "Kami tidak berjaya memaut butiran dokumen untuk dibeli. Sila muat semula muka ini."
       : "We are unable to retrieve details of document to purchase. Please refresh this page."
@@ -173,7 +173,7 @@ export class Error {
   }
 
   setForDocumentPurchase(): void {
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "No information found"
     this.message = this.isMalay()
       ? "Kami tidak berjaya memaut butiran dokumen yang dibeli. Sila muat semula muka ini."
       : "We are unable to retrieve details of last purchased document. Please refresh this page."
@@ -205,7 +205,7 @@ export class Error {
   }
 
   setForFetchCustom(nameOfDataEn: string, nameOfDataBm: string): void {
-    this.title = this.isMalay() ? "Tiada maklumat untuk Sdn Bhd anda" : "Information not available for your Sdn Bhd"
+    this.title = this.isMalay() ? "Tiada maklumat dijumpai" : "Information not available"
     this.message = this.isMalay()
       ? `Kami tidak berjaya memaut ${nameOfDataBm}. Sila muat semula muka ini.`
       : `We are unable to fetch ${nameOfDataEn}. Please refresh this page and try again.`
@@ -301,7 +301,7 @@ export class Error {
   }
 
   setForNoPurchaseToGetJson(itemEn: string, itemBm: string): void {
-    this.title = this.isMalay() ? `Tiada maklumat untuk Sdn Bhd anda` : `No information for your Sdn Bhd`
+    this.title = this.isMalay() ? `Tiada maklumat dijumpai` : `No information`
     this.message = this.isMalay()
       ? `Sila beli ${itemBm} untuk muat turun fail PDF ini.`
       : `Please purchase ${itemEn} to download the PDF file.`
@@ -319,7 +319,7 @@ export class Error {
   }
 
   setForRetrieveDownload(): void {
-    this.title = this.isMalay() ? `Tiada maklumat untuk Sdn Bhd anda` : `No information for your Sdn Bhd`
+    this.title = this.isMalay() ? `Tiada maklumat dijumpai` : `No information`
     this.message = this.isMalay()
       ? "Kami tidak berjaya untuk memaut dokumen untuk dimuat turun. Sila cuba sekali lagi."
       : "We are unable to fetch the document to download. Please try again."
@@ -328,7 +328,7 @@ export class Error {
   }
 
   setForEmailDocument(): void {
-    this.title = this.isMalay() ? `Tiada maklumat untuk Sdn Bhd anda` : `No information for your Sdn Bhd`
+    this.title = this.isMalay() ? `Tiada maklumat dijumpai` : `No information`
     this.message = this.isMalay()
       ? "Kami tidak berjaya untuk menghantar dokumen melalui email. Sila cuba sekali lagi."
       : "We are unable to send the document via email. Please try again."

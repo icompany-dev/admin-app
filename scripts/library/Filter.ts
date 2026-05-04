@@ -29,7 +29,7 @@ export class Filter {
     this.sortOrder = null
   }
 
-  canNextPage(): Boolean {
+  canNextPage(): boolean {
     return this.page < this.totalPages
   }
 
@@ -37,7 +37,7 @@ export class Filter {
     this.page = Math.min(this.page + 1, this.totalPages)
   }
 
-  canPreviousPage(): Boolean {
+  canPreviousPage(): boolean {
     return this.page > 1
   }
 
