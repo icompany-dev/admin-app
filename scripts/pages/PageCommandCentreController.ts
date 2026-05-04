@@ -1,3 +1,5 @@
+import { FilterPeriod } from "../constants/FilterValues"
+import { Filter } from "../library/Filter"
 import { PageController } from "./PageController"
 
 export class PageCommandCentreController extends PageController {
@@ -22,11 +24,20 @@ export class PageCommandCentreController extends PageController {
   reassignmentStatisticRef: any | null = null
   usersStatisticRef: any | null = null
 
+  dayjs = useDayjs()
+  time = useLocalTime()
+
   constructor() {
     let title: string = "Admin Dashboard - iCompany Malaysia"
     let description: string = "Admin Dashboard"
 
     super(title, description, "")
+
+    this.init()
+  }
+
+  async init(): Promise<void> {
+    this.fetchNewIncorporations()
   }
 
   setNameReservationStatisticRef(nameReservationStatisticRef: any): void {
@@ -46,7 +57,6 @@ export class PageCommandCentreController extends PageController {
   }
 
   handleOutsideClicks(): void {
-    console.log(this.nameReservationStatisticRef)
     if (this.nameReservationStatisticRef) {
       this.nameReservationStatisticRef.hideOptions()
     }
@@ -64,12 +74,85 @@ export class PageCommandCentreController extends PageController {
     }
   }
 
+  async fetchNewIncorporations(): Promise<void> {
+    let repository = useApplicationIncorporateStore()
+    let filter = new Filter()
+    filter.statuses = [this.selectedNewIncorporationStatus.value]
+    if (this.selectedNewIncorporationStatus.value !== "paid") {
+      filter.includeDeleted = true
+    }
+    filter.startDate = this.startDateForPeriod(this.selectedNewIncorporationPeriod.value)
+    filter.endDate = this.endDateForPeriod(this.selectedNewIncorporationPeriod.value)
+    filter.take = 1
+
+    let response = await repository.fetchAll(filter)
+    this.newIncorporationCount.value = response.totalRecords
+  }
+
   async onNameReservationStatusSelected(value: string): Promise<void> {
     this.selectedNameReservationStatus.value = value
   }
 
   async onNameReservationPeriodSelected(value: string): Promise<void> {
     this.selectedNameReservationPeriod.value = value
+  }
+
+  async onNewIncorporationStatusSelected(value: string): Promise<void> {
+    this.selectedNewIncorporationStatus.value = value
+    await this.fetchNewIncorporations()
+  }
+
+  async onNewIncorporationPeriodSelected(value: string): Promise<void> {
+    this.selectedNewIncorporationPeriod.value = value
+    await this.fetchNewIncorporations()
+  }
+
+  startDateForPeriod(period: string): string {
+    let today = this.dayjs()
+    let startDate = today.startOf("day").format("YYYY-MM-DD")
+    switch (period) {
+      case FilterPeriod.Week:
+        startDate = today.startOf("week").format("YYYY-MM-DD")
+        break
+      case FilterPeriod.Month:
+        startDate = today.startOf("month").format("YYYY-MM-DD")
+        break
+      case FilterPeriod.Quarter:
+        let month = today.month()
+        let monthInQuarter = Math.floor(month / 3) * 3 + 1
+        startDate = `${today.year()}-${monthInQuarter}-01`
+        break
+      case FilterPeriod.Year:
+        startDate = today.startOf("year").format("YYYY-MM-DD")
+        break
+    }
+
+    return this.time.formatDateOnlySystem(startDate)
+  }
+
+  endDateForPeriod(period: string): string {
+    let today = this.dayjs()
+    let startDate = today.startOf("day").format("YYYY-MM-DD")
+
+    switch (period) {
+      case FilterPeriod.Week:
+        startDate = today.endOf("week").format("YYYY-MM-DD")
+        break
+      case FilterPeriod.Month:
+        startDate = today.endOf("month").format("YYYY-MM-DD")
+        break
+      case FilterPeriod.Quarter:
+        let month = today.month()
+        let monthInQuarter = Math.floor(month / 3) * 3 + 2
+        let dateString = `${today.year()}-${monthInQuarter}-01`
+        startDate = this.dayjs(dateString).endOf("month").format("YYYY-MM-DD")
+        break
+      case FilterPeriod.Year:
+        startDate = today.endOf("year").format("YYYY-MM-DD")
+        break
+    }
+
+    return this.time.formatDateOnlySystem(startDate)
   }
 
   get nameReservationLabel(): string {

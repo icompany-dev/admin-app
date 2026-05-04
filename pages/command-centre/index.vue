@@ -23,6 +23,8 @@
           :periods="pageController.periods"
           :selected-period="pageController.selectedNewIncorporationPeriod.value"
           :count="pageController.newIncorporationCount.value"
+          @status-selected="pageController.onNewIncorporationStatusSelected($event)"
+          @period-selected="pageController.onNewIncorporationPeriodSelected($event)"
         />
       </div>
       <div class="statistic">
