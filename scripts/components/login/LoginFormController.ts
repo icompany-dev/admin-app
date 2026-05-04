@@ -1,7 +1,5 @@
 import { ref } from "vue"
-import { useAuthStore } from "~/stores/Auth"
-import { useUserStore } from "#imports"
-import { useRouter } from "vue-router"
+import { Error } from "~/scripts/library/Error"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class LoginFormController {
@@ -35,12 +33,10 @@ export class LoginFormController {
     this.isEmailExist.value = await this.userStore.checkExists(this.email.value)
 
     if (!this.isEmailExist.value) {
-      this.router.push({
-        path: "/register",
-        query: {
-          email: this.email.value,
-        },
-      })
+      let error = new Error(Error.ERROR_TYPE_API, "")
+      error.title = "You are not registered."
+      error.message = "Please contact the system administrator to get access."
+      error.handle()
       return
     }
 
