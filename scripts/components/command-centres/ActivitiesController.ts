@@ -76,18 +76,12 @@ export class ActivitiesController {
     this.selectedPeriod.value = value
   }
 
-  serviceName(todo: AdminToDo): string {
-    let serviceName = ""
-
-    let service = ServiceNames.names.find((sn: ServiceName) => {
-      return sn.target === todo.type
-    })
-
-    if (service) {
-      return service.en
+  activityStatus(todo: AdminToDo): string {
+    if (todo.signatureStatus === "completed") {
+      return "Majority Achieved"
     }
 
-    return serviceName
+    return todo.otherDetails
   }
 
   get tablePaginationProps(): PropsTablePagination {

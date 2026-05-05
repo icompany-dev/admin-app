@@ -34,13 +34,21 @@
             v-for="(todo, index) in controller.activitiesOnPage"
             :key="index"
           >
-            <td>? logo</td>
+            <td class="no-logo">
+              <img src="/img/logo/default-logo.png" />
+            </td>
             <td class="company-name">
               {{ todo.companyName }}
             </td>
-            <td>{{ todo.name }} // {{ todo.status }}</td>
+            <td class="status">
+              <b>{{ todo.name }}</b>
+              <br />
+              {{ controller.activityStatus(todo) }}
+            </td>
             <td>// actions?</td>
-            <td>Next Step button</td>
+            <td>
+              <button class="btn btn-standard btn-submit">Next Step</button>
+            </td>
           </tr>
         </tbody>
       </table>
