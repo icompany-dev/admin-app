@@ -28,7 +28,22 @@
       </span>
     </div>
     <div class="activities-table">
-      {{ controller.activitiesOnPage }}
+      <table class="activities">
+        <tbody>
+          <tr
+            v-for="(todo, index) in controller.activitiesOnPage"
+            :key="index"
+          >
+            <td>? logo</td>
+            <td class="company-name">
+              {{ todo.companyName }}
+            </td>
+            <td>{{ todo.name }} // {{ todo.status }}</td>
+            <td>// actions?</td>
+            <td>Next Step button</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <TablePagination
       v-bind="controller.tablePaginationProps"

@@ -76,4 +76,25 @@
       font-size: 1.2rem;
     }
   }
+
+  .activities-table {
+    width: 100%;
+    min-height: 500px;
+
+    table {
+      &.activities {
+        width: 100%;
+
+        tbody {
+          tr {
+            td {
+              &.company-name {
+                text-transform: uppercase;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

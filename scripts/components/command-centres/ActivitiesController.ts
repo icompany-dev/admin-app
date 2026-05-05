@@ -3,6 +3,8 @@ import { Filter } from "~/scripts/library/Filter"
 import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { FilterDateShortCuts } from "~/scripts/constants/FilterValues"
+import { ServiceName, ServiceNames } from "~/scripts/constants/ServiceNames"
+import { ObjectUtil } from "~/scripts/utils/Object"
 
 export class ActivitiesController {
   todos = ref<AdminToDo[]>([])
@@ -47,6 +49,8 @@ export class ActivitiesController {
       this.todos.value = response.data.map((d: any) => {
         return new AdminToDo(d)
       })
+
+      this.todos.value = ObjectUtil.sort<AdminToDo>(this.todos.value, "paidAt", "desc")
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -70,6 +74,20 @@ export class ActivitiesController {
 
   onPeriodSelected(value: FilterDateShortCuts): void {
     this.selectedPeriod.value = value
+  }
+
+  serviceName(todo: AdminToDo): string {
+    let serviceName = ""
+
+    let service = ServiceNames.names.find((sn: ServiceName) => {
+      return sn.target === todo.type
+    })
+
+    if (service) {
+      return service.en
+    }
+
+    return serviceName
   }
 
   get tablePaginationProps(): PropsTablePagination {
