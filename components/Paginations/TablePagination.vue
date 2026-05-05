@@ -13,6 +13,7 @@
         @click="controller.onPageClicked(page)"
         v-for="page in controller.pageRanges"
         :key="page"
+        :class="{ selected: page === controller.filter.value.page }"
       >
         {{ page }}
       </div>
