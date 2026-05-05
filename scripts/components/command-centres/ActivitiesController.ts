@@ -8,6 +8,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 
 export class ActivitiesController {
   todos = ref<AdminToDo[]>([])
+  filteredTodos = ref<AdminToDo[]>([])
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
@@ -16,6 +17,8 @@ export class ActivitiesController {
   emitEvents: any | null = null
 
   language = useLanguage()
+  dayjs = useDayjs()
+  time = useLocalTime()
 
   isShowPeriodOptions: Ref<boolean> = ref<boolean>(false)
   selectedPeriod: Ref<FilterDateShortCuts> = ref<FilterDateShortCuts>(FilterDateShortCuts.Daily)
@@ -43,14 +46,12 @@ export class ActivitiesController {
       let repository = useAdminToDoStore()
 
       let response = await repository.fetchAll(this.filter.value)
-      this.filter.value.totalPages = Math.ceil(response.totalRecords / this.filter.value.take)
-      this.filter.value.totalRecords = response.totalRecords
-
       this.todos.value = response.data.map((d: any) => {
         return new AdminToDo(d)
       })
 
       this.todos.value = ObjectUtil.sort<AdminToDo>(this.todos.value, "paidAt", "desc")
+      this.setFilteredToDos()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -74,6 +75,7 @@ export class ActivitiesController {
 
   onPeriodSelected(value: FilterDateShortCuts): void {
     this.selectedPeriod.value = value
+    this.setFilteredToDos()
   }
 
   activityStatus(todo: AdminToDo): string {
@@ -84,6 +86,22 @@ export class ActivitiesController {
     return todo.otherDetails
   }
 
+  setFilteredToDos(): void {
+    let startDate = this.dayjs(this.startDate)
+    let endDate = this.dayjs(this.endDate)
+
+    console.log("startDate", this.startDate)
+    console.log("endDate", this.endDate)
+
+    this.filteredTodos.value = this.todos.value.filter((td: AdminToDo) => {
+      let updatedAt = this.dayjs(td.updatedAt)
+      return updatedAt.isAfter(startDate) && updatedAt.isBefore(endDate)
+    })
+
+    this.filter.value.totalRecords = this.filteredTodos.value.length
+    this.filter.value.totalPages = Math.ceil(this.filter.value.totalRecords / this.filter.value.take)
+  }
+
   get tablePaginationProps(): PropsTablePagination {
     return new PropsTablePagination(this.filter.value)
   }
@@ -92,10 +110,65 @@ export class ActivitiesController {
     return this.language.isMalay() ? "Aktiviti dalam Sistem iCompany" : "Activities in iCompany Systems"
   }
 
+  get startDate(): string {
+    let today = this.dayjs()
+    let startDate = today.startOf("day").format("YYYY-MM-DD")
+
+    switch (this.selectedPeriod.value) {
+      case FilterDateShortCuts.Daily:
+        break
+      case FilterDateShortCuts.Weekly:
+        startDate = today.startOf("week").format("YYYY-MM-DD")
+        break
+      case FilterDateShortCuts.Monthly:
+        startDate = today.startOf("month").format("YYYY-MM-DD")
+        break
+      case FilterDateShortCuts.Quarterly:
+        let month = today.month()
+        let monthInQuarter = Math.floor(month / 3) * 3 + 2
+        let dateString = `${today.year()}-${monthInQuarter}-01`
+        startDate = this.dayjs(dateString).startOf("month").format("YYYY-MM-DD")
+        break
+      case FilterDateShortCuts.Yearly:
+        startDate = today.startOf("year").format("YYYY-MM-DD")
+        break
+    }
+
+    return startDate
+  }
+
+  get endDate(): string {
+    let today = this.dayjs()
+    let endDate = today.startOf("day").format("YYYY-MM-DD")
+
+    switch (this.selectedPeriod.value) {
+      case FilterDateShortCuts.Daily:
+        endDate = today.endOf("day").format("YYYY-MM-DD")
+        break
+      case FilterDateShortCuts.Weekly:
+        endDate = today.endOf("week").format("YYYY-MM-DD")
+        break
+      case FilterDateShortCuts.Monthly:
+        endDate = today.endOf("month").format("YYYY-MM-DD")
+        break
+      case FilterDateShortCuts.Quarterly:
+        let month = today.month()
+        let monthInQuarter = Math.floor(month / 3) * 3 + 2
+        let dateString = `${today.year()}-${monthInQuarter}-01`
+        endDate = this.dayjs(dateString).endOf("month").format("YYYY-MM-DD")
+        break
+      case FilterDateShortCuts.Yearly:
+        endDate = today.endOf("year").format("YYYY-MM-DD")
+        break
+    }
+
+    return endDate
+  }
+
   get activitiesOnPage(): AdminToDo[] {
     let startIndex = (this.filter.value.page - 1) * this.filter.value.take
     let endIndex = startIndex + this.filter.value.take
 
-    return this.todos.value.slice(startIndex, endIndex)
+    return this.filteredTodos.value.slice(startIndex, endIndex)
   }
 }

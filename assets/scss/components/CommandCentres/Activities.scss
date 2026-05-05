@@ -17,6 +17,7 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
+    z-index: 2;
 
     .activities-status-selection {
       position: relative;
@@ -80,6 +81,7 @@
   .activities-table {
     width: 100%;
     min-height: 500px;
+    z-index: 1;
 
     table {
       &.activities {
