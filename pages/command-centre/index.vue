@@ -59,6 +59,7 @@
       <div class="activities-container">
         <Activities />
       </div>
+      <div class="payment-container">///</div>
     </div>
   </div>
 </template>

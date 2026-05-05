@@ -2,6 +2,7 @@ import { AdminToDo } from "~/scripts/models/AdminToDo"
 import { Filter } from "~/scripts/library/Filter"
 import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
+import { FilterDateShortCuts } from "~/scripts/constants/FilterValues"
 
 export class ActivitiesController {
   todos = ref<AdminToDo[]>([])
@@ -11,6 +12,12 @@ export class ActivitiesController {
   filter = ref<Filter>(new Filter())
 
   emitEvents: any | null = null
+
+  language = useLanguage()
+
+  isShowPeriodOptions: Ref<boolean> = ref<boolean>(false)
+  selectedPeriod: Ref<FilterDateShortCuts> = ref<FilterDateShortCuts>(FilterDateShortCuts.Daily)
+  periodOptions = Object.values(FilterDateShortCuts)
 
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -55,10 +62,28 @@ export class ActivitiesController {
 
   async goToPage(page: number): Promise<void> {
     this.filter.value.page = page
-    // await this.fetchToDos()
+  }
+
+  onPeriodSelectionClicked(): void {
+    this.isShowPeriodOptions.value = !this.isShowPeriodOptions.value
+  }
+
+  onPeriodSelected(value: FilterDateShortCuts): void {
+    this.selectedPeriod.value = value
   }
 
   get tablePaginationProps(): PropsTablePagination {
     return new PropsTablePagination(this.filter.value)
+  }
+
+  get title(): string {
+    return this.language.isMalay() ? "Aktiviti dalam Sistem iCompany" : "Activities in iCompany Systems"
+  }
+
+  get activitiesOnPage(): AdminToDo[] {
+    let startIndex = (this.filter.value.page - 1) * this.filter.value.take
+    let endIndex = startIndex + this.filter.value.take
+
+    return this.todos.value.slice(startIndex, endIndex)
   }
 }

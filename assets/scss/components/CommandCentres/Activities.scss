@@ -1,3 +1,79 @@
 #command-centres-activities {
-  // Styles go here
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 10px;
+  padding: 20px;
+  width: calc(100% - 40px);
+  border-radius: 10px;
+  background-color: var(--bs-white);
+
+  .activities-title {
+    background-color: var(--bs-icompany-purple);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+
+    .activities-status-selection {
+      position: relative;
+
+      .fa-solid {
+        color: var(--bs-white);
+        font-size: 1.2rem;
+        line-height: 1.2rem;
+        cursor: pointer;
+      }
+
+      .activities-status-options {
+        width: fit-content;
+        position: absolute;
+        top: 30px;
+        left: -10px;
+        max-height: 0;
+        overflow: hidden;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: all 0.7s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 0 0 5px 5px;
+
+        &.show {
+          max-height: fit-content;
+          transform: scaleY(1);
+        }
+
+        .activities-status-option {
+          color: var(--bs-white);
+          padding: 2px;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--bs-icompany-orange);
+          }
+        }
+      }
+    }
+
+    .activities-status {
+      color: var(--bs-icompany-orange);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .activities-name {
+      color: var(--bs-white);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+  }
 }
