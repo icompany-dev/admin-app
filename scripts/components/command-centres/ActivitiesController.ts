@@ -143,7 +143,7 @@ export class ActivitiesController {
 
     switch (this.selectedPeriod.value) {
       case FilterDateShortCuts.Daily:
-        endDate = today.endOf("day").format("YYYY-MM-DD")
+        endDate = today.add(1, "day").endOf("day").format("YYYY-MM-DD")
         break
       case FilterDateShortCuts.Weekly:
         endDate = today.endOf("week").format("YYYY-MM-DD")
