@@ -1,30 +1,28 @@
-import { AdminToDo } from "~/scripts/models/AdminToDo"
 import { Filter } from "~/scripts/library/Filter"
+import { AdminPaymentReceived } from "~/scripts/models/AdminPaymentReceived"
+import { FilterDateShortCuts } from "~/scripts/constants/FilterValues"
+import { ObjectUtil } from "~/scripts/utils/Object"
 import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
-import { FilterDateShortCuts } from "~/scripts/constants/FilterValues"
-import { ServiceName, ServiceNames } from "~/scripts/constants/ServiceNames"
-import { ObjectUtil } from "~/scripts/utils/Object"
 
-export class ActivitiesController {
-  todos = ref<AdminToDo[]>([])
-  filteredTodos = ref<AdminToDo[]>([])
-
-  isLoading: Ref<boolean> = ref<boolean>(false)
+export class PaymentsReceivedController {
+  paymentsReceived = ref<AdminPaymentReceived[]>([])
 
   filter = ref<Filter>(new Filter())
-
-  emitEvents: any | null = null
 
   language = useLanguage()
   dayjs = useDayjs()
   time = useLocalTime()
 
+  emitEvents: any | null = null
+
+  isLoading: Ref<boolean> = ref<boolean>(false)
+
   isShowPeriodOptions: Ref<boolean> = ref<boolean>(false)
   selectedPeriod: Ref<FilterDateShortCuts> = ref<FilterDateShortCuts>(FilterDateShortCuts.Daily)
   periodOptions = Object.values(FilterDateShortCuts)
 
-  constructor(props: any, emitEvents: any) {
+  constructor(emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.filter.value = new Filter()
@@ -33,25 +31,29 @@ export class ActivitiesController {
     this.filter.value.totalPages = 1
     this.filter.value.totalRecords = 1
 
-    this.fetchToDos()
+    this.fetchData()
   }
 
-  async fetchToDos(): Promise<void> {
+  async fetchData(): Promise<void> {
     if (this.isLoading.value) {
       return
     }
 
     try {
       this.isLoading.value = true
-      let repository = useAdminToDoStore()
+      let repository = useAdminPaymentReceivedStore()
+
+      this.filter.value.startDate = this.startDate
+      this.filter.value.endDate = this.endDate
 
       let response = await repository.fetchAll(this.filter.value)
-      this.todos.value = response.data.map((d: any) => {
-        return new AdminToDo(d)
+      console.log(response)
+      this.paymentsReceived.value = response.data.map((d: any) => {
+        return new AdminPaymentReceived(d)
       })
 
-      this.todos.value = ObjectUtil.sort<AdminToDo>(this.todos.value, "paidAt", "desc")
-      this.setFilteredToDos()
+      this.filter.value.totalRecords = this.paymentsReceived.value.length
+      this.filter.value.totalPages = Math.ceil(this.filter.value.totalRecords / this.filter.value.take)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -73,38 +75,13 @@ export class ActivitiesController {
     this.isShowPeriodOptions.value = !this.isShowPeriodOptions.value
   }
 
-  onPeriodSelected(value: FilterDateShortCuts): void {
+  async onPeriodSelected(value: FilterDateShortCuts): Promise<void> {
     this.selectedPeriod.value = value
-    this.setFilteredToDos()
-  }
-
-  activityStatus(todo: AdminToDo): string {
-    if (todo.signatureStatus === "completed") {
-      return "Majority Achieved"
-    }
-
-    return todo.otherDetails
-  }
-
-  setFilteredToDos(): void {
-    let startDate = this.dayjs(this.startDate)
-    let endDate = this.dayjs(this.endDate)
-
-    this.filteredTodos.value = this.todos.value.filter((td: AdminToDo) => {
-      let updatedAt = this.dayjs(td.updatedAt)
-      return updatedAt.isAfter(startDate) && updatedAt.isBefore(endDate)
-    })
-
-    this.filter.value.totalRecords = this.filteredTodos.value.length
-    this.filter.value.totalPages = Math.ceil(this.filter.value.totalRecords / this.filter.value.take)
-  }
-
-  get tablePaginationProps(): PropsTablePagination {
-    return new PropsTablePagination(this.filter.value)
+    await this.fetchData()
   }
 
   get title(): string {
-    return this.language.isMalay() ? "Aktiviti dalam Sistem iCompany" : "Activities in iCompany Systems"
+    return this.language.isMalay() ? "Bayaran yang Diterima" : "Payment Received"
   }
 
   get startDate(): string {
@@ -162,10 +139,16 @@ export class ActivitiesController {
     return endDate
   }
 
-  get activitiesOnPage(): AdminToDo[] {
+  get paymentsOnPage(): AdminPaymentReceived[] {
     let startIndex = (this.filter.value.page - 1) * this.filter.value.take
     let endIndex = startIndex + this.filter.value.take
 
-    return this.filteredTodos.value.slice(startIndex, endIndex)
+    console.log(startIndex, endIndex)
+
+    return this.paymentsReceived.value.slice(startIndex, endIndex)
+  }
+
+  get tablePaginationProps(): PropsTablePagination {
+    return new PropsTablePagination(this.filter.value)
   }
 }

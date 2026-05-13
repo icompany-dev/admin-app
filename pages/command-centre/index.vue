@@ -59,15 +59,18 @@
       <div class="activities-container">
         <Activities />
       </div>
-      <div class="payment-container">///</div>
+      <div class="payment-container">
+        <PaymentsReceived />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import Activities from "~/components/CommandCentres/Activities.vue"
+  import Activities from "@/components/CommandCentres/Activities.vue"
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
-  import Statistic from "~/components/CommandCentres/Statistic.vue"
+  import PaymentsReceived from "@/components/CommandCentres/PaymentsReceived.vue"
+  import Statistic from "@/components/CommandCentres/Statistic.vue"
   import { PageCommandCentreController } from "~/scripts/pages/PageCommandCentreController"
 
   const nameReservationStatisticRef = ref(null)

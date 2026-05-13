@@ -1,4 +1,4 @@
-#command-centres-activities {
+#command-centres-payments-received {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -10,7 +10,7 @@
   border-radius: 10px;
   background-color: var(--bs-white);
 
-  .activities-title {
+  .payments-title {
     background-color: var(--bs-icompany-purple);
     display: flex;
     flex-direction: row;
@@ -20,7 +20,7 @@
     padding: 10px;
     z-index: 2;
 
-    .activities-status-selection {
+    .payments-status-selection {
       position: relative;
 
       .fa-solid {
@@ -30,7 +30,7 @@
         cursor: pointer;
       }
 
-      .activities-status-options {
+      .payments-status-options {
         width: fit-content;
         position: absolute;
         top: 30px;
@@ -54,7 +54,7 @@
           transform: scaleY(1);
         }
 
-        .activities-status-option {
+        .payments-status-option {
           color: var(--bs-white);
           padding: 2px;
           cursor: pointer;
@@ -66,71 +66,55 @@
       }
     }
 
-    .activities-status {
+    .payments-status {
       color: var(--bs-icompany-orange);
       font-weight: 600;
       font-size: 1.2rem;
     }
 
-    .activities-name {
+    .payments-name {
       color: var(--bs-white);
       font-weight: 600;
       font-size: 1.2rem;
     }
   }
 
-  .activities-table {
+  .payments-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 10px;
     width: 100%;
-    min-height: 500px;
-    z-index: 1;
 
-    table {
-      &.activities {
+    .payment-detail {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 5px;
+      width: 100%;
+
+      .payee {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.8rem;
+        text-transform: uppercase;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+        overflow: hidden;
+      }
+
+      .payment-for-amount {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
         width: 100%;
 
-        tbody {
-          tr {
-            td {
-              padding: 5px;
-
-              &:first-child {
-                width: 50px;
-                height: 50px;
-                max-width: 50px;
-                max-height: 50px;
-
-                img {
-                  width: 100%;
-                  height: auto;
-                  aspect-ratio: 1 / 1;
-                  object-position: center;
-                }
-
-                &.no-logo {
-                  img {
-                    opacity: 0.5;
-                    filter: grayscale(1);
-                  }
-                }
-              }
-
-              &.company-name {
-                width: 25%;
-                text-transform: uppercase;
-                text-overflow: ellipsis;
-                text-wrap: nowrap;
-                overflow: hidden;
-              }
-
-              &.status {
-                width: 50%;
-
-                b {
-                  font-weight: 600;
-                }
-              }
-            }
-          }
+        .amount {
+          width: 200px;
         }
       }
     }
