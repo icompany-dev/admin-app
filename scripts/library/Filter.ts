@@ -51,7 +51,7 @@ export class Filter {
 
   getSlug(): string {
     const slugElements = []
-    slugElements.push(`page=${this.page}&take=${this.take}&take_all=${this.takeAll}`)
+    slugElements.push(`page=${this.page}&take=${this.take}&take_all=${this.takeAll ? "1" : "0"}`)
 
     if (this.searchText !== null && this.searchText.length > 0) {
       slugElements.push(`search_text=${encodeURIComponent(this.searchText)}`)
