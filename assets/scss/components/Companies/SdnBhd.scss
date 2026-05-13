@@ -1,0 +1,40 @@
+.company-sdn-bhd {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+
+  .logo {
+    width: 100px;
+    height: 100px;
+    background-color: var(--bs-white);
+    border-radius: 5px;
+
+    img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1/1;
+      object-fit: contain;
+    }
+  }
+
+  .name-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 5px;
+
+    .company-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+      line-height: 1.8rem;
+
+      .registration-numbers {
+        font-weight: normal;
+        font-size: 1.1rem;
+      }
+    }
+  }
+}

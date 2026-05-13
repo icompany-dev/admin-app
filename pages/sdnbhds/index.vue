@@ -17,5 +17,5 @@
 </script>
 
 <style lang="scss">
-  @use "~/assets/scss/components/Companies/All" as *;
+  @use "~/assets/scss/pages/SdnBhd" as *;
 </style>
