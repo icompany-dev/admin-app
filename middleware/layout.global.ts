@@ -40,9 +40,7 @@ export default defineNuxtRouteMiddleware((to) => {
     return path === route || path === route + "/" || path.startsWith(route + "/")
   })
 
-  if (path.startsWith("/sdnbhd")) {
-    Object.assign(to.meta, metaPresets.sdnbhd)
-  } else if (isAuthRoute) {
+  if (isAuthRoute) {
     Object.assign(to.meta, metaPresets.auth)
   } else if (path.startsWith("/public")) {
     Object.assign(to.meta, metaPresets.public)
