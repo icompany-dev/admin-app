@@ -47,7 +47,6 @@ export class PaymentsReceivedController {
       this.filter.value.endDate = this.endDate
 
       let response = await repository.fetchAll(this.filter.value)
-      console.log(response)
       this.paymentsReceived.value = response.data.map((d: any) => {
         return new AdminPaymentReceived(d)
       })
@@ -142,8 +141,6 @@ export class PaymentsReceivedController {
   get paymentsOnPage(): AdminPaymentReceived[] {
     let startIndex = (this.filter.value.page - 1) * this.filter.value.take
     let endIndex = startIndex + this.filter.value.take
-
-    console.log(startIndex, endIndex)
 
     return this.paymentsReceived.value.slice(startIndex, endIndex)
   }
