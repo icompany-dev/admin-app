@@ -1,0 +1,23 @@
+#bread-crumbs-default {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  color: var(--bs-icompany-purple);
+
+  .fa-solid {
+    font-size: 2rem;
+  }
+
+  .slash {
+    font-size: 2rem;
+  }
+
+  .page-name {
+    font-size: 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2pt;
+  }
+}

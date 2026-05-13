@@ -1,0 +1,158 @@
+#command-centre-statistic {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 10px;
+  padding: 20px;
+  width: calc(100% - 40px);
+  border-radius: 10px;
+  background-color: var(--bs-white);
+
+  .statistic-title {
+    background-color: var(--bs-icompany-purple);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+
+    .statistic-status-selection {
+      position: relative;
+
+      .fa-solid {
+        color: var(--bs-white);
+        font-size: 1.2rem;
+        line-height: 1.2rem;
+        cursor: pointer;
+      }
+
+      .statistic-status-options {
+        width: fit-content;
+        position: absolute;
+        top: 30px;
+        left: -10px;
+        max-height: 0;
+        overflow: hidden;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: all 0.7s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 0 0 5px 5px;
+
+        &.show {
+          max-height: fit-content;
+          transform: scaleY(1);
+        }
+
+        .statistic-status-option {
+          color: var(--bs-white);
+          padding: 2px;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--bs-icompany-orange);
+          }
+        }
+      }
+    }
+
+    .statistic-status {
+      color: var(--bs-icompany-orange);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .statistic-name {
+      color: var(--bs-white);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+  }
+
+  .statistic-counter {
+    width: 100%;
+    text-align: right;
+
+    .statistic-count {
+      color: var(--bs-icompany-purple);
+
+      span {
+        font-size: 3rem;
+        line-height: 3rem;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .statistic-period {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+
+    .statistic-selected-period {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .statistic-period-selection {
+      position: relative;
+
+      .fa-solid {
+        font-size: 1.2rem;
+        line-height: 1.2rem;
+        cursor: pointer;
+        transition: all 0.7s ease;
+
+        &.rotate {
+          transform: rotate(-180deg);
+        }
+      }
+
+      .statistic-period-options {
+        width: fit-content;
+        position: absolute;
+        top: 20px;
+        right: 0px;
+        max-height: 0;
+        overflow: hidden;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: all 0.7s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 5px;
+
+        &.show {
+          max-height: fit-content;
+          transform: scaleY(1);
+        }
+
+        .statistic-period-option {
+          color: var(--bs-white);
+          padding: 2px;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--bs-icompany-orange);
+          }
+        }
+      }
+    }
+  }
+}
