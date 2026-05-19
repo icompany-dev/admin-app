@@ -24,7 +24,17 @@ export class AllController {
     this.tableDataFetcher.value.fetchData()
   }
 
-  goToPage(page: number): void {
-    this.tableDataFetcher.value.goToPage(page)
+  async setSearch(searchText: string): Promise<void> {
+    this.tableDataFetcher.value.filter.searchText = searchText
+    await this.tableDataFetcher.value.fetchData()
+  }
+
+  async setSortOrder(sortOrder: string): Promise<void> {
+    this.tableDataFetcher.value.filter.sortOrder = sortOrder
+    await this.tableDataFetcher.value.fetchData()
+  }
+
+  async goToPage(page: number): Promise<void> {
+    await this.tableDataFetcher.value.goToPage(page)
   }
 }

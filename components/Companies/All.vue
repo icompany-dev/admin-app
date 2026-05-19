@@ -15,10 +15,34 @@
   import SdnBhd from "@/components/Companies/SdnBhd.vue"
   import { AllController } from "~/scripts/components/companies/AllController"
 
-  const props = defineProps({})
+  const props = defineProps({
+    searchText: {
+      type: String,
+      default: null,
+    },
+    sortOrder: {
+      type: String,
+      default: null,
+    },
+  })
+
   const emit = defineEmits([])
 
   const controller = new AllController(emit)
+
+  watch(
+    () => props.searchText,
+    (newVal) => {
+      controller.setSearch(newVal)
+    }
+  )
+
+  watch(
+    () => props.sortOrder,
+    (newVal) => {
+      controller.setSortOrder(newVal)
+    }
+  )
 </script>
 
 <style lang="scss">

@@ -45,7 +45,7 @@
       required: true,
     },
   })
-  const emit = defineEmits([])
+  const emit = defineEmits(["selected"])
 
   const controller = new SdnBhdController(props.company, emit)
 

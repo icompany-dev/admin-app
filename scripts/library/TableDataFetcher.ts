@@ -44,8 +44,9 @@ export class TableDataFetcher<T> {
     }
   }
 
-  goToPage(page: number): void {
+  async goToPage(page: number): Promise<void> {
     this.filter.page = page
+    await this.fetchData()
   }
 
   get dataOnPage(): T[] {

@@ -1,6 +1,8 @@
 <template>
   <div id="page-all-sdn-bhd">
-    <BreadCrumb v-bind="pageController.breadCrumbProps" />
+    <div class="page-header">
+      <BreadCrumb v-bind="pageController.breadCrumbProps" />
+    </div>
     <All />
   </div>
 </template>
