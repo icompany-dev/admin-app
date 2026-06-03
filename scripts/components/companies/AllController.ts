@@ -20,7 +20,7 @@ export class AllController {
     this.tableDataFetcher.value.filter.take = 20
     this.tableDataFetcher.value.filter.takeAll = false
     this.tableDataFetcher.value.filter.orderBy = "name"
-    this.tableDataFetcher.value.filter.sortOrder = "asec"
+    this.tableDataFetcher.value.filter.sortOrder = "asc"
 
     this.tableDataFetcher.value.fetchData()
   }
@@ -32,6 +32,11 @@ export class AllController {
 
   async setSortOrder(sortOrder: string): Promise<void> {
     this.tableDataFetcher.value.filter.sortOrder = sortOrder
+    await this.tableDataFetcher.value.fetchData()
+  }
+
+  async setIsIncludeDemo(isIncludeDemo: boolean): Promise<void> {
+    this.tableDataFetcher.value.filter.includeTestAccount = isIncludeDemo
     await this.tableDataFetcher.value.fetchData()
   }
 

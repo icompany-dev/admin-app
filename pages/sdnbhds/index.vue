@@ -11,6 +11,7 @@
     <All
       :search-text="pageController.searchText.value"
       :sort-order="pageController.sortOrder.value"
+      :is-include-demo="pageController.isIncludeDemo.value"
     />
   </div>
 </template>

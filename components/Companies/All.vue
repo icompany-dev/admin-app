@@ -41,6 +41,10 @@
       type: String,
       default: null,
     },
+    isIncludeDemo: {
+      type: Boolean,
+      default: false,
+    },
   })
 
   const emit = defineEmits([])
@@ -58,6 +62,13 @@
     () => props.sortOrder,
     (newVal) => {
       controller.setSortOrder(newVal)
+    }
+  )
+
+  watch(
+    () => props.isIncludeDemo,
+    (newVal) => {
+      controller.setIsIncludeDemo(newVal)
     }
   )
 </script>

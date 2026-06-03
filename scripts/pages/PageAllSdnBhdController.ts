@@ -5,6 +5,7 @@ import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props
 export class PageAllSdnBhdController extends PageController {
   searchText: Ref<string> = ref<string>("")
   sortOrder: Ref<string> = ref<string>("asc")
+  isIncludeDemo: Ref<boolean> = ref<boolean>(false)
 
   constructor() {
     let title: string = "Admin Dashboard - iCompany Malaysia"
@@ -18,17 +19,28 @@ export class PageAllSdnBhdController extends PageController {
   }
 
   onSortOrderChanged(data: PropsDataOrders): void {
-    this.sortOrder.value = data.sortOrder ? "desc" : "asc"
+    if (data.orderColumn === this.sortOrderLabel) {
+      this.sortOrder.value = data.sortOrder ? "desc" : "asc"
+      return
+    }
+
+    console.log("data.orderColumn", data)
+    if (data.orderColumn === "Include Demo") {
+      this.isIncludeDemo.value = data.sortOrder ? true : false
+      return
+    }
   }
 
   get breadCrumbProps(): PropsBreadCrumb {
     return new PropsBreadCrumb([new PropsBreadCrumbItem("Companies", ""), new PropsBreadCrumbItem("All Sdn Bhd", "")])
   }
 
-  get propsDataOrders(): PropsDataOrders {
-    let name = this.sortOrder.value === "asc" ? "By A/Z" : "By Z/A"
+  get sortOrderLabel(): string {
+    return this.sortOrder.value === "asc" ? "By A/Z" : "By Z/A"
+  }
 
-    return new PropsDataOrders(name, "asc")
+  get propsDataOrders(): PropsDataOrders[] {
+    return [new PropsDataOrders(this.sortOrderLabel, "asc"), new PropsDataOrders("Include Demo", "false")]
   }
 
   get tableFilterProps(): PropsTableFilter {
@@ -36,7 +48,7 @@ export class PageAllSdnBhdController extends PageController {
       true,
       this.searchText.value,
       true,
-      [this.propsDataOrders],
+      this.propsDataOrders,
       false,
       new PropsDataDateFilter("", "", "")
     )
