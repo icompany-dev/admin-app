@@ -45,7 +45,6 @@
   watch(
     () => props.searchText,
     (newVal) => {
-      console.log("called??")
       controller.setSearch(newVal)
     }
   )

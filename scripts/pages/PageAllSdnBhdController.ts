@@ -1,6 +1,6 @@
 import { PageController } from "~/scripts/pages/PageController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
-import { PropsTableFilter, PropsDataDateFilter } from "../props/PropsTableFilter"
+import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props/PropsTableFilter"
 
 export class PageAllSdnBhdController extends PageController {
   searchText: Ref<string> = ref<string>("")
@@ -17,15 +17,28 @@ export class PageAllSdnBhdController extends PageController {
     this.searchText.value = searchInput
   }
 
-  onSortOrderChanged(sortOrder: string): void {
-    this.sortOrder.value = sortOrder
+  onSortOrderChanged(data: PropsDataOrders): void {
+    this.sortOrder.value = data.sortOrder ? "desc" : "asc"
   }
 
   get breadCrumbProps(): PropsBreadCrumb {
     return new PropsBreadCrumb([new PropsBreadCrumbItem("Companies", ""), new PropsBreadCrumbItem("All Sdn Bhd", "")])
   }
 
+  get propsDataOrders(): PropsDataOrders {
+    let name = this.sortOrder.value === "asc" ? "By A/Z" : "By Z/A"
+
+    return new PropsDataOrders(name, "asc")
+  }
+
   get tableFilterProps(): PropsTableFilter {
-    return new PropsTableFilter(true, this.searchText.value, true, [], false, new PropsDataDateFilter("", "", ""))
+    return new PropsTableFilter(
+      true,
+      this.searchText.value,
+      true,
+      [this.propsDataOrders],
+      false,
+      new PropsDataDateFilter("", "", "")
+    )
   }
 }

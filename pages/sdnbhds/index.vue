@@ -8,7 +8,10 @@
         @order="pageController.onSortOrderChanged($event)"
       />
     </div>
-    <All :search-text="pageController.searchText.value" />
+    <All
+      :search-text="pageController.searchText.value"
+      :sort-order="pageController.sortOrder.value"
+    />
   </div>
 </template>
 

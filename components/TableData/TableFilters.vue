@@ -18,18 +18,26 @@
       v-if="props.hasOrderBy"
     >
       <div
-        class="check-box toggle"
+        class="checkbox-toggle"
         v-for="(orderBy, index) in props.orderBys"
         :key="index"
       >
-        <input
-          type="checkbox"
-          :id="`order-by-${index}`"
-          :value="orderBy.orderColumn"
-          v-model="orderBy.sortOrder"
-          @change="emit('order', orderBy)"
-        />
-        <label :for="`order-by-${index}`">{{ orderBy.orderColumn }}</label>
+        <label class="switch switch-sm">
+          <input
+            type="checkbox"
+            :id="`order-by-${index}`"
+            :value="orderBy.orderColumn"
+            v-model="orderBy.sortOrder"
+            @change="emit('order', orderBy)"
+          />
+          <span class="slider round" />
+        </label>
+        <label
+          class="switch-label"
+          :for="`order-by-${index}`"
+        >
+          {{ orderBy.orderColumn }}
+        </label>
       </div>
     </div>
   </div>

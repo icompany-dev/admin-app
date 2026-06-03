@@ -20,6 +20,7 @@ export class Filter {
   endDate: string | null = null
 
   includeDeleted: boolean = false
+  includeTestAccount: boolean = false
 
   statuses: string[] = []
 
@@ -80,7 +81,11 @@ export class Filter {
     }
 
     if (this.includeDeleted) {
-      slugElements.push(`include_deleted=${this.includeDeleted}`)
+      slugElements.push(`include_deleted=${this.includeDeleted ? "1" : "0"}`)
+    }
+
+    if (this.includeTestAccount) {
+      slugElements.push(`include_test_account=${this.includeTestAccount ? "1" : "0"}`)
     }
 
     if (this.statuses.length > 0) {
