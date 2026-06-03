@@ -1,5 +1,6 @@
 import { PageController } from "~/scripts/pages/PageController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
+import { PropsTableFilter, PropsDataDateFilter } from "../props/PropsTableFilter"
 
 export class PageAllSdnBhdController extends PageController {
   searchText: Ref<string> = ref<string>("")
@@ -22,5 +23,9 @@ export class PageAllSdnBhdController extends PageController {
 
   get breadCrumbProps(): PropsBreadCrumb {
     return new PropsBreadCrumb([new PropsBreadCrumbItem("Companies", ""), new PropsBreadCrumbItem("All Sdn Bhd", "")])
+  }
+
+  get tableFilterProps(): PropsTableFilter {
+    return new PropsTableFilter(true, this.searchText.value, true, [], false, new PropsDataDateFilter("", "", ""))
   }
 }

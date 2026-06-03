@@ -1,3 +1,30 @@
 #table-data-table-filters {
-  // Styles go here
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+
+  .search-container {
+    width: 350px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--bs-white);
+    padding: 5px 10px;
+    border-radius: 5px;
+
+    .form-control {
+      width: 100%;
+      outline: none;
+      font-weight: normal;
+      border: none;
+
+      &::placeholder {
+        color: var(--bs-gray-400);
+      }
+    }
+  }
 }

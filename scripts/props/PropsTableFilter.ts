@@ -40,7 +40,7 @@ export class PropsDataDateFilter {
   }
 }
 
-export class PropsTableFilter {
+export class PropsTableFilter implements IPropsTableFilter {
   isSearchable: boolean
   searchText: string
   hasOrderBy: boolean
