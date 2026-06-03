@@ -3,6 +3,7 @@ import { Filter } from "~/scripts/library/Filter"
 import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class AllController {
   tableDataFetcher = ref<TableDataFetcher<Company>>(new TableDataFetcher(Company, useCompanyStore()))
@@ -36,5 +37,21 @@ export class AllController {
 
   async goToPage(page: number): Promise<void> {
     await this.tableDataFetcher.value.goToPage(page)
+  }
+
+  get noRecordTitle(): string {
+    return this.language.isMalay() ? `Tiada Syarikat Ditemui.` : `No Company Found`
+  }
+
+  get noRecordSubtitle(): string {
+    if (!StringUtil.isNullOrEmpty(this.tableDataFetcher.value.filter.searchText)) {
+      return this.language.isMalay()
+        ? `Tiada syarikat ditemui dengan kata kunci tersebut.`
+        : `Use a different keyword and search again.`
+    }
+
+    return this.language.isMalay()
+      ? `Data akan dipaparkan apabila tersedia.`
+      : `Data will appear once it becomes available.`
   }
 }

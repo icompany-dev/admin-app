@@ -1,6 +1,11 @@
 <template>
   <div id="companies-all">
     <div v-if="!controller.tableDataFetcher.value.isLoading">
+      <NoRecord
+        v-if="controller.tableDataFetcher.value.data.length === 0"
+        :title="controller.noRecordTitle"
+        :subtitle="controller.noRecordSubtitle"
+      />
       <div class="sdn-bhd-container">
         <SdnBhd
           v-for="(sdnbhd, index) in controller.tableDataFetcher.value.dataOnPage"
@@ -12,6 +17,7 @@
 </template>
 
 <script lang="ts" setup>
+  import NoRecord from "../Placeholders/NoRecord.vue"
   import SdnBhd from "@/components/Companies/SdnBhd.vue"
   import { AllController } from "~/scripts/components/companies/AllController"
 
