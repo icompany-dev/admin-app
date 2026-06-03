@@ -39,6 +39,15 @@ export class AllController {
     await this.tableDataFetcher.value.goToPage(page)
   }
 
+  // getters
+  get loaderLabel(): string {
+    return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
+  }
+
+  get loaderSublabel(): string {
+    return this.language.isMalay() ? "Sdn Bhd" : "Sdn Bhds"
+  }
+
   get noRecordTitle(): string {
     return this.language.isMalay() ? `Tiada Syarikat Ditemui.` : `No Company Found`
   }

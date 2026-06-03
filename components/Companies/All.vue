@@ -1,5 +1,10 @@
 <template>
   <div id="companies-all">
+    <LoaderPrepare
+      v-if="controller.tableDataFetcher.value.isLoading"
+      :label="controller.loaderLabel"
+      :sublabel="controller.loaderSublabel"
+    />
     <div v-if="!controller.tableDataFetcher.value.isLoading">
       <NoRecord
         v-if="controller.tableDataFetcher.value.data.length === 0"
@@ -17,6 +22,7 @@
 </template>
 
 <script lang="ts" setup>
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import SdnBhd from "@/components/Companies/SdnBhd.vue"
   import { AllController } from "~/scripts/components/companies/AllController"
