@@ -13,8 +13,12 @@
       />
       <div class="sdn-bhd-container">
         <SdnBhd
-          v-for="(sdnbhd, index) in controller.tableDataFetcher.value.dataOnPage"
+          v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
           :company="sdnbhd"
+        />
+        <TablePagination
+          v-bind="controller.tablePaginationProps"
+          @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
         />
       </div>
     </div>
@@ -25,6 +29,7 @@
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import SdnBhd from "@/components/Companies/SdnBhd.vue"
+  import TablePagination from "~/components/Paginations/TablePagination.vue"
   import { AllController } from "~/scripts/components/companies/AllController"
 
   const props = defineProps({

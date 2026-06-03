@@ -63,4 +63,8 @@ export class AllController {
       ? `Data akan dipaparkan apabila tersedia.`
       : `Data will appear once it becomes available.`
   }
+
+  get tablePaginationProps(): PropsTablePagination {
+    return new PropsTablePagination(this.tableDataFetcher.value.filter)
+  }
 }
