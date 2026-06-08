@@ -53,6 +53,47 @@
           </div>
         </div>
       </div>
+      <TransitionGroup
+        class="page-tabs"
+        name="slide-left"
+        tag="div"
+      >
+        <div
+          class="page-tab"
+          :class="{ selected: controller.isBusiness.value }"
+          @click="controller.onBusinessClicked()"
+        >
+          {{ controller.business }}
+        </div>
+        <div
+          class="page-tab"
+          :class="{ selected: controller.isDirectors.value }"
+          @click="controller.onDirectorsClicked()"
+        >
+          {{ controller.directors }}
+        </div>
+        <div
+          class="page-tab"
+          :class="{ selected: controller.isDocuments.value }"
+          @click="controller.onDocumentsClicked()"
+        >
+          {{ controller.documents }}
+        </div>
+        <div
+          class="page-tab"
+          :class="{ selected: controller.isShareholders.value }"
+          @click="controller.onShareholdersClicked()"
+        >
+          {{ controller.shareholders }}
+        </div>
+        <div
+          class="page-tab"
+          :class="{ selected: controller.isAccounting.value }"
+          @click="controller.onAccountingClicked()"
+        >
+          {{ controller.accounting }}
+        </div>
+      </TransitionGroup>
     </div>
     <div class="document-container"></div>
   </div>
