@@ -12,14 +12,22 @@
         :subtitle="controller.noRecordSubtitle"
       />
       <div class="sdn-bhd-container">
-        <SdnBhd
-          v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
-          :company="sdnbhd"
-        />
-        <TablePagination
-          v-bind="controller.tablePaginationProps"
-          @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
-        />
+        <TransitionGroup name="fade">
+          <template v-if="!controller.isShowSelectedSdnBhd">
+            <SdnBhd
+              v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
+              :company="sdnbhd"
+              @selected="controller.onCompanySelected(sdnbhd.id)"
+            />
+            <TablePagination
+              v-bind="controller.tablePaginationProps"
+              @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
+            />
+          </template>
+          <template v-if="controller.isShowSelectedSdnBhd">
+            <SelectedSdnBhd :company-id="controller.selectedCompanyId.value" />
+          </template>
+        </TransitionGroup>
       </div>
     </div>
   </div>
@@ -28,6 +36,7 @@
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
+  import SelectedSdnBhd from "@/components/Companies/SelectedSdnBhd.vue"
   import SdnBhd from "@/components/Companies/SdnBhd.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
   import { AllController } from "~/scripts/components/companies/AllController"

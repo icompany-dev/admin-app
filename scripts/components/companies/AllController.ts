@@ -8,6 +8,8 @@ import { StringUtil } from "~/scripts/utils/String"
 export class AllController {
   tableDataFetcher = ref<TableDataFetcher<Company>>(new TableDataFetcher(Company, useCompanyStore()))
 
+  selectedCompanyId: Ref<string> = ref<string>("")
+
   language = useLanguage()
 
   filter = ref<Filter>(new Filter())
@@ -44,6 +46,10 @@ export class AllController {
     await this.tableDataFetcher.value.goToPage(page)
   }
 
+  onCompanySelected(companyId: string): void {
+    this.selectedCompanyId.value = companyId
+  }
+
   // getters
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
@@ -71,5 +77,9 @@ export class AllController {
 
   get tablePaginationProps(): PropsTablePagination {
     return new PropsTablePagination(this.tableDataFetcher.value.filter)
+  }
+
+  get isShowSelectedSdnBhd(): boolean {
+    return !StringUtil.isNullOrEmpty(this.selectedCompanyId.value)
   }
 }
