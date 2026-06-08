@@ -7,11 +7,16 @@
       <i class="fa-solid fa-magnifying-glass"></i>
       <input
         type="text"
-        placeholder="Search by keyword"
+        placeholder="Press 'Enter' to Search"
         class="form-control"
         v-model="controller.searchText"
         @change="emit('search', controller.searchText)"
       />
+      <i
+        v-if="controller.searchText.length > 0"
+        class="fa-solid fa-xmark reset"
+        @click="emit('clearSearch')"
+      ></i>
     </div>
     <div
       class="sort-container"
@@ -49,7 +54,7 @@
 
   const props = defineProps<IPropsTableFilter>()
 
-  const emit = defineEmits(["search", "order", "filter"])
+  const emit = defineEmits(["search", "order", "filter", "clearSearch"])
 
   const controller = new TableFiltersController(props, emit)
 

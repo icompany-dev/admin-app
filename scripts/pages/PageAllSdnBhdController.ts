@@ -40,7 +40,7 @@ export class PageAllSdnBhdController extends PageController {
   }
 
   get propsDataOrders(): PropsDataOrders[] {
-    return [new PropsDataOrders(this.sortOrderLabel, "asc"), new PropsDataOrders("Include Demo", "false")]
+    return [new PropsDataOrders(this.sortOrderLabel, "asc"), new PropsDataOrders("Show Demo", "false")]
   }
 
   get tableFilterProps(): PropsTableFilter {

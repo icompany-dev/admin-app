@@ -6,6 +6,7 @@
         v-bind="pageController.tableFilterProps"
         @search="pageController.onSearchInput($event)"
         @order="pageController.onSortOrderChanged($event)"
+        @clearSearch="pageController.onSearchInput('')"
       />
     </div>
     <All

@@ -26,6 +26,19 @@
         color: var(--bs-gray-400);
       }
     }
+
+    .reset {
+      cursor: pointer;
+    }
+  }
+
+  .sort-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
   }
 
   .checkbox-toggle {
