@@ -11,6 +11,7 @@ export class SelectedSdnBhdController {
   language = useLanguage()
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+  isShowOptions: Ref<boolean> = ref<boolean>(false)
 
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -60,5 +61,49 @@ export class SelectedSdnBhdController {
     } finally {
       this.isLoading.value = false
     }
+  }
+
+  onOptionsClicked(): void {
+    this.isShowOptions.value = !this.isShowOptions.value
+  }
+
+  onEditClicked(): void {
+    //
+  }
+
+  onStrikeOffClicked(): void {
+    //
+  }
+
+  onSwitchOutClicked(): void {
+    // initiate switchout process
+  }
+
+  get hasCompanyLogo(): boolean {
+    return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
+  }
+
+  get companyLogo(): string {
+    if (!this.company.value.companyLogo || StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)) {
+      return "/img/logo/default-logo.png"
+    }
+
+    return this.company.value.companyLogo.url
+  }
+
+  get more(): string {
+    return this.language.isMalay() ? "Lagi" : "More"
+  }
+
+  get edit(): string {
+    return this.language.isMalay() ? "Kemas Kini" : "Edit"
+  }
+
+  get strikeOff(): string {
+    return this.language.isMalay() ? "Strike Off" : "Strike Off"
+  }
+
+  get switchOut(): string {
+    return this.language.isMalay() ? "Switch Out" : "Switch Out"
   }
 }

@@ -56,7 +56,7 @@
     },
   })
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["sdnbhdSelected"])
 
   const controller = new AllController(emit)
 
@@ -80,6 +80,10 @@
       controller.setIsIncludeDemo(newVal)
     }
   )
+
+  defineExpose({
+    onCompanyUnselected: controller.onCompanyUnselected.bind(controller),
+  })
 </script>
 
 <style lang="scss">
