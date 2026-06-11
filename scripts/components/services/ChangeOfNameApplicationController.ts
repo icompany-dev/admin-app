@@ -52,6 +52,6 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   get approvalApplicationNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(!this.isApplicationApproved, this.isApplicationApproved)
+    return new PropsServiceApplicationNode(!this.isshareholderSignatureCompleted, this.isshareholderSignatureCompleted)
   }
 }
