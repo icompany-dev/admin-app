@@ -42,7 +42,16 @@
                 </div>
               </div>
             </div>
-            <div class="approval-dates">//</div>
+            <div class="approval-dates">
+              <div v-if="controller.isApprovalReceived">
+                <b>{{ controller.completedLabel }} :</b>
+                {{ controller.approvalDate }}
+              </div>
+              <div>
+                <b>{{ controller.latestSignatureLabel }} :</b>
+                {{ controller.approvalDate }}
+              </div>
+            </div>
           </template>
           <template #nodeActions>
             <div class="action-button-options">

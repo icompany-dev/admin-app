@@ -4,20 +4,8 @@ import type { IPropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsServiceApplicationNode } from "~/scripts/props/PropsServiceApplicationNode"
 
 export class ChangeOfNameApplicationController extends ApplicationController<CompanyAmendmentName> {
-  isShowApprovalTypeOptions: Ref<boolean> = ref<boolean>(false)
-  selectedApprovalType: Ref<string> = ref<string>("director-member")
-
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(props.companyId, useCompanyAmendmentNameStore(), CompanyAmendmentName, emitEvents)
-  }
-
-  onApprovalTypeClicked(): void {
-    this.isShowApprovalTypeOptions.value = !this.isShowApprovalTypeOptions.value
-  }
-
-  onApprovalTypeSelected(type: string): void {
-    this.selectedApprovalType.value = type
-    this.isShowApprovalTypeOptions.value = false
   }
 
   // getters

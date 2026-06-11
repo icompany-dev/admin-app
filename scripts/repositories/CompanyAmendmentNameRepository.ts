@@ -17,11 +17,11 @@ export class CompanyAmendmentNameRepository extends Repository<CompanyAmendmentN
       let filter = new Filter()
       filter.companyId = companyId
       filter.take = 1
-      filter.statuses = ["paid", "approved", "submitted"]
+      filter.statuses = ["paid", "approved", "submitted", "approved"]
       filter.orderBy = "created_at"
       filter.sortOrder = "desc"
 
-      const response = await this.get<CompanyAmendmentName>(`${this.resourceUrl}?${filter.getSlug()}}`)
+      const response = await this.get<CompanyAmendmentName>(`${this.resourceUrl}?${filter.getSlug()}`)
       return response
     } catch (error) {
       throw error

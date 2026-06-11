@@ -1,8 +1,12 @@
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Error } from "~/scripts/library/Error"
 import { Application } from "~/scripts/models/Application"
+import { Director } from "~/scripts/models/Director"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
+import { Shareholder } from "~/scripts/models/Shareholder"
+import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
+import { ObjectUtil } from "~/scripts/utils/Object"
 import { StringUtil } from "~/scripts/utils/String"
 
 export abstract class ApplicationController<Application> {
@@ -10,6 +14,14 @@ export abstract class ApplicationController<Application> {
 
   applications = ref<Application[]>([])
   application = ref<Application | null>(null)
+
+  directors: Ref<Director[]> = ref<Director[]>([])
+  shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+
+  isShowApprovalTypeOptions: Ref<boolean> = ref<boolean>(false)
+  selectedApprovalType: Ref<string> = ref<string>("director-member")
+
+  minimumMajorityRequired: Ref<number> = ref<number>(0.5)
 
   repository: IRepositoryStore
 
@@ -48,7 +60,7 @@ export abstract class ApplicationController<Application> {
     try {
       this.isLoading.value = true
 
-      await this.fetchOngoing()
+      await Promise.all([this.fetchOngoing(), this.fetchDirectors(), this.fetchShareholders()])
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -65,12 +77,13 @@ export abstract class ApplicationController<Application> {
   async setCompanyId(companyId: string): Promise<void> {
     this.companyId.value = companyId
 
-    await this.fetchOngoing()
+    await Promise.all([this.fetchOngoing(), this.fetchDirectors(), this.fetchShareholders()])
   }
 
   async fetchOngoing(): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       this.application.value = new this.applicationClassType(null)
+      return
     }
 
     let response = await this.repository.ongoing(this.companyId.value)
@@ -93,6 +106,43 @@ export abstract class ApplicationController<Application> {
     })
   }
 
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      this.directors.value = []
+      return
+    }
+
+    let repository = useDirectorStore()
+    let response = await repository.fetchAllForCompany(this.companyId.value)
+
+    this.directors.value = response.map((d: any) => {
+      return new Director(d)
+    })
+  }
+
+  async fetchShareholders(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      this.shareholders.value = []
+      return
+    }
+
+    let repository = useShareholderStore()
+    let response = await repository.fetchAllForCompany(this.companyId.value)
+
+    this.shareholders.value = response.map((d: any) => {
+      return new Shareholder(d)
+    })
+  }
+
+  onApprovalTypeClicked(): void {
+    this.isShowApprovalTypeOptions.value = !this.isShowApprovalTypeOptions.value
+  }
+
+  onApprovalTypeSelected(type: string): void {
+    this.selectedApprovalType.value = type
+    this.isShowApprovalTypeOptions.value = false
+  }
+
   // getters
   abstract get serviceName(): string
 
@@ -106,5 +156,188 @@ export abstract class ApplicationController<Application> {
 
   get serviceApplicationProps(): PropsServiceApplication {
     return new PropsServiceApplication(this.serviceName, this.hasApplication)
+  }
+
+  get isSigned(): boolean {
+    return this.application.value !== null && this.application.value.signatureGroups.length > 0
+  }
+
+  get lastSignatureDate(): string {
+    if (!this.application.value || !this.isSigned) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    let orderedSignatureGroups = ObjectUtil.sort<SignatureGroup>(
+      this.application.value.signatureGroups,
+      "createdAt",
+      "desc"
+    )
+
+    let firstSignature = orderedSignatureGroups[0]
+
+    return this.time.formatDateOnlyFull(firstSignature.createdAt ?? "")
+  }
+
+  get firstSignatureDate(): string {
+    if (!this.application.value || !this.isSigned) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    let orderedSignatureGroups = ObjectUtil.sort<SignatureGroup>(
+      this.application.value.signatureGroups,
+      "createdAt",
+      "asc"
+    )
+
+    let firstSignature = orderedSignatureGroups[0]
+
+    return this.time.formatDateOnlyFull(firstSignature.createdAt ?? "")
+  }
+
+  get directorSignatures(): SignatureGroup[] {
+    return this.application.value.signatureGroups.filter((sg: SignatureGroup) => {
+      return sg.group?.target === "director" || sg.group?.target === "director_invitation"
+    })
+  }
+
+  get firstDirectorSignatureDate(): string {
+    if (!this.application.value || !this.isSigned) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    if (this.directorSignatures.length <= 0) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    let orderedSignatureGroups = ObjectUtil.sort<SignatureGroup>(this.directorSignatures, "createdAt", "asc")
+
+    let firstSignature = orderedSignatureGroups[0]
+
+    return this.time.formatDateOnlyFull(firstSignature.createdAt ?? "")
+  }
+
+  get lastDirectorSignatureDate(): string {
+    if (!this.application.value || !this.isSigned) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    if (this.directorSignatures.length <= 0) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    let orderedSignatureGroups = ObjectUtil.sort<SignatureGroup>(this.directorSignatures, "createdAt", "desc")
+
+    let firstSignature = orderedSignatureGroups[0]
+
+    return this.time.formatDateOnlyFull(firstSignature.createdAt ?? "")
+  }
+
+  get isDirectorSignatureCompleted(): boolean {
+    let numberOfSignatures = this.directorSignatures.length
+
+    return numberOfSignatures > this.minimumMajorityRequired.value * this.directors.value.length
+  }
+
+  get shareholderSignatures(): SignatureGroup[] {
+    return this.application.value.signatureGroups.filter((sg: SignatureGroup) => {
+      return sg.group?.target === "shareholder" || sg.group?.target === "shareholder_invitation"
+    })
+  }
+
+  get firstshareholderSignatureDate(): string {
+    if (!this.application.value || !this.isSigned) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    if (this.shareholderSignatures.length <= 0) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    let orderedSignatureGroups = ObjectUtil.sort<SignatureGroup>(this.shareholderSignatures, "createdAt", "asc")
+
+    let firstSignature = orderedSignatureGroups[0]
+
+    return this.time.formatDateOnlyFull(firstSignature.createdAt ?? "")
+  }
+
+  get lastshareholderSignatureDate(): string {
+    if (!this.application.value || !this.isSigned) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    if (this.shareholderSignatures.length <= 0) {
+      return this.language.isMalay() ? "Tiada Tandatangan" : "No Signature Received"
+    }
+
+    let orderedSignatureGroups = ObjectUtil.sort<SignatureGroup>(this.shareholderSignatures, "createdAt", "desc")
+
+    let firstSignature = orderedSignatureGroups[0]
+
+    return this.time.formatDateOnlyFull(firstSignature.createdAt ?? "")
+  }
+
+  get isshareholderSignatureCompleted(): boolean {
+    return this.totalSignedShares > this.minimumMajorityRequired.value * this.totalShares
+  }
+
+  get totalSignedShares(): number {
+    return this.shareholders.value
+      .filter((s: Shareholder) => {
+        if (!this.application.value) {
+          return false
+        }
+
+        return this.shareholderSignatures.some((sg: SignatureGroup) => {
+          return sg.email === s.email
+        })
+      })
+      .map((s: Shareholder) => {
+        return Number(s.ordinaryShares) + Number(s.preferenceShares)
+      })
+      .reduce((a: number, b: number) => {
+        return a + b
+      }, 0)
+  }
+
+  get totalShares(): number {
+    return this.shareholders.value
+      .map((s: Shareholder) => {
+        return Number(s.ordinaryShares) + Number(s.preferenceShares)
+      })
+      .reduce((a: number, b: number) => {
+        return a + b
+      }, 0)
+  }
+
+  get isApprovalReceived(): boolean {
+    if (this.selectedApprovalType.value === "director") {
+      return this.isDirectorSignatureCompleted
+    }
+
+    if (this.selectedApprovalType.value === "member") {
+      return this.isshareholderSignatureCompleted
+    }
+
+    return this.isDirectorSignatureCompleted && this.isshareholderSignatureCompleted
+  }
+
+  get approvalDate(): string {
+    if (this.selectedApprovalType.value === "director") {
+      return this.lastDirectorSignatureDate
+    }
+
+    if (this.selectedApprovalType.value === "member") {
+      return this.lastshareholderSignatureDate
+    }
+
+    return this.lastSignatureDate
+  }
+
+  get completedLabel(): string {
+    return this.language.isMalay() ? "Selesai" : "Completed"
+  }
+
+  get latestSignatureLabel(): string {
+    return this.language.isMalay() ? "Tarikh Tandatangan Terakhir" : "Last Signature Received"
   }
 }
