@@ -1,5 +1,8 @@
 <template>
-  <div id="company-selected-sdn-bhd">
+  <div
+    id="company-selected-sdn-bhd"
+    :class="{ 'is-showing-documents': controller.isShowApplicationDocuments.value }"
+  >
     <div class="company-details">
       <div class="name-logo">
         <div
@@ -95,7 +98,12 @@
         </div>
       </TransitionGroup>
     </div>
-    <div class="document-container"></div>
+    <Transition name="slide-left">
+      <div
+        class="document-container"
+        v-if="controller.isShowApplicationDocuments.value"
+      ></div>
+    </Transition>
   </div>
 </template>
 

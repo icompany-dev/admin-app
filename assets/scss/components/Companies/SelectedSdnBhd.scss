@@ -7,7 +7,7 @@
   gap: 50px;
 
   .company-details {
-    width: calc(50% - 25px);
+    width: 100%;
 
     .name-logo {
       width: 100%;
@@ -140,5 +140,11 @@
 
   .document-containter {
     width: calc(50% - 25px);
+  }
+
+  &.is-showing-documents {
+    .company-details {
+      width: calc(50% - 25px);
+    }
   }
 }

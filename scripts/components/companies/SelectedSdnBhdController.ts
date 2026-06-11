@@ -12,8 +12,9 @@ export class SelectedSdnBhdController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isShowOptions: Ref<boolean> = ref<boolean>(false)
+  isShowApplicationDocuments: Ref<boolean> = ref<boolean>(false)
 
-  isBusiness: Ref<boolean> = ref<boolean>(false)
+  isBusiness: Ref<boolean> = ref<boolean>(true)
   isDirectors: Ref<boolean> = ref<boolean>(false)
   isDocuments: Ref<boolean> = ref<boolean>(false)
   isShareholders: Ref<boolean> = ref<boolean>(false)
