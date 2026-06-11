@@ -97,6 +97,14 @@
           {{ controller.accounting }}
         </div>
       </TransitionGroup>
+      <TransitionGroup name="fade">
+        <div
+          class="application-contents"
+          v-if="controller.isBusiness.value"
+        >
+          <ChangeOfNameApplication v-bind="controller.applicationProps" />
+        </div>
+      </TransitionGroup>
     </div>
     <Transition name="slide-left">
       <div
@@ -108,6 +116,7 @@
 </template>
 
 <script lang="ts" setup>
+  import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
 
   const props = defineProps({

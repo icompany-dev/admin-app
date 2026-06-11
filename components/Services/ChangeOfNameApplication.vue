@@ -1,12 +1,22 @@
 <template>
   <div id="services-change-of-name-application">
     <ServiceApplication v-bind="controller.serviceApplicationProps">
-      <template #application>// the pasca steps here</template>
+      <template #application>
+        <ApplicationNode v-bind="controller.approvalApplicationNodeProps">
+          <template #nodeContent>
+            <div class="approval-container">
+              <span>{{ controller.approvalLabel }}</span>
+            </div>
+            <div class="approval-dates">//</div>
+          </template>
+        </ApplicationNode>
+      </template>
     </ServiceApplication>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ApplicationNode from "./ApplicationNode.vue"
   import ServiceApplication from "./ServiceApplication.vue"
   import { ChangeOfNameApplicationController } from "~/scripts/components/services/ChangeOfNameApplicationController"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"

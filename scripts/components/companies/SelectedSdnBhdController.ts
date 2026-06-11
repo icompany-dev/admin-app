@@ -1,5 +1,6 @@
 import { Error } from "~/scripts/library/Error"
 import { Company } from "~/scripts/models/Company"
+import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SelectedSdnBhdController {
@@ -172,5 +173,9 @@ export class SelectedSdnBhdController {
 
   get accounting(): string {
     return this.language.isMalay() ? "Perakaunan" : "Accounting"
+  }
+
+  get applicationProps(): PropsApplication {
+    return new PropsApplication(this.companyId.value)
   }
 }

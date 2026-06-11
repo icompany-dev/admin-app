@@ -1,5 +1,5 @@
 <template>
-  <Transition
+  <TransitionGroup
     id="services-service-application"
     tag="div"
     name="expand"
@@ -14,7 +14,7 @@
     >
       <slot name="application"></slot>
     </div>
-  </Transition>
+  </TransitionGroup>
 </template>
 
 <script lang="ts" setup>
