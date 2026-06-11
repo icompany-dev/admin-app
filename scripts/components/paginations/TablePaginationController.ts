@@ -6,7 +6,7 @@ export class TablePaginationController {
 
   emitEvents: any | null = null
 
-  maxPageCount: number = 3
+  maxPageCount: number = 5
 
   language = useLanguage()
 
@@ -46,7 +46,7 @@ export class TablePaginationController {
     if (this.filter.value.totalPages <= this.maxPageCount) {
       return Array.from({ length: this.filter.value.totalPages }, (_, i) => i)
     } else {
-      let half = Math.floor(this.maxPageCount / 1)
+      let half = Math.floor(this.maxPageCount / 2)
       let startRange = Math.max(1, this.filter.value.page - half)
       let endRange = Math.min(startRange + this.maxPageCount, this.filter.value.totalPages)
 

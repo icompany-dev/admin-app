@@ -38,6 +38,14 @@
   letter-spacing: 0.1pt;
 }
 
+.btn-pill {
+  font-size: 0.8rem;
+  letter-spacing: 0.2pt;
+  padding: 5px 15px;
+  min-width: 80px;
+  border-radius: 10px;
+}
+
 .btn-default {
   background-color: transparent;
   border-color: var(--bs-white);

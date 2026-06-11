@@ -56,7 +56,7 @@ export class ActivitiesController {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error = new Error(Error.ERROR_TYPE_API, "")
+        let error = new Error()
         error.setForFetchAll()
         error.handle()
       }

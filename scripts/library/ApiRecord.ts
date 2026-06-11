@@ -6,19 +6,27 @@ export class ApiRecord<TItem> {
   page: number = 1
   take: number = 10
   totalPages: number = 1
-  searchText: string | null = ''
+  searchText: string | null = ""
 
   constructor(apiResponse: any, classType: new (data: any) => TItem) {
-    this.data =
-      apiResponse.data && Array.isArray(apiResponse.data)
-        ? apiResponse.data.map((d: any) => {
-            return new classType(d)
-          })
-        : []
+    this.data = []
+    if (apiResponse.data) {
+      if (Array.isArray(apiResponse.data)) {
+        this.data = apiResponse.data.map((d: any) => {
+          return new classType(d)
+        })
+      } else if (typeof apiResponse.data === "object") {
+        let apiResponseData = Object.values(apiResponse.data)
+        this.data = apiResponseData.map((d: any) => {
+          return new classType(d)
+        })
+      }
+    }
+
     this.totalRecords = apiResponse.total_records ?? 0
     this.page = apiResponse.page ?? 1
     this.take = apiResponse.take ?? 10
-    this.totalPages = apiResponse.totalPages ?? 1
-    this.searchText = apiResponse.searchText ?? null
+    this.totalPages = apiResponse.total_pages ?? 1
+    this.searchText = apiResponse.search_text ?? null
   }
 }

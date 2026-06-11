@@ -1,0 +1,104 @@
+<template>
+  <div id="companies-all">
+    <LoaderPrepare
+      v-if="controller.tableDataFetcher.value.isLoading"
+      :label="controller.loaderLabel"
+      :sublabel="controller.loaderSublabel"
+    />
+    <div v-if="!controller.tableDataFetcher.value.isLoading">
+      <NoRecord
+        v-if="controller.tableDataFetcher.value.data.length === 0"
+        :title="controller.noRecordTitle"
+        :subtitle="controller.noRecordSubtitle"
+      />
+      <div class="sdn-bhd-container">
+        <TransitionGroup name="fade">
+          <template v-if="!controller.isShowSelectedSdnBhd">
+            <SdnBhd
+              v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
+              :company="sdnbhd"
+              @selected="controller.onCompanySelected(sdnbhd.id)"
+            />
+            <TablePagination
+              v-bind="controller.tablePaginationProps"
+              @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
+            />
+          </template>
+          <template v-if="controller.isShowSelectedSdnBhd">
+            <SelectedSdnBhd :company-id="controller.selectedCompanyId.value" />
+          </template>
+        </TransitionGroup>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import NoRecord from "../Placeholders/NoRecord.vue"
+  import SelectedSdnBhd from "@/components/Companies/SelectedSdnBhd.vue"
+  import SdnBhd from "@/components/Companies/SdnBhd.vue"
+  import TablePagination from "~/components/Paginations/TablePagination.vue"
+  import { AllController } from "~/scripts/components/companies/AllController"
+
+  const props = defineProps({
+    searchText: {
+      type: String,
+      default: null,
+    },
+    sortOrder: {
+      type: String,
+      default: null,
+    },
+    isIncludeDemo: {
+      type: Boolean,
+      default: false,
+    },
+    isUnselectSdnBhd: {
+      type: Boolean,
+      default: false,
+    },
+  })
+
+  const emit = defineEmits(["sdnbhdSelected"])
+
+  const controller = new AllController(emit)
+
+  watch(
+    () => props.searchText,
+    (newVal) => {
+      controller.setSearch(newVal)
+    }
+  )
+
+  watch(
+    () => props.sortOrder,
+    (newVal) => {
+      controller.setSortOrder(newVal)
+    }
+  )
+
+  watch(
+    () => props.isIncludeDemo,
+    (newVal) => {
+      controller.setIsIncludeDemo(newVal)
+    }
+  )
+
+  watch(
+    () => props.isUnselectSdnBhd,
+    (newVal) => {
+      if (newVal) {
+        controller.onCompanyUnselected()
+      }
+    }
+  )
+
+  defineExpose({
+    onCompanyUnselected: controller.onCompanyUnselected.bind(controller),
+  })
+</script>
+
+<style lang="scss">
+  @use "~/assets/scss/components/Companies/All" as *;
+</style>
