@@ -318,10 +318,14 @@ export abstract class ApplicationController<Application> {
       return this.isshareholderSignatureCompleted
     }
 
-    return this.isDirectorSignatureCompleted && this.isshareholderSignatureCompleted
+    return this.isshareholderSignatureCompleted
   }
 
   get approvalDate(): string {
+    if (!this.isApprovalReceived) {
+      return this.language.isMalay() ? "Menunggu Persetujuan" : "Pending Approval"
+    }
+
     if (this.selectedApprovalType.value === "director") {
       return this.lastDirectorSignatureDate
     }
@@ -330,7 +334,7 @@ export abstract class ApplicationController<Application> {
       return this.lastshareholderSignatureDate
     }
 
-    return this.lastSignatureDate
+    return this.lastshareholderSignatureDate
   }
 
   get completedLabel(): string {

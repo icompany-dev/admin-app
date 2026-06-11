@@ -43,13 +43,13 @@
               </div>
             </div>
             <div class="approval-dates">
-              <div v-if="controller.isApprovalReceived">
+              <div>
                 <b>{{ controller.completedLabel }} :</b>
                 {{ controller.approvalDate }}
               </div>
               <div>
                 <b>{{ controller.latestSignatureLabel }} :</b>
-                {{ controller.approvalDate }}
+                {{ controller.lastSignatureDate }}
               </div>
             </div>
           </template>
