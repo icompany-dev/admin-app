@@ -276,7 +276,7 @@ export abstract class ApplicationController<Application> {
     return this.time.formatDateOnlyFull(firstSignature.createdAt ?? "")
   }
 
-  get isshareholderSignatureCompleted(): boolean {
+  get isShareholderSignatureCompleted(): boolean {
     return this.totalSignedShares > this.minimumMajorityRequired.value * this.totalShares
   }
 
@@ -315,10 +315,10 @@ export abstract class ApplicationController<Application> {
     }
 
     if (this.selectedApprovalType.value === "member") {
-      return this.isshareholderSignatureCompleted
+      return this.isShareholderSignatureCompleted
     }
 
-    return this.isshareholderSignatureCompleted
+    return this.isShareholderSignatureCompleted
   }
 
   get approvalDate(): string {

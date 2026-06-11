@@ -12,6 +12,8 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(props.companyId, useCompanyAmendmentNameStore(), CompanyAmendmentName, emitEvents)
+
+    this.minimumMajorityRequired.value = 0.5 // special resolution
   }
 
   onShowApprovalActionClicked(): void {
@@ -85,14 +87,24 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     return this.language.isMalay() ? "Persetujuan dari" : "Approval from"
   }
 
-  get isApplicationApproved(): boolean {
-    // special resolution. so 75%
-
-    return false
+  get approvalApplicationNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(!this.isShareholderSignatureCompleted, this.isShareholderSignatureCompleted)
   }
 
-  get approvalApplicationNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(!this.isshareholderSignatureCompleted, this.isshareholderSignatureCompleted)
+  get isNameReservationSubmitted(): boolean {
+    return false // set to true for now
+  }
+
+  get nameReservationLabel(): string {
+    return this.language.isMalay() ? "Permohonan Tempahan Nama" : "Application of Name Reservation"
+  }
+
+  get nameReservationSublabel(): string {
+    return this.language.isMalay() ? "Seksyen 27 Akta Syarikat 2016" : "Section 27 of the Act"
+  }
+
+  get nameReservationNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isShareholderSignatureCompleted, this.isNameReservationSubmitted)
   }
 
   get approvalActionLabel(): string {
@@ -100,7 +112,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
       return this.language.isMalay() ? "Pilih Aksi" : "Select Action"
     }
 
-    if (!this.application.value || !this.isshareholderSignatureCompleted) {
+    if (!this.application.value || !this.isShareholderSignatureCompleted) {
       return this.paid
     }
 

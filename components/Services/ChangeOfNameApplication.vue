@@ -77,12 +77,20 @@
                 </button>
                 <button
                   class="btn btn-pill btn-submit"
-                  :disabled="controller.isshareholderSignatureCompleted"
+                  :disabled="controller.isShareholderSignatureCompleted"
                   @click="controller.onRejectApplicationClicked()"
                 >
                   {{ controller.reject }}
                 </button>
               </div>
+            </div>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode v-bind="controller.nameReservationNodeProps">
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">{{ controller.nameReservationLabel }}</div>
+              <div class="node-subtitle">({{ controller.nameReservationSublabel }})</div>
             </div>
           </template>
         </ApplicationNode>
