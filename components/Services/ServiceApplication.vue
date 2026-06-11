@@ -3,7 +3,7 @@
     class="services-service-application"
     tag="div"
     name="expand"
-    @click="controller.onPanelClicked()"
+    @click.self="controller.onPanelClicked()"
   >
     <div class="application-name">
       {{ controller.serviceName.value }}

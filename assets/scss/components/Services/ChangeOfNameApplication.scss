@@ -1,3 +1,10 @@
 #services-change-of-name-application {
-  // Styles go here
+  .actions-button-options {
+    display: inline-block;
+    margin-left: 10px;
+
+    .btn {
+      width: 200px;
+    }
+  }
 }
