@@ -1,16 +1,19 @@
+import { StatusConstants } from "~/scripts/constants/Status"
 import { Error } from "~/scripts/library/Error"
+import { Application } from "~/scripts/models/Application"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
+import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
 import { StringUtil } from "~/scripts/utils/String"
 
-export abstract class ApplicationController<T> {
+export abstract class ApplicationController<Application> {
   companyId: Ref<string> = ref<string>("")
 
-  applications = ref<T[]>([])
-  application = ref<T | null>(null)
+  applications = ref<Application[]>([])
+  application = ref<Application | null>(null)
 
   repository: IRepositoryStore
 
-  applicationClassType: new (data: any) => T
+  applicationClassType: new (data: any) => Application
 
   language = useLanguage()
   dayjs = useDayjs()
@@ -23,7 +26,7 @@ export abstract class ApplicationController<T> {
   constructor(
     companyId: string,
     repository: IRepositoryStore,
-    applicationClassType: new (data: any) => T,
+    applicationClassType: new (data: any) => Application,
     emitEvents: any | null
   ) {
     this.repository = repository
@@ -57,6 +60,12 @@ export abstract class ApplicationController<T> {
     }
   }
 
+  async setCompanyId(companyId: string): Promise<void> {
+    this.companyId.value = companyId
+
+    await this.fetchOngoing()
+  }
+
   async fetchOngoing(): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       this.application.value = new this.applicationClassType(null)
@@ -68,5 +77,20 @@ export abstract class ApplicationController<T> {
     }
 
     this.application.value = new this.applicationClassType(response)
+  }
+
+  // getters
+  abstract get serviceName(): string
+
+  get hasApplication(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.application.value.id) &&
+      this.application.value.status !== StatusConstants.DRAFT &&
+      this.application.value.status !== StatusConstants.PENDING
+    )
+  }
+
+  get serviceApplicationProps(): PropsServiceApplication {
+    return new PropsServiceApplication(this.serviceName, this.hasApplication)
   }
 }
