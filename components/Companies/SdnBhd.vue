@@ -1,6 +1,11 @@
 <template>
   <div class="company-sdn-bhd">
-    <div class="logo"></div>
+    <div
+      class="logo"
+      :class="{ 'no-logo': !controller.hasCompanyLogo }"
+    >
+      <img :src="controller.companyLogo" />
+    </div>
     <div class="name-actions">
       <div
         class="company-name"

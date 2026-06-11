@@ -17,6 +17,13 @@
       aspect-ratio: 1/1;
       object-fit: contain;
     }
+
+    &.no-logo {
+      img {
+        opacity: 0.5;
+        filter: grayscale(1);
+      }
+    }
   }
 
   .name-actions {

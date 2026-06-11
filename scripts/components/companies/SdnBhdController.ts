@@ -1,4 +1,5 @@
 import { Company } from "~/scripts/models/Company"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class SdnBhdController {
   company = ref<Company>(new Company())
@@ -34,6 +35,18 @@ export class SdnBhdController {
 
   onSwitchOutClicked(): void {
     // initiate switchout process
+  }
+
+  get hasCompanyLogo(): boolean {
+    return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
+  }
+
+  get companyLogo(): string {
+    if (!this.company.value.companyLogo || StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)) {
+      return "/img/logo/default-logo.png"
+    }
+
+    return this.company.value.companyLogo.url
   }
 
   get edit(): string {
