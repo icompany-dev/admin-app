@@ -344,4 +344,20 @@ export abstract class ApplicationController<Application> {
   get latestSignatureLabel(): string {
     return this.language.isMalay() ? "Tarikh Tandatangan Terakhir" : "Last Signature Received"
   }
+
+  get pendingApproval(): string {
+    return this.language.isMalay() ? "Menunggu Persetujuan" : "Pending Approval"
+  }
+
+  get concluded(): string {
+    return this.language.isMalay() ? "Selesai" : "Concluded"
+  }
+
+  get reject(): string {
+    return this.language.isMalay() ? "Tolak" : "Reject"
+  }
+
+  get paid(): string {
+    return this.language.isMalay() ? "Telah Dibayar" : "Paid"
+  }
 }

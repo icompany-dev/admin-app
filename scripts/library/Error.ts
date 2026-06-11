@@ -77,4 +77,13 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_API
   }
+
+  setForCUD(): void {
+    this.title = this.isMalay ? `Maklumat tidak Dikemaskini` : `Changes not Saved`
+    this.message = this.isMalay
+      ? "Sila muat semula muka ini dan cuba sekali lagi. Jika isu ini berulang, sila log masuk semula."
+      : "Please refresh the page and try again. If the issue persists, please re-login."
+
+    this.type = Error.ERROR_TYPE_API
+  }
 }

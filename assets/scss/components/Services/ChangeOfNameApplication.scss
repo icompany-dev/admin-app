@@ -7,4 +7,18 @@
       width: 200px;
     }
   }
+
+  .node-actions {
+    .actions-button-options {
+      .btn {
+        width: 100px;
+      }
+
+      .btn-submit {
+        &:disabled {
+          background-color: var(--bs-white);
+        }
+      }
+    }
+  }
 }

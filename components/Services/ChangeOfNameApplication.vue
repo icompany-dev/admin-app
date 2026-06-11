@@ -54,8 +54,35 @@
             </div>
           </template>
           <template #nodeActions>
-            <div class="action-button-options">
-              <div class="btn btn-pill btn-submit selected">//status</div>
+            <div class="actions-button-options">
+              <div
+                class="btn btn-pill btn-submit selected"
+                @click="controller.onShowApprovalActionClicked()"
+              >
+                <span class="label">{{ controller.approvalActionLabel }}</span>
+                <i
+                  class="fa-solid fa-caret-down"
+                  :class="{ rotate: controller.isShowApprovalAction.value }"
+                ></i>
+              </div>
+              <div
+                class="options"
+                :class="{ show: controller.isShowApprovalAction.value }"
+              >
+                <button
+                  class="btn btn-pill btn-submit"
+                  disabled
+                >
+                  {{ controller.concluded }}
+                </button>
+                <button
+                  class="btn btn-pill btn-submit"
+                  :disabled="controller.isshareholderSignatureCompleted"
+                  @click="controller.onRejectApplicationClicked()"
+                >
+                  {{ controller.reject }}
+                </button>
+              </div>
             </div>
           </template>
         </ApplicationNode>
