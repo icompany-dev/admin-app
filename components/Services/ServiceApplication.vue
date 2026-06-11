@@ -1,6 +1,6 @@
 <template>
   <TransitionGroup
-    id="services-service-application"
+    class="services-service-application"
     tag="div"
     name="expand"
     @click="controller.onPanelClicked()"

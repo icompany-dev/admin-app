@@ -9,6 +9,8 @@ export class ServiceApplicationController {
   emitEvents: any | null = null
 
   constructor(props: IPropsServiceApplication, emitEvents: any) {
+    this.serviceName.value = props.serviceName
+    this.hasApplication.value = props.hasApplication
     this.emitEvents = emitEvents
   }
 

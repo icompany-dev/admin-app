@@ -1,12 +1,14 @@
 <template>
-  <div class="services-application-node">
-    <div
-      class="node"
-      :class="{
-        'is-selected': props.isInFocused,
-        'is-completed': props.isCompleted,
-      }"
-    />
+  <div
+    class="services-application-node"
+    :class="{
+      'is-selected': props.isInFocused,
+      'is-completed': props.isCompleted,
+    }"
+  >
+    <div class="node-container">
+      <div class="node" />
+    </div>
     <div class="node-content">
       <slot name="nodeContent" />
     </div>

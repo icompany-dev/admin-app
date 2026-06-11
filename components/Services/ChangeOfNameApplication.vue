@@ -5,9 +5,14 @@
         <ApplicationNode v-bind="controller.approvalApplicationNodeProps">
           <template #nodeContent>
             <div class="approval-container">
-              <span>{{ controller.approvalLabel }}</span>
+              <span class="node-title">{{ controller.approvalLabel }}</span>
             </div>
             <div class="approval-dates">//</div>
+          </template>
+          <template #nodeActions>
+            <div class="action-button-options">
+              <div class="btn btn-pill btn-submit selected">//status</div>
+            </div>
           </template>
         </ApplicationNode>
       </template>
