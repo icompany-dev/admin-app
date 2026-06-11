@@ -59,3 +59,19 @@
     transform: translateX(100%);
     opacity: 0;
 }
+
+// Slide Left, Leave Right
+.slide-left-leave-right-enter-active,
+.slide-left-leave-right-leave-active {
+    transition: all 0.5s ease-out;
+}
+
+.slide-left-leave-right-enter-from {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.slide-left-leave-right-leave-to {
+    transform: translateX(100%);
+    opacity: 0;
+}

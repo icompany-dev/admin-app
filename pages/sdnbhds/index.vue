@@ -7,12 +7,15 @@
         @search="pageController.onSearchInput($event)"
         @order="pageController.onSortOrderChanged($event)"
         @clearSearch="pageController.onSearchInput('')"
+        @unMinimize="pageController.onSdnBhdUnselected()"
       />
     </div>
     <All
       :search-text="pageController.searchText.value"
       :sort-order="pageController.sortOrder.value"
       :is-include-demo="pageController.isIncludeDemo.value"
+      :is-unselect-sdn-bhd="!pageController.isSdnBhdSelected.value"
+      @sdnbhd-selected="pageController.onSdnBhdSelected()"
     />
   </div>
 </template>

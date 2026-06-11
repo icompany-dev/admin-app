@@ -6,6 +6,7 @@ export class PageAllSdnBhdController extends PageController {
   searchText: Ref<string> = ref<string>("")
   sortOrder: Ref<string> = ref<string>("asc")
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
+  isSdnBhdSelected: Ref<boolean> = ref<boolean>(false)
 
   constructor() {
     let title: string = "Admin Dashboard - iCompany Malaysia"
@@ -30,6 +31,14 @@ export class PageAllSdnBhdController extends PageController {
     }
   }
 
+  onSdnBhdSelected(): void {
+    this.isSdnBhdSelected.value = true
+  }
+
+  onSdnBhdUnselected(): void {
+    this.isSdnBhdSelected.value = false
+  }
+
   get breadCrumbProps(): PropsBreadCrumb {
     return new PropsBreadCrumb([new PropsBreadCrumbItem("Companies", ""), new PropsBreadCrumbItem("All Sdn Bhd", "")])
   }
@@ -49,7 +58,8 @@ export class PageAllSdnBhdController extends PageController {
       true,
       this.propsDataOrders,
       false,
-      new PropsDataDateFilter("", "", "")
+      new PropsDataDateFilter("", "", ""),
+      this.isSdnBhdSelected.value
     )
   }
 }

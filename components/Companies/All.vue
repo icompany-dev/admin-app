@@ -54,6 +54,10 @@
       type: Boolean,
       default: false,
     },
+    isUnselectSdnBhd: {
+      type: Boolean,
+      default: false,
+    },
   })
 
   const emit = defineEmits(["sdnbhdSelected"])
@@ -78,6 +82,15 @@
     () => props.isIncludeDemo,
     (newVal) => {
       controller.setIsIncludeDemo(newVal)
+    }
+  )
+
+  watch(
+    () => props.isUnselectSdnBhd,
+    (newVal) => {
+      if (newVal) {
+        controller.onCompanyUnselected()
+      }
     }
   )
 

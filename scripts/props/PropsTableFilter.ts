@@ -16,6 +16,7 @@ export interface IPropsTableFilter {
   orderBys: IPropsDataOrders[]
   canFilterDateColumn: boolean
   dateFilter: IPropsDataDateFilter
+  isMinimizedDisplay: boolean
 }
 
 export class PropsDataOrders {
@@ -47,6 +48,7 @@ export class PropsTableFilter implements IPropsTableFilter {
   orderBys: PropsDataOrders[]
   canFilterDateColumn: boolean
   dateFilter: PropsDataDateFilter
+  isMinimizedDisplay: boolean
 
   constructor(
     isSearchable: boolean,
@@ -54,7 +56,8 @@ export class PropsTableFilter implements IPropsTableFilter {
     hasOrderBy: boolean,
     orderBys: PropsDataOrders[],
     canFilterDateColumn: boolean,
-    dateFilter: PropsDataDateFilter
+    dateFilter: PropsDataDateFilter,
+    isMinimizedDisplay: boolean
   ) {
     this.isSearchable = isSearchable
     this.searchText = searchText
@@ -62,5 +65,6 @@ export class PropsTableFilter implements IPropsTableFilter {
     this.orderBys = orderBys
     this.canFilterDateColumn = canFilterDateColumn
     this.dateFilter = dateFilter
+    this.isMinimizedDisplay = isMinimizedDisplay
   }
 }

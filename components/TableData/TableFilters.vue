@@ -1,5 +1,9 @@
 <template>
-  <div id="table-data-table-filters">
+  <TransitionGroup
+    id="table-data-table-filters"
+    name="slide-left-leave-right"
+    tag="div"
+  >
     <div
       class="search-container"
       v-if="props.isSearchable"
@@ -45,7 +49,14 @@
         </label>
       </div>
     </div>
-  </div>
+    <div
+      v-if="props.isMinimizedDisplay"
+      class="back-button"
+      @click="emit('unMinimize')"
+    >
+      <i class="fa-solid fa-circle-arrow-left" />
+    </div>
+  </TransitionGroup>
 </template>
 
 <script lang="ts" setup>
@@ -54,7 +65,7 @@
 
   const props = defineProps<IPropsTableFilter>()
 
-  const emit = defineEmits(["search", "order", "filter", "clearSearch"])
+  const emit = defineEmits(["search", "order", "filter", "clearSearch", "unMinimize"])
 
   const controller = new TableFiltersController(props, emit)
 
