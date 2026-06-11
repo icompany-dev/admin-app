@@ -58,6 +58,8 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   get isApplicationApproved(): boolean {
+    // special resolution. so 75%
+
     return false
   }
 

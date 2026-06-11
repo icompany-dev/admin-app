@@ -36,6 +36,8 @@ export abstract class ApplicationController<Application> {
     this.application.value = new this.applicationClassType(null)
 
     this.emitEvents = emitEvents
+
+    this.init()
   }
 
   async init(): Promise<void> {
@@ -76,7 +78,19 @@ export abstract class ApplicationController<Application> {
       throw this.repository.error
     }
 
-    this.application.value = new this.applicationClassType(response)
+    if (!Array.isArray(response)) {
+      this.application.value = new this.applicationClassType(response)
+      return
+    }
+
+    if (response.length === 1) {
+      this.application.value = new this.applicationClassType(response[0])
+      return
+    }
+
+    this.applications.value = response.map((d: any) => {
+      return new this.applicationClassType(d)
+    })
   }
 
   // getters
