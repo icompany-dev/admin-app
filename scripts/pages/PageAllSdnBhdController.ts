@@ -24,8 +24,7 @@ export class PageAllSdnBhdController extends PageController {
       return
     }
 
-    console.log("data.orderColumn", data)
-    if (data.orderColumn === "Include Demo") {
+    if (data.orderColumn === "Show Demo") {
       this.isIncludeDemo.value = data.sortOrder ? true : false
       return
     }
