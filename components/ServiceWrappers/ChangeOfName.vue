@@ -2,13 +2,10 @@
   <div
     id="change-of-name"
     class="cosec-service-documents"
-    :class="{ 'full-size': props.isDocumentEnlarged }"
   >
     <div
       class="documents-section"
       :class="{ invert: controller.showMcrFirst.value }"
-      @click="emit('zoomIn')"
-      :style="controller.getZoomStyle()"
     >
       <TransitionGroup
         name="flip"

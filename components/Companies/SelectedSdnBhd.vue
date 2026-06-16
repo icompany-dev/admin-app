@@ -102,19 +102,16 @@
           class="application-contents"
           v-if="controller.isBusiness.value"
         >
-          <ChangeOfNameApplication
-            v-bind="controller.applicationProps"
-            @click.self="controller.onApplicationClicked(CompanyConstants.TARGET_AMENDMENT_NAME)"
-          />
+          <ChangeOfNameApplication v-bind="controller.applicationProps" />
         </div>
       </TransitionGroup>
     </div>
     <Transition name="slide-left">
-      <div
-        class="document-container"
-        v-if="controller.isShowApplicationDocuments.value"
-      >
-        <ServiceWrapper v-bind="controller.serviceWrapperProps" />
+      <div class="document-container">
+        <ChangeOfNameService
+          :company-id="controller.companyId.value"
+          :view-type="'existing'"
+        />
       </div>
     </Transition>
   </div>
@@ -123,6 +120,7 @@
 <script lang="ts" setup>
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
   import ServiceWrapper from "@/components/ServiceWrappers/ServiceWrapper.vue"
+  import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
   import { CompanyConstants } from "~/scripts/constants/Company"
 

@@ -128,7 +128,7 @@
         </div>
       </template>
     </CompanyServiceWrapper>
-    <ActionTray
+    <!-- <ActionTray
       v-if="controller.showActionTray()"
       ref="actionTrayRef"
       :actions="controller.actionTrayElements.value"
@@ -158,13 +158,13 @@
           </Alert>
         </Transition>
       </div>
-    </Teleport>
+    </Teleport> -->
   </div>
 </template>
 
 <script setup lang="ts">
-  import ActionTray from "../ActionTrays/ActionTray.vue"
-  import Alert from "../Alerts/Alert.vue"
+  // import ActionTray from "../ActionTrays/ActionTray.vue"
+  // import Alert from "../Alerts/Alert.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import DcrChangeOfNames from "../Resolutions/DcrChangeOfNames.vue"
   import McrChangeOfNames from "../Resolutions/McrChangeOfNames.vue"

@@ -72,64 +72,6 @@
             <slot name="resolutions" />
           </div>
         </div>
-        <div
-          ref="documentSlipCaseRef"
-          class="document-slip-case-container"
-          :class="{ hide: controller.isOverlayHidden() }"
-          :style="controller.getSlipCaseStyle()"
-          v-if="!controller.isHideOtherElements()"
-        >
-          <DocumentSlipCase
-            :title="props.documentSlipCaseProps.title"
-            :back-button-label="props.documentSlipCaseProps.backButtonLabel"
-            :proceed-button-label="props.documentSlipCaseProps.proceedButtonLabel"
-            :is-loading="props.documentSlipCaseProps.isLoading"
-            :hovered-proceed-button-label="props.documentSlipCaseProps.hoveredProceedButtonLabel"
-            @back="emit('back')"
-            @pay="emit('proceed')"
-          >
-            <template #slipCaseContent>
-              <slot name="documentSlipCaseContent" />
-            </template>
-          </DocumentSlipCase>
-        </div>
-      </div>
-      <div
-        ref="serviceStepsRef"
-        class="service-steps-container"
-        v-if="props.showServiceSteps"
-      >
-        <ServiceSteps
-          ref="serviceStepsCompomentRef"
-          :application="props.serviceStepProps.application"
-          :price="props.serviceStepProps.price"
-          :target="props.serviceStepProps.target"
-          :has-paid="props.serviceStepProps.hasPaid"
-          :has-user-signed="props.serviceStepProps.hasUserSigned"
-          :have-all-signed="props.serviceStepProps.haveAllSigned"
-          :is-dcr="props.serviceStepProps.isDcr"
-          :is-mcr="props.serviceStepProps.isMcr"
-          :number-of-directors="props.serviceStepProps.numberOfDirectors"
-          :number-of-shareholders="props.serviceStepProps.numberOfShareholders"
-          :signature-date="props.serviceStepProps.signatureDate"
-          :can-skip-to-confirmation="props.serviceStepProps.canSkipToConfirmation"
-          :use-default-confirmation="props.serviceStepProps.useDefaultConfirmation"
-          :has-majority-rule="props.serviceStepProps.hasMajorityRule"
-          :has-custom-affirmation="props.serviceStepProps.hasCustomAffirmation"
-          :is-pasca-in-pasca="props.serviceStepProps.isPascaInPasca"
-          @revoke="emit('revoke')"
-          @accept="controller.handleAccept()"
-        >
-          <template #customAffirmation>
-            <slot name="pasca-custom-affirmation" />
-          </template>
-          <template #statusDetails>
-            <slot name="step-status" />
-          </template>
-          <template #customConfirmation>
-            <slot name="pasca-custom-confirmation" />
-          </template>
-        </ServiceSteps>
       </div>
       <div class="no-record-found">
         <NoRecord
@@ -148,7 +90,7 @@
           </template>
         </NoRecord>
       </div>
-      <div
+      <!-- <div
         class="past-records"
         v-if="controller.isShowPastApplications()"
       >
@@ -156,30 +98,17 @@
           v-bind="props.pastApplicationProps"
           @goToNew="emit(EmitMessages.GO_TO_NEW)"
         />
-      </div>
+      </div> -->
     </div>
 
     <Teleport to="body">
-      <DeleteApplication
-        ref="deleteApplicationRef"
-        :target-type="props.deleteApplicationProps.targetType"
-        :target-id="props.deleteApplicationProps.targetId"
-      />
       <div
         class="document-view"
         :class="{ show: controller.isDocumentEnlarged.value }"
         v-if="props.hasPaid"
       >
         <ServiceWrapper
-          :company-id="props.companyId"
-          :target="props.serviceWrapperProps.target"
-          :target-id="props.serviceWrapperProps.targetId ?? ''"
-          :is-in-preview-mode="props.serviceWrapperProps.isInPreviewMode"
-          :is-showing="controller.isDocumentEnlarged.value"
-          :paper-orientation="props.paperOrientation"
-          :is-by-shareholder="props.serviceWrapperProps.isByShareholder"
-          :financial-year-start-date="props.serviceWrapperProps.financialYearStartDate"
-          :financial-year-end-date="props.serviceWrapperProps.financialYearEndDate"
+          v-bind="props.serviceWrapperProps"
           @minimize="controller.minimize($event)"
           @make-payment="controller.onMakePayment()"
           @applicationUpdated="controller.onApplicationUpdated($event)"
@@ -197,12 +126,8 @@
 <script setup lang="ts">
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
-  import PastApplications from "../PastApplications/PastApplications.vue"
-  import ServiceWrapper from "@/components/Services/ServiceWrapper.vue"
-  import ServiceSteps from "./ServiceSteps.vue"
-  import DeleteApplication from "../Popups/DeleteApplication.vue"
-  import DocumentSlipCase from "../DocumentCtas/DocumentSlipCase.vue"
-  import OngoingApplicationAlert from "../Popups/OngoingApplicationAlert.vue"
+  // import PastApplications from "../PastApplications/PastApplications.vue"
+  import ServiceWrapper from "@/components/ServiceWrappers/ServiceWrapper.vue"
   import { CompanyServiceWrapperController } from "~/scripts/components/company-services/CompanyServiceWrapperController"
   import type { IPropsCompanyServiceWrapper } from "~/scripts/props/PropsCompanyServiceWrapper"
   import { ViewMode } from "~/scripts/constants/ViewMode"
