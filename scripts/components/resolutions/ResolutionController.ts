@@ -456,6 +456,7 @@ export abstract class ResolutionController<T> {
       this.resolutionContent.value = templateProcessor.replaceInputsWithValues(this.resolutionContent.value)
     }
 
+    await nextTick()
     let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
 
     this.resolutionContent.value = originalResolutionContent

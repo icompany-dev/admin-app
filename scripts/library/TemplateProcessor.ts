@@ -388,11 +388,13 @@ export class TemplateProcessor {
       }
 
       const spanElement = doc.createElement("span")
-      spanElement.className = "fit-content"
       spanElement.textContent = input.value || ""
 
       input.parentNode.replaceChild(spanElement, input)
     })
+
+    const remainingDatalists = doc.querySelectorAll("datalist")
+    remainingDatalists.forEach((dl) => dl.remove())
 
     return doc.body.innerHTML
   }
