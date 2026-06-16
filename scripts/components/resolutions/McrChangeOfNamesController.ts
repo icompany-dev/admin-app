@@ -5,6 +5,9 @@ import { useCompanyStore } from "~/stores/Companies"
 import { Company } from "~/scripts/models/Company"
 import { StringUtil } from "~/scripts/utils/String"
 import { NameReservation } from "~/scripts/types/NameReservation"
+import { DocumentTemplate } from "~/scripts/models/DocumentTemplate"
+import { Error } from "~/scripts/library/Error"
+import { TemplateProcessor } from "~/scripts/library/TemplateProcessor"
 import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { StatusConstants } from "~/scripts/constants/Status"
 
@@ -12,6 +15,13 @@ export class McrChangeOfNamesController extends ResolutionController<CompanyAmen
   companyAmendmentNameRepository = useCompanyAmendmentNameStore()
   companyRepository = useCompanyStore()
   nameReservations = ref<NameReservation[]>([])
+
+  documentTemplateId: string = "cf307832-abc5-4eaa-8c0c-81b9a3165c44"
+  documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
+  originalTemplateContent: string = ""
+  accompanyingDocumentContent = ref<string>("")
+
+  resolutionContent: Ref<string> = ref<string>("")
 
   constructor(props: IPropsResolutionDocument<CompanyAmendmentName>, emitEvents: any | null) {
     super(
@@ -26,55 +36,73 @@ export class McrChangeOfNamesController extends ResolutionController<CompanyAmen
       props.watermarkText,
       emitEvents
     )
-    this.setNameReservations(props.nameReservations)
 
-    this.hasAccompanyingDocument.value = true
+    this.isUsingTemplate.value = true
+
     this.signatureStartOnPage.value = 1
     this.maxSignatureOnFirstPage.value = 4
     this.maxSignatureOnOtherPages.value = 6
   }
 
   async setApplicationId(id: string | null): Promise<void> {
+    if (this.isLoading.value) {
+      setTimeout(() => {
+        this.setApplicationId(id)
+      }, 500)
+      return
+    }
+
     if (StringUtil.isNullOrEmpty(id)) {
       await this.setApplication()
       return
     } else {
       await this.fetchApplication(id ?? "")
     }
-  }
 
-  setNameReservations(nameReservations: NameReservation[]): void {
-    this.nameReservations.value = toRaw(nameReservations).map((nr: NameReservation) => {
-      let newNameReservation = new NameReservation("", "")
-      newNameReservation.clone(nr)
-      return newNameReservation
-    })
+    this.setContent()
   }
 
   async fetchApplication(id: string): Promise<void> {
     let response = await this.companyAmendmentNameRepository.fetch(id)
-    if (!this.companyAmendmentNameRepository.error && response) {
+    if (!this.companyAmendmentNameRepository.error && response !== null) {
       this.application.value = new CompanyAmendmentName(response)
-      this.initializeData()
     }
+
+    this.initializeData()
   }
 
   async setApplication(): Promise<void> {
-    let response = await this.companyRepository.fetch(this.companyId.value)
-    if (!this.companyRepository.error && response) {
+    if (this.application.value && !StringUtil.isNullOrEmpty(this.application.value.id)) {
+      return
+    }
+
+    let company = await this.companyRepository.fetch(this.companyId.value)
+    if (!this.companyRepository.error) {
       this.application.value = new CompanyAmendmentName()
       this.application.value.companyId = this.companyId.value
-      this.application.value.company = new Company(response)
-      this.initializeData()
+      this.application.value.company = new Company(company)
     }
+
+    this.initializeData()
   }
 
   async fetchDocumentTemplate(): Promise<void> {
-    // do nothing
-  }
+    try {
+      let repository = useDocumentTemplateStore()
+      let response = await repository.fetch(this.documentTemplateId)
+      if (repository.error !== null) {
+        throw repository.error
+      }
 
-  setContent(): void {
-    // do nothing
+      this.documentTemplate.value = new DocumentTemplate(response)
+      this.originalTemplateContent = this.documentTemplate.value.content
+    } catch (e: any) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        console.error(e) // not handling the error for now
+      }
+    }
   }
 
   async otherDataInitiation(): Promise<void> {
@@ -94,117 +122,83 @@ export class McrChangeOfNamesController extends ResolutionController<CompanyAmen
     )
   }
 
-  namesToChangeTo(): string {
-    if (!this.application.value) {
-      return ""
+  pursuantSectionNumber(): string {
+    if (!this.application.value?.company?.hasConstitution) {
+      return "Section 300 of the Companies Act, 2016"
     }
 
-    const names = [
-      this.application.value.name1?.getCompleteName() ?? "",
-      this.application.value.name2?.getCompleteName() ?? "",
-      this.application.value.name3?.getCompleteName() ?? "",
+    return "Company's Constitution"
+  }
+
+  setContent(): void {
+    this.resolutionContent.value = this.getContent()
+    this.accompanyingDocumentContent.value = this.getAccompanyingDocument()
+    this.hasAccompanyingDocument.value = this.accompanyingDocumentContent.value.length > 0
+  }
+
+  getAccompanyingDocument(): string {
+    let templateProcessor = new TemplateProcessor(this.documentTemplate.value)
+
+    return templateProcessor.getPostSignatureContent(this.application.value)
+  }
+
+  getNameOptions(): string {
+    if (!this.application.value) {
+      return `<span>NEW BUSINESS NAME</span>`
+    }
+
+    let options = [
+      `
+        <option value='${this.application.value.name1?.getCompleteName()}'>
+          ${this.application.value.name1?.getCompleteName()}
+        </option>
+      `,
     ]
 
-    let nameChangeTo = names
-      .filter((n) => {
-        return n.length > 0
-      })
-      .join(" / ")
-
-    if (StringUtil.isNullOrEmpty(nameChangeTo)) {
-      return "YOUR PROPOSE NAME SDN BHD"
+    if (this.application.value.name2) {
+      options.push(
+        `
+          <option value='${this.application.value.name2.getCompleteName()}'>
+            ${this.application.value.name2.getCompleteName()}
+          </option>
+        `
+      )
     }
 
-    return nameChangeTo
+    if (this.application.value.name3) {
+      options.push(
+        `
+          <option value='${this.application.value.name3.getCompleteName()}'>
+            ${this.application.value.name3.getCompleteName()}
+          </option>
+        `
+      )
+    }
+
+    return `
+      <select name='newBusinessName' class='form-control in-resolution'>
+        ${options.join("")}
+      </select>
+    `
   }
 
-  handleNumberOfNamesChanged(nameReservations: NameReservation[]): void {
-    this.nameReservations.value = []
-    this.nameReservations.value = nameReservations.map((nr: NameReservation) => {
-      let newNameReservation = new NameReservation("", "")
-      newNameReservation.clone(nr)
-      return newNameReservation
-    })
-    this.handlePageChanges()
+  getContent(): string {
+    this.documentTemplate.value.content = this.originalTemplateContent
 
-    this.emitEvents("nameChanged", nameReservations)
-  }
-
-  handleNameChanges(nameReservations: NameReservation[]): void {
-    // check if there are any changes first\
-    let hasChanged = this.nameReservations.value.some((nr: NameReservation) => {
-      let nrInParam = nameReservations.find((nrp: NameReservation) => {
-        return nr.id === nrp.id
-      })
-      if (!nrInParam) {
-        return true
-      }
-
-      return !nr.isEqual(nrInParam)
-    })
-    let hasChangedInParams = nameReservations.some((nr: NameReservation) => {
-      let nrInHere = this.nameReservations.value.find((nrp: NameReservation) => {
-        return nr.id === nrp.id
-      })
-      if (!nrInHere) {
-        return true
-      }
-
-      return !nr.isEqual(nrInHere)
-    })
-    let anyChanges = this.nameReservations.value.length !== nameReservations.length || hasChanged || hasChangedInParams
-    if (!anyChanges) {
-      return
-    }
-
-    this.nameReservations.value = nameReservations.map((nr: NameReservation) => {
-      let newNameReservation = new NameReservation("", "")
-      newNameReservation.clone(nr)
-      return newNameReservation
-    })
-    this.handlePageChanges()
-
-    this.emitEvents("nameChanged", nameReservations)
-  }
-
-  handlePageChanges(): void {
-    let numberOfNames = this.nameReservations.value.length
-    let isAnySupportingDocumentsRequired = this.nameReservations.value.some((nr: NameReservation) => {
-      return nr.isSupportingDocumentRequired
-    })
-
-    if (!isAnySupportingDocumentsRequired && numberOfNames <= 2) {
-      this.signatureStartOnPage.value = 1
-      this.maxSignatureOnFirstPage.value = 4
-    } else {
-      this.signatureStartOnPage.value = 1
-      this.maxSignatureOnFirstPage.value = 2
-    }
-  }
-
-  override isDocumentEditable(): boolean {
-    if (this.isInPreviewMode.value) {
-      return false
-    }
-
-    if (!this.application.value) {
-      return false
-    }
-
-    if (this.application.value.canProposeNewName()) {
-      return true
-    }
-
-    if (this.application.value.signatureGroups.length > 0) {
-      return false
-    }
-
-    return (
-      this.application.value &&
-      (StringUtil.isNullOrEmpty(this.application.value.id) ||
-        this.application.value.status === StatusConstants.DRAFT ||
-        this.application.value.status === StatusConstants.PENDING ||
-        this.application.value.status === StatusConstants.PAID)
+    let nameOptionsString = "$text.&lt;name=newBusinessName&gt;$"
+    this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+      nameOptionsString,
+      this.getNameOptions()
     )
+
+    let templateProcessor = new TemplateProcessor(this.documentTemplate.value)
+
+    if (this.isInPreviewMode.value) {
+      return templateProcessor.getContentForPreview(this.application.value)
+    }
+
+    return this.isDocumentEditable()
+      ? templateProcessor.getContent(this.application.value, false)
+      : templateProcessor.getContentForPrint(this.application.value)
   }
 }

@@ -38,6 +38,13 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
   }
 
   async setApplicationId(id: string | null): Promise<void> {
+    if (this.isLoading.value) {
+      setTimeout(() => {
+        this.setApplicationId(id)
+      }, 500)
+      return
+    }
+
     if (StringUtil.isNullOrEmpty(id)) {
       await this.setApplication()
       return
@@ -45,7 +52,7 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
       await this.fetchApplication(id ?? "")
     }
 
-    await this.getPersonsToSign()
+    this.setContent()
   }
 
   async fetchApplication(id: string): Promise<void> {
@@ -53,6 +60,8 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
     if (!this.companyAmendmentNameRepository.error && response !== null) {
       this.application.value = new CompanyAmendmentName(response)
     }
+
+    this.initializeData()
   }
 
   async setApplication(): Promise<void> {
@@ -66,6 +75,8 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
       this.application.value.companyId = this.companyId.value
       this.application.value.company = new Company(company)
     }
+
+    this.initializeData()
   }
 
   async fetchDocumentTemplate(): Promise<void> {
