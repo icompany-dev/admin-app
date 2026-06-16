@@ -227,10 +227,10 @@ export class ChangeOfNameController
   get resolutionDocumentProps() {
     return new PropsResolutionDocument<CompanyAmendmentName>(
       this.companyId,
-      this.applicationId,
-      this.application,
+      this.applicationRef.value.id,
+      this.applicationRef.value as CompanyAmendmentName,
       this.isDraft,
-      "Draft",
+      "DRAFT",
       false,
       false,
       null,

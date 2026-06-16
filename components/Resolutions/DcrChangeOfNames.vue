@@ -80,6 +80,7 @@
   watch(
     () => props.applicationId,
     (newVal) => {
+      console.log("setting", newVal)
       controller.setApplicationId(newVal)
     }
   )
