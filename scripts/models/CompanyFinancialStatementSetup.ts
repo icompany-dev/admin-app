@@ -11,7 +11,7 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
   authorisedPersonId: string | null = null
   auditorAppointmentId: string | null = null
   initiatorId: string | null = null
-  status: string | null = null
+  status: string | null = "pending"
   paidAt: string | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
@@ -65,6 +65,7 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
       set_fye_id: this.setFyeId,
       authorised_person_id: this.authorisedPersonId,
       auditor_appointment_id: this.auditorAppointmentId,
+      status: this.status,
     }
   }
 

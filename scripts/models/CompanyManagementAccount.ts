@@ -8,14 +8,16 @@ import { StringUtil } from "../utils/String"
 import { Error } from "../library/Error"
 import type { IAutoSaveEnabled } from "./IAutoSaveEnabled"
 import { StatusConstants } from "../constants/Status"
+import { Application } from "./Application"
+import type { IModelApplication } from "./IModelApplication"
 
 export class CompanyManagementAccount
-  extends CompanyItem
+  extends Application //CompanyItem
   implements
-    IModel<CompanyManagementAccount>,
+    IModelApplication<CompanyManagementAccount, ReturnType<typeof useCompanyManagementAccountStore>>,
     IAutoSaveEnabled<CompanyManagementAccount, ReturnType<typeof useCompanyManagementAccountStore>>
 {
-  status: string = StatusConstants.DRAFT
+  // status: string = StatusConstants.DRAFT
   financialYearStartDate: string | null = null
   financialYearEndDate: string | null = null
   balanceSheet: CompanyManagementAccountBalanceSheet = new CompanyManagementAccountBalanceSheet()
@@ -75,7 +77,11 @@ export class CompanyManagementAccount
     return this.balanceSheet.isTheSame(record.balanceSheet) && this.profitLoss.isTheSame(record.profitLoss)
   }
 
-  canSubmit(checkValidity: boolean): boolean {
+  canSubmit(): boolean {
+    return true
+  }
+
+  canSubmitDetails(checkValidity: boolean): boolean {
     if (!checkValidity) {
       return true
     }
@@ -94,7 +100,7 @@ export class CompanyManagementAccount
 
   // We need to move this to the controller. It should not be in here
   getInvalidErrorMessage(): string {
-    if (this.canSubmit(true)) {
+    if (this.canSubmitDetails(true)) {
       return ""
     }
 

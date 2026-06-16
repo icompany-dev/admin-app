@@ -208,4 +208,14 @@ export class Company implements IModel<Company> {
     }
     return ""
   }
+
+  getOnelineAddress(): string {
+    if (this.businessAddressLocation && this.businessAddressLocation.addressLine1) {
+      return this.businessAddressLocation.getOnelineAddress()
+    }
+    if (this.registeredAddressLocation && this.registeredAddressLocation.addressLine1) {
+      return this.registeredAddressLocation.getOnelineAddress()
+    }
+    return ""
+  }
 }

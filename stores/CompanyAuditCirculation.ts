@@ -18,6 +18,24 @@ export const useCompanyAuditCirculationStore = defineStore("companyAuditCirculat
     error: error,
   })
 
+  async function byFinancialPeriod(
+    companyId: string,
+    financialPeriodId: string
+  ): Promise<CompanyAuditCirculation | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.companyAuditCirculations.byFinancialPeriod(companyId, financialPeriodId)
+      return new CompanyAuditCirculation(response)
+    } catch (e: any) {
+      console.error(`Error to fetch ongoing`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   async function byAuditCycle(id: string): Promise<CompanyAuditCirculation | null> {
     isLoading.value = true
     error.value = null
@@ -42,6 +60,7 @@ export const useCompanyAuditCirculationStore = defineStore("companyAuditCirculat
     error,
     totalCompanyAuditCirculations,
     ...crudActions,
+    byFinancialPeriod,
     byAuditCycle,
   }
 })

@@ -50,6 +50,22 @@ export const useDirectorStore = defineStore("director", () => {
     }
   }
 
+  async function isDirectorForCompany(companyId: string): Promise<boolean> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.directors.isDirectorForCompany(companyId)
+      return response.is_director ?? false
+    } catch (e: any) {
+      error.value = e.message || `Failed to check if user is a director for company`
+      console.error(`Error to check director`, e)
+      return false
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalDirectors = computed(() => directors.value.length)
 
   return {
@@ -61,5 +77,6 @@ export const useDirectorStore = defineStore("director", () => {
     ...crudActions,
     fetchAllForUserByCompany,
     fetchAllForCompany,
+    isDirectorForCompany,
   }
 })

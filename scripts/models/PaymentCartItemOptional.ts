@@ -31,7 +31,7 @@ export class PaymentCartItemOptional {
     this.servicePricingId = data.service_pricing_id
     this.servicePricing = new ServicePricing(data.service_pricing)
     this.isLateLodgement = data.is_late_lodgement
-    this.lateLodgementFees = data.late_lodgement_fees
+    this.lateLodgementFees = Number(data.late_lodgement_fees)
     this.total = data.total
   }
 
@@ -41,7 +41,7 @@ export class PaymentCartItemOptional {
     this.servicePricingId = data.servicePricingId
     this.servicePricing = new ServicePricing(data.servicePricing)
     this.isLateLodgement = data.isLateLodgement
-    this.lateLodgementFees = data.lateLodgementFees
+    this.lateLodgementFees = Number(data.lateLodgementFees)
     this.total = data.total
     this.suffixToServiceName = data.suffixToServiceName
     this.isDisabled = data.isDisabled

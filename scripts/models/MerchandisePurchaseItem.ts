@@ -57,6 +57,7 @@ export class MerchandisePurchaseItem implements IModel<MerchandisePurchaseItem> 
       price_per_unit: this.price,
       quantity: this.quantity,
       total_price: this.totalPrice,
+      additional_details: [], // Required for customization
     }
   }
 

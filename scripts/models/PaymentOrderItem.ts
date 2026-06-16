@@ -211,13 +211,14 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.servicePricingId = data.servicePricingId
     this.additionalServicePricingIds = data.additionalServicePricingIds
     this.serviceName = data.servicePricing.serviceName
-    this.quantity = 1
+    this.quantity = data.quantity
     this.targetType = data.targetType
     this.targetId = data.targetId
     this.discountPercent = data.discountPercent
     this.discountAmount = data.discountAmount
     this.isExpressFilingRequired = data.isExpressFilingRequired
     this.expressFilingAmount = data.expressFilingAmount
+    this.cosecServiceFee = data.servicePricing.config.cosecServiceFee
     this.isLateLodgement = data.isLateLodgement
     this.lateLodgementFees = data.lateLodgementFees
     this.subtotal = data.subtotal
@@ -284,6 +285,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       discount_amount: this.discountAmount,
       is_express_filing_required: this.isExpressFilingRequired,
       express_filing_amount: this.expressFilingAmount,
+      cosec_service_fee: this.cosecServiceFee,
       is_late_lodgement: this.isLateLodgement,
       late_lodgement_fees: this.lateLodgementFees,
       subtotal: this.subtotal,

@@ -49,11 +49,12 @@ export class CompanyAuditCirculation
     return {
       company_id: this.companyId,
       financial_period_id: this.financialPeriodId,
+      status: this.status,
     }
   }
 
   canSubmit(): boolean {
-    return StringUtil.isNullOrEmpty(this.companyId) && StringUtil.isNullOrEmpty(this.financialPeriodId)
+    return !StringUtil.isNullOrEmpty(this.companyId) && !StringUtil.isNullOrEmpty(this.financialPeriodId)
   }
 
   async create(repository: ReturnType<typeof useCompanyAuditCirculationStore>): Promise<void> {

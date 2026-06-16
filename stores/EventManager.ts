@@ -27,6 +27,8 @@ export const useEventManagerStore = defineStore("eventManager", () => {
   const isHeaderSearchHidden = ref<boolean>(false)
   const hasColorModeChanged = ref<boolean>(false)
 
+  const isShowHolidayNotification = ref<boolean>(false)
+
   const isAllotingPreferenceShare = ref<boolean>(false)
 
   const isPopupShowing = ref<boolean>(false)
@@ -34,6 +36,7 @@ export const useEventManagerStore = defineStore("eventManager", () => {
   const isOpenSearchBar = ref<boolean>(false)
   const searchBarText = ref<string | null>(null)
   const isSetSearchInputInFocus = ref<boolean>(false)
+  const isSearchOpen = ref<boolean>(false)
   const canSelectCompany = ref<boolean | null>(null)
 
   const isSidebarOpen = ref<boolean>(false)
@@ -53,6 +56,11 @@ export const useEventManagerStore = defineStore("eventManager", () => {
 
   const isShowGlossary = ref<boolean>(false)
   const glossarySearchText = ref<string | null>(null)
+
+  const isHeaderLoaded = ref<boolean>(false)
+  const isSidebarLoaded = ref<boolean>(false)
+
+  const isCentreStageLoaded = ref<boolean>(true) // default to true
 
   function setMakePayment(value: boolean): void {
     makePayment.value = value
@@ -129,6 +137,10 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     hasColorModeChanged.value = value
   }
 
+  function setIsShowHolidayNotification(value: boolean): void {
+    isShowHolidayNotification.value = value
+  }
+
   function setIsAllotingPreferenceShare(value: boolean): void {
     isAllotingPreferenceShare.value = value
   }
@@ -143,6 +155,10 @@ export const useEventManagerStore = defineStore("eventManager", () => {
 
   function setIsSidebarOpen(value: boolean): void {
     isSidebarOpen.value = value
+  }
+
+  function setIsSearchOpen(value: boolean): void {
+    isSearchOpen.value = value
   }
 
   function setIsSidebarOpenFull(value: boolean): void {
@@ -201,6 +217,18 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     canSelectCompany.value = value
   }
 
+  function setIsHeaderLoaded(value: boolean): void {
+    isHeaderLoaded.value = value
+  }
+
+  function setIsSidebarLoaded(value: boolean): void {
+    isSidebarLoaded.value = value
+  }
+
+  function setIsCentreStageLoaded(value: boolean): void {
+    isCentreStageLoaded.value = value
+  }
+
   return {
     makePayment,
     entityTypeToMakePayment,
@@ -217,9 +245,11 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     isDocumentPreview,
     isHeaderSearchHidden,
     hasColorModeChanged,
+    isShowHolidayNotification,
     isAllotingPreferenceShare,
     isPopupShowing,
     isOpenSearchBar,
+    isSearchOpen,
     isSidebarOpen,
     isSidebarOpenFull,
     isShowWelcomeAfterEKYC,
@@ -235,6 +265,9 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     isSetSearchInputInFocus,
     searchBarText,
     canSelectCompany,
+    isHeaderLoaded,
+    isSidebarLoaded,
+    isCentreStageLoaded,
     setMakePayment,
     setEntityTypeToMakePayment,
     setEntityIdToMakePayment,
@@ -252,9 +285,11 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     setIsDocumentPreview,
     setIsHeaderSearchHidden,
     setHasColorModeChanged,
+    setIsShowHolidayNotification,
     setIsAllotingPreferenceShare,
     setIsPopupShowing,
     setIsOpenSearchBar,
+    setIsSearchOpen,
     setIsSidebarOpen,
     setIsSidebarOpenFull,
     setIsShowWelcomeAfterEKYC,
@@ -270,5 +305,8 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     setIsSetSearchInputInFocus,
     setSearchBarText,
     setCanSelectCompany,
+    setIsHeaderLoaded,
+    setIsSidebarLoaded,
+    setIsCentreStageLoaded,
   }
 })

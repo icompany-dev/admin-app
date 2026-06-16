@@ -44,7 +44,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
     this.financialStatement = data.financial_statement ? new File(data.financial_statement) : null
     this.isRecommendedAudited = data.is_recommended_audited
     this.auditRecommendation = data.audit_recommendation
-    this.isSubmittingAudited = data.is_submitting_audited
+    this.isSubmittingAudited = data.is_submitting_audited === 1 ? true : false
     this.financialStatementStatus = data.financial_statement_status
     this.status = data.status
     this.createdAt = data.created_at

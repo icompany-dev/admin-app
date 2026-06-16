@@ -20,6 +20,8 @@ export class CompanyStrikingOffResolution extends Application {
   uploadedDocuments: CompanyStrikingOffDocument[] = []
   type: string[] = []
 
+  preparationData: string = ""
+
   constructor(data: any | null = null) {
     super()
     if (!data) {
@@ -84,7 +86,8 @@ export class CompanyStrikingOffResolution extends Application {
     return {
       company_id: this.companyId,
       applicant_id: this.applicant.id,
-      type: this.type.join(","),
+      type: this.preparationData,
+      // type: this.type.join(","),
     }
   }
 
