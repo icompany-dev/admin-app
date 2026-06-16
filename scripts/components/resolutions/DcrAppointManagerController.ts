@@ -18,7 +18,6 @@ export class DcrAppointManagerController extends ResolutionController<CompanyDir
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
-  resolutionContent: Ref<string> = ref<string>("")
   originalTemplateContent: string = ""
 
   private documentTemplateId: string = "1866b7fd-bfb6-42fd-94e2-3109c83711e9"

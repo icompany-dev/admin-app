@@ -53,6 +53,15 @@
               </div>
             </div>
           </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isDownloading.value }"
+              @click="controller.onDownloadClicked()"
+            >
+              Download
+            </button>
+          </template>
           <template #nodeActions>
             <div class="actions-button-options">
               <div
@@ -97,6 +106,7 @@
       </template>
       <template #documents>
         <ChangeOfNameService
+          ref="resolutionsRef"
           :company-id="controller.companyId.value"
           :view-type="'existing'"
           :application-id="controller.application.value?.id ?? ''"
@@ -117,6 +127,8 @@
 
   const emit = defineEmits(["applicationId"])
 
+  const resolutionsRef = ref(null)
+
   const controller = new ChangeOfNameApplicationController(props, emit)
 
   watch(
@@ -124,6 +136,14 @@
     (newVal) => {
       controller.setCompanyId(newVal)
     }
+  )
+
+  watch(
+    resolutionsRef,
+    (newVal) => {
+      controller.setResolutionsRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

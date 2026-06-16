@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-change-of-names">
+  <div
+    id="dcr-change-of-names"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @total-page-changed="emit('totalPageChanged')"
@@ -17,11 +20,8 @@
 </template>
 
 <script setup lang="ts">
-  import FurtherResolved from "./FurtherResolved.vue"
   import Resolution from "./Resolution.vue"
-  import NameReservations from "../NameReservations/NameReservations.vue"
   import { DcrChangeOfNamesController } from "~/scripts/components/resolutions/DcrChangeOfNamesController"
-  import { NameReservation } from "~/scripts/types/NameReservation"
   import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import type { CompanyAmendmentName } from "~/scripts/models/CompanyAmendmentName"
 
@@ -29,12 +29,13 @@
 
   const emit = defineEmits(["startLoading", "doneLoading", "totalPageChanged", "nameChanged", "signed"])
 
+  const documentRef = ref(null)
+
   const controller = new DcrChangeOfNamesController(props, emit)
 
   watch(
     () => props.applicationId,
     (newVal) => {
-      console.log("setting", newVal)
       controller.setApplicationId(newVal)
     }
   )
@@ -60,10 +61,19 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -19,7 +19,6 @@ export class DcrAppointChairmanController extends ResolutionController<CompanyDi
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
-  resolutionContent: Ref<string> = ref<string>("")
   originalTemplateContent: string = ""
 
   private documentTemplateId: string = "78a05874-5abd-4861-957d-f926cad896e7"

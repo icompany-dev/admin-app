@@ -13,6 +13,9 @@ import { Company } from "~/scripts/models/Company"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { PropsResolution } from "~/scripts/props/PropsResolution"
 import { ObjectUtil } from "~/scripts/utils/Object"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { DocumentTemplate } from "~/scripts/models/DocumentTemplate"
+import { TemplateProcessor } from "~/scripts/library/TemplateProcessor"
 
 export abstract class ResolutionController<T> {
   companyId: Ref<string> = ref<string>("")
@@ -31,6 +34,7 @@ export abstract class ResolutionController<T> {
 
   emitEvents: any | null = null
 
+  documentRef: any | null = null
   resolutionContentRef: any | null = null
 
   excludeResigningDirectors: boolean = false
@@ -45,6 +49,8 @@ export abstract class ResolutionController<T> {
   hasAccompanyingDocument = ref<boolean>(false)
   showWatermark = ref<boolean>(false)
   watermarkText = ref<string>("preview")
+
+  resolutionContent: Ref<string> = ref<string>("")
 
   constructor(
     companyId: string,
@@ -123,6 +129,10 @@ export abstract class ResolutionController<T> {
 
   setResolutionContentRef(resolutionContentRef: any | null): void {
     this.resolutionContentRef = resolutionContentRef
+  }
+
+  setDocumentRef(documentRef: any | null): void {
+    this.documentRef = documentRef
   }
 
   setIsInPreviewMode(isInPreviewMode: boolean): void {
@@ -433,5 +443,23 @@ export abstract class ResolutionController<T> {
       this.isUsingTemplate.value, //isUsingTemplate
       this.isLoading.value //isLoading
     )
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    let originalResolutionContent = this.resolutionContent.value
+    if (!StringUtil.isNullOrEmpty(this.resolutionContent.value)) {
+      let templateProcessor = new TemplateProcessor(null)
+      this.resolutionContent.value = templateProcessor.replaceInputsWithValues(this.resolutionContent.value)
+    }
+
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    this.resolutionContent.value = originalResolutionContent
+
+    return pdfPages
   }
 }

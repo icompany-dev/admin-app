@@ -34,7 +34,6 @@ export class DcrClosureOfBankAccountController extends ResolutionController<Comp
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
-  resolutionContent: Ref<string> = ref<string>("")
   originalTemplateContent: string = ""
 
   private documentTemplateId: string = "bfbad03b-45fe-41fb-a9d2-6cc6f7f8372b"

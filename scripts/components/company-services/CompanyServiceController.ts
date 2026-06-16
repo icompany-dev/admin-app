@@ -16,6 +16,8 @@ import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export abstract class CompanyServiceController<T> {
   companyId: string = ""
@@ -187,7 +189,7 @@ export abstract class CompanyServiceController<T> {
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetchAll()
         errorMessage.handle()
       }
@@ -216,7 +218,7 @@ export abstract class CompanyServiceController<T> {
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetchAll()
         errorMessage.handle()
       }
@@ -620,5 +622,25 @@ export abstract class CompanyServiceController<T> {
 
   async handleRevoke(): Promise<void> {
     //
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    let pages: HTMLElement[] = []
+
+    if (this.dcrRef) {
+      let dcrPages = await this.dcrRef.getPdfPages()
+      pages = pages.concat(dcrPages)
+    }
+
+    if (this.mcrRef) {
+      let mcrPages = await this.mcrRef.getPdfPages()
+      pages = pages.concat(mcrPages)
+    }
+
+    if (pages.length <= 0) {
+      return
+    }
+
+    await PdfPaperUtil.generatePdfFile(pages, 20, "Resolutions.pdf", PaperSize.A4, PaperOrientation.Portrait)
   }
 }

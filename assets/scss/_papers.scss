@@ -588,3 +588,13 @@
     background-color: var(--paper-tag-sign-bg-color);
   }
 }
+
+.is-printing {
+  .document-ear-mark {
+    display: none;
+  }
+
+  .document-watermark {
+    display: none;
+  }
+}

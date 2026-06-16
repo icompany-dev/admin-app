@@ -20,8 +20,6 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
   originalTemplateContent: string = ""
 
-  resolutionContent: Ref<string> = ref<string>("")
-
   constructor(props: IPropsResolutionDocument<CompanyAmendmentName>, emitEvents: any | null) {
     super(
       props.companyId,
@@ -134,18 +132,14 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
 
     let options = [
       `
-        <option value='${this.application.value.name1?.getCompleteName()}'>
-          ${this.application.value.name1?.getCompleteName()}
-        </option>
+        <option value='${this.application.value.name1?.getCompleteName()}' />
       `,
     ]
 
     if (this.application.value.name2) {
       options.push(
         `
-          <option value='${this.application.value.name2.getCompleteName()}'>
-            ${this.application.value.name2.getCompleteName()}
-          </option>
+          <option value='${this.application.value.name2.getCompleteName()}' />
         `
       )
     }
@@ -153,17 +147,16 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
     if (this.application.value.name3) {
       options.push(
         `
-          <option value='${this.application.value.name3.getCompleteName()}'>
-            ${this.application.value.name3.getCompleteName()}
-          </option>
+          <option value='${this.application.value.name3.getCompleteName()}' />
         `
       )
     }
 
     return `
-      <select name='newBusinessName' class='form-control in-resolution'>
+      <input name='newBusinessName' class='form-control in-resolution' value='${this.application.value.name1?.getCompleteName()}' list='dcrNameOptionsList'>
+      <datalist id='dcrNameOptionsList'>
         ${options.join("")}
-      </select>
+      </datalist>
     `
   }
 

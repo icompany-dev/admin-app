@@ -365,4 +365,35 @@ export class TemplateProcessor {
   replacePageBreaks(content: string): string {
     return content.replaceAll(TemplateProcessor.BREAKPAGE_MARKER, TemplateProcessor.BREAKPAGE_HTML)
   }
+
+  replaceInputsWithValues(content: string): string {
+    if (!content) return ""
+
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(content, "text/html")
+
+    const inputs = doc.querySelectorAll("input")
+
+    inputs.forEach((input) => {
+      if (!input.parentNode) {
+        return
+      }
+
+      const listId = input.getAttribute("list")
+      if (listId) {
+        const datalist = doc.getElementById(listId)
+        if (datalist) {
+          datalist.remove()
+        }
+      }
+
+      const spanElement = doc.createElement("span")
+      spanElement.className = "fit-content"
+      spanElement.textContent = input.value || ""
+
+      input.parentNode.replaceChild(spanElement, input)
+    })
+
+    return doc.body.innerHTML
+  }
 }

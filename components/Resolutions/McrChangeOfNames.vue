@@ -1,5 +1,8 @@
 <template>
-  <div id="mcr-change-of-names">
+  <div
+    id="mcr-change-of-names"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @total-page-changed="emit('totalPageChanged')"
@@ -32,6 +35,8 @@
 
   const props = defineProps<IPropsResolutionDocument<CompanyAmendmentName>>()
 
+  const documentRef = ref(null)
+
   const emit = defineEmits(["startLoading", "doneLoading", "totalPageChanged", "nameChanged", "signed"])
 
   const controller = new McrChangeOfNamesController(props, emit)
@@ -50,10 +55,19 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller), //Has to plus one always, because there is accompanying document
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

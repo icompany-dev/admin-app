@@ -10,10 +10,18 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
   isUpdatingApprovalStatus: Ref<boolean> = ref<boolean>(false)
 
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+
+  resolutionsRef: any | null = null
+
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(props.companyId, useCompanyAmendmentNameStore(), CompanyAmendmentName, emitEvents)
 
     this.minimumMajorityRequired.value = 0.5 // special resolution
+  }
+
+  setResolutionsRef(resolutionsRef: any): void {
+    this.resolutionsRef = resolutionsRef
   }
 
   onShowApprovalActionClicked(): void {
@@ -47,6 +55,22 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
       }
     } finally {
       this.isUpdatingApprovalStatus.value = false
+    }
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value || !this.resolutionsRef) {
+      return
+    }
+
+    try {
+      this.isDownloading.value = true
+
+      await this.resolutionsRef.onDownloadClicked()
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
     }
   }
 

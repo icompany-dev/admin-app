@@ -23,7 +23,6 @@ export class DcrEnterContractsController extends ResolutionController<CompanyCon
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
-  resolutionContent: Ref<string> = ref<string>("")
   originalTemplateContent: string = ""
 
   private documentTemplateId: string = "f517e315-e358-4f77-9e70-8576e502df20"

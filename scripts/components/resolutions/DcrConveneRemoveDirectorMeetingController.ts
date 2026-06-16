@@ -24,7 +24,6 @@ export class DcrConveneRemoveDirectorMeetingController extends ResolutionControl
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
-  resolutionContent: Ref<string> = ref<string>("")
   originalTemplateContent: string = ""
 
   private documentTemplateId: string = "827d74fa-6e92-474e-8878-2ccfb45be15f"
