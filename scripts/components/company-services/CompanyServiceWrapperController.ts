@@ -200,12 +200,14 @@ export class CompanyServiceWrapperController {
 
   enlarge(): void {
     this.isDocumentEnlarged.value = true
+    this.serviceWrapperConfig.value.isShowing = true
     document.body.style.overflow = "hidden"
   }
 
   minimize(applicationData: any): void {
     this.documentViewMode.value = ViewMode.Edit
     this.isDocumentEnlarged.value = false
+    this.serviceWrapperConfig.value.isShowing = false
     document.body.style.overflow = "auto"
     this.isSubmittingDocument.value = applicationData !== null
     this.emitEvents("minimized", applicationData)
@@ -475,7 +477,7 @@ export class CompanyServiceWrapperController {
     if (this.documentViewMode.value === ViewMode.Enlarged) {
       this.eventManager.setIsDocumentActive(false)
 
-      this.documentViewMode.value = ViewMode.Shrinking
+      // this.documentViewMode.value = ViewMode.Shrinking
       this.isShowOverlayInstruction.value = false
       setTimeout(() => {
         this.documentViewMode.value = ViewMode.Shrouded

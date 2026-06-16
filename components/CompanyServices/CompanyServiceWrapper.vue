@@ -108,17 +108,12 @@
         v-if="props.hasPaid"
       >
         <ServiceWrapper
-          v-bind="props.serviceWrapperProps"
+          v-bind="controller.serviceWrapperConfig.value"
           @minimize="controller.minimize($event)"
           @make-payment="controller.onMakePayment()"
           @applicationUpdated="controller.onApplicationUpdated($event)"
         />
       </div>
-      <OngoingApplicationAlert
-        ref="ongoingApplicationAlertRef"
-        @back="emit('back')"
-        @proceed="emit('goToExisting')"
-      />
     </Teleport>
   </div>
 </template>
