@@ -84,6 +84,13 @@
   })
 
   watch(
+    () => props.applicationId,
+    (newVal) => {
+      controller.fetchApplication(newVal)
+    }
+  )
+
+  watch(
     noticeRef,
     (newVal) => {
       controller.setNoticeRef(newVal)

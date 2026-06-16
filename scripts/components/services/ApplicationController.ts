@@ -61,6 +61,8 @@ export abstract class ApplicationController<Application> {
       this.isLoading.value = true
 
       await Promise.all([this.fetchOngoing(), this.fetchDirectors(), this.fetchShareholders()])
+
+      this.emitEvents("applicationId", this.application.value.id)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -78,6 +80,8 @@ export abstract class ApplicationController<Application> {
     this.companyId.value = companyId
 
     await Promise.all([this.fetchOngoing(), this.fetchDirectors(), this.fetchShareholders()])
+
+    this.emitEvents("applicationId", this.application.value.id)
   }
 
   async fetchOngoing(): Promise<void> {

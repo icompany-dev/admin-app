@@ -111,6 +111,7 @@
         <ChangeOfNameService
           :company-id="controller.companyId.value"
           :view-type="'existing'"
+          :application-id="controller.selectedApplicationId.value"
         />
       </div>
     </Transition>

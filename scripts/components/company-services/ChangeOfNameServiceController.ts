@@ -90,8 +90,8 @@ export class ChangeOfNameServiceController extends CompanyServiceController<Comp
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -120,8 +120,8 @@ export class ChangeOfNameServiceController extends CompanyServiceController<Comp
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -181,9 +181,7 @@ export class ChangeOfNameServiceController extends CompanyServiceController<Comp
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
-        errorMessage.handle()
+        // do something
       }
     } finally {
       this.isSubmitting.value = false
@@ -241,9 +239,7 @@ export class ChangeOfNameServiceController extends CompanyServiceController<Comp
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
-        errorMessage.handle()
+        // do something
       }
     } finally {
       this.isProposingNewName.value = false
@@ -252,39 +248,6 @@ export class ChangeOfNameServiceController extends CompanyServiceController<Comp
 
   onShowMoreTimelineClicked(): void {
     this.showMoreTimeline.value = !this.showMoreTimeline.value
-  }
-
-  helpTitle(): string {
-    return this.language.isMalay() ? "Ubah Nama Syarikat" : "Change of Company Name"
-  }
-
-  helpDescription(): string {
-    if (this.language.isMalay()) {
-      return `
-        Apabila sesebuah syarikat ingin menukar namanya, Seksyen 28 Akta Syarikat 2016 menyatakan bahawa ia mesti terlebih dahulu mendapatkan 
-        kelulusan pemegang saham melalui resolusi khas dan kemudian memaklumkan kepada SSM dalam tempoh tiga puluh hari. Setelah SSM menerima 
-        nama baharu dan mengeluarkan notis pendaftaran, pertukaran nama tersebut akan berkuat kuasa tanpa menjejaskan hak, kontrak atau obligasi 
-        syarikat.
-        <br><br>
-        Seksyen 30 menghendaki nama baharu dan nombor syarikat dipaparkan di pejabat, premis perniagaan dan pada semua dokumen syarikat, termasuk 
-        surat, invois, cek dan laman web. Selama dua belas bulan selepas pertukaran, nama lama juga mesti dipaparkan di bawah nama baharu supaya 
-        orang ramai dan rakan niaga dapat melihat dengan jelas kesinambungan syarikat tersebut.
-      `
-    }
-
-    return `
-      When a company wants to change its name, section 28 of the Companies Act 2016 says it must first get shareholder approval by way of a 
-      special resolution and then notify SSM within thirty days. Once SSM accepts the new name and issues the notice of registration, the change 
-      takes effect without affecting the company’s rights, contracts or obligations.
-      <br><br>
-      Section 30 requires the new name and company number to be displayed at the office, on business premises and on all company documents, 
-      including letters, invoices, cheques and websites. For twelve months after the change, the old name must also appear beneath the new 
-      one so the public and business partners can clearly see the continuity of the company.
-    `
-  }
-
-  override backLabel(): string {
-    return this.language.isMalay() ? "Kembali" : "Back"
   }
 
   slipCaseTitle(): string {

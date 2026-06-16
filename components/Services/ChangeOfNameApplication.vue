@@ -107,7 +107,7 @@
 
   const props = defineProps<IPropsApplication>()
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["applicationId"])
 
   const controller = new ChangeOfNameApplicationController(props, emit)
 

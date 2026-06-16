@@ -167,7 +167,7 @@ export class ChangeOfNameController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }

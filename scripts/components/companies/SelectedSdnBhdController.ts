@@ -23,6 +23,7 @@ export class SelectedSdnBhdController {
   isShareholders: Ref<boolean> = ref<boolean>(false)
   isAccounting: Ref<boolean> = ref<boolean>(false)
 
+  selectedApplicationId: Ref<string> = ref<string>("")
   selectedService: Ref<string> = ref<string>(CompanyConstants.TARGET_AMENDMENT_NAME)
 
   constructor(companyId: string, emitEvents: any) {
@@ -136,6 +137,10 @@ export class SelectedSdnBhdController {
     this.isShowApplicationDocuments.value = true
   }
 
+  onApplicationIdUpdated(id: string): void {
+    this.selectedApplicationId.value = id
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -189,7 +194,13 @@ export class SelectedSdnBhdController {
   }
 
   get serviceWrapperProps(): PropsServiceWrapper {
-    let props = new PropsServiceWrapper(this.companyId.value, this.selectedService.value, null, false, false)
+    let props = new PropsServiceWrapper(
+      this.companyId.value,
+      this.selectedService.value,
+      this.selectedApplicationId.value,
+      false,
+      false
+    )
 
     return props
   }
