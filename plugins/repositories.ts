@@ -2,7 +2,9 @@ import { AccessRoleRuleRepository } from "~/scripts/repositories/AccessRoleRuleR
 import { AccessRoleRepository } from "~/scripts/repositories/AccessRoleRepository"
 import { AccessRuleRepository } from "~/scripts/repositories/AccessRuleRepository"
 import { ActivityRegisterRepository } from "~/scripts/repositories/ActivityRegisterRepository"
+import { AdminPaymentReceivedRepository } from "~/scripts/repositories/AdminPaymentReceivedRepository"
 import { AdminSettingRepository } from "~/scripts/repositories/AdminSettingRepository"
+import { AdminToDoRepository } from "~/scripts/repositories/AdminToDoRepository"
 import { ApplicationIncorporateRepository } from "~/scripts/repositories/ApplicationIncorporateRepository"
 import { ApplicationNameReservationRepository } from "~/scripts/repositories/ApplicationNameReservationRepository"
 import { ApplicationSwitchRepository } from "~/scripts/repositories/ApplicationSwitchRepository"
@@ -176,7 +178,9 @@ interface Repositories {
   accessRoles: AccessRoleRepository
   accessRules: AccessRuleRepository
   activityRegisters: ActivityRegisterRepository
+  adminPaymentReceiveds: AdminPaymentReceivedRepository
   adminSettings: AdminSettingRepository
+  adminToDos: AdminToDoRepository
   applicationIncorporates: ApplicationIncorporateRepository
   applicationNameReservations: ApplicationNameReservationRepository
   applicationSwitches: ApplicationSwitchRepository
@@ -1249,7 +1253,9 @@ declare module "#app" {
       accessRoles: import("~/scripts/repositories/AccessRoleRepository").AccessRoleRepository
       accessRules: import("~/scripts/repositories/AccessRuleRepository").AccessRuleRepository
       activityRegisters: import("~/scripts/repositories/ActivityRegisterRepository").ActivityRegisterRepository
+      adminPaymentReceiveds: import("~/scripts/repositories/AdminPaymentReceivedRepository").AdminPaymentReceivedRepository
       adminSettings: import("~/scripts/repositories/AdminSettingRepository").AdminSettingRepository
+      adminToDos: import("~/scripts/repositories/AdminToDoRepository").AdminToDoRepository
       applicationIncorporates: import("~/scripts/repositories/ApplicationIncorporateRepository").ApplicationIncorporateRepository
       applicationNameReservations: import("~/scripts/repositories/ApplicationNameReservationRepository").ApplicationNameReservationRepository
       applicationSwitches: import("~/scripts/repositories/ApplicationSwitchRepository").ApplicationSwitchRepository
@@ -1427,7 +1433,9 @@ declare module "pinia" {
       accessRoles: import("~/scripts/repositories/AccessRoleRepository").AccessRoleRepository
       accessRules: import("~/scripts/repositories/AccessRuleRepository").AccessRuleRepository
       activityRegisters: import("~/scripts/repositories/ActivityRegisterRepository").ActivityRegisterRepository
+      adminPaymentReceiveds: import("~/scripts/repositories/AdminPaymentReceivedRepository").AdminPaymentReceivedRepository
       adminSettings: import("~/scripts/repositories/AdminSettingRepository").AdminSettingRepository
+      adminToDos: import("~/scripts/repositories/AdminToDoRepository").AdminToDoRepository
       applicationIncorporates: import("~/scripts/repositories/ApplicationIncorporateRepository").ApplicationIncorporateRepository
       applicationNameReservations: import("~/scripts/repositories/ApplicationNameReservationRepository").ApplicationNameReservationRepository
       applicationSwitches: import("~/scripts/repositories/ApplicationSwitchRepository").ApplicationSwitchRepository
