@@ -621,12 +621,6 @@
         </template>
       </Paper>
     </template>
-    <Teleport to="body">
-      <NonDirectorBankSignatory
-        ref="nonDirectorBankSignatoryRef"
-        @proceed="controller.onAddSignatory()"
-      />
-    </Teleport>
   </div>
 </template>
 
@@ -635,7 +629,6 @@
   import Paper from "@/components/Papers/Paper.vue"
   import BranchDropdown from "@/components/Banks/BranchDropdown.vue"
   import type { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"
-  import NonDirectorBankSignatory from "../Popups/NonDirectorBankSignatory.vue"
   import { DcrBankAccountOpeningHongLeongBankController } from "~/scripts/components/resolutions/DcrBankAccountOpeningHongLeongBankController"
   import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import { StringUtil } from "~/scripts/utils/String"
