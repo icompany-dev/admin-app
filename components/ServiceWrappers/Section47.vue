@@ -23,22 +23,10 @@
         />
       </TransitionGroup>
     </div>
-    <!-- <DocumentToggler :can-zoom-in="controller.canZoomIn()" :can-zoom-out="controller.canZoomOut()" @back="controller.onBackClicked()"
-      @remove="controller.onRemove()" @zoom-in="controller.onZoomInClicked()" @zoom-out="controller.onZoomOutClicked()">
-      <template #help>
-        <div class="help-title">
-          {{ controller.helpTitle() }}
-        </div>
-        <div class="help-description" v-html="controller.helpDescription()" />
-      </template>
-    </DocumentToggler> -->
-    <!-- <ServiceCta class="enlarged" @back="controller.onBackClicked()" @proceed="controller.onSubmitClicked()" /> -->
   </div>
 </template>
 
 <script setup lang="ts">
-  import DocumentToggler from "@/components/DocumentCtas/DocumentToggler.vue"
-  import ServiceCta from "../DocumentCtas/ServiceCta.vue"
   import DcrSection47 from "../Resolutions/DcrSection47.vue"
   import { Section47Controller } from "~/scripts/components/service-wrappers/Section47Controller"
 
