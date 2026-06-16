@@ -394,14 +394,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       config.public.apiBaseUrl,
       getAuthToken
     ),
-      getAuthToken
-    ),
-    applicationIncorporates: new ApplicationIncorporateRepository(
-      "application/incorporates",
-      "application/incorporate",
-      config.public.apiBaseUrl,
-      getAuthToken
-    ),
     applicationNameReservations: new ApplicationNameReservationRepository(
       "application/incorporate/name-reservations",
       "application/incorporate/name-reservation",
