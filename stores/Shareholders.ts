@@ -49,6 +49,22 @@ export const useShareholderStore = defineStore("shareholder", () => {
     }
   }
 
+  async function isShareholderForCompany(companyId: string): Promise<boolean> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.shareholders.isShareholderForCompany(companyId)
+      return response.is_shareholder ?? false
+    } catch (e: any) {
+      error.value = e.message || `Failed to check if user is a shareholder for company`
+      console.error(`Error to check shareholder`, e)
+      return false
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalShareholders = computed(() => shareholders.value.length)
 
   return {
@@ -60,5 +76,6 @@ export const useShareholderStore = defineStore("shareholder", () => {
     ...crudActions,
     fetchAllForUserByCompany,
     fetchAllForCompany,
+    isShareholderForCompany,
   }
 })

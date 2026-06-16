@@ -160,4 +160,10 @@ export class Shareholder implements IModel<Shareholder> {
 
     return new User(response)
   }
+
+  async setRegisteredUser(repository: ReturnType<typeof useUserStore>): Promise<void> {
+    let user = await this.getRegisteredUser(repository)
+
+    this.user = new User(user)
+  }
 }

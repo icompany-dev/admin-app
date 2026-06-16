@@ -2,21 +2,7 @@ import type { IModel } from "./IModel"
 import { Company } from "./Company"
 import { StringUtil } from "../utils/String"
 import { Bank } from "./Bank"
-export class BankBranch {
-  id: string = ""
-  name: string = ""
-  address: string = ""
-
-  constructor(data: any | null = null) {
-    if (!data) {
-      return
-    }
-
-    this.id = data.id || ""
-    this.name = data.name || ""
-    this.address = data.address || ""
-  }
-}
+import { BankBranch } from "~/scripts/models/BankBranch"
 
 export class CompanyBank implements IModel<CompanyBank> {
   id: string = ""

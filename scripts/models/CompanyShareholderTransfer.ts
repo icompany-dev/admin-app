@@ -41,7 +41,7 @@ export class CompanyShareholderTransfer
   toSignatureAlt: File | null = null
   toSignatureName: string | null = null
   toSignatureIdentification: string | null = null
-  isInitiatedByDirector: boolean = false
+  isInitiatedByDirector: boolean = true // set to true no matter the reasons
   isProceedWithLodgment: boolean = false
   isFullPaymentReceived: boolean = false
   isFullPaymentMade: boolean = false
@@ -204,7 +204,7 @@ export class CompanyShareholderTransfer
       shares_allotted: this.sharesToTransfer,
       price_per_share: this.pricePerShare,
       shares_type: this.shareType,
-      is_initiated_by_director: this.isInitiatedByDirector,
+      is_initiated_by_director: true, //this.isInitiatedByDirector,
       transfer_details: this.transferDetails.map((d: CompanyShareTransferDetail) => {
         return d.getRequestBody()
       }),

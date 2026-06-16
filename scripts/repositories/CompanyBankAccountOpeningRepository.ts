@@ -10,4 +10,16 @@ export class CompanyBankAccountOpeningRepository extends Repository<CompanyBankA
   ) {
     super(resourceUrl, singleResourceUrl, baseUrl, getAuthToken, CompanyBankAccountOpening)
   }
+
+  async addBankAccountNumber(id: string, accountNumber: string): Promise<any> {
+    try {
+      let data = {
+        account_number: accountNumber,
+      }
+      const response = await this.post<any>(`${this.singleResourceUrl}/account-number/${id}`, data)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

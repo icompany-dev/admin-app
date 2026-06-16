@@ -17,6 +17,17 @@ export class CompanyRepository extends Repository<Company> {
   override async fetchAll<Company>(filter: Filter): Promise<ApiRecord<Company>> {
     try {
       const slug = filter.getSlug()
+      const rawResponse: any = await this.get(`/api/all-companies${slug ? "?" + slug : ""}`)
+      const apiRecord = new ApiRecord<Company>(rawResponse, this.itemClassType as any)
+      return apiRecord
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async fetchAllAdmin<Company>(filter: Filter): Promise<ApiRecord<Company>> {
+    try {
+      const slug = filter.getSlug()
       const rawResponse: any = await this.get(`/api/sdnbhds/all${slug ? "?" + slug : ""}`)
       const apiRecord = new ApiRecord<Company>(rawResponse, this.itemClassType as any)
       return apiRecord

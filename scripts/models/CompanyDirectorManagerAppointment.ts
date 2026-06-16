@@ -74,6 +74,10 @@ export class CompanyDirectorManagerAppointment
   }
 
   canSubmit(): boolean {
+    if (this.roleName === "Chairman") {
+      return !StringUtil.isNullOrEmpty(this.companyId) && !StringUtil.isNullOrEmpty(this.name)
+    }
+
     return (
       !StringUtil.isNullOrEmpty(this.companyId) &&
       !StringUtil.isNullOrEmpty(this.name) &&

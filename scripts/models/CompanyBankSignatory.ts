@@ -1,6 +1,10 @@
 export class CompanyBankSignatory {
   id: string = ""
   name: string | null = null
+  nationality: string | null = null //HLB requires this
+  designation: string | null = null //HLB requires this
+  email: string | null = null //HLB requires this
+  phone: string | null = null //HLB requires this
   type: string | null = null
   identification: string | null = null
   role: string | null = null
@@ -22,6 +26,10 @@ export class CompanyBankSignatory {
   convertFromResponse(data: any): void {
     this.id = data.id
     this.name = data.name
+    this.nationality = data.nationality
+    this.designation = data.designation
+    this.email = data.email
+    this.phone = data.phone
     this.type = data.type
     this.identification = data.identification
     this.role = data.role
@@ -32,6 +40,10 @@ export class CompanyBankSignatory {
   clone(data: CompanyBankSignatory): void {
     this.id = data.id
     this.name = data.name
+    this.nationality = data.nationality
+    this.designation = data.designation
+    this.email = data.email
+    this.phone = data.phone
     this.type = data.type
     this.identification = data.identification
     this.role = data.role
@@ -42,6 +54,10 @@ export class CompanyBankSignatory {
   getRequestBody(): object {
     return {
       name: this.name,
+      nationality: this.nationality,
+      designation: this.designation,
+      email: this.email,
+      phone: this.phone,
       type: this.type,
       identification: this.identification,
       role: this.role,

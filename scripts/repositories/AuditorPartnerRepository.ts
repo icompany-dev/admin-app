@@ -29,7 +29,27 @@ export class AuditorPartnerRepository extends Repository<AuditorPartner> {
 
       const rawResponse: any = await this.get(`/api/auditor/all-partners${slug}`)
 
-      this.setWithExpiry(storageKey, rawResponse)
+      try {
+        this.setWithExpiry(storageKey, rawResponse)
+      } catch (storageError: any) {
+        if (storageError.name === "QuotaExceededError" || storageError.code === 22) {
+          console.warn("Cache quota full. Purging old auditor_partners keys...")
+
+          Object.keys(localStorage).forEach((key) => {
+            if (key.startsWith(this.CACHE_KEY_PREFIX)) {
+              localStorage.removeItem(key)
+            }
+          })
+
+          try {
+            this.setWithExpiry(storageKey, rawResponse)
+          } catch (_) {
+            console.error("Payload too large for localStorage even after purge. Skipping cache.")
+          }
+        } else {
+          throw storageError
+        }
+      }
 
       const apiRecord = new ApiRecord<AuditorPartner>(rawResponse, this.itemClassType as any)
       return apiRecord
@@ -53,7 +73,6 @@ export class AuditorPartnerRepository extends Repository<AuditorPartner> {
     const item = JSON.parse(itemStr)
     const now = Date.now()
 
-    // Compare the expiry time of the item with the current time
     if (now > item.expiry) {
       localStorage.removeItem(key)
       return null

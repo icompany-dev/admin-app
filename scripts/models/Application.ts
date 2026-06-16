@@ -17,6 +17,11 @@ export abstract class Application implements IApplication {
   updatedAt: string = ""
   deletedAt: string = ""
 
+  // this is for UI purposes
+  // We need this for linkage purposes. eg. Transfer of Shares & Register of Transfer
+  relatedApplicationId: string | null = null
+  relatedApplicationTarget: string | null = null
+
   protected convertFromResponse(data: any): void {
     this.id = data.id
     this.companyId = data.company_id ? data.company_id : data.company ? data.company?.id : ""

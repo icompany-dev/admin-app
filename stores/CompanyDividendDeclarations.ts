@@ -1,3 +1,7 @@
+export enum DividendDeclarationType {
+  Immediate = "immediate",
+  FourteenDays = "fourteen-days",
+}
 import { defineStore } from "pinia"
 import { useNuxtApp } from "#app"
 import { useStoreActions } from "~/stores/StoreActions"

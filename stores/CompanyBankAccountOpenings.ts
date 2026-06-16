@@ -18,6 +18,22 @@ export const useCompanyBankAccountOpeningStore = defineStore("companyBankAccount
     error: error,
   })
 
+  async function addBankAccountNumber(id: string, accountNumber: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companyBankAccountOpenings.addBankAccountNumber(id, accountNumber)
+      return response.data ?? null
+    } catch (e: any) {
+      error.value = e.message || "Failed to update bank account number"
+      console.error("Error updating bank account number", e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanyBankAccountOpenings = computed(() => companyBankAccountOpenings.value.length)
 
   return {
@@ -27,5 +43,6 @@ export const useCompanyBankAccountOpeningStore = defineStore("companyBankAccount
     error,
     totalCompanyBankAccountOpenings,
     ...crudActions,
+    addBankAccountNumber,
   }
 })
