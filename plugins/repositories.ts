@@ -2,9 +2,7 @@ import { AccessRoleRuleRepository } from "~/scripts/repositories/AccessRoleRuleR
 import { AccessRoleRepository } from "~/scripts/repositories/AccessRoleRepository"
 import { AccessRuleRepository } from "~/scripts/repositories/AccessRuleRepository"
 import { ActivityRegisterRepository } from "~/scripts/repositories/ActivityRegisterRepository"
-import { AdminPaymentReceivedRepository } from "~/scripts/repositories/AdminPaymentReceivedRepository"
 import { AdminSettingRepository } from "~/scripts/repositories/AdminSettingRepository"
-import { AdminToDoRepository } from "~/scripts/repositories/AdminToDoRepository"
 import { ApplicationIncorporateRepository } from "~/scripts/repositories/ApplicationIncorporateRepository"
 import { ApplicationNameReservationRepository } from "~/scripts/repositories/ApplicationNameReservationRepository"
 import { ApplicationSwitchRepository } from "~/scripts/repositories/ApplicationSwitchRepository"
@@ -155,7 +153,6 @@ import { PostcodeRepository } from "~/scripts/repositories/PostcodeRepository"
 import { ProductRepository } from "~/scripts/repositories/ProductRepository"
 import { ProgressRepository } from "~/scripts/repositories/ProgressRepository"
 import { PublicRepository } from "~/scripts/repositories/PublicRepository"
-import { PurchasedDocumentTemplateRepository } from "~/scripts/repositories/PurchasedDocumentTemplateRepository"
 import { SearchComplianceRepository } from "~/scripts/repositories/SearchComplianceRepository"
 import { ServicePricingRepository } from "~/scripts/repositories/ServicePricingRepository"
 import { ServiceToPayRepository } from "~/scripts/repositories/ServiceToPayRepository"
@@ -172,15 +169,14 @@ import { UserInvitationRepository } from "~/scripts/repositories/UserInvitationR
 import { UserRepository } from "~/scripts/repositories/UserRepository"
 import { WiseAiRepository } from "~/scripts/repositories/WiseAiRepository"
 import { useCookie } from "#app"
+import { PurchasedDocumentTemplateRepository } from "~/scripts/repositories/PurchasedDocumentTemplateRepository"
 
 interface Repositories {
   accessRoleRules: AccessRoleRuleRepository
   accessRoles: AccessRoleRepository
   accessRules: AccessRuleRepository
   activityRegisters: ActivityRegisterRepository
-  adminPaymentReceiveds: AdminPaymentReceivedRepository
   adminSettings: AdminSettingRepository
-  adminToDos: AdminToDoRepository
   applicationIncorporates: ApplicationIncorporateRepository
   applicationNameReservations: ApplicationNameReservationRepository
   applicationSwitches: ApplicationSwitchRepository
@@ -392,6 +388,14 @@ export default defineNuxtPlugin((nuxtApp) => {
       getAuthToken
     ),
     adminToDos: new AdminToDoRepository("admin/to-dos", "admin/to-do", config.public.apiBaseUrl, getAuthToken),
+    applicationIncorporates: new ApplicationIncorporateRepository(
+      "application/incorporates",
+      "application/incorporate",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
+      getAuthToken
+    ),
     applicationIncorporates: new ApplicationIncorporateRepository(
       "application/incorporates",
       "application/incorporate",
@@ -1253,9 +1257,7 @@ declare module "#app" {
       accessRoles: import("~/scripts/repositories/AccessRoleRepository").AccessRoleRepository
       accessRules: import("~/scripts/repositories/AccessRuleRepository").AccessRuleRepository
       activityRegisters: import("~/scripts/repositories/ActivityRegisterRepository").ActivityRegisterRepository
-      adminPaymentReceiveds: import("~/scripts/repositories/AdminPaymentReceivedRepository").AdminPaymentReceivedRepository
       adminSettings: import("~/scripts/repositories/AdminSettingRepository").AdminSettingRepository
-      adminToDos: import("~/scripts/repositories/AdminToDoRepository").AdminToDoRepository
       applicationIncorporates: import("~/scripts/repositories/ApplicationIncorporateRepository").ApplicationIncorporateRepository
       applicationNameReservations: import("~/scripts/repositories/ApplicationNameReservationRepository").ApplicationNameReservationRepository
       applicationSwitches: import("~/scripts/repositories/ApplicationSwitchRepository").ApplicationSwitchRepository
@@ -1357,6 +1359,7 @@ declare module "#app" {
       companyNameRegisters: import("~/scripts/repositories/CompanyNameRegisterRepository").CompanyNameRegisterRepository
       companyNameReservations: import("~/scripts/repositories/CompanyNameReservationRepository").CompanyNameReservationRepository
       companyNoConstitutionDeclarations: import("~/scripts/repositories/CompanyNoConstitutionDeclarationRepository").CompanyNoConstitutionDeclarationRepository
+      companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companyNotifyChangeOfNames: import("~/scripts/repositories/CompanyNotifyChangeOfNameRepository").CompanyNotifyChangeOfNameRepository
       companyOfficialSeals: import("~/scripts/repositories/CompanyOfficialSealRepository").CompanyOfficialSealRepository
       companyOutstandings: import("~/scripts/repositories/CompanyOutstandingRepository").CompanyOutstandingRepository
@@ -1366,7 +1369,6 @@ declare module "#app" {
       companyPreferenceShareTermFinancials: import("~/scripts/repositories/CompanyPreferenceShareTermFinancialRepository").CompanyPreferenceShareTermFinancialRepository
       companyPreferenceShareTermGovernances: import("~/scripts/repositories/CompanyPreferenceShareTermGovernanceRepository").CompanyPreferenceShareTermGovernanceRepository
       companyPreferenceShareTerms: import("~/scripts/repositories/CompanyPreferenceShareTermRepository").CompanyPreferenceShareTermRepository
-      companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository
@@ -1433,9 +1435,7 @@ declare module "pinia" {
       accessRoles: import("~/scripts/repositories/AccessRoleRepository").AccessRoleRepository
       accessRules: import("~/scripts/repositories/AccessRuleRepository").AccessRuleRepository
       activityRegisters: import("~/scripts/repositories/ActivityRegisterRepository").ActivityRegisterRepository
-      adminPaymentReceiveds: import("~/scripts/repositories/AdminPaymentReceivedRepository").AdminPaymentReceivedRepository
       adminSettings: import("~/scripts/repositories/AdminSettingRepository").AdminSettingRepository
-      adminToDos: import("~/scripts/repositories/AdminToDoRepository").AdminToDoRepository
       applicationIncorporates: import("~/scripts/repositories/ApplicationIncorporateRepository").ApplicationIncorporateRepository
       applicationNameReservations: import("~/scripts/repositories/ApplicationNameReservationRepository").ApplicationNameReservationRepository
       applicationSwitches: import("~/scripts/repositories/ApplicationSwitchRepository").ApplicationSwitchRepository
@@ -1537,6 +1537,7 @@ declare module "pinia" {
       companyNameRegisters: import("~/scripts/repositories/CompanyNameRegisterRepository").CompanyNameRegisterRepository
       companyNameReservations: import("~/scripts/repositories/CompanyNameReservationRepository").CompanyNameReservationRepository
       companyNoConstitutionDeclarations: import("~/scripts/repositories/CompanyNoConstitutionDeclarationRepository").CompanyNoConstitutionDeclarationRepository
+      companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companyNotifyChangeOfNames: import("~/scripts/repositories/CompanyNotifyChangeOfNameRepository").CompanyNotifyChangeOfNameRepository
       companyOfficialSeals: import("~/scripts/repositories/CompanyOfficialSealRepository").CompanyOfficialSealRepository
       companyOutstandings: import("~/scripts/repositories/CompanyOutstandingRepository").CompanyOutstandingRepository
@@ -1546,7 +1547,6 @@ declare module "pinia" {
       companyPreferenceShareTermFinancials: import("~/scripts/repositories/CompanyPreferenceShareTermFinancialRepository").CompanyPreferenceShareTermFinancialRepository
       companyPreferenceShareTermGovernances: import("~/scripts/repositories/CompanyPreferenceShareTermGovernanceRepository").CompanyPreferenceShareTermGovernanceRepository
       companyPreferenceShareTerms: import("~/scripts/repositories/CompanyPreferenceShareTermRepository").CompanyPreferenceShareTermRepository
-      companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository

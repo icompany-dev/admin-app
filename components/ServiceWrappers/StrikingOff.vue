@@ -47,12 +47,6 @@
         />
       </TransitionGroup>
     </div>
-    <Teleport to="body">
-      <SignAllConfirmation
-        ref="signAllPopupRef"
-        @proceed="controller.onSignAll()"
-      />
-    </Teleport>
   </div>
 </template>
 
@@ -63,7 +57,6 @@
   import StrikingOffChecklist from "~/components/LegalDocuments/StrikingOffChecklist.vue"
   import StrikingOffClearanceLetter from "~/components/LegalDocuments/StrikingOffClearanceLetter.vue"
   import StrikingOffSupportingLetter from "~/components/LegalDocuments/StrikingOffSupportingLetter.vue"
-  import SignAllConfirmation from "../Popups/SignAllConfirmation.vue"
   import { StrikingOffController } from "~/scripts/components/service-wrappers/StrikingOffController"
 
   const props = defineProps({

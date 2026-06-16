@@ -99,57 +99,9 @@
   import UseCommonSealAbroad from "./UseCommonSealAbroad.vue"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import { ServiceWrapperController } from "~/scripts/components/service-wrappers/ServiceWrapperController"
+  import type { IPropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
 
-  const props = defineProps({
-    companyId: {
-      type: String,
-      required: true,
-    },
-    target: {
-      type: String,
-      required: true,
-    },
-    targetId: {
-      type: String,
-      default: null,
-    },
-    isShowing: {
-      type: Boolean,
-      default: false,
-    },
-    isInPreviewMode: {
-      type: Boolean,
-      default: false,
-    },
-    showWatermarkText: {
-      type: Boolean,
-      default: true,
-    },
-    watermarkText: {
-      type: String,
-      default: "DRAFT",
-    },
-    yearToLodge: {
-      type: String,
-      default: "",
-    },
-    paperOrientation: {
-      type: String,
-      default: "portrait",
-    },
-    isByShareholder: {
-      type: Boolean,
-      default: false,
-    },
-    financialYearEndDate: {
-      type: String,
-      default: "",
-    },
-    financialYearStartDate: {
-      type: String,
-      default: "",
-    },
-  })
+  const props = defineProps<IPropsServiceWrapper>()
 
   const emit = defineEmits(["minimize", "makePayment", "applicationUpdated", "updateNonBO", "openCart"])
 

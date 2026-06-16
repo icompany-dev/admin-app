@@ -1,6 +1,8 @@
+import { CompanyConstants } from "~/scripts/constants/Company"
 import { Error } from "~/scripts/library/Error"
 import { Company } from "~/scripts/models/Company"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
+import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SelectedSdnBhdController {
@@ -20,6 +22,8 @@ export class SelectedSdnBhdController {
   isDocuments: Ref<boolean> = ref<boolean>(false)
   isShareholders: Ref<boolean> = ref<boolean>(false)
   isAccounting: Ref<boolean> = ref<boolean>(false)
+
+  selectedService: Ref<string> = ref<string>(CompanyConstants.TARGET_AMENDMENT_NAME)
 
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -127,6 +131,11 @@ export class SelectedSdnBhdController {
     // initiate switchout process
   }
 
+  onApplicationClicked(selectedService: string): void {
+    this.selectedService.value = selectedService
+    this.isShowApplicationDocuments.value = true
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -177,5 +186,11 @@ export class SelectedSdnBhdController {
 
   get applicationProps(): PropsApplication {
     return new PropsApplication(this.companyId.value)
+  }
+
+  get serviceWrapperProps(): PropsServiceWrapper {
+    let props = new PropsServiceWrapper(this.companyId.value, this.selectedService.value, null, false, false)
+
+    return props
   }
 }
