@@ -145,4 +145,11 @@ export class PaymentOrder implements IModel<PaymentOrder> {
 
     this.convertFromResponse(response)
   }
+
+  totalDiscount(): number {
+    return this.items.reduce((totalDiscount: number, item: PaymentOrderItem) => {
+      totalDiscount += Number(item.discountAmount)
+      return totalDiscount
+    }, 0)
+  }
 }

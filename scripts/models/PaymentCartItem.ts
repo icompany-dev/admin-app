@@ -1,4 +1,4 @@
-import { CtcConstants, DeliveryConstants } from "../constants/Payment"
+import { ControlledServicePricingId, CtcConstants, DeliveryConstants } from "../constants/Payment"
 import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
 import type { IModel } from "./IModel"
@@ -17,6 +17,7 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
   servicePricing: ServicePricing = new ServicePricing()
   additionalServicePricingIds: string[] = []
   additionalServicePricings: ServicePricing[] = []
+  quantity: number = 1
   targetType: string = ""
   targetId: string = ""
   target: any | null = null
@@ -73,13 +74,14 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
             return new ServicePricing(asp)
           })
         : []
+    this.quantity = data.quantity ?? 1
     this.targetType = data.target_type
     this.targetId = data.target_id
     this.target = _.cloneDeep(data.target)
     this.isExpressFilingRequired = data.is_express_filing_required
     this.expressFilingAmount = data.express_filing_amount
     this.isLateLodgement = data.is_late_lodgement
-    this.lateLodgementFees = data.late_lodgement_fees
+    this.lateLodgementFees = Number(data.late_lodgement_fees ?? 0)
     this.discountPercent = Number(data.discount_percent ?? 0)
     this.discountAmount = Number(data.discount_amount ?? 0)
     this.subtotal = Number(data.subtotal)
@@ -113,13 +115,14 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     this.additionalServicePricings = data.additionalServicePricings.map((asp: ServicePricing) => {
       return new ServicePricing(asp)
     })
+    this.quantity = data.quantity
     this.targetType = data.targetType
     this.targetId = data.targetId
     this.target = _.cloneDeep(data.target)
     this.isExpressFilingRequired = data.isExpressFilingRequired
     this.expressFilingAmount = data.expressFilingAmount
     this.isLateLodgement = data.isLateLodgement
-    this.lateLodgementFees = data.lateLodgementFees
+    this.lateLodgementFees = Number(data.lateLodgementFees)
     this.discountPercent = Number(data.discountPercent)
     this.discountAmount = Number(data.discountAmount)
     this.subtotal = Number(data.subtotal)
@@ -154,6 +157,9 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
       service_pricing_id: this.servicePricingId,
       target_type: this.targetType,
       target_id: this.targetId,
+      quantity: this.quantity,
+      discount_percent: this.discountPercent,
+      discount_amount: this.discountAmount,
       is_express_filing_required: this.isExpressFilingRequired,
       express_filing_amount: this.expressFilingAmount,
       is_late_lodgement: this.isLateLodgement,
@@ -187,13 +193,15 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
   }
 
   totalBreakdowns(): number {
-    return this.servicePricing.breakdowns
+    let total = this.servicePricing.breakdowns
       .map((bd: ServicePricingBreakdown) => {
         return bd.price
       })
       .reduce((a: number, b: number) => {
         return a + b
       }, 0)
+
+    return total * this.quantity
   }
 
   totalAdditionalService(): number {
@@ -213,13 +221,15 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
   }
 
   totalMandatories(): number {
-    return this.servicePricing.mandatoryServices
+    let total = this.servicePricing.mandatoryServices
       .map((ms: ServicePricingMandatory) => {
         return ms.basePrice ?? 0
       })
       .reduce((a: number, b: number) => {
         return a + b
       }, 0)
+
+    return total * this.quantity
   }
 
   totalAdditionalServicePricings(): number {
@@ -444,10 +454,31 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     return this.subtotal + Number(this.discountAmount ?? 0.0)
   }
 
+  setDiscountAmount(): void {
+    if (this.servicePricingId !== ControlledServicePricingId.YearlySubscription) {
+      return
+    }
+
+    if (this.quantity < 3) {
+      this.discountPercent = 0
+      this.discountAmount = 0
+      return
+    }
+
+    if (this.quantity < 5) {
+      this.discountPercent = 10
+      this.discountAmount = 0.1 * this.totalBreakdowns()
+    }
+
+    if (this.quantity === 5) {
+      this.discountPercent = 15
+      this.discountAmount = 0.15 * this.totalBreakdowns()
+    }
+  }
+
   setSubtotal(): void {
     this.subtotal =
       Number(this.totalBreakdowns()) +
-      // Number(this.totalAdditionalService()) + // This is already included in totalAdditionalServicePricings, so it will be double counted if we include this
       Number(this.totalMandatories()) +
       Number(this.totalAdditionalServicePricings()) +
       Number(this.cosecServiceFee()) +

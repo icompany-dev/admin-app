@@ -28,4 +28,13 @@ export class DirectorRepository extends Repository<Director> {
       throw error
     }
   }
+
+  async isDirectorForCompany(companyId: string): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.singleResourceUrl}/check/${companyId}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

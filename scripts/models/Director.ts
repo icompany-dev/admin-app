@@ -123,4 +123,19 @@ export class Director {
 
     return new User(response)
   }
+
+  async setRegisteredUser(repository: ReturnType<typeof useUserStore>): Promise<void> {
+    if (this.userId === null) {
+      return
+    }
+
+    const response = await repository.fetch(this.userId)
+    if (repository.error !== null) {
+      let error: Error = new Error("", "")
+      error.setForFetch()
+      throw error
+    }
+
+    this.user = new User(response)
+  }
 }

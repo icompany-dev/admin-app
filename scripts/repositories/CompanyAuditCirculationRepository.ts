@@ -11,11 +11,20 @@ export class CompanyAuditCirculationRepository extends Repository<CompanyAuditCi
     super(resourceUrl, singleResourceUrl, baseUrl, getAuthToken, CompanyAuditCirculation)
   }
 
-  async byAuditCycle(id: string): Promise<any> {
+  async byFinancialPeriod(companyId: string, financialPeriodId: string): Promise<any> {
     try {
       const response = this.get(
-        `${this.singleResourceUrl}/by-audit-cycle?audit_cycle_id=${id}`
+        `${this.singleResourceUrl}/by-financial-period/${companyId}?financial_period_id=${financialPeriodId}`
       )
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async byAuditCycle(id: string): Promise<any> {
+    try {
+      const response = this.get(`${this.singleResourceUrl}/by-audit-cycle?audit_cycle_id=${id}`)
       return response
     } catch (error) {
       throw error

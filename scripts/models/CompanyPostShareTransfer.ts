@@ -5,6 +5,7 @@ import { CompanyShareholderTransfer } from "./CompanyShareholderTransfer"
 import type { IModelApplication } from "./IModelApplication"
 import { StringUtil } from "../utils/String"
 import { Company } from "./Company"
+import { CompanyConstants } from "../constants/Company"
 
 export class CompanyPostShareTransfer
   extends Application
@@ -43,6 +44,9 @@ export class CompanyPostShareTransfer
     this.delayType = data.delay_type
     this.reason = data.reason
     this.shareTransfer = new CompanyShareholderTransfer(data.share_transfer_application)
+
+    this.relatedApplicationId = this.transferId
+    this.relatedApplicationTarget = CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES
   }
 
   cloneDetails(data: CompanyPostShareTransfer): void {
@@ -55,6 +59,9 @@ export class CompanyPostShareTransfer
     this.delayType = data.delayType
     this.reason = data.reason
     this.shareTransfer = new CompanyShareholderTransfer(data.shareTransfer)
+
+    this.relatedApplicationId = this.transferId
+    this.relatedApplicationTarget = CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES
   }
 
   getRequestBody(): object {

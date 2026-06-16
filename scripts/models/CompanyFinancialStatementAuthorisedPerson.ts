@@ -55,11 +55,12 @@ export class CompanyFinancialStatementAuthorisedPerson
       financial_period_id: this.financialPeriodId,
       authorised_for_statutory: this.authorisedForStatutory,
       authorised_for_reports: this.authorisedForReports,
+      status: this.status,
     }
   }
 
   async create(repository: ReturnType<typeof useCompanyFinancialStatementAuthorisedPersonStore>): Promise<void> {
-    if (!this.canSubmit()) {
+    if (StringUtil.isNullOrEmpty(this.companyId)) {
       let error: Error = new Error("", "")
       error.setForIncompleteData()
       throw error

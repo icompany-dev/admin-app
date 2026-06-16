@@ -7,6 +7,8 @@ import { BankBranch } from "./BankBranch"
 import { CompanyBankSignatory } from "./CompanyBankSignatory"
 import type { IModelApplication } from "./IModelApplication"
 import { OnlineBanking } from "../types/banks/OnlineBanking"
+import { AllianceBankApplicationDetails } from "../types/banks/AllianceBankApplicationDetails"
+import { AffinBankApplicationDetails } from "../types/banks/AffinBankApplicationDetails"
 
 export class CompanyBankAccountOpening
   extends Application
@@ -23,6 +25,9 @@ export class CompanyBankAccountOpening
 
   onlineBanking: OnlineBanking[] = []
   signatoryType: string = "anyone"
+
+  allianceBankApplicationDetails: AllianceBankApplicationDetails | null = null
+  affinBankApplicationDetails: AffinBankApplicationDetails | null = null
 
   constructor(data: any | null = null) {
     super()
@@ -64,6 +69,14 @@ export class CompanyBankAccountOpening
       if (data.meta_data.type) {
         this.signatoryType = data.meta_data.type
       }
+
+      if (data.meta_data.alliance_bank_details) {
+        this.allianceBankApplicationDetails = new AllianceBankApplicationDetails(data.meta_data.alliance_bank_details)
+      }
+
+      if (data.meta_data.affin_bank_details) {
+        this.affinBankApplicationDetails = new AffinBankApplicationDetails(data.meta_data.affin_bank_details)
+      }
     }
   }
 
@@ -83,6 +96,15 @@ export class CompanyBankAccountOpening
       return new OnlineBanking(d)
     })
     this.signatoryType = data.signatoryType
+    this.allianceBankApplicationDetails =
+      data.allianceBankApplicationDetails !== null
+        ? new AllianceBankApplicationDetails(data.allianceBankApplicationDetails)
+        : null
+
+    this.affinBankApplicationDetails =
+      data.affinBankApplicationDetails !== null
+        ? new AffinBankApplicationDetails(data.affinBankApplicationDetails)
+        : null
   }
 
   getRequestBody(): object {
@@ -97,8 +119,15 @@ export class CompanyBankAccountOpening
       meta_data: {
         type: this.signatoryType,
         online_banking: this.onlineBanking,
+        ...(this.allianceBankApplicationDetails !== null && {
+          alliance_bank_details: this.allianceBankApplicationDetails,
+        }),
+        ...(this.affinBankApplicationDetails !== null && {
+          affin_bank_details: this.affinBankApplicationDetails,
+        }),
       },
       requirements: this.requirements,
+      status: this.status,
     }
   }
 
@@ -132,6 +161,26 @@ export class CompanyBankAccountOpening
 
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
+    if (repository.error) {
+      let error: Error = new Error("", "")
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponseDetails(response)
+  }
+
+  async addBankAccountNumber(
+    bankAccountNumber: string,
+    repository: ReturnType<typeof useCompanyBankAccountOpeningStore>
+  ): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error("", "")
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.addBankAccountNumber(this.id, bankAccountNumber)
     if (repository.error) {
       let error: Error = new Error("", "")
       error.setForCUD()
