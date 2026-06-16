@@ -719,19 +719,19 @@
         </div>
       </template>
     </Paper>
-    <Teleport to="body">
+    <!-- <Teleport to="body">
       <NonBeneficialOwner
         ref="nonBeneficialOwnerRef"
         @proceed="emit('updateNonBO', $event)"
       />
-    </Teleport>
+    </Teleport> -->
   </div>
 </template>
 
 <script setup lang="ts">
   import Paper from "../Papers/Paper.vue"
   import Signature from "@/components/Signatures/Signature.vue"
-  import NonBeneficialOwner from "../Popups/NonBeneficialOwner.vue"
+  // import NonBeneficialOwner from "../Popups/NonBeneficialOwner.vue"
   import { BODeclarationController } from "~/scripts/components/legal-documents/BODeclarationController"
   import { CriteriaType, OwnershipType } from "~/scripts/constants/BODeclarations"
   import { Gender } from "~/scripts/constants/UserProfile"

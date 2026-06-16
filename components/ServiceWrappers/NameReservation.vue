@@ -65,18 +65,18 @@
         />
       </TransitionGroup>
     </div>
-    <Teleport to="body">
+    <!-- <Teleport to="body">
       <DeleteApplication
         ref="deleteApplicationRef"
         :target-type="CompanyConstants.TARGET_APPLICATION_INCORPORATE"
         :target-id="controller.applicationIncorporateId.value"
       />
-    </Teleport>
+    </Teleport> -->
   </div>
 </template>
 
 <script setup lang="ts">
-  import DeleteApplication from "../Popups/DeleteApplication.vue"
+  // import DeleteApplication from "../Popups/DeleteApplication.vue"
   import NameReservationEmail from "../LegalDocuments/NameReservationEmail.vue"
   import Section27OneFour from "../LegalDocuments/Section27OneFour.vue"
   import { NameReservationController } from "~/scripts/components/service-wrappers/NameReservationController"

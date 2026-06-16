@@ -31,7 +31,7 @@
           @signed="controller.onSigned($event)"
           @preferenceShareSelected="controller.onPreferenceShareSelected()"
         />
-        <PreemptiveRightNotices
+        <!-- <PreemptiveRightNotices
           ref="notice"
           :company-id="props.companyId"
           :application-id="props.applicationId"
@@ -46,10 +46,10 @@
           :show-watermark="controller.showWatermark()"
           :watermark-text="controller.watermarkText()"
           @responded="controller.onResponded()"
-        />
+        /> -->
       </TransitionGroup>
     </div>
-    <Teleport to="body">
+    <!-- <Teleport to="body">
       <PreferenceShareAlertPopup
         ref="preferenceSharePopup"
         :has-constitution="controller.hasConstitution()"
@@ -57,14 +57,14 @@
         @cancel="controller.onCancelPreferenceShares()"
         @proceed="controller.onGoToConstitution()"
       />
-    </Teleport>
+    </Teleport> -->
   </div>
 </template>
 
 <script setup lang="ts">
   import DcrProposeAllotmentOfShares from "../Resolutions/DcrProposeAllotmentOfShares.vue"
-  import PreemptiveRightNotices from "../Shareholders/AllotmentOfShares/PreemptiveRightNotices.vue"
-  import PreferenceShareAlertPopup from "../Popups/PreferenceShareAlertPopup.vue"
+  // import PreemptiveRightNotices from "../Shareholders/AllotmentOfShares/PreemptiveRightNotices.vue"
+  // import PreferenceShareAlertPopup from "../Popups/PreferenceShareAlertPopup.vue"
   import { ShareIssuanceController } from "~/scripts/components/service-wrappers/ShareIssuanceController"
 
   const props = defineProps({
