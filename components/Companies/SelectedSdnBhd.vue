@@ -106,21 +106,11 @@
         </div>
       </TransitionGroup>
     </div>
-    <Transition name="slide-left">
-      <div class="document-container">
-        <ChangeOfNameService
-          :company-id="controller.companyId.value"
-          :view-type="'existing'"
-          :application-id="controller.selectedApplicationId.value"
-        />
-      </div>
-    </Transition>
   </div>
 </template>
 
 <script lang="ts" setup>
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
-  import ServiceWrapper from "@/components/ServiceWrappers/ServiceWrapper.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
   import { CompanyConstants } from "~/scripts/constants/Company"

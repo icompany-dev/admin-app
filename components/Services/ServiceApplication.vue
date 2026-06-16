@@ -3,16 +3,23 @@
     class="services-service-application"
     tag="div"
     name="expand"
-    @click.self="controller.onPanelClicked()"
   >
-    <div class="application-name">
-      {{ controller.serviceName.value }}
-    </div>
     <div
-      class="panel-content"
-      v-if="!controller.isCollapsed.value"
+      class="application-steps"
+      @click.self="controller.onPanelClicked()"
     >
-      <slot name="application"></slot>
+      <div class="application-name">
+        {{ controller.serviceName.value }}
+      </div>
+      <div
+        class="panel-content"
+        v-if="!controller.isCollapsed.value"
+      >
+        <slot name="application"></slot>
+      </div>
+    </div>
+    <div class="application-documents">
+      <slot name="documents" />
     </div>
   </TransitionGroup>
 </template>

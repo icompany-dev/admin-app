@@ -1,26 +1,43 @@
 .services-service-application {
   width: calc(100% - 60px);
-  padding: 30px;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 10px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
   gap: 15px;
 
-  .application-name {
-    font-size: 1.3rem;
-    line-height: 1.5rem;
-    font-weight: 600;
-  }
-
-  .panel-content {
-    width: 100%;
+  .application-steps {
+    flex: 1;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 10px;
+    gap: 15px;
+
+    .application-name {
+      font-size: 1.3rem;
+      line-height: 1.5rem;
+      font-weight: 600;
+    }
+
+    .panel-content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  }
+
+  .application-document {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
   }
 }

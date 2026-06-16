@@ -95,6 +95,13 @@
           </template>
         </ApplicationNode>
       </template>
+      <template #documents>
+        <ChangeOfNameService
+          :company-id="controller.companyId.value"
+          :view-type="'existing'"
+          :application-id="controller.application.value?.id ?? ''"
+        />
+      </template>
     </ServiceApplication>
   </div>
 </template>
@@ -102,6 +109,7 @@
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
   import ServiceApplication from "./ServiceApplication.vue"
+  import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import { ChangeOfNameApplicationController } from "~/scripts/components/services/ChangeOfNameApplicationController"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
 
