@@ -84,7 +84,3 @@
     isLoading: controller.isLoading.value,
   })
 </script>
-
-<style lang="scss">
-  @use "~/assets/scss/components/Resolutions/DcrConveneRemoveDirectorMeeting" as *;
-</style>

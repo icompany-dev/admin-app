@@ -138,7 +138,3 @@
     }
   )
 </script>
-
-<style lang="scss">
-  @use "~/assets/scss/components/LegalDocuments/NotifyBankChangeOfCompanyName" as *;
-</style>

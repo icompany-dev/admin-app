@@ -214,7 +214,3 @@
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
   })
 </script>
-
-<style lang="scss">
-  @use "~/assets/scss/components/Resolutions/McrTekunApplication" as *;
-</style>

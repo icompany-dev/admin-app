@@ -25,7 +25,6 @@
       </TransitionGroup>
     </div>
     <Teleport to="body">
-      <!-- <DocumentAutoSaveAlert ref="autoSaveAlertRef" /> -->
       <Transition name="slide-left">
         <div
           class="document-auto-saved"
@@ -52,7 +51,6 @@
   import BankIslamDocuments from "../Banks/Documents/BankIslamDocuments.vue"
   import AllianceBankDocuments from "../Banks/Documents/AllianceBankDocuments.vue"
   import AffinBankDocuments from "../Banks/Documents/AffinBankDocuments.vue"
-  import DocumentAutoSaveAlert from "@/components/Popups/DocumentAutoSaveAlert.vue"
   import { BankAccountOpeningController } from "~/scripts/components/service-wrappers/BankAccountOpeningController"
   import { BankConstants } from "~/scripts/constants/Banks"
 

@@ -974,12 +974,6 @@
         </template>
       </Paper>
     </template>
-    <Teleport to="body">
-      <NonDirectorBankSignatory
-        ref="nonDirectorBankSignatoryRef"
-        @proceed="controller.onAddMoreSignatory()"
-      />
-    </Teleport>
   </div>
 </template>
 
@@ -987,7 +981,6 @@
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Paper from "@/components/Papers/Paper.vue"
   import BranchDropdown from "@/components/Banks/BranchDropdown.vue"
-  import NonDirectorBankSignatory from "../Popups/NonDirectorBankSignatory.vue"
   import type { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"
   import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import { StringUtil } from "~/scripts/utils/String"
