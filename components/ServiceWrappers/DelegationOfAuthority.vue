@@ -61,8 +61,6 @@
 </template>
 
 <script setup lang="ts">
-  import DocumentToggler from "@/components/DocumentCtas/DocumentToggler.vue"
-  import ServiceCta from "../DocumentCtas/ServiceCta.vue"
   import DcrDelegationOfAuthority from "../Resolutions/DcrDelegationOfAuthority.vue"
   import { ChangeOfBranchController } from "~/scripts/components/service-wrappers/ChangeOfBranchController"
 

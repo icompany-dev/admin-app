@@ -85,7 +85,6 @@
 </template>
 
 <script setup lang="ts">
-  import DocumentToggler from "@/components/DocumentCtas/DocumentToggler.vue"
   import Switch from "../Forms/Switch.vue"
   import DcrPreferenceShareRight from "../Resolutions/DcrPreferenceShareRight.vue"
   import McrPreferenceShareRight from "../Resolutions/McrPreferenceShareRight.vue"

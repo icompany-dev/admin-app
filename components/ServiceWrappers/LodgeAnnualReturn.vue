@@ -38,18 +38,10 @@
         />
       </TransitionGroup>
     </div>
-
-    <Teleport to="body">
-      <ComplianceAlertAnnualReturnLodgement
-        ref="popupAnnualReturnLodgementRef"
-        @back="emit('back')"
-      />
-    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-  import ComplianceAlertAnnualReturnLodgement from "~/components/Popups/ComplianceAlertAnnualReturnLodgement.vue"
   import DcrLodgeAnnualReturn from "../Resolutions/DcrLodgeAnnualReturn.vue"
   import Section68 from "../LegalDocuments/Section68.vue"
   import { LodgeAnnualReturnController } from "~/scripts/components/service-wrappers/LodgeAnnualReturnController"

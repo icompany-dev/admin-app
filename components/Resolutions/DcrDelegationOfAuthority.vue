@@ -389,14 +389,14 @@
       </template>
     </Resolution>
 
-    <Teleport to="body">
+    <!-- <Teleport to="body">
       <DelegationWarning
         ref="delegationWarningPopupRef"
         target-type="delegation"
         target-id="new"
         @success="controller.addDelegateTo()"
       />
-    </Teleport>
+    </Teleport> -->
   </div>
 </template>
 
@@ -405,7 +405,7 @@
   import { StringUtil } from "~/scripts/utils/String"
   import Resolution from "./Resolution.vue"
   import { DcrDelegationOfAuthorityController } from "~/scripts/components/resolutions/DcrDelegationOfAuthorityController"
-  import DelegationWarning from "~/components/Popups/DelegationWarning.vue"
+  // import DelegationWarning from "~/components/Popups/DelegationWarning.vue"
   import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import type { CompanyDelegationOfAuthority } from "~/scripts/models/CompanyDelegationOfAuthority"
 
