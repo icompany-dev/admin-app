@@ -117,7 +117,7 @@ export class TemplateProcessor {
 
     let processedContent = this.template.postSignatureContent
     processedContent = this.#replaceGenericPlaceholders(processedContent, data)
-    processedContent = this.#replaceInputWithPlaceholders(processedContent, data)
+    processedContent = this.#replaceInputPlaceholders(processedContent, data)
     processedContent = this.#replaceHtmlTags(processedContent)
 
     return processedContent
