@@ -6,57 +6,11 @@
       @signed="emit('signed', $event)"
     >
       <template #page1>
-        <p>
-          <b>WHEREAS:</b>
-          <br />
-          <br />
-          The Board of Directors has proposed a change of the Company’s name, which is conditional upon the members’
-          approval by special resolution and upon the passing of such resolution, the Company shall lodge the necessary
-          with the Registrar within thirty (30) days pursuant to Section 28 of the Companies Act 2016.
-        </p>
-        <p>
-          <b>IT IS HEREBY RESOLVED:</b>
-          <br />
-          <br />
-          <b>CIRCULATION OF MEMBERS' WRITTEN RESOLUTION TO OBTAIN APPROVAL ON THE CHANGE OF COMPANY'S NAME</b>
-        </p>
-        <p>
-          <b>THAT</b>
-          the Directors be and are hereby authorised to propose, circulate and take all necessary steps to obtain the
-          members’ approval of the following resolution pursuant to Section 300 of the Act:
-        </p>
-        <div class="blockquote">
-          <b>SPECIAL RESOLUTION</b>
-          <br />
-          <b>CHANGE OF COMPANY'S NAME</b>
-          <br />
-          <br />
-          THAT the name of the Company,
-          <span class="company-names">{{ controller.companyName() }}</span>
-          be changed to
-          <span
-            v-if="!controller.isDocumentEditable()"
-            class="company-names"
-            :class="{ placeholder: controller.isInPreviewMode.value }"
-          >
-            {{ controller.namesToChangeTo() }}
-          </span>
-          <div
-            v-if="controller.isDocumentEditable()"
-            class="set-company-names"
-          >
-            <NameReservations
-              :name-reservations="controller.nameReservations.value"
-              :is-disabled="props.isInPreviewMode"
-              @addName="controller.handleNumberOfNamesChanged($event)"
-              @removeName="controller.handleNumberOfNamesChanged($event)"
-              @nameChanges="controller.handleNameChanges($event)"
-            />
-          </div>
-          with effect from the date as stipulated by the Registrar in the Notice of Registration on Change of Name of
-          Company.
-        </div>
-        <FurtherResolved />
+        <div
+          ref="resolutionContent"
+          class="resolution-content"
+          v-html="controller.resolutionContent.value"
+        />
       </template>
     </Resolution>
   </div>
@@ -89,13 +43,6 @@
     () => props.isInPreviewMode,
     (newVal) => {
       controller.setIsInPreviewMode(newVal)
-    }
-  )
-
-  watch(
-    () => props.nameReservations,
-    (newVal) => {
-      controller.setNameReservations(newVal)
     }
   )
 
