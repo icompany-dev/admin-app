@@ -374,6 +374,21 @@ export class TemplateProcessor {
 
     const inputs = doc.querySelectorAll("input")
 
+    const formatDateString = (dateStr: string): string => {
+      if (!dateStr || !dateStr.includes("-")) return dateStr
+      const dateObj = new Date(dateStr)
+
+      // Check if it's a valid date object
+      if (isNaN(dateObj.getTime())) return dateStr
+
+      // Fast, modern native formatting engine
+      return new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(dateObj)
+    }
+
     inputs.forEach((input) => {
       if (!input.parentNode) {
         return
@@ -387,10 +402,34 @@ export class TemplateProcessor {
         }
       }
 
+      let inputValue = input.value || ""
+
+      if (
+        input.getAttribute("type") === "date" ||
+        (inputValue.length === 10 && inputValue.match(/^\d{4}-\d{2}-\d{2}$/))
+      ) {
+        inputValue = formatDateString(inputValue)
+      }
+
       const spanElement = doc.createElement("span")
-      spanElement.textContent = input.value || ""
+      spanElement.textContent = inputValue
 
       input.parentNode.replaceChild(spanElement, input)
+    })
+
+    const selects = doc.querySelectorAll("select")
+    selects.forEach((select) => {
+      if (!select.parentNode) {
+        return
+      }
+
+      const selectedOption = select.querySelector("option[selected]") || select.querySelector("option")
+      const selectValue = selectedOption ? selectedOption.textContent?.trim() : select.value
+
+      const spanElement = doc.createElement("span")
+      spanElement.textContent = selectValue || ""
+
+      select.parentNode.replaceChild(spanElement, select)
     })
 
     const remainingDatalists = doc.querySelectorAll("datalist")

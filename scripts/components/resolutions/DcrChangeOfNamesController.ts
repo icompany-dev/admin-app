@@ -132,14 +132,18 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
 
     let options = [
       `
-        <option value='${this.application.value.name1?.getCompleteName()}' />
+        <option value='${this.application.value.name1?.getCompleteName()}'>
+          ${this.application.value.name1?.getCompleteName()}
+        </option>
       `,
     ]
 
     if (this.application.value.name2) {
       options.push(
         `
-          <option value='${this.application.value.name2.getCompleteName()}' />
+          <option value='${this.application.value.name2.getCompleteName()}'>
+            ${this.application.value.name2.getCompleteName()}
+          </option>
         `
       )
     }
@@ -147,16 +151,17 @@ export class DcrChangeOfNamesController extends ResolutionController<CompanyAmen
     if (this.application.value.name3) {
       options.push(
         `
-          <option value='${this.application.value.name3.getCompleteName()}' />
+          <option value='${this.application.value.name3.getCompleteName()}'>
+            ${this.application.value.name3.getCompleteName()}
+          </option>
         `
       )
     }
 
     return `
-      <input name='newBusinessName' class='form-control in-resolution' value='${this.application.value.name1?.getCompleteName()}' list='dcrNameOptionsList'>
-      <datalist id='dcrNameOptionsList'>
+      <select name='newBusinessName' class='form-control in-resolution'>
         ${options.join("")}
-      </datalist>
+      </select>
     `
   }
 
