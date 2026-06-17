@@ -4,10 +4,13 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: stretch;
-  gap: 30px;
+  gap: 20px;
+  transition: all 0.5s ease;
+  cursor: pointer;
 
   .node-container {
     padding-top: 22px;
+    padding-left: 15px;
 
     .node {
       position: relative;
@@ -20,7 +23,7 @@
       &::before {
         content: ' ';
         position: absolute;
-        top: -22px;
+        top: -12px;
         left: -7px;
         width: 11px;
         height: 11px;
@@ -32,7 +35,7 @@
       &::after {
         content: ' ';
         position: absolute;
-        top: -25px;
+        top: -15px;
         left: -10px;
         width: 15px;
         height: 15px;
@@ -50,11 +53,21 @@
     align-items: flex-start;
     gap: 10px;
     width: calc(100% - 200px);
+    padding: 10px 0;
 
     .node-title {
       font-size: 1.1rem;
       font-weight: 600;
     }
+  }
+
+  .node-options {
+    padding: 10px 0;
+  }
+
+  .node-actions {
+    padding: 10px 15px;
+    padding-left: 0;
   }
 
   &.is-selected {
@@ -86,5 +99,10 @@
     .node-content {
       opacity: 1;
     }
+  }
+
+  &.is-showing-document {
+    background-color: rgba(var(--bs-icompany-purple-rgb), 0.2);
+    border-radius: 5px;
   }
 }

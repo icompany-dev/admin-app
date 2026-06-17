@@ -2,7 +2,10 @@
   <div id="services-change-of-name-application">
     <ServiceApplication v-bind="controller.serviceApplicationProps">
       <template #application>
-        <ApplicationNode v-bind="controller.approvalApplicationNodeProps">
+        <ApplicationNode
+          v-bind="controller.approvalApplicationNodeProps"
+          @click="controller.onApprovalStepClicked()"
+        >
           <template #nodeContent>
             <div class="approval-container">
               <span class="node-title">{{ controller.approvalLabel }}</span>
@@ -95,7 +98,10 @@
             </div>
           </template>
         </ApplicationNode>
-        <ApplicationNode v-bind="controller.nameReservationNodeProps">
+        <ApplicationNode
+          v-bind="controller.nameReservationNodeProps"
+          @click="controller.onApplicationOfNameReservationClicked()"
+        >
           <template #nodeContent>
             <div class="application-container">
               <div class="node-title">{{ controller.nameReservationLabel }}</div>

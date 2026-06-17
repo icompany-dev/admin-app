@@ -4,6 +4,7 @@
     :class="{
       'is-selected': props.isInFocused,
       'is-completed': props.isCompleted,
+      'is-showing-document': props.isShowDocument,
     }"
   >
     <div class="node-container">

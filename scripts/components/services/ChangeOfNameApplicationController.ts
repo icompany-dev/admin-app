@@ -12,6 +12,9 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   isDownloading: Ref<boolean> = ref<boolean>(false)
 
+  isShowResolutions: Ref<boolean> = ref<boolean>(true)
+  isShowSection27: Ref<boolean> = ref<boolean>(false)
+
   resolutionsRef: any | null = null
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
@@ -74,6 +77,16 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     }
   }
 
+  onApprovalStepClicked(): void {
+    this.isShowResolutions.value = true
+    this.isShowSection27.value = false
+  }
+
+  onApplicationOfNameReservationClicked(): void {
+    this.isShowResolutions.value = false
+    this.isShowSection27.value = true
+  }
+
   // getters
   get serviceName(): string {
     return this.language.isMalay() ? "Tukar Nama Syarikat" : "Change Company Name"
@@ -112,7 +125,11 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   get approvalApplicationNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(!this.isShareholderSignatureCompleted, this.isShareholderSignatureCompleted)
+    return new PropsServiceApplicationNode(
+      !this.isShareholderSignatureCompleted,
+      this.isShareholderSignatureCompleted,
+      this.isShowResolutions.value
+    )
   }
 
   get isNameReservationSubmitted(): boolean {
@@ -128,7 +145,11 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   get nameReservationNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.isShareholderSignatureCompleted, this.isNameReservationSubmitted)
+    return new PropsServiceApplicationNode(
+      this.isShareholderSignatureCompleted,
+      this.isNameReservationSubmitted,
+      this.isShowSection27.value
+    )
   }
 
   get approvalActionLabel(): string {
