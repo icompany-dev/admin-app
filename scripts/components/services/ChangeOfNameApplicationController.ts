@@ -63,19 +63,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   async onDownloadClicked(): Promise<void> {
-    if (this.isDownloading.value || !this.resolutionsRef) {
-      return
-    }
-
-    try {
-      this.isDownloading.value = true
-
-      await this.resolutionsRef.onDownloadClicked()
-    } catch (e) {
-      console.error(e)
-    } finally {
-      this.isDownloading.value = false
-    }
+    this.emitEvents("download")
   }
 
   onApprovalStepClicked(): void {

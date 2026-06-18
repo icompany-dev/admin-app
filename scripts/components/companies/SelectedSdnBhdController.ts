@@ -28,6 +28,9 @@ export class SelectedSdnBhdController {
   selectedService: Ref<string> = ref<string>(CompanyConstants.TARGET_AMENDMENT_NAME)
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
 
+  documentRef: any | null = null
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
@@ -41,6 +44,10 @@ export class SelectedSdnBhdController {
 
     this.companyId.value = companyId
     await this.fetchCompany()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async fetchCompany(): Promise<void> {
@@ -145,6 +152,22 @@ export class SelectedSdnBhdController {
 
   onDocumentTargetSelected(target: string): void {
     this.selectedDocumentTarget.value = target
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value || !this.documentRef) {
+      return
+    }
+
+    try {
+      this.isDownloading.value = true
+
+      await this.documentRef.onDownloadClicked()
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+    }
   }
 
   get hasCompanyLogo(): boolean {

@@ -106,6 +106,7 @@
             v-bind="controller.applicationProps"
             @applicationId="controller.onApplicationIdUpdated($event)"
             @documentSelected="controller.onDocumentTargetSelected($event)"
+            @download="controller.onDownloadClicked()"
           />
         </div>
       </TransitionGroup>
@@ -116,6 +117,7 @@
         v-if="controller.showDocument"
       >
         <component
+          ref="documentRef"
           :is="activeDocumentComponent"
           :company-id="controller.companyId.value"
           :view-type="'existing'"
@@ -142,6 +144,8 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
   const componentMap: Record<string, any> = {
@@ -157,6 +161,10 @@
     () => props.companyId,
     (newVal) => [controller.setCompanyId(newVal)]
   )
+
+  watch(documentRef, (newVal) => {
+    controller.setDocumentRef(newVal)
+  })
 </script>
 
 <style lang="scss">

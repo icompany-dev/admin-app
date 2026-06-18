@@ -131,7 +131,7 @@
 
   const props = defineProps<IPropsApplication>()
 
-  const emit = defineEmits(["applicationId", "documentSelected"])
+  const emit = defineEmits(["applicationId", "documentSelected", "download"])
 
   const resolutionsRef = ref(null)
 
