@@ -202,12 +202,7 @@ export abstract class ServiceController {
   }
 
   onBackClicked(): void {
-    let application = null
-    if (this.dcrRef) {
-      application = this.dcrRef.getApplication() ?? null
-    }
-
-    this.emitEvents("back", application)
+    this.emitEvents("back")
   }
 
   onZoomInClicked(): void {

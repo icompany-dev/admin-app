@@ -15,14 +15,10 @@
         <DcrChangeOfNames
           ref="dcrRef"
           v-bind="controller.resolutionDocumentProps"
-          @name-changed="controller.onNamesSet($event)"
-          @signed="controller.onSigned($event)"
         />
         <McrChangeOfNames
           ref="mcrRef"
           v-bind="controller.resolutionDocumentProps"
-          @name-changed="controller.onNamesSet($event)"
-          @signed="controller.onSigned($event)"
         />
       </TransitionGroup>
     </div>

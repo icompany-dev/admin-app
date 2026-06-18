@@ -375,13 +375,15 @@ export class TemplateProcessor {
     const inputs = doc.querySelectorAll("input")
 
     const formatDateString = (dateStr: string): string => {
-      if (!dateStr || !dateStr.includes("-")) return dateStr
+      if (!dateStr || !dateStr.includes("-")) {
+        return dateStr
+      }
+
       const dateObj = new Date(dateStr)
+      if (isNaN(dateObj.getTime())) {
+        return dateStr
+      }
 
-      // Check if it's a valid date object
-      if (isNaN(dateObj.getTime())) return dateStr
-
-      // Fast, modern native formatting engine
       return new Intl.DateTimeFormat("en-GB", {
         day: "numeric",
         month: "long",
@@ -404,6 +406,7 @@ export class TemplateProcessor {
 
       let inputValue = input.value || ""
 
+      console.log(inputValue, input.getAttribute("type"))
       if (
         input.getAttribute("type") === "date" ||
         (inputValue.length === 10 && inputValue.match(/^\d{4}-\d{2}-\d{2}$/))

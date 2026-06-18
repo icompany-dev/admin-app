@@ -105,7 +105,6 @@
       <div
         class="document-view"
         :class="{ show: controller.isDocumentEnlarged.value }"
-        v-if="props.hasPaid"
       >
         <ServiceWrapper
           v-bind="controller.serviceWrapperConfig.value"

@@ -207,20 +207,8 @@ export class CompanyServiceWrapperController {
   minimize(applicationData: any): void {
     this.documentViewMode.value = ViewMode.Edit
     this.isDocumentEnlarged.value = false
-    this.serviceWrapperConfig.value.isShowing = false
     document.body.style.overflow = "auto"
-    this.isSubmittingDocument.value = applicationData !== null
     this.emitEvents("minimized", applicationData)
-
-    // NOTE (Bahiyah): This is just a temporary solution. We need to find out the root cause.
-    // safe proof in case this get stuck in loop
-    setTimeout(() => {
-      if (!this.isSubmittingDocument.value) {
-        return
-      }
-
-      this.onApplicationUpdated(applicationData)
-    }, 10000)
   }
 
   onApplicationUpdated(applicationData: any): void {
