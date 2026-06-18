@@ -47,7 +47,6 @@
 </template>
 
 <script setup lang="ts">
-  import Section27OneFour from "@/components/LegalDocuments/Section27OneFour.vue"
   import Section27ForCompany from "@/components/LegalDocuments/Section27ForCompany.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
