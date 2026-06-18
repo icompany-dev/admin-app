@@ -89,6 +89,7 @@
   import SetFinancialYearEnd from "./SetFinancialYearEnd.vue"
   import ShareIssuance from "./ShareIssuance.vue"
   import Section201 from "./Section201.vue"
+  import Section27ForCompany from "./Section27ForCompany.vue"
   import NameReservation from "./NameReservation.vue"
   import Section219And221 from "./Section219And221.vue"
   import StrikingOff from "./StrikingOff.vue"
@@ -114,6 +115,7 @@
     [CompanyConstants.TARGET_AMENDMENT_CONSTITUTION]: ChangeOfConstitution,
     [CompanyConstants.TARGET_AMENDMENT_DESCRIPTION]: ChangeOfDescription,
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
+    [CompanyConstants.TARGET_AMENDMENT_NAME_SECTION27]: Section27ForCompany,
     [CompanyConstants.TARGET_AMENDMENT_REGISTERED_ADDRESS]: ChangeOfRegisteredAddress,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE]: NewIncorporation,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointmentOfAuditor,
