@@ -106,18 +106,40 @@
             <div class="application-container">
               <div class="node-title">{{ controller.nameReservationLabel }}</div>
               <div class="node-subtitle">({{ controller.nameReservationSublabel }})</div>
+              <div class="application-details">
+                <span class="application-label">
+                  {{ controller.proposedNamesLabel }}
+                </span>
+                <div class="actions-button-options">
+                  <div
+                    class="btn btn-primary selected"
+                    @click="controller.onProposedNamesClicked()"
+                  >
+                    <span class="label">{{ controller.selectedProposedNameForDisplay }}</span>
+                    <i
+                      class="fa-solid fa-caret-down"
+                      :class="{ rotate: controller.isShowProposedNames.value }"
+                    ></i>
+                  </div>
+                  <div
+                    class="options"
+                    :class="{ show: controller.isShowProposedNames.value }"
+                  >
+                    <button
+                      v-for="(name, index) in controller.nameOptions"
+                      :key="index"
+                      class="btn btn-primary name-option"
+                      @click="controller.onProposedNamesSelected(name)"
+                    >
+                      {{ name }}
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </template>
         </ApplicationNode>
       </template>
-      <!-- <template #documents>
-        <ChangeOfNameService
-          ref="resolutionsRef"
-          :company-id="controller.companyId.value"
-          :view-type="'existing'"
-          :application-id="controller.application.value?.id ?? ''"
-        />
-      </template> -->
     </ServiceApplication>
   </div>
 </template>
@@ -125,7 +147,6 @@
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
   import ServiceApplication from "./ServiceApplication.vue"
-  import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import { ChangeOfNameApplicationController } from "~/scripts/components/services/ChangeOfNameApplicationController"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
 

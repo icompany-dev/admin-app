@@ -6,6 +6,9 @@ import { Error } from "~/scripts/library/Error"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Toast } from "~/scripts/library/Toast"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
+import { StringUtil } from "~/scripts/utils/String"
+import { CompanyNameReservation } from "~/scripts/models/CompanyNameReservation"
+import { ObjectUtil } from "~/scripts/utils/Object"
 
 export class ChangeOfNameApplicationController extends ApplicationController<CompanyAmendmentName> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -17,6 +20,9 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowSection27: Ref<boolean> = ref<boolean>(false)
 
   resolutionsRef: any | null = null
+
+  isShowProposedNames: Ref<boolean> = ref<boolean>(false)
+  selectedProposedName: Ref<string> = ref<string>("")
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(props.companyId, useCompanyAmendmentNameStore(), CompanyAmendmentName, emitEvents)
@@ -76,6 +82,15 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.isShowResolutions.value = false
     this.isShowSection27.value = true
     this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27)
+  }
+
+  onProposedNamesClicked(): void {
+    this.isShowProposedNames.value = !this.isShowProposedNames.value
+  }
+
+  onProposedNamesSelected(name: string): void {
+    this.isShowProposedNames.value = false
+    this.selectedProposedName.value = name
   }
 
   // getters
@@ -157,5 +172,69 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     }
 
     return this.concluded
+  }
+
+  get proposedNamesLabel(): string {
+    return this.language.isMalay() ? "Nama yang Dicadangkan" : "Proposed Names"
+  }
+
+  get canReservedName(): boolean {
+    if (!this.application.value) {
+      return false
+    }
+
+    return StringUtil.isNullOrEmpty(this.application.value.confirmedName?.name ?? "")
+  }
+
+  get nameReservations(): CompanyNameReservation[] {
+    if (!this.application.value) {
+      return []
+    }
+
+    return ObjectUtil.sort<CompanyNameReservation>(this.application.value.nameReservations, "createdAt", "desc")
+  }
+
+  get nameOptions(): string[] {
+    if (!this.application.value) {
+      return []
+    }
+
+    let names: string[] = []
+
+    names.push(this.application.value.name1?.getCompleteName() ?? "")
+
+    if (this.application.value.name2) {
+      names.push(this.application.value.name2.getCompleteName())
+    }
+
+    if (this.application.value.name3) {
+      names.push(this.application.value.name3.getCompleteName())
+    }
+
+    return names
+  }
+
+  get selectedProposedNameForDisplay(): string {
+    if (this.isShowProposedNames.value) {
+      return this.language.isMalay() ? "Pilih Nama yang Dicadangkan" : "Select Proposed Name"
+    }
+
+    if (!this.application.value) {
+      return "PROPOSED NAME"
+    }
+
+    if (this.application.value.confirmedName) {
+      return this.application.value.confirmedName.getCompleteName()
+    }
+
+    let ongoingApplication = this.nameReservations.find((nr: CompanyNameReservation) => {
+      return nr.status === StatusConstants.PENDING
+    })
+
+    if (ongoingApplication) {
+      return ongoingApplication.proposedName
+    }
+
+    return this.nameOptions[0]
   }
 }

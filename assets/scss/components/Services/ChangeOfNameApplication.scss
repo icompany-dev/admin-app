@@ -5,6 +5,18 @@
 
     .btn {
       width: 200px;
+
+      .label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+      }
+
+      &.name-option {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+      }
     }
   }
 
@@ -19,6 +31,14 @@
           background-color: var(--bs-white);
         }
       }
+    }
+  }
+
+  .application-details {
+    margin-top: 10px;
+
+    .application-label {
+      font-weight: 600;
     }
   }
 }
