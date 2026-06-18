@@ -5,11 +5,14 @@ import { useSignatureStore } from "#imports"
 import { useServicePricingStore } from "#imports"
 import { useLanguage } from "#imports"
 import { useLocalTime } from "#imports"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { ActivityLogger } from "~/scripts/library/ActivityLogger"
 import { Error } from "~/scripts/library/Error"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
 import { SignatureGroup, SignatureGroupGroup, SignatureGroupTarget } from "~/scripts/models/SignatureGroup"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export abstract class ServiceController {
@@ -51,12 +54,16 @@ export abstract class ServiceController {
   emitEvents: any | null = null
   isInPreviewMode = ref<boolean>(false)
 
+  actionTrayElements = ref<ActionTrayElement[]>([])
+
   constructor(target: string, companyId: string, emitEvents: any | null) {
     this.target = target
     this.companyId = companyId
     this.emitEvents = emitEvents
 
     Promise.all([this.getDirectorForCompany(), this.getShareholderForCompany(), this.getServicePrice()])
+
+    this.setActionTrayElements()
   }
 
   setTargetId(targetId: string) {
@@ -69,6 +76,19 @@ export abstract class ServiceController {
 
   setMcrRef(mcrRef: any): void {
     this.mcrRef = mcrRef
+  }
+
+  setActionTrayElements(): void {
+    this.actionTrayElements.value = [
+      new ActionTrayElement("back", this.onBackClicked.bind(this), {
+        label: new ActionTrayLabel("Back", "Kembali"),
+        isIconStart: true,
+        iconClass: "fa-solid fa-circle-arrow-left",
+      }),
+      new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
+        label: new ActionTrayLabel("Download", "Muat Turun"),
+      }),
+    ]
   }
 
   async getDirectorForCompany(): Promise<void> {
@@ -151,6 +171,36 @@ export abstract class ServiceController {
     return this.currentZoomFactor.value > this.minZoomFactor
   }
 
+  async onDownloadClicked(): Promise<void> {
+    let promises = []
+
+    if (this.dcrRef) {
+      let dcrPages = await this.dcrRef.getPdfPages()
+      promises.push(
+        PdfPaperUtil.generatePdfFile(
+          dcrPages,
+          20,
+          "Directors' Resolutions.pdf",
+          PaperSize.A4,
+          PaperOrientation.Portrait
+        )
+      )
+    }
+
+    if (this.mcrRef) {
+      let mcrPages = await this.mcrRef.getPdfPages()
+      promises.push(
+        PdfPaperUtil.generatePdfFile(mcrPages, 20, "Member's Resolutions.pdf", PaperSize.A4, PaperOrientation.Portrait)
+      )
+    }
+
+    if (promises.length <= 0) {
+      return
+    }
+
+    await Promise.all(promises)
+  }
+
   onBackClicked(): void {
     let application = null
     if (this.dcrRef) {
@@ -198,8 +248,8 @@ export abstract class ServiceController {
     }
 
     if (!this.signatureFile.value) {
-      let errorMessage: Error = new Error("", "")
-      errorMessage.setForSignature()
+      let errorMessage: Error = new Error()
+      errorMessage.setForCUD()
       throw errorMessage
     }
 

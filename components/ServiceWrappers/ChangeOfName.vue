@@ -26,20 +26,12 @@
         />
       </TransitionGroup>
     </div>
-    <!-- <PopupProceedChangeOfName
-      ref="noticeRef"
-      :price="controller.price.value"
-      :proposed-name1="controller.proposedName1.value ?? ''"
-      :proposed-name2="controller.proposedName2.value ?? ''"
-      :proposed-name3="controller.proposedName3.value ?? ''"
-      @cancel="emit('back')"
-      @proceed="controller.onProceedClicked()"
-    /> -->
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
-  // import PopupProceedChangeOfName from "@/components/Popups/ProceedChangeOfName.vue"
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrChangeOfNames from "../Resolutions/DcrChangeOfNames.vue"
   import McrChangeOfNames from "../Resolutions/McrChangeOfNames.vue"
   import { ChangeOfNameController } from "~/scripts/components/service-wrappers/ChangeOfNameController"
