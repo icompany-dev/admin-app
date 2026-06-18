@@ -5,6 +5,7 @@ import { PropsServiceApplicationNode } from "~/scripts/props/PropsServiceApplica
 import { Error } from "~/scripts/library/Error"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Toast } from "~/scripts/library/Toast"
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
 export class ChangeOfNameApplicationController extends ApplicationController<CompanyAmendmentName> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -80,11 +81,13 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   onApprovalStepClicked(): void {
     this.isShowResolutions.value = true
     this.isShowSection27.value = false
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
   }
 
   onApplicationOfNameReservationClicked(): void {
     this.isShowResolutions.value = false
     this.isShowSection27.value = true
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27)
   }
 
   // getters

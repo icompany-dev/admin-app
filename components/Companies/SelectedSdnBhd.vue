@@ -102,10 +102,27 @@
           class="application-contents"
           v-if="controller.isBusiness.value"
         >
-          <ChangeOfNameApplication v-bind="controller.applicationProps" />
+          <ChangeOfNameApplication
+            v-bind="controller.applicationProps"
+            @applicationId="controller.onApplicationIdUpdated($event)"
+            @documentSelected="controller.onDocumentTargetSelected($event)"
+          />
         </div>
       </TransitionGroup>
     </div>
+    <TransitionGroup name="slide-left">
+      <div
+        class="document-container"
+        v-if="controller.showDocument"
+      >
+        <component
+          :is="activeDocumentComponent"
+          :company-id="controller.companyId.value"
+          :view-type="'existing'"
+          :application-id="controller.selectedApplicationId.value"
+        />
+      </div>
+    </TransitionGroup>
   </div>
 </template>
 
@@ -114,6 +131,7 @@
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
   import { CompanyConstants } from "~/scripts/constants/Company"
+  import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
   const props = defineProps({
     companyId: {
@@ -125,6 +143,15 @@
   const emit = defineEmits([])
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
+
+  const componentMap: Record<string, any> = {
+    [DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS]: ChangeOfNameService,
+  }
+
+  const activeDocumentComponent = computed(() => {
+    const target = controller.selectedDocumentTarget.value
+    return target && componentMap[target] ? componentMap[target] : null
+  })
 
   watch(
     () => props.companyId,

@@ -1,4 +1,5 @@
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { Error } from "~/scripts/library/Error"
 import { Company } from "~/scripts/models/Company"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
@@ -25,6 +26,7 @@ export class SelectedSdnBhdController {
 
   selectedApplicationId: Ref<string> = ref<string>("")
   selectedService: Ref<string> = ref<string>(CompanyConstants.TARGET_AMENDMENT_NAME)
+  selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
 
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -141,6 +143,10 @@ export class SelectedSdnBhdController {
     this.selectedApplicationId.value = id
   }
 
+  onDocumentTargetSelected(target: string): void {
+    this.selectedDocumentTarget.value = target
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -203,5 +209,9 @@ export class SelectedSdnBhdController {
     )
 
     return props
+  }
+
+  get showDocument(): boolean {
+    return !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value)
   }
 }

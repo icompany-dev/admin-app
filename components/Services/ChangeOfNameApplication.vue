@@ -110,14 +110,14 @@
           </template>
         </ApplicationNode>
       </template>
-      <template #documents>
+      <!-- <template #documents>
         <ChangeOfNameService
           ref="resolutionsRef"
           :company-id="controller.companyId.value"
           :view-type="'existing'"
           :application-id="controller.application.value?.id ?? ''"
         />
-      </template>
+      </template> -->
     </ServiceApplication>
   </div>
 </template>
@@ -131,7 +131,7 @@
 
   const props = defineProps<IPropsApplication>()
 
-  const emit = defineEmits(["applicationId"])
+  const emit = defineEmits(["applicationId", "documentSelected"])
 
   const resolutionsRef = ref(null)
 

@@ -107,8 +107,6 @@
 
   const controller = new ServiceWrapperController(props.target, emit)
 
-  console.log(props.target, "what??")
-
   //NOTE: This cannot be moved into controller as it maps the component itself
   const componentMap: Record<string, any> = {
     [CompanyConstants.TARGET_AMENDMENT_ADDRESS]: ChangeOfAddress,
