@@ -86,4 +86,11 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_API
   }
+
+  setForIncompleteData(): void {
+    this.title = this.isMalay ? "Maklumat anda diperlukan" : "Your information is required"
+    this.message = this.isMalay ? "Sila lengkapkan semua maklumat." : "Please complete the required information."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
 }

@@ -131,6 +131,7 @@
 <script lang="ts" setup>
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
+  import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
@@ -150,6 +151,7 @@
 
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS]: ChangeOfNameService,
+    [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27]: Section27Service,
   }
 
   const activeDocumentComponent = computed(() => {
