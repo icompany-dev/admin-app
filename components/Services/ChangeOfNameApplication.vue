@@ -138,6 +138,53 @@
               </div>
             </div>
           </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isUploadingSection27.value }"
+              @click="controller.onUploadSection27Clicked()"
+            >
+              Upload
+            </button>
+          </template>
+          <template #nodeActions>
+            <div class="actions-button-options">
+              <div
+                class="btn btn-pill btn-submit selected"
+                @click="controller.onShowSection27ActionClicked()"
+              >
+                <span class="label">{{ controller.section27ActionLabel }}</span>
+                <i
+                  class="fa-solid fa-caret-down"
+                  :class="{ rotate: controller.isShowSection27Actions.value }"
+                ></i>
+              </div>
+              <div
+                class="options"
+                :class="{ show: controller.isShowSection27Actions.value }"
+              >
+                <button
+                  class="btn btn-pill btn-submit"
+                  :disabled="!controller.canSubmitSection27"
+                >
+                  {{ controller.submitSection27ApplicationLabel }}
+                </button>
+                <button
+                  class="btn btn-pill btn-submit"
+                  :disabled="!controller.canUpdateSection27"
+                >
+                  {{ controller.approvedSection27Label }}
+                </button>
+                <button
+                  class="btn btn-pill btn-submit"
+                  :disabled="!controller.canUpdateSection27"
+                  @click="controller.onRejectApplicationClicked()"
+                >
+                  {{ controller.rejectedSection27Label }}
+                </button>
+              </div>
+            </div>
+          </template>
         </ApplicationNode>
       </template>
     </ServiceApplication>

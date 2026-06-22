@@ -13,8 +13,10 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 export class ChangeOfNameApplicationController extends ApplicationController<CompanyAmendmentName> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
   isUpdatingApprovalStatus: Ref<boolean> = ref<boolean>(false)
-
   isDownloading: Ref<boolean> = ref<boolean>(false)
+
+  isUploadingSection27: Ref<boolean> = ref<boolean>(false)
+  isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
 
   isShowResolutions: Ref<boolean> = ref<boolean>(true)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
@@ -70,6 +72,14 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   async onDownloadClicked(): Promise<void> {
     this.emitEvents("download")
+  }
+
+  onShowSection27ActionClicked(): void {
+    this.isShowSection27Actions.value = !this.isShowSection27Actions.value
+  }
+
+  async onUploadSection27Clicked(): Promise<void> {
+    ///
   }
 
   onApprovalStepClicked(): void {
@@ -236,5 +246,51 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     }
 
     return this.nameOptions[0]
+  }
+
+  get section27Applications(): CompanyNameReservation[] {
+    if (!this.application.value) {
+      return []
+    }
+
+    let nameReservations = this.application.value.nameReservations.map((nr: CompanyNameReservation) => {
+      return new CompanyNameReservation(nr)
+    })
+
+    let orderedApplications = ObjectUtil.sort<CompanyNameReservation>(nameReservations, "paidAt", "desc")
+
+    return orderedApplications
+  }
+
+  get latestSection27Application(): CompanyNameReservation | null {
+    if (this.section27Applications.length <= 0) {
+      return null
+    }
+
+    return this.section27Applications[0]
+  }
+
+  get section27ActionLabel(): string {
+    return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
+  }
+
+  get canSubmitSection27(): boolean {
+    return !this.latestSection27Application || this.latestSection27Application.status === StatusConstants.REJECTED
+  }
+
+  get canUpdateSection27(): boolean {
+    return this.latestSection27Application !== null && this.latestSection27Application.status === StatusConstants.PAID
+  }
+
+  get submitSection27ApplicationLabel(): string {
+    return this.language.isMalay() ? "Hantar" : "Submit"
+  }
+
+  get approvedSection27Label(): string {
+    return this.language.isMalay() ? "Lulus" : "Approved"
+  }
+
+  get rejectedSection27Label(): string {
+    return this.language.isMalay() ? "Ditolak" : "Rejected"
   }
 }
