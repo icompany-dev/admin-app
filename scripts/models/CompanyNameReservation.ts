@@ -121,7 +121,7 @@ export class CompanyNameReservation {
     this.convertFromResponse(response)
   }
 
-  async remove(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<void> {
+  async remove(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<any> {
     if (StringUtil.isNullOrEmpty(this.id)) {
       let error = new Error()
       error.setForIncompleteData()
@@ -136,5 +136,39 @@ export class CompanyNameReservation {
     }
 
     return response
+  }
+
+  async approve(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.approve(this.id)
+    if (repository.error) {
+      let error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async reject(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.reject(this.id, this.rejectionReason)
+    if (repository.error) {
+      let error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
   }
 }

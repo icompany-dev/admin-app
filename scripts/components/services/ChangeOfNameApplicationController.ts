@@ -19,6 +19,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   isUploadingSection27: Ref<boolean> = ref<boolean>(false)
   isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
+  isUpdatingSection27: Ref<boolean> = ref<boolean>(false)
 
   isShowResolutions: Ref<boolean> = ref<boolean>(true)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
@@ -119,7 +120,28 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   async onProceedNameReservationRejected(details: NameReservationRejected): Promise<void> {
-    console.log(details)
+    let application = this.latestSection27Application
+    if (!application || this.isUpdatingSection27.value) {
+      return
+    }
+
+    application.rejectedAt = details.dateRejected
+    application.rejectionReason = details.reason
+
+    try {
+      this.isUpdatingSection27.value = true
+      await application.reject(useCompanyNameReservationStore())
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingSection27.value = false
+    }
   }
 
   // getters
