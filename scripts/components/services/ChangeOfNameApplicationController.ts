@@ -11,6 +11,7 @@ import { CompanyNameReservation } from "~/scripts/models/CompanyNameReservation"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsNameReservationRejected } from "~/scripts/props/PropsNameReservationRejected"
 import type { NameReservationRejected } from "~/scripts/types/emit-messages/NameReservationRejected"
+import { NameReservationVariant } from "~/scripts/models/NameReservationVariant"
 
 export class ChangeOfNameApplicationController extends ApplicationController<CompanyAmendmentName> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -195,6 +196,18 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     try {
       this.isUpdatingSection27.value = true
       await application.approve(useCompanyNameReservationStore())
+
+      if (this.application.value) {
+        this.application.value.confirmedName = new NameReservationVariant(
+          application.proposedName,
+          application.nameType,
+          application.description,
+          application.supportingDocumentId
+        )
+
+        await this.application.value.update(useCompanyAmendmentNameStore())
+      }
+
       await this.fetchOngoing()
     } catch (e) {
       if (e instanceof Error) {
@@ -254,8 +267,10 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     )
   }
 
-  get isNameReservationSubmitted(): boolean {
-    return false // set to true for now
+  get isNameReservationApproved(): boolean {
+    return (
+      this.latestSection27Application !== null && this.latestSection27Application.status === StatusConstants.APPROVED
+    )
   }
 
   get nameReservationLabel(): string {
@@ -269,7 +284,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   get nameReservationNodeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(
       this.isShareholderSignatureCompleted,
-      this.isNameReservationSubmitted,
+      this.isNameReservationApproved,
       this.isShowSection27.value
     )
   }
