@@ -151,6 +151,7 @@
             <div class="actions-button-options">
               <div
                 class="btn btn-pill btn-submit selected"
+                :class="{ 'is-loading': controller.isUpdatingSection27.value }"
                 @click="controller.onShowSection27ActionClicked()"
               >
                 <span class="label">{{ controller.section27ActionLabel }}</span>
@@ -172,6 +173,7 @@
                 <button
                   class="btn btn-pill btn-submit"
                   :disabled="!controller.canUpdateSection27"
+                  @click="controller.onApproveNameReservation()"
                 >
                   {{ controller.approvedSection27Label }}
                 </button>

@@ -131,6 +131,32 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     try {
       this.isUpdatingSection27.value = true
       await application.reject(useCompanyNameReservationStore())
+      await this.fetchOngoing()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingSection27.value = false
+    }
+  }
+
+  async onApproveNameReservation(): Promise<void> {
+    this.isShowSection27Actions.value = false
+
+    if (!this.latestSection27Application || this.isUpdatingSection27.value) {
+      return
+    }
+
+    let application = this.latestSection27Application
+    try {
+      this.isUpdatingSection27.value = true
+      await application.approve(useCompanyNameReservationStore())
+      await this.fetchOngoing()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
