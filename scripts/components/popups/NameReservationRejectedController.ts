@@ -42,7 +42,7 @@ export class NameReservationRejectedController extends BasePopupController {
 
   //getters
   get canProceed(): boolean {
-    return !StringUtil.isNullOrEmpty(this.dateRejected.value) && !StringUtil.isNullOrEmpty(this.reason.value)
+    return !StringUtil.isNullOrEmpty(this.reason.value)
   }
 
   get title(): string {

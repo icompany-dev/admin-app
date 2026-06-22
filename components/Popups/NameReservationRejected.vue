@@ -10,14 +10,6 @@
           v-html="controller.content"
         />
         <div class="form-group">
-          <span class="label">{{ controller.dateRejectedLabel }}</span>
-          <input
-            type="date"
-            class="form-control"
-            v-model="controller.dateValue.value"
-          />
-        </div>
-        <div class="form-group">
           <span class="label">{{ controller.reasonLabel }}</span>
           <textarea
             class="form-control"
