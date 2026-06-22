@@ -118,6 +118,10 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
       return
     }
 
+    if (StringUtil.isNullOrEmpty(this.selectedProposedName.value)) {
+      this.selectedProposedName.value = this.nameOptions[0]
+    }
+
     try {
       this.isUpdatingSection27.value = true
 
