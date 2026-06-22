@@ -11,10 +11,30 @@
   >
     <div class="popup-content">
       <slot name="beforeTitle" />
-      <div class="title">
-        {{ props.title }}
+      <div
+        class="title"
+        v-html="props.title"
+      />
+      <div class="popup-details">
+        <div
+          class="heading"
+          v-html="props.heading"
+        />
+        <div class="body">
+          <slot name="content" />
+        </div>
+        <div
+          v-if="props.hasCta"
+          class="cta-notice"
+          v-html="props.cta"
+        />
+        <div
+          class="action-buttons"
+          v-if="props.hasActionButtons"
+        >
+          <slot name="actionButtons" />
+        </div>
       </div>
-      <slot name="content" />
     </div>
   </div>
 </template>
@@ -22,17 +42,9 @@
 <script setup lang="ts">
   import { PopupController } from "~/scripts/components/popups/PopupController"
   import { usePopupStack } from "~/composables/usePopupStack"
+  import type { IPropsPopup } from "~/scripts/props/PropsPopup"
 
-  const props = defineProps({
-    title: {
-      type: String,
-      required: true,
-    },
-    isCompliance: {
-      type: Boolean,
-      default: false,
-    },
-  })
+  const props = defineProps<IPropsPopup>()
 
   const instanceId = useId()
   const { addToStack, removeFromStack, isTop } = usePopupStack()

@@ -10,6 +10,7 @@ export class EmitMessages {
   static MAILROOM_SERVICE: string = "mailroomService"
   static NO_EXISTING_APPLICATION: string = "noExistingApplication"
   static PAY: string = "pay"
+  static PROCEED: string = "proceed"
   static RESIGN_AS_DIRECTOR: string = "resignAsDirector"
   static RESERVE_NAME_FIRST: string = "reserveNameFirst"
   static SSM_CORPORATE_PROFILE: string = "ssmCorporateProfile"
@@ -31,4 +32,6 @@ export class EmitMessages {
     this.VIEW_MODE_CHANGED,
     this.MISSING_STEP,
   ]
+
+  static POPUPS: string[] = [this.BACK, this.PROCEED]
 }
