@@ -9,6 +9,21 @@
           class="action"
           v-html="controller.content"
         />
+        <div class="form-group">
+          <span class="label">{{ controller.dateRejectedLabel }}</span>
+          <input
+            type="date"
+            class="form-control"
+            v-model="controller.dateRejected"
+          />
+        </div>
+        <div class="form-group">
+          <span class="label">{{ controller.reasonLabel }}</span>
+          <textarea
+            class="form-control"
+            v-model="controller.reason.value"
+          />
+        </div>
       </template>
       <template #actionButtons>
         <button
