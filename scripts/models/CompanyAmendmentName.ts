@@ -140,6 +140,19 @@ export class CompanyAmendmentName
       data.supporting_document_id_3 = this.name3?.supportingDocumentId
     }
 
+    if (!StringUtil.isNullOrEmpty(this.confirmedName?.name ?? "")) {
+      data.confirmed_name = this.confirmedName?.name
+    }
+    if (!StringUtil.isNullOrEmpty(this.confirmedName?.nameType ?? "")) {
+      data.confirmed_name_type = this.confirmedName?.nameType
+    }
+    if (!StringUtil.isNullOrEmpty(this.confirmedName?.nameDescription ?? "")) {
+      data.confirmed_name_description = this.confirmedName?.nameDescription
+    }
+    if (!StringUtil.isNullOrEmpty(this.confirmedName?.supportingDocumentId ?? "")) {
+      data.confirmed_supporting_document = this.confirmedName?.supportingDocumentId
+    }
+
     return data
   }
 
