@@ -178,7 +178,7 @@
                 <button
                   class="btn btn-pill btn-submit"
                   :disabled="!controller.canUpdateSection27"
-                  @click="controller.onRejectApplicationClicked()"
+                  @click="controller.onNameReservationRejectedClicked()"
                 >
                   {{ controller.rejectedSection27Label }}
                 </button>
@@ -188,11 +188,17 @@
         </ApplicationNode>
       </template>
     </ServiceApplication>
+    <PopupNameReservationRejected
+      ref="nameReservationRejectedPopup"
+      v-bind="controller.nameReservationRejectedProps"
+      @proceed="controller.onProceedNameReservationRejected($event)"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
+  import PopupNameReservationRejected from "@/components/Popups/NameReservationRejected.vue"
   import ServiceApplication from "./ServiceApplication.vue"
   import { ChangeOfNameApplicationController } from "~/scripts/components/services/ChangeOfNameApplicationController"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
@@ -202,6 +208,7 @@
   const emit = defineEmits(["applicationId", "documentSelected", "download"])
 
   const resolutionsRef = ref(null)
+  const nameReservationRejectedPopup = ref(null)
 
   const controller = new ChangeOfNameApplicationController(props, emit)
 
@@ -216,6 +223,14 @@
     resolutionsRef,
     (newVal) => {
       controller.setResolutionsRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    nameReservationRejectedPopup,
+    (newVal) => {
+      controller.setNameReservationRejectedPopup(newVal)
     },
     { immediate: true }
   )

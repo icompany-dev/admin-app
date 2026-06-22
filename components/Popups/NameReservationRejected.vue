@@ -14,7 +14,7 @@
           <input
             type="date"
             class="form-control"
-            v-model="controller.dateRejected"
+            v-model="controller.dateValue.value"
           />
         </div>
         <div class="form-group">
@@ -33,7 +33,7 @@
           {{ controller.cancelLabel }}
         </button>
         <button
-          class="btn btn-proceed"
+          class="btn btn-submit"
           @click="controller.onProceedClicked()"
         >
           {{ controller.proceedLabel }}
@@ -72,6 +72,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    show: controller.show.bind(controller),
+  })
 </script>
 
 <style lang="scss">

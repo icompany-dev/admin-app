@@ -9,6 +9,8 @@ import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { StringUtil } from "~/scripts/utils/String"
 import { CompanyNameReservation } from "~/scripts/models/CompanyNameReservation"
 import { ObjectUtil } from "~/scripts/utils/Object"
+import { PropsNameReservationRejected } from "~/scripts/props/PropsNameReservationRejected"
+import type { NameReservationRejected } from "~/scripts/types/emit-messages/NameReservationRejected"
 
 export class ChangeOfNameApplicationController extends ApplicationController<CompanyAmendmentName> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -22,6 +24,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowSection27: Ref<boolean> = ref<boolean>(false)
 
   resolutionsRef: any | null = null
+  nameReservationRejectedPopup: any | null = null
 
   isShowProposedNames: Ref<boolean> = ref<boolean>(false)
   selectedProposedName: Ref<string> = ref<string>("")
@@ -34,6 +37,10 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   setResolutionsRef(resolutionsRef: any): void {
     this.resolutionsRef = resolutionsRef
+  }
+
+  setNameReservationRejectedPopup(nameReservationRejectedPopup: any): void {
+    this.nameReservationRejectedPopup = nameReservationRejectedPopup
   }
 
   onShowApprovalActionClicked(): void {
@@ -101,6 +108,18 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   onProposedNamesSelected(name: string): void {
     this.isShowProposedNames.value = false
     this.selectedProposedName.value = name
+  }
+
+  onNameReservationRejectedClicked(): void {
+    this.isShowSection27Actions.value = false
+
+    if (this.nameReservationRejectedPopup) {
+      this.nameReservationRejectedPopup.show()
+    }
+  }
+
+  async onProceedNameReservationRejected(details: NameReservationRejected): Promise<void> {
+    console.log(details)
   }
 
   // getters
@@ -292,5 +311,12 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   get rejectedSection27Label(): string {
     return this.language.isMalay() ? "Ditolak" : "Rejected"
+  }
+
+  get nameReservationRejectedProps(): PropsNameReservationRejected {
+    return new PropsNameReservationRejected(
+      this.application.value?.company?.getFullName() ?? "Company",
+      this.latestSection27Application?.proposedName ?? "PROPOSED NAME"
+    )
   }
 }

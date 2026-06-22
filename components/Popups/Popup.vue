@@ -1,42 +1,44 @@
 <template>
-  <div
-    ref="popup"
-    class="popup"
-    :class="{
-      show: controller.isShowing.value,
-      compliance: props.isCompliance,
-      hide: controller.eventManager.isSearchOpen,
-    }"
-    @click.self="controller.handleClickOutside()"
-  >
-    <div class="popup-content">
-      <slot name="beforeTitle" />
-      <div
-        class="title"
-        v-html="props.title"
-      />
-      <div class="popup-details">
+  <Teleport to="body">
+    <div
+      ref="popup"
+      class="popup"
+      :class="{
+        show: controller.isShowing.value,
+        compliance: props.isCompliance,
+        hide: controller.eventManager.isSearchOpen,
+      }"
+      @click.self="controller.handleClickOutside()"
+    >
+      <div class="popup-content">
+        <slot name="beforeTitle" />
         <div
-          class="heading"
-          v-html="props.heading"
+          class="title"
+          v-html="props.title"
         />
-        <div class="body">
-          <slot name="content" />
-        </div>
-        <div
-          v-if="props.hasCta"
-          class="cta-notice"
-          v-html="props.cta"
-        />
-        <div
-          class="action-buttons"
-          v-if="props.hasActionButtons"
-        >
-          <slot name="actionButtons" />
+        <div class="popup-details">
+          <div
+            class="heading"
+            v-html="props.heading"
+          />
+          <div class="body">
+            <slot name="content" />
+          </div>
+          <div
+            v-if="props.hasCta"
+            class="cta-notice"
+            v-html="props.cta"
+          />
+          <div
+            class="action-buttons"
+            v-if="props.hasActionButtons"
+          >
+            <slot name="actionButtons" />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">

@@ -2,7 +2,7 @@ import { StringUtil } from "~/scripts/utils/String"
 import { BasePopupController } from "./BasePopupController"
 import { Error } from "~/scripts/library/Error"
 import { EmitMessages } from "~/scripts/constants/EmitMessages"
-import NameReservationRejected from "~/components/Popups/NameReservationRejected.vue"
+import { NameReservationRejected } from "~/scripts/types/emit-messages/NameReservationRejected"
 import { PopupTitles, PopupTitlesBm } from "~/scripts/constants/Popups"
 import type { IPropsNameReservationRejected } from "~/scripts/props/PropsNameReservationRejected"
 
@@ -10,6 +10,7 @@ export class NameReservationRejectedController extends BasePopupController {
   applicantName: Ref<string> = ref<string>("")
   nameSubmitted: Ref<string> = ref<string>("")
 
+  dateValue: Ref<any> = ref<any>(null)
   dateRejected: Ref<string> = ref<string>("")
   reason: Ref<string> = ref<string>("")
 
@@ -25,6 +26,7 @@ export class NameReservationRejectedController extends BasePopupController {
   }
 
   override onProceedClicked(): void {
+    this.dateRejected.value = this.dateValue.value
     if (!this.canProceed) {
       // add toast
       let error = new Error()
@@ -34,6 +36,8 @@ export class NameReservationRejectedController extends BasePopupController {
     }
 
     this.emitEvents(EmitMessages.PROCEED, new NameReservationRejected(this.dateRejected.value, this.reason.value))
+
+    this.hide()
   }
 
   //getters
@@ -56,14 +60,21 @@ export class NameReservationRejectedController extends BasePopupController {
   get content(): string {
     if (this.language.isMalay()) {
       return `
-        ${this.applicantName.value} akan diberitahu bahawa ${this.nameSubmitted.value} telah ditolak oleh SSM.
+        ${this.applicantName.value} akan diberitahu bahawa<br>
+        <b>${this.nameSubmitted.value}</b> 
+        <br>
+        telah ditolak oleh SSM.
         <br><br>
         Sila lengkapkan semua maklumat dibawah.
       `
     }
 
     return `
-      ${this.applicantName.value} will be informed that ${this.nameSubmitted.value} has been rejected by SSM.
+      ${this.applicantName.value} will be informed that 
+      <br>
+      <b>${this.nameSubmitted.value}</b>
+      <br>
+      has been rejected by SSM.
       <br><br>
       Please complete the following details.
     `
