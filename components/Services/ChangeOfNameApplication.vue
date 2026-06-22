@@ -167,6 +167,7 @@
                 <button
                   class="btn btn-pill btn-submit"
                   :disabled="!controller.canSubmitSection27"
+                  @click="controller.onSubmitNameReservation()"
                 >
                   {{ controller.submitSection27ApplicationLabel }}
                 </button>

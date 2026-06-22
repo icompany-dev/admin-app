@@ -111,6 +111,41 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.selectedProposedName.value = name
   }
 
+  async onSubmitNameReservation(): Promise<void> {
+    this.isShowSection27Actions.value = false
+
+    if (this.isUpdatingSection27.value || !this.application.value) {
+      return
+    }
+
+    try {
+      this.isUpdatingSection27.value = true
+
+      let newNameReservationApplication = new CompanyNameReservation()
+      newNameReservationApplication.amendmentId = this.application.value.id
+      newNameReservationApplication.proposedName = this.selectedProposedName.value
+        .replace("SDN BHD", "")
+        .replace("sdn bhd", "")
+        .replace("SDN. BHD.", "")
+        .replace("sdn. bhd.", "")
+      newNameReservationApplication.nameType = "sdnbhd"
+      newNameReservationApplication.status = "paid"
+
+      await newNameReservationApplication.create(useCompanyNameReservationStore())
+      await this.fetchOngoing()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingSection27.value = false
+    }
+  }
+
   onNameReservationRejectedClicked(): void {
     this.isShowSection27Actions.value = false
 
