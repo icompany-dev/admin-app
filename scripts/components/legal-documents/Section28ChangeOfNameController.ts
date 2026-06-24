@@ -4,6 +4,7 @@ import { Error } from "~/scripts/library/Error"
 import { CompanyAmendmentName } from "~/scripts/models/CompanyAmendmentName"
 import { CompanyNameReservation } from "~/scripts/models/CompanyNameReservation"
 import { User } from "~/scripts/models/User"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class Section28ChangeOfNameController {
@@ -17,6 +18,9 @@ export class Section28ChangeOfNameController {
   language = useLanguage()
   time = useLocalTime()
   dayjs = useDayjs()
+
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+  documentRef: any | null = null
 
   additionalCssClass: string = "section-28"
 
@@ -39,6 +43,10 @@ export class Section28ChangeOfNameController {
 
   setChangeOfName(changeOfName: CompanyAmendmentName): void {
     this.changeOfName.value = new CompanyAmendmentName(changeOfName)
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async setApplicationId(applicationId: string): Promise<void> {
@@ -167,6 +175,26 @@ export class Section28ChangeOfNameController {
     return this.time.formatDateOnlyWithSlash(this.application.value.submittedAt)
   }
 
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    let pages: HTMLElement[] = []
+    try {
+      this.isDownloading.value = true
+
+      pages = await PdfPaperUtil.getPdfElements(this.documentRef)
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+    } finally {
+      this.isDownloading.value = false
+      return pages
+    }
+  }
+
   get nameOptions(): string[] {
     let names: string[] = []
     names.push(this.changeOfName.value.name1?.getCompleteName() ?? "")
@@ -212,5 +240,25 @@ export class Section28ChangeOfNameController {
     let fragments = registrationNumberOld.split("-")
 
     return fragments[1] ?? ""
+  }
+
+  get formattedResolutionDate(): string {
+    if (StringUtil.isNullOrEmpty(this.resolutionDate.value)) {
+      return ""
+    }
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyFull(this.resolutionDate.value).toUpperCase()
+  }
+
+  get formattedSignatureDate(): string {
+    if (StringUtil.isNullOrEmpty(this.signatureDate.value)) {
+      return ""
+    }
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyFull(this.signatureDate.value).toUpperCase()
   }
 }

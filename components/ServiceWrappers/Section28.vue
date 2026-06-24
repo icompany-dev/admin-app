@@ -13,7 +13,7 @@
         class="document-transition-wrapper"
       >
         <Section28ChangeOfName
-          ref="documentRef"
+          ref="dcrRef"
           :application-id="controller.applicationId ?? ''"
           :change-of-name="controller.applicationValue"
         />

@@ -15,6 +15,7 @@
     </Paper>
     <template v-if="!controller.isLoading.value">
       <Paper
+        ref="documentRef"
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
         :additional-css-class="controller.additionalCssClass"
@@ -56,7 +57,16 @@
                 {{ controller.newName }}
               </span>
               by a special resolution dated
-              <span class="input-field">
+              <span
+                class="input-field"
+                v-if="controller.isDownloading.value"
+              >
+                {{ controller.formattedResolutionDate }}
+              </span>
+              <span
+                class="input-field"
+                v-if="!controller.isDownloading.value"
+              >
                 <input
                   type="date"
                   class="form-control"
@@ -84,10 +94,14 @@
               <span class="label">Date</span>
               <span>:</span>
               <input
+                v-if="!controller.isDownloading.value"
                 type="date"
                 class="form-control"
                 v-model="controller.signatureDate.value"
               />
+              <span v-if="controller.isDownloading.value">
+                {{ controller.formattedSignatureDate }}
+              </span>
             </div>
             <p>
               <b>Attention</b>
@@ -154,6 +168,8 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new Section28ChangeOfNameController(props.applicationId, props.changeOfName)
 
   watch(
@@ -170,6 +186,18 @@
     },
     { deep: true }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">
