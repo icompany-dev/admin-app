@@ -20,6 +20,15 @@
         :additional-css-class="controller.additionalCssClass"
       >
         <template #paperContent>
+          <div class="document-company">
+            <b>Company No.</b>
+            <br />
+            <div class="numbers">
+              <div class="number">{{ controller.numberFirst }}</div>
+              <div class="check-digit">{{ controller.checkDigit }}</div>
+            </div>
+          </div>
+          <div class="endorsement-box"></div>
           <div class="document-header">
             <span>COMPANIES ACT 2016</span>
             <span>Section 28</span>
@@ -62,20 +71,17 @@
               I confirm that the facts and information stated in this document are true and to the best of my knowledge.
             </p>
             <p>
-              <br />
-            </p>
-            <p>
               <b>Signed</b>
             </p>
             <div class="signature-container"></div>
             <div class="sign-off">(Secretary)</div>
             <div class="sign-off-details">
-              <span>Name</span>
+              <span class="label">Name</span>
               <span>:</span>
               <span>{{ controller.cosecName }}</span>
             </div>
             <div class="sign-off-details">
-              <span>Name</span>
+              <span class="label">Date</span>
               <span>:</span>
               <input
                 type="date"
@@ -84,7 +90,6 @@
               />
             </div>
             <p>
-              <br />
               <b>Attention</b>
             </p>
             <p>

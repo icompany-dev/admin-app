@@ -189,4 +189,28 @@ export class Section28ChangeOfNameController {
   get newName(): string {
     return this.changeOfName.value.confirmedName?.getCompleteName() ?? ""
   }
+
+  get numberFirst(): string {
+    let registrationNumberOld = this.changeOfName.value.company?.registrationNumberOld ?? ""
+
+    if (StringUtil.isNullOrEmpty(registrationNumberOld)) {
+      return ""
+    }
+
+    let fragments = registrationNumberOld.split("-")
+
+    return fragments[0]
+  }
+
+  get checkDigit(): string {
+    let registrationNumberOld = this.changeOfName.value.company?.registrationNumberOld ?? ""
+
+    if (StringUtil.isNullOrEmpty(registrationNumberOld)) {
+      return ""
+    }
+
+    let fragments = registrationNumberOld.split("-")
+
+    return fragments[1] ?? ""
+  }
 }
