@@ -189,6 +189,49 @@
             </div>
           </template>
         </ApplicationNode>
+        <ApplicationNode
+          v-bind="controller.registrationOfNameChangeProps"
+          @click="controller.onRegistrationOfNameChangedClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">{{ controller.registrationOfNameChangeLabel }}</div>
+              <div class="node-subtitle">({{ controller.registrationOfNameChangeSublabel }})</div>
+            </div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isUploadingSection27.value }"
+              @click="controller.onUploadSection27Clicked()"
+            >
+              Upload
+            </button>
+          </template>
+          <template #nodeActions>
+            <div class="actions-button-options">
+              <div
+                class="btn btn-pill btn-submit selected"
+                :class="{ 'is-loading': controller.isUploadingSection28.value }"
+                @click="controller.onShowRegistrationActions()"
+              >
+                <span class="label">{{ controller.section28ActionLabel }}</span>
+                <i
+                  class="fa-solid fa-caret-down"
+                  :class="{ rotate: controller.isShowSection28Actions.value }"
+                ></i>
+              </div>
+              <div
+                class="options"
+                :class="{ show: controller.isShowSection28Actions.value }"
+              >
+                <button class="btn btn-pill btn-submit">
+                  {{ controller.registrationOfNameButtonLabel }}
+                </button>
+              </div>
+            </div>
+          </template>
+        </ApplicationNode>
       </template>
     </ServiceApplication>
     <PopupNameReservationRejected

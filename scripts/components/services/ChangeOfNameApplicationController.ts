@@ -22,8 +22,13 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
   isUpdatingSection27: Ref<boolean> = ref<boolean>(false)
 
+  isUploadingSection28: Ref<boolean> = ref<boolean>(false)
+  isShowSection28Actions: Ref<boolean> = ref<boolean>(false)
+  isUpdatingSection28: Ref<boolean> = ref<boolean>(false)
+
   isShowResolutions: Ref<boolean> = ref<boolean>(true)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
+  isShowSection28: Ref<boolean> = ref<boolean>(false)
 
   resolutionsRef: any | null = null
   nameReservationRejectedPopup: any | null = null
@@ -94,13 +99,22 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   onApprovalStepClicked(): void {
     this.isShowResolutions.value = true
     this.isShowSection27.value = false
+    this.isShowSection28.value = false
     this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
   }
 
   onApplicationOfNameReservationClicked(): void {
     this.isShowResolutions.value = false
     this.isShowSection27.value = true
+    this.isShowSection28.value = false
     this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27)
+  }
+
+  onRegistrationOfNameChangedClicked(): void {
+    this.isShowResolutions.value = false
+    this.isShowSection27.value = false
+    this.isShowSection28.value = true
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28)
   }
 
   onProposedNamesClicked(): void {
@@ -219,6 +233,30 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
       }
     } finally {
       this.isUpdatingSection27.value = false
+    }
+  }
+
+  onShowRegistrationActions(): void {
+    this.isShowSection28Actions.value = !this.isShowSection28Actions.value
+  }
+
+  async onSubmitToSSMClicked(): Promise<void> {
+    if (!this.isNameReservationApproved || this.isUpdatingSection28.value) {
+      return
+    }
+
+    try {
+      this.isUpdatingSection28.value = true
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingSection28.value = false
     }
   }
 
@@ -420,5 +458,50 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
       this.application.value?.company?.getFullName() ?? "Company",
       this.latestSection27Application?.proposedName ?? "PROPOSED NAME"
     )
+  }
+
+  get isRegistrationOfNameSubmitted(): boolean {
+    return false
+  }
+
+  get registrationOfNameChangeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.isNameReservationApproved,
+      this.isRegistrationOfNameSubmitted,
+      this.isShowSection28.value
+    )
+  }
+
+  get registrationOfNameChangeLabel(): string {
+    return this.language.isMalay() ? "Pendaftaran Pertukaran Nama" : "Registration of Change of Name"
+  }
+
+  get registrationOfNameChangeSublabel(): string {
+    return this.language.isMalay() ? "Seksyen 28 Akta" : "Section 28 of the Act"
+  }
+
+  get canSubmitToSSM(): boolean {
+    if (!this.application.value) {
+      return false
+    }
+
+    return this.isNameReservationApproved && this.application.value.status === StatusConstants.PAID
+  }
+
+  get hasSubmittedToSSM(): boolean {
+    return (
+      this.application.value !== null &&
+      this.application.value.status !== StatusConstants.DRAFT &&
+      this.application.value.status !== StatusConstants.PENDING &&
+      this.application.value.status !== StatusConstants.PAID
+    )
+  }
+
+  get registrationOfNameButtonLabel(): string {
+    return this.language.isMalay() ? "Telah Dihantar" : "Submitted"
+  }
+
+  get section28ActionLabel(): string {
+    return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
   }
 }

@@ -20,6 +20,7 @@ export class DocumentTargets {
   static TARGET_AMENDMENT_NAME: string = "company_amendment_name"
   static TARGET_AMENDMENT_NAME_RESOLUTIONS: string = "company_amendment_name_resolutions"
   static TARGET_AMENDMENT_NAME_SECTION27: string = "company_amendment_name_section27"
+  static TARGET_AMENDMENT_NAME_SECTION28: string = "company_amendment_name_resolutions"
 
   static TARGET_AUDIT_CIRCULATION: string = "company_audit_circulation"
   static TARGET_AUDIT_CIRCULATION_RESOLUTIONS: string = "company_audit_circulation_resolutions"
