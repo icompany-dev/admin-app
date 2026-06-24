@@ -132,6 +132,7 @@
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
+  import Section28Service from "@/components/CompanyServices/Section28Service.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
@@ -152,6 +153,7 @@
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS]: ChangeOfNameService,
     [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27]: Section27Service,
+    [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28]: Section28Service,
   }
 
   const activeDocumentComponent = computed(() => {

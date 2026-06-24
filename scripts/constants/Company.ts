@@ -25,6 +25,7 @@ export class CompanyConstants {
   static TARGET_AMENDMENT_DESCRIPTION: string = "company_amendment_description"
   static TARGET_AMENDMENT_NAME: string = "company_amendment_name"
   static TARGET_AMENDMENT_NAME_SECTION27: string = "company_amendment_name_section27"
+  static TARGET_AMENDMENT_NAME_SECTION28: string = "company_amendment_name_section28"
   static TARGET_AUDIT_CIRCULATION: string = "company_audit_circulation"
   static TARGET_AUDIT_EXTENSION_OF_TIME: string = "company_audit_extension_of_time"
   static TARGET_AUDITOR_APPOINTMENT: string = "company_auditor_appointment"
@@ -88,6 +89,7 @@ export class CompanyConstants {
     this.TARGET_AMENDMENT_DESCRIPTION,
     this.TARGET_AMENDMENT_NAME,
     this.TARGET_AMENDMENT_NAME_SECTION27,
+    this.TARGET_AMENDMENT_NAME_SECTION28,
     this.TARGET_APPLICATION_INCORPORATE,
     this.TARGET_APPLICATION_SWITCH,
     this.TARGET_AUDIT_CIRCULATION,

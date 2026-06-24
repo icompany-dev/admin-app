@@ -27,7 +27,7 @@ export class Section28ServiceController extends CompanyServiceController<Company
 
   constructor(companyId: string, viewType: string, applicationId: string, emitEvents: any | null) {
     super(companyId, true, true, CompanyAmendmentName, useCompanyAmendmentNameStore(), emitEvents)
-    this.target = CompanyConstants.TARGET_AMENDMENT_NAME_SECTION27
+    this.target = CompanyConstants.TARGET_AMENDMENT_NAME_SECTION28
     this.applicationId.value = applicationId
     this.setViewType(viewType)
     this.initializeData()
