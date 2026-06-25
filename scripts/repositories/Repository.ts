@@ -129,6 +129,15 @@ export class Repository<T> implements IRepositoryOptions {
     }
   }
 
+  async submit<T>(id: any): Promise<T> {
+    try {
+      const response = await this.post<any>(`${this.singleResourceUrl}/submit/${id}`, {})
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
   async ongoing<T>(companyId: any): Promise<T> {
     try {
       const response = await this.get<any>(`${this.singleResourceUrl}/ongoing/${companyId}`, {})

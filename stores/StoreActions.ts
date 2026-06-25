@@ -122,6 +122,20 @@ export function useStoreActions<T extends { id?: string | number }>(
     }
   }
 
+  async function submit(id: string | null) {
+    setProcessingState(true)
+    try {
+      const response = await repository.submit<any>(id)
+      return response.data
+    } catch (e: any) {
+      setProcessingState(false, e.message || `Failed to submit item with ID: ${id}.`)
+      console.error(`Error in submit (${id}):`, e)
+      throw e
+    } finally {
+      setProcessingState(false)
+    }
+  }
+
   async function ongoing(companyId: string) {
     setProcessingState(true)
     try {
