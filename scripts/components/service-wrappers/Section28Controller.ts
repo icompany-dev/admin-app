@@ -230,7 +230,7 @@ export class Section28Controller
       promises.push(
         PdfPaperUtil.generatePdfFile(
           pages,
-          20,
+          0,
           `${this.companyName} - Section 28 APPLICATION FOR CHANGE OF NAME.pdf`,
           PaperSize.A4,
           PaperOrientation.Portrait

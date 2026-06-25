@@ -198,3 +198,9 @@ $paper-width-px: (
   }
 }
 }
+
+.section-28 {
+  &.is-printing {
+    padding: 20mm;
+  }
+}
