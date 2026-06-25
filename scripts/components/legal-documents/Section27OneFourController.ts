@@ -24,7 +24,6 @@ export class Section27OneFourController {
   async setApplicationId(applicationId: string): Promise<void> {
     this.applicationId.value = applicationId
 
-    console.log("changed", this.applicationId.value)
     if (StringUtil.isNullOrEmpty(this.applicationId.value) || this.isLoading.value) {
       return
     }
@@ -39,7 +38,7 @@ export class Section27OneFourController {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetchAll()
         errorMessage.handle()
       }
