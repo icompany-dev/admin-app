@@ -201,13 +201,12 @@ export class CompanyServiceWrapperController {
   enlarge(): void {
     this.isDocumentEnlarged.value = true
     this.serviceWrapperConfig.value.isShowing = true
-    document.body.style.overflow = "hidden"
   }
 
   minimize(applicationData: any): void {
     this.documentViewMode.value = ViewMode.Edit
     this.isDocumentEnlarged.value = false
-    document.body.style.overflow = "auto"
+    this.serviceWrapperConfig.value.isShowing = false
     this.emitEvents("minimized", applicationData)
   }
 
