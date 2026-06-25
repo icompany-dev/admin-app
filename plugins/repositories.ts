@@ -485,8 +485,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       getAuthToken
     ),
     companyAmendmentNames: new CompanyAmendmentNameRepository(
-      "company/amendment/names",
-      "company/amendment/name",
+      "company/names/changes",
+      "company/names/change",
       config.public.apiBaseUrl,
       getAuthToken
     ),
