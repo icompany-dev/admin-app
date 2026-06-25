@@ -14,6 +14,7 @@ import { ServicePricing } from "~/scripts/models/ServicePricing"
 import { CompanyServiceInitializer } from "~/scripts/library/CompanyServiceInitializer"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { Company } from "~/scripts/models/Company"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
@@ -21,6 +22,7 @@ import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export abstract class CompanyServiceController<T> {
   companyId: string = ""
+  company = ref<Company>(new Company())
   target: string = ""
   application = ref<Application | null>(null)
   hasDcr = ref<boolean>(false)
@@ -117,6 +119,8 @@ export abstract class CompanyServiceController<T> {
     this.itemClassType = itemClassType
     this.companyServiceInitializer = new CompanyServiceInitializer(this.companyId, itemClassType, this.repository)
 
+    this.fetchCompany()
+
     this.setActionTrayElements()
   }
 
@@ -165,6 +169,16 @@ export abstract class CompanyServiceController<T> {
     } catch (e) {
       this.price.value = 299
     }
+  }
+
+  async fetchCompany(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId)) {
+      return
+    }
+
+    let repository = useCompanyStore()
+    let response = await repository.fetch(this.companyId)
+    this.company.value = new Company(response)
   }
 
   async fetchDirectors(): Promise<void> {

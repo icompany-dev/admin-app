@@ -15,6 +15,8 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { CompanyNameReservation } from "~/scripts/models/CompanyNameReservation"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class Section28ServiceController extends CompanyServiceController<CompanyAmendmentName> {
   companyAmendmentName = ref<CompanyAmendmentName>(new CompanyAmendmentName())
@@ -491,6 +493,32 @@ export class Section28ServiceController extends CompanyServiceController<Company
     return this.language.isMalay()
       ? "Resolusi ini berkuat kuasa dan terpakai sepenuhnya"
       : "This resolution is in full force and effect"
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    let pages: HTMLElement[] = []
+
+    if (this.dcrRef) {
+      let dcrPages = await this.dcrRef.getPdfPages()
+      pages = pages.concat(dcrPages)
+    }
+
+    if (this.mcrRef) {
+      let mcrPages = await this.mcrRef.getPdfPages()
+      pages = pages.concat(mcrPages)
+    }
+
+    if (pages.length <= 0) {
+      return
+    }
+
+    await PdfPaperUtil.generatePdfFile(
+      pages,
+      0,
+      `${this.company.value.getFullName()} - Section 28 APPLICATION FOR CHANGE OF NAME`,
+      PaperSize.A4,
+      PaperOrientation.Portrait
+    )
   }
 
   get serviceWrapperProps() {

@@ -202,17 +202,17 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
-              :class="{ 'is-loading': controller.isUploadingSection27.value }"
-              @click="controller.onUploadSection27Clicked()"
+              :class="{ 'is-loading': controller.isDownloadingSection28.value }"
+              @click="controller.onDownloadClicked()"
             >
-              Upload
+              Download
             </button>
           </template>
           <template #nodeActions>
             <div class="actions-button-options">
               <div
                 class="btn btn-pill btn-submit selected"
-                :class="{ 'is-loading': controller.isUploadingSection28.value }"
+                :class="{ 'is-loading': controller.isDownloadingSection28.value }"
                 @click="controller.onShowRegistrationActions()"
               >
                 <span class="label">{{ controller.section28ActionLabel }}</span>

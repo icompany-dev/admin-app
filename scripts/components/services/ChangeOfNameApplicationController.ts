@@ -22,7 +22,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
   isUpdatingSection27: Ref<boolean> = ref<boolean>(false)
 
-  isUploadingSection28: Ref<boolean> = ref<boolean>(false)
+  isDownloadingSection28: Ref<boolean> = ref<boolean>(false)
   isShowSection28Actions: Ref<boolean> = ref<boolean>(false)
   isUpdatingSection28: Ref<boolean> = ref<boolean>(false)
 
@@ -85,6 +85,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   async onDownloadClicked(): Promise<void> {
+    await nextTick()
     this.emitEvents("download")
   }
 
@@ -93,6 +94,10 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   async onUploadSection27Clicked(): Promise<void> {
+    ///
+  }
+
+  async onDownloadSection28Clicked(): Promise<void> {
     ///
   }
 

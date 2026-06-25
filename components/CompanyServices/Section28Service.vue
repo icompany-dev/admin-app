@@ -37,6 +37,7 @@
           class="documents"
         >
           <Section28ChangeOfName
+            ref="dcrRef"
             :application-id="controller.applicationId.value"
             :change-of-name="controller.applicationValue"
           />
