@@ -212,7 +212,7 @@
             <div class="actions-button-options">
               <div
                 class="btn btn-pill btn-submit selected"
-                :class="{ 'is-loading': controller.isDownloadingSection28.value }"
+                :class="{ 'is-loading': controller.isUpdatingSection28.value }"
                 @click="controller.onShowRegistrationActions()"
               >
                 <span class="label">{{ controller.section28ActionLabel }}</span>
@@ -225,7 +225,10 @@
                 class="options"
                 :class="{ show: controller.isShowSection28Actions.value }"
               >
-                <button class="btn btn-pill btn-submit">
+                <button
+                  class="btn btn-pill btn-submit"
+                  @click="controller.onSubmitToSSMClicked()"
+                >
                   {{ controller.registrationOfNameButtonLabel }}
                 </button>
               </div>

@@ -246,12 +246,15 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   async onSubmitToSSMClicked(): Promise<void> {
-    if (!this.isNameReservationApproved || this.isUpdatingSection28.value) {
+    this.isShowSection28Actions.value = false
+
+    if (!this.isNameReservationApproved || this.isUpdatingSection28.value || !this.application.value) {
       return
     }
 
     try {
       this.isUpdatingSection28.value = true
+      await this.application.value.submit(useCompanyAmendmentNameStore())
     } catch (e) {
       if (e instanceof Error) {
         e.handle()

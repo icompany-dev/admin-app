@@ -180,6 +180,7 @@ export function useStoreActions<T extends { id?: string | number }>(
     update,
     remove,
     withdraw,
+    submit,
     ongoing,
     latestCompleted,
     clearItem,
