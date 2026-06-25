@@ -13,12 +13,15 @@
         />
       </template>
     </Paper>
-    <template v-if="!controller.isLoading.value">
+    <div
+      ref="documentRef"
+      v-if="!controller.isLoading.value"
+    >
       <Paper
-        ref="documentRef"
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
         :additional-css-class="controller.additionalCssClass"
+        :is-printable="true"
       >
         <template #paperContent>
           <div class="document-company">
@@ -144,7 +147,7 @@
           </div>
         </template>
       </Paper>
-    </template>
+    </div>
   </div>
 </template>
 

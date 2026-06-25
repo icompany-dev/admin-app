@@ -13,7 +13,7 @@
         class="document-transition-wrapper"
       >
         <Section28ChangeOfName
-          ref="dcrRef"
+          ref="documentRef"
           :application-id="controller.applicationId ?? ''"
           :change-of-name="controller.applicationValue"
         />
@@ -59,7 +59,7 @@
 
   const dcrRef = ref(null)
   const mcrRef = ref(null)
-  const noticeRef = ref(null)
+  const documentRef = ref(null)
 
   const controller = new Section28Controller(props.companyId, emit, props.applicationId)
 
@@ -75,9 +75,9 @@
   )
 
   watch(
-    noticeRef,
+    documentRef,
     (newVal) => {
-      controller.setNoticeRef(newVal)
+      controller.setDocumentRef(newVal)
     },
     { immediate: true }
   )

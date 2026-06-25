@@ -8,6 +8,7 @@ import { useLocalTime } from "#imports"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { ActivityLogger } from "~/scripts/library/ActivityLogger"
 import { Error } from "~/scripts/library/Error"
+import { Company } from "~/scripts/models/Company"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
 import { SignatureGroup, SignatureGroupGroup, SignatureGroupTarget } from "~/scripts/models/SignatureGroup"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
@@ -19,6 +20,7 @@ export abstract class ServiceController {
   target: string = ""
   targetId: string | null = null
   companyId: string = ""
+  company = ref<Company>(new Company())
   isADirector = ref<boolean>(false)
   directorId = ref<string | null>(null)
   isAShareholder = ref<boolean>(false)
@@ -61,7 +63,12 @@ export abstract class ServiceController {
     this.companyId = companyId
     this.emitEvents = emitEvents
 
-    Promise.all([this.getDirectorForCompany(), this.getShareholderForCompany(), this.getServicePrice()])
+    Promise.all([
+      this.getCompany(),
+      this.getDirectorForCompany(),
+      this.getShareholderForCompany(),
+      this.getServicePrice(),
+    ])
 
     this.setActionTrayElements()
   }
@@ -89,6 +96,17 @@ export abstract class ServiceController {
         label: new ActionTrayLabel("Download", "Muat Turun"),
       }),
     ]
+  }
+
+  async getCompany(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId)) {
+      return
+    }
+
+    let repository = useCompanyStore()
+    let response = await repository.fetch(this.companyId)
+
+    this.company.value = new Company(response)
   }
 
   async getDirectorForCompany(): Promise<void> {
@@ -298,5 +316,13 @@ export abstract class ServiceController {
 
   async pay(): Promise<void> {
     this.emitEvents("makePayment")
+  }
+
+  get companyName(): string {
+    return this.company.value.getFullName()
+  }
+
+  get companyRegistrationNumber(): string {
+    return `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`
   }
 }

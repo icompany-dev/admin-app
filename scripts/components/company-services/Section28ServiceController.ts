@@ -128,30 +128,26 @@ export class Section28ServiceController extends CompanyServiceController<Company
   }
 
   async onApplicationUpdated(application: CompanyAmendmentName): Promise<void> {
-    if (!application) {
-      return
-    }
-
-    await this.fetchOngoingApplication()
-
-    if (this.dcrRef) {
-      this.dcrRef.updateApplicationContent(this.companyAmendmentName.value)
-    }
-
-    if (this.mcrRef) {
-      this.mcrRef.updateApplicationContent(this.companyAmendmentName.value)
-    }
+    // if (!application) {
+    //   return
+    // }
+    // await this.fetchOngoingApplication()
+    // if (this.dcrRef) {
+    //   this.dcrRef.updateApplicationContent(this.companyAmendmentName.value)
+    // }
+    // if (this.mcrRef) {
+    //   this.mcrRef.updateApplicationContent(this.companyAmendmentName.value)
+    // }
   }
 
   async setApplicationData(applicationData: CompanyAmendmentName): Promise<void> {
-    if (!applicationData) {
-      return
-    }
-
-    await this.fetchOngoingApplication()
-    if (this.dcrRef) {
-      this.dcrRef.updateApplicationContent(this.companyAmendmentName.value)
-    }
+    // if (!applicationData) {
+    //   return
+    // }
+    // await this.fetchOngoingApplication()
+    // if (this.dcrRef) {
+    //   this.dcrRef.updateApplicationContent(this.companyAmendmentName.value)
+    // }
   }
 
   async makePayment(): Promise<void> {

@@ -12,6 +12,8 @@ import { NameReservation } from "~/scripts/types/NameReservation"
 import type { CompanyNameReservation } from "~/scripts/models/CompanyNameReservation"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { StatusConstants } from "~/scripts/constants/Status"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class Section28Controller
   extends ServiceController
@@ -25,7 +27,7 @@ export class Section28Controller
 
   showMcrFirst = ref<boolean>(false)
 
-  noticeRef: any | null = null
+  documentRef: any | null = null
 
   nameReservations = ref<NameReservation[]>([])
 
@@ -41,8 +43,8 @@ export class Section28Controller
     }
   }
 
-  setNoticeRef(noticeRef: any | null) {
-    this.noticeRef = noticeRef
+  setDocumentRef(noticeRef: any | null) {
+    this.documentRef = noticeRef
   }
 
   async fetchApplication(id: string): Promise<void> {
@@ -147,11 +149,11 @@ export class Section28Controller
       return
     }
 
-    if (!this.noticeRef) {
+    if (!this.documentRef) {
       return
     }
 
-    this.noticeRef.show()
+    this.documentRef.show()
   }
 
   async onProceedClicked(): Promise<void> {
@@ -218,6 +220,25 @@ export class Section28Controller
           </ul>
           You can Purchase & Download SSM Corporate Profile as confirmation of the change (optional).
         `
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    let promises = []
+
+    if (this.documentRef) {
+      let pages = await this.documentRef.getPdfPages()
+      promises.push(
+        PdfPaperUtil.generatePdfFile(
+          pages,
+          20,
+          `${this.companyName} - Section 28 APPLICATION FOR CHANGE OF NAME.pdf`,
+          PaperSize.A4,
+          PaperOrientation.Portrait
+        )
+      )
+    }
+
+    await Promise.all(promises)
   }
 
   get isDraft(): boolean {

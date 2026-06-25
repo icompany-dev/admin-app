@@ -59,7 +59,7 @@ export class Section28ChangeOfNameController {
     try {
       this.isLoading.value = true
 
-      await this.fetchApplication()
+      // await this.fetchApplication()
       await this.fetchAmendment()
       await this.fetchApplicant()
     } catch (e: any) {
