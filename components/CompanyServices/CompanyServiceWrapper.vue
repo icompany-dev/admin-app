@@ -314,7 +314,6 @@
   watch(
     () => controller.documentViewMode.value,
     (newVal) => {
-      console.log("changed?", newVal)
       emit("viewModeChanged", newVal)
     }
   )
