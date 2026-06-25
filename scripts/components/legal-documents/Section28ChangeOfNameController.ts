@@ -183,14 +183,17 @@ export class Section28ChangeOfNameController {
     let pages: HTMLElement[] = []
     try {
       this.isDownloading.value = true
-
+      await nextTick()
       pages = await PdfPaperUtil.getPdfElements(this.documentRef)
     } catch (e) {
       let error = new Error()
       error.setForCUD()
       error.handle()
     } finally {
-      this.isDownloading.value = false
+      setTimeout(() => {
+        this.isDownloading.value = false
+      }, 2000)
+
       return pages
     }
   }
