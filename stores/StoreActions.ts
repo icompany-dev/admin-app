@@ -136,6 +136,34 @@ export function useStoreActions<T extends { id?: string | number }>(
     }
   }
 
+  async function ship(id: string, trackingNumber: string, trackingUrl: string) {
+    setProcessingState(true)
+    try {
+      const response = await repository.ship<any>(id, trackingNumber, trackingUrl)
+      return response.data
+    } catch (e: any) {
+      setProcessingState(false, e.message || `Failed to submit item with ID: ${id}.`)
+      console.error(`Error in submit (${id}):`, e)
+      throw e
+    } finally {
+      setProcessingState(false)
+    }
+  }
+
+  async function complete(id: string | null) {
+    setProcessingState(true)
+    try {
+      const response = await repository.complete<any>(id)
+      return response.data
+    } catch (e: any) {
+      setProcessingState(false, e.message || `Failed to complete item with ID: ${id}.`)
+      console.error(`Error in complete (${id}):`, e)
+      throw e
+    } finally {
+      setProcessingState(false)
+    }
+  }
+
   async function ongoing(companyId: string) {
     setProcessingState(true)
     try {
@@ -181,6 +209,8 @@ export function useStoreActions<T extends { id?: string | number }>(
     remove,
     withdraw,
     submit,
+    ship,
+    complete,
     ongoing,
     latestCompleted,
     clearItem,

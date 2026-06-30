@@ -5,6 +5,7 @@
       'is-selected': props.isInFocused,
       'is-completed': props.isCompleted,
       'is-showing-document': props.isShowDocument,
+      'is-last-node': props.isLastNode,
     }"
   >
     <div class="node-container">

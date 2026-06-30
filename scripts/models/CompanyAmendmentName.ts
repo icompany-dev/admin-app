@@ -217,23 +217,6 @@ export class CompanyAmendmentName
     return response
   }
 
-  async submit(repository: ReturnType<typeof useCompanyAmendmentNameStore>): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error()
-      error.setForCUD()
-      throw error
-    }
-
-    const response = await repository.submit(this.id)
-    if (repository.error) {
-      let error: Error = new Error()
-      error.setForCUD()
-      throw error
-    }
-
-    return response
-  }
-
   isNewProposeNameRequired(): boolean {
     let totalNamesAlreadyProposed = [this.name1, this.name2, this.name3].filter((name) => {
       return name !== null && !StringUtil.isNullOrEmpty(name.name)

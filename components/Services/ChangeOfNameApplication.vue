@@ -142,7 +142,7 @@
             <button
               class="btn btn-pill btn-primary"
               :class="{ 'is-loading': controller.isUploadingSection27.value }"
-              @click="controller.onUploadSection27Clicked()"
+              @click="controller.onUploadDocumentClicked()"
             >
               Upload
             </button>
@@ -227,10 +227,78 @@
               >
                 <button
                   class="btn btn-pill btn-submit"
+                  :disabled="!controller.canSubmitToSSM"
                   @click="controller.onSubmitToSSMClicked()"
                 >
                   {{ controller.registrationOfNameButtonLabel }}
                 </button>
+              </div>
+            </div>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode
+          v-bind="controller.certificateOfNameChangeProps"
+          @click="controller.onCertficationOfNameChangeClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">{{ controller.certifcateOfNameChangeLabel }}</div>
+              <div class="node-subtitle">({{ controller.certifcateOfNameChangeSublabel }})</div>
+            </div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isUploadingCON.value }"
+              @click="controller.onUploadDocumentClicked()"
+            >
+              Upload
+            </button>
+          </template>
+          <template #nodeActions>
+            <div class="actions-button-options">
+              <div
+                class="btn btn-pill btn-submit selected"
+                @click="controller.onShowCONActions()"
+              >
+                <span class="label">{{ controller.conActionLabel }}</span>
+                <i
+                  class="fa-solid fa-caret-down"
+                  :class="{ rotate: controller.isShowCONActions.value }"
+                ></i>
+              </div>
+              <div
+                class="options"
+                :class="{ show: controller.isShowCONActions.value }"
+              >
+                <button
+                  class="btn btn-pill btn-submit"
+                  disabled
+                  @click="controller.shipClicked()"
+                >
+                  {{ controller.shipLabel }}
+                </button>
+              </div>
+            </div>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode
+          v-bind="controller.completeApplicationProps"
+          @click="controller.onCompleteNameChangeClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">{{ controller.completeLabel }}</div>
+            </div>
+          </template>
+          <template #nodeActions>
+            <div class="actions-button-options">
+              <div
+                class="btn btn-pill btn-submit selected single"
+                :class="{ disabled: !controller.isCONUploaded }"
+                @click="controller.onCompleteNameChangeClicked()"
+              >
+                <span class="label">{{ controller.completeActionLabel }}</span>
               </div>
             </div>
           </template>

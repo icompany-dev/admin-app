@@ -7,6 +7,9 @@ export interface IRepositoryStore {
   create(data: any): Promise<any>
   update(id: string, data: any): Promise<any>
   remove(id: string): Promise<any>
+  submit(id: string): Promise<any>
+  ship(id: string, trackingNumber: string, trackingUrl: string): Promise<any>
+  complete(id: string): Promise<any>
   ongoing(companyId: string): Promise<any>
   latestCompleted(companyId: string): Promise<any>
   error: any

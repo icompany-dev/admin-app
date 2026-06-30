@@ -1,7 +1,6 @@
 <template>
-  <TransitionGroup
+  <div
     class="services-service-application"
-    tag="div"
     name="expand"
   >
     <div
@@ -18,10 +17,7 @@
         <slot name="application"></slot>
       </div>
     </div>
-    <div class="application-documents">
-      <slot name="documents" />
-    </div>
-  </TransitionGroup>
+  </div>
 </template>
 
 <script lang="ts" setup>
