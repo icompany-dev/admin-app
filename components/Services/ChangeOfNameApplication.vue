@@ -242,12 +242,17 @@
       v-bind="controller.nameReservationRejectedProps"
       @proceed="controller.onProceedNameReservationRejected($event)"
     />
+    <PopupUploadDocument
+      v-bind="controller.uploadDocumentProps"
+      ref="uploadDocumentPopup"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
   import PopupNameReservationRejected from "@/components/Popups/NameReservationRejected.vue"
+  import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"
   import { ChangeOfNameApplicationController } from "~/scripts/components/services/ChangeOfNameApplicationController"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
@@ -258,6 +263,7 @@
 
   const resolutionsRef = ref(null)
   const nameReservationRejectedPopup = ref(null)
+  const uploadDocumentPopup = ref(null)
 
   const controller = new ChangeOfNameApplicationController(props, emit)
 
@@ -280,6 +286,14 @@
     nameReservationRejectedPopup,
     (newVal) => {
       controller.setNameReservationRejectedPopup(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    uploadDocumentPopup,
+    (newVal) => {
+      controller.setUploadDocumentPopup(newVal)
     },
     { immediate: true }
   )

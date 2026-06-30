@@ -1,9 +1,14 @@
 import { File as UploadedFile } from "~/scripts/models/File"
 import { Form } from "~/scripts/models/Form"
 import { Error } from "~/scripts/library/Error"
+import { SelectOption } from "~/scripts/types/SelectOption"
+import { BasePopupController } from "./BasePopupController"
+import { PopupTitles, PopupTitlesBm } from "~/scripts/constants/Popups"
+import type { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 
-export class UploadDocumentController {
+export class UploadDocumentController extends BasePopupController {
   companyId: Ref<string> = ref<string>("")
+
   fileInputRef: any | null = null
 
   files: Ref<File[]> = ref<File[]>([])
@@ -15,16 +20,22 @@ export class UploadDocumentController {
 
   isUploading: Ref<boolean> = ref<boolean>(false)
 
-  emitEvents: any | null = null
-
   maxSize: number = 2 * 1024 * 1024
 
-  constructor(props: any, emitEvents: any) {
-    this.emitEvents = emitEvents
+  constructor(props: PropsUploadDocument, emitEvents: any) {
+    super(emitEvents)
+
+    this.companyId.value = props.companyId
   }
 
   setFileInputRef(fileInputRef: any): void {
     this.fileInputRef = fileInputRef
+  }
+
+  onPropsChange(props: PropsUploadDocument): void {
+    this.companyId.value = props.companyId
+    this.canUploadImage.value = props.canUploadImage
+    this.canUploadPdf.value = props.canUploadPdf
   }
 
   onUploadClicked(): void {
@@ -79,6 +90,16 @@ export class UploadDocumentController {
         error.handle()
       }
     }
+  }
+
+  async onProceedClicked(): Promise<void> {
+    if (this.isUploading.value) {
+      return
+    }
+
+    await this.uploadFiles()
+
+    this.hide()
   }
 
   async uploadFiles(): Promise<void> {
@@ -160,5 +181,58 @@ export class UploadDocumentController {
 
       return false
     })
+  }
+
+  get documentTypes(): SelectOption[] {
+    return [
+      new SelectOption("statutory", "statutory", this.language.isMalay() ? "Dokumen Berkanun" : "Statutory Document"),
+      new SelectOption("resolution", "resolution", this.language.isMalay() ? "Resolusi" : "Resolutions"),
+      new SelectOption("loans", "loans", this.language.isMalay() ? "Pinjaman" : "Loans"),
+      new SelectOption("others", "others", this.language.isMalay() ? "Others" : "Others"),
+    ]
+  }
+
+  get title(): string {
+    return this.language.isMalay() ? PopupTitlesBm.ImportantNotice : PopupTitles.ImportantNotice
+  }
+
+  get heading(): string {
+    if (this.language.isMalay()) {
+      return `Muat Naik Dokumen`
+    }
+
+    return `Upload Documents`
+  }
+
+  get instructions(): string {
+    return this.language.isMalay()
+      ? "Letakkan fail anda di sini atau klik untuk layar."
+      : "Drop your files here or click to browse."
+  }
+
+  get cta(): string {
+    if (this.language.isMalay()) {
+      return `
+        Ingin teruskan?
+      `
+    }
+
+    return `
+      Would you like to continue?
+    `
+  }
+
+  get fileToAccept(): string {
+    let filesType: string[] = []
+
+    if (this.canUploadImage.value) {
+      filesType.push("image/*")
+    }
+
+    if (this.canUploadPdf.value) {
+      filesType.push(".pdf")
+    }
+
+    return filesType.join(", ")
   }
 }
