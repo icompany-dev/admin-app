@@ -115,6 +115,38 @@ export const usePaymentOrderStore = defineStore("paymentOrder", () => {
     }
   }
 
+  async function fetchItem(target: string, targetId: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.paymentOrders.fetchItem(target, targetId)
+      return response.data
+    } catch (e: any) {
+      error.value = e.message || `Failed to fetch payment order for receipt`
+      console.error(`Error to fetch payment order for receipt`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function shipItem(target: string, targetId: string, trackingNumber: string, trackingUrl: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.paymentOrders.shipItem(target, targetId, trackingNumber, trackingUrl)
+      return response.data
+    } catch (e: any) {
+      error.value = e.message || `Failed to fetch payment order for receipt`
+      console.error(`Error to fetch payment order for receipt`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalPaymentOrders = computed(() => paymentOrders.value.length)
 
   return {
@@ -130,5 +162,7 @@ export const usePaymentOrderStore = defineStore("paymentOrder", () => {
     fetchByPaymentBill,
     fetchPendingDeliveries,
     fetchForReceipt,
+    fetchItem,
+    shipItem,
   }
 })
