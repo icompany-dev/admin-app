@@ -104,6 +104,7 @@
         </button>
         <button
           class="btn btn-submit"
+          :disabled="!controller.anyFileAdded"
           @click="controller.onProceedClicked()"
         >
           {{ controller.proceedLabel }}
