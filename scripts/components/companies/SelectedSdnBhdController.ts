@@ -1,5 +1,9 @@
+import { CompanyConstants } from "~/scripts/constants/Company"
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { Error } from "~/scripts/library/Error"
 import { Company } from "~/scripts/models/Company"
+import { PropsApplication } from "~/scripts/props/PropsApplication"
+import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SelectedSdnBhdController {
@@ -20,6 +24,13 @@ export class SelectedSdnBhdController {
   isShareholders: Ref<boolean> = ref<boolean>(false)
   isAccounting: Ref<boolean> = ref<boolean>(false)
 
+  selectedApplicationId: Ref<string> = ref<string>("")
+  selectedService: Ref<string> = ref<string>(CompanyConstants.TARGET_AMENDMENT_NAME)
+  selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
+
+  documentRef: any | null = null
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
@@ -33,6 +44,10 @@ export class SelectedSdnBhdController {
 
     this.companyId.value = companyId
     await this.fetchCompany()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async fetchCompany(): Promise<void> {
@@ -126,6 +141,35 @@ export class SelectedSdnBhdController {
     // initiate switchout process
   }
 
+  onApplicationClicked(selectedService: string): void {
+    this.selectedService.value = selectedService
+    this.isShowApplicationDocuments.value = true
+  }
+
+  onApplicationIdUpdated(id: string): void {
+    this.selectedApplicationId.value = id
+  }
+
+  onDocumentTargetSelected(target: string): void {
+    this.selectedDocumentTarget.value = target
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value || !this.documentRef) {
+      return
+    }
+
+    try {
+      this.isDownloading.value = true
+
+      await this.documentRef.onDownloadClicked()
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+    }
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -172,5 +216,25 @@ export class SelectedSdnBhdController {
 
   get accounting(): string {
     return this.language.isMalay() ? "Perakaunan" : "Accounting"
+  }
+
+  get applicationProps(): PropsApplication {
+    return new PropsApplication(this.companyId.value)
+  }
+
+  get serviceWrapperProps(): PropsServiceWrapper {
+    let props = new PropsServiceWrapper(
+      this.companyId.value,
+      this.selectedService.value,
+      this.selectedApplicationId.value,
+      false,
+      false
+    )
+
+    return props
+  }
+
+  get showDocument(): boolean {
+    return !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value)
   }
 }

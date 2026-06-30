@@ -1,0 +1,206 @@
+// #legal-documents-section28-change-of-name {
+//   // Styles go here
+// }
+
+$paper-width-px: (
+  210 / 25.4) * 96px;
+
+.section-28 {
+  .paper-content {
+    position: relative;
+  }
+
+  div,
+  p,
+  span,
+  li {
+    font-size: 12px;
+    line-height: 16px;
+    font-family: Arial,
+      Helvetica,
+      sans-serif;
+  }
+
+  p {
+    text-align: justify;
+    margin-bottom: 10px;
+  }
+
+  .document-company {
+    position: absolute;
+    top: -10mm;
+    left: 0mm;
+
+    .label {
+      font-weight: 600;
+    }
+
+    .numbers {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 0;
+
+      .number {
+        border: 1px solid var(--bs-black
+        );
+      padding: 2px 5px;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .check-digit {
+      border: 1px solid var(--bs-black);
+      border-left: none;
+      padding: 2px 5px;
+      min-width: 20px;
+      text-align: center;
+    }
+  }
+}
+
+.endorsement-box {
+  position: absolute;
+  top: -27mm;
+  right: -15mm;
+  width: $paper-width-px * 0.35; // Takes up ~35% of the page width visually
+  height: 150px;
+  border: 1px solid var(--bs-black);
+  border-top: none;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  margin: 2rem auto;
+
+  &::before {
+    content: "10cm";
+    position: absolute;
+    left: 4px;
+    top: 5px;
+    bottom: 5px;
+    font-family: 'Arial', sans-serif;
+    font-size: 10px;
+    color: #000000;
+    padding-left: 20px;
+    display: flex;
+    align-items: center;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='100' viewBox='0 0 12 100' preserveAspectRatio='none'><path d='M0,0 C3,0 5,12 5,38 C5,46 12,48 12,50 C12,52 5,54 5,62 C5,88 3,100 0,100' fill='none' stroke='black' stroke-width='0.8' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: left center;
+    background-size: 12px 100%;
+    width: 70px;
+  }
+
+  &::after {
+    content: "15cm";
+    position: absolute;
+    bottom: 4px;
+    left: 5px;
+    right: 5px;
+    font-family: 'Arial', sans-serif;
+    font-size: 10px;
+    color: #000000;
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='12' viewBox='0 0 100 12' preserveAspectRatio='none'><path d='M0,12 C4,8 10,11 35,11 C43,11 46,0 50,0 C54,0 57,11 65,11 C90,11 96,8 100,12' fill='none' stroke='black' stroke-width='0.8' stroke-linecap='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center bottom;
+    background-size: 100% 12px;
+    height: 12px;
+  }
+}
+
+.document-header {
+  padding-top: 100px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  span {
+    font-weight: 600;
+  }
+}
+
+.document-content {
+  .direction-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+
+    .checkbox-container {
+      width: 12px;
+      height: 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid var(--bs-black);
+    }
+  }
+
+  .indented-content {
+    padding-left: 22px;
+    margin-bottom: 10px;
+  }
+
+  .input-field {
+    display: inline-block;
+    padding: 2px 5px;
+    border-bottom: 2px dotted var(--bs-black);
+  }
+
+  .signature-container {
+    height: 50px;
+    width: 200px;
+    border-bottom: 1px solid var(--bs-black);
+  }
+
+  .sign-off-details {
+    margin: 5pt 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+
+    .label {
+      width: 50px;
+    }
+  }
+
+  .lodger-header {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+
+  .lodger-information {
+    tbody {
+      tr {
+        td {
+          padding: 5px;
+
+          &:first-child {
+            width: 100px;
+          }
+        }
+      }
+    }
+  }
+}
+}
+
+.section-28 {
+  &.is-printing {
+    padding: 20mm;
+  }
+}

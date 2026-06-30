@@ -10,6 +10,7 @@ export abstract class Application implements IApplication {
   status: string = StatusConstants.DRAFT
   signatureGroups: Array<SignatureGroup> = []
   signatureGroupStatus: string = ""
+  initiatorId: string | null = null
   paidAt: string | null = null
   submittedAt: string | null = null
   completedAt: string | null = null
@@ -34,6 +35,7 @@ export abstract class Application implements IApplication {
           })
         : []
     this.signatureGroupStatus = data.signature_group_status ?? ""
+    this.initiatorId = data.initiator_id ?? null
     this.paidAt = data.paid_at ?? null
     this.submittedAt = data.submitted_at ?? null
     this.completedAt = data.completed_at ?? null
@@ -51,6 +53,7 @@ export abstract class Application implements IApplication {
       return new SignatureGroup(sg)
     })
     this.signatureGroupStatus = data.signatureGroupStatus
+    this.initiatorId = data.initiatorId
     this.paidAt = data.paidAt
     this.submittedAt = data.submittedAt
     this.completedAt = data.completedAt

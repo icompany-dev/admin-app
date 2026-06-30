@@ -1,0 +1,208 @@
+// #legal-documents-management-account-for-striking-off {
+//   // Styles go here
+// }
+
+.management-account-table {
+  width: 100%;
+
+  tbody {
+    tr {
+      td {
+        padding: 5px 0;
+
+        &:first-child {
+          width: 85%;
+          text-align: left;
+
+          span {
+            letter-spacing: 0.1pt;
+          }
+        }
+
+        &:last-child(&:not(:only-child)) {
+          width: 15%;
+          text-align: right;
+
+          span {
+            text-align: right;
+          }
+        }
+
+        &.company-name {
+          font-size: 14px;
+          font-weight: bold;
+          text-transform: uppercase;
+          padding: 0px;
+        }
+
+        &.document-title {
+          font-size: 14px;
+          font-weight: bold;
+          text-transform: uppercase;
+          padding: 0px;
+        }
+
+        &.header {
+          padding: 0px;
+        }
+
+        &.section-title {
+          letter-spacing: 0.2pt;
+          font-weight: bold;
+          text-transform: uppercase;
+          padding: 0px;
+          text-decoration: underline;
+
+          span {
+            font-size: 15px;
+          }
+        }
+
+        &.sub-section-title {
+          font-size: 14px;
+          font-weight: bold;
+          text-transform: uppercase;
+          padding: 2px 0;
+
+          span {
+            font-size: 14px;
+          }
+        }
+
+        &.child-section-title {
+          font-weight: bold;
+          text-transform: uppercase;
+          padding: 2px 0;
+        }
+
+        &.note {
+          font-size: 11px;
+          color: var(--bs-gray-600);
+          font-style: italic;
+          padding: 2px 0;
+
+          .more-info {
+            color: var(--bs-icompany-blue);
+            cursor: pointer;
+          }
+        }
+
+        &.add-item {
+          cursor: pointer;
+          color: var(--bs-icompany-blue);
+        }
+
+        &.sub-total-label {
+          letter-spacing: 0.1pt;
+          text-transform: uppercase;
+        }
+
+        &.sub-total-amount {
+          border-top: solid 1px var(--bs-black);
+          border-bottom: solid 1px var(--bs-black);
+          text-align: right;
+        }
+
+        &.total-label {
+          letter-spacing: 0.2pt;
+          font-size: 13px;
+          font-weight: 600;
+          text-transform: uppercase;
+
+          span {
+            font-size: 13px;
+          }
+        }
+
+        &.total-amount {
+          font-size: 13px;
+          font-weight: 600;
+          border-top: solid 2px var(--bs-black);
+          border-bottom: solid 2px var(--bs-black);
+          text-align: right;
+
+          span {
+            font-size: 13px;
+          }
+        }
+
+        &.section-total-label {
+          font-size: 15px;
+          font-weight: bold;
+          text-transform: uppercase;
+
+          span {
+            font-size: 15px;
+          }
+        }
+
+        &.section-total-amount {
+          font-size: 15px;
+          font-weight: bold;
+          border-top: solid 2px var(--bs-black);
+          border-bottom: double 4px var(--bs-black);
+          text-align: right;
+
+          span {
+            font-size: 15px;
+          }
+        }
+
+        &.item {
+          .form-control {
+            padding: 5px;
+            width: 85%;
+            border-radius: 5px;
+            font-weight: normal;
+          }
+        }
+
+        &.item-amount {
+          text-align: right;
+
+          .amount-input {
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+
+            .form-control {
+              text-align: right;
+              padding: 5px;
+              width: 90%;
+              border-radius: 5px;
+              font-weight: normal;
+            }
+
+            .delete-item {
+              position: absolute;
+              top: 50%;
+              right: -20px;
+              transform: translateY(-50%);
+              color: var(--bs-danger);
+              cursor: pointer;
+            }
+          }
+        }
+
+        &.amount-column {
+          text-align: right;
+
+          span {
+            text-align: right;
+          }
+        }
+      }
+
+      &.child {
+        td {
+          &:first-child {
+            padding-left: 15px;
+            width: calc(85% - 15px);
+          }
+        }
+      }
+    }
+  }
+}

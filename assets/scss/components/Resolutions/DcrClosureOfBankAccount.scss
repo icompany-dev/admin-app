@@ -1,0 +1,14 @@
+#dcr-closure-of-bank-account {
+  .searchable-dropdown {
+    border-radius: 5px;
+    border: 1px solid var(--bs-gray-500);
+    padding: 2px 8px;
+
+    .dropdown {
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+}

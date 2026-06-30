@@ -100,6 +100,26 @@
           }
         }
 
+        .form-group {
+          width: 90%;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: flex-start;
+          gap: 10px;
+
+          .label {
+            font-size: 1.1rem;
+          }
+
+          .form-control {
+            background-color: var(--bs-white);
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid var(--form-control-border-color);
+          }
+        }
+
         .highlight {
           font-size: 1.5rem;
           line-height: 1.8rem;
@@ -320,76 +340,6 @@
     .popup-content {
       .title {
         background-color: var(--compliance-alert-title-bg-color);
-      }
-    }
-  }
-}
-
-.popup-confirmation {
-  .popup-content {
-    transform: scale(0);
-    opacity: 0;
-    width: calc(90% - 40px);
-    transition:
-      opacity 0.5s ease-in-out 0.25s,
-      transform 0.5s ease-in-out 0.25s;
-
-    .close-button {
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background-color: var(--bs-danger);
-      color: var(--bs-white);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-
-      i {
-        font-size: 20px;
-      }
-    }
-
-    .title {
-      background-color: var(--popup-title-bg-color);
-      width: 100%;
-    }
-
-    .popup-details {
-      width: 100%;
-
-      &.document-popup {
-        .body {
-          padding: 15px 0;
-
-          .action,
-          .acknowledgement {
-            font-size: 1.4rem;
-          }
-
-          .document-name {
-            font-size: 1.8rem;
-            font-weight: bold;
-          }
-
-          .alert-notice {
-            font-size: 0.9rem;
-            line-height: 1.4rem;
-          }
-
-          .get-digital-copy {
-            margin-top: 10px;
-            display: flex;
-            flex-direction: row;
-            justify-content: flex-start;
-            align-items: flex-start;
-            gap: 10px;
-          }
-        }
       }
     }
   }

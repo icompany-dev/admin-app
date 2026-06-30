@@ -155,7 +155,6 @@ import { PostcodeRepository } from "~/scripts/repositories/PostcodeRepository"
 import { ProductRepository } from "~/scripts/repositories/ProductRepository"
 import { ProgressRepository } from "~/scripts/repositories/ProgressRepository"
 import { PublicRepository } from "~/scripts/repositories/PublicRepository"
-import { PurchasedDocumentTemplateRepository } from "~/scripts/repositories/PurchasedDocumentTemplateRepository"
 import { SearchComplianceRepository } from "~/scripts/repositories/SearchComplianceRepository"
 import { ServicePricingRepository } from "~/scripts/repositories/ServicePricingRepository"
 import { ServiceToPayRepository } from "~/scripts/repositories/ServiceToPayRepository"
@@ -172,6 +171,7 @@ import { UserInvitationRepository } from "~/scripts/repositories/UserInvitationR
 import { UserRepository } from "~/scripts/repositories/UserRepository"
 import { WiseAiRepository } from "~/scripts/repositories/WiseAiRepository"
 import { useCookie } from "#app"
+import { PurchasedDocumentTemplateRepository } from "~/scripts/repositories/PurchasedDocumentTemplateRepository"
 
 interface Repositories {
   accessRoleRules: AccessRoleRuleRepository
@@ -485,8 +485,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       getAuthToken
     ),
     companyAmendmentNames: new CompanyAmendmentNameRepository(
-      "company/amendment/names",
-      "company/amendment/name",
+      "company/names/changes",
+      "company/names/change",
       config.public.apiBaseUrl,
       getAuthToken
     ),
@@ -1357,6 +1357,7 @@ declare module "#app" {
       companyNameRegisters: import("~/scripts/repositories/CompanyNameRegisterRepository").CompanyNameRegisterRepository
       companyNameReservations: import("~/scripts/repositories/CompanyNameReservationRepository").CompanyNameReservationRepository
       companyNoConstitutionDeclarations: import("~/scripts/repositories/CompanyNoConstitutionDeclarationRepository").CompanyNoConstitutionDeclarationRepository
+      companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companyNotifyChangeOfNames: import("~/scripts/repositories/CompanyNotifyChangeOfNameRepository").CompanyNotifyChangeOfNameRepository
       companyOfficialSeals: import("~/scripts/repositories/CompanyOfficialSealRepository").CompanyOfficialSealRepository
       companyOutstandings: import("~/scripts/repositories/CompanyOutstandingRepository").CompanyOutstandingRepository
@@ -1366,7 +1367,6 @@ declare module "#app" {
       companyPreferenceShareTermFinancials: import("~/scripts/repositories/CompanyPreferenceShareTermFinancialRepository").CompanyPreferenceShareTermFinancialRepository
       companyPreferenceShareTermGovernances: import("~/scripts/repositories/CompanyPreferenceShareTermGovernanceRepository").CompanyPreferenceShareTermGovernanceRepository
       companyPreferenceShareTerms: import("~/scripts/repositories/CompanyPreferenceShareTermRepository").CompanyPreferenceShareTermRepository
-      companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository
@@ -1537,6 +1537,7 @@ declare module "pinia" {
       companyNameRegisters: import("~/scripts/repositories/CompanyNameRegisterRepository").CompanyNameRegisterRepository
       companyNameReservations: import("~/scripts/repositories/CompanyNameReservationRepository").CompanyNameReservationRepository
       companyNoConstitutionDeclarations: import("~/scripts/repositories/CompanyNoConstitutionDeclarationRepository").CompanyNoConstitutionDeclarationRepository
+      companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companyNotifyChangeOfNames: import("~/scripts/repositories/CompanyNotifyChangeOfNameRepository").CompanyNotifyChangeOfNameRepository
       companyOfficialSeals: import("~/scripts/repositories/CompanyOfficialSealRepository").CompanyOfficialSealRepository
       companyOutstandings: import("~/scripts/repositories/CompanyOutstandingRepository").CompanyOutstandingRepository
@@ -1546,7 +1547,6 @@ declare module "pinia" {
       companyPreferenceShareTermFinancials: import("~/scripts/repositories/CompanyPreferenceShareTermFinancialRepository").CompanyPreferenceShareTermFinancialRepository
       companyPreferenceShareTermGovernances: import("~/scripts/repositories/CompanyPreferenceShareTermGovernanceRepository").CompanyPreferenceShareTermGovernanceRepository
       companyPreferenceShareTerms: import("~/scripts/repositories/CompanyPreferenceShareTermRepository").CompanyPreferenceShareTermRepository
-      companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository

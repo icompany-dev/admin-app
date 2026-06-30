@@ -1,0 +1,62 @@
+#notice-removal-of-director {
+  // Styles go here
+}
+
+.notice-removal-of-director {
+
+  div,
+  span,
+  p,
+  li {
+    font-size: 13px;
+    text-align: justify;
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  .notice-header {
+    margin-bottom: 10px;
+  }
+
+  .notice-subheader {
+    font-size: 11px;
+    text-align: left;
+    font-style: italic;
+  }
+
+  .notice-title {
+    margin-bottom: 20px;
+  }
+
+  .signature-section {
+    margin-top: 30px;
+    width: 100%;
+    max-width: unset !important;
+
+    .signature-title {
+      font-weight: 600;
+    }
+
+    .signatures {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 30px;
+      width: 100%;
+
+      .signature-pad {
+        width: calc(50% - 30px);
+
+        .sign-off {
+          .signee-name {
+            padding: 2px 0;
+          }
+        }
+      }
+    }
+  }
+}

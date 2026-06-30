@@ -18,6 +18,7 @@ export class StatusConstants {
   static PAID: string = "paid"
   static PENDING: string = "pending"
   static PROCESSING: string = "processing"
+  static READY: string = "ready"
   static READY_FOR_PICKUP: string = "ready-for-pickup"
   static REJECTED: string = "rejected"
   static RESPONDED: string = "responded"

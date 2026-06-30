@@ -87,7 +87,7 @@ export class CompanyNameReservation {
 
   async create(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.amendmentId)) {
-      let error = new Error("", "")
+      let error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -95,7 +95,8 @@ export class CompanyNameReservation {
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error = new Error(Error.ERROR_TYPE_API, repository.error)
+      let error = new Error()
+      error.setForCUD()
       throw error
     }
 
@@ -104,7 +105,7 @@ export class CompanyNameReservation {
 
   async update(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error = new Error("", "")
+      let error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -112,28 +113,62 @@ export class CompanyNameReservation {
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error = new Error(Error.ERROR_TYPE_API, repository.error)
+      let error = new Error()
+      error.setForCUD()
       throw error
     }
 
     this.convertFromResponse(response)
   }
 
-  async remove(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<void> {
+  async remove(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<any> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error = new Error(
-        Error.ERROR_TYPE_DATA,
-        "Application ID is empty. Please create the application before removing."
-      )
+      let error = new Error()
+      error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error = new Error(Error.ERROR_TYPE_API, repository.error)
+      let error = new Error()
+      error.setForCUD()
       throw error
     }
 
     return response
+  }
+
+  async approve(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.approve(this.id)
+    if (repository.error) {
+      let error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async reject(repository: ReturnType<typeof useCompanyNameReservationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.reject(this.id, this.rejectionReason)
+    if (repository.error) {
+      let error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
   }
 }

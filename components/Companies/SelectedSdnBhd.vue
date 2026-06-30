@@ -1,7 +1,7 @@
 <template>
   <div
     id="company-selected-sdn-bhd"
-    :class="{ 'is-showing-documents': controller.isShowApplicationDocuments.value }"
+    :class="{ 'is-showing-documents': controller.showDocument }"
   >
     <div class="company-details">
       <div class="name-logo">
@@ -97,18 +97,45 @@
           {{ controller.accounting }}
         </div>
       </TransitionGroup>
+      <TransitionGroup name="fade">
+        <div
+          class="application-contents"
+          v-if="controller.isBusiness.value"
+        >
+          <ChangeOfNameApplication
+            v-bind="controller.applicationProps"
+            @applicationId="controller.onApplicationIdUpdated($event)"
+            @documentSelected="controller.onDocumentTargetSelected($event)"
+            @download="controller.onDownloadClicked()"
+          />
+        </div>
+      </TransitionGroup>
     </div>
-    <Transition name="slide-left">
+    <TransitionGroup name="slide-left">
       <div
-        class="document-container"
-        v-if="controller.isShowApplicationDocuments.value"
-      ></div>
-    </Transition>
+        class="application-document-container"
+        v-if="controller.showDocument"
+      >
+        <component
+          ref="documentRef"
+          :is="activeDocumentComponent"
+          :company-id="controller.companyId.value"
+          :view-type="'existing'"
+          :application-id="controller.selectedApplicationId.value"
+        />
+      </div>
+    </TransitionGroup>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
+  import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
+  import Section27Service from "@/components/CompanyServices/Section27Service.vue"
+  import Section28Service from "@/components/CompanyServices/Section28Service.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
+  import { CompanyConstants } from "~/scripts/constants/Company"
+  import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
   const props = defineProps({
     companyId: {
@@ -119,12 +146,29 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new SelectedSdnBhdController(props.companyId, emit)
+
+  const componentMap: Record<string, any> = {
+    [DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS]: ChangeOfNameService,
+    [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27]: Section27Service,
+    [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28]: Section28Service,
+  }
+
+  const activeDocumentComponent = computed(() => {
+    const target = controller.selectedDocumentTarget.value
+    return target && componentMap[target] ? componentMap[target] : null
+  })
 
   watch(
     () => props.companyId,
     (newVal) => [controller.setCompanyId(newVal)]
   )
+
+  watch(documentRef, (newVal) => {
+    controller.setDocumentRef(newVal)
+  })
 </script>
 
 <style lang="scss">

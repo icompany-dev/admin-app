@@ -117,7 +117,7 @@ export class TemplateProcessor {
 
     let processedContent = this.template.postSignatureContent
     processedContent = this.#replaceGenericPlaceholders(processedContent, data)
-    processedContent = this.#replaceInputWithPlaceholders(processedContent, data)
+    processedContent = this.#replaceInputPlaceholders(processedContent, data)
     processedContent = this.#replaceHtmlTags(processedContent)
 
     return processedContent
@@ -364,5 +364,80 @@ export class TemplateProcessor {
    */
   replacePageBreaks(content: string): string {
     return content.replaceAll(TemplateProcessor.BREAKPAGE_MARKER, TemplateProcessor.BREAKPAGE_HTML)
+  }
+
+  replaceInputsWithValues(content: string): string {
+    if (!content) return ""
+
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(content, "text/html")
+
+    const inputs = doc.querySelectorAll("input")
+
+    const formatDateString = (dateStr: string): string => {
+      if (!dateStr || !dateStr.includes("-")) {
+        return dateStr
+      }
+
+      const dateObj = new Date(dateStr)
+      if (isNaN(dateObj.getTime())) {
+        return dateStr
+      }
+
+      return new Intl.DateTimeFormat("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }).format(dateObj)
+    }
+
+    inputs.forEach((input) => {
+      if (!input.parentNode) {
+        return
+      }
+
+      const listId = input.getAttribute("list")
+      if (listId) {
+        const datalist = doc.getElementById(listId)
+        if (datalist) {
+          datalist.remove()
+        }
+      }
+
+      let inputValue = input.value || ""
+
+      console.log(inputValue, input.getAttribute("type"))
+      if (
+        input.getAttribute("type") === "date" ||
+        (inputValue.length === 10 && inputValue.match(/^\d{4}-\d{2}-\d{2}$/))
+      ) {
+        inputValue = formatDateString(inputValue)
+      }
+
+      const spanElement = doc.createElement("span")
+      spanElement.textContent = inputValue
+
+      input.parentNode.replaceChild(spanElement, input)
+    })
+
+    const selects = doc.querySelectorAll("select")
+    selects.forEach((select) => {
+      if (!select.parentNode) {
+        return
+      }
+
+      const selectedOption = select.querySelector("option[selected]") || select.querySelector("option")
+      const selectValue = selectedOption ? selectedOption.textContent?.trim() : select.value
+
+      const spanElement = doc.createElement("span")
+      spanElement.textContent = selectValue || ""
+
+      select.parentNode.replaceChild(spanElement, select)
+    })
+
+    const remainingDatalists = doc.querySelectorAll("datalist")
+    remainingDatalists.forEach((dl) => dl.remove())
+
+    return doc.body.innerHTML
   }
 }
