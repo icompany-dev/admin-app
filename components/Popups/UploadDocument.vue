@@ -72,7 +72,7 @@
                   <td>
                     <select
                       class="form-control"
-                      v-model="form.type"
+                      v-model="form.formTypeId"
                     >
                       <option></option>
                       <option
@@ -106,6 +106,7 @@
         <button
           class="btn btn-submit"
           :disabled="!controller.anyFileAdded"
+          :class="{ 'is-loading': controller.isUploading.value }"
           @click="controller.onProceedClicked()"
         >
           {{ controller.proceedLabel }}

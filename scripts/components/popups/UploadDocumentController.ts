@@ -1,5 +1,6 @@
 import { File as UploadedFile } from "~/scripts/models/File"
 import { Form } from "~/scripts/models/Form"
+import { FormType } from "~/scripts/models/FormType"
 import { Error } from "~/scripts/library/Error"
 import { SelectOption } from "~/scripts/types/SelectOption"
 import { BasePopupController } from "./BasePopupController"
@@ -7,6 +8,8 @@ import { PopupTitles, PopupTitlesBm } from "~/scripts/constants/Popups"
 import type { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { PropsPopup } from "~/scripts/props/PropsPopup"
 import { DragAndDropFile } from "~/scripts/library/DragAndDropFile"
+import { Filter } from "~/scripts/library/Filter"
+import { Toast } from "~/scripts/library/Toast"
 
 export class UploadDocumentController extends BasePopupController {
   companyId: Ref<string> = ref<string>("")
@@ -28,12 +31,16 @@ export class UploadDocumentController extends BasePopupController {
 
   maxSize: number = 2 * 1024 * 1024
 
+  formTypes = ref<FormType[]>([])
+
   constructor(props: PropsUploadDocument, emitEvents: any) {
     super(emitEvents)
 
     this.companyId.value = props.companyId
     this.canUploadImage.value = props.canUploadImage
     this.canUploadPdf.value = props.canUploadPdf
+
+    this.fetchFormTypes()
   }
 
   setFileInputRef(fileInputRef: any): void {
@@ -48,6 +55,21 @@ export class UploadDocumentController extends BasePopupController {
 
       this.removeEventListeners()
       this.addEventListeners()
+    }
+  }
+
+  async fetchFormTypes(): Promise<void> {
+    try {
+      let repository = useFormTypeStore()
+      let filter = new Filter()
+      filter.takeAll = true
+
+      let response = await repository.fetchAll(filter)
+      this.formTypes.value = response.data.map((d: any) => {
+        return new FormType(d)
+      })
+    } catch (e) {
+      this.formTypes.value = []
     }
   }
 
@@ -102,6 +124,7 @@ export class UploadDocumentController extends BasePopupController {
 
         newForm.companyId = this.companyId.value
         newForm.status = "active"
+        newForm.type = "business_detail"
         return newForm
       })
     } catch (e) {
@@ -172,6 +195,17 @@ export class UploadDocumentController extends BasePopupController {
       })
 
       await Promise.all(promises)
+
+      let toastTitle = this.language.isMalay()
+        ? `Fail anda telah dimuat naik.`
+        : `Your file${this.files.value.length > 1 ? "s have" : " has"} been uploaded.`
+      let toastMessage = this.language.isMalay()
+        ? "Fail ini boleh dimuat turun di muka Dokumen Syarikat"
+        : `${this.files.value.length > 1 ? "They" : "It"} can be downloaded from the list of Company Documents`
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      this.hide()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -182,6 +216,9 @@ export class UploadDocumentController extends BasePopupController {
       }
     } finally {
       this.isUploading.value = false
+      this.files.value = []
+      this.uploadedFiles.value = []
+      this.forms.value = []
     }
   }
 
@@ -298,12 +335,9 @@ export class UploadDocumentController extends BasePopupController {
   }
 
   get documentTypes(): SelectOption[] {
-    return [
-      new SelectOption("statutory", "statutory", this.language.isMalay() ? "Dokumen Berkanun" : "Statutory Document"),
-      new SelectOption("resolution", "resolution", this.language.isMalay() ? "Resolusi" : "Resolutions"),
-      new SelectOption("loans", "loans", this.language.isMalay() ? "Pinjaman" : "Loans"),
-      new SelectOption("others", "others", this.language.isMalay() ? "Others" : "Others"),
-    ]
+    return this.formTypes.value.map((d: FormType) => {
+      return new SelectOption(d.id, d.id, this.language.isMalay() ? (d.nameBm ?? d.name) : (d.name ?? ""))
+    })
   }
 
   get title(): string {
