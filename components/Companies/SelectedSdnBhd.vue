@@ -1,7 +1,7 @@
 <template>
   <div
     id="company-selected-sdn-bhd"
-    :class="{ 'is-showing-documents': controller.isShowApplicationDocuments.value }"
+    :class="{ 'is-showing-documents': controller.showDocument }"
   >
     <div class="company-details">
       <div class="name-logo">
@@ -113,7 +113,7 @@
     </div>
     <TransitionGroup name="slide-left">
       <div
-        class="document-container"
+        class="application-document-container"
         v-if="controller.showDocument"
       >
         <component

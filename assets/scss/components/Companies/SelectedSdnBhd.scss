@@ -138,13 +138,17 @@
     }
   }
 
-  .document-containter {
-    width: calc(50% - 25px);
+  .application-document-container {
+    width: calc(40% - 25px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
   &.is-showing-documents {
     .company-details {
-      width: calc(50% - 25px);
+      width: calc(60% - 25px);
     }
   }
 }
