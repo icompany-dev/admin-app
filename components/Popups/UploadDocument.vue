@@ -18,8 +18,74 @@
           ref="fileInputRef"
           class="hidden"
           :accept="controller.fileToAccept"
+          multiple="true"
           @change="controller.handleFileSelected($event)"
         />
+        <Transition name="fade">
+          <div
+            class="selected-values"
+            v-if="controller.anyFileAdded"
+          >
+            <table class="files-to-upload">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Document Name</th>
+                  <th>Document Date</th>
+                  <th>Type</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(form, i) in controller.forms.value"
+                  :key="i"
+                >
+                  <td>{{ i + 1 }}.</td>
+                  <td>
+                    <div class="uploaded-file-details">
+                      <input
+                        type="text"
+                        class="form-control"
+                        :value="controller.documentNameFor(i)"
+                        @change="controller.onDocumentNameInput(i, $event)"
+                      />
+                      <span class="uploaded-file-name">
+                        <b>{{ controller.uploadedFilenameLabel }}:</b>
+                        {{ controller.filenameFor(i) }}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <input
+                      type="date"
+                      class="form-control"
+                      v-model="form.documentDate"
+                    />
+                  </td>
+                  <td>
+                    <select
+                      class="form-control"
+                      v-model="form.type"
+                    >
+                      <option></option>
+                      <option
+                        v-for="(type, j) in controller.documentTypes"
+                        :key="type.id"
+                        :value="type.value"
+                      >
+                        {{ type.label }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <i class="fa-solid fa-xmark action-link remove" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Transition>
       </template>
       <template #actionButtons>
         <button

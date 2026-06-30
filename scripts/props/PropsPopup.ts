@@ -5,6 +5,7 @@ export interface IPropsPopup {
   isCompliance: boolean
   hasCta: boolean
   hasActionButtons: boolean
+  cssClass: string
 }
 
 export class PropsPopup {
@@ -14,6 +15,7 @@ export class PropsPopup {
   isCompliance: boolean
   hasCta: boolean
   hasActionButtons: boolean
+  cssClass: string = ""
 
   constructor(
     title: string,

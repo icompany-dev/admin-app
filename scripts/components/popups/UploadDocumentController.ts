@@ -5,6 +5,7 @@ import { SelectOption } from "~/scripts/types/SelectOption"
 import { BasePopupController } from "./BasePopupController"
 import { PopupTitles, PopupTitlesBm } from "~/scripts/constants/Popups"
 import type { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import { PropsPopup } from "~/scripts/props/PropsPopup"
 
 export class UploadDocumentController extends BasePopupController {
   companyId: Ref<string> = ref<string>("")
@@ -74,7 +75,10 @@ export class UploadDocumentController extends BasePopupController {
       }
 
       this.uploadedFiles.value = this.files.value.map((f: File) => {
-        return new UploadedFile()
+        let uploadedFile = new UploadedFile()
+        uploadedFile.name = f.name
+
+        return uploadedFile
       })
 
       this.forms.value = this.files.value.map((f: File) => {
@@ -163,6 +167,35 @@ export class UploadDocumentController extends BasePopupController {
     }
   }
 
+  filenameFor(index: number): string {
+    let file = this.files.value[index] ?? null
+
+    if (!file) {
+      return ""
+    }
+
+    return file.name
+  }
+
+  documentNameFor(index: number): string {
+    let uploadedFile = this.uploadedFiles.value[index] ?? null
+    if (!uploadedFile) {
+      return ""
+    }
+
+    return uploadedFile.name
+  }
+
+  onDocumentNameInput(index: number, event: Event): void {
+    let uploadedFile = this.uploadedFiles.value[index] ?? null
+    if (!uploadedFile) {
+      return
+    }
+
+    let target = event.target as HTMLInputElement
+    uploadedFile.name = target.value
+  }
+
   get areAllBelow2MB(): boolean {
     return this.files.value.every((f: File) => {
       return f.size <= this.maxSize
@@ -240,5 +273,24 @@ export class UploadDocumentController extends BasePopupController {
 
   get anyFileAdded(): boolean {
     return this.files.value.length > 0
+  }
+
+  get uploadedFilenameLabel(): string {
+    return this.language.isMalay() ? "Nama Fail Asal" : "Original Filename"
+  }
+
+  override get popupProps(): PropsPopup {
+    let props = new PropsPopup(
+      this.title,
+      this.heading,
+      this.cta,
+      this.isCompliance.value,
+      this.hasCta.value,
+      this.hasActionButtons.value
+    )
+
+    props.cssClass = "upload-document"
+
+    return props
   }
 }
