@@ -28,9 +28,16 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowSection28Actions: Ref<boolean> = ref<boolean>(false)
   isUpdatingSection28: Ref<boolean> = ref<boolean>(false)
 
+  isUploadingCON: Ref<boolean> = ref<boolean>(false)
+  isShowCONActions: Ref<boolean> = ref<boolean>(false)
+
+  isShowCompletedActions: Ref<boolean> = ref<boolean>(false)
+
   isShowResolutions: Ref<boolean> = ref<boolean>(true)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
   isShowSection28: Ref<boolean> = ref<boolean>(false)
+  isShowCON: Ref<boolean> = ref<boolean>(false)
+  isShowComplete: Ref<boolean> = ref<boolean>(false)
 
   resolutionsRef: any | null = null
   fileInputRef: any | null = null
@@ -101,7 +108,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.isShowSection27Actions.value = !this.isShowSection27Actions.value
   }
 
-  async onUploadSection27Clicked(): Promise<void> {
+  async onUploadDocumentClicked(): Promise<void> {
     if (!this.uploadDocumentPopup) {
       return
     }
@@ -117,6 +124,8 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.isShowResolutions.value = true
     this.isShowSection27.value = false
     this.isShowSection28.value = false
+    this.isShowCON.value = false
+    this.isShowComplete.value = false
     this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
   }
 
@@ -124,6 +133,8 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.isShowResolutions.value = false
     this.isShowSection27.value = true
     this.isShowSection28.value = false
+    this.isShowCON.value = false
+    this.isShowComplete.value = false
     this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27)
   }
 
@@ -131,6 +142,26 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.isShowResolutions.value = false
     this.isShowSection27.value = false
     this.isShowSection28.value = true
+    this.isShowCON.value = false
+    this.isShowComplete.value = false
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28)
+  }
+
+  onCertficationOfNameChangeClicked(): void {
+    this.isShowResolutions.value = false
+    this.isShowSection27.value = false
+    this.isShowSection28.value = false
+    this.isShowCON.value = true
+    this.isShowComplete.value = false
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28)
+  }
+
+  onCompleteNameChangeClicked(): void {
+    this.isShowResolutions.value = false
+    this.isShowSection27.value = false
+    this.isShowSection28.value = false
+    this.isShowCON.value = false
+    this.isShowComplete.value = true
     this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28)
   }
 
@@ -278,6 +309,30 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     } finally {
       this.isUpdatingSection28.value = false
     }
+  }
+
+  onShowCONActions(): void {
+    this.isShowCONActions.value = !this.isShowCONActions.value
+  }
+
+  shipClicked(): void {
+    //
+  }
+
+  async onProceedShipped(data: any): Promise<void> {
+    //
+  }
+
+  onShowCompleteActions(): void {
+    if (!this.isCONUploaded) {
+      return
+    }
+
+    this.isShowCompletedActions.value = !this.isShowCompletedActions.value
+  }
+
+  async completeServiceClicked(): Promise<void> {
+    //
   }
 
   // getters
@@ -481,7 +536,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   get isRegistrationOfNameSubmitted(): boolean {
-    return false
+    return this.application.value?.status === StatusConstants.SUBMITTED
   }
 
   get registrationOfNameChangeProps(): PropsServiceApplicationNode {
@@ -490,6 +545,22 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
       this.isRegistrationOfNameSubmitted,
       this.isShowSection28.value
     )
+  }
+
+  get certificateOfNameChangeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isRegistrationOfNameSubmitted, this.isCONUploaded, this.isShowCON.value)
+  }
+
+  get isCONUploaded(): boolean {
+    return false // need to check company documents for this
+  }
+
+  get completeApplicationProps(): PropsServiceApplicationNode {
+    let props = new PropsServiceApplicationNode(this.isCONUploaded, false, this.isShowComplete.value)
+
+    props.isLastNode = true
+
+    return props
   }
 
   get registrationOfNameChangeLabel(): string {
@@ -532,5 +603,33 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     props.canUploadPdf = true
 
     return props
+  }
+
+  get certifcateOfNameChangeLabel(): string {
+    return this.language.isMalay() ? "Sijil Pertukaran Nama" : "Certificate of Name Change"
+  }
+
+  get certifcateOfNameChangeSublabel(): string {
+    return this.language.isMalay() ? "Seksyen 28(4) Akta" : "Section 28(4) of the Act"
+  }
+
+  get conActionLabel(): string {
+    return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
+  }
+
+  get shipLabel(): string {
+    return this.language.isMalay() ? "Telah Dihantar" : "Shipped"
+  }
+
+  get completeLabel(): string {
+    return this.language.isMalay() ? "Lengkap dan Pindah ke Dokumen" : "Completion and Transfer to Documents"
+  }
+
+  get completeSublabel(): string {
+    return ""
+  }
+
+  get completeActionLabel(): string {
+    return this.language.isMalay() ? "Selesai" : "Complete"
   }
 }

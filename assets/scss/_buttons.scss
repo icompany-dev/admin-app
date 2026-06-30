@@ -541,6 +541,10 @@
           transform: rotate(-180deg);
         }
       }
+
+      &.single {
+        justify-content: center;
+      }
     }
   }
 
