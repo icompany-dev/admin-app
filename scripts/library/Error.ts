@@ -93,4 +93,29 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_DATA
   }
+
+  setForFileTooBig(): void {
+    this.title = this.isMalay ? "Fail anda terlalu besar" : "Your file size is too big"
+    this.message = this.isMalay ? "Saiz fail mesti kurang dari 2MB." : "File size must be less than 2MB."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
+  setForIncorrectFileTypePdf(): void {
+    this.title = this.isMalay ? "Jenis fail anda tidak diterima" : "Your file type is incorrect"
+    this.message = this.isMalay
+      ? "Jenis fail anda tidak diterima. Sila muat naik fail PDF sahaja."
+      : "Your file type is invalid. Upload only PDF files."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
+  setForFailedUpload(): void {
+    this.title = this.isMalay ? "Fail tidak dimuat naik ke server." : "Your File is not uploaded to server."
+    this.message = this.isMalay
+      ? "Sila muat naik semula fail dan cuba semula. Jika masalah ini berulang, sila hubungi IT Support."
+      : "Please re-upload the file and try again. If the problem persists, please contact Support."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
 }

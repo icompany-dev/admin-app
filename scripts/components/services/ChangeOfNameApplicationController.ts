@@ -9,6 +9,7 @@ import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { StringUtil } from "~/scripts/utils/String"
 import { CompanyNameReservation } from "~/scripts/models/CompanyNameReservation"
 import { ObjectUtil } from "~/scripts/utils/Object"
+import { File } from "~/scripts/models/File"
 import { PropsNameReservationRejected } from "~/scripts/props/PropsNameReservationRejected"
 import type { NameReservationRejected } from "~/scripts/types/emit-messages/NameReservationRejected"
 import { NameReservationVariant } from "~/scripts/models/NameReservationVariant"
@@ -31,6 +32,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowSection28: Ref<boolean> = ref<boolean>(false)
 
   resolutionsRef: any | null = null
+  fileInputRef: any | null = null
   nameReservationRejectedPopup: any | null = null
 
   isShowProposedNames: Ref<boolean> = ref<boolean>(false)
@@ -97,8 +99,48 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     ///
   }
 
+  async uploadSection27(): Promise<void> {
+    //
+  }
+
   async onDownloadSection28Clicked(): Promise<void> {
     ///
+  }
+
+  async uploadDocument(event: Event): Promise<void> {
+    const eventFileInput = event.target as HTMLInputElement
+    if (!eventFileInput.files || eventFileInput.files.length <= 0) {
+      return
+    }
+
+    try {
+      const fileToUpload: globalThis.File = eventFileInput.files[0]
+      const maxSize = 2 * 1024 * 1024 // Max 2MB
+      if (fileToUpload.size > maxSize) {
+        let errorMessage: Error = new Error()
+        errorMessage.setForFileTooBig()
+        errorMessage.handle()
+        throw errorMessage
+      }
+
+      const type = fileToUpload.type
+      if (!type.startsWith("image/") && type !== "application/pdf") {
+        let errorMessage: Error = new Error()
+        errorMessage.setForIncorrectFileTypePdf()
+        errorMessage.handle()
+        throw errorMessage
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFailedUpload()
+        error.handle()
+      }
+    } finally {
+      this.isUploadingSection27.value = !this.isUploadingSection27.value
+    }
   }
 
   onApprovalStepClicked(): void {
