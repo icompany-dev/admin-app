@@ -15,6 +15,16 @@
   --box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
   --paper-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
+  --sidebar-group-bg-color: #{$gray-900};
+  --sidebar-group-color: #{$white};
+
+  --sidebar-item-color: #{$white};
+  --sidebar-item-bg-color: rgba(0, 0, 0, 0.5);
+  --sidebar-item-disabled-bg-color: rgba(0, 0, 0, 0.2);
+  --sidebar-item-disabled-color: #{$gray-600};
+  --sidebar-item-selected-bg-color: #{color.mix(transparent, $icompany-purple-lightest, 50%)};
+  --sidebar-item-hover-bg-color: #{color.mix(transparent, $icompany-purple-lightest, 70%)};
+
   // 1. LAYOUT
   --default-layout-bg-gradient-from: rgba(255, 255, 255, 0.7);
   --default-layout-bg-gradient-to: rgba(73, 31, 70, 1);

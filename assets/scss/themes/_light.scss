@@ -15,6 +15,16 @@
   --box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
   --paper-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
+  --sidebar-group-bg-color: #{$icompany-purple};
+  --sidebar-group-color: #{$white};
+
+  --sidebar-item-color: #{$icompany-purple};
+  --sidebar-item-bg-color: #{$white};
+  --sidebar-item-disabled-bg-color: #{$gray-200};
+  --sidebar-item-disabled-color: #{$gray-900};
+  --sidebar-item-selected-bg-color: #{color.mix(transparent, $icompany-purple-lightest, 50%)};
+  --sidebar-item-hover-bg-color: #{color.mix(transparent, $icompany-purple-lightest, 70%)};
+
   // 1. LAYOUT
   --default-layout-bg-gradient-from: rgba(255, 255, 255, 0.7);
   --default-layout-bg-gradient-to: rgba(255, 255, 255, 0.7);
@@ -79,7 +89,8 @@
   --centre-stage-company-panel-hover-bg-color: #{$icompany-purple-lightest};
   --centre-stage-company-panel-border-color: #{$white};
   --centre-stage-company-panel-hover-border-color: #{$icompany-purple};
-  --centre-stage-company-panel-hover-box-shadow: 0 4px 8px 0 #{$icompany-purple}, 0 6px 20px 0 #{$icompany-purple};
+  --centre-stage-company-panel-hover-box-shadow: 0 4px 8px 0 #{$icompany-purple},
+  0 6px 20px 0 #{$icompany-purple};
   --centre-stage-company-panels-navigation-arrow-color: #{$white};
   --centre-stage-company-panels-navigation-arrow-bg-color: #{color.mix(transparent, $icompany-purple, 50%)};
 
