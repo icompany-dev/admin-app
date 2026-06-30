@@ -235,4 +235,8 @@ export class UploadDocumentController extends BasePopupController {
 
     return filesType.join(", ")
   }
+
+  get anyFileAdded(): boolean {
+    return this.files.value.length > 0
+  }
 }

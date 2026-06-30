@@ -7,6 +7,7 @@
       <template #content>
         <div
           class="drop-zone"
+          :class="{ collapsed: controller.anyFileAdded }"
           @click="controller.onUploadClicked()"
         >
           <i class="fa-regular fa-cloud-arrow-up icon"></i>

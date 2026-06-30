@@ -35,6 +35,16 @@
               opacity: 1;
             }
           }
+
+          &.collapsed {
+            height: 50px;
+            flex-direction: row;
+            gap: 50px;
+
+            .icon {
+              font-size: 2rem;
+            }
+          }
         }
 
         .hidden {
