@@ -35,17 +35,14 @@ export class File implements IModel<File> {
     this.slug = data.slug
     this.description = data.description || ""
     this.url = data.url || ""
-    this.categories =
-      data.categories !== null ? _.cloneDeep(data.categories) : []
+    this.categories = data.categories !== null ? _.cloneDeep(data.categories) : []
     this.extension = data.extension || ""
     this.size = data.size || 0
     this.type = data.type || ""
     this.mimeType = data.mime_type || ""
     this.server = data.server
-    this.dimensions =
-      data.dimensions !== null ? _.cloneDeep(data.dimensions) : null
-    this.variations =
-      data.variations !== null ? _.cloneDeep(data.variations) : []
+    this.dimensions = data.dimensions !== null ? _.cloneDeep(data.dimensions) : null
+    this.variations = data.variations !== null ? _.cloneDeep(data.variations) : []
     this.createdAt = data.created_at || null
     this.updatedAt = data.updated_at || null
   }
@@ -56,16 +53,14 @@ export class File implements IModel<File> {
     this.slug = data.slug
     this.description = data.description || ""
     this.url = data.url || ""
-    this.categories =
-      data.categories !== null ? _.cloneDeep(data.categories) : []
+    this.categories = data.categories !== null ? _.cloneDeep(data.categories) : []
     this.extension = data.extension || ""
     this.size = data.size || 0
     this.type = data.type || ""
     this.mimeType = data.mimeType || ""
     this.server = data.server
     this.dimensions = data.dimensions
-    this.variations =
-      data.variations !== null ? _.cloneDeep(data.variations) : []
+    this.variations = data.variations !== null ? _.cloneDeep(data.variations) : []
     this.createdAt = data.createdAt || null
     this.updatedAt = data.updatedAt || null
   }
@@ -74,17 +69,11 @@ export class File implements IModel<File> {
     return {}
   }
 
-  async uploadFile(
-    fileToUpload: globalThis.File,
-    repository: any
-  ): Promise<void> {
+  async uploadFile(fileToUpload: globalThis.File, repository: any): Promise<void> {
     const formData = new FormData()
     const type = fileToUpload.type
-    const fileNameLength = fileToUpload.name.length
-    const fileName =
-      fileNameLength > 40
-        ? fileToUpload.name.substring(0, 41)
-        : fileToUpload.name
+    const fileNameLength = this.name.length ?? fileToUpload.name.length
+    const fileName = fileNameLength > 40 ? this.name.substring(0, 41) : this.name
     formData.append("attachment", fileToUpload)
     formData.append("type", type)
     formData.append("name", fileName)

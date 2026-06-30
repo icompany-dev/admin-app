@@ -110,6 +110,13 @@ export class Error {
     this.type = Error.ERROR_TYPE_DATA
   }
 
+  setForIncorrectFileTypeImageAndPdf(): void {
+    this.title = this.isMalay ? "Jenis fail anda tidak diterima" : "Your file type is incorrect"
+    this.message = this.isMalay ? "Sila muat naik imej atau PDF sahaja." : "Upload only image files or PDF."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
   setForFailedUpload(): void {
     this.title = this.isMalay ? "Fail tidak dimuat naik ke server." : "Your File is not uploaded to server."
     this.message = this.isMalay

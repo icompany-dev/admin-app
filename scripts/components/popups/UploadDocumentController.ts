@@ -1,0 +1,164 @@
+import { File as UploadedFile } from "~/scripts/models/File"
+import { Form } from "~/scripts/models/Form"
+import { Error } from "~/scripts/library/Error"
+
+export class UploadDocumentController {
+  companyId: Ref<string> = ref<string>("")
+  fileInputRef: any | null = null
+
+  files: Ref<File[]> = ref<File[]>([])
+  uploadedFiles = ref<UploadedFile[]>([])
+  forms = ref<Form[]>([])
+
+  canUploadImage: Ref<boolean> = ref<boolean>(false)
+  canUploadPdf: Ref<boolean> = ref<boolean>(false)
+
+  isUploading: Ref<boolean> = ref<boolean>(false)
+
+  emitEvents: any | null = null
+
+  maxSize: number = 2 * 1024 * 1024
+
+  constructor(props: any, emitEvents: any) {
+    this.emitEvents = emitEvents
+  }
+
+  setFileInputRef(fileInputRef: any): void {
+    this.fileInputRef = fileInputRef
+  }
+
+  onUploadClicked(): void {
+    if (!this.fileInputRef) {
+      return
+    }
+
+    this.fileInputRef.click()
+  }
+
+  handleFileSelected(event: Event): void {
+    const eventFileInput = event.target as HTMLInputElement
+    if (!eventFileInput.files || eventFileInput.files.length <= 0) {
+      return
+    }
+
+    this.files.value = Array.from(eventFileInput.files)
+
+    this.postFileSelection()
+  }
+
+  postFileSelection(): void {
+    try {
+      if (!this.areAllBelow2MB) {
+        let error = new Error()
+        error.setForFileTooBig()
+        throw error
+      }
+
+      if (!this.areCorrectFileTypes) {
+        let error = new Error()
+        error.setForIncorrectFileTypeImageAndPdf()
+        throw error
+      }
+
+      this.uploadedFiles.value = this.files.value.map((f: File) => {
+        return new UploadedFile()
+      })
+
+      this.forms.value = this.files.value.map((f: File) => {
+        let newForm = new Form()
+
+        newForm.companyId = this.companyId.value
+        return newForm
+      })
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFailedUpload()
+        error.handle()
+      }
+    }
+  }
+
+  async uploadFiles(): Promise<void> {
+    if (this.isUploading.value) {
+      return
+    }
+
+    try {
+      this.isUploading.value = true
+
+      if (!this.areAllBelow2MB) {
+        let error = new Error()
+        error.setForFileTooBig()
+        throw error
+      }
+
+      if (!this.areCorrectFileTypes) {
+        let error = new Error()
+        error.setForIncorrectFileTypeImageAndPdf()
+        throw error
+      }
+
+      let promises: any[] = []
+      this.uploadedFiles.value.forEach((d: UploadedFile, index: number) => {
+        let file = this.files.value[index] ?? null
+
+        if (!file) {
+          return
+        }
+
+        promises.push(d.uploadFile(file, useFileStore()))
+      })
+
+      await Promise.all(promises)
+
+      promises = []
+      this.forms.value.forEach((f: Form, index: number) => {
+        let uploadedFile = this.uploadedFiles.value[index] ?? null
+        if (!uploadedFile) {
+          return
+        }
+
+        f.fileId = uploadedFile.id
+
+        promises.push(f.create(useFormStore()))
+      })
+
+      await Promise.all(promises)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFailedUpload()
+        error.handle()
+      }
+    } finally {
+      this.isUploading.value = false
+    }
+  }
+
+  get areAllBelow2MB(): boolean {
+    return this.files.value.every((f: File) => {
+      return f.size <= this.maxSize
+    })
+  }
+
+  get areCorrectFileTypes(): boolean {
+    return this.files.value.every((f: File) => {
+      const type = f.type
+
+      if (this.canUploadImage && type.startsWith("image/")) {
+        return true
+      }
+
+      if (this.canUploadPdf && type === "application/pdf") {
+        return true
+      }
+
+      return false
+    })
+  }
+}

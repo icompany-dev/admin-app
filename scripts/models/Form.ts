@@ -61,6 +61,7 @@ export class Form extends CompanyItem implements IModel<Form> {
       company_id: this.companyId,
       type: this.type,
       file_id: this.fileId,
+      document_date: this.documentDate,
       status: this.status,
     }
   }
@@ -76,7 +77,7 @@ export class Form extends CompanyItem implements IModel<Form> {
 
   async create(repository: ReturnType<typeof useFormStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -84,7 +85,7 @@ export class Form extends CompanyItem implements IModel<Form> {
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
