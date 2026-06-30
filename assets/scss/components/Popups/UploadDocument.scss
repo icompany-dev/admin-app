@@ -125,6 +125,14 @@
                       .uploaded-file-name {
                         color: var(--bs-gray-600);
                         font-size: 10px;
+
+                        .original-name {
+                          display: block;
+                          width: 250px;
+                          text-overflow: ellipsis;
+                          overflow: hidden;
+                          text-wrap: nowrap;
+                        }
                       }
                     }
                   }

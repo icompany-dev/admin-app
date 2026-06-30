@@ -52,7 +52,12 @@
                       />
                       <span class="uploaded-file-name">
                         <b>{{ controller.uploadedFilenameLabel }}:</b>
-                        {{ controller.filenameFor(i) }}
+                        <span
+                          class="original-name"
+                          :title="controller.filenameFor(i)"
+                        >
+                          {{ controller.filenameFor(i) }}
+                        </span>
                       </span>
                     </div>
                   </td>
