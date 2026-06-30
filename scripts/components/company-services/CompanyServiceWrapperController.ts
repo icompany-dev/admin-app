@@ -432,59 +432,7 @@ export class CompanyServiceWrapperController {
   }
 
   handleDocumentClicked(): void {
-    if (this.isSubmittingDocument.value) {
-      return
-    }
-
-    if (this.documentViewMode.value === ViewMode.Shrouded) {
-      if (window.innerWidth > 500) {
-        this.documentViewMode.value = ViewMode.Preview
-        this.eventManager.setIsDocumentPreview(true)
-        this.emitEvents("preview")
-      } else {
-        this.eventManager.setIsDocumentActive(true)
-        this.documentViewMode.value = ViewMode.Enlarged
-      }
-
-      this.isShowOverlayInstruction.value = true
-      this.resolutionContainerStyle.value = this.getResolutionContainerStyle()
-
-      return
-    }
-
-    if (this.documentViewMode.value === ViewMode.Preview) {
-      this.resolutionContainerStyle.value = this.getResolutionContainerStyle()
-      this.eventManager.setIsDocumentActive(true)
-      this.eventManager.setIsDocumentPreview(false)
-      this.isShowOverlayInstruction.value = true
-      this.documentViewMode.value = ViewMode.Enlarged
-      return
-    }
-
-    if (this.documentViewMode.value === ViewMode.Enlarged) {
-      this.eventManager.setIsDocumentActive(false)
-
-      // this.documentViewMode.value = ViewMode.Shrinking
-      this.isShowOverlayInstruction.value = false
-      setTimeout(() => {
-        this.documentViewMode.value = ViewMode.Shrouded
-        this.emitEvents("shrouded")
-
-        if (this.isHoverDocument.value) {
-          this.isOverlayVisible.value = false
-        }
-
-        this.resolutionContainerStyle.value = this.getResolutionContainerStyle()
-      }, 700)
-
-      return
-    }
-
-    if (this.documentViewMode.value === ViewMode.Edit) {
-      this.documentViewMode.value = ViewMode.Expand
-      this.enlarge()
-      return
-    }
+    this.enlarge()
   }
 
   onPreviewClicked(): void {
