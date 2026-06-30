@@ -1,3 +1,7 @@
+import { StringUtil } from "~/scripts/utils/String"
+import type { IModel } from "./IModel"
+import { Error } from "~/scripts/library/Error"
+
 export class FormType {
   id: string = ""
   name: string = ""
@@ -40,5 +44,71 @@ export class FormType {
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
     this.deletedAt = data.deletedAt
+  }
+
+  getRequestBody(): object {
+    return {
+      name: this.name,
+      name_bm: this.nameBm,
+      description: this.description,
+      description_bm: this.descriptionBm,
+    }
+  }
+
+  canSubmit() {
+    return !StringUtil.isNullOrEmpty(this.name)
+  }
+
+  async create(repository: ReturnType<typeof useFormTypeStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    const response = await repository.create(data)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async update(repository: ReturnType<typeof useFormTypeStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id) || !this.canSubmit()) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    const response = await repository.update(this.id, data)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async remove(repository: ReturnType<typeof useFormTypeStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.remove(this.id)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    return response
   }
 }
