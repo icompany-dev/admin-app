@@ -138,6 +138,28 @@ export class Repository<T> implements IRepositoryOptions {
     }
   }
 
+  async ship<T>(id: any, trackingNumber: string, trackingUrl: string): Promise<T> {
+    try {
+      let data = {
+        tracking_number: trackingNumber,
+        tracking_url: trackingUrl,
+      }
+      const response = await this.post<any>(`${this.singleResourceUrl}/ship/${id}`, data)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async complete<T>(id: any): Promise<T> {
+    try {
+      const response = await this.post<any>(`${this.singleResourceUrl}/complete/${id}`, {})
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
   async ongoing<T>(companyId: any): Promise<T> {
     try {
       const response = await this.get<any>(`${this.singleResourceUrl}/ongoing/${companyId}`, {})

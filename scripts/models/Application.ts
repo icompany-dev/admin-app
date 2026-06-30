@@ -2,6 +2,9 @@ import { StatusConstants } from "../constants/Status"
 import { Company } from "./Company"
 import type { IApplication } from "./IApplication"
 import { SignatureGroup } from "./SignatureGroup"
+import { Error } from "../library/Error"
+import { StringUtil } from "../utils/String"
+import type { IRepositoryStore } from "./IRepositoryStore"
 
 export abstract class Application implements IApplication {
   id: string = ""
@@ -60,5 +63,50 @@ export abstract class Application implements IApplication {
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
     this.deletedAt = data.deletedAt
+  }
+
+  async submit(repository: IRepositoryStore): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    await repository.submit(this.id)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+  }
+
+  async ship(trackingNumber: string, trackingUrl: string, repository: IRepositoryStore): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    const response = await repository.ship(this.id, trackingNumber, trackingUrl)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+  }
+
+  async complete(repository: IRepositoryStore): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    await repository.complete(this.id)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
   }
 }
