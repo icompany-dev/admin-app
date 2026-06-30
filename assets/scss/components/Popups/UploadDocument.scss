@@ -29,6 +29,7 @@
               transition: all 1s ease;
             }
 
+            &.drag-enter,
             &:hover {
               border-radius: 10px;
               border-width: 3px;

@@ -6,11 +6,15 @@ import { BasePopupController } from "./BasePopupController"
 import { PopupTitles, PopupTitlesBm } from "~/scripts/constants/Popups"
 import type { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { PropsPopup } from "~/scripts/props/PropsPopup"
+import { DragAndDropFile } from "~/scripts/library/DragAndDropFile"
 
 export class UploadDocumentController extends BasePopupController {
   companyId: Ref<string> = ref<string>("")
 
   fileInputRef: any | null = null
+  dropZoneRef: any | null = null
+
+  dragAndDropFile = ref<DragAndDropFile>(new DragAndDropFile(null))
 
   files: Ref<File[]> = ref<File[]>([])
   uploadedFiles = ref<UploadedFile[]>([])
@@ -20,6 +24,7 @@ export class UploadDocumentController extends BasePopupController {
   canUploadPdf: Ref<boolean> = ref<boolean>(false)
 
   isUploading: Ref<boolean> = ref<boolean>(false)
+  isDragEnter: Ref<boolean> = ref<boolean>(false)
 
   maxSize: number = 2 * 1024 * 1024
 
@@ -33,6 +38,17 @@ export class UploadDocumentController extends BasePopupController {
 
   setFileInputRef(fileInputRef: any): void {
     this.fileInputRef = fileInputRef
+  }
+
+  setDropZoneRef(dropZoneRef: any): void {
+    this.dropZoneRef = dropZoneRef
+
+    if (this.dropZoneRef) {
+      this.dragAndDropFile.value.dropTarget = this.dropZoneRef as HTMLElement
+
+      this.removeEventListeners()
+      this.addEventListeners()
+    }
   }
 
   onPropsChange(props: PropsUploadDocument): void {
@@ -88,6 +104,7 @@ export class UploadDocumentController extends BasePopupController {
         return newForm
       })
     } catch (e) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {
@@ -202,6 +219,62 @@ export class UploadDocumentController extends BasePopupController {
     this.files.value.splice(index, 1)
   }
 
+  addEventListeners(): void {
+    if (!this.dropZoneRef) {
+      return
+    }
+
+    this.dropZoneRef = this.dropZoneRef as HTMLElement
+
+    this.dropZoneRef.addEventListener("dragenter", this.handleDragEnter.bind(this), false)
+    this.dropZoneRef.addEventListener("dragover", this.handleDragEnter.bind(this), false)
+    this.dropZoneRef.addEventListener("dragleave", this.handleDragLeave.bind(this), false)
+    this.dropZoneRef.addEventListener("drop", this.handleDrop.bind(this), false)
+  }
+
+  removeEventListeners(): void {
+    if (!this.dropZoneRef) {
+      return
+    }
+
+    this.dropZoneRef = this.dropZoneRef as HTMLElement
+
+    this.dropZoneRef.removeEventListener("dragenter", this.handleDragEnter.bind(this), false)
+    this.dropZoneRef.removeEventListener("dragover", this.handleDragEnter.bind(this), false)
+    this.dropZoneRef.removeEventListener("dragleave", this.handleDragLeave.bind(this), false)
+    this.dropZoneRef.removeEventListener("drop", this.handleDrop.bind(this), false)
+  }
+
+  preventDefaults(e: Event): void {
+    this.dragAndDropFile.value.preventDefaults(e)
+  }
+
+  handleDragEnter(e: DragEvent): void {
+    this.dragAndDropFile.value.handleDragEnter(e)
+    this.isDragEnter.value = true
+  }
+
+  handleDragLeave(e: DragEvent): void {
+    this.dragAndDropFile.value.handleDragLeave(e)
+    this.isDragEnter.value = false
+  }
+
+  async handleDrop(e: DragEvent): Promise<void> {
+    console.log("here???")
+    this.dragAndDropFile.value.handleDrop(e)
+
+    if (!this.dragAndDropFile.value.files) {
+      this.isDragEnter.value = false
+      return
+    }
+
+    this.files.value = Array.from(this.dragAndDropFile.value.files)
+
+    this.postFileSelection()
+    this.isDragEnter.value = false
+  }
+
+  //getters
   get areAllBelow2MB(): boolean {
     return this.files.value.every((f: File) => {
       return f.size <= this.maxSize

@@ -6,8 +6,9 @@
     >
       <template #content>
         <div
+          ref="dropZoneRef"
           class="drop-zone"
-          :class="{ collapsed: controller.anyFileAdded }"
+          :class="{ collapsed: controller.anyFileAdded, 'drag-enter': controller.isDragEnter.value }"
           @click="controller.onUploadClicked()"
         >
           <i class="fa-regular fa-cloud-arrow-up icon"></i>
@@ -125,6 +126,7 @@
 
   const popupRef = ref(null)
   const fileInputRef = ref(null)
+  const dropZoneRef = ref(null)
 
   const controller = new UploadDocumentController(props, emit)
 
@@ -151,6 +153,22 @@
     },
     { immediate: true }
   )
+
+  watch(
+    dropZoneRef,
+    (newVal) => {
+      controller.setDropZoneRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  onMounted(() => {
+    controller.addEventListeners()
+  })
+
+  onUnmounted(() => {
+    controller.removeEventListeners()
+  })
 
   defineExpose({
     show: controller.show.bind(controller),
