@@ -32,6 +32,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowCONActions: Ref<boolean> = ref<boolean>(false)
 
   isShowCompletedActions: Ref<boolean> = ref<boolean>(false)
+  isCompleting: Ref<boolean> = ref<boolean>(false)
 
   isShowResolutions: Ref<boolean> = ref<boolean>(true)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
@@ -332,7 +333,26 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   async completeServiceClicked(): Promise<void> {
-    //
+    if (this.isCompleting.value) {
+      return
+    }
+
+    try {
+      this.isCompleting.value = true
+
+      await this.application.value?.complete(useCompanyAmendmentNameStore())
+      await this.fetchOngoing()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isCompleting.value = false
+    }
   }
 
   // getters
