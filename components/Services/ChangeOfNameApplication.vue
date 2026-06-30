@@ -334,12 +334,18 @@
       v-bind="controller.uploadDocumentProps"
       ref="uploadDocumentPopup"
     />
+    <PopupShipApplication
+      v-bind="controller.shipApplicationProps"
+      ref="shipApplicationRef"
+      @proceed="controller.onProceedShipped()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
   import PopupNameReservationRejected from "@/components/Popups/NameReservationRejected.vue"
+  import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"
   import { ChangeOfNameApplicationController } from "~/scripts/components/services/ChangeOfNameApplicationController"
@@ -352,6 +358,7 @@
   const resolutionsRef = ref(null)
   const nameReservationRejectedPopup = ref(null)
   const uploadDocumentPopup = ref(null)
+  const shipApplicationRef = ref(null)
 
   const controller = new ChangeOfNameApplicationController(props, emit)
 
@@ -382,6 +389,14 @@
     uploadDocumentPopup,
     (newVal) => {
       controller.setUploadDocumentPopup(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    shipApplicationRef,
+    (newVal) => {
+      controller.setShipApplicationRef(newVal)
     },
     { immediate: true }
   )

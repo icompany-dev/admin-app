@@ -65,7 +65,10 @@ export class ShipApplicationController extends BasePopupController {
           this.application.value.trackingUrl ?? ""
         ),
       ])
+
+      this.emitEvents("proceed")
     } catch (e) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {

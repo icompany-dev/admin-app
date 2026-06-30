@@ -52,7 +52,7 @@
 
   const props = defineProps<IPropsShipApplication>()
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["proceed"])
 
   const popupRef = ref(null)
 

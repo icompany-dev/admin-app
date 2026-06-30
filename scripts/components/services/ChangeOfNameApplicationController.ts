@@ -14,6 +14,7 @@ import { PropsNameReservationRejected } from "~/scripts/props/PropsNameReservati
 import type { NameReservationRejected } from "~/scripts/types/emit-messages/NameReservationRejected"
 import { NameReservationVariant } from "~/scripts/models/NameReservationVariant"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import { CompanyConstants } from "~/scripts/constants/Company"
 
 export class ChangeOfNameApplicationController extends ApplicationController<CompanyAmendmentName> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -52,7 +53,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(props.companyId, useCompanyAmendmentNameStore(), CompanyAmendmentName, emitEvents)
-
+    this.target.value = CompanyConstants.TARGET_AMENDMENT_NAME
     this.minimumMajorityRequired.value = 0.5 // special resolution
   }
 
@@ -319,11 +320,11 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   shipClicked(): void {
-    //
-  }
+    if (!this.shipApplicationRef) {
+      return
+    }
 
-  async onProceedShipped(data: any): Promise<void> {
-    //
+    this.shipApplicationRef.show()
   }
 
   onShowCompleteActions(): void {
