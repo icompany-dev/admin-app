@@ -13,9 +13,9 @@ import { generateStores } from "./stores/generate-stores.js"
 // Add or remove classes here. This is the only source of truth.
 const classes = [
   {
-    name: "AdminPaymentReceived",
-    url: "admin/payments-received",
-    singleUrl: "admin/payment-received",
+    name: "FormType",
+    url: "form/types",
+    singleUrl: "form/type",
   },
 ]
 

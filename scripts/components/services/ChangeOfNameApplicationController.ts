@@ -13,6 +13,7 @@ import { File } from "~/scripts/models/File"
 import { PropsNameReservationRejected } from "~/scripts/props/PropsNameReservationRejected"
 import type { NameReservationRejected } from "~/scripts/types/emit-messages/NameReservationRejected"
 import { NameReservationVariant } from "~/scripts/models/NameReservationVariant"
+import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 
 export class ChangeOfNameApplicationController extends ApplicationController<CompanyAmendmentName> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -34,6 +35,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   resolutionsRef: any | null = null
   fileInputRef: any | null = null
   nameReservationRejectedPopup: any | null = null
+  uploadDocumentPopup: any | null = null
 
   isShowProposedNames: Ref<boolean> = ref<boolean>(false)
   selectedProposedName: Ref<string> = ref<string>("")
@@ -50,6 +52,10 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   setNameReservationRejectedPopup(nameReservationRejectedPopup: any): void {
     this.nameReservationRejectedPopup = nameReservationRejectedPopup
+  }
+
+  setUploadDocumentPopup(uploadDocumentPopup: any): void {
+    this.uploadDocumentPopup = uploadDocumentPopup
   }
 
   onShowApprovalActionClicked(): void {
@@ -96,51 +102,15 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   async onUploadSection27Clicked(): Promise<void> {
-    ///
-  }
+    if (!this.uploadDocumentPopup) {
+      return
+    }
 
-  async uploadSection27(): Promise<void> {
-    //
+    this.uploadDocumentPopup.show()
   }
 
   async onDownloadSection28Clicked(): Promise<void> {
     ///
-  }
-
-  async uploadDocument(event: Event): Promise<void> {
-    const eventFileInput = event.target as HTMLInputElement
-    if (!eventFileInput.files || eventFileInput.files.length <= 0) {
-      return
-    }
-
-    try {
-      const fileToUpload: globalThis.File = eventFileInput.files[0]
-      const maxSize = 2 * 1024 * 1024 // Max 2MB
-      if (fileToUpload.size > maxSize) {
-        let errorMessage: Error = new Error()
-        errorMessage.setForFileTooBig()
-        errorMessage.handle()
-        throw errorMessage
-      }
-
-      const type = fileToUpload.type
-      if (!type.startsWith("image/") && type !== "application/pdf") {
-        let errorMessage: Error = new Error()
-        errorMessage.setForIncorrectFileTypePdf()
-        errorMessage.handle()
-        throw errorMessage
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        e.handle()
-      } else {
-        let error = new Error()
-        error.setForFailedUpload()
-        error.handle()
-      }
-    } finally {
-      this.isUploadingSection27.value = !this.isUploadingSection27.value
-    }
   }
 
   onApprovalStepClicked(): void {
@@ -553,5 +523,14 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   get section28ActionLabel(): string {
     return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
+  }
+
+  get uploadDocumentProps(): PropsUploadDocument {
+    let props = new PropsUploadDocument(this.companyId.value)
+
+    props.canUploadImage = false
+    props.canUploadPdf = true
+
+    return props
   }
 }

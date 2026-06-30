@@ -14,6 +14,7 @@ export class Form extends CompanyItem implements IModel<Form> {
   expiryDate: string | null = null
   removeOnExpired: boolean = false
   status: string = ""
+  formTypeId: string | null = null
   documentDate: string | null = null
 
   constructor(data: any | null = null) {
@@ -40,6 +41,7 @@ export class Form extends CompanyItem implements IModel<Form> {
     this.expiryDate = data.expiry_date ?? null
     this.removeOnExpired = data.remove_on_expired ?? false
     this.status = data.status ?? ""
+    this.formTypeId = data.form_type_id ?? null
     this.documentDate = data.document_date ?? null
   }
 
@@ -53,6 +55,7 @@ export class Form extends CompanyItem implements IModel<Form> {
     this.expiryDate = data.expiryDate
     this.removeOnExpired = data.removeOnExpired
     this.status = data.status
+    this.formTypeId = data.formTypeId
     this.documentDate = data.documentDate
   }
 
@@ -61,7 +64,9 @@ export class Form extends CompanyItem implements IModel<Form> {
       company_id: this.companyId,
       type: this.type,
       file_id: this.fileId,
+      document_date: this.documentDate,
       status: this.status,
+      form_type_id: this.formTypeId,
     }
   }
 
@@ -76,7 +81,7 @@ export class Form extends CompanyItem implements IModel<Form> {
 
   async create(repository: ReturnType<typeof useFormStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -84,7 +89,7 @@ export class Form extends CompanyItem implements IModel<Form> {
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

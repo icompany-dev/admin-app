@@ -10,7 +10,10 @@
       }"
       @click.self="controller.handleClickOutside()"
     >
-      <div class="popup-content">
+      <div
+        class="popup-content"
+        :class="props.cssClass"
+      >
         <slot name="beforeTitle" />
         <div
           class="title"
