@@ -19,6 +19,10 @@ export class Sidebar {
   get isShowing(): boolean {
     let route = useRoute()
 
+    if (this.route === "") {
+      return this.route === route.fullPath
+    }
+
     return route.fullPath.includes(this.route)
   }
 }
