@@ -14,6 +14,7 @@ export class Form extends CompanyItem implements IModel<Form> {
   expiryDate: string | null = null
   removeOnExpired: boolean = false
   status: string = ""
+  formTypeId: string | null = null
   documentDate: string | null = null
 
   constructor(data: any | null = null) {
@@ -40,6 +41,7 @@ export class Form extends CompanyItem implements IModel<Form> {
     this.expiryDate = data.expiry_date ?? null
     this.removeOnExpired = data.remove_on_expired ?? false
     this.status = data.status ?? ""
+    this.formTypeId = data.form_type_id ?? null
     this.documentDate = data.document_date ?? null
   }
 
@@ -53,6 +55,7 @@ export class Form extends CompanyItem implements IModel<Form> {
     this.expiryDate = data.expiryDate
     this.removeOnExpired = data.removeOnExpired
     this.status = data.status
+    this.formTypeId = data.formTypeId
     this.documentDate = data.documentDate
   }
 
@@ -63,6 +66,7 @@ export class Form extends CompanyItem implements IModel<Form> {
       file_id: this.fileId,
       document_date: this.documentDate,
       status: this.status,
+      form_type_id: this.formTypeId,
     }
   }
 

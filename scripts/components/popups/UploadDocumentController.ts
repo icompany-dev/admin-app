@@ -101,6 +101,7 @@ export class UploadDocumentController extends BasePopupController {
         let newForm = new Form()
 
         newForm.companyId = this.companyId.value
+        newForm.status = "active"
         return newForm
       })
     } catch (e) {
@@ -165,6 +166,7 @@ export class UploadDocumentController extends BasePopupController {
         }
 
         f.fileId = uploadedFile.id
+        console.log(f)
 
         promises.push(f.create(useFormStore()))
       })
