@@ -26,10 +26,24 @@ export class UploadedDocumentChecker {
   }
 
   isDocumentUploaded(target: string, applicationDate: string): boolean {
+    let firstDocument = this.latestDocument(target, applicationDate)
+
+    if (!firstDocument) {
+      return false
+    }
+
+    let firstDocumentDate = firstDocument.documentDate
+
+    let dayjs = useDayjs()
+
+    return dayjs(applicationDate).isBefore(firstDocumentDate) || dayjs(applicationDate).isSame(firstDocumentDate)
+  }
+
+  latestDocument(target: string, applicationDate: string): CompanyDocument | null {
     let keyword = this.keyword(target)
 
     if (StringUtil.isNullOrEmpty(keyword) || StringUtil.isNullOrEmpty(applicationDate)) {
-      return false
+      return null
     }
 
     let keywordParts = keyword.split(",")
@@ -41,16 +55,12 @@ export class UploadedDocumentChecker {
     })
 
     if (matchedDocuments.length <= 0) {
-      return false
+      return null
     }
 
     let orderedDocuments = ObjectUtil.sort<CompanyDocument>(matchedDocuments, "documentDate", "desc")
 
-    let firstDocumentDate = orderedDocuments[0].documentDate
-
-    let dayjs = useDayjs()
-
-    return dayjs(applicationDate).isBefore(firstDocumentDate) || dayjs(applicationDate).isSame(firstDocumentDate)
+    return orderedDocuments[0]
   }
 
   keyword(target: string): string {

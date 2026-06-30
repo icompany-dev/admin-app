@@ -1,5 +1,6 @@
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Error } from "~/scripts/library/Error"
+import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Application } from "~/scripts/models/Application"
 import { Director } from "~/scripts/models/Director"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
@@ -20,6 +21,8 @@ export abstract class ApplicationController<Application> {
 
   isShowApprovalTypeOptions: Ref<boolean> = ref<boolean>(false)
   selectedApprovalType: Ref<string> = ref<string>("director-member")
+
+  uploadedDocumentChecker = ref<UploadedDocumentChecker>(new UploadedDocumentChecker(""))
 
   minimumMajorityRequired: Ref<number> = ref<number>(0.5)
 
@@ -60,7 +63,14 @@ export abstract class ApplicationController<Application> {
     try {
       this.isLoading.value = true
 
-      await Promise.all([this.fetchOngoing(), this.fetchDirectors(), this.fetchShareholders()])
+      this.uploadedDocumentChecker.value.companyId = this.companyId.value
+
+      await Promise.all([
+        this.fetchOngoing(),
+        this.fetchDirectors(),
+        this.fetchShareholders(),
+        this.uploadedDocumentChecker.value.fetchDocuments(),
+      ])
 
       this.emitEvents("applicationId", this.application.value.id)
     } catch (e) {
@@ -79,7 +89,14 @@ export abstract class ApplicationController<Application> {
   async setCompanyId(companyId: string): Promise<void> {
     this.companyId.value = companyId
 
-    await Promise.all([this.fetchOngoing(), this.fetchDirectors(), this.fetchShareholders()])
+    this.uploadedDocumentChecker.value.companyId = this.companyId.value
+
+    await Promise.all([
+      this.fetchOngoing(),
+      this.fetchDirectors(),
+      this.fetchShareholders(),
+      this.uploadedDocumentChecker.value.fetchDocuments(),
+    ])
 
     this.emitEvents("applicationId", this.application.value.id)
   }

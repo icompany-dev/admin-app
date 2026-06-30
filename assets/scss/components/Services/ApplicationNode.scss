@@ -117,4 +117,30 @@
       }
     }
   }
+
+  .action-link {
+    display: block;
+    margin-top: 10px;
+    padding: 0px 5px;
+    cursor: pointer;
+    transition: all 0.7s ease;
+
+    &.download {
+      color: var(--bs-icompany-blue);
+      font-size: 12px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 5px;
+
+      i {
+        font-size: 13px;
+      }
+    }
+
+    &:hover {
+      font-weight: 600;
+    }
+  }
 }

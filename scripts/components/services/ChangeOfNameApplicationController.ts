@@ -21,6 +21,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isDownloading: Ref<boolean> = ref<boolean>(false)
 
   isUploadingSection27: Ref<boolean> = ref<boolean>(false)
+  isDownloadingSection27: Ref<boolean> = ref<boolean>(false)
   isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
   isUpdatingSection27: Ref<boolean> = ref<boolean>(false)
 
@@ -355,6 +356,47 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     }
   }
 
+  async onDownloadSection27Clicked(): Promise<void> {
+    if (!this.isSection27Uploaded || this.isDownloadingSection27.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+        DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27,
+        this.application.value?.createdAt ?? ""
+      )
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingSection27.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingSection27.value = false
+    }
+  }
+
   // getters
   get serviceName(): string {
     return this.language.isMalay() ? "Tukar Nama Syarikat" : "Change Company Name"
@@ -525,7 +567,15 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   get section27ActionLabel(): string {
+    if (!this.canSubmitSection27 && !this.canUpdateSection27) {
+      return this.language.isMalay() ? "Telah Ditempah" : "Reserved"
+    }
+
     return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
+  }
+
+  get hasNextStepsForSection27(): boolean {
+    return this.canSubmitSection27 || this.canUpdateSection27
   }
 
   get canSubmitSection27(): boolean {
@@ -546,6 +596,18 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   get rejectedSection27Label(): string {
     return this.language.isMalay() ? "Ditolak" : "Rejected"
+  }
+
+  get uploadSection27Label(): string {
+    if (this.isSection27Uploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
+  get downloadDocumentSection27Label(): string {
+    return this.language.isMalay() ? "Seksyeb 27" : "Section 27"
   }
 
   get nameReservationRejectedProps(): PropsNameReservationRejected {
@@ -569,10 +631,6 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   get certificateOfNameChangeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(this.isRegistrationOfNameSubmitted, this.isCONUploaded, this.isShowCON.value)
-  }
-
-  get isCONUploaded(): boolean {
-    return false // need to check company documents for this
   }
 
   get completeApplicationProps(): PropsServiceApplicationNode {
@@ -651,5 +709,20 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   get completeActionLabel(): string {
     return this.language.isMalay() ? "Selesai" : "Complete"
+  }
+
+  // document checkers
+  get isSection27Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
+  get isCONUploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28,
+      this.application.value?.createdAt ?? ""
+    )
   }
 }

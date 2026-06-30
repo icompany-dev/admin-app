@@ -144,18 +144,31 @@
               :class="{ 'is-loading': controller.isUploadingSection27.value }"
               @click="controller.onUploadDocumentClicked()"
             >
-              Upload
+              {{ controller.uploadSection27Label }}
             </button>
+            <span
+              class="action-link download"
+              v-if="controller.isSection27Uploaded"
+              @click="controller.onDownloadSection27Clicked()"
+            >
+              <i class="fa-regular fa-cloud-arrow-down"></i>
+              {{ controller.downloadDocumentSection27Label }}
+            </span>
           </template>
           <template #nodeActions>
             <div class="actions-button-options">
               <div
                 class="btn btn-pill btn-submit selected"
-                :class="{ 'is-loading': controller.isUpdatingSection27.value }"
+                :class="{
+                  'is-loading': controller.isUpdatingSection27.value,
+                  single: !controller.hasNextStepsForSection27,
+                  disabled: !controller.hasNextStepsForSection27,
+                }"
                 @click="controller.onShowSection27ActionClicked()"
               >
                 <span class="label">{{ controller.section27ActionLabel }}</span>
                 <i
+                  v-if="controller.hasNextStepsForSection27"
                   class="fa-solid fa-caret-down"
                   :class="{ rotate: controller.isShowSection27Actions.value }"
                 ></i>
