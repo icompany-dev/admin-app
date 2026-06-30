@@ -162,7 +162,6 @@
                 :class="{
                   'is-loading': controller.isUpdatingSection27.value,
                   single: !controller.hasNextStepsForSection27,
-                  disabled: !controller.hasNextStepsForSection27,
                 }"
                 @click="controller.onShowSection27ActionClicked()"
               >
@@ -265,8 +264,16 @@
               :class="{ 'is-loading': controller.isUploadingCON.value }"
               @click="controller.onUploadDocumentClicked()"
             >
-              Upload
+              {{ controller.uploadCONLabel }}
             </button>
+            <span
+              class="action-link download"
+              v-if="controller.isCONUploaded"
+              @click="controller.onDownloadCONClicked()"
+            >
+              <i class="fa-regular fa-cloud-arrow-down"></i>
+              {{ controller.downloadDocumentCONLabel }}
+            </span>
           </template>
           <template #nodeActions>
             <div class="actions-button-options">
@@ -286,7 +293,7 @@
               >
                 <button
                   class="btn btn-pill btn-submit"
-                  disabled
+                  :disabled="!controller.isCONUploaded"
                   @click="controller.shipClicked()"
                 >
                   {{ controller.shipLabel }}

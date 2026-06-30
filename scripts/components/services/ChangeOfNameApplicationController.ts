@@ -30,6 +30,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isUpdatingSection28: Ref<boolean> = ref<boolean>(false)
 
   isUploadingCON: Ref<boolean> = ref<boolean>(false)
+  isDownloadingCON: Ref<boolean> = ref<boolean>(false)
   isShowCONActions: Ref<boolean> = ref<boolean>(false)
 
   isShowCompletedActions: Ref<boolean> = ref<boolean>(false)
@@ -397,6 +398,47 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     }
   }
 
+  async onDownloadCONClicked(): Promise<void> {
+    if (!this.isCONUploaded || this.isDownloadingCON.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+        DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28,
+        this.application.value?.createdAt ?? ""
+      )
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingCON.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingCON.value = false
+    }
+  }
+
   // getters
   get serviceName(): string {
     return this.language.isMalay() ? "Tukar Nama Syarikat" : "Change Company Name"
@@ -607,7 +649,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   get downloadDocumentSection27Label(): string {
-    return this.language.isMalay() ? "Seksyeb 27" : "Section 27"
+    return this.language.isMalay() ? "Seksyen 27" : "Section 27"
   }
 
   get nameReservationRejectedProps(): PropsNameReservationRejected {
@@ -689,6 +731,18 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   get certifcateOfNameChangeSublabel(): string {
     return this.language.isMalay() ? "Seksyen 28(4) Akta" : "Section 28(4) of the Act"
+  }
+
+  get uploadCONLabel(): string {
+    if (this.isCONUploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
+  get downloadDocumentCONLabel(): string {
+    return this.language.isMalay() ? "Sijil" : "Certificate"
   }
 
   get conActionLabel(): string {
