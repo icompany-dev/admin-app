@@ -39,7 +39,7 @@
               <tbody>
                 <tr
                   v-for="(form, i) in controller.forms.value"
-                  :key="i"
+                  :key="`form-${i}`"
                 >
                   <td>{{ i + 1 }}.</td>
                   <td>
@@ -84,7 +84,10 @@
                     </select>
                   </td>
                   <td>
-                    <i class="fa-solid fa-xmark action-link remove" />
+                    <i
+                      class="fa-solid fa-xmark action-link remove"
+                      @click="controller.onRemove(i)"
+                    />
                   </td>
                 </tr>
               </tbody>

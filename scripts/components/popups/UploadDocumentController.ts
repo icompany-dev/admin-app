@@ -196,6 +196,12 @@ export class UploadDocumentController extends BasePopupController {
     uploadedFile.name = target.value
   }
 
+  onRemove(index: number): void {
+    this.forms.value.splice(index, 1)
+    this.uploadedFiles.value.splice(index, 1)
+    this.files.value.splice(index, 1)
+  }
+
   get areAllBelow2MB(): boolean {
     return this.files.value.every((f: File) => {
       return f.size <= this.maxSize
