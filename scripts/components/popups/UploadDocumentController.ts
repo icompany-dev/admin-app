@@ -26,6 +26,8 @@ export class UploadDocumentController extends BasePopupController {
     super(emitEvents)
 
     this.companyId.value = props.companyId
+    this.canUploadImage.value = props.canUploadImage
+    this.canUploadPdf.value = props.canUploadPdf
   }
 
   setFileInputRef(fileInputRef: any): void {
