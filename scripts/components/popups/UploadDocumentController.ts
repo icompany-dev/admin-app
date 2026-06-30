@@ -71,7 +71,7 @@ export class UploadDocumentController extends BasePopupController {
       return
     }
 
-    this.files.value = Array.from(eventFileInput.files)
+    this.files.value = this.files.value.concat(Array.from(eventFileInput.files))
 
     this.postFileSelection()
   }
@@ -104,7 +104,6 @@ export class UploadDocumentController extends BasePopupController {
         return newForm
       })
     } catch (e) {
-      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {
@@ -260,7 +259,6 @@ export class UploadDocumentController extends BasePopupController {
   }
 
   async handleDrop(e: DragEvent): Promise<void> {
-    console.log("here???")
     this.dragAndDropFile.value.handleDrop(e)
 
     if (!this.dragAndDropFile.value.files) {
@@ -268,7 +266,7 @@ export class UploadDocumentController extends BasePopupController {
       return
     }
 
-    this.files.value = Array.from(this.dragAndDropFile.value.files)
+    this.files.value = this.files.value.concat(Array.from(this.dragAndDropFile.value.files))
 
     this.postFileSelection()
     this.isDragEnter.value = false
