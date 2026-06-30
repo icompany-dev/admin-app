@@ -36,7 +36,7 @@ export class SidebarGroup {
 }
 
 export class PageSidebar {
-  static commandCentre: Sidebar = new Sidebar("Command Centre", "Pusat Kawalan", "command-centre", false)
+  static commandCentre: Sidebar = new Sidebar("Command Centre", "Pusat Kawalan", "", false)
   static dashboardGroup: SidebarGroup = new SidebarGroup("Dashboard", "Dashboard", [this.commandCentre])
 
   static incorpDrafts: Sidebar = new Sidebar(
