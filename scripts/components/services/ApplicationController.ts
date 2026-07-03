@@ -19,6 +19,7 @@ export abstract class ApplicationController<Application> {
   application = ref<Application | null>(null)
 
   paymentOrderId: Ref<string> = ref<string>("")
+  paymentOrder: Ref<PaymentOrder> = ref<PaymentOrder>(new PaymentOrder())
 
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
@@ -86,7 +87,7 @@ export abstract class ApplicationController<Application> {
       await this.fetchPaymentOrder()
 
       this.emitEvents("applicationId", this.application.value.id)
-      this.emitEvents("paymnentOrderId", this.paymentOrderId.value)
+      this.emitEvents("paymentOrderId", this.paymentOrderId.value)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -115,7 +116,7 @@ export abstract class ApplicationController<Application> {
     await this.fetchPaymentOrder()
 
     this.emitEvents("applicationId", this.application.value.id)
-    this.emitEvents("paymnentOrderId", this.paymentOrderId.value)
+    this.emitEvents("paymentOrderId", this.paymentOrderId.value)
   }
 
   setShipApplicationRef(shipApplicationRef: any): void {
@@ -178,8 +179,10 @@ export abstract class ApplicationController<Application> {
       return
     }
 
-    let paymentOrder = new PaymentOrder(response)
-    this.paymentOrderId.value = paymentOrder.id
+    this.paymentOrder.value = new PaymentOrder(response)
+    this.paymentOrderId.value = this.paymentOrder.value.id
+
+    this.emitEvents("paymentOrder", this.paymentOrder.value)
   }
 
   onApprovalTypeClicked(): void {

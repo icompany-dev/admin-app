@@ -23,6 +23,8 @@ export class ReceiptInvoiceServiceController {
 
   get serviceWrapperProps(): PropsCompanyServiceWrapper {
     let dummyApplication = new CompanyAmendmentName()
+    dummyApplication.status = "paid"
+    dummyApplication.id = "dummy"
 
     let props = new PropsCompanyServiceWrapper(
       dummyApplication,

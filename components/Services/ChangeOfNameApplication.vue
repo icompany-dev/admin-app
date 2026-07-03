@@ -356,7 +356,7 @@
 
   const props = defineProps<IPropsApplication>()
 
-  const emit = defineEmits(["applicationId", "paymentOrderId", "documentSelected", "download"])
+  const emit = defineEmits(["applicationId", "paymentOrderId", "paymentOrder", "documentSelected", "download"])
 
   const resolutionsRef = ref(null)
   const nameReservationRejectedPopup = ref(null)

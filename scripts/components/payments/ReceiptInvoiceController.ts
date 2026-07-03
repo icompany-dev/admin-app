@@ -1,3 +1,4 @@
+import { PaperOrientation } from "~/scripts/constants/Paper"
 import { PaymentConstants } from "~/scripts/constants/Payment"
 import { ActivityLogger } from "~/scripts/library/ActivityLogger"
 import { Error } from "~/scripts/library/Error"
@@ -33,6 +34,7 @@ export class ReceiptInvoiceController {
   documentRef: any | null = null
 
   isSettingPaymentOrder = ref<boolean>(false)
+  isLoading = ref<boolean>(false)
   isDownloading = ref<boolean>(false)
 
   totalPages = ref<number>(1)
@@ -47,6 +49,9 @@ export class ReceiptInvoiceController {
   logoBase64: Ref<string> = ref<string>("")
 
   receiptInvoiceGenerator: ReceiptInvoiceGenerator = new ReceiptInvoiceGenerator()
+
+  additionalCssClass: string = "receipt-paper"
+  paperOrientation: string = PaperOrientation.Portrait
 
   constructor(paymentOrderId: string, paymentOrder: PaymentOrder | null = null, emitEvents: any | null) {
     this.emitEvents = emitEvents
@@ -154,6 +159,7 @@ export class ReceiptInvoiceController {
   }
 
   async fetchPaymentOrder(): Promise<void> {
+    this.isLoading.value = true
     this.paymentOrder.value = new PaymentOrder()
 
     try {
@@ -171,6 +177,8 @@ export class ReceiptInvoiceController {
         errorMessage.setForPaymentDetails()
         errorMessage.handle()
       }
+    } finally {
+      this.isLoading.value = false
     }
   }
 
@@ -537,5 +545,13 @@ export class ReceiptInvoiceController {
     }
 
     return paymentGateway.gatewayName()
+  }
+
+  get loaderLabel(): string {
+    return "Generating the"
+  }
+
+  get loaderSublabel(): string {
+    return "Receipt"
   }
 }
