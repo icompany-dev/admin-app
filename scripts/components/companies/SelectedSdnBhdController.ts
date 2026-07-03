@@ -25,6 +25,7 @@ export class SelectedSdnBhdController {
   isAccounting: Ref<boolean> = ref<boolean>(false)
 
   selectedApplicationId: Ref<string> = ref<string>("")
+  selectedPaymentOrderId: Ref<string> = ref<string>("")
   selectedService: Ref<string> = ref<string>(CompanyConstants.TARGET_AMENDMENT_NAME)
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
 
@@ -148,6 +149,10 @@ export class SelectedSdnBhdController {
 
   onApplicationIdUpdated(id: string): void {
     this.selectedApplicationId.value = id
+  }
+
+  onPaymentOrderIdUpdated(id: string): void {
+    this.selectedPaymentOrderId.value = id
   }
 
   onDocumentTargetSelected(target: string): void {

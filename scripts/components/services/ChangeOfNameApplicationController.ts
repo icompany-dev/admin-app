@@ -52,7 +52,13 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   selectedProposedName: Ref<string> = ref<string>("")
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
-    super(props.companyId, useCompanyAmendmentNameStore(), CompanyAmendmentName, emitEvents)
+    super(
+      props.companyId,
+      useCompanyAmendmentNameStore(),
+      CompanyAmendmentName,
+      CompanyConstants.TARGET_AMENDMENT_NAME,
+      emitEvents
+    )
     this.target.value = CompanyConstants.TARGET_AMENDMENT_NAME
     this.minimumMajorityRequired.value = 0.5 // special resolution
   }

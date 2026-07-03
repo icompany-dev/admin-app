@@ -112,6 +112,7 @@
             <ChangeOfNameApplication
               v-bind="controller.applicationProps"
               @applicationId="controller.onApplicationIdUpdated($event)"
+              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
               @documentSelected="controller.onDocumentTargetSelected($event)"
               @download="controller.onDownloadClicked()"
             />
@@ -129,6 +130,7 @@
             :company-id="controller.companyId.value"
             :view-type="'existing'"
             :application-id="controller.selectedApplicationId.value"
+            :target-id="controller.selectedPaymentOrderId.value"
           />
         </div>
       </TransitionGroup>

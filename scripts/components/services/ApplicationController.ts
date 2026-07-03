@@ -4,6 +4,7 @@ import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentCheck
 import { Application } from "~/scripts/models/Application"
 import { Director } from "~/scripts/models/Director"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
+import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
@@ -16,6 +17,8 @@ export abstract class ApplicationController<Application> {
 
   applications = ref<Application[]>([])
   application = ref<Application | null>(null)
+
+  paymentOrderId: Ref<string> = ref<string>("")
 
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
@@ -47,6 +50,7 @@ export abstract class ApplicationController<Application> {
     companyId: string,
     repository: IRepositoryStore,
     applicationClassType: new (data: any) => Application,
+    target: string,
     emitEvents: any | null
   ) {
     this.repository = repository
@@ -54,6 +58,8 @@ export abstract class ApplicationController<Application> {
     this.companyId.value = companyId
 
     this.application.value = new this.applicationClassType(null)
+
+    this.target.value = target
 
     this.emitEvents = emitEvents
 
@@ -77,7 +83,10 @@ export abstract class ApplicationController<Application> {
         this.uploadedDocumentChecker.value.fetchDocuments(),
       ])
 
+      await this.fetchPaymentOrder()
+
       this.emitEvents("applicationId", this.application.value.id)
+      this.emitEvents("paymnentOrderId", this.paymentOrderId.value)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -103,7 +112,10 @@ export abstract class ApplicationController<Application> {
       this.uploadedDocumentChecker.value.fetchDocuments(),
     ])
 
+    await this.fetchPaymentOrder()
+
     this.emitEvents("applicationId", this.application.value.id)
+    this.emitEvents("paymnentOrderId", this.paymentOrderId.value)
   }
 
   setShipApplicationRef(shipApplicationRef: any): void {
@@ -150,6 +162,24 @@ export abstract class ApplicationController<Application> {
     this.shareholders.value = response.map((d: any) => {
       return new Shareholder(d)
     })
+  }
+
+  async fetchPaymentOrder(): Promise<void> {
+    if (!this.hasApplication) {
+      this.paymentOrderId.value = ""
+      return
+    }
+
+    let repository = usePaymentOrderStore()
+    let response = await repository.fetchByTarget(this.target.value, this.application?.value.id)
+
+    if (!response || repository.error !== null) {
+      this.paymentOrderId.value = ""
+      return
+    }
+
+    let paymentOrder = new PaymentOrder(response)
+    this.paymentOrderId.value = paymentOrder.id
   }
 
   onApprovalTypeClicked(): void {
