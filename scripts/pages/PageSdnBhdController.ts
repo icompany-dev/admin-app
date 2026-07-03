@@ -67,6 +67,14 @@ export class PageSdnBhdController extends PageController {
   }
 
   get tableFilterProps(): PropsTableFilter {
-    return new PropsTableFilter(true, "", true, this.propsDataOrders, false, new PropsDataDateFilter("", "", ""), true)
+    return new PropsTableFilter(
+      false,
+      "",
+      false,
+      this.propsDataOrders,
+      false,
+      new PropsDataDateFilter("", "", ""),
+      true
+    )
   }
 }
