@@ -66,6 +66,7 @@ export class ShipApplicationController extends BasePopupController {
         ),
       ])
 
+      this.hide()
       this.emitEvents("proceed")
     } catch (e) {
       console.error(e)
