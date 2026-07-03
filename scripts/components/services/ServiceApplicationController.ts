@@ -1,3 +1,4 @@
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Application } from "~/scripts/models/Application"
 import type { IPropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
@@ -37,6 +38,10 @@ export class ServiceApplicationController {
 
   onPanelClicked(): void {
     this.isCollapsed.value = !this.isCollapsed.value
+  }
+
+  onPaymentNodeClicked(): void {
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
   }
 
   async onDownloaReceiptClicked(): Promise<void> {

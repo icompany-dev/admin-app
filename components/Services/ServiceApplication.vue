@@ -14,7 +14,10 @@
         class="panel-content"
         v-if="!controller.isCollapsed.value"
       >
-        <ApplicationNode v-bind="controller.receiptApplicationNodeProps">
+        <ApplicationNode
+          v-bind="controller.receiptApplicationNodeProps"
+          @click="controller.onPaymentNodeClicked()"
+        >
           <template #nodeContent>
             <div class="application-container">
               <div class="node-title">{{ controller.paymentLabel }}</div>
@@ -44,7 +47,7 @@
 
   const props = defineProps<IPropsServiceApplication>()
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["documentSelected"])
 
   const controller = new ServiceApplicationController(props, emit)
 

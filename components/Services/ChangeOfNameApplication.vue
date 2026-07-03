@@ -1,6 +1,9 @@
 <template>
   <div id="services-change-of-name-application">
-    <ServiceApplication v-bind="controller.serviceApplicationProps">
+    <ServiceApplication
+      v-bind="controller.serviceApplicationProps"
+      @documentSelected="emit('documentSelected', $event)"
+    >
       <template #application>
         <ApplicationNode
           v-bind="controller.approvalApplicationNodeProps"

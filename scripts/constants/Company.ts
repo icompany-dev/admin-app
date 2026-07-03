@@ -57,6 +57,7 @@ export class CompanyConstants {
   static TARGET_OFFICIAL_SEAL: string = "company_official_seal"
   static TARGET_OPEN_BANK_ACCOUNT: string = "company_bank_resolution"
   static TARGET_PREFERENCE_SHARE_RIGHT: string = "company_preference_share_right"
+  static TARGET_RECEIPT: string = "receipt"
   static TARGET_REMOVAL_OF_DIRECTOR: string = "company_director_removal_notice"
   static TARGET_SET_FINANCIAL_YEAR_END: string = "company_set_financial_year_end"
   static TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT: string = "company_share_issuance"
@@ -65,6 +66,7 @@ export class CompanyConstants {
   static TARGET_SHAREHOLDER_PROPOSE_TRANSFER: string = "company_shareholder_transfer_proposal"
   static TARGET_SHAREHOLDER_POST_SHARE_TRANSFER: string = "company_post_share_transfer"
   static TARGET_STRIKING_OFF_RESOLUTION: string = "company_striking_off_resolution"
+  static TARGET_SWITCH_OUT: string = "company_switch_out"
   static TARGET_SUBSCRIPTION: string = "company_subscription"
   static TARGET_SUBSCRIBE_BUSINESS_ADDRESS: string = "company_address_subscription"
   static TARGET_TERMS_OF_REFERENCE: string = "company_terms_of_reference"
@@ -120,6 +122,7 @@ export class CompanyConstants {
     this.TARGET_OPEN_BANK_ACCOUNT,
     this.TARGET_PREFERENCE_SHARE_RIGHT,
     this.TARGET_PREPARE_FINANCIAL_STATEMENTS,
+    this.TARGET_RECEIPT,
     this.TARGET_REMOVAL_OF_DIRECTOR,
     this.TARGET_SET_FINANCIAL_YEAR_END,
     this.TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT,
@@ -130,6 +133,7 @@ export class CompanyConstants {
     this.TARGET_APPLICATION_INCORPORATE,
     this.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES,
     this.TARGET_STRIKING_OFF_RESOLUTION,
+    this.TARGET_SWITCH_OUT,
     this.TARGET_SUBSCRIBE_BUSINESS_ADDRESS,
     this.TARGET_SUBSCRIPTION,
     this.TARGET_THIRD_SCHEDULE,

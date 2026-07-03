@@ -1,4 +1,6 @@
 export class DocumentTargets {
+  static TARGET_RECEIPT: string = "receipt"
+
   static TARGET_ADOPT_A_CONSTITUTION: string = "company_constitution_setting"
   static TARGET_ADOPT_A_CONSTITUTION_RESOLUTIONS: string = "company_constitution_setting_resolutions"
 

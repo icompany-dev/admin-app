@@ -125,4 +125,29 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_DATA
   }
+
+  setForPaymentDetails(): void {
+    this.title = this.isMalay ? "Tiada maklumat pembayaran" : "No information for your payment"
+    this.message = this.isMalay ? "Sila muat semula halaman dan cuba lagi." : "Please refresh the page and try again."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
+  setForPaymentGateways(): void {
+    this.title = this.isMalay
+      ? "Servis pembayaran tidak ada buat masa ini."
+      : "Payment service is currently unavailable"
+    this.message = this.isMalay ? "Sila cuba semula." : "Please try again later."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
+  setForDocumentDownload(): void {
+    this.title = this.isMalay ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.message = this.isMalay
+      ? "Kami tidak berjaya jana dokumen untuk dimuat turun. Sila cuba sekali lagi."
+      : "We are unable to generate the document for download. Please try again."
+
+    this.type = Error.ERROR_TYPE_API
+  }
 }

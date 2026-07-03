@@ -1,3 +1,4 @@
+import { CompanyConstants } from "../constants/Company"
 import { DeliveryConstants } from "../constants/Payment"
 import { StringUtil } from "../utils/String"
 import type { IModel } from "./IModel"
@@ -399,5 +400,37 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       }, 0.0)
 
     return Number(totalOptionals)
+  }
+
+  bulkPackageFees(): number {
+    if (!this.isDeliveryRequired || this.targetType !== CompanyConstants.TARGET_SWITCH_OUT) {
+      return 0
+    }
+
+    return this.deliveryType !== DeliveryConstants.DELIVERY_EMAIL &&
+      this.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
+      ? 30
+      : 0
+  }
+
+  deliveryFees(): number {
+    if (!this.isDeliveryRequired) {
+      return 0
+    }
+
+    let totalDelivery = 0
+    if (this.delivery) {
+      totalDelivery = Number(this.delivery.deliveryRates)
+    } else {
+      totalDelivery = 10 // we take the courier for now
+    }
+
+    totalDelivery += this.paperPrintPackageCost()
+
+    if (this.targetType === CompanyConstants.TARGET_SWITCH_OUT) {
+      totalDelivery += this.bulkPackageFees()
+    }
+
+    return totalDelivery
   }
 }
