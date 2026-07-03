@@ -14,6 +14,8 @@ export abstract class Application implements IApplication {
   signatureGroups: Array<SignatureGroup> = []
   signatureGroupStatus: string = ""
   initiatorId: string | null = null
+  trackingNumber: string | null = null
+  trackingUrl: string | null = null
   paidAt: string | null = null
   submittedAt: string | null = null
   completedAt: string | null = null
@@ -80,14 +82,14 @@ export abstract class Application implements IApplication {
     }
   }
 
-  async ship(trackingNumber: string, trackingUrl: string, repository: IRepositoryStore): Promise<void> {
+  async ship(repository: IRepositoryStore): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
       let error: Error = new Error()
       error.setForCUD()
       throw error
     }
 
-    const response = await repository.ship(this.id, trackingNumber, trackingUrl)
+    const response = await repository.ship(this.id, this.trackingNumber ?? "", this.trackingUrl ?? "")
     if (repository.error) {
       let error: Error = new Error()
       error.setForCUD()

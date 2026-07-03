@@ -7,6 +7,7 @@ import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
+import { PropsShipApplication } from "~/scripts/props/PropsShipApplication"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -37,6 +38,10 @@ export abstract class ApplicationController<Application> {
   emitEvents: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  target: Ref<string> = ref<string>("")
+
+  shipApplicationRef: any | null = null
 
   constructor(
     companyId: string,
@@ -101,13 +106,17 @@ export abstract class ApplicationController<Application> {
     this.emitEvents("applicationId", this.application.value.id)
   }
 
+  setShipApplicationRef(shipApplicationRef: any): void {
+    this.shipApplicationRef = shipApplicationRef
+  }
+
   async fetchOngoing(): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       this.application.value = new this.applicationClassType(null)
       return
     }
 
-    let response = await this.repository.ongoing(this.companyId.value)
+    let response = await this.repository.latestCompleted(this.companyId.value)
     if (this.repository.error !== null) {
       throw this.repository.error
     }
@@ -162,6 +171,10 @@ export abstract class ApplicationController<Application> {
   onApprovalTypeSelected(type: string): void {
     this.selectedApprovalType.value = type
     this.isShowApprovalTypeOptions.value = false
+  }
+
+  async onProceedShipped(): Promise<void> {
+    await this.fetchOngoing()
   }
 
   // getters
@@ -380,5 +393,9 @@ export abstract class ApplicationController<Application> {
 
   get paid(): string {
     return this.language.isMalay() ? "Telah Dibayar" : "Paid"
+  }
+
+  get shipApplicationProps(): PropsShipApplication {
+    return new PropsShipApplication(this.application.value, this.target.value, this.repository)
   }
 }
