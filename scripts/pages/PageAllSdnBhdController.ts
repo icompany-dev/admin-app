@@ -59,7 +59,7 @@ export class PageAllSdnBhdController extends PageController {
       this.propsDataOrders,
       false,
       new PropsDataDateFilter("", "", ""),
-      this.isSdnBhdSelected.value
+      false
     )
   }
 }

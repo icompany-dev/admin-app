@@ -49,7 +49,9 @@ export class AllController {
   onCompanySelected(companyId: string): void {
     this.selectedCompanyId.value = companyId
 
-    this.emitEvents("sdnbhdSelected")
+    let router = useRouter()
+    router.push(`/sdnbhds/${this.selectedCompanyId.value}`)
+    //this.emitEvents("sdnbhdSelected")
   }
 
   onCompanyUnselected(): void {

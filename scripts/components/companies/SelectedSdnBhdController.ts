@@ -237,4 +237,12 @@ export class SelectedSdnBhdController {
   get showDocument(): boolean {
     return !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value)
   }
+
+  get loaderLabel(): string {
+    return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
+  }
+
+  get loaderSublabel(): string {
+    return this.language.isMalay() ? "Butiran Sdn Bhd" : "Sdn Bhd Details"
+  }
 }
