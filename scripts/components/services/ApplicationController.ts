@@ -116,7 +116,7 @@ export abstract class ApplicationController<Application> {
       return
     }
 
-    let response = await this.repository.ongoing(this.companyId.value)
+    let response = await this.repository.latestCompleted(this.companyId.value)
     if (this.repository.error !== null) {
       throw this.repository.error
     }
