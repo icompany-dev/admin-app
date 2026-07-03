@@ -177,4 +177,13 @@ export class Repository<T> implements IRepositoryOptions {
       throw error
     }
   }
+
+  async latestApplication<T>(companyId: any): Promise<T> {
+    try {
+      const response = await this.get<any>(`${this.singleResourceUrl}/latest-application/${companyId}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

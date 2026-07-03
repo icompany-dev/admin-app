@@ -192,6 +192,20 @@ export function useStoreActions<T extends { id?: string | number }>(
     }
   }
 
+  async function latestApplication(companyId: string) {
+    setProcessingState(true)
+    try {
+      const response = await repository.latestApplication<any>(companyId)
+      return response.data
+    } catch (e: any) {
+      setProcessingState(false, e.message || `Failed to fetch ongoing item with ID: ${companyId}.`)
+      console.error(`Error in ongoing(${companyId}):`, e)
+      throw e
+    } finally {
+      setProcessingState(false)
+    }
+  }
+
   const clearItem = () => {
     item.value = null
   }
@@ -213,6 +227,7 @@ export function useStoreActions<T extends { id?: string | number }>(
     complete,
     ongoing,
     latestCompleted,
+    latestApplication,
     clearItem,
     clearItems,
   }
