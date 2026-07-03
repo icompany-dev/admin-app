@@ -2,6 +2,7 @@ import { Company } from "../models/Company"
 import { PageController } from "./PageController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
 import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props/PropsTableFilter"
+import { StringUtil } from "../utils/String"
 
 export class PageSdnBhdController extends PageController {
   companyId: Ref<string> = ref<string>("")
@@ -32,7 +33,7 @@ export class PageSdnBhdController extends PageController {
     let repository = useCompanyStore()
     let response = await repository.fetch(this.companyId.value)
 
-    if (!response || repository.error === null) {
+    if (!response || repository.error !== null) {
       this.company.value = new Company()
     } else {
       this.company.value = new Company(response)
@@ -47,7 +48,7 @@ export class PageSdnBhdController extends PageController {
   }
 
   get companyName(): string {
-    return this.company.value.getFullName()
+    return StringUtil.capitalize(this.company.value.getFullName())
   }
 
   get breadCrumbProps(): PropsBreadCrumb {
