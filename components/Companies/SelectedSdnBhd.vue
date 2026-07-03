@@ -163,7 +163,9 @@
 
   watch(
     () => props.companyId,
-    (newVal) => [controller.setCompanyId(newVal)]
+    (newVal) => {
+      controller.setCompanyId(newVal)
+    }
   )
 
   watch(documentRef, (newVal) => {
