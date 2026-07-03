@@ -116,24 +116,12 @@ export abstract class ApplicationController<Application> {
       return
     }
 
-    let response = await this.repository.latestCompleted(this.companyId.value)
+    let response = await this.repository.latestApplication(this.companyId.value)
     if (this.repository.error !== null) {
       throw this.repository.error
     }
 
-    if (!Array.isArray(response)) {
-      this.application.value = new this.applicationClassType(response)
-      return
-    }
-
-    if (response.length === 1) {
-      this.application.value = new this.applicationClassType(response[0])
-      return
-    }
-
-    this.applications.value = response.map((d: any) => {
-      return new this.applicationClassType(d)
-    })
+    this.application.value = new this.applicationClassType(response)
   }
 
   async fetchDirectors(): Promise<void> {
@@ -189,7 +177,11 @@ export abstract class ApplicationController<Application> {
   }
 
   get serviceApplicationProps(): PropsServiceApplication {
-    return new PropsServiceApplication(this.serviceName, this.hasApplication)
+    let props = new PropsServiceApplication(this.serviceName, this.hasApplication)
+
+    props.application = this.application.value
+
+    return props
   }
 
   get isSigned(): boolean {

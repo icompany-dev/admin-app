@@ -14,6 +14,23 @@
         class="panel-content"
         v-if="!controller.isCollapsed.value"
       >
+        <ApplicationNode v-bind="controller.receiptApplicationNodeProps">
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">{{ controller.paymentLabel }}</div>
+              <div class="node-subtitle">({{ controller.paymentSublabel }})</div>
+            </div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isDownloadingReceipt.value }"
+              @click="controller.onDownloaReceiptClicked()"
+            >
+              {{ controller.downloadLabel }}
+            </button>
+          </template>
+        </ApplicationNode>
         <slot name="application"></slot>
       </div>
     </div>
@@ -21,6 +38,7 @@
 </template>
 
 <script lang="ts" setup>
+  import ApplicationNode from "./ApplicationNode.vue"
   import type { IPropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
   import { ServiceApplicationController } from "~/scripts/components/services/ServiceApplicationController"
 
@@ -42,6 +60,14 @@
     (newVal) => {
       controller.setHasApplication(newVal)
     }
+  )
+
+  watch(
+    () => props.application,
+    (newVal) => {
+      controller.setApplication(newVal)
+    },
+    { deep: true }
   )
 </script>
 
