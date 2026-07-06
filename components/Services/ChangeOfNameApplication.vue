@@ -2,7 +2,7 @@
   <div id="services-change-of-name-application">
     <ServiceApplication
       v-bind="controller.serviceApplicationProps"
-      @documentSelected="emit('documentSelected', $event)"
+      @paymentNodeSelected="controller.onPaymentStepClicked()"
     >
       <template #application>
         <ApplicationNode
@@ -356,7 +356,7 @@
 
   const props = defineProps<IPropsApplication>()
 
-  const emit = defineEmits(["applicationId", "paymentOrderId", "paymentOrder", "documentSelected", "download"])
+  const emit = defineEmits(["applicationId", "paymentOrderId", "pa", "documentSelected", "download"])
 
   const resolutionsRef = ref(null)
   const nameReservationRejectedPopup = ref(null)

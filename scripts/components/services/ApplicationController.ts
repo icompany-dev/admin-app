@@ -24,6 +24,8 @@ export abstract class ApplicationController<Application> {
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
 
+  isShowReceipt: Ref<boolean> = ref<boolean>(true)
+
   isShowApprovalTypeOptions: Ref<boolean> = ref<boolean>(false)
   selectedApprovalType: Ref<string> = ref<string>("director-member")
 
@@ -210,11 +212,18 @@ export abstract class ApplicationController<Application> {
   }
 
   get serviceApplicationProps(): PropsServiceApplication {
-    let props = new PropsServiceApplication(this.serviceName, this.hasApplication)
+    let props = new PropsServiceApplication(this.serviceName, this.hasApplication, this.isShowReceipt.value)
 
     props.application = this.application.value
 
     return props
+  }
+
+  get hasPaid(): boolean {
+    return (
+      this.application.value.status !== StatusConstants.DRAFT &&
+      this.application.value.status !== StatusConstants.PENDING
+    )
   }
 
   get isSigned(): boolean {

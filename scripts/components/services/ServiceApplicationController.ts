@@ -15,12 +15,14 @@ export class ServiceApplicationController {
 
   language = useLanguage()
 
+  isShowReceipt: Ref<boolean> = ref<boolean>(true)
   isDownloadingReceipt: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsServiceApplication, emitEvents: any) {
     this.serviceName.value = props.serviceName
     this.hasApplication.value = props.hasApplication
     this.application.value = props.application
+    this.isShowReceipt.value = props.isShowPaymentStep
     this.emitEvents = emitEvents
   }
 
@@ -36,11 +38,17 @@ export class ServiceApplicationController {
     this.application.value = application
   }
 
+  setIsShowReceipt(isShowReceipt: boolean): void {
+    this.isShowReceipt.value = isShowReceipt
+  }
+
   onPanelClicked(): void {
     this.isCollapsed.value = !this.isCollapsed.value
   }
 
   onPaymentNodeClicked(): void {
+    this.isShowReceipt.value = true
+    this.emitEvents("paymentNodeSelected", true)
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
   }
 
@@ -71,7 +79,7 @@ export class ServiceApplicationController {
   }
 
   get receiptApplicationNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(!this.hasPaid, this.hasPaid, false)
+    return new PropsServiceApplicationNode(!this.hasPaid, this.hasPaid, this.isShowReceipt.value)
   }
 
   get paymentLabel(): string {

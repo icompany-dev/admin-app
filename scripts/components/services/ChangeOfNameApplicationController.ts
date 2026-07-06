@@ -37,7 +37,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   isShowCompletedActions: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
-  isShowResolutions: Ref<boolean> = ref<boolean>(true)
+  isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
   isShowSection28: Ref<boolean> = ref<boolean>(false)
   isShowCON: Ref<boolean> = ref<boolean>(false)
@@ -73,6 +73,17 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   setUploadDocumentPopup(uploadDocumentPopup: any): void {
     this.uploadDocumentPopup = uploadDocumentPopup
+  }
+
+  onPaymentStepClicked(): void {
+    this.isShowReceipt.value = true
+    this.isShowResolutions.value = false
+    this.isShowSection27.value = false
+    this.isShowSection28.value = false
+    this.isShowCON.value = false
+    this.isShowComplete.value = false
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
   }
 
   onShowApprovalActionClicked(): void {
@@ -131,6 +142,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   onApprovalStepClicked(): void {
+    this.isShowReceipt.value = false
     this.isShowResolutions.value = true
     this.isShowSection27.value = false
     this.isShowSection28.value = false
@@ -140,6 +152,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   onApplicationOfNameReservationClicked(): void {
+    this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowSection27.value = true
     this.isShowSection28.value = false
@@ -149,6 +162,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   onRegistrationOfNameChangedClicked(): void {
+    this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowSection27.value = false
     this.isShowSection28.value = true
@@ -158,6 +172,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   onCertficationOfNameChangeClicked(): void {
+    this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowSection27.value = false
     this.isShowSection28.value = false
@@ -167,6 +182,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   onCompleteNameChangeClicked(): void {
+    this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowSection27.value = false
     this.isShowSection28.value = false
@@ -449,6 +465,10 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   // getters
   get serviceName(): string {
     return this.language.isMalay() ? "Tukar Nama Syarikat" : "Change Company Name"
+  }
+
+  get paymentApplicationNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(!this.hasPaid, this.hasPaid, this.isShowReceipt.value)
   }
 
   get selectedApprovalTypeLabel(): string {

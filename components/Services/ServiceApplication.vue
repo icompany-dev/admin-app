@@ -47,7 +47,7 @@
 
   const props = defineProps<IPropsServiceApplication>()
 
-  const emit = defineEmits(["documentSelected"])
+  const emit = defineEmits(["documentSelected", "paymentNodeSelected"])
 
   const controller = new ServiceApplicationController(props, emit)
 
@@ -71,6 +71,13 @@
       controller.setApplication(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    () => props.isShowPaymentStep,
+    (newVal) => {
+      controller.setIsShowReceipt(newVal)
+    }
   )
 </script>
 
