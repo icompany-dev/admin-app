@@ -110,18 +110,22 @@
             v-if="controller.isBusiness.value"
           >
             <ChangeOfNameApplication
+              :ref="(el) => controller.setApplicationRefs(0, el)"
               v-bind="controller.applicationProps"
               @applicationId="controller.onApplicationIdUpdated($event)"
               @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
               @documentSelected="controller.onDocumentTargetSelected($event)"
               @download="controller.onDownloadClicked()"
+              @show="controller.onPanelShow(0)"
             />
             <ChangeOfAddressApplication
+              :ref="(el) => controller.setApplicationRefs(1, el)"
               v-bind="controller.applicationProps"
               @applicationId="controller.onApplicationIdUpdated($event)"
               @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
               @documentSelected="controller.onDocumentTargetSelected($event)"
               @download="controller.onDownloadClicked()"
+              @show="controller.onPanelShow(1)"
             />
           </div>
         </TransitionGroup>

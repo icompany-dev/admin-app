@@ -7,7 +7,10 @@
       class="application-steps"
       @click.self="controller.onPanelClicked()"
     >
-      <div class="application-name">
+      <div
+        class="application-name"
+        @click.self="controller.onPanelClicked()"
+      >
         {{ controller.serviceName.value }}
       </div>
       <Transition name="fade">

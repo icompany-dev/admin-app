@@ -32,6 +32,8 @@ export class SelectedSdnBhdController {
   documentRef: any | null = null
   isDownloading: Ref<boolean> = ref<boolean>(false)
 
+  applicationRefs: any[] = []
+
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
@@ -49,6 +51,10 @@ export class SelectedSdnBhdController {
 
   setDocumentRef(documentRef: any): void {
     this.documentRef = documentRef
+  }
+
+  setApplicationRefs(index: number, ref: any): void {
+    this.applicationRefs[index] = ref
   }
 
   async fetchCompany(): Promise<void> {
@@ -173,6 +179,16 @@ export class SelectedSdnBhdController {
     } finally {
       this.isDownloading.value = false
     }
+  }
+
+  onPanelShow(index: number): void {
+    this.applicationRefs.forEach((ref: any, i: number) => {
+      if (i === index) {
+        return
+      }
+
+      ref.collapse()
+    })
   }
 
   get hasCompanyLogo(): boolean {
