@@ -44,7 +44,6 @@ export class ServiceApplicationController {
 
   onPanelClicked(): void {
     this.isCollapsed.value = !this.isCollapsed.value
-    console.log("called??")
     this.emitEvents(this.isCollapsed.value ? "hide" : "show")
   }
 

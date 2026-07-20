@@ -4,7 +4,7 @@
       ref="serviceApplicationRef"
       v-bind="controller.serviceApplicationProps"
       @paymentNodeSelected="controller.onPaymentStepClicked()"
-      @show="emit('show')"
+      @show="controller.onShowPanel()"
       @hide="emit('hide')"
     >
       <template #application>

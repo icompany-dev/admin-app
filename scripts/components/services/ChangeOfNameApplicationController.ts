@@ -83,6 +83,8 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.isShowCON.value = false
     this.isShowComplete.value = false
 
+    this.emitEvents("applicationId", this.application.value?.id)
+    this.emitEvents("paymentOrderId", this.paymentOrderId.value)
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
   }
 

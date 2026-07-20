@@ -205,11 +205,19 @@ export abstract class ApplicationController<Application> {
     await this.fetchOngoing()
   }
 
+  onShowPanel(): void {
+    this.emitEvents("applicationId", this.application.value?.id)
+    this.emitEvents("paymentOrderId", this.paymentOrderId.value)
+    this.emitEvents("show")
+  }
+
   expand(): void {
     if (!this.serviceApplicationRef) {
       return
     }
 
+    this.emitEvents("applicationId", this.application.value?.id)
+    this.emitEvents("paymentOrderId", this.paymentOrderId.value)
     this.serviceApplicationRef.expand()
   }
 
