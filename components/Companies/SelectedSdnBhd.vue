@@ -116,6 +116,13 @@
               @documentSelected="controller.onDocumentTargetSelected($event)"
               @download="controller.onDownloadClicked()"
             />
+            <ChangeOfAddressApplication
+              v-bind="controller.applicationProps"
+              @applicationId="controller.onApplicationIdUpdated($event)"
+              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
+              @documentSelected="controller.onDocumentTargetSelected($event)"
+              @download="controller.onDownloadClicked()"
+            />
           </div>
         </TransitionGroup>
       </div>
@@ -140,6 +147,7 @@
 
 <script lang="ts" setup>
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
+  import ChangeOfAddressApplication from "../Services/ChangeOfAddressApplication.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"

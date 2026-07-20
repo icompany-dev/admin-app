@@ -10,32 +10,34 @@
       <div class="application-name">
         {{ controller.serviceName.value }}
       </div>
-      <div
-        class="panel-content"
-        v-if="!controller.isCollapsed.value"
-      >
-        <ApplicationNode
-          v-bind="controller.receiptApplicationNodeProps"
-          @click="controller.onPaymentNodeClicked()"
+      <Transition name="fade">
+        <div
+          class="panel-content"
+          v-if="!controller.isCollapsed.value"
         >
-          <template #nodeContent>
-            <div class="application-container">
-              <div class="node-title">{{ controller.paymentLabel }}</div>
-              <div class="node-subtitle">({{ controller.paymentSublabel }})</div>
-            </div>
-          </template>
-          <template #nodeOptions>
-            <button
-              class="btn btn-pill btn-primary"
-              :class="{ 'is-loading': controller.isDownloadingReceipt.value }"
-              @click="controller.onDownloaReceiptClicked()"
-            >
-              {{ controller.downloadLabel }}
-            </button>
-          </template>
-        </ApplicationNode>
-        <slot name="application"></slot>
-      </div>
+          <ApplicationNode
+            v-bind="controller.receiptApplicationNodeProps"
+            @click="controller.onPaymentNodeClicked()"
+          >
+            <template #nodeContent>
+              <div class="application-container">
+                <div class="node-title">{{ controller.paymentLabel }}</div>
+                <div class="node-subtitle">({{ controller.paymentSublabel }})</div>
+              </div>
+            </template>
+            <template #nodeOptions>
+              <button
+                class="btn btn-pill btn-primary"
+                :class="{ 'is-loading': controller.isDownloadingReceipt.value }"
+                @click="controller.onDownloaReceiptClicked()"
+              >
+                {{ controller.downloadLabel }}
+              </button>
+            </template>
+          </ApplicationNode>
+          <slot name="application"></slot>
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -47,7 +49,7 @@
 
   const props = defineProps<IPropsServiceApplication>()
 
-  const emit = defineEmits(["documentSelected", "paymentNodeSelected"])
+  const emit = defineEmits(["documentSelected", "paymentNodeSelected", "show", "hide"])
 
   const controller = new ServiceApplicationController(props, emit)
 
@@ -79,6 +81,11 @@
       controller.setIsShowReceipt(newVal)
     }
   )
+
+  defineExpose({
+    expand: controller.expand.bind(controller),
+    collapse: controller.collapse.bind(controller),
+  })
 </script>
 
 <style lang="scss">

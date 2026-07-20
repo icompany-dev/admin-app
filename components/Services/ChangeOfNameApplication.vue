@@ -1,8 +1,11 @@
 <template>
   <div id="services-change-of-name-application">
     <ServiceApplication
+      ref="serviceApplicationRef"
       v-bind="controller.serviceApplicationProps"
       @paymentNodeSelected="controller.onPaymentStepClicked()"
+      @show="emit('show')"
+      @hide="emit('hide')"
     >
       <template #application>
         <ApplicationNode
@@ -356,12 +359,13 @@
 
   const props = defineProps<IPropsApplication>()
 
-  const emit = defineEmits(["applicationId", "paymentOrderId", "pa", "documentSelected", "download"])
+  const emit = defineEmits(["applicationId", "paymentOrderId", "pa", "documentSelected", "download", "show", "hide"])
 
   const resolutionsRef = ref(null)
   const nameReservationRejectedPopup = ref(null)
   const uploadDocumentPopup = ref(null)
   const shipApplicationRef = ref(null)
+  const serviceApplicationRef = ref(null)
 
   const controller = new ChangeOfNameApplicationController(props, emit)
 
@@ -403,6 +407,19 @@
     },
     { immediate: true }
   )
+
+  watch(
+    serviceApplicationRef,
+    (newVal) => {
+      controller.setServiceApplicationRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    expand: controller.expand.bind(controller),
+    collapse: controller.collapse.bind(controller),
+  })
 </script>
 
 <style lang="scss">

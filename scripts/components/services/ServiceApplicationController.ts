@@ -44,6 +44,17 @@ export class ServiceApplicationController {
 
   onPanelClicked(): void {
     this.isCollapsed.value = !this.isCollapsed.value
+    this.emitEvents(this.isCollapsed.value ? "hide" : "show")
+  }
+
+  expand(): void {
+    this.isCollapsed.value = false
+    this.emitEvents("show")
+  }
+
+  collapse(): void {
+    this.isCollapsed.value = true
+    this.emitEvents("hide")
   }
 
   onPaymentNodeClicked(): void {

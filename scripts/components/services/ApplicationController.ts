@@ -47,6 +47,7 @@ export abstract class ApplicationController<Application> {
 
   target: Ref<string> = ref<string>("")
 
+  serviceApplicationRef: any | null = null
   shipApplicationRef: any | null = null
 
   constructor(
@@ -125,6 +126,10 @@ export abstract class ApplicationController<Application> {
     this.shipApplicationRef = shipApplicationRef
   }
 
+  setServiceApplicationRef(serviceApplicationRef: any): void {
+    this.serviceApplicationRef = serviceApplicationRef
+  }
+
   async fetchOngoing(): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       this.application.value = new this.applicationClassType(null)
@@ -198,6 +203,22 @@ export abstract class ApplicationController<Application> {
 
   async onProceedShipped(): Promise<void> {
     await this.fetchOngoing()
+  }
+
+  expand(): void {
+    if (!this.serviceApplicationRef) {
+      return
+    }
+
+    this.serviceApplicationRef.expand()
+  }
+
+  collapse(): void {
+    if (!this.serviceApplicationRef) {
+      return
+    }
+
+    this.serviceApplicationRef.collapse()
   }
 
   // getters
