@@ -152,6 +152,7 @@
 <script lang="ts" setup>
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
   import ChangeOfAddressApplication from "../Services/ChangeOfAddressApplication.vue"
+  import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
@@ -178,6 +179,7 @@
     [DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS]: ChangeOfNameService,
     [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27]: Section27Service,
     [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28]: Section28Service,
+    [DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS]: ChangeOfAddressService,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 

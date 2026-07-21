@@ -93,43 +93,10 @@
         </div>
       </template>
     </CompanyServiceWrapper>
-    <ActionTray
-      v-if="controller.showActionTray()"
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
-    <Teleport to="body">
-      <div
-        class="alert-tray"
-        :class="{ show: controller.isShowInfo.value }"
-      >
-        <Transition name="alert-appear">
-          <Alert
-            :is-dismissible="true"
-            :type="'default'"
-            :is-show="controller.isShowInfo.value"
-            @hide="controller.onMoreInfoClicked()"
-          >
-            <template #alertContent>
-              <div class="title">
-                {{ controller.alertTitle() }}
-              </div>
-              <div
-                class="content"
-                v-html="controller.alertContent()"
-                @click="controller.onGlossaryLinkClicked($event)"
-              />
-            </template>
-          </Alert>
-        </Transition>
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-  import Alert from "../Alerts/Alert.vue"
-  import ActionTray from "../ActionTrays/ActionTray.vue"
   import DcrChangeOfAddress from "../Resolutions/DcrChangeOfAddress.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
