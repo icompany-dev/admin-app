@@ -1,0 +1,159 @@
+// #legal-documents-practice-directive2 {
+//   // Styles go here
+// }
+
+.pd2 {
+  width: 210mm;
+  height: 295mm;
+  padding: 20mm;
+  margin: auto;
+  color: var(--bs-dark);
+  position: relative;
+  font-family: sans-serif;
+  font-size: 12px;
+
+  .pdf-bordered-table {
+    border-collapse: collapse;
+    border-right: 1px solid var(--bs-black);
+    border-bottom: 1px solid var(--bs-black);
+
+    th,
+    td {
+      border: none;
+      border-top: 1px solid var(--bs-black);
+      border-left: 1px solid var(--bs-black);
+    }
+  }
+
+  .pd2-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .pd2-header {
+    .header-label {
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .header-content {
+      font-size: 12px;
+    }
+  }
+
+  .pd2-form-content {
+    .title {
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 15px;
+    }
+  }
+
+  .label {
+    margin-top: 15px;
+  }
+
+  .copywriting {
+    margin-top: 15px;
+  }
+
+  .check {
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .slash-box {
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid black;
+    }
+  }
+
+  .check-table {
+    width: 100%;
+    margin-top: 5px;
+
+    th,
+    td {
+      padding: 1mm;
+    }
+
+    tbody {
+      td:first-child {
+        text-align: center;
+      }
+
+      input {
+        width: 100%;
+      }
+    }
+  }
+
+  .secretary-info-table,
+  .lodger-info-table {
+    width: 100%;
+    font-size: 12px;
+
+    td {
+      vertical-align: top;
+      padding-bottom: 1mm;
+    }
+
+    td:nth-child(2) {
+      padding: 0 2mm;
+    }
+  }
+
+  .secretary-info-table {
+    td:first-child {
+      width: 50mm;
+    }
+  }
+
+  .lodger-info-table {
+    td:first-child {
+      width: 25mm;
+    }
+  }
+
+  .pd2-signature-wrapper {
+    position: relative;
+    width: 300px;
+    height: 150px;
+
+    .signature-image {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .signature-content-wrapper {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      font-size: 12px;
+      width: 100%;
+
+      .signature-content {
+        border-top: dashed 1px;
+        padding-top: 8px;
+        border-color: var(--bs-gray-400);
+      }
+    }
+  }
+
+  .lodger-header {
+    font-weight: 600;
+    margin: 8mm 0;
+    text-align: center;
+  }
+}
