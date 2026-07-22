@@ -35,7 +35,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
-  isShowSection28: Ref<boolean> = ref<boolean>(false)
+  isShowPD2: Ref<boolean> = ref<boolean>(false)
   isShowCON: Ref<boolean> = ref<boolean>(false)
   isShowComplete: Ref<boolean> = ref<boolean>(false)
 
@@ -76,7 +76,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false
     this.isShowSection27.value = false
-    this.isShowSection28.value = false
+    this.isShowPD2.value = false
     this.isShowCON.value = false
     this.isShowComplete.value = false
 
@@ -144,7 +144,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
     this.isShowSection27.value = false
-    this.isShowSection28.value = false
+    this.isShowPD2.value = false
     this.isShowCON.value = false
     this.isShowComplete.value = false
     this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS)
@@ -154,7 +154,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowSection27.value = true
-    this.isShowSection28.value = false
+    this.isShowPD2.value = false
     this.isShowCON.value = false
     this.isShowComplete.value = false
     // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION27)
@@ -164,17 +164,17 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowSection27.value = false
-    this.isShowSection28.value = true
+    this.isShowPD2.value = true
     this.isShowCON.value = false
     this.isShowComplete.value = false
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION28)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_PD2)
   }
 
   onCertficationOfAddressChangeClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowSection27.value = false
-    this.isShowSection28.value = false
+    this.isShowPD2.value = false
     this.isShowCON.value = true
     this.isShowComplete.value = false
     // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION28)
@@ -184,7 +184,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowSection27.value = false
-    this.isShowSection28.value = false
+    this.isShowPD2.value = false
     this.isShowCON.value = false
     this.isShowComplete.value = true
     // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION28)
@@ -601,7 +601,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     return new PropsServiceApplicationNode(
       this.isApprovalReceived,
       this.isRegistrationOfAddressSubmitted,
-      this.isShowSection28.value
+      this.isShowPD2.value
     )
   }
 

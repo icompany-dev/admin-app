@@ -351,7 +351,7 @@ export class PracticeDirective2ServiceController extends CompanyServiceControlle
       this.currentPage.value,
       this.totalPages.value,
       "DCR",
-      showPasca,
+      false,
       this.hasPaid(),
       this.price.value,
       this.isMajorityReached(),

@@ -392,6 +392,10 @@
     },
     { deep: true }
   )
+
+  defineExpose({
+    totalPages: controller.totalPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

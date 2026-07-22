@@ -53,6 +53,10 @@ export class PracticeDirective2Controller extends SdnBhdLegalDocumentController 
     this.removeAddressEffectiveDate.value = props.removeAddressEffectiveDate
   }
 
+  totalPages(): number {
+    return 2
+  }
+
   get isChangingAddress(): boolean {
     return (
       this.isUpdatingBusinessAddress.value ||
