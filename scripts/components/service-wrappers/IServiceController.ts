@@ -20,7 +20,7 @@ export interface IServiceController<T, R> {
   onUpdate(): Promise<void>
   onRemove(): Promise<void>
   submitSignature(): Promise<void>
-  pay(): Promise<void>
-  helpDescription(): string
-  helpTitle(): string
+  // pay(): Promise<void>
+  // helpDescription(): string
+  // helpTitle(): string
 }
