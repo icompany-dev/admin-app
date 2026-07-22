@@ -56,7 +56,8 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
       emitEvents
     )
     this.target.value = CompanyConstants.TARGET_AMENDMENT_ADDRESS
-    this.minimumMajorityRequired.value = 0.5 // special resolution
+    this.minimumMajorityRequired.value = 0.5
+    this.selectedApprovalType.value = "director" // this is fixed for this service
   }
 
   setResolutionsRef(resolutionsRef: any): void {
@@ -498,13 +499,13 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   get approvalLabel(): string {
-    return this.language.isMalay() ? "Persetujuan dari" : "Approval from"
+    return this.language.isMalay() ? "Persetujuan dari Pengarah" : "Approval from Directors"
   }
 
   get approvalApplicationNodeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(
-      !this.isShareholderSignatureCompleted,
-      this.isShareholderSignatureCompleted,
+      !this.isDirectorSignatureCompleted,
+      this.isDirectorSignatureCompleted,
       this.isShowResolutions.value
     )
   }

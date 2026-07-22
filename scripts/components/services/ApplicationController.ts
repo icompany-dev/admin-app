@@ -332,7 +332,7 @@ export abstract class ApplicationController<Application> {
   get isDirectorSignatureCompleted(): boolean {
     let numberOfSignatures = this.directorSignatures.length
 
-    return numberOfSignatures > this.minimumMajorityRequired.value * this.directors.value.length
+    return numberOfSignatures >= this.minimumMajorityRequired.value * this.directors.value.length
   }
 
   get shareholderSignatures(): SignatureGroup[] {

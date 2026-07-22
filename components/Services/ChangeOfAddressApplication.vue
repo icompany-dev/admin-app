@@ -15,41 +15,6 @@
           <template #nodeContent>
             <div class="approval-container">
               <span class="node-title">{{ controller.approvalLabel }}</span>
-              <div class="actions-button-options">
-                <div
-                  class="btn btn-primary selected"
-                  @click="controller.onApprovalTypeClicked()"
-                >
-                  <span class="label">{{ controller.selectedApprovalTypeLabel }}</span>
-                  <i
-                    class="fa-solid fa-caret-down"
-                    :class="{ rotate: controller.isShowApprovalTypeOptions.value }"
-                  ></i>
-                </div>
-                <div
-                  class="options"
-                  :class="{ show: controller.isShowApprovalTypeOptions.value }"
-                >
-                  <button
-                    class="btn btn-primary"
-                    @click="controller.onApprovalTypeSelected('director')"
-                  >
-                    {{ controller.directorApprovalTypeLabel }}
-                  </button>
-                  <button
-                    class="btn btn-primary"
-                    @click="controller.onApprovalTypeSelected('member')"
-                  >
-                    {{ controller.shareholderApprovalTypeLabel }}
-                  </button>
-                  <button
-                    class="btn btn-primary"
-                    @click="controller.onApprovalTypeSelected('director-member')"
-                  >
-                    {{ controller.directorShareholderApprovalTypeLabel }}
-                  </button>
-                </div>
-              </div>
             </div>
             <div class="approval-dates">
               <div>
