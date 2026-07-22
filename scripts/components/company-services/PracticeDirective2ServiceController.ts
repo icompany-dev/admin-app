@@ -12,15 +12,16 @@ import { City, Country, State } from "~/scripts/models/Location"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { PropsPracticeDirective2 } from "~/scripts/props/PropsPracticeDirective2"
 
-export class ChangeOfBusinessAddressServiceController extends CompanyServiceController<CompanyAmendmentAddress> {
+export class PracticeDirective2ServiceController extends CompanyServiceController<CompanyAmendmentAddress> {
   companyAmendmentAddress = ref<CompanyAmendmentAddress>(new CompanyAmendmentAddress())
 
   wrapperRef: any | null = null
 
   constructor(companyId: string, viewType: string, emitEvents: any | null) {
     super(companyId, true, false, CompanyAmendmentAddress, useCompanyAmendmentAddressStore(), emitEvents)
-    this.target = CompanyConstants.TARGET_AMENDMENT_ADDRESS
+    this.target = CompanyConstants.TARGET_PRACTICE_DIRECTIVE_2
     this.setViewType(viewType)
     this.initializeData()
   }
@@ -384,5 +385,11 @@ export class ChangeOfBusinessAddressServiceController extends CompanyServiceCont
       this.isInPreviewMode.value,
       false
     )
+  }
+
+  get practiceDirective2Props(): PropsPracticeDirective2 {
+    let props = new PropsPracticeDirective2(this.companyId)
+
+    return props
   }
 }

@@ -80,6 +80,7 @@
   import NoticeTransferOfShares from "./NoticeTransferOfShares.vue"
   import NoConstitution from "./NoConstitution.vue"
   import NotifyBankChangeOfCompanyName from "./NotifyBankChangeOfCompanyName.vue"
+  import PracticeDirective2 from "./PracticeDirective2.vue"
   import PreferenceShareRight from "./PreferenceShareRight.vue"
   import RegisterTransferOfShares from "./RegisterTransferOfShares.vue"
   import RemoveDirector from "./RemoveDirector.vue"
@@ -147,6 +148,7 @@
     [CompanyConstants.TARGET_NO_CONSTITUTION]: NoConstitution,
     [CompanyConstants.TARGET_NOTICE_ACKNOWLEDGEMENT]: AcknowledgeSpecialNotice,
     [CompanyConstants.TARGET_NOTIFY_CHANGE_OF_NAME]: NotifyBankChangeOfCompanyName,
+    [CompanyConstants.TARGET_PRACTICE_DIRECTIVE_2]: PracticeDirective2,
     [CompanyConstants.TARGET_PREFERENCE_SHARE_RIGHT]: PreferenceShareRight,
     [CompanyConstants.TARGET_REMOVAL_OF_DIRECTOR]: RemoveDirector,
     [CompanyConstants.TARGET_SET_FINANCIAL_YEAR_END]: SetFinancialYearEnd,

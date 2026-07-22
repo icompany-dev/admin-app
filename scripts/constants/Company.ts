@@ -56,6 +56,7 @@ export class CompanyConstants {
   static TARGET_NOTIFY_CHANGE_OF_NAME: string = "company_notify_change_of_name"
   static TARGET_OFFICIAL_SEAL: string = "company_official_seal"
   static TARGET_OPEN_BANK_ACCOUNT: string = "company_bank_resolution"
+  static TARGET_PRACTICE_DIRECTIVE_2: string = "practice_directive_2"
   static TARGET_PREFERENCE_SHARE_RIGHT: string = "company_preference_share_right"
   static TARGET_RECEIPT: string = "receipt"
   static TARGET_REMOVAL_OF_DIRECTOR: string = "company_director_removal_notice"
@@ -120,6 +121,7 @@ export class CompanyConstants {
     this.TARGET_NOTIFY_CHANGE_OF_NAME,
     this.TARGET_OFFICIAL_SEAL,
     this.TARGET_OPEN_BANK_ACCOUNT,
+    this.TARGET_PRACTICE_DIRECTIVE_2,
     this.TARGET_PREFERENCE_SHARE_RIGHT,
     this.TARGET_PREPARE_FINANCIAL_STATEMENTS,
     this.TARGET_RECEIPT,
