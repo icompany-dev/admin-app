@@ -616,12 +616,12 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     return props
   }
 
-  get registrationOfAddressChangeLabel(): string {
-    return this.language.isMalay() ? "Pendaftaran Pertukaran Nama" : "Registration of Change of Address"
+  get pd2Label(): string {
+    return this.language.isMalay() ? "Pemfailan kepada SSM" : "Filing to SSM"
   }
 
-  get registrationOfAddressChangeSublabel(): string {
-    return this.language.isMalay() ? "Seksyen 28 Akta" : "Section 28 of the Act"
+  get pd2Sublabel(): string {
+    return this.language.isMalay() ? "Pursuant to Practice Directive 2/207" : "Pursuant to Practice Directive 2/207"
   }
 
   get canSubmitToSSM(): boolean {

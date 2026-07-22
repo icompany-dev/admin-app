@@ -110,8 +110,8 @@
         >
           <template #nodeContent>
             <div class="application-container">
-              <div class="node-title">{{ controller.registrationOfAddressChangeLabel }}</div>
-              <div class="node-subtitle">({{ controller.registrationOfAddressChangeSublabel }})</div>
+              <div class="node-title">{{ controller.pd2Label }}</div>
+              <div class="node-subtitle">({{ controller.pd2Sublabel }})</div>
             </div>
           </template>
           <template #nodeOptions>
@@ -146,59 +146,6 @@
                   @click="controller.onSubmitToSSMClicked()"
                 >
                   {{ controller.registrationOfAddressButtonLabel }}
-                </button>
-              </div>
-            </div>
-          </template>
-        </ApplicationNode>
-        <ApplicationNode
-          v-bind="controller.certificateOfAddressChangeProps"
-          @click="controller.onCertficationOfAddressChangeClicked()"
-        >
-          <template #nodeContent>
-            <div class="application-container">
-              <div class="node-title">{{ controller.certifcateOfAddressChangeLabel }}</div>
-              <div class="node-subtitle">({{ controller.certifcateOfAddressChangeSublabel }})</div>
-            </div>
-          </template>
-          <template #nodeOptions>
-            <!-- <button
-              class="btn btn-pill btn-primary"
-              :class="{ 'is-loading': controller.isUploadingCON.value }"
-              @click="controller.onUploadDocumentClicked()"
-            >
-              {{ controller.uploadCONLabel }}
-            </button>
-            <span
-              class="action-link download"
-              v-if="controller.isCONUploaded"
-              @click="controller.onDownloadCONClicked()"
-            >
-              <i class="fa-regular fa-cloud-arrow-down"></i>
-              {{ controller.downloadDocumentCONLabel }}
-            </span> -->
-          </template>
-          <template #nodeActions>
-            <div class="actions-button-options">
-              <div
-                class="btn btn-pill btn-submit selected"
-                @click="controller.onShowCONActions()"
-              >
-                <span class="label">{{ controller.conActionLabel }}</span>
-                <i
-                  class="fa-solid fa-caret-down"
-                  :class="{ rotate: controller.isShowCONActions.value }"
-                ></i>
-              </div>
-              <div
-                class="options"
-                :class="{ show: controller.isShowCONActions.value }"
-              >
-                <button
-                  class="btn btn-pill btn-submit"
-                  @click="controller.shipClicked()"
-                >
-                  {{ controller.shipLabel }}
                 </button>
               </div>
             </div>
