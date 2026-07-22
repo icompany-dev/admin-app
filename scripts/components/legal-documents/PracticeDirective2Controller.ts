@@ -33,7 +33,24 @@ export class PracticeDirective2Controller extends SdnBhdLegalDocumentController 
   constructor(props: PropsPracticeDirective2, emitEvents: any) {
     super("Practice Directive 2/2017", props.companyId, PaperOrientation.Portrait)
 
+    this.setData(props)
     this.emitEvents = emitEvents
+  }
+
+  setData(props: PropsPracticeDirective2): void {
+    this.isAddingBusinessAddress.value = props.isAddingBusinessAddress
+    this.isUpdatingBusinessAddress.value = props.isUpdatingBusinessAddress
+    this.isRemovingBusinessAddress.value = props.isRemovingBusinessAddress
+    this.isAddingBranchAddress.value = props.isAddingBranchAddress
+    this.isUpdatingBranchAddress.value = props.isUpdatingBranchAddress
+    this.isRemovingBranchAddress.value = props.isRemovingBranchAddress
+    this.isUpdatingNature.value = props.isUpdatingNature
+    this.addAddress.value = props.addAddress ?? ""
+    this.addAddressEffectiveDate.value = props.addAddressEffectiveDate
+    this.updateAddress.value = props.updateAddress ?? ""
+    this.updateAddressEffectiveDate.value = props.updateAddressEffectiveDate
+    this.removeAddress.value = props.removeAddress ?? ""
+    this.removeAddressEffectiveDate.value = props.removeAddressEffectiveDate
   }
 
   get isChangingAddress(): boolean {

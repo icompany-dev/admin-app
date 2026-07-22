@@ -384,6 +384,14 @@
   const emit = defineEmits([])
 
   const controller = new PracticeDirective2Controller(props, emit)
+
+  watch(
+    () => props,
+    (newVal) => {
+      controller.setData(newVal)
+    },
+    { deep: true }
+  )
 </script>
 
 <style lang="scss">
