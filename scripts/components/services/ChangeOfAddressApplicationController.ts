@@ -599,7 +599,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
 
   get registrationOfAddressChangeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(
-      this.isAddressReservationApproved,
+      this.isApprovalReceived,
       this.isRegistrationOfAddressSubmitted,
       this.isShowSection28.value
     )
