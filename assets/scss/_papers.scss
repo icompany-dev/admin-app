@@ -589,6 +589,10 @@
   }
 }
 
+.print-only {
+  display: none;
+}
+
 .is-printing {
   .document-ear-mark {
     display: none;
@@ -596,5 +600,13 @@
 
   .document-watermark {
     display: none;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  .print-only {
+    display: initial;
   }
 }

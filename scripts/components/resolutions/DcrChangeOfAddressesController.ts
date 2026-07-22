@@ -3,7 +3,7 @@ import { ResolutionController } from "./ResolutionController"
 import { useCompanyAmendmentAddressStore } from "#imports"
 import { useCompanyStore } from "#imports"
 import { Company } from "~/scripts/models/Company"
-import { City, Country, State } from "~/scripts/models/Location"
+import { Location, City, Country, State } from "~/scripts/models/Location"
 import { StringUtil } from "~/scripts/utils/String"
 import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 
@@ -162,5 +162,13 @@ export class DcrChangeOfAddressesController extends ResolutionController<Company
     }
 
     return this.application.value.company.businessAddressLocation.canCreate()
+  }
+
+  get location(): Location {
+    if (!this.application.value || !this.application.value.businessAddressLocation) {
+      return new Location()
+    }
+
+    return this.application.value.businessAddressLocation
   }
 }

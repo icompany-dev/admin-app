@@ -40,6 +40,7 @@ export abstract class ResolutionController<T> {
   excludeResigningDirectors: boolean = false
 
   isInPreviewMode = ref<boolean>(false)
+  isGettingPdfPages = ref<boolean>(false)
 
   signatureStartOnPage = ref<number>(1)
   maxSignatureOnFirstPage = ref<number>(2)
@@ -341,25 +342,26 @@ export abstract class ResolutionController<T> {
   }
 
   isDocumentEditable(): boolean {
-    if (this.isInPreviewMode.value) {
-      return false
-    }
+    return !this.isGettingPdfPages.value
+    // if (this.isInPreviewMode.value) {
+    //   return false
+    // }
 
-    if (!this.application.value) {
-      return false
-    }
+    // if (!this.application.value) {
+    //   return false
+    // }
 
-    if (this.application.value && this.application.value.signatureGroups.length > 0) {
-      return false
-    }
+    // if (this.application.value && this.application.value.signatureGroups.length > 0) {
+    //   return false
+    // }
 
-    return (
-      this.application.value &&
-      (StringUtil.isNullOrEmpty(this.application.value.id) ||
-        this.application.value.status === StatusConstants.DRAFT ||
-        this.application.value.status === StatusConstants.PENDING ||
-        this.application.value.status === StatusConstants.PAID)
-    )
+    // return (
+    //   this.application.value &&
+    //   (StringUtil.isNullOrEmpty(this.application.value.id) ||
+    //     this.application.value.status === StatusConstants.DRAFT ||
+    //     this.application.value.status === StatusConstants.PENDING ||
+    //     this.application.value.status === StatusConstants.PAID)
+    // )
   }
 
   getApplication(): T | null {
@@ -450,6 +452,8 @@ export abstract class ResolutionController<T> {
       return []
     }
 
+    this.isGettingPdfPages.value = true
+
     let originalResolutionContent = this.resolutionContent.value
     if (!StringUtil.isNullOrEmpty(this.resolutionContent.value)) {
       let templateProcessor = new TemplateProcessor(null)
@@ -460,6 +464,8 @@ export abstract class ResolutionController<T> {
     let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
 
     this.resolutionContent.value = originalResolutionContent
+
+    this.isGettingPdfPages.value = false
 
     return pdfPages
   }
