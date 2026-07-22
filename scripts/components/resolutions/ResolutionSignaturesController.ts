@@ -56,6 +56,14 @@ export class ResolutionSignaturesController {
 
   get formattedDocumentDate(): string {
     let time = useLocalTime()
+
+    if (!this.documentDate.value) {
+      let dayjs = useDayjs()
+      let today = dayjs().format("YYYY-MM-DD")
+
+      return time.formatDateOnlyFull(today)
+    }
+
     return time.formatDateOnlyFull(this.documentDate.value ?? "")
   }
 }
