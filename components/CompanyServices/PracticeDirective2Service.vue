@@ -18,14 +18,11 @@
       v-bind="controller.serviceWrapperProps"
       @go-to-page="controller.goToPage($event)"
       @back="controller.onBackButtonClicked()"
-      @proceed="controller.onProceedClicked()"
       @pay="emit('pay')"
       @refresh="controller.initializeData()"
       @preview="controller.onPreview()"
       @shrouded="controller.onShrouded()"
-      @minimized="controller.setApplicationData($event)"
       @view-mode-changed="controller.onViewModeChanged($event)"
-      @application-updated="controller.onApplicationUpdated($event)"
       @goToNew="emit(EmitMessages.GO_TO_NEW)"
       @goToExisting="emit(EmitMessages.GO_TO_EXISTING)"
     >
@@ -61,6 +58,10 @@
       type: String,
       required: true,
     },
+    targetType: {
+      type: String,
+      required: true,
+    },
   })
 
   const emit = defineEmits(EmitMessages.COMPANY_SERVICES)
@@ -68,7 +69,7 @@
   const dcrRef = ref(null)
   const wrapperRef = ref(null)
 
-  const controller = new PracticeDirective2ServiceController(props.companyId, props.viewType, emit)
+  const controller = new PracticeDirective2ServiceController(props.companyId, props.targetType, props.viewType, emit)
 
   onMounted(async () => {
     await nextTick()

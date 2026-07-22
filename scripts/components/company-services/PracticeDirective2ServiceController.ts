@@ -13,15 +13,22 @@ import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { PropsPracticeDirective2 } from "~/scripts/props/PropsPracticeDirective2"
+import { Application } from "~/scripts/models/Application"
+import { CompanyAmendmentDescription } from "~/scripts/models/CompanyAmendmentDescription"
+import { CompanyAmendmentBranch } from "~/scripts/models/CompanyAmendmentBranch"
 
 export class PracticeDirective2ServiceController extends CompanyServiceController<CompanyAmendmentAddress> {
   companyAmendmentAddress = ref<CompanyAmendmentAddress>(new CompanyAmendmentAddress())
+  companyAmendmentBranch = ref<CompanyAmendmentBranch>(new CompanyAmendmentBranch())
+  companyAmendmentDescription = ref<CompanyAmendmentDescription>(new CompanyAmendmentDescription())
 
+  targetType: Ref<string> = ref<string>("")
   wrapperRef: any | null = null
 
-  constructor(companyId: string, viewType: string, emitEvents: any | null) {
+  constructor(companyId: string, targetType: string, viewType: string, emitEvents: any | null) {
     super(companyId, true, false, CompanyAmendmentAddress, useCompanyAmendmentAddressStore(), emitEvents)
     this.target = CompanyConstants.TARGET_PRACTICE_DIRECTIVE_2
+    this.targetType.value = targetType
     this.setViewType(viewType)
     this.initializeData()
   }
@@ -29,88 +36,59 @@ export class PracticeDirective2ServiceController extends CompanyServiceControlle
   async initializeData(): Promise<void> {
     this.isLoading.value = true
 
-    switch (this.viewType.value) {
-      case ViewMode.New:
-        this.isInPreviewMode.value = true
-        this.companyAmendmentAddress.value = new CompanyAmendmentAddress(this.companyServiceInitializer.newApplication)
-        await Promise.all([this.fetchPrice(), this.companyServiceInitializer.setExistingApplication()])
-        if (this.companyServiceInitializer.existingApplication) {
-          this.hasOngoingApplication.value = true //We need to warn users
-        }
-        break
-      case ViewMode.Existing:
-        this.isInPreviewMode.value = false
-        this.hasOngoingApplication.value = true
-        await Promise.all([this.fetchPrice(), this.companyServiceInitializer.setExistingApplication()])
-        this.companyAmendmentAddress.value = new CompanyAmendmentAddress(
-          this.companyServiceInitializer.existingApplication
-        )
+    await this.fetchOngoingApplication()
 
-        if (StringUtil.isNullOrEmpty(this.companyAmendmentAddress.value.id)) {
-          this.hasOngoingApplication.value = false
-          this.isInPreviewMode.value = true
-        }
-        break
-      case ViewMode.Past:
-        this.isInPreviewMode.value = true
-        await Promise.all([this.fetchPrice(), this.companyServiceInitializer.setPastApplications()])
-        this.hasPastApplications.value = this.companyServiceInitializer.pastApplications.length > 0
-        this.emitEvents(EmitMessages.HAS_PAST_APPLICATIONS, this.hasPastApplications.value)
-        break
-    }
-
-    this.init(this.companyAmendmentAddress.value as CompanyAmendmentAddress)
+    await this.init(this.companyAmendmentAddress.value as CompanyAmendmentAddress)
 
     this.isLoading.value = false
   }
 
   async fetchOngoingApplication(): Promise<void> {
     try {
-      let apiRecord = await this.repository.fetchAll(this.ongoingFilter)
-      if (this.repository.error !== null) {
-        throw this.repository.error
+      this.hasOngoingApplication.value = true
+
+      let repository = null
+      switch (this.targetType.value) {
+        case CompanyConstants.TARGET_AMENDMENT_ADDRESS:
+          repository = useCompanyAmendmentAddressStore()
+          break
+        case CompanyConstants.TARGET_AMENDMENT_BRANCH:
+          repository = useCompanyAmendmentBranchStore()
+          break
+        case CompanyConstants.TARGET_AMENDMENT_DESCRIPTION:
+          repository = useCompanyAmendmentDescriptionStore()
+          break
       }
 
-      if (apiRecord.totalRecords <= 0) {
-        this.companyAmendmentAddress.value = new CompanyAmendmentAddress()
-        this.companyAmendmentAddress.value.companyId = this.companyId
+      if (!repository) {
         this.hasOngoingApplication.value = false
         return
       }
 
-      this.companyAmendmentAddress.value = new CompanyAmendmentAddress(apiRecord.data[0])
-      this.isInPreviewMode.value = false
-      this.hasOngoingApplication.value = true
-    } catch (error) {
-      if (error instanceof Error) {
-        error.handle()
-      } else {
-        let errorMessage: Error = new Error()
-        errorMessage.setForFetch()
-        errorMessage.handle()
-      }
-    }
-  }
-
-  async fetchPreviousSubmission(): Promise<void> {
-    try {
-      let apiRecord = await this.repository.fetchAll(this.lastSubmissionFilter)
-      if (this.repository.error !== null) {
-        throw this.repository.error
+      let response = await repository.fetchAll(this.ongoingFilter)
+      if (repository.error !== null) {
+        throw repository.error
       }
 
-      if (apiRecord.totalRecords <= 0) {
-        this.hasSubmittedBefore.value = false
-        this.lastApplicationDate.value = ""
-        this.hasPastApplications.value = false
-        this.emitEvents(EmitMessages.HAS_PAST_APPLICATIONS, false)
+      if (response.totalRecords <= 0) {
+        this.hasOngoingApplication.value = false
         return
       }
 
-      let lastApplication = new CompanyAmendmentAddress(apiRecord.data[0])
-      this.lastApplicationDate.value = this.time.formatDateOnlyFull(lastApplication.updatedAt)
-      this.hasPastApplications.value = true
-      this.emitEvents(EmitMessages.HAS_PAST_APPLICATIONS, true)
+      switch (this.targetType.value) {
+        case CompanyConstants.TARGET_AMENDMENT_ADDRESS:
+          this.companyAmendmentAddress.value = new CompanyAmendmentAddress(response.data[0])
+          break
+        case CompanyConstants.TARGET_AMENDMENT_BRANCH:
+          this.companyAmendmentBranch.value = new CompanyAmendmentBranch(response.data[0])
+          // need to set for wrapper
+          this.companyAmendmentAddress.value = new CompanyAmendmentAddress(response.data[0])
+          break
+        case CompanyConstants.TARGET_AMENDMENT_DESCRIPTION:
+          this.companyAmendmentDescription.value = new CompanyAmendmentDescription(response.data[0])
+          this.companyAmendmentAddress.value = new CompanyAmendmentAddress(response.data[0])
+          break
+      }
     } catch (error) {
       if (error instanceof Error) {
         error.handle()
@@ -119,85 +97,6 @@ export class PracticeDirective2ServiceController extends CompanyServiceControlle
         errorMessage.setForFetch()
         errorMessage.handle()
       }
-    }
-  }
-
-  async onApplicationUpdated(application: CompanyAmendmentAddress): Promise<void> {
-    await this.fetchOngoingApplication()
-
-    if (this.dcrRef) {
-      this.dcrRef.updateApplicationContent(this.companyAmendmentAddress.value)
-    }
-  }
-
-  setApplicationData(applicationData: CompanyAmendmentAddress): void {
-    if (!applicationData) {
-      return
-    }
-
-    if (this.dcrRef) {
-      this.dcrRef.updateApplicationContent(applicationData)
-    }
-  }
-
-  async makePayment(): Promise<void> {
-    if (this.isSubmitting.value) {
-      return
-    }
-
-    try {
-      this.isSubmitting.value = true
-
-      await this.submitApplication()
-
-      let makePayment = new MakePayment(
-        PaymentConstants.PAYMENT_CART_ENTITY_TYPE_COMPANY,
-        this.companyId,
-        this.target,
-        this.companyAmendmentAddress.value.id
-      )
-
-      await makePayment.setPaymentCart()
-
-      this.emitEvents("pay", makePayment.paymentCart)
-    } catch (e: any) {
-      if (e instanceof Error) {
-        e.handle()
-      } else {
-        let errorMessage: Error = new Error()
-        errorMessage.setForFetch()
-        errorMessage.handle()
-      }
-    } finally {
-      this.isSubmitting.value = false
-    }
-  }
-
-  async submitApplication(): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.companyAmendmentAddress.value.id)) {
-      this.companyAmendmentAddress.value.businessAddressLocation.addressLine1 = "-"
-      this.companyAmendmentAddress.value.businessAddressLocation.postcode = "40400"
-      this.companyAmendmentAddress.value.businessAddressLocation.city = new City()
-      this.companyAmendmentAddress.value.businessAddressLocation.city.id = 61096
-      this.companyAmendmentAddress.value.businessAddressLocation.state = new State()
-      this.companyAmendmentAddress.value.businessAddressLocation.state.id = 23
-      this.companyAmendmentAddress.value.businessAddressLocation.country = new Country()
-      this.companyAmendmentAddress.value.businessAddressLocation.country.id = 87
-      this.companyAmendmentAddress.value.companyId = this.companyId
-      await this.companyAmendmentAddress.value.create(useCompanyAmendmentAddressStore())
-    } else {
-      await this.companyAmendmentAddress.value.update(useCompanyAmendmentAddressStore())
-    }
-  }
-
-  async onProceedClicked(): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.companyAmendmentAddress.value.id) || !this.hasPaid()) {
-      this.makePayment()
-      return
-    }
-
-    if (this.wrapperRef) {
-      this.wrapperRef.enlarge()
     }
   }
 
@@ -278,57 +177,6 @@ export class PracticeDirective2ServiceController extends CompanyServiceControlle
     `
   }
 
-  // PASCA functions
-  isMajorityReached(): boolean {
-    if (!this.application.value) {
-      return false
-    }
-
-    let totalSigned = this.application.value.signatureGroups.filter((sg: SignatureGroup) => {
-      return sg.group?.target === "director"
-    }).length
-
-    let percentage = Math.ceil((totalSigned / this.totalNumberOfDirectors.value) * 100)
-
-    return percentage >= 50
-  }
-
-  override isStepStatusVisible(): boolean {
-    if (!this.application.value) {
-      return false
-    }
-
-    return this.application.value.paidAt !== null && this.isMajorityReached()
-  }
-
-  signatureDate(): string {
-    if (!this.application.value) {
-      return ""
-    }
-
-    if (this.application.value.signatureGroups.length <= 0) {
-      return ""
-    }
-
-    if (this.isMajorityReached()) {
-      let directorSignatures = this.application.value.signatureGroups.filter((sg: SignatureGroup) => {
-        return sg.group?.target === "director"
-      })
-
-      if (directorSignatures.length > 0) {
-        let sorted = ObjectUtil.sort<SignatureGroup>(directorSignatures, "createdAt", "desc")
-
-        return this.time.formatDateOnlyShort(sorted[0].createdAt ?? "")
-      }
-    }
-
-    if (this.hasSigned()) {
-      return this.userSignatureDate()
-    }
-
-    return ""
-  }
-
   get serviceWrapperProps() {
     let application =
       this.viewType.value === ViewMode.New ? new CompanyAmendmentAddress() : this.companyAmendmentAddress.value
@@ -354,9 +202,9 @@ export class PracticeDirective2ServiceController extends CompanyServiceControlle
       false,
       this.hasPaid(),
       this.price.value,
-      this.isMajorityReached(),
+      true,
       this.hasSigned(),
-      this.signatureDate(),
+      "",
       this.hasDcr.value,
       this.hasMcr.value,
       this.totalNumberOfDirectors.value,
@@ -389,6 +237,28 @@ export class PracticeDirective2ServiceController extends CompanyServiceControlle
 
   get practiceDirective2Props(): PropsPracticeDirective2 {
     let props = new PropsPracticeDirective2(this.companyId)
+
+    switch (this.targetType.value) {
+      case CompanyConstants.TARGET_AMENDMENT_ADDRESS:
+        props.isUpdatingBusinessAddress = true
+        props.updateAddress = this.companyAmendmentAddress.value.businessAddressLocation?.getMultilineAddress() ?? ""
+        break
+      case CompanyConstants.TARGET_AMENDMENT_BRANCH:
+        if (this.companyAmendmentBranch.value.type === CompanyConstants.AMENDMENT_BRANCH_TYPE_ADD) {
+          props.isAddingBranchAddress = true
+          props.addAddress = this.companyAmendmentBranch.value.location.getMultilineAddress() ?? ""
+        } else if (this.companyAmendmentBranch.value.type === CompanyConstants.AMENDMENT_BRANCH_TYPE_CHANGE) {
+          props.isUpdatingBranchAddress = true
+          props.updateAddress = this.companyAmendmentBranch.value.location.getMultilineAddress() ?? ""
+        } else if (this.companyAmendmentBranch.value.type === CompanyConstants.AMENDMENT_BRANCH_TYPE_REMOVE) {
+          props.isRemovingBranchAddress = true
+          props.removeAddress = this.companyAmendmentBranch.value.location.getMultilineAddress() ?? ""
+        }
+        break
+      case CompanyConstants.TARGET_AMENDMENT_DESCRIPTION:
+        props.isUpdatingNature = true
+        break
+    }
 
     return props
   }

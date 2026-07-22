@@ -24,6 +24,7 @@ export class SelectedSdnBhdController {
   isShareholders: Ref<boolean> = ref<boolean>(false)
   isAccounting: Ref<boolean> = ref<boolean>(false)
 
+  selectedApplicationName: Ref<string> = ref<string>("")
   selectedApplicationId: Ref<string> = ref<string>("")
   selectedPaymentOrderId: Ref<string> = ref<string>("")
   selectedService: Ref<string> = ref<string>(CompanyConstants.TARGET_AMENDMENT_NAME)
@@ -161,8 +162,10 @@ export class SelectedSdnBhdController {
     this.selectedPaymentOrderId.value = id
   }
 
-  onDocumentTargetSelected(target: string): void {
+  onDocumentTargetSelected(target: string, applicationName: string): void {
     this.selectedDocumentTarget.value = target
+
+    this.selectedApplicationName.value = applicationName
   }
 
   async onDownloadClicked(): Promise<void> {

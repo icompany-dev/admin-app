@@ -114,7 +114,7 @@
               v-bind="controller.applicationProps"
               @applicationId="controller.onApplicationIdUpdated($event)"
               @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
-              @documentSelected="controller.onDocumentTargetSelected($event)"
+              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_AMENDMENT_NAME)"
               @download="controller.onDownloadClicked()"
               @show="controller.onPanelShow(0)"
             />
@@ -123,7 +123,7 @@
               v-bind="controller.applicationProps"
               @applicationId="controller.onApplicationIdUpdated($event)"
               @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
-              @documentSelected="controller.onDocumentTargetSelected($event)"
+              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_AMENDMENT_ADDRESS)"
               @download="controller.onDownloadClicked()"
               @show="controller.onPanelShow(1)"
             />
@@ -142,6 +142,7 @@
             :view-type="'existing'"
             :application-id="controller.selectedApplicationId.value"
             :target-id="controller.selectedPaymentOrderId.value"
+            :target-type="controller.selectedApplicationName.value"
           />
         </div>
       </TransitionGroup>
