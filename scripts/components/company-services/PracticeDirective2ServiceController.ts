@@ -187,7 +187,7 @@ export class PracticeDirective2ServiceController extends CompanyServiceControlle
     let isInPreviewMode = this.viewType.value === ViewMode.New ? true : false
     let showPasca = this.viewType.value === ViewMode.Existing
 
-    return new PropsCompanyServiceWrapper(
+    let props = new PropsCompanyServiceWrapper(
       this.companyAmendmentAddress.value,
       this.companyId,
       this.target,
@@ -221,6 +221,10 @@ export class PracticeDirective2ServiceController extends CompanyServiceControlle
       false,
       true
     )
+
+    props.serviceWrapperProps.applicationTarget = this.targetType.value
+
+    return props
   }
 
   get resolutionDocumentProps() {

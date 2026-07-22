@@ -14,6 +14,7 @@ export interface IPropsServiceWrapper {
   watermarkText: string
   yearToLodge: string
   paperOrientation: string
+  applicationTarget: string
 }
 
 export class PropsServiceWrapper implements IPropsServiceWrapper {
@@ -29,6 +30,7 @@ export class PropsServiceWrapper implements IPropsServiceWrapper {
   watermarkText: string = ""
   yearToLodge: string = ""
   paperOrientation: string = PaperOrientation.Portrait
+  applicationTarget: string = ""
 
   constructor(
     companyId: string,

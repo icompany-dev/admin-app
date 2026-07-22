@@ -37,6 +37,7 @@
             :is-showing="props.isShowing"
             :financial-year-start-date="props.financialYearStartDate"
             :financial-year-end-date="props.financialYearEndDate"
+            :target-type="props.applicationTarget"
             @back="controller.onMinimizeDocument($event)"
             @make-payment="controller.onMakePayment()"
             @applicationUpdated="controller.onApplicationUpdated($event)"

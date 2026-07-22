@@ -55,13 +55,30 @@
       type: String,
       default: "DRAFT",
     },
+    targetType: {
+      type: String,
+      required: true,
+    },
   })
 
   const emit = defineEmits(["zoomOut", "zoomIn", "back"])
 
   const dcrRef = ref(null)
 
-  const controller = new PracticeDirective2Controller(props.companyId, emit, props.applicationId)
+  const controller = new PracticeDirective2Controller(props.companyId, props.targetType, emit, props.applicationId)
+
+  watch(
+    () => props.applicationId,
+    (newVal) => {
+      controller.applicationId = newVal
+      controller.fetchApplication(newVal)
+    }
+  )
+
+  watch(
+    () => props.targetType,
+    (newVal) => [controller.setTargetType(newVal)]
+  )
 
   watch(
     dcrRef,
