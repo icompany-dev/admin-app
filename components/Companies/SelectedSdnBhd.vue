@@ -127,6 +127,15 @@
               @download="controller.onDownloadClicked()"
               @show="controller.onPanelShow(1)"
             />
+            <ChangeOfBranchApplication
+              :ref="(el) => controller.setApplicationRefs(2, el)"
+              v-bind="controller.applicationProps"
+              @applicationId="controller.onApplicationIdUpdated($event)"
+              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
+              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_AMENDMENT_BRANCH)"
+              @download="controller.onDownloadClicked()"
+              @show="controller.onPanelShow(2)"
+            />
           </div>
         </TransitionGroup>
       </div>
@@ -153,7 +162,9 @@
 <script lang="ts" setup>
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
   import ChangeOfAddressApplication from "../Services/ChangeOfAddressApplication.vue"
+  import ChangeOfBranchApplication from "../Services/ChangeOfBranchApplication.vue"
   import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
+  import ChangeOfBusinessBranchService from "../CompanyServices/ChangeOfBusinessBranchService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
@@ -182,6 +193,7 @@
     [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27]: Section27Service,
     [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28]: Section28Service,
     [DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS]: ChangeOfAddressService,
+    [DocumentTargets.TARGET_AMENDMENT_BRANCH_RESOLUTIONS]: ChangeOfBusinessBranchService,
     [DocumentTargets.TARGET_PD2]: PracticeDirective2Service,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }

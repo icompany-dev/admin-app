@@ -43,10 +43,10 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
       props.companyId,
       useCompanyAmendmentBranchStore(),
       CompanyAmendmentBranch,
-      CompanyConstants.TARGET_AMENDMENT_ADDRESS,
+      CompanyConstants.TARGET_AMENDMENT_BRANCH,
       emitEvents
     )
-    this.target.value = CompanyConstants.TARGET_AMENDMENT_ADDRESS
+    this.target.value = CompanyConstants.TARGET_AMENDMENT_BRANCH
     this.minimumMajorityRequired.value = 0.5
     this.selectedApprovalType.value = "director" // this is fixed for this service
   }
@@ -132,7 +132,7 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
     this.isShowSection27.value = false
     this.isShowPD2.value = false
     this.isShowComplete.value = false
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_BRANCH_RESOLUTIONS)
   }
 
   onRegistrationOfBranchChangedClicked(): void {
@@ -150,7 +150,7 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
     this.isShowSection27.value = false
     this.isShowPD2.value = false
     this.isShowComplete.value = true
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION28)
+    // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_BRANCH_SECTION28)
   }
 
   onShowRegistrationActions(): void {
