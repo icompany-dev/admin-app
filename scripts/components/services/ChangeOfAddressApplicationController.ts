@@ -22,9 +22,9 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
   isUpdatingSection27: Ref<boolean> = ref<boolean>(false)
 
-  isDownloadingSection28: Ref<boolean> = ref<boolean>(false)
-  isShowSection28Actions: Ref<boolean> = ref<boolean>(false)
-  isUpdatingSection28: Ref<boolean> = ref<boolean>(false)
+  isDownloadingPd2: Ref<boolean> = ref<boolean>(false)
+  isShowPd2Actions: Ref<boolean> = ref<boolean>(false)
+  isUpdatingPd2: Ref<boolean> = ref<boolean>(false)
 
   isUploadingCON: Ref<boolean> = ref<boolean>(false)
   isDownloadingCON: Ref<boolean> = ref<boolean>(false)
@@ -310,18 +310,18 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   // }
 
   onShowRegistrationActions(): void {
-    this.isShowSection28Actions.value = !this.isShowSection28Actions.value
+    this.isShowPd2Actions.value = !this.isShowPd2Actions.value
   }
 
   async onSubmitToSSMClicked(): Promise<void> {
-    this.isShowSection28Actions.value = false
+    this.isShowPd2Actions.value = false
 
-    if (!this.isAddressReservationApproved || this.isUpdatingSection28.value || !this.application.value) {
+    if (!this.isAddressReservationApproved || this.isUpdatingPd2.value || !this.application.value) {
       return
     }
 
     try {
-      this.isUpdatingSection28.value = true
+      this.isUpdatingPd2.value = true
       await this.application.value.submit(useCompanyAmendmentAddressStore())
     } catch (e) {
       if (e instanceof Error) {
@@ -332,7 +332,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
         error.handle()
       }
     } finally {
-      this.isUpdatingSection28.value = false
+      this.isUpdatingPd2.value = false
     }
   }
 

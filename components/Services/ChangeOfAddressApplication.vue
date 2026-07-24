@@ -82,7 +82,7 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
-              :class="{ 'is-loading': controller.isDownloadingSection28.value }"
+              :class="{ 'is-loading': controller.isDownloadingPd2.value }"
               @click="controller.onDownloadClicked()"
             >
               Download
@@ -92,18 +92,18 @@
             <div class="actions-button-options">
               <div
                 class="btn btn-pill btn-submit selected"
-                :class="{ 'is-loading': controller.isUpdatingSection28.value }"
+                :class="{ 'is-loading': controller.isUpdatingPd2.value }"
                 @click="controller.onShowRegistrationActions()"
               >
                 <span class="label">{{ controller.section28ActionLabel }}</span>
                 <i
                   class="fa-solid fa-caret-down"
-                  :class="{ rotate: controller.isShowSection28Actions.value }"
+                  :class="{ rotate: controller.isShowPd2Actions.value }"
                 ></i>
               </div>
               <div
                 class="options"
-                :class="{ show: controller.isShowSection28Actions.value }"
+                :class="{ show: controller.isShowPd2Actions.value }"
               >
                 <button
                   class="btn btn-pill btn-submit"

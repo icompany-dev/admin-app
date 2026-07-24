@@ -1,5 +1,8 @@
 <template>
-  <div id="legal-documents-practice-directive2">
+  <div
+    id="legal-documents-practice-directive2"
+    ref="documentRef"
+  >
     <Paper
       :show-page-number="false"
       :additional-css-class="controller.additionalCssClass"
@@ -383,6 +386,8 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new PracticeDirective2Controller(props, emit)
 
   watch(
@@ -393,8 +398,17 @@
     { deep: true }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 
