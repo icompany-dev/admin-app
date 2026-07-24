@@ -7,12 +7,14 @@ import { useCompanyAmendmentBranchStore } from "~/stores/CompanyAmendmentBranche
 import { useCompanyStore } from "~/stores/Companies"
 import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 
 export class ChangeOfBranchController
   extends ServiceController
   implements IServiceController<CompanyAmendmentBranch, ReturnType<typeof useCompanyAmendmentBranchStore>>
 {
   application: CompanyAmendmentBranch = new CompanyAmendmentBranch()
+  applicationRef = ref<CompanyAmendmentBranch>(new CompanyAmendmentBranch())
   applicationId: string | null = null
   repository = useCompanyAmendmentBranchStore()
   companyRepository = useCompanyStore()
@@ -28,11 +30,12 @@ export class ChangeOfBranchController
   }
 
   async fetchApplication(id: string): Promise<void> {
+    this.applicationId = id
+    this.targetId = id
     let response = await this.repository.fetch(id)
     if (!this.repository.error) {
       this.application = new CompanyAmendmentBranch(response)
-      this.applicationId = this.application.id
-      this.targetId = this.application.id
+      this.applicationRef.value = new CompanyAmendmentBranch(response)
     }
   }
 
@@ -66,7 +69,7 @@ export class ChangeOfBranchController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -93,29 +96,24 @@ export class ChangeOfBranchController
     this.emitEvents("back")
   }
 
-  helpTitle(): string {
-    return this.language.isMalay()
-      ? `Resolusi Pengarah untuk Menukar Alamat Perniagaan`
-      : "DCR to Change Business Branch"
+  get isDraft(): boolean {
+    return this.application.signatureGroups.length <= 0
   }
 
-  helpDescription(): string {
-    return this.language.isMalay()
-      ? `Resolusi ini memerlukan:
-        <ul>
-          <li>Semua Pengarah <b>mesti menandatangani</b> untuk pengesahan (<i>boleh dilakukan secara elektronik di sini</i>).</li>
-          <li>Pilih: <b>Express Filing</b> atau <b>Normal Filing</b> (harga berbeza mengikut SSM).</li>
-          <li>Setelah pendaftaran diluluskan oleh SSM, Sistem iCompany akan memberitahu semua Pengarah.</li>
-          <li>Beli & Muat Turun Profil Korporat SSM sebagai pengesahan perubahan (pilihan).</li>
-        </ul>
-        `
-      : `This DCR requires:
-          <ul>
-            <li>All Directors <b>must sign</b> for confirmation (<i>can be done electronically here</i>).</li>
-            <li>Choose: <b>Express Filing</b> or <b>Normal Filing</b> (price varies based on SSM Fees).</li>
-            <li>Once filing is approved by SSM, iCompany System will notify all Directors.</li>
-            <li>Purchase & Download SSM Corporate Profile as confirmation of the change (optional).</li>
-          </ul>
-        `
+  get resolutionDocumentProps() {
+    return new PropsResolutionDocument<CompanyAmendmentBranch>(
+      this.companyId,
+      this.applicationId,
+      this.applicationRef.value as CompanyAmendmentBranch,
+      this.isDraft,
+      "DRAFT",
+      false,
+      false,
+      null,
+      null,
+      [],
+      null,
+      null
+    )
   }
 }

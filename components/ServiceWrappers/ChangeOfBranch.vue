@@ -17,26 +17,17 @@
       >
         <DcrChangeOfBranch
           ref="dcr"
-          :company-id="props.companyId"
-          :application-id="props.applicationId"
-          :application="null"
-          :show-watermark="props.showWatermarkText"
-          :watermark-text="props.watermarkText"
-          :is-in-preview-mode="props.isInPreviewMode"
-          :is-by-shareholder="false"
-          :financial-period-id="null"
-          :bank-id="null"
-          :name-reservations="[]"
-          :year-to-lodge="null"
-          :type="null"
+          v-bind="controller.resolutionDocumentProps"
           @signed="controller.onSigned($event)"
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrChangeOfBranch from "../Resolutions/DcrChangeOfBranch.vue"
   import { ChangeOfBranchController } from "~/scripts/components/service-wrappers/ChangeOfBranchController"
 

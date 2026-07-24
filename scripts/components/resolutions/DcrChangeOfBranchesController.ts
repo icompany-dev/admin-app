@@ -4,7 +4,7 @@ import { useCompanyAmendmentBranchStore } from "#imports"
 import { useCompanyBranchStore } from "#imports"
 import { useCompanyStore } from "#imports"
 import { Company } from "~/scripts/models/Company"
-import { City, Country, State } from "~/scripts/models/Location"
+import { Location, City, Country, State } from "~/scripts/models/Location"
 import { SelectOption } from "~/scripts/types/SelectOption"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { Filter } from "~/scripts/library/Filter"
@@ -357,5 +357,13 @@ export class DcrChangeOfBranchesController extends ResolutionController<CompanyA
     }
 
     return this.application.value.location.getMultilineAddress()
+  }
+
+  get location(): Location {
+    if (!this.application.value || !this.application.value.location) {
+      return new Location()
+    }
+
+    return this.application.value.location
   }
 }
