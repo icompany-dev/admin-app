@@ -76,6 +76,7 @@
           <div v-if="controller.isShowBranchAddressForm()">
             <AddressInput
               :is-disabled="props.isInPreviewMode"
+              :location="controller.location"
               @update-address-line1="controller.handleAddressLine1Change($event)"
               @update-address-line2="controller.handleAddressLine2Change($event)"
               @update-postcode="controller.handlePostcodeChange($event)"
