@@ -23,5 +23,7 @@ export class DefaultController {
 
   onBurgerClicked(): void {
     this.isCollapsed.value = !this.isCollapsed.value
+
+    this.emitEvents(this.isCollapsed.value ? "collapsed" : "expanded")
   }
 }

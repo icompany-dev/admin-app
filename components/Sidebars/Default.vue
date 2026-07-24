@@ -46,7 +46,8 @@
   import { DefaultController } from "~/scripts/components/sidebars/DefaultController"
 
   const props = defineProps({})
-  const emit = defineEmits([])
+
+  const emit = defineEmits(["collapsed", "expanded"])
 
   const controller = new DefaultController(emit)
 </script>

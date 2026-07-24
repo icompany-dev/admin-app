@@ -7,6 +7,8 @@ export class LayoutController {
   pageContentRef: any | null = null
   isOverlap: Ref<boolean> = ref<boolean>(false)
 
+  isSidebarCollapsed: Ref<boolean> = ref<boolean>(false)
+
   isDragging: Ref<boolean> = ref<boolean>(false)
   lastY: Ref<number> = ref<number>(0)
   deltaY: Ref<number> = ref<number>(0)
@@ -99,5 +101,13 @@ export class LayoutController {
 
   isDisableScrolling(): boolean {
     return this.eventManager.isPopupShowing || this.eventManager.isDisablePage
+  }
+
+  onSidebarCollapsed(): void {
+    this.isSidebarCollapsed.value = true
+  }
+
+  onSidebarExpanded(): void {
+    this.isSidebarCollapsed.value = false
   }
 }
