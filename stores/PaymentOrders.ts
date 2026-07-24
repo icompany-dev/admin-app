@@ -131,6 +131,22 @@ export const usePaymentOrderStore = defineStore("paymentOrder", () => {
     }
   }
 
+  async function fetchByTarget(target: string, targetId: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.paymentOrders.fetchByTarget(target, targetId)
+      return response.data
+    } catch (e: any) {
+      error.value = e.message || `Failed to fetch payment order for receipt`
+      console.error(`Error to fetch payment order for receipt`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   async function shipItem(target: string, targetId: string, trackingNumber: string, trackingUrl: string): Promise<any> {
     isLoading.value = true
     error.value = null
@@ -163,6 +179,7 @@ export const usePaymentOrderStore = defineStore("paymentOrder", () => {
     fetchPendingDeliveries,
     fetchForReceipt,
     fetchItem,
+    fetchByTarget,
     shipItem,
   }
 })

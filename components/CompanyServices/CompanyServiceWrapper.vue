@@ -90,15 +90,6 @@
           </template>
         </NoRecord>
       </div>
-      <!-- <div
-        class="past-records"
-        v-if="controller.isShowPastApplications()"
-      >
-        <PastApplications
-          v-bind="props.pastApplicationProps"
-          @goToNew="emit(EmitMessages.GO_TO_NEW)"
-        />
-      </div> -->
     </div>
 
     <Teleport to="body">
@@ -120,7 +111,6 @@
 <script setup lang="ts">
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
-  // import PastApplications from "../PastApplications/PastApplications.vue"
   import ServiceWrapper from "@/components/ServiceWrappers/ServiceWrapper.vue"
   import { CompanyServiceWrapperController } from "~/scripts/components/company-services/CompanyServiceWrapperController"
   import type { IPropsCompanyServiceWrapper } from "~/scripts/props/PropsCompanyServiceWrapper"

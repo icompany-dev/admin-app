@@ -18,14 +18,11 @@
       v-bind="controller.serviceWrapperProps"
       @go-to-page="controller.goToPage($event)"
       @back="controller.onBackButtonClicked()"
-      @proceed="controller.onProceedClicked()"
       @pay="emit('pay')"
       @refresh="controller.initializeData()"
       @preview="controller.onPreview()"
       @shrouded="controller.onShrouded()"
-      @minimized="controller.setApplicationData($event)"
       @view-mode-changed="controller.onViewModeChanged($event)"
-      @application-updated="controller.onApplicationUpdated($event)"
       @goToNew="emit(EmitMessages.GO_TO_NEW)"
       @goToExisting="emit(EmitMessages.GO_TO_EXISTING)"
     >
@@ -35,73 +32,22 @@
           tag="div"
           class="documents"
         >
-          <DcrChangeOfAddress
+          <PracticeDirective2
             ref="dcrRef"
-            v-bind="controller.resolutionDocumentProps"
-            @total-page-changed="controller.handleDoneLoading()"
+            v-bind="controller.practiceDirective2Props"
           />
         </TransitionGroup>
-      </template>
-      <template #step-status>
-        <div v-if="controller.isStepStatusVisible()">
-          <div v-if="!controller.isSubmittedToSSM()">
-            {{ controller.processingLabel() }}
-            <i class="fa-solid fa-loader fa-spin"></i>
-          </div>
-
-          <div v-if="controller.isSubmittedToSSM()">
-            <b>{{ controller.submittedToSsmLabel() }}:</b>
-            <div class="step-date">
-              {{ controller.getSubmissionDate() }}
-              <i class="check-icon fa-solid fa-circle-check"></i>
-            </div>
-
-            <div class="step-buttons">
-              <button
-                class="btn btn-submit"
-                @click="controller.onPayForAccess()"
-              >
-                {{ controller.payForAccessLabel() }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #cornerButton>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-primary"
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </button>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-pay"
-          :class="{ 'is-loading': controller.isSubmitting.value }"
-          @click="controller.onProceedClicked()"
-        >
-          {{ controller.payLabel() }}
-        </button>
-      </template>
-      <template #learnMoreButton>
-        <div
-          class="learn-more"
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </div>
       </template>
     </CompanyServiceWrapper>
   </div>
 </template>
 
 <script setup lang="ts">
-  import DcrChangeOfAddress from "../Resolutions/DcrChangeOfAddress.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import PracticeDirective2 from "../LegalDocuments/PracticeDirective2.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
-  import { ChangeOfBusinessAddressServiceController } from "~/scripts/components/company-services/ChangeOfBusinessAddressServiceController"
+  import { PracticeDirective2ServiceController } from "~/scripts/components/company-services/PracticeDirective2ServiceController"
 
   const props = defineProps({
     companyId: {
@@ -112,6 +58,10 @@
       type: String,
       required: true,
     },
+    targetType: {
+      type: String,
+      required: true,
+    },
   })
 
   const emit = defineEmits(EmitMessages.COMPANY_SERVICES)
@@ -119,7 +69,7 @@
   const dcrRef = ref(null)
   const wrapperRef = ref(null)
 
-  const controller = new ChangeOfBusinessAddressServiceController(props.companyId, props.viewType, emit)
+  const controller = new PracticeDirective2ServiceController(props.companyId, props.targetType, props.viewType, emit)
 
   onMounted(async () => {
     await nextTick()

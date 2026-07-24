@@ -1,6 +1,7 @@
 import { PaperOrientation } from "~/scripts/constants/Paper"
 import { Error } from "~/scripts/library/Error"
 import { Company } from "~/scripts/models/Company"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export abstract class SdnBhdLegalDocumentController {
@@ -14,6 +15,8 @@ export abstract class SdnBhdLegalDocumentController {
 
   isFetchingCompany: Ref<boolean> = ref<boolean>(true)
   isInPreviewMode: Ref<boolean> = ref<boolean>(true)
+
+  documentRef: any | null = null
 
   constructor(legalDocumentName: string, companyId: string, paperOrientation: PaperOrientation) {
     this.paperOrientation = paperOrientation
@@ -34,6 +37,10 @@ export abstract class SdnBhdLegalDocumentController {
     this.isInPreviewMode.value = isInPreviewMode
   }
 
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
+  }
+
   async fetchCompany(): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       return
@@ -51,10 +58,8 @@ export abstract class SdnBhdLegalDocumentController {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error: Error = new Error(
-          Error.ERROR_TYPE_API,
-          "Unable to fetch details of company. Please refresh the page and try again."
-        )
+        let error: Error = new Error()
+        error.setForFetch()
         error.handle()
       }
     } finally {
@@ -80,5 +85,16 @@ export abstract class SdnBhdLegalDocumentController {
     }
 
     return this.company.value.businessAddressLocation.getMultilineAddress()
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    return pdfPages
   }
 }

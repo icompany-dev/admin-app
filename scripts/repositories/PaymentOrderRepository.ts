@@ -79,6 +79,15 @@ export class PaymentOrderRepository extends Repository<PaymentOrder> {
     }
   }
 
+  async fetchByTarget(target: string, targetId: string): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.singleResourceUrl}/by-target?target=${target}&target_id=${targetId}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
   async shipItem(target: string, targetId: string, trackingNumber: string, trackingUrl: string): Promise<any> {
     try {
       let data = {

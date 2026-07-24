@@ -12,21 +12,8 @@
 }
 
 .receipt-paper {
-  position: relative;
-  width: 210mm;
-  height: 296mm;
-  overflow: hidden;
-  font-size: 13px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-
   .header-content {
     flex-grow: 1;
-    padding-top: 20mm;
-    padding-left: 20mm;
-    padding-right: 20mm;
     page-break-inside: auto;
 
     .header {
@@ -256,8 +243,11 @@
   }
 
   .receipt-footer {
+    position: absolute;
+    left: -20mm;
+    bottom: -20mm;
     flex-shrink: 0;
-    width: 100%;
+    width: 210mm;
 
     .disclaimer {
       width: 100%;

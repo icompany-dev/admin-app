@@ -1,9 +1,10 @@
 <template>
-  <div id="dcr-change-of-addresses">
+  <div id="dcr-change-of-addresses" ref="documentRef">
     <Resolution v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)">
       <template #page1>
-        <p>
+        <div class="change-of-address">
+          <p>
           <b>RESOLVED:</b>
           <br>
           <b>CHANGE OF BUSINESS ADDRESS</b>
@@ -26,7 +27,7 @@
         </p>
 
         <div v-if="controller.isDocumentEditable()">
-          <AddressInput :is-preview-mode="props.isInPreviewMode" :is-show-labels="false"
+          <AddressInput :is-preview-mode="props.isInPreviewMode" :is-show-labels="false" :location="controller.location"
             @update-address-line1="controller.handleAddressLine1Change($event)"
             @update-address-line2="controller.handleAddressLine2Change($event)"
             @update-postcode="controller.handlePostcodeChange($event)"
@@ -40,6 +41,7 @@
           is hereby accepted and confirmed.
         </p>
         <FurtherResolved />
+        </div>
       </template>
     </Resolution>
   </div>
@@ -56,6 +58,8 @@ import type { CompanyAmendmentAddress } from '~/scripts/models/CompanyAmendmentA
 const props = defineProps<IPropsResolutionDocument<CompanyAmendmentAddress>>()
 
 const emit = defineEmits(['startLoading', 'doneLoading', "pay", "signed"])
+
+const documentRef = ref(null)
 
 const controller = new DcrChangeOfAddressesController(
   props,
@@ -78,10 +82,19 @@ watch(() => props.watermarkText, (newVal) => {
   controller.setWatermarkText(newVal)
 })
 
+watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
 defineExpose({
   totalPages: controller.totalPages.bind(controller),
   getApplication: controller.getApplication.bind(controller),
-  updateApplicationContent: controller.updateApplicationContent.bind(controller)
+  updateApplicationContent: controller.updateApplicationContent.bind(controller),
+  getPdfPages: controller.getPdfPages.bind(controller),
 })
 </script>
 

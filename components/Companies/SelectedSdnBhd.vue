@@ -110,10 +110,22 @@
             v-if="controller.isBusiness.value"
           >
             <ChangeOfNameApplication
+              :ref="(el) => controller.setApplicationRefs(0, el)"
               v-bind="controller.applicationProps"
               @applicationId="controller.onApplicationIdUpdated($event)"
-              @documentSelected="controller.onDocumentTargetSelected($event)"
+              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
+              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_AMENDMENT_NAME)"
               @download="controller.onDownloadClicked()"
+              @show="controller.onPanelShow(0)"
+            />
+            <ChangeOfAddressApplication
+              :ref="(el) => controller.setApplicationRefs(1, el)"
+              v-bind="controller.applicationProps"
+              @applicationId="controller.onApplicationIdUpdated($event)"
+              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
+              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_AMENDMENT_ADDRESS)"
+              @download="controller.onDownloadClicked()"
+              @show="controller.onPanelShow(1)"
             />
           </div>
         </TransitionGroup>
@@ -129,6 +141,8 @@
             :company-id="controller.companyId.value"
             :view-type="'existing'"
             :application-id="controller.selectedApplicationId.value"
+            :target-id="controller.selectedPaymentOrderId.value"
+            :target-type="controller.selectedApplicationName.value"
           />
         </div>
       </TransitionGroup>
@@ -138,8 +152,12 @@
 
 <script lang="ts" setup>
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
+  import ChangeOfAddressApplication from "../Services/ChangeOfAddressApplication.vue"
+  import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
+  import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
@@ -163,6 +181,9 @@
     [DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS]: ChangeOfNameService,
     [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27]: Section27Service,
     [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28]: Section28Service,
+    [DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS]: ChangeOfAddressService,
+    [DocumentTargets.TARGET_PD2]: PracticeDirective2Service,
+    [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 
   const activeDocumentComponent = computed(() => {

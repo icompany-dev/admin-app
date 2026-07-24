@@ -84,8 +84,8 @@ export class ChangeOfBusinessAddressServiceController extends CompanyServiceCont
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -114,8 +114,8 @@ export class ChangeOfBusinessAddressServiceController extends CompanyServiceCont
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -163,8 +163,8 @@ export class ChangeOfBusinessAddressServiceController extends CompanyServiceCont
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     } finally {
@@ -202,45 +202,6 @@ export class ChangeOfBusinessAddressServiceController extends CompanyServiceCont
 
   setWrapperRef(wrapperRef: any | null): void {
     this.wrapperRef = wrapperRef
-
-    this.setOptionButtons()
-  }
-
-  setOptionButtons(): void {
-    if (!this.wrapperRef) {
-      return
-    }
-
-    let label = this.language.isMalay() ? "Tukar Alamat Syarikat" : "Update Company Address"
-  }
-
-  helpTitle(): string {
-    return this.language.isMalay() ? "Tukar Alamat Syarikat" : "Update Company Address"
-  }
-
-  helpDescription(): string {
-    if (this.language.isMalay()) {
-      return `Apabila sesebuah syarikat menukar alamat perniagaan atau cawangan, syarikat
-        tersebut perlu memberitahu SSM (Suruhanjaya Syarikat Malaysia) mengenai
-        perubahan itu dalam tempoh empat belas hari dari tarikh kuat kuasa perubahan.
-        Perkara ini dilakukan melalui borang khusus untuk "Pemberitahuan Pertukaran
-        Alamat Perniagaan/Cawangan dan/atau Jenis Perniagaan".
-        <br><br>
-        Pemberitahuan pertukaran alamat perniagaan hendaklah dibuat dalam borang dan
-        cara yang ditetapkan oleh Arahan Amalan SSM 2/2017. Merupakan suatu kesalahan
-        di bawah Seksyen 591 Akta Syarikat 2016 untuk memberikan maklumat palsu atau
-        mengelirukan kepada Pendaftar.`
-    }
-
-    return `When a company changes its business or branch address, it must notify
-      SSM of the change within fourteen days from the effective date of the change.
-      This is done through a specific form for "Notification of Change in the
-      Business/Branch Address and/or Nature of Business".
-      <br><br>
-      The notification of change in business address is to be done in the form
-      and manner specified by SSM's Practice Directive 2/2017. It is an offense
-      under Section 591 of the Companies Act 2016 to provide false or misleading
-      information to the Registrar.`
   }
 
   slipCaseTitle(): string {

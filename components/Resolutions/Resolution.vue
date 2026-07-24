@@ -91,11 +91,19 @@
           >
             Date:
             <br />
-            <span
+            <input
+              class="form-control in-resolution no-print"
+              type="date"
+              v-model="controller.documentDate.value"
+            />
+            <span class="date print-only">
+              {{ controller.formattedDocumentDate }}
+            </span>
+            <!-- <span
               class="date"
               :class="{ unknown: props.resolutionDate.toLowerCase() === 'to be determined' }"
               v-html="props.resolutionDate"
-            />
+            /> -->
           </div>
         </template>
       </Paper>

@@ -6,6 +6,8 @@ export class ResolutionSignaturesController {
   maxSignatureOnOtherPages = ref<number>(6)
   signatureStartPage = ref<number>(1)
 
+  documentDate = ref<string | null>(null)
+
   language = useLanguage()
 
   constructor(
@@ -50,5 +52,18 @@ export class ResolutionSignaturesController {
 
   loaderSublabel(): string {
     return this.language.isMalay() ? "Resolusi Anda" : "Resolution"
+  }
+
+  get formattedDocumentDate(): string {
+    let time = useLocalTime()
+
+    if (!this.documentDate.value) {
+      let dayjs = useDayjs()
+      let today = dayjs().format("YYYY-MM-DD")
+
+      return time.formatDateOnlyFull(today)
+    }
+
+    return time.formatDateOnlyFull(this.documentDate.value ?? "")
   }
 }

@@ -4,6 +4,7 @@ import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentCheck
 import { Application } from "~/scripts/models/Application"
 import { Director } from "~/scripts/models/Director"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
+import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
@@ -17,8 +18,13 @@ export abstract class ApplicationController<Application> {
   applications = ref<Application[]>([])
   application = ref<Application | null>(null)
 
+  paymentOrderId: Ref<string> = ref<string>("")
+  paymentOrder: Ref<PaymentOrder> = ref<PaymentOrder>(new PaymentOrder())
+
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+
+  isShowReceipt: Ref<boolean> = ref<boolean>(true)
 
   isShowApprovalTypeOptions: Ref<boolean> = ref<boolean>(false)
   selectedApprovalType: Ref<string> = ref<string>("director-member")
@@ -41,12 +47,14 @@ export abstract class ApplicationController<Application> {
 
   target: Ref<string> = ref<string>("")
 
+  serviceApplicationRef: any | null = null
   shipApplicationRef: any | null = null
 
   constructor(
     companyId: string,
     repository: IRepositoryStore,
     applicationClassType: new (data: any) => Application,
+    target: string,
     emitEvents: any | null
   ) {
     this.repository = repository
@@ -54,6 +62,8 @@ export abstract class ApplicationController<Application> {
     this.companyId.value = companyId
 
     this.application.value = new this.applicationClassType(null)
+
+    this.target.value = target
 
     this.emitEvents = emitEvents
 
@@ -77,7 +87,10 @@ export abstract class ApplicationController<Application> {
         this.uploadedDocumentChecker.value.fetchDocuments(),
       ])
 
+      await this.fetchPaymentOrder()
+
       this.emitEvents("applicationId", this.application.value.id)
+      this.emitEvents("paymentOrderId", this.paymentOrderId.value)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -103,11 +116,18 @@ export abstract class ApplicationController<Application> {
       this.uploadedDocumentChecker.value.fetchDocuments(),
     ])
 
+    await this.fetchPaymentOrder()
+
     this.emitEvents("applicationId", this.application.value.id)
+    this.emitEvents("paymentOrderId", this.paymentOrderId.value)
   }
 
   setShipApplicationRef(shipApplicationRef: any): void {
     this.shipApplicationRef = shipApplicationRef
+  }
+
+  setServiceApplicationRef(serviceApplicationRef: any): void {
+    this.serviceApplicationRef = serviceApplicationRef
   }
 
   async fetchOngoing(): Promise<void> {
@@ -116,24 +136,12 @@ export abstract class ApplicationController<Application> {
       return
     }
 
-    let response = await this.repository.latestCompleted(this.companyId.value)
+    let response = await this.repository.latestApplication(this.companyId.value)
     if (this.repository.error !== null) {
       throw this.repository.error
     }
 
-    if (!Array.isArray(response)) {
-      this.application.value = new this.applicationClassType(response)
-      return
-    }
-
-    if (response.length === 1) {
-      this.application.value = new this.applicationClassType(response[0])
-      return
-    }
-
-    this.applications.value = response.map((d: any) => {
-      return new this.applicationClassType(d)
-    })
+    this.application.value = new this.applicationClassType(response)
   }
 
   async fetchDirectors(): Promise<void> {
@@ -164,6 +172,26 @@ export abstract class ApplicationController<Application> {
     })
   }
 
+  async fetchPaymentOrder(): Promise<void> {
+    if (!this.hasApplication) {
+      this.paymentOrderId.value = ""
+      return
+    }
+
+    let repository = usePaymentOrderStore()
+    let response = await repository.fetchByTarget(this.target.value, this.application?.value.id)
+
+    if (!response || repository.error !== null) {
+      this.paymentOrderId.value = ""
+      return
+    }
+
+    this.paymentOrder.value = new PaymentOrder(response)
+    this.paymentOrderId.value = this.paymentOrder.value.id
+
+    this.emitEvents("paymentOrder", this.paymentOrder.value)
+  }
+
   onApprovalTypeClicked(): void {
     this.isShowApprovalTypeOptions.value = !this.isShowApprovalTypeOptions.value
   }
@@ -175,6 +203,30 @@ export abstract class ApplicationController<Application> {
 
   async onProceedShipped(): Promise<void> {
     await this.fetchOngoing()
+  }
+
+  onShowPanel(): void {
+    this.emitEvents("applicationId", this.application.value?.id)
+    this.emitEvents("paymentOrderId", this.paymentOrderId.value)
+    this.emitEvents("show")
+  }
+
+  expand(): void {
+    if (!this.serviceApplicationRef) {
+      return
+    }
+
+    this.emitEvents("applicationId", this.application.value?.id)
+    this.emitEvents("paymentOrderId", this.paymentOrderId.value)
+    this.serviceApplicationRef.expand()
+  }
+
+  collapse(): void {
+    if (!this.serviceApplicationRef) {
+      return
+    }
+
+    this.serviceApplicationRef.collapse()
   }
 
   // getters
@@ -189,7 +241,18 @@ export abstract class ApplicationController<Application> {
   }
 
   get serviceApplicationProps(): PropsServiceApplication {
-    return new PropsServiceApplication(this.serviceName, this.hasApplication)
+    let props = new PropsServiceApplication(this.serviceName, this.hasApplication, this.isShowReceipt.value)
+
+    props.application = this.application.value
+
+    return props
+  }
+
+  get hasPaid(): boolean {
+    return (
+      this.application.value.status !== StatusConstants.DRAFT &&
+      this.application.value.status !== StatusConstants.PENDING
+    )
   }
 
   get isSigned(): boolean {
@@ -269,7 +332,7 @@ export abstract class ApplicationController<Application> {
   get isDirectorSignatureCompleted(): boolean {
     let numberOfSignatures = this.directorSignatures.length
 
-    return numberOfSignatures > this.minimumMajorityRequired.value * this.directors.value.length
+    return numberOfSignatures >= this.minimumMajorityRequired.value * this.directors.value.length
   }
 
   get shareholderSignatures(): SignatureGroup[] {

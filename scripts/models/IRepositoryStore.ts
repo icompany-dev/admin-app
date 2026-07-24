@@ -12,5 +12,6 @@ export interface IRepositoryStore {
   complete(id: string): Promise<any>
   ongoing(companyId: string): Promise<any>
   latestCompleted(companyId: string): Promise<any>
+  latestApplication(companyId: string): Promise<any>
   error: any
 }
