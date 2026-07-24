@@ -630,7 +630,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
       return false
     }
 
-    return this.isAddressReservationApproved && this.application.value.status === StatusConstants.PAID
+    return this.application.value.status === StatusConstants.PAID && this.isApprovalReceived
   }
 
   get hasSubmittedToSSM(): boolean {
