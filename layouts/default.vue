@@ -10,11 +10,15 @@
     <div class="color-overlay"></div>
 
     <Header :is-header-hidden="layoutController.isOverlap.value" />
-    <Sidebar />
+    <Sidebar
+      @collapsed="layoutController.onSidebarCollapsed()"
+      @expanded="layoutController.onSidebarExpanded()"
+    />
 
     <div
       ref="pageContentRef"
       class="page-content"
+      :class="{ expand: layoutController.isSidebarCollapsed.value }"
       @touchstart="layoutController.startDrag"
       @touchmove="layoutController.onDrag"
       @touchend="layoutController.stopDrag"

@@ -40,13 +40,20 @@
   }
 
   .page-content {
+    margin: auto;
     margin-top: 100px; // Header height 90px
-    margin-left: 300px;
     z-index: 2;
-    width: calc(100% - 300px);
+    width: 90%;
     min-height: calc(100dvh - 200px);
-    max-width: 100%;
+    max-width: calc(100% - 300px);
+    transform: translateX(150px); //sidebar width
     padding-bottom: 30px;
+    transition: all 0.7s ease;
+
+    &.expand {
+      max-width: 90%;
+      transform: translateX(0);
+    }
 
     @media only screen and (max-width: 768px) {
       margin-top: 100px;

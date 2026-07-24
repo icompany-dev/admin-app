@@ -31,17 +31,29 @@ export class SidebarGroup {
   labelEn: string = ""
   labelBm: string = ""
   items: Sidebar[] = []
+  isExpanded: boolean = false
 
-  constructor(labelEn: string, labelBm: string, items: Sidebar[]) {
+  constructor(labelEn: string, labelBm: string, items: Sidebar[], isExpanded: boolean = false) {
     this.labelEn = labelEn
     this.labelBm = labelBm
     this.items = items
+    this.isExpanded = isExpanded
+  }
+
+  get isShowChildren(): boolean {
+    if (this.isExpanded) {
+      return true
+    }
+
+    return this.items.some((item: Sidebar) => {
+      return item.isShowing
+    })
   }
 }
 
 export class PageSidebar {
   static commandCentre: Sidebar = new Sidebar("Command Centre", "Pusat Kawalan", "", false)
-  static dashboardGroup: SidebarGroup = new SidebarGroup("Dashboard", "Dashboard", [this.commandCentre])
+  static dashboardGroup: SidebarGroup = new SidebarGroup("Dashboard", "Dashboard", [this.commandCentre], true)
 
   static incorpDrafts: Sidebar = new Sidebar(
     "Applications in Draft",
