@@ -62,6 +62,37 @@
         </li>
       </ol>
     </div>
+    <div class="company-overview-section">
+      <div class="overview-title">{{ controller.shareholdersLabel }}</div>
+      <ol>
+        <li
+          v-for="(shareholder, i) in controller.shareholdersDetails"
+          :key="i"
+        >
+          <div class="human-details">
+            <div class="name">{{ shareholder.name }}</div>
+            <div class="human-detail">
+              <i class="fa-regular fa-envelope"></i>
+              <span class="email">{{ shareholder.email }}</span>
+            </div>
+            <div class="human-detail">
+              <i class="fa-brands fa-whatsapp" />
+              <span class="phone">{{ shareholder.phone }}</span>
+            </div>
+            <div class="human-detail">
+              <span>
+                <b>{{ controller.totalSharesLabel }}:</b>
+              </span>
+              <span>{{ controller.ordinarySharesLabel }}:</span>
+              <span>{{ shareholder.ordinaryShares }}</span>
+              <span>/</span>
+              <span>{{ controller.preferenceSharesLabel }}:</span>
+              <span>{{ shareholder.preferenceShares }}</span>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
   </div>
 </template>
 

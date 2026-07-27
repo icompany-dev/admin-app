@@ -142,6 +142,14 @@ export class OverviewController {
     return ObjectUtil.sort<Director>(this.directors.value, "dateAppointed", "asc")
   }
 
+  get shareholdersLabel(): string {
+    return this.language.isMalay() ? "Pemegang Saham" : "Board of Members"
+  }
+
+  get shareholdersDetails(): Shareholder[] {
+    return ObjectUtil.sort<Shareholder>(this.shareholders.value, "dateAppointed", "asc")
+  }
+
   get nameLabel(): string {
     return this.language.isMalay() ? "Nama" : "Name"
   }
@@ -152,5 +160,17 @@ export class OverviewController {
 
   get phoneLabel(): string {
     return this.language.isMalay() ? "No. Telefon" : "Contact Number"
+  }
+
+  get totalSharesLabel(): string {
+    return this.language.isMalay() ? "Jumlah Saham" : "Total Shares"
+  }
+
+  get ordinarySharesLabel(): string {
+    return this.language.isMalay() ? "Ordinary" : "Ordinary"
+  }
+
+  get preferenceSharesLabel(): string {
+    return this.language.isMalay() ? "Preference" : "Preference"
   }
 }
