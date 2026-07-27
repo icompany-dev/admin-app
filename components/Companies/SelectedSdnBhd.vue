@@ -70,6 +70,13 @@
         >
           <div
             class="page-tab"
+            :class="{ selected: controller.isOverview.value }"
+            @click="controller.onOverviewClicked()"
+          >
+            {{ controller.overview }}
+          </div>
+          <div
+            class="page-tab"
             :class="{ selected: controller.isBusiness.value }"
             @click="controller.onBusinessClicked()"
           >
