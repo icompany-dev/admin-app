@@ -18,7 +18,8 @@ export class SelectedSdnBhdController {
   isShowOptions: Ref<boolean> = ref<boolean>(false)
   isShowApplicationDocuments: Ref<boolean> = ref<boolean>(false)
 
-  isBusiness: Ref<boolean> = ref<boolean>(true)
+  isOverview: Ref<boolean> = ref<boolean>(true)
+  isBusiness: Ref<boolean> = ref<boolean>(false)
   isDirectors: Ref<boolean> = ref<boolean>(false)
   isDocuments: Ref<boolean> = ref<boolean>(false)
   isShareholders: Ref<boolean> = ref<boolean>(false)
@@ -93,7 +94,17 @@ export class SelectedSdnBhdController {
     }
   }
 
+  onOverviewClicked(): void {
+    this.isOverview.value = true
+    this.isBusiness.value = false
+    this.isDirectors.value = false
+    this.isDocuments.value = false
+    this.isShareholders.value = false
+    this.isAccounting.value = false
+  }
+
   onBusinessClicked(): void {
+    this.isOverview.value = false
     this.isBusiness.value = true
     this.isDirectors.value = false
     this.isDocuments.value = false
@@ -102,6 +113,7 @@ export class SelectedSdnBhdController {
   }
 
   onDirectorsClicked(): void {
+    this.isOverview.value = false
     this.isBusiness.value = false
     this.isDirectors.value = true
     this.isDocuments.value = false
@@ -110,6 +122,8 @@ export class SelectedSdnBhdController {
   }
 
   onDocumentsClicked(): void {
+    this.isOverview.value = false
+    this.isOverview.value = false
     this.isBusiness.value = false
     this.isDirectors.value = false
     this.isDocuments.value = true
@@ -118,6 +132,7 @@ export class SelectedSdnBhdController {
   }
 
   onShareholdersClicked(): void {
+    this.isOverview.value = false
     this.isBusiness.value = false
     this.isDirectors.value = false
     this.isDocuments.value = false
@@ -126,6 +141,7 @@ export class SelectedSdnBhdController {
   }
 
   onAccountingClicked(): void {
+    this.isOverview.value = false
     this.isBusiness.value = false
     this.isDirectors.value = false
     this.isDocuments.value = false
@@ -222,6 +238,10 @@ export class SelectedSdnBhdController {
     return this.language.isMalay() ? "Switch Out" : "Switch Out"
   }
 
+  get overview(): string {
+    return this.language.isMalay() ? "Overview" : "Overview"
+  }
+
   get business(): string {
     return this.language.isMalay() ? "Perniagaan" : "Business"
   }
@@ -259,7 +279,7 @@ export class SelectedSdnBhdController {
   }
 
   get showDocument(): boolean {
-    return !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value)
+    return !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value) && !this.isOverview.value
   }
 
   get loaderLabel(): string {

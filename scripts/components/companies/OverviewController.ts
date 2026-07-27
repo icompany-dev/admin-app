@@ -1,0 +1,294 @@
+import { Error } from "~/scripts/library/Error"
+import { Compliance } from "~/scripts/library/Compliance"
+import { Company } from "~/scripts/models/Company"
+import { StringUtil } from "~/scripts/utils/String"
+import { Director } from "~/scripts/models/Director"
+import { Shareholder } from "~/scripts/models/Shareholder"
+import { CompanyBank } from "~/scripts/models/CompanyBank"
+import { ObjectUtil } from "~/scripts/utils/Object"
+import type { ChartData, ChartOptions } from "chart.js"
+import { Filter } from "~/scripts/library/Filter"
+import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
+
+export class OverviewController {
+  companyId: Ref<string> = ref<string>("")
+  company: Ref<Company> = ref<Company>(new Company())
+
+  directors: Ref<Director[]> = ref<Director[]>([])
+  shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+
+  companyBanks: Ref<CompanyBank[]> = ref<CompanyBank[]>([])
+
+  isLoading: Ref<boolean> = ref<boolean>(false)
+  isShowShareDistribution: Ref<boolean> = ref<boolean>(false)
+
+  compliance = ref<Compliance>(new Compliance(""))
+
+  emitEvents: any | null = null
+
+  language = useLanguage()
+  time = useLocalTime()
+  dayjs = useDayjs()
+
+  constructor(companyId: string, emitEvents: any) {
+    this.setCompanyId(companyId)
+    this.emitEvents = emitEvents
+  }
+
+  async setCompanyId(companyId: string): Promise<void> {
+    this.companyId.value = companyId
+
+    await this.init()
+  }
+
+  async init(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+      return
+    }
+
+    if (this.isLoading.value) {
+      return
+    }
+
+    try {
+      this.isLoading.value = true
+
+      this.compliance.value.companyId = this.companyId.value
+
+      await Promise.allSettled([
+        this.fetchCompany(),
+        this.compliance.value.init(),
+        this.fetchDirectors(),
+        this.fetchShareholders(),
+        this.fetchCompanyBanks(),
+      ])
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFetch()
+        error.handle()
+      }
+    } finally {
+      this.isLoading.value
+    }
+  }
+
+  async fetchCompany(): Promise<void> {
+    let repository = useCompanyStore()
+    let response = await repository.fetch(this.companyId.value)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.company.value = new Company(response)
+  }
+
+  async fetchDirectors(): Promise<void> {
+    let repository = useDirectorStore()
+    let response = await repository.fetchAllForCompany(this.companyId.value)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.directors.value = response.map((d: any) => {
+      return new Director(d)
+    })
+  }
+
+  async fetchShareholders(): Promise<void> {
+    let repository = useShareholderStore()
+    let response = await repository.fetchAllForCompany(this.companyId.value)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.shareholders.value = response.map((d: any) => {
+      return new Shareholder(d)
+    })
+  }
+
+  async fetchCompanyBanks(): Promise<void> {
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    let repository = useCompanyBankStore()
+    let response = await repository.fetchAll(filter)
+
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.companyBanks.value = response.data.map((d: any) => {
+      return new CompanyBank(d)
+    })
+  }
+
+  onShowSharePercentageClicked(): void {
+    this.isShowShareDistribution.value = !this.isShowShareDistribution.value
+  }
+
+  // getters
+  get noneText(): string {
+    return this.language.isMalay() ? "TIADA" : "NONE"
+  }
+
+  get businessDetailsLabel(): string {
+    return this.language.isMalay() ? "Butiran Perniagaan" : "Business Details"
+  }
+
+  get incorporatedAtLabel(): string {
+    return this.language.isMalay() ? "Tarikh Diperbadankan" : "Incorporation Date"
+  }
+
+  get incorporatedAtDate(): string {
+    return this.time.formatDateOnlyFull(this.company.value.incorporatedAt ?? "")
+  }
+
+  get hasAnnualReturnDue(): boolean {
+    return this.compliance.value.annualReturnYearsToLodge.length > 0
+  }
+
+  get annualReturnDues(): string {
+    let yearsDue = this.compliance.value.annualReturnYearsToLodge
+      .filter((year: number) => {
+        return year !== null && year !== undefined
+      })
+      .sort((a: number, b: number) => {
+        return a - b
+      })
+      .map((year: number) => {
+        return year.toString()
+      })
+
+    let joinedYears = StringUtil.oxfordJoin("&", yearsDue)
+
+    return this.language.isMalay() ? `Penyata Tahun Tertunggak: ${joinedYears}` : `Annual Returns Due: ${joinedYears}`
+  }
+
+  get businessAddressLabel(): string {
+    return this.language.isMalay() ? "Alamat Perniagaan" : "Business Address"
+  }
+
+  get businessAddress(): string {
+    return this.company.value.businessAddressLocation?.getMultilineAddress() ?? "No Business Address"
+  }
+
+  get registeredAddressLabel(): string {
+    return this.language.isMalay() ? "Alamat Berdaftar" : "Registered Address"
+  }
+
+  get registeredAddress(): string {
+    return this.company.value.registeredAddressLocation?.getMultilineAddress() ?? "No Registered Address"
+  }
+
+  get businessBranchesLabel(): string {
+    return this.language.isMalay() ? "Cawangan Perniagaan" : "Business Branch"
+  }
+
+  get branchAddresses(): string[] {
+    return this.company.value.branches
+      .filter((cb: CompanyBranch) => {
+        return cb.location !== null
+      })
+      .map((cb: CompanyBranch) => {
+        return cb.location?.getMultilineAddress() ?? ""
+      })
+  }
+
+  get bankDetailLabel(): string {
+    return this.language.isMalay() ? "Akaun Bank" : "Bank Accounts"
+  }
+
+  get bankDetails(): CompanyBank[] {
+    return this.companyBanks.value
+  }
+
+  get accountNumberLabel(): string {
+    return this.language.isMalay() ? "No. Akaun" : "Account Number"
+  }
+
+  get directorsLabel(): string {
+    return this.language.isMalay() ? "Lembaga Pengarah" : "Board of Directors"
+  }
+
+  get directorsDetails(): Director[] {
+    return ObjectUtil.sort<Director>(this.directors.value, "dateAppointed", "asc")
+  }
+
+  get shareholdersLabel(): string {
+    return this.language.isMalay() ? "Pemegang Saham" : "Board of Members"
+  }
+
+  get shareholdersDetails(): Shareholder[] {
+    return ObjectUtil.sort<Shareholder>(this.shareholders.value, "dateAppointed", "asc")
+  }
+
+  get nameLabel(): string {
+    return this.language.isMalay() ? "Nama" : "Name"
+  }
+
+  get emailLabel(): string {
+    return this.language.isMalay() ? "Alamat Emel" : "Email Address"
+  }
+
+  get phoneLabel(): string {
+    return this.language.isMalay() ? "No. Telefon" : "Contact Number"
+  }
+
+  get totalSharesLabel(): string {
+    return this.language.isMalay() ? "Jumlah Saham" : "Total Shares"
+  }
+
+  get ordinarySharesLabel(): string {
+    return this.language.isMalay() ? "Ordinary" : "Ordinary"
+  }
+
+  get preferenceSharesLabel(): string {
+    return this.language.isMalay() ? "Preference" : "Preference"
+  }
+
+  get shareDistributionChartOptions(): ChartOptions<"pie"> {
+    return {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+          },
+        },
+      },
+    }
+  }
+
+  get shareDistributionChartData(): ChartData<"pie"> {
+    return {
+      labels: this.shareholdersDetails.map((s: Shareholder) => {
+        return s.name
+      }),
+      datasets: [
+        {
+          backgroundColor: ["#491f4680", "#f6905580", "#0d6efd80", "#00683780"],
+          hoverOffset: 6,
+          data: this.shareholdersDetails.map((s: Shareholder) => {
+            return s.ordinaryShares + s.preferenceShares
+          }),
+        },
+      ],
+    }
+  }
+
+  get showDistributionLabel(): string {
+    if (this.isShowShareDistribution.value) {
+      return this.language.isMalay() ? "Tunjuk Butiran" : "Show Details"
+    }
+
+    return this.language.isMalay() ? "Tunjuk Percentage" : "Show Percentage"
+  }
+}
