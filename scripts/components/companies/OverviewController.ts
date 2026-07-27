@@ -24,6 +24,8 @@ export class OverviewController {
   emitEvents: any | null = null
 
   language = useLanguage()
+  time = useLocalTime()
+  dayjs = useDayjs()
 
   constructor(companyId: string, emitEvents: any) {
     this.setCompanyId(companyId)
@@ -130,6 +132,14 @@ export class OverviewController {
 
   get businessDetailsLabel(): string {
     return this.language.isMalay() ? "Butiran Perniagaan" : "Business Details"
+  }
+
+  get incorporatedAtLabel(): string {
+    return this.language.isMalay() ? "Tarikh Diperbadankan" : "Incorporation Date"
+  }
+
+  get incorporatedAtDate(): string {
+    return this.time.formatDateOnlyFull(this.company.value.incorporatedAt ?? "")
   }
 
   get businessAddressLabel(): string {

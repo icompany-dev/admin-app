@@ -5,6 +5,13 @@
       <table class="overview-table">
         <tbody>
           <tr>
+            <td>{{ controller.incorporatedAtLabel }}</td>
+            <td>:</td>
+            <td>
+              {{ controller.incorporatedAtDate }}
+            </td>
+          </tr>
+          <tr>
             <td>{{ controller.businessAddressLabel }}</td>
             <td>:</td>
             <td>

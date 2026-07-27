@@ -1,7 +1,36 @@
 import { useDayjs } from "#imports"
+import customParseFormat from "dayjs/plugin/customParseFormat"
 
 export function useLocalTime() {
   const dayjs = useDayjs()
+  dayjs.extend(customParseFormat)
+
+  const USER_DATE_FORMATS = [
+    "D MMM YYYY", // 30 Jun 2025
+    "D MMMM YYYY", // 30 June 2025
+    "D.M.YYYY", // 30.6.2025, 30.06.2025
+    "DD.MM.YYYY", // 30.06.2025
+    "D/M/YYYY", // 30/6/2025, 30/06/2025
+    "DD/MM/YYYY", // 30/06/2025
+    "YYYY-MM-DD", // Standard system date
+  ]
+
+  const parseInputDate = (date: string) => {
+    if (!date) {
+      return dayjs(invalidDateStringPlaceholder())
+    }
+
+    const d = dayjs(date)
+    if (d.isValid()) {
+      return d
+    }
+
+    return dayjs(date, USER_DATE_FORMATS)
+  }
+
+  const invalidDateStringPlaceholder = () => {
+    return ""
+  }
 
   const currentDateFull = () => {
     return dayjs().format("dddd, D MMMM YYYY")
@@ -16,86 +45,78 @@ export function useLocalTime() {
   }
 
   const currentDataTimeForSignature = () => {
-    return dayjs().format("D MMM YYYY - HH:MM:SS")
+    return dayjs().format("D MMM YYYY - HH:mm:ss")
   }
 
   const formatDayDateFull = (date: string) => {
-    return dayjs(date).format("dddd, D MMMM YYYY")
+    return parseInputDate(date).format("dddd, D MMMM YYYY")
   }
 
   const formatDayDateShort = (date: string) => {
-    return dayjs(date).format("ddd, D MMM YYYY")
+    return parseInputDate(date).format("ddd, D MMM YYYY")
   }
 
   const formatDateOnlyFull = (date: string) => {
-    return dayjs(date).format("D MMMM YYYY")
+    return parseInputDate(date).format("D MMMM YYYY")
   }
 
   const formatDateOnlyShort = (date: string) => {
-    return dayjs(date).format("D MMM YYYY")
+    return parseInputDate(date).format("D MMM YYYY")
   }
 
   const formatDateMonthOnly = (date: string) => {
-    return dayjs(date).format("MMM")
+    return parseInputDate(date).format("MMM")
   }
 
   const formatDateMonthOnlyFull = (date: string) => {
-    return dayjs(date).format("D MMMM")
+    return parseInputDate(date).format("D MMMM")
   }
 
   const formatDateOnly = (date: string) => {
-    return dayjs(date).format("D")
+    return parseInputDate(date).format("D")
   }
 
   const formatDateOnlySystem = (date: string) => {
-    return dayjs(date).format("YYYY-MM-DD")
+    return parseInputDate(date).format("YYYY-MM-DD")
   }
 
   const formatDateFullForEmail = (date: string) => {
-    return dayjs(date).format("DD/MM/YYYY HH:MM:SS")
+    return parseInputDate(date).format("DD/MM/YYYY HH:mm:ss")
   }
 
   const formatDateOnlyWithSlash = (date: string) => {
-    return dayjs(date).format("DD/MM/YYYY")
+    return parseInputDate(date).format("DD/MM/YYYY")
   }
 
   const formatYearOnly = (date: string) => {
-    return dayjs(date).format("YYYY")
+    return parseInputDate(date).format("YYYY")
   }
 
   const formatTimeOnly = (date: string) => {
-    return dayjs(date).format("h:mm a")
+    return parseInputDate(date).format("h:mm a")
   }
 
   const formatDateTimeShort = (date: string) => {
-    return dayjs(date).format("D MM YYYY h:mm a")
+    return parseInputDate(date).format("D MM YYYY h:mm a")
   }
 
   const isMorning = () => {
-    const now = dayjs()
-    const morningStartTime = now.hour(5).minute(0).second(0)
-    const morningEndTime = now.hour(12).minute(0).second(0)
-
-    return now.isAfter(morningStartTime) && now.isBefore(morningEndTime)
+    const hour = dayjs().hour()
+    return hour >= 5 && hour < 12
   }
 
   const isAfternoon = () => {
-    const now = dayjs()
-    const afternoonStartTime = now.hour(12).minute(0).second(0)
-    const afternoonEndTime = now.hour(19).minute(0).second(0)
-
-    return now.isAfter(afternoonStartTime) && now.isBefore(afternoonEndTime)
+    const hour = dayjs().hour()
+    return hour >= 12 && hour < 19
   }
 
   const isEvening = () => {
-    const now = dayjs()
-    const eveningStartTime = now.hour(19).minute(0).second(0)
-    const eveningEndTime = now.hour(5).minute(0).second(0).add(1, "day")
-
-    return now.isAfter(eveningStartTime) || now.isBefore(eveningEndTime)
+    const hour = dayjs().hour()
+    return hour >= 19 || hour < 5
   }
 
   return {
+    USER_DATE_FORMATS,
     currentDateFull,
     currentDateShort,
     currentTime,
