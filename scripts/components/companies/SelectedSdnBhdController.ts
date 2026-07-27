@@ -279,7 +279,7 @@ export class SelectedSdnBhdController {
   }
 
   get showDocument(): boolean {
-    return !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value)
+    return !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value) && !this.isOverview.value
   }
 
   get loaderLabel(): string {

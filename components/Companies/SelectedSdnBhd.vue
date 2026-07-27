@@ -152,7 +152,7 @@
           </div>
         </TransitionGroup>
       </div>
-      <TransitionGroup name="slide-left">
+      <TransitionGroup name="slide-left-leave-right">
         <div
           class="application-document-container"
           v-if="controller.showDocument"
