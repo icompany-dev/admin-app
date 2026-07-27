@@ -111,7 +111,13 @@
             {{ controller.accounting }}
           </div>
         </TransitionGroup>
-        <TransitionGroup name="fade">
+        <TransitionGroup name="slide-left">
+          <div
+            class="application-contents"
+            v-if="controller.isOverview.value"
+          >
+            <Overview :company-id="controller.companyId.value" />
+          </div>
           <div
             class="application-contents"
             v-if="controller.isBusiness.value"
@@ -174,6 +180,7 @@
   import ChangeOfBusinessBranchService from "../CompanyServices/ChangeOfBusinessBranchService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import Overview from "@/components/Companies/Overview.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"

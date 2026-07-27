@@ -1,0 +1,135 @@
+import { Error } from "~/scripts/library/Error"
+import { Company } from "~/scripts/models/Company"
+import { StringUtil } from "~/scripts/utils/String"
+import { Director } from "~/scripts/models/Director"
+import { Shareholder } from "~/scripts/models/Shareholder"
+import type { CompanyBank } from "~/scripts/models/CompanyBank"
+
+export class OverviewController {
+  companyId: Ref<string> = ref<string>("")
+  company: Ref<Company> = ref<Company>(new Company())
+
+  directors: Ref<Director[]> = ref<Director[]>([])
+  shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+
+  isLoading: Ref<boolean> = ref<boolean>(false)
+
+  emitEvents: any | null = null
+
+  language = useLanguage()
+
+  constructor(companyId: string, emitEvents: any) {
+    this.setCompanyId(companyId)
+    this.emitEvents = emitEvents
+  }
+
+  async setCompanyId(companyId: string): Promise<void> {
+    this.companyId.value = companyId
+
+    await this.init()
+  }
+
+  async init(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+      return
+    }
+
+    if (this.isLoading.value) {
+      return
+    }
+
+    try {
+      this.isLoading.value = true
+
+      await Promise.all([this.fetchCompany(), this.fetchDirectors(), this.fetchShareholders()])
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFetch()
+        error.handle()
+      }
+    } finally {
+      this.isLoading.value
+    }
+  }
+
+  async fetchCompany(): Promise<void> {
+    let repository = useCompanyStore()
+    let response = await repository.fetch(this.companyId.value)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.company.value = new Company(response)
+  }
+
+  async fetchDirectors(): Promise<void> {
+    let repository = useDirectorStore()
+    let response = await repository.fetchAllForCompany(this.companyId.value)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.directors.value = response.map((d: any) => {
+      return new Director(d)
+    })
+  }
+
+  async fetchShareholders(): Promise<void> {
+    let repository = useShareholderStore()
+    let response = await repository.fetchAllForCompany(this.companyId.value)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.shareholders.value = response.map((d: any) => {
+      return new Shareholder(d)
+    })
+  }
+
+  // getters
+  get noneText(): string {
+    return this.language.isMalay() ? "TIADA" : "NONE"
+  }
+
+  get businessDetailsLabel(): string {
+    return this.language.isMalay() ? "Butiran Perniagaan" : "Business Details"
+  }
+
+  get businessAddressLabel(): string {
+    return this.language.isMalay() ? "Alamat Perniagaan" : "Business Address"
+  }
+
+  get businessAddress(): string {
+    return this.company.value.businessAddressLocation?.getMultilineAddress() ?? "No Business Address"
+  }
+
+  get registeredAddressLabel(): string {
+    return this.language.isMalay() ? "Alamat Berdaftar" : "Registered Address"
+  }
+
+  get registeredAddress(): string {
+    return this.company.value.registeredAddressLocation?.getMultilineAddress() ?? "No Registered Address"
+  }
+
+  get businessBranchesLabel(): string {
+    return this.language.isMalay() ? "Cawangan Perniagaan" : "Business Branch"
+  }
+
+  get branchAddresses(): string[] {
+    return [] // need to pull the data
+  }
+
+  get bankDetailLabel(): string {
+    return this.language.isMalay() ? "Akaun Bank" : "Bank Accounts"
+  }
+
+  get bankDetails(): CompanyBank[] {
+    return []
+  }
+}
