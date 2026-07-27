@@ -35,5 +35,55 @@
         }
       }
     }
+
+    .human-details {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 3px;
+
+      .name {
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .human-detail {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 3px;
+      }
+
+      .email {
+        cursor: pointer;
+        color: var(--bs-icompany-blue); // connect to gmail
+        transition: all 0.7s ease;
+
+        &:hover {
+          font-weight: 600;
+        }
+      }
+
+      .phone {
+        cursor: pointer;
+        color: var(--bs-icompany-blue); // connect to sleekflow
+        transition: all 0.7s ease;
+
+        &:hover {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  ol {
+    padding-left: 15px;
+
+    li {
+      padding-left: 10px;
+      padding-bottom: 10px;
+    }
   }
 }

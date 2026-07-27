@@ -4,6 +4,7 @@ import { StringUtil } from "~/scripts/utils/String"
 import { Director } from "~/scripts/models/Director"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import type { CompanyBank } from "~/scripts/models/CompanyBank"
+import { ObjectUtil } from "~/scripts/utils/Object"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -131,5 +132,25 @@ export class OverviewController {
 
   get bankDetails(): CompanyBank[] {
     return []
+  }
+
+  get directorsLabel(): string {
+    return this.language.isMalay() ? "Lembaga Pengarah" : "Board of Directors"
+  }
+
+  get directorsDetails(): Director[] {
+    return ObjectUtil.sort<Director>(this.directors.value, "dateAppointed", "asc")
+  }
+
+  get nameLabel(): string {
+    return this.language.isMalay() ? "Nama" : "Name"
+  }
+
+  get emailLabel(): string {
+    return this.language.isMalay() ? "Alamat Emel" : "Email Address"
+  }
+
+  get phoneLabel(): string {
+    return this.language.isMalay() ? "No. Telefon" : "Contact Number"
   }
 }
