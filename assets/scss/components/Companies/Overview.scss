@@ -36,6 +36,20 @@
       }
     }
 
+    .company-overview-section-split {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 30px;
+      width: 100%;
+
+      .split-section-item {
+        flex: 1;
+      }
+    }
+
     .human-details {
       display: flex;
       flex-direction: column;

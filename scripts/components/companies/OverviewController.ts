@@ -5,6 +5,7 @@ import { Director } from "~/scripts/models/Director"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import type { CompanyBank } from "~/scripts/models/CompanyBank"
 import { ObjectUtil } from "~/scripts/utils/Object"
+import type { ChartData, ChartOptions } from "chart.js"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -172,5 +173,38 @@ export class OverviewController {
 
   get preferenceSharesLabel(): string {
     return this.language.isMalay() ? "Preference" : "Preference"
+  }
+
+  get shareDistributionChartOptions(): ChartOptions<"pie"> {
+    return {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: {
+          position: "bottom",
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+          },
+        },
+      },
+    }
+  }
+
+  get shareDistributionChartData(): ChartData<"pie"> {
+    return {
+      labels: this.shareholdersDetails.map((s: Shareholder) => {
+        return s.name
+      }),
+      datasets: [
+        {
+          backgroundColor: ["#491f4680", "#f6905580", "#0d6efd80", "#00683780"],
+          hoverOffset: 6,
+          data: this.shareholdersDetails.map((s: Shareholder) => {
+            return s.ordinaryShares + s.preferenceShares
+          }),
+        },
+      ],
+    }
   }
 }
