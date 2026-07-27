@@ -1,3 +1,5 @@
+import { StringUtil } from "~/scripts/utils/String"
+
 export class CompanyBankSignatory {
   id: string = ""
   name: string | null = null
@@ -62,5 +64,14 @@ export class CompanyBankSignatory {
       identification: this.identification,
       role: this.role,
     }
+  }
+
+  canCreate(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.name) &&
+      !StringUtil.isNullOrEmpty(this.type) &&
+      !StringUtil.isNullOrEmpty(this.identification) &&
+      !StringUtil.isNullOrEmpty(this.role)
+    )
   }
 }

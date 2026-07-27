@@ -101,6 +101,22 @@
     }
   }
 
+  .bank-details {
+    margin: 0;
+
+    .bank-account-detail {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 3px;
+
+      .branch-details {
+        font-size: 12px;
+      }
+    }
+  }
+
   .action-link-container {
     width: 100%;
 

@@ -36,6 +36,29 @@
             <td>:</td>
             <td>
               <span v-if="controller.bankDetails.length <= 0">{{ controller.noneText }}</span>
+              <ol
+                class="bank-details"
+                v-if="controller.bankDetails.length > 0"
+              >
+                <li
+                  v-for="(companyBank, i) in controller.bankDetails"
+                  :key="i"
+                >
+                  <div class="bank-account-detail">
+                    <div class="name">
+                      <b>{{ companyBank.bank.name }}</b>
+                    </div>
+                    <div class="branch-details">
+                      {{ companyBank.bankBranch.name }}
+                      <br />
+                      {{ companyBank.bankBranch.address }}
+                    </div>
+                    <div class="account-number">
+                      {{ controller.accountNumberLabel }}: {{ companyBank.accountNumber }}
+                    </div>
+                  </div>
+                </li>
+              </ol>
             </td>
           </tr>
         </tbody>
@@ -113,9 +136,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="company-overview-section">
-      <div class="overview-title">{{ controller.shareholdersLabel }}</div>
     </div>
   </div>
 </template>

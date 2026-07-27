@@ -3,6 +3,8 @@ import { Company } from "./Company"
 import { StringUtil } from "../utils/String"
 import { Bank } from "./Bank"
 import { BankBranch } from "~/scripts/models/BankBranch"
+import { Error } from "../library/Error"
+import type { CompanyBankSignatory } from "./CompanyBankSignatory"
 
 export class CompanyBank implements IModel<CompanyBank> {
   id: string = ""
@@ -16,6 +18,8 @@ export class CompanyBank implements IModel<CompanyBank> {
   status: string = ""
   createdAt: string | null = null
   updatedAt: string | null = null
+
+  signatories: CompanyBankSignatory[] = []
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -32,6 +36,18 @@ export class CompanyBank implements IModel<CompanyBank> {
   getRequestBody(): object {
     return {
       account_number: this.accountNumber,
+    }
+  }
+
+  getRequestBodyToCreate(): object {
+    return {
+      company_id: this.companyId,
+      bank_id: this.bankId,
+      bank_branch_id: this.bankBranchId,
+      account_number: this.accountNumber,
+      signatories: this.signatories.map((cbs: CompanyBankSignatory) => {
+        return cbs.getRequestBody()
+      }),
     }
   }
 
@@ -61,6 +77,29 @@ export class CompanyBank implements IModel<CompanyBank> {
     this.status = data.status
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
+  }
+
+  canCreate(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.companyId) &&
+      !StringUtil.isNullOrEmpty(this.bankId) &&
+      !StringUtil.isNullOrEmpty(this.bankBranchId) &&
+      !StringUtil.isNullOrEmpty(this.accountNumber) &&
+      this.signatories.length > 0 &&
+      this.signatories.every((cbs: CompanyBankSignatory) => {
+        return cbs.canCreate()
+      })
+    )
+  }
+
+  async create(repository: ReturnType<typeof useCompanyBankStore>): Promise<void> {
+    if (!this.canCreate()) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    await repository.create(this.getRequestBodyToCreate())
   }
 
   async update(repository: ReturnType<typeof useCompanyBankStore>): Promise<void> {

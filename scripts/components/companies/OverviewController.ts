@@ -3,9 +3,10 @@ import { Company } from "~/scripts/models/Company"
 import { StringUtil } from "~/scripts/utils/String"
 import { Director } from "~/scripts/models/Director"
 import { Shareholder } from "~/scripts/models/Shareholder"
-import type { CompanyBank } from "~/scripts/models/CompanyBank"
+import { CompanyBank } from "~/scripts/models/CompanyBank"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import type { ChartData, ChartOptions } from "chart.js"
+import { Filter } from "~/scripts/library/Filter"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -13,6 +14,8 @@ export class OverviewController {
 
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+
+  companyBanks: Ref<CompanyBank[]> = ref<CompanyBank[]>([])
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isShowShareDistribution: Ref<boolean> = ref<boolean>(false)
@@ -47,7 +50,12 @@ export class OverviewController {
     try {
       this.isLoading.value = true
 
-      await Promise.all([this.fetchCompany(), this.fetchDirectors(), this.fetchShareholders()])
+      await Promise.allSettled([
+        this.fetchCompany(),
+        this.fetchDirectors(),
+        this.fetchShareholders(),
+        this.fetchCompanyBanks(),
+      ])
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -95,6 +103,21 @@ export class OverviewController {
     })
   }
 
+  async fetchCompanyBanks(): Promise<void> {
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    let repository = useCompanyBankStore()
+    let response = await repository.fetchAll(filter)
+
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.companyBanks.value = response.data.map((d: any) => {
+      return new CompanyBank(d)
+    })
+  }
+
   onShowSharePercentageClicked(): void {
     this.isShowShareDistribution.value = !this.isShowShareDistribution.value
   }
@@ -137,7 +160,11 @@ export class OverviewController {
   }
 
   get bankDetails(): CompanyBank[] {
-    return []
+    return this.companyBanks.value
+  }
+
+  get accountNumberLabel(): string {
+    return this.language.isMalay() ? "No. Akaun" : "Account Number"
   }
 
   get directorsLabel(): string {
