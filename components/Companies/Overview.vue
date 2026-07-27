@@ -29,6 +29,14 @@
             <td>:</td>
             <td>
               <span v-if="controller.branchAddresses.length <= 0">{{ controller.noneText }}</span>
+              <ol>
+                <li v-for="(branchAddress, i) in controller.branchAddresses">
+                  <span
+                    class="address-span"
+                    v-html="branchAddress"
+                  />
+                </li>
+              </ol>
             </td>
           </tr>
           <tr>

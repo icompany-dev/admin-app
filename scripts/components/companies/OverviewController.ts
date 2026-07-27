@@ -7,6 +7,7 @@ import { CompanyBank } from "~/scripts/models/CompanyBank"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import type { ChartData, ChartOptions } from "chart.js"
 import { Filter } from "~/scripts/library/Filter"
+import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -152,7 +153,13 @@ export class OverviewController {
   }
 
   get branchAddresses(): string[] {
-    return [] // need to pull the data
+    return this.company.value.branches
+      .filter((cb: CompanyBranch) => {
+        return cb.location !== null
+      })
+      .map((cb: CompanyBranch) => {
+        return cb.location?.getMultilineAddress() ?? ""
+      })
   }
 
   get bankDetailLabel(): string {
