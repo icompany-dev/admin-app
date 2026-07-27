@@ -42,31 +42,31 @@
       </table>
     </div>
     <div class="company-overview-section">
-      <div class="overview-title">{{ controller.directorsLabel }}</div>
-      <ol>
-        <li
-          v-for="(director, i) in controller.directorsDetails"
-          :key="i"
-        >
-          <div class="human-details">
-            <div class="name">{{ director.name }}</div>
-            <div class="human-detail">
-              <i class="fa-regular fa-envelope"></i>
-              <span class="email">{{ director.email }}</span>
-            </div>
-            <div class="human-detail">
-              <i class="fa-brands fa-whatsapp" />
-              <span class="phone">{{ director.phone }}</span>
-            </div>
-          </div>
-        </li>
-      </ol>
-    </div>
-    <div class="company-overview-section">
-      <div class="overview-title">{{ controller.shareholdersLabel }}</div>
       <div class="company-overview-section-split">
         <div class="split-section-item">
+          <div class="overview-title">{{ controller.directorsLabel }}</div>
           <ol>
+            <li
+              v-for="(director, i) in controller.directorsDetails"
+              :key="i"
+            >
+              <div class="human-details">
+                <div class="name">{{ director.name }}</div>
+                <div class="human-detail">
+                  <i class="fa-regular fa-envelope"></i>
+                  <span class="email">{{ director.email }}</span>
+                </div>
+                <div class="human-detail">
+                  <i class="fa-brands fa-whatsapp" />
+                  <span class="phone">{{ director.phone }}</span>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+        <div class="split-section-item">
+          <div class="overview-title">{{ controller.shareholdersLabel }}</div>
+          <ol v-if="!controller.isShowShareDistribution.value">
             <li
               v-for="(shareholder, i) in controller.shareholdersDetails"
               :key="i"
@@ -94,16 +94,28 @@
               </div>
             </li>
           </ol>
-        </div>
-        <div class="split-section-item">
-          <div class="chart-wrapper">
+          <div
+            class="chart-wrapper"
+            v-if="controller.isShowShareDistribution.value"
+          >
             <Pie
               :data="controller.shareDistributionChartData"
               :options="controller.shareDistributionChartOptions"
             />
           </div>
+          <div class="action-link-container right">
+            <span
+              class="action-link"
+              @click="controller.onShowSharePercentageClicked()"
+            >
+              {{ controller.showDistributionLabel }}
+            </span>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="company-overview-section">
+      <div class="overview-title">{{ controller.shareholdersLabel }}</div>
     </div>
   </div>
 </template>

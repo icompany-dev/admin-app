@@ -100,4 +100,23 @@
       padding-bottom: 10px;
     }
   }
+
+  .action-link-container {
+    width: 100%;
+
+    &.right {
+      text-align: right;
+    }
+
+    .action-link {
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--bs-icompany-purple);
+      transition: all 0.7s ease;
+
+      &:hover {
+        font-weight: 600;
+      }
+    }
+  }
 }

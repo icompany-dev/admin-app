@@ -15,6 +15,7 @@ export class OverviewController {
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+  isShowShareDistribution: Ref<boolean> = ref<boolean>(false)
 
   emitEvents: any | null = null
 
@@ -92,6 +93,10 @@ export class OverviewController {
     this.shareholders.value = response.map((d: any) => {
       return new Shareholder(d)
     })
+  }
+
+  onShowSharePercentageClicked(): void {
+    this.isShowShareDistribution.value = !this.isShowShareDistribution.value
   }
 
   // getters
@@ -206,5 +211,13 @@ export class OverviewController {
         },
       ],
     }
+  }
+
+  get showDistributionLabel(): string {
+    if (this.isShowShareDistribution.value) {
+      return this.language.isMalay() ? "Tunjuk Butiran" : "Show Details"
+    }
+
+    return this.language.isMalay() ? "Tunjuk Percentage" : "Show Percentage"
   }
 }
