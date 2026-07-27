@@ -1,4 +1,5 @@
 import { Error } from "~/scripts/library/Error"
+import { Compliance } from "~/scripts/library/Compliance"
 import { Company } from "~/scripts/models/Company"
 import { StringUtil } from "~/scripts/utils/String"
 import { Director } from "~/scripts/models/Director"
@@ -20,6 +21,8 @@ export class OverviewController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isShowShareDistribution: Ref<boolean> = ref<boolean>(false)
+
+  compliance = ref<Compliance>(new Compliance(""))
 
   emitEvents: any | null = null
 
@@ -53,8 +56,11 @@ export class OverviewController {
     try {
       this.isLoading.value = true
 
+      this.compliance.value.companyId = this.companyId.value
+
       await Promise.allSettled([
         this.fetchCompany(),
+        this.compliance.value.init(),
         this.fetchDirectors(),
         this.fetchShareholders(),
         this.fetchCompanyBanks(),
@@ -140,6 +146,27 @@ export class OverviewController {
 
   get incorporatedAtDate(): string {
     return this.time.formatDateOnlyFull(this.company.value.incorporatedAt ?? "")
+  }
+
+  get hasAnnualReturnDue(): boolean {
+    return this.compliance.value.annualReturnYearsToLodge.length > 0
+  }
+
+  get annualReturnDues(): string {
+    let yearsDue = this.compliance.value.annualReturnYearsToLodge
+      .filter((year: number) => {
+        return year !== null && year !== undefined
+      })
+      .sort((a: number, b: number) => {
+        return a - b
+      })
+      .map((year: number) => {
+        return year.toString()
+      })
+
+    let joinedYears = StringUtil.oxfordJoin("&", yearsDue)
+
+    return this.language.isMalay() ? `Penyata Tahun Tertunggak: ${joinedYears}` : `Annual Returns Due: ${joinedYears}`
   }
 
   get businessAddressLabel(): string {

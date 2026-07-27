@@ -9,6 +9,12 @@
             <td>:</td>
             <td>
               {{ controller.incorporatedAtDate }}
+              <div
+                class="annual-returs-due"
+                v-if="controller.hasAnnualReturnDue"
+              >
+                {{ controller.annualReturnDues }}
+              </div>
             </td>
           </tr>
           <tr>
