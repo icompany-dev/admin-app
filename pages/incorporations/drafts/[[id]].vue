@@ -10,7 +10,7 @@
         @search="pageController.onSearchInput($event)"
         @order="pageController.onSortOrderChanged($event)"
         @clearSearch="pageController.onSearchInput('')"
-        @unMinimize="pageController.onShowAllClicked()"
+        @unMinimize="pageController.onClearSelected()"
       />
     </div>
     <Drafts

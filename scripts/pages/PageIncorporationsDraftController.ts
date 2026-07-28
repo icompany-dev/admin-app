@@ -3,6 +3,7 @@ import { PageIncorporationsController } from "./PageIncorporationsController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
 import { PropsIncorporationsDraft } from "~/scripts/props/PropsIncorporationsDraft"
 import { PropsIncorporationApplication } from "../props/PropsIncorporationApplication"
+import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props/PropsTableFilter"
 
 export class PageIncorporationsDraftController extends PageIncorporationsController {
   showAll: Ref<boolean> = ref<boolean>(true)
@@ -55,6 +56,10 @@ export class PageIncorporationsDraftController extends PageIncorporationsControl
     this.showSelected.value = true
   }
 
+  onClearSelected(): void {
+    this.router.push({ path: "/incorporations/drafts" })
+  }
+
   get breadCrumbProps(): PropsBreadCrumb {
     if (this.showSelected.value) {
       return new PropsBreadCrumb([
@@ -76,5 +81,21 @@ export class PageIncorporationsDraftController extends PageIncorporationsControl
 
   get applicationProps(): PropsIncorporationApplication {
     return new PropsIncorporationApplication(this.selectedApplicationId.value)
+  }
+
+  override get tableFilterProps(): PropsTableFilter {
+    if (this.showSelected.value) {
+      return new PropsTableFilter(false, "", false, [], false, new PropsDataDateFilter("", "", ""), true)
+    }
+
+    return new PropsTableFilter(
+      true,
+      this.searchText.value,
+      true,
+      this.propsDataOrders,
+      false,
+      new PropsDataDateFilter("", "", ""),
+      false
+    )
   }
 }
