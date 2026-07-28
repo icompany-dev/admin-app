@@ -17,11 +17,14 @@ export class DraftsController {
   language = useLanguage()
 
   constructor(props: PropsIncorporationsDraft, emitEvents: any) {
+    this.setDataFromProps(props)
     this.emitEvents = emitEvents
   }
 
-  setDataFromProps(props: PropsIncorporationsDraft): void {
+  async setDataFromProps(props: PropsIncorporationsDraft): Promise<void> {
     this.searchText.value = props.searchText
+
+    await this.init()
   }
 
   async init(): Promise<void> {

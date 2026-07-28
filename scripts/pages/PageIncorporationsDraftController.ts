@@ -1,6 +1,7 @@
 import { StringUtil } from "../utils/String"
 import { PageIncorporationsController } from "./PageIncorporationsController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
+import { PropsIncorporationsDraft } from "~/scripts/props/PropsIncorporationsDraft"
 
 export class PageIncorporationsDraftController extends PageIncorporationsController {
   showAll: Ref<boolean> = ref<boolean>(true)
@@ -66,5 +67,9 @@ export class PageIncorporationsDraftController extends PageIncorporationsControl
       new PropsBreadCrumbItem("New Incorporations", ""),
       new PropsBreadCrumbItem("Drafts", ""),
     ])
+  }
+
+  get draftsProps(): PropsIncorporationsDraft {
+    return new PropsIncorporationsDraft(this.searchText.value)
   }
 }

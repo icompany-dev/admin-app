@@ -13,12 +13,14 @@
         @unMinimize="pageController.onShowAllClicked()"
       />
     </div>
+    <Drafts v-bind="pageController.draftsProps" />
   </div>
 </template>
 
 <script setup lang="ts">
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
-  import TableFilters from "~/components/TableData/TableFilters.vue"
+  import Drafts from "@/components/Incorporations/Drafts.vue"
+  import TableFilters from "@/components/TableData/TableFilters.vue"
   import { PageIncorporationsDraftController } from "~/scripts/pages/PageIncorporationsDraftController"
 
   const pageController = new PageIncorporationsDraftController()
