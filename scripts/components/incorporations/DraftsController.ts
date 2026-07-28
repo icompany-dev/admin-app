@@ -60,13 +60,13 @@ export class DraftsController {
   }
 
   get noRecordTitle(): string {
-    return this.language.isMalay() ? `Tiada Syarikat Ditemui.` : `No Company Found`
+    return this.language.isMalay() ? `Tiada Permohonan Ditemui.` : `No Application Found`
   }
 
   get noRecordSubtitle(): string {
     if (!StringUtil.isNullOrEmpty(this.tableDataFetcher.value.filter.searchText)) {
       return this.language.isMalay()
-        ? `Tiada syarikat ditemui dengan kata kunci tersebut.`
+        ? `Tiada permohonan ditemui dengan kata kunci tersebut.`
         : `Use a different keyword and search again.`
     }
 
