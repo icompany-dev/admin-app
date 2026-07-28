@@ -2,7 +2,7 @@
   <div id="incorporations-drafts">
     <div
       class="loader-container"
-      v-if="controller.isLoading.value"
+      v-if="controller.tableDataFetcher.value.isLoading"
     >
       <LoaderPrepare
         :label="controller.loaderLabel"
@@ -11,11 +11,16 @@
     </div>
     <div
       class="applications"
-      v-if="!controller.isLoading.value"
+      v-if="!controller.tableDataFetcher.value.isLoading"
     >
+      <NoRecord
+        v-if="controller.tableDataFetcher.value.hasNoRecord"
+        :title="controller.noRecordTitle"
+        :subtitle="controller.noRecordSubtitle"
+      />
       <div
         class="application"
-        v-for="(application, i) in controller.applications.value"
+        v-for="(application, i) in controller.tableDataFetcher.value.data"
         :key="i"
       >
         {{ application }}
@@ -26,6 +31,7 @@
 
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import NoRecord from "@/components/Placeholders/NoRecord.vue"
   import { DraftsController } from "~/scripts/components/incorporations/DraftsController"
   import type { IPropsIncorporationsDraft } from "~/scripts/props/PropsIncorporationsDraft"
 

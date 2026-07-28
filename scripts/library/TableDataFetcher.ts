@@ -59,4 +59,8 @@ export class TableDataFetcher<T> {
   get tablePaginationProps(): PropsTablePagination {
     return new PropsTablePagination(this.filter)
   }
+
+  get hasNoRecord(): boolean {
+    return this.data.length <= 0
+  }
 }
