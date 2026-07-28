@@ -14,20 +14,41 @@
         <div class="applicant-name">//</div>
       </div>
     </div>
-    <ServiceApplication v-bind="controller.serviceApplicationProps" />
+    <div class="application-details">
+      <ServiceApplication v-bind="controller.serviceApplicationProps" />
+      <div class="document-display">
+        <component
+          ref="documentRef"
+          :is="activeDocumentComponent"
+          :application-id="controller.applicationId.value"
+          :target-id="controller.paymentOrderId.value"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
+  import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
+  import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
   const props = defineProps<IPropsIncorporationApplication>()
 
   const emit = defineEmits(["back"])
 
+  const componentMap: Record<string, any> = {
+    [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
+  }
+
   const controller = new ApplicationController(props, emit)
+
+  const activeDocumentComponent = computed(() => {
+    const target = controller.selectedDocumentTarget.value
+    return target && componentMap[target] ? componentMap[target] : null
+  })
 
   watch(
     () => props,

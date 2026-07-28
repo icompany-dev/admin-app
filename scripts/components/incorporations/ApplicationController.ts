@@ -6,6 +6,7 @@ import { PropsIncorporationApplication } from "~/scripts/props/PropsIncorporatio
 import { StringUtil } from "~/scripts/utils/String"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
 import { PropsShipApplication } from "~/scripts/props/PropsShipApplication"
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -31,6 +32,8 @@ export class ApplicationController {
   language = useLanguage()
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
 
   constructor(props: PropsIncorporationApplication, emitEvents: any) {
     this.setDataFromProps(props)
