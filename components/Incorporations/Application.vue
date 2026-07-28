@@ -1,36 +1,48 @@
 <template>
   <div id="incorporations-application">
-    <div class="application-summary">
-      <div class="proposed-name">
-        {{ controller.application.value.getName() }}
-        <span
-          class="name-approved"
-          v-if="controller.isNameApproved"
-        >
-          <i class="fa-solid fa-circle-check" />
-        </span>
-      </div>
-      <div class="applicant-details">
-        <div class="applicant-name">//</div>
-      </div>
+    <div
+      class="loader-container"
+      v-if="controller.isLoading.value"
+    >
+      <LoaderPrepare
+        :label="controller.loaderLabel"
+        :sublabel="controller.loaderSublabel"
+      />
     </div>
-    <div class="application-details">
-      <ServiceApplication v-bind="controller.serviceApplicationProps" />
-      <div class="document-display">
-        <component
-          ref="documentRef"
-          :is="activeDocumentComponent"
-          :application-id="controller.applicationId.value"
-          :target-id="controller.paymentOrderId.value"
-        />
+    <template v-if="!controller.isLoading.value">
+      <div class="application-summary">
+        <div class="proposed-name">
+          {{ controller.application.value.getName() }}
+          <span
+            class="name-approved"
+            v-if="controller.isNameApproved"
+          >
+            <i class="fa-solid fa-circle-check" />
+          </span>
+        </div>
+        <div class="applicant-details">
+          <div class="applicant-name">//</div>
+        </div>
       </div>
-    </div>
+      <div class="application-details">
+        <ServiceApplication v-bind="controller.serviceApplicationProps" />
+        <div class="document-display">
+          <component
+            ref="documentRef"
+            :is="activeDocumentComponent"
+            :application-id="controller.applicationId.value"
+            :target-id="controller.paymentOrderId.value"
+          />
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-  import ServiceApplication from "@/components/Services/ServiceApplication.vue"
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
+  import ServiceApplication from "@/components/Services/ServiceApplication.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"

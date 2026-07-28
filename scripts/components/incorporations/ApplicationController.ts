@@ -109,6 +109,14 @@ export class ApplicationController {
   }
 
   // getters
+  get loaderLabel(): string {
+    return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
+  }
+
+  get loaderSublabel(): string {
+    return this.language.isMalay() ? "Permohonan" : "Application"
+  }
+
   get serviceName(): string {
     return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
   }

@@ -21,6 +21,11 @@
       font-size: 1.5rem;
       font-weight: 600;
       letter-spacing: 0.1pt;
+
+      .name-approved {
+        color: var(--bs-icompany-green);
+        font-size: 1.1rem;
+      }
     }
   }
 
