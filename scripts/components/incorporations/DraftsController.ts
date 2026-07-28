@@ -1,3 +1,4 @@
+import { StatusConstants } from "~/scripts/constants/Status"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
@@ -34,6 +35,40 @@ export class DraftsController {
   async init(): Promise<void> {
     this.tableDataFetcher.value.filter = this.filter
     await this.tableDataFetcher.value.fetchData()
+  }
+
+  applicationDate(application: ApplicationIncorporate): string {
+    let time = useLocalTime()
+
+    return time.formatDateTimeFull(application.createdAt)
+  }
+
+  applicationStatus(application: ApplicationIncorporate): string {
+    switch (application.status) {
+      case StatusConstants.DRAFT:
+        return this.language.isMalay() ? "Belum Dibayar" : "Pending Payment"
+      case StatusConstants.PAID:
+        return this.language.isMalay() ? "Bayaran Diterima" : "Payment Received"
+      case StatusConstants.NAME_REJECTED:
+        return this.language.isMalay() ? "Cadangan Nama Ditolak" : "Proposed Name Rejected"
+    }
+
+    return application.status
+  }
+
+  applicationStatusClass(application: ApplicationIncorporate): string {
+    switch (application.status) {
+      case StatusConstants.DRAFT:
+        return "draft"
+      case StatusConstants.PAID:
+        return "info"
+      case StatusConstants.NAME_REJECTED:
+        return "danger"
+      case StatusConstants.APPROVED:
+        return "success"
+    }
+
+    return "info"
   }
 
   // getters

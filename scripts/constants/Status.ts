@@ -11,7 +11,7 @@ export class StatusConstants {
   static EXTENDED: string = "extended"
   static FAILED: string = "failed"
   static ISSUED: string = "issued"
-  static NAME_REJECTED: string = "name-rejected"
+  static NAME_REJECTED: string = "name-reject"
   static NOTIFIED: string = "notified"
   static ONGOING: string = "ongoing"
   static OUTCOME: string = "outcome"

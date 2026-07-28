@@ -259,7 +259,7 @@ export class ApplicationIncorporate implements IApplication {
 
   async createOrUpdateNamesReservations(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<void> {
     if (!this.canSubmitNameReservation()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -268,7 +268,7 @@ export class ApplicationIncorporate implements IApplication {
     if (StringUtil.isNullOrEmpty(this.id)) {
       let response = await repository.createNameReservations(data)
       if (repository.error !== null) {
-        let error: Error = new Error("", "")
+        let error: Error = new Error()
         error.setForCUD()
         throw error
       }
@@ -279,7 +279,7 @@ export class ApplicationIncorporate implements IApplication {
     } else {
       let response = await repository.updateNameReservations(this.id, data)
       if (repository.error !== null) {
-        let error: Error = new Error("", "")
+        let error: Error = new Error()
         error.setForCUD()
         throw error
       }
@@ -312,7 +312,7 @@ export class ApplicationIncorporate implements IApplication {
     repository: ReturnType<typeof useApplicationIncorporateStore>
   ): Promise<void> {
     if (!this.canSubmitBusinessDescriptionAndMsicCodes(msicCodeIds)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -320,7 +320,7 @@ export class ApplicationIncorporate implements IApplication {
     let data = this.getRequestBodyForBusinessDescriptionAndMsicCodes(msicCodeIds)
     let response = await repository.updateDescriptionMsicCodes(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -358,7 +358,7 @@ export class ApplicationIncorporate implements IApplication {
 
   async updateBusinessAddress(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<void> {
     if (!this.canSubmitBusinessAddress()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -366,7 +366,7 @@ export class ApplicationIncorporate implements IApplication {
     let data = this.getRequestBodyForBusinessAddress()
     let response = await repository.updateBusinessAddress(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -376,14 +376,14 @@ export class ApplicationIncorporate implements IApplication {
 
   async delete(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     await repository.remove(this.id)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

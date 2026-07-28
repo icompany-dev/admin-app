@@ -100,6 +100,10 @@ export function useLocalTime() {
     return parseInputDate(date).format("D MM YYYY h:mm a")
   }
 
+  const formatDateTimeFull = (date: string) => {
+    return parseInputDate(date).format("D MMMM YYYY h:mm A")
+  }
+
   const isMorning = () => {
     const hour = dayjs().hour()
     return hour >= 5 && hour < 12
@@ -134,6 +138,7 @@ export function useLocalTime() {
     formatYearOnly,
     formatTimeOnly,
     formatDateTimeShort,
+    formatDateTimeFull,
     isMorning,
     isAfternoon,
     isEvening,

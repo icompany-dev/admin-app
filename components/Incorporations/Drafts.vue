@@ -23,7 +23,21 @@
         v-for="(application, i) in controller.tableDataFetcher.value.data"
         :key="i"
       >
-        {{ application }}
+        <div class="application-details">
+          <div class="proposed-name">
+            {{ application.getName() }}
+          </div>
+          <div class="application-date">
+            {{ controller.applicationDate(application) }}
+          </div>
+          <div
+            class="application-status"
+            :class="controller.applicationStatusClass(application)"
+          >
+            {{ controller.applicationStatus(application) }}
+          </div>
+        </div>
+        <div class="application-actions">//</div>
       </div>
     </div>
   </div>
