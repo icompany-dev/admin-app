@@ -16,6 +16,7 @@ export class DraftsController {
   emitEvents: any | null = null
 
   searchText: Ref<string | null> = ref<string | null>(null)
+  isIncludeDemo: Ref<boolean> = ref<boolean>(false)
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
@@ -28,6 +29,7 @@ export class DraftsController {
 
   async setDataFromProps(props: PropsIncorporationsDraft): Promise<void> {
     this.searchText.value = props.searchText
+    this.isIncludeDemo.value = props.isIncludeDemo
 
     await this.init()
   }
@@ -83,6 +85,7 @@ export class DraftsController {
     filter.takeAll = false
     filter.sortOrder = "desc"
     filter.orderBy = "created_at"
+    filter.includeTestAccount = this.isIncludeDemo.value
 
     if (!StringUtil.isNullOrEmpty(this.searchText.value)) {
       filter.searchText = this.searchText.value

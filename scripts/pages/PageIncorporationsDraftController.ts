@@ -76,7 +76,7 @@ export class PageIncorporationsDraftController extends PageIncorporationsControl
   }
 
   get draftsProps(): PropsIncorporationsDraft {
-    return new PropsIncorporationsDraft(this.searchText.value)
+    return new PropsIncorporationsDraft(this.searchText.value, this.isIncludeDemo.value)
   }
 
   get applicationProps(): PropsIncorporationApplication {
@@ -87,7 +87,6 @@ export class PageIncorporationsDraftController extends PageIncorporationsControl
     if (this.showSelected.value) {
       return new PropsTableFilter(false, "", false, [], false, new PropsDataDateFilter("", "", ""), true)
     }
-
     return new PropsTableFilter(
       true,
       this.searchText.value,
