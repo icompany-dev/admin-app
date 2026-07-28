@@ -21,6 +21,7 @@ export class ReservedNameForNewSdnBhdController extends BasePopupController {
 
   setApplicationNameReservation(applicationNameReservation: ApplicationNameReservation): void {
     this.applicationNameReservation.value = new ApplicationNameReservation(applicationNameReservation)
+    this.applicationNameReservation.value.submittedAt = this.dateValue.value
   }
 
   onDateChanged(): void {
