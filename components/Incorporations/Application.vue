@@ -174,12 +174,18 @@
         </div>
       </div>
     </template>
+    <ReservedNameForNewSdnBhd
+      ref="nameReservedPopup"
+      :application="controller.applicationNameReservation.value"
+      @proceed="controller.onProceedSubmitNameReservation($event)"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
@@ -194,6 +200,8 @@
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 
+  const nameReservedPopup = ref(null)
+
   const controller = new ApplicationController(props, emit)
 
   const activeDocumentComponent = computed(() => {
@@ -207,6 +215,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    nameReservedPopup,
+    (newVal) => {
+      controller.setNameReservedPopup(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

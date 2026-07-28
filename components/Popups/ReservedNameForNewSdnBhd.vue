@@ -11,7 +11,12 @@
         />
         <div class="form-group">
           <span class="label">{{ controller.nameLabel }}</span>
-          <span>{{ controller.applicationNameReservation.value.name }}</span>
+          <input
+            type="text"
+            class="form-control"
+            v-model="controller.applicationNameReservation.value.name"
+            readonly
+          />
         </div>
         <div class="form-group">
           <span class="label">{{ controller.submittedAtLabel }}</span>
@@ -48,6 +53,7 @@
         </button>
         <button
           class="btn btn-submit"
+          :disabled="!controller.canProceed"
           @click="controller.onProceedClicked()"
         >
           {{ controller.proceedLabel }}

@@ -15,6 +15,8 @@ export class ReservedNameForNewSdnBhdController extends BasePopupController {
   constructor(applicationNameReservation: ApplicationNameReservation, emitEvents: any) {
     super(emitEvents)
     this.setApplicationNameReservation(applicationNameReservation)
+
+    this.isCompliance.value = false
   }
 
   setApplicationNameReservation(applicationNameReservation: ApplicationNameReservation): void {

@@ -33,12 +33,17 @@ export class ApplicationController {
   application: Ref<ApplicationIncorporate> = ref<ApplicationIncorporate>(new ApplicationIncorporate())
   applicant: Ref<User> = ref<User>(new User())
 
+  applicationNameReservation: Ref<ApplicationNameReservation> = ref<ApplicationNameReservation>(
+    new ApplicationNameReservation()
+  )
+
   paymentOrderId: Ref<string> = ref<string>("")
   paymentOrder: Ref<PaymentOrder> = ref<PaymentOrder>(new PaymentOrder())
 
   emitEvents: any | null = null
 
   uploadDocumentPopup: any | null = null
+  nameReservedPopup: any | null = null
   nameReservationRejectedPopup: any | null = null
 
   language = useLanguage()
@@ -70,6 +75,10 @@ export class ApplicationController {
 
   setNameReservationRejectedPopup(nameReservationRejectedPopup: any): void {
     this.nameReservationRejectedPopup = nameReservationRejectedPopup
+  }
+
+  setNameReservedPopup(nameReservedPopup: any): void {
+    this.nameReservedPopup = nameReservedPopup
   }
 
   setUploadDocumentPopup(uploadDocumentPopup: any): void {
@@ -243,19 +252,44 @@ export class ApplicationController {
     }
 
     try {
-      this.isUpdatingSection27.value = true
-
-      let newNameReservationApplication = new ApplicationNameReservation()
-      newNameReservationApplication.applicationIncorporateId = this.application.value.id
-      newNameReservationApplication.name = this.selectedProposedName.value
+      this.applicationNameReservation.value = new ApplicationNameReservation()
+      this.applicationNameReservation.value.applicationIncorporateId = this.application.value.id
+      this.applicationNameReservation.value.name = this.selectedProposedName.value
         .replace("SDN BHD", "")
         .replace("sdn bhd", "")
         .replace("SDN. BHD.", "")
         .replace("sdn. bhd.", "")
-      newNameReservationApplication.nameType = "sdnbhd"
-      newNameReservationApplication.status = "paid"
+      this.applicationNameReservation.value.nameType = "sdnbhd"
+      this.applicationNameReservation.value.status = "paid"
 
-      await newNameReservationApplication.create(useApplicationNameReservationStore())
+      if (this.nameReservedPopup) {
+        this.nameReservedPopup.show()
+      } else {
+        //
+      }
+
+      // await newNameReservationApplication.create(useApplicationNameReservationStore())
+      // await this.fetchApplication()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      //
+    }
+  }
+
+  async onProceedSubmitNameReservation(data: ApplicationNameReservation): Promise<void> {
+    try {
+      this.isUpdatingSection27.value = true
+
+      this.applicationNameReservation.value.clone(data)
+
+      await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
       await this.fetchApplication()
     } catch (e) {
       if (e instanceof Error) {
@@ -267,6 +301,7 @@ export class ApplicationController {
       }
     } finally {
       this.isUpdatingSection27.value = false
+      this.applicationNameReservation.value = new ApplicationNameReservation()
     }
   }
 
