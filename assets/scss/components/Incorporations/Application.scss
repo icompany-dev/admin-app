@@ -7,7 +7,7 @@
   align-items: stretch;
   gap: 20px;
 
-  .application-summary {
+  .incorp-application-summary {
     background-color: rgba(255, 255, 255, 0.5);
     padding: 20px;
     border-radius: 10px;
@@ -57,7 +57,7 @@
     }
   }
 
-  .application-details {
+  .incorp-application-details {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -74,6 +74,49 @@
       .resolution-steps {
         margin-top: 0;
       }
+    }
+  }
+
+  .actions-button-options {
+    display: inline-block;
+    margin-left: 10px;
+
+    .btn {
+      width: 200px;
+
+      .label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+      }
+
+      &.name-option {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+      }
+    }
+  }
+
+  .node-actions {
+    .actions-button-options {
+      .btn {
+        width: 100px;
+      }
+
+      .btn-submit {
+        &:disabled {
+          background-color: var(--bs-white);
+        }
+      }
+    }
+  }
+
+  .application-details {
+    margin-top: 10px;
+
+    .application-label {
+      font-weight: 600;
     }
   }
 }

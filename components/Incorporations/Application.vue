@@ -10,7 +10,7 @@
       />
     </div>
     <template v-if="!controller.isLoading.value">
-      <div class="application-summary">
+      <div class="incorp-application-summary">
         <div class="proposed-name">
           {{ controller.application.value.getName() }}
           <span
@@ -20,7 +20,6 @@
             <i class="fa-solid fa-circle-check" />
           </span>
         </div>
-        <div class="summary-item">{{ controller.otherProposedNameLabel }}: {{ controller.otherProposedName }}</div>
         <div class="summary-item">
           <div class="summary-item-title">
             {{ controller.applicantLabel }}
@@ -40,8 +39,11 @@
           </div>
         </div>
       </div>
-      <div class="application-details">
-        <ServiceApplication v-bind="controller.serviceApplicationProps">
+      <div class="incorp-application-details">
+        <ServiceApplication
+          v-bind="controller.serviceApplicationProps"
+          @paymentNodeSelected="controller.onPaymentStepClicked()"
+        >
           <template #application>
             <ApplicationNode
               v-bind="controller.nameReservationNodeProps"

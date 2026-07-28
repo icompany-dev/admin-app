@@ -167,6 +167,12 @@ export class ApplicationController {
     this.uploadDocumentPopup.show()
   }
 
+  onPaymentStepClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowReceipt.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
+  }
+
   // Name Reservation Step
   onNameReservationStepClicked(): void {
     this.resetAllDocumentValues()
@@ -464,14 +470,14 @@ export class ApplicationController {
 
     let names: string[] = []
 
-    names.push(this.application.value.name1?.getCompleteName() ?? "")
+    names.push(this.application.value.name1?.name ?? "")
 
     if (this.application.value.name2) {
-      names.push(this.application.value.name2.getCompleteName())
+      names.push(this.application.value.name2.name)
     }
 
     if (this.application.value.name3) {
-      names.push(this.application.value.name3.getCompleteName())
+      names.push(this.application.value.name3.name)
     }
 
     return names
