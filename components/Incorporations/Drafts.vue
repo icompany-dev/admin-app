@@ -24,7 +24,10 @@
         :key="i"
       >
         <div class="application-details">
-          <div class="proposed-name">
+          <div
+            class="proposed-name"
+            @click="controller.onApplicationClicked(application)"
+          >
             {{ application.getName() }}
           </div>
           <div class="application-date">

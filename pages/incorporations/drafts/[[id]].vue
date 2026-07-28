@@ -13,17 +13,32 @@
         @unMinimize="pageController.onShowAllClicked()"
       />
     </div>
-    <Drafts v-bind="pageController.draftsProps" />
+    <Drafts
+      v-if="pageController.showAll.value"
+      v-bind="pageController.draftsProps"
+    />
+    <Application
+      v-if="pageController.showSelected.value"
+      v-bind="pageController.applicationProps"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+  import Application from "@/components/Incorporations/Application.vue"
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
   import Drafts from "@/components/Incorporations/Drafts.vue"
   import TableFilters from "@/components/TableData/TableFilters.vue"
   import { PageIncorporationsDraftController } from "~/scripts/pages/PageIncorporationsDraftController"
 
   const pageController = new PageIncorporationsDraftController()
+
+  watch(
+    () => pageController.route.params,
+    (newVal) => {
+      pageController.handleRoute()
+    }
+  )
 </script>
 
 <style lang="scss">

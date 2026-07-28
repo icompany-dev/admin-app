@@ -71,6 +71,11 @@ export class DraftsController {
     return "info"
   }
 
+  onApplicationClicked(application: ApplicationIncorporate): void {
+    let router = useRouter()
+    router.push({ path: `/incorporations/drafts/${application.id}` })
+  }
+
   // getters
   get filter(): Filter {
     let filter = new Filter()
