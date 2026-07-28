@@ -15,6 +15,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsNameReservationRejected } from "~/scripts/props/PropsNameReservationRejected"
 import type { NameReservationRejected } from "~/scripts/types/emit-messages/NameReservationRejected"
 import { NameReservationVariant } from "~/scripts/models/NameReservationVariant"
+import { Toast } from "~/scripts/library/Toast"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -265,11 +266,8 @@ export class ApplicationController {
       if (this.nameReservedPopup) {
         this.nameReservedPopup.show()
       } else {
-        //
+        throw ""
       }
-
-      // await newNameReservationApplication.create(useApplicationNameReservationStore())
-      // await this.fetchApplication()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -291,6 +289,15 @@ export class ApplicationController {
 
       await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
       await this.fetchApplication()
+
+      let toastTitle = this.language.isMalay()
+        ? "Tindakan anda telah berjaya direkod."
+        : "Your action has been recorded successfully"
+      let toastMessage = this.language.isMalay()
+        ? "Pemohon akan diberitahu melalui emel dan WhatsApp."
+        : "The applicant will be informed via Email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
