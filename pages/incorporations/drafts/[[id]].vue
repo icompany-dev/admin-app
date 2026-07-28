@@ -3,12 +3,22 @@
     id="page-incorporation-drafts"
     class="page-incorporation"
   >
-    <BreadCrumb v-bind="pageController.breadCrumbProps" />
+    <div class="page-header">
+      <BreadCrumb v-bind="pageController.breadCrumbProps" />
+      <TableFilters
+        v-bind="pageController.tableFilterProps"
+        @search="pageController.onSearchInput($event)"
+        @order="pageController.onSortOrderChanged($event)"
+        @clearSearch="pageController.onSearchInput('')"
+        @unMinimize="pageController.onShowAllClicked()"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
+  import TableFilters from "~/components/TableData/TableFilters.vue"
   import { PageIncorporationsDraftController } from "~/scripts/pages/PageIncorporationsDraftController"
 
   const pageController = new PageIncorporationsDraftController()
