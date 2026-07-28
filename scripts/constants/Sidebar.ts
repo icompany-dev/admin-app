@@ -13,7 +13,7 @@ export class Sidebar {
 
   onClick(): void {
     let router = useRouter()
-    router.push(this.route)
+    router.push({ path: `/${this.route}` })
   }
 
   get isShowing(): boolean {
