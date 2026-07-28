@@ -51,6 +51,21 @@
             background-color: var(--bs-icompany-blue);
             color: var(--bs-white);
           }
+
+          &.danger {
+            background-color: var(--bs-danger);
+            color: var(--bs-white);
+          }
+
+          &.success {
+            background-color: var(--bs-icompany-green);
+            color: var(--bs-white);
+          }
+
+          &.draft {
+            background-color: var(--bs-gray-600);
+            color: var(--bs-white);
+          }
         }
       }
     }
