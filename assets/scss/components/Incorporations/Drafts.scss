@@ -15,7 +15,8 @@
       align-items: flex-start;
       gap: 20px;
       max-width: 500px;
-      padding: 10px;
+      padding: 10px 20px;
+      transition: all 0.7s ease;
 
       .application-details {
         max-width: 480px;
@@ -67,6 +68,12 @@
             color: var(--bs-white);
           }
         }
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 20px;
+        border-radius: 10px;
       }
     }
   }
