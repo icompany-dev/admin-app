@@ -665,8 +665,7 @@ export class ApplicationController {
 
   get canUpdateSection27(): boolean {
     return (
-      this.latestSection27Application !== null &&
-      this.latestSection27Application.ssmResult === StatusConstants.SUBMITTED
+      this.latestSection27Application !== null && this.latestSection27Application.status === StatusConstants.SUBMITTED
     )
   }
 
