@@ -554,11 +554,20 @@ export class ApplicationController {
   }
 
   get canSubmitSection27(): boolean {
-    return !this.latestSection27Application || this.latestSection27Application.status === StatusConstants.REJECTED
+    return !this.latestSection27Application || this.latestSection27Application.ssmResult === StatusConstants.REJECTED
+  }
+
+  get canResubmitSection27(): boolean {
+    return (
+      this.latestSection27Application !== null && this.latestSection27Application.ssmResult === StatusConstants.QUERIED
+    )
   }
 
   get canUpdateSection27(): boolean {
-    return this.latestSection27Application !== null && this.latestSection27Application.status === StatusConstants.PAID
+    return (
+      this.latestSection27Application !== null &&
+      this.latestSection27Application.ssmResult === StatusConstants.SUBMITTED
+    )
   }
 
   get section27ActionLabel(): string {
@@ -570,7 +579,15 @@ export class ApplicationController {
   }
 
   get submitSection27ApplicationLabel(): string {
-    return this.language.isMalay() ? "Hantar" : "Submit"
+    return this.language.isMalay() ? "Telah Hantar" : "Submitted"
+  }
+
+  get querySection27ApplicationLabel(): string {
+    return this.language.isMalay() ? "Pertanyaan" : "Queried"
+  }
+
+  get resubmitSection27ApplicationLabel(): string {
+    return this.language.isMalay() ? "Dihantar Semula" : "Resubmitted"
   }
 
   get approvedSection27Label(): string {

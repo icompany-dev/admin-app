@@ -133,6 +133,20 @@
                     <button
                       class="btn btn-pill btn-submit"
                       :disabled="!controller.canUpdateSection27"
+                      @click="controller.onSubmitNameReservation()"
+                    >
+                      {{ controller.querySection27ApplicationLabel }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="!controller.canResubmitSection27"
+                      @click="controller.onSubmitNameReservation()"
+                    >
+                      {{ controller.resubmitSection27ApplicationLabel }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="!controller.canUpdateSection27"
                       @click="controller.onApproveNameReservation()"
                     >
                       {{ controller.approvedSection27Label }}
