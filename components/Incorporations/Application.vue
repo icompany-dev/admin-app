@@ -133,7 +133,7 @@
                     <button
                       class="btn btn-pill btn-submit"
                       :disabled="!controller.canUpdateSection27"
-                      @click="controller.onSubmitNameReservation()"
+                      @click="controller.onQueryNameReservation()"
                     >
                       {{ controller.querySection27ApplicationLabel }}
                     </button>
@@ -179,6 +179,11 @@
       :application="controller.applicationNameReservation.value"
       @proceed="controller.onProceedSubmitNameReservation($event)"
     />
+    <ReservedNameForNewSdnBhdQueried
+      ref="nameReservedQueriedPopup"
+      :application="controller.applicationNameReservation.value"
+      @proceed="controller.onProceedQueryNameReservation($event)"
+    />
   </div>
 </template>
 
@@ -186,6 +191,7 @@
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
+  import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
@@ -201,6 +207,7 @@
   }
 
   const nameReservedPopup = ref(null)
+  const nameReservedQueriedPopup = ref(null)
 
   const controller = new ApplicationController(props, emit)
 
@@ -221,6 +228,14 @@
     nameReservedPopup,
     (newVal) => {
       controller.setNameReservedPopup(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    nameReservedQueriedPopup,
+    (newVal) => {
+      controller.setNameReservedQueriedPopup(newVal)
     },
     { immediate: true }
   )

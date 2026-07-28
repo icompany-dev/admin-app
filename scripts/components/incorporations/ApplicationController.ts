@@ -45,6 +45,7 @@ export class ApplicationController {
 
   uploadDocumentPopup: any | null = null
   nameReservedPopup: any | null = null
+  nameReservedQueriedPopup: any | null = null
   nameReservationRejectedPopup: any | null = null
 
   language = useLanguage()
@@ -80,6 +81,10 @@ export class ApplicationController {
 
   setNameReservedPopup(nameReservedPopup: any): void {
     this.nameReservedPopup = nameReservedPopup
+  }
+
+  setNameReservedQueriedPopup(nameReservedQueriedPopup: any): void {
+    this.nameReservedQueriedPopup = nameReservedQueriedPopup
   }
 
   setUploadDocumentPopup(uploadDocumentPopup: any): void {
@@ -288,6 +293,59 @@ export class ApplicationController {
       this.applicationNameReservation.value.clone(data)
 
       await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
+      await this.fetchApplication()
+
+      let toastTitle = this.language.isMalay()
+        ? "Tindakan anda telah berjaya direkod."
+        : "Your action has been recorded successfully"
+      let toastMessage = this.language.isMalay()
+        ? "Pemohon akan diberitahu melalui emel dan WhatsApp."
+        : "The applicant will be informed via Email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingSection27.value = false
+      this.applicationNameReservation.value = new ApplicationNameReservation()
+    }
+  }
+
+  onQueryNameReservation(): void {
+    this.isShowSection27Actions.value = false
+
+    try {
+      if (!this.latestSection27Application || !this.nameReservedQueriedPopup) {
+        throw ""
+      }
+
+      this.applicationNameReservation.value = new ApplicationNameReservation(this.latestSection27Application)
+
+      this.nameReservedQueriedPopup.show()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    }
+  }
+
+  async onProceedQueryNameReservation(data: ApplicationNameReservation): Promise<void> {
+    try {
+      this.isUpdatingSection27.value = true
+
+      this.applicationNameReservation.value.clone(data)
+
+      await this.applicationNameReservation.value.queried(useApplicationNameReservationStore())
       await this.fetchApplication()
 
       let toastTitle = this.language.isMalay()

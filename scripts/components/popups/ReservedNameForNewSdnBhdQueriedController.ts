@@ -47,7 +47,7 @@ export class ReservedNameForNewSdnBhdQueriedController extends BasePopupControll
   }
 
   get heading(): string {
-    return this.language.isMalay() ? "Tempah Nama bagi Sdn Bhd Baharu" : "Reserved Name for New Sdn Bhd"
+    return this.language.isMalay() ? "Kueri SSM atas Nama yang Ditempah" : "SSM Query on Reserved Name"
   }
 
   get cta(): string {
