@@ -106,7 +106,7 @@ export class ApplicationNameReservation {
 
   async create(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -114,7 +114,41 @@ export class ApplicationNameReservation {
     let data = this.getRequestBody()
     let response = await repository.create(data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async approve(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.approve(this.id)
+    if (repository.error) {
+      let error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async reject(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.reject(this.id, this.ssmRemarksEn)
+    if (repository.error) {
+      let error = new Error()
       error.setForCUD()
       throw error
     }

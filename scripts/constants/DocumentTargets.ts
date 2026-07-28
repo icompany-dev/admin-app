@@ -156,4 +156,6 @@ export class DocumentTargets {
   static TARGET_SECTION_47_RESOLUTIONS: string = "company_record_storage_resolutions"
 
   static TARGET_PD2: string = "pd2"
+
+  static TARGET_INCORP_SECTION_27: string = "section_27"
 }

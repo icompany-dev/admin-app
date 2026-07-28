@@ -42,7 +42,111 @@
       </div>
       <div class="application-details">
         <ServiceApplication v-bind="controller.serviceApplicationProps">
-          <template #application>//</template>
+          <template #application>
+            <ApplicationNode
+              v-bind="controller.nameReservationNodeProps"
+              @click="controller.onNameReservationStepClicked()"
+            >
+              <template #nodeContent>
+                <div class="application-container">
+                  <div class="node-title">{{ controller.nameReservationLabel }}</div>
+                  <div class="node-subtitle">({{ controller.nameReservationSublabel }})</div>
+                  <div class="application-details">
+                    <span class="application-label">
+                      {{ controller.proposedNamesLabel }}
+                    </span>
+                    <div class="actions-button-options">
+                      <div
+                        class="btn btn-primary selected"
+                        @click="controller.onProposedNamesClicked()"
+                      >
+                        <span class="label">{{ controller.selectedProposedNameForDisplay }}</span>
+                        <i
+                          class="fa-solid fa-caret-down"
+                          :class="{ rotate: controller.isShowProposedNames.value }"
+                        ></i>
+                      </div>
+                      <div
+                        class="options"
+                        :class="{ show: controller.isShowProposedNames.value }"
+                      >
+                        <button
+                          v-for="(name, index) in controller.nameOptions"
+                          :key="index"
+                          class="btn btn-primary name-option"
+                          @click="controller.onProposedNamesSelected(name)"
+                        >
+                          {{ name }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template #nodeOptions>
+                <button
+                  class="btn btn-pill btn-primary"
+                  :class="{ 'is-loading': controller.isUploadingSection27.value }"
+                  @click="controller.onUploadDocumentClicked()"
+                >
+                  {{ controller.uploadSection27Label }}
+                </button>
+                <span
+                  class="action-link download"
+                  v-if="controller.isSection27Uploaded"
+                  @click="controller.onDownloadSection27Clicked()"
+                >
+                  <i class="fa-regular fa-cloud-arrow-down"></i>
+                  {{ controller.downloadDocumentSection27Label }}
+                </span>
+              </template>
+              <template #nodeActions>
+                <div class="actions-button-options">
+                  <div
+                    class="btn btn-pill btn-submit selected"
+                    :class="{
+                      'is-loading': controller.isUpdatingSection27.value,
+                      single: !controller.hasNextStepsForSection27,
+                    }"
+                    @click="controller.onShowSection27ActionClicked()"
+                  >
+                    <span class="label">{{ controller.section27ActionLabel }}</span>
+                    <i
+                      v-if="controller.hasNextStepsForSection27"
+                      class="fa-solid fa-caret-down"
+                      :class="{ rotate: controller.isShowSection27Actions.value }"
+                    ></i>
+                  </div>
+                  <div
+                    class="options"
+                    :class="{ show: controller.isShowSection27Actions.value }"
+                  >
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="!controller.canSubmitSection27"
+                      @click="controller.onSubmitNameReservation()"
+                    >
+                      {{ controller.submitSection27ApplicationLabel }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="!controller.canUpdateSection27"
+                      @click="controller.onApproveNameReservation()"
+                    >
+                      {{ controller.approvedSection27Label }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="!controller.canUpdateSection27"
+                      @click="controller.onNameReservationRejectedClicked()"
+                    >
+                      {{ controller.rejectedSection27Label }}
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </ApplicationNode>
+          </template>
         </ServiceApplication>
         <div class="document-display">
           <component
@@ -58,6 +162,7 @@
 </template>
 
 <script lang="ts" setup>
+  import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"

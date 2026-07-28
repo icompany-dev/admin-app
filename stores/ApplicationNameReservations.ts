@@ -18,6 +18,36 @@ export const useApplicationNameReservationStore = defineStore("applicationNameRe
     error: error,
   })
 
+  async function approve(id: string): Promise<ApplicationNameReservation | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companyNameReservations.approve(id)
+      return response.data ? new ApplicationNameReservation(response.data) : null
+    } catch (e) {
+      error.value = `Failed to update data: ${e}`
+      throw error.value
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function reject(id: string, reason: string): Promise<ApplicationNameReservation | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companyNameReservations.reject(id, reason)
+      return response.data ? new ApplicationNameReservation(response.data) : null
+    } catch (e) {
+      error.value = `Failed to update data: ${e}`
+      throw error.value
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalApplicationNameReservations = computed(() => applicationNameReservations.value.length)
 
   return {
@@ -26,6 +56,8 @@ export const useApplicationNameReservationStore = defineStore("applicationNameRe
     isLoading,
     error,
     totalApplicationNameReservations,
-    ...crudActions
+    ...crudActions,
+    approve,
+    reject,
   }
 })
