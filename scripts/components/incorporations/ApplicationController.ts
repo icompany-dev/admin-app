@@ -2,6 +2,7 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { Error } from "~/scripts/library/Error"
 import { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
 import { PaymentOrder } from "~/scripts/models/PaymentOrder"
+import { User } from "~/scripts/models/User"
 import { PropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
 import { StringUtil } from "~/scripts/utils/String"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
@@ -23,6 +24,7 @@ import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
   application: Ref<ApplicationIncorporate> = ref<ApplicationIncorporate>(new ApplicationIncorporate())
+  applicant: Ref<User> = ref<User>(new User())
 
   paymentOrderId: Ref<string> = ref<string>("")
   paymentOrder: Ref<PaymentOrder> = ref<PaymentOrder>(new PaymentOrder())
@@ -67,6 +69,8 @@ export class ApplicationController {
 
       await Promise.allSettled([this.fetchApplication(), this.fetchPaymentOrder()])
 
+      await this.fetchApplicant()
+
       this.application.value.paidAt = this.paymentOrder.value.paidAt
     } catch (e) {
       if (e instanceof Error) {
@@ -108,6 +112,17 @@ export class ApplicationController {
     this.paymentOrderId.value = this.paymentOrder.value.id
   }
 
+  async fetchApplicant(): Promise<void> {
+    let repository = useUserStore()
+    let response = await repository.fetch(this.application.value.applicantId)
+
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.applicant.value = new User(response)
+  }
+
   // getters
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
@@ -123,6 +138,54 @@ export class ApplicationController {
 
   get isNameApproved(): boolean {
     return this.application.value.nameSelected !== null
+  }
+
+  get otherProposedNameLabel(): string {
+    return this.language.isMalay() ? "Cadangan Nama Lain" : "Other Proposed Names"
+  }
+
+  get otherProposedName(): string {
+    let names = [
+      this.application.value.name1.name,
+      this.application.value.name2?.name ?? "",
+      this.application.value.name3?.name ?? "",
+    ]
+
+    let filteredNames = names.filter((s: string) => {
+      if (StringUtil.isNullOrEmpty(s)) {
+        return false
+      }
+      return (
+        !(this.application.value.nameSelected && this.application.value.nameSelected.name === s) ||
+        !this.application.value.nameSelected
+      )
+    })
+
+    if (filteredNames.length <= 0) {
+      return this.language.isMalay() ? "Tiada" : "None"
+    }
+
+    return StringUtil.oxfordJoin("&", filteredNames)
+  }
+
+  get applicantLabel(): string {
+    return this.language.isMalay() ? "Butiran Pemohon" : "Details of Applicant"
+  }
+
+  get applicantName(): string {
+    return this.applicant.value.name
+  }
+
+  get applicantEmail(): string {
+    return this.applicant.value.email
+  }
+
+  get applicantPhone(): string {
+    return this.applicant.value.phone
+  }
+
+  get applicantIdentification(): string {
+    return this.applicant.value.detail?.identification ?? "-"
   }
 
   get serviceApplicationProps(): PropsServiceApplication {

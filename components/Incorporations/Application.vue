@@ -20,12 +20,30 @@
             <i class="fa-solid fa-circle-check" />
           </span>
         </div>
-        <div class="applicant-details">
-          <div class="applicant-name">//</div>
+        <div class="summary-item">{{ controller.otherProposedNameLabel }}: {{ controller.otherProposedName }}</div>
+        <div class="summary-item">
+          <div class="summary-item-title">
+            {{ controller.applicantLabel }}
+          </div>
+          <div class="summary-item-content human-details">
+            <span class="human-detail">
+              <b>{{ controller.applicantName }}</b>
+            </span>
+            <span class="human-detail">
+              <i class="fa-regular fa-envelope" />
+              {{ controller.applicantEmail }}
+            </span>
+            <span class="human-detail">
+              <i class="fa-brands fa-whatsapp" />
+              {{ controller.applicantPhone }}
+            </span>
+          </div>
         </div>
       </div>
       <div class="application-details">
-        <ServiceApplication v-bind="controller.serviceApplicationProps" />
+        <ServiceApplication v-bind="controller.serviceApplicationProps">
+          <template #application>//</template>
+        </ServiceApplication>
         <div class="document-display">
           <component
             ref="documentRef"

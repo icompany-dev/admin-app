@@ -27,6 +27,34 @@
         font-size: 1.1rem;
       }
     }
+
+    .summary-item {
+      .summary-item-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .summary-item-content {
+        //
+      }
+    }
+  }
+
+  .human-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+
+    .human-detail {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 3px;
+    }
   }
 
   .application-details {
