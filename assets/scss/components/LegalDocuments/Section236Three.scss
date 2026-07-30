@@ -1,0 +1,86 @@
+// #legal-documents-section236-three {
+//   // Styles go here
+// }
+
+.section-236Three {
+
+  div,
+  p,
+  span,
+  td {
+    font-size: 13px;
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  .company-registration {
+    .company-registration-label {
+      font-weight: 600;
+    }
+
+    .company-registration-box {
+      padding: 3px 10px;
+      min-width: 150px;
+      text-align: center;
+      border: 1px solid var(--bs-black);
+    }
+  }
+
+  .document-header {
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .section-table {
+    thead {
+      tr {
+        th {
+          text-align: center;
+          font-weight: 600;
+          font-size: 14px;
+          padding: 5px;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          vertical-align: middle;
+          padding: 5px;
+        }
+      }
+    }
+
+    &.particulars {
+      tbody {
+        tr {
+          td {
+            &:first-child {
+              width: 30%;
+            }
+          }
+        }
+      }
+    }
+
+    &.declaration {
+      tbody {
+        tr {
+          td {
+            &:first-child {
+              width: 10%;
+              text-align: center;
+            }
+
+            &:only-child {
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
+}
