@@ -76,7 +76,7 @@
             </tr>
             <tr>
               <td>Firm</td>
-              <td>{{ controller.selectedSecretary.value.firmName }}</td>
+              <td>{{ controller.selectedSecretary.value.firmName.toUpperCase() }}</td>
             </tr>
             <tr>
               <td>Tel.</td>

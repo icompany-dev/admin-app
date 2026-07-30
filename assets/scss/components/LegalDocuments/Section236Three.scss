@@ -22,7 +22,7 @@
 
     .company-registration-box {
       padding: 3px 10px;
-      min-width: 150px;
+      width: 150px;
       text-align: center;
       border: 1px solid var(--bs-black);
     }
@@ -34,6 +34,10 @@
   }
 
   .section-table {
+    margin: 20px 0;
+    width: 100%;
+    border-collapse: collapse;
+
     thead {
       tr {
         th {
@@ -41,6 +45,7 @@
           font-weight: 600;
           font-size: 14px;
           padding: 5px;
+          border: 1px solid var(--bs-black);
         }
       }
     }
@@ -49,7 +54,13 @@
       tr {
         td {
           vertical-align: middle;
-          padding: 5px;
+          padding: 5px 10px;
+          border-right: 1px solid var(--bs-black);
+          border-bottom: 1px solid var(--bs-black);
+
+          &:first-child {
+            border-left: 1px solid var(--bs-black);
+          }
         }
       }
     }
@@ -77,6 +88,43 @@
 
             &:only-child {
               width: 100%;
+              text-align: left;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .signature-section {
+    margin-top: 40px;
+
+    .sign-off {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .signature-image {
+      width: 30%;
+      border-bottom: 1px solid var(--bs-black);
+
+      img {
+        height: 80px;
+        width: auto;
+      }
+    }
+
+    .sign-off-details {
+      margin-top: 10px;
+    }
+
+    .sign-off-table {
+      tbody {
+        tr {
+          td {
+            &:last-child {
+              text-transform: uppercase;
+              font-weight: 600;
             }
           }
         }
