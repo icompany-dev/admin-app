@@ -78,6 +78,7 @@ export class CompanyConstants {
   // TODO: Consider moving this elsewhere
   static TARGET_APPLICATION_INCORPORATE: string = "application_incorporate"
   static TARGET_APPLICATION_INCORPORATE_SECTION27: string = "application_incorporate_section27"
+  static TARGET_APPLICATION_INCORPORATE_SECTION236: string = "application_incorporate_section236"
 
   static TARGET_APPLICATION_SWITCH: string = "application_switch"
   static TARGET_PURCHASED_DOCUMENT_TEMPLATE: string = "purchased_document_template"
@@ -97,6 +98,7 @@ export class CompanyConstants {
     this.TARGET_AMENDMENT_NAME_SECTION28,
     this.TARGET_APPLICATION_INCORPORATE,
     this.TARGET_APPLICATION_INCORPORATE_SECTION27,
+    this.TARGET_APPLICATION_INCORPORATE_SECTION236,
     this.TARGET_APPLICATION_SWITCH,
     this.TARGET_AUDIT_CIRCULATION,
     this.TARGET_AUDIT_EXTENSION_OF_TIME,

@@ -16,6 +16,7 @@ import { PropsNameReservationRejected } from "~/scripts/props/PropsNameReservati
 import type { NameReservationRejected } from "~/scripts/types/emit-messages/NameReservationRejected"
 import { NameReservationVariant } from "~/scripts/models/NameReservationVariant"
 import { Toast } from "~/scripts/library/Toast"
+import { Company } from "~/scripts/models/Company"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -70,6 +71,10 @@ export class ApplicationController {
   isUpdatingCOI: Ref<boolean> = ref<boolean>(false)
 
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
+
+  incorporatedAt: Ref<string | null> = ref<string | null>(null)
+  registrationNumberNew: Ref<string | null> = ref<string | null>(null)
+  registrationNumberOld: Ref<string | null> = ref<string | null>(null)
 
   constructor(props: PropsIncorporationApplication, emitEvents: any) {
     this.setDataFromProps(props)
@@ -838,5 +843,15 @@ export class ApplicationController {
 
   get convertLabel(): string {
     return this.language.isMalay() ? "Selesai" : "Complete"
+  }
+
+  get companyToConvert(): Company {
+    let company = new Company()
+
+    company.name = this.application.value.nameSelected?.getCompleteName() ?? ""
+    company.registrationNumberNew = this.registrationNumberNew.value ?? ""
+    company.registrationNumberOld = this.registrationNumberOld.value ?? ""
+
+    return company
   }
 }

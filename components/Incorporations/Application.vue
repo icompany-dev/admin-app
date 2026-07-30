@@ -251,6 +251,9 @@
             :application-id="controller.applicationId.value"
             :target-id="controller.paymentOrderId.value"
             :application-name-reservation-id="controller.latestSection27Application?.id ?? ''"
+            :company-name="controller.companyToConvert.name"
+            :registration-number-new="controller.companyToConvert.registrationNumberNew"
+            :registration-number-old="controller.companyToConvert.registrationNumberOld"
           />
         </div>
       </div>
@@ -274,6 +277,7 @@
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
+  import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import Section27OneFourService from "@/components/CompanyServices/Section27OneFourService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
@@ -287,6 +291,7 @@
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
     [DocumentTargets.TARGET_INCORP_SECTION_27]: Section27OneFourService,
+    [DocumentTargets.TARGET_INCORP_SECTION_236_THREE]: Section236ThreeService,
   }
 
   const nameReservedPopup = ref(null)
