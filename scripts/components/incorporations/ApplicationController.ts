@@ -417,17 +417,6 @@ export class ApplicationController {
       this.isUpdatingSection27.value = true
       await application.approve(useApplicationNameReservationStore())
 
-      if (this.application.value) {
-        this.application.value.nameSelected = new NameReservationVariant(
-          application.name,
-          application.nameType,
-          application.nameDescription,
-          application.supportingDocumentId
-        )
-
-        await this.application.value.createOrUpdateNamesReservations(useApplicationIncorporateStore())
-      }
-
       await this.fetchApplication()
     } catch (e) {
       if (e instanceof Error) {
