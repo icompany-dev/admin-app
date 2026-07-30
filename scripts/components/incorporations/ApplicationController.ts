@@ -54,6 +54,7 @@ export class ApplicationController {
 
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
+  isShowCOI: Ref<boolean> = ref<boolean>(false)
 
   isShowProposedNames: Ref<boolean> = ref<boolean>(false)
   selectedProposedName: Ref<string> = ref<string>("")
@@ -62,6 +63,11 @@ export class ApplicationController {
   isDownloadingSection27: Ref<boolean> = ref<boolean>(false)
   isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
   isUpdatingSection27: Ref<boolean> = ref<boolean>(false)
+
+  isUploadingCOI: Ref<boolean> = ref<boolean>(false)
+  isDownloadingCOI: Ref<boolean> = ref<boolean>(false)
+  isShowCOIActions: Ref<boolean> = ref<boolean>(false)
+  isUpdatingCOI: Ref<boolean> = ref<boolean>(false)
 
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
 
@@ -170,6 +176,7 @@ export class ApplicationController {
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
     this.isShowSection27.value = false
+    this.isShowCOI.value = false
 
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
@@ -431,6 +438,74 @@ export class ApplicationController {
     }
   }
 
+  // Complete Incorporation
+  onRegistrationOfIncorporationClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowCOI.value = true
+
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT // update the document target
+  }
+
+  async onCompleteIncorporation(): Promise<void> {
+    /**
+     * Items at this step:
+     * 1. Incorporation Date
+     * 2. Confirmation on the Company Details
+     * 3. Documents relating to the company - COI, Superform, Appointment of First Cosec (At this step?)
+     * */
+  }
+
+  async onDownloadCOIClicked(): Promise<void> {
+    //
+  }
+
+  onShowCOIActionsClicked(): void {
+    this.isShowCOIActions.value = !this.isShowCOIActions.value
+  }
+
+  async onIncorporationApproved(): Promise<void> {
+    this.isShowCOIActions.value = false
+
+    if (this.isUpdatingCOI.value) {
+      return
+    }
+
+    try {
+      this.isUpdatingCOI.value = true
+
+      let repository = useApplicationIncorporateStore()
+      this.application.value.status = StatusConstants.APPROVED
+      let data = {
+        status: StatusConstants.APPROVED,
+      }
+      await repository.update(this.application.value.id, data)
+      let response = await this.application.value.notifyApproved(repository)
+
+      if (!response) {
+        let error = new Error()
+        error.setForCUD()
+        throw error
+      } else {
+        let toastTitle = this.language.isMalay() ? "Rekod telah dikemaskini." : "Your changes have been recorded!"
+        let toastMessage = this.language.isMalay()
+          ? "Promoter telah diberitahu melalui emel dan WhatsApp."
+          : "Promoter has been informed via Email and WhatsApp."
+        let toast = new Toast(toastTitle, toastMessage)
+        toast.success()
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingCOI.value = false
+    }
+  }
+
   // getters
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
@@ -517,7 +592,7 @@ export class ApplicationController {
   }
 
   get isNameReservationCompleted(): boolean {
-    return false // TODO: Update
+    return this.isNameApproved // TODO: Update
   }
 
   get nameReservationLabel(): string {
@@ -695,5 +770,73 @@ export class ApplicationController {
       "Incorporation of New Sdn Bhd",
       this.latestSection27Application?.name ?? "PROPOSED NAME"
     )
+  }
+
+  // registration of incoporation
+  get registrationNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isNameApproved, this.isRegistrationCompleted, this.isShowCOI.value)
+  }
+
+  get isRegistrationCompleted(): boolean {
+    return this.application.value.status === StatusConstants.APPROVED
+  }
+
+  get registrationLabel(): string {
+    return this.language.isMalay() ? "Sijil Pemerbadanan" : "Certificate of Incorporation"
+  }
+
+  get registrationSublabel(): string {
+    return this.language.isMalay() ? "Pemerbadanan Selesai" : "Completion of Incorporation"
+  }
+
+  get uploadlCOILabel(): string {
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
+  get completedLabel(): string {
+    return this.language.isMalay() ? "Diluluskan" : "Approved"
+  }
+
+  get isCOIUploaded(): boolean {
+    return false
+  }
+
+  get downloadCOILabel(): string {
+    return this.language.isMalay() ? "Muat Turun" : "Download"
+  }
+
+  get hasNextStepsForRegistration(): boolean {
+    return this.application.value.status !== StatusConstants.CONVERTED
+  }
+
+  get registrationActionLabel(): string {
+    if (!this.hasNextStepsForRegistration) {
+      return this.language.isMalay() ? "Selesai" : "Completed"
+    }
+
+    return this.language.isMalay() ? "Seterusnya" : "Next Steps"
+  }
+
+  get isIncorporationApproved(): boolean {
+    return (
+      this.application.value.status === StatusConstants.APPROVED ||
+      this.application.value.status === StatusConstants.CONVERTED
+    )
+  }
+
+  get approvedRegistrationLabel(): string {
+    return this.language.isMalay() ? "Diluluskan" : "Approved"
+  }
+
+  get generateSection236Label(): string {
+    return this.language.isMalay() ? "Seksyen 236(2)" : "Section 236(2)"
+  }
+
+  get appointmentCosecLabel(): string {
+    return this.language.isMalay() ? "S/Usaha Pertama" : "First CoSec"
+  }
+
+  get convertLabel(): string {
+    return this.language.isMalay() ? "Selesai" : "Complete"
   }
 }

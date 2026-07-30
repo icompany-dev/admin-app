@@ -388,4 +388,21 @@ export class ApplicationIncorporate implements IApplication {
       throw error
     }
   }
+
+  async notifyApproved(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<boolean> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let response = await repository.notifyApproved(this.id)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    return response
+  }
 }

@@ -102,6 +102,19 @@
     .node-content {
       opacity: 1;
     }
+
+    .node-actions {
+      cursor: default;
+
+
+      .btn {
+        color: var(--btn-out-focus-color);
+        background-color: var(--btn-out-focus-bg-color);
+        border-color: var(--btn-out-focus-border-color);
+        pointer-events: none;
+        cursor: default;
+      }
+    }
   }
 
   &.is-showing-document {

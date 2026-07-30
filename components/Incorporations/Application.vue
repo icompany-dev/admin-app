@@ -162,6 +162,86 @@
                 </div>
               </template>
             </ApplicationNode>
+            <ApplicationNode
+              v-bind="controller.registrationNodeProps"
+              @click="controller.onRegistrationOfIncorporationClicked()"
+            >
+              <template #nodeContent>
+                <div class="application-container">
+                  <div class="node-title">{{ controller.registrationLabel }}</div>
+                  <div class="node-subtitle">({{ controller.registrationSublabel }})</div>
+                </div>
+              </template>
+              <template #nodeOptions>
+                <button
+                  class="btn btn-pill btn-primary"
+                  :class="{ 'is-loading': controller.isUploadingCOI.value }"
+                  @click="controller.onUploadDocumentClicked()"
+                >
+                  {{ controller.uploadlCOILabel }}
+                </button>
+                <span
+                  class="action-link download"
+                  v-if="controller.isCOIUploaded"
+                  @click="controller.onDownloadCOIClicked()"
+                >
+                  <i class="fa-regular fa-cloud-arrow-down"></i>
+                  {{ controller.downloadCOILabel }}
+                </span>
+              </template>
+              <template #nodeActions>
+                <div class="actions-button-options">
+                  <div
+                    class="btn btn-pill btn-submit selected"
+                    :class="{
+                      'is-loading': controller.isUpdatingCOI.value,
+                      single: !controller.hasNextStepsForRegistration,
+                    }"
+                    @click="controller.onShowCOIActionsClicked()"
+                  >
+                    <span class="label">{{ controller.registrationActionLabel }}</span>
+                    <i
+                      v-if="controller.hasNextStepsForRegistration"
+                      class="fa-solid fa-caret-down"
+                      :class="{ rotate: controller.isShowCOIActions.value }"
+                    ></i>
+                  </div>
+                  <div
+                    class="options"
+                    :class="{ show: controller.isShowCOIActions.value }"
+                  >
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="controller.isIncorporationApproved"
+                      @click="controller.onIncorporationApproved()"
+                    >
+                      {{ controller.approvedRegistrationLabel }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="!controller.isIncorporationApproved"
+                      @click="controller.onIncorporationApproved()"
+                    >
+                      {{ controller.generateSection236Label }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="!controller.isIncorporationApproved"
+                      @click="controller.onIncorporationApproved()"
+                    >
+                      {{ controller.appointmentCosecLabel }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      :disabled="!controller.isIncorporationApproved"
+                      @click="controller.onIncorporationApproved()"
+                    >
+                      {{ controller.convertLabel }}
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </ApplicationNode>
           </template>
         </ServiceApplication>
         <div class="document-display">

@@ -74,4 +74,13 @@ export class ApplicationIncorporateRepository extends Repository<ApplicationInco
       throw error
     }
   }
+
+  async notifyApproved(id: string): Promise<any> {
+    try {
+      const response = this.post(`${this.singleResourceUrl}/notify-approved/${id}`, {})
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }
