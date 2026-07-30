@@ -50,7 +50,7 @@ export class SecretaryInformation {
         state: { name: "Selangor" },
         country: { name: "Malaysia" },
       }),
-      signatureUrl: "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/signatures/cosec-signature.png",
+      signatureUrl: "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/signatures/asy-signature.png",
     },
   ]
 

@@ -56,7 +56,13 @@ export class Section236ThreeController {
       return
     }
 
-    await PdfPaperUtil.generatePdfFile(pages, 20, "Section 27(1)(4).pdf", PaperSize.A4, PaperOrientation.Portrait)
+    await PdfPaperUtil.generatePdfFile(
+      pages,
+      20,
+      `${this.companyName.value} Section 236(2).pdf`,
+      PaperSize.A4,
+      PaperOrientation.Portrait
+    )
   }
 
   onBackClicked(): void {

@@ -26,8 +26,27 @@
       <template #paperContent>
         <div class="company-registration">
           <div class="company-registration-label">Company No.</div>
-          <div class="company-registration-box">
-            {{ controller.companyRegistrationNumberNew.value }} ({{ controller.companyRegistrationNumberOld.value }})
+          <div
+            class="company-registration-box"
+            :class="{ printing: controller.isPrinting.value }"
+          >
+            <template v-if="!controller.isPrinting.value">
+              <input
+                type="text"
+                class="form-control"
+                v-model="controller.companyRegistrationNumberNew.value"
+              />
+              (
+              <input
+                type="text"
+                class="form-control small"
+                v-model="controller.companyRegistrationNumberOld.value"
+              />
+              )
+            </template>
+            <span v-if="controller.isPrinting.value">
+              {{ controller.companyRegistrationNumberNew.value }} ({{ controller.companyRegistrationNumberOld.value }})
+            </span>
           </div>
         </div>
         <div class="document-header">
@@ -38,7 +57,7 @@
           <br />
           DECLARATION BY A PERSON BEFORE APPOINTMENT
           <br />
-          AS Secretary
+          AS SECRETARY
           <br />
           <br />
           {{ controller.companyName.value }}
