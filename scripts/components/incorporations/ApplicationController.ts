@@ -659,6 +659,10 @@ export class ApplicationController {
   }
 
   get section27ActionLabel(): string {
+    if (this.isNameApproved) {
+      return this.language.isMalay() ? "Lulus" : "Approved"
+    }
+
     if (!this.canSubmitSection27 && !this.canUpdateSection27) {
       return this.language.isMalay() ? "Telah Ditempah" : "Reserved"
     }
