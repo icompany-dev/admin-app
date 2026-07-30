@@ -22,6 +22,8 @@ export class Section27OneFourServiceController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
+  documentRef: any | null = null
+
   emitEvents: any | null = null
 
   constructor(props: PropsIncorporationDocumentService, emitEvents: any) {
@@ -34,6 +36,10 @@ export class Section27OneFourServiceController {
     this.applicationNameReservationId.value = props.applicationNameReservationId
 
     await this.init()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async init(): Promise<void> {
@@ -82,12 +88,26 @@ export class Section27OneFourServiceController {
     await this.fetchApplication()
   }
 
+  async onDownloadClicked(): Promise<void> {
+    if (!this.documentRef) {
+      return
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return
+    }
+
+    await PdfPaperUtil.generatePdfFile(pages, 20, "Section 27(1)(4).pdf", PaperSize.A4, PaperOrientation.Portrait)
+  }
+
   get serviceWrapperProps() {
     let dummyApplication = new CompanyAmendmentName()
-    dummyApplication.id = this.applicationIncorporationId.value
+    dummyApplication.id = this.applicationNameReservationId.value
     dummyApplication.status = "paid"
 
-    return new PropsCompanyServiceWrapper(
+    let props = new PropsCompanyServiceWrapper(
       dummyApplication, //application
       this.applicationIncorporationId.value, //companyId
       this.target, //target
@@ -121,6 +141,11 @@ export class Section27OneFourServiceController {
       false, //isByShareholder
       true //hasMajorityRule
     )
+
+    props.serviceWrapperProps.targetId = this.applicationNameReservationId.value
+    props.serviceWrapperProps.applicationIncorporationId = this.applicationIncorporationId.value
+
+    return props
   }
 
   get loaderLabel(): string {

@@ -2,6 +2,7 @@ import { PaperOrientation } from "../constants/Paper"
 
 export interface IPropsServiceWrapper {
   companyId: string
+  applicationIncorporationId: string
   target: string
   targetId: string | null
   isShowing: boolean
@@ -19,6 +20,7 @@ export interface IPropsServiceWrapper {
 
 export class PropsServiceWrapper implements IPropsServiceWrapper {
   companyId: string
+  applicationIncorporationId: string = ""
   target: string
   targetId: string | null
   isShowing: boolean
