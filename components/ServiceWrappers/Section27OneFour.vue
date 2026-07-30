@@ -16,6 +16,7 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements" />
   </div>
 </template>
 
@@ -35,7 +36,7 @@
     },
   })
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["back"])
 
   const documentRef = ref(null)
 

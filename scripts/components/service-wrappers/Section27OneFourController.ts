@@ -3,10 +3,8 @@ import { Error } from "~/scripts/library/Error"
 import { StringUtil } from "~/scripts/utils/String"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
-import { PropsCompanyServiceWrapper } from "~/scripts/props/PropsCompanyServiceWrapper"
-import type { PropsIncorporationDocumentService } from "~/scripts/props/PropsIncorporationDocumentService"
-import { CompanyAmendmentName } from "~/scripts/models/CompanyAmendmentName"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 
 export class Section27OneFourController {
   applicationIncorporationId: Ref<string> = ref<string>("")
@@ -102,5 +100,22 @@ export class Section27OneFourController {
     }
 
     await PdfPaperUtil.generatePdfFile(pages, 20, "Section 27(1)(4).pdf", PaperSize.A4, PaperOrientation.Portrait)
+  }
+
+  onBackClicked(): void {
+    this.emitEvents("back")
+  }
+
+  get actionTrayElements(): ActionTrayElement[] {
+    return [
+      new ActionTrayElement("back", this.onBackClicked.bind(this), {
+        label: new ActionTrayLabel("Back", "Kembali"),
+        isIconStart: true,
+        iconClass: "fa-solid fa-circle-arrow-left",
+      }),
+      new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
+        label: new ActionTrayLabel("Download", "Muat Turun"),
+      }),
+    ]
   }
 }
