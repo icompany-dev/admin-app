@@ -9,6 +9,7 @@
       :is-include-logo="false"
       :show-page-number="true"
       :page-number="1"
+      :total-pages="2"
     >
       <template #paperContent>
         <div class="document-title">
@@ -66,31 +67,31 @@
               <tr>
                 <td>Applicant Name</td>
                 <td>
-                  <span class="placeholder-value">To be determined by iCompany</span>
+                  <span class="placeholder-value"></span>
                 </td>
               </tr>
               <tr>
                 <td>Identification Number</td>
                 <td>
-                  <span class="placeholder-value">To be determined by iCompany</span>
+                  <span class="placeholder-value"></span>
                 </td>
               </tr>
               <tr>
                 <td>Address</td>
                 <td>
-                  <span class="placeholder-value">To be determined by iCompany</span>
+                  <span class="placeholder-value"></span>
                 </td>
               </tr>
               <tr>
                 <td>Email Address</td>
                 <td>
-                  <span class="placeholder-value">To be determined by iCompany</span>
+                  <span class="placeholder-value"></span>
                 </td>
               </tr>
               <tr>
                 <td>Mobile Phone Number</td>
                 <td>
-                  <span class="placeholder-value">To be determined by iCompany</span>
+                  <span class="placeholder-value"></span>
                 </td>
               </tr>
               <tr>
@@ -175,8 +176,14 @@
         </div>
       </template>
     </Paper>
-    <!-- <Paper :paper-orientation="PaperOrientation.Portrait" :additional-css-class="'legal-document section-27'"
-      :is-include-logo="false" :show-page-number="true" :page-number="2">
+    <Paper
+      :paper-orientation="PaperOrientation.Portrait"
+      :additional-css-class="'legal-document section-27'"
+      :is-include-logo="false"
+      :show-page-number="true"
+      :page-number="2"
+      :total-pages="2"
+    >
       <template #paperContent>
         <div class="document-section">
           <table>
@@ -187,9 +194,17 @@
             </thead>
             <tbody>
               <tr class="header">
-                <td>Promoter Name/Body<br>Corporate</td>
+                <td>
+                  Promoter Name/Body
+                  <br />
+                  Corporate
+                </td>
                 <td>Identification Type</td>
-                <td>Identification<br>No/Registration No</td>
+                <td>
+                  Identification
+                  <br />
+                  No/Registration No
+                </td>
                 <td>Date of Birth</td>
                 <td>Email Address</td>
               </tr>
@@ -228,20 +243,17 @@
                     knowledge.
                   </p>
                   <p>
-                    Name : 
-                    <span class="placeholder-value">
-                      To be determined by iCompany
-                    </span>
-                    <br>
-                    Date of Application : 
-                    <span class="placeholder-value">
-                      To be determined by iCompany
-                    </span>
-                    <br>
+                    Name :
+                    <span class="placeholder-value">To be determined by iCompany</span>
+                    <br />
+                    Date of Application :
+                    <span class="placeholder-value">To be determined by iCompany</span>
+                    <br />
                     Designation :PROFESSIONAL
                   </p>
                   <p>
-                    Attention:<br>
+                    Attention:
+                    <br />
                     It is an offence under section 591 of the Companies Act 2016 to make or authorize the making of a
                     statement that a person knows is false or misleading and that person may be liable, upon conviction,
                     to imprisonment for a term not exceeding ten years or to a fine not exceeding RM3 million or to
@@ -263,17 +275,13 @@
               <tr>
                 <td>Name</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Identification Number</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
@@ -283,56 +291,44 @@
               <tr>
                 <td>License number/Membership Number</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Address</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Email Address</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Mobile Phone Number</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Phone Number</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Fax Number</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
       </template>
-    </Paper> -->
+    </Paper>
   </div>
 </template>
 
