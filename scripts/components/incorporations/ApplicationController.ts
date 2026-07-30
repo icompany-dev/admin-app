@@ -17,6 +17,7 @@ import type { NameReservationRejected } from "~/scripts/types/emit-messages/Name
 import { NameReservationVariant } from "~/scripts/models/NameReservationVariant"
 import { Toast } from "~/scripts/library/Toast"
 import { Company } from "~/scripts/models/Company"
+import type { CompletionOfIncorporation } from "~/scripts/types/emit-messages/CompletionOfIncorporation"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -48,6 +49,7 @@ export class ApplicationController {
   nameReservedPopup: any | null = null
   nameReservedQueriedPopup: any | null = null
   nameReservationRejectedPopup: any | null = null
+  completionOfIncorporationPopup: any | null = null
 
   language = useLanguage()
 
@@ -100,6 +102,10 @@ export class ApplicationController {
 
   setUploadDocumentPopup(uploadDocumentPopup: any): void {
     this.uploadDocumentPopup = uploadDocumentPopup
+  }
+
+  setCompletionOfIncorporationPopup(completionOfIncorporationPopup: any): void {
+    this.completionOfIncorporationPopup = completionOfIncorporationPopup
   }
 
   async init(): Promise<void> {
@@ -451,13 +457,20 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
   }
 
-  async onCompleteIncorporation(): Promise<void> {
+  onIncorporationApproved(): void {
     /**
      * Items at this step:
      * 1. Incorporation Date
      * 2. Confirmation on the Company Details
      * 3. Documents relating to the company - COI, Superform, Appointment of First Cosec (At this step?)
      * */
+    if (this.completionOfIncorporationPopup) {
+      this.completionOfIncorporationPopup.show()
+    }
+  }
+
+  async onProceedIncorporationApproved(data: CompletionOfIncorporation): Promise<void> {
+    // save the data
   }
 
   async onDownloadCOIClicked(): Promise<void> {
@@ -468,7 +481,7 @@ export class ApplicationController {
     this.isShowCOIActions.value = !this.isShowCOIActions.value
   }
 
-  async onIncorporationApproved(): Promise<void> {
+  async onIncorporationCompleted(): Promise<void> {
     this.isShowCOIActions.value = false
 
     if (this.isUpdatingCOI.value) {

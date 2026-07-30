@@ -69,18 +69,14 @@ export class CompletionOfIncorporationController extends BasePopupController {
     if (this.language.isMalay()) {
       return `
       Sila sahkan bahawa pemerbadanan 
-      <br><br>
       <span class='company-name'>${this.companyName.value} </span>
-      <br><br>
       telah diluluskan dengan melengkapkan butiran dibawah.
       `
     }
 
     return `
       Please confirm that the incorporation of 
-      <br><br>
       <span class='company-name'>${this.companyName.value} </span>
-      <br><br>
       has been approved by completing the following details.
     `
   }
@@ -94,6 +90,6 @@ export class CompletionOfIncorporationController extends BasePopupController {
   }
 
   get registrationNumberOldLabel(): string {
-    return this.language.isMalay() ? "No. Pendaftaran (Baharu)" : "Registration Number (New)"
+    return this.language.isMalay() ? "No. Pendaftaran (Lama)" : "Registration Number (Old)"
   }
 }

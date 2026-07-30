@@ -3,14 +3,22 @@
 // }
 
 .popup-details {
+  .company-name {
+    font-weight: 600;
+    display: block;
+    padding: 5px;
+  }
+
   .form-group {
+    margin-top: 3px;
+
     .label {
-      width: 80px;
+      width: 230px;
       text-align: start;
     }
 
     .form-control {
-      width: calc(100% - 100px);
+      width: calc(100% - 180px);
       resize: vertical;
     }
   }

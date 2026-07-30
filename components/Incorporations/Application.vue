@@ -267,11 +267,17 @@
       :application="controller.applicationNameReservation.value"
       @proceed="controller.onProceedQueryNameReservation($event)"
     />
+    <CompletionOfIncorporation
+      ref="completionOfIncorporationPopup"
+      :company-name="controller.application.value.getName()"
+      @proceed="controller.onProceedIncorporationApproved($event)"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
+  import CompletionOfIncorporation from "@/components/Popups/CompletionOfIncorporation.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
@@ -295,6 +301,7 @@
 
   const nameReservedPopup = ref(null)
   const nameReservedQueriedPopup = ref(null)
+  const completionOfIncorporationPopup = ref(null)
 
   const controller = new ApplicationController(props, emit)
 
@@ -323,6 +330,14 @@
     nameReservedQueriedPopup,
     (newVal) => {
       controller.setNameReservedQueriedPopup(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    completionOfIncorporationPopup,
+    (newVal) => {
+      controller.setCompletionOfIncorporationPopup(newVal)
     },
     { immediate: true }
   )

@@ -20,7 +20,7 @@
         <div class="form-group">
           <span class="label">{{ controller.registrationNumberNewLabel }}</span>
           <input
-            type="date"
+            type="text"
             class="form-control"
             v-model="controller.registrationNumberNew.value"
           />
@@ -28,7 +28,7 @@
         <div class="form-group">
           <span class="label">{{ controller.registrationNumberOldLabel }}</span>
           <input
-            type="date"
+            type="text"
             class="form-control"
             v-model="controller.registrationNumberOld.value"
           />
@@ -84,6 +84,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    show: controller.show.bind(controller),
+  })
 </script>
 
 <style lang="scss">
