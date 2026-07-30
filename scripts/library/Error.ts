@@ -150,4 +150,29 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_API
   }
+
+  setForInProgress(processEn: string, processBm: string): void {
+    this.title = this.isMalay ? `${processBm} sedang diproses.` : `${processEn} is in progress. `
+    this.message = this.isMalay ? `Sila tunggu sehingga proses in selesai.` : `Please wait for the process to finish.`
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
+  setForPurchaseFail(itemEn: string, itemBm: string): void {
+    this.title = this.isMalay ? `Kami tidak berjaya membeli ${itemBm}.` : `We are unable to purchase ${itemEn}.`
+    this.message = this.isMalay
+      ? `Jika bayaran sudah ditolak dari akaun anda, sila hubungi kami untuk kami selesaikan masalah ini.`
+      : `If your account has been charged, please contact us and we will rectify this situation.`
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
+  setForNoPurchaseToGetJson(itemEn: string, itemBm: string): void {
+    this.title = this.isMalay ? `Tiada maklumat untuk Sdn Bhd anda` : `No information for your Sdn Bhd`
+    this.message = this.isMalay
+      ? `Sila beli ${itemBm} untuk muat turun fail PDF ini.`
+      : `Please purchase ${itemEn} to download the PDF file.`
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
 }

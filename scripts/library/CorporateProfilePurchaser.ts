@@ -44,13 +44,13 @@ export class CorporateProfilePurchaser {
 
   async purchase(): Promise<void> {
     if (this.isPurchasing) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForInProgress("Purchase", "Pembelian")
       throw errorMessage
     }
 
     if (StringUtil.isNullOrEmpty(this.registrationNumberOld) && StringUtil.isNullOrEmpty(this.registrationNumberOld)) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForIncompleteData()
       throw errorMessage
     }
@@ -62,7 +62,7 @@ export class CorporateProfilePurchaser {
     )
     if (this.repository.error !== null || !response) {
       this.isPurchasing = false
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForPurchaseFail("SSM Corporate Profile", "Profil Korporat SSM")
       throw errorMessage
     }
@@ -70,7 +70,7 @@ export class CorporateProfilePurchaser {
     this.purchaseResponse = new MyDataPurchaseCorporateProfileResponse(response)
     if (this.purchaseResponse.successCode !== "00") {
       this.isPurchasing = false
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForPurchaseFail("SSM Corporate Profile", "Profil Korporat SSM")
       throw errorMessage
     }
@@ -81,7 +81,7 @@ export class CorporateProfilePurchaser {
 
   async purchaseByDocumentRequest(documentRequestId: string): Promise<void> {
     if (this.isPurchasing) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForInProgress("Purchase", "Pembelian")
       throw errorMessage
     }
@@ -92,7 +92,7 @@ export class CorporateProfilePurchaser {
 
     if (this.repository.error !== null || !response) {
       this.isPurchasing = false
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForPurchaseFail("SSM Corporate Profile", "Profil Korporat SSM")
       throw errorMessage
     }
@@ -103,7 +103,7 @@ export class CorporateProfilePurchaser {
     })
     if (!purchasedItem || !purchasedItem.mydataOrderNumber) {
       this.isPurchasing = false
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForPurchaseFail("SSM Corporate Profile", "Profil Korporat SSM")
       throw errorMessage
     }
@@ -113,7 +113,7 @@ export class CorporateProfilePurchaser {
     this.purchaseResponse.invoiceNumber = purchasedItem.mydataCustomerReferenceNumber ?? ""
     if (StringUtil.isNullOrEmpty(this.purchaseResponse.orderNumber)) {
       this.isPurchasing = false
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForPurchaseFail("SSM Corporate Profile", "Profil Korporat SSM")
       throw errorMessage
     }
@@ -124,7 +124,7 @@ export class CorporateProfilePurchaser {
 
   async getJsonPdf(): Promise<void> {
     if (!this.purchaseResponse || !this.isPurchasing) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForNoPurchaseToGetJson("SSM Corporate Profile", "Profil Korporat SSM")
       throw errorMessage
     }
@@ -136,7 +136,7 @@ export class CorporateProfilePurchaser {
     this.jsonData = null
 
     if (!this.purchaseResponse) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForNoPurchaseToGetJson("SSM Corporate Profile", "Profil Korporat SSM")
       throw errorMessage
     }
@@ -148,7 +148,7 @@ export class CorporateProfilePurchaser {
     this.pdfBlob = null
 
     if (!this.purchaseResponse) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForNoPurchaseToGetJson("SSM Corporate Profile", "Profil Korporat SSM")
       throw errorMessage
     }

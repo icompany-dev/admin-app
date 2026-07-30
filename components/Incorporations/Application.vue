@@ -228,7 +228,7 @@
                       :disabled="!controller.isIncorporationApproved"
                       @click="controller.onIncorporationApproved()"
                     >
-                      {{ controller.appointmentCosecLabel }}
+                      {{ controller.corporateProfileLabel }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"

@@ -842,8 +842,8 @@ export class ApplicationController {
     return this.language.isMalay() ? "Seksyen 236(2)" : "Section 236(2)"
   }
 
-  get appointmentCosecLabel(): string {
-    return this.language.isMalay() ? "S/Usaha Pertama" : "First CoSec"
+  get corporateProfileLabel(): string {
+    return this.language.isMalay() ? "Profil Korporat" : "Corporate Profile"
   }
 
   get convertLabel(): string {
