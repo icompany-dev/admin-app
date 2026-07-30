@@ -1,5 +1,8 @@
 <template>
-  <div id="legal-document-section-27">
+  <div
+    id="legal-document-section-27"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="PaperOrientation.Portrait"
       :additional-css-class="'legal-document section-27'"
@@ -339,6 +342,8 @@
     },
   })
 
+  const documentRef = ref(null)
+
   const controller = new Section27OneFourController(props.applicationId, props.applicationIncorporateId)
 
   watch(
@@ -354,6 +359,18 @@
       controller.setIncorporationId(newVal ?? "")
     }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

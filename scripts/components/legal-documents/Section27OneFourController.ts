@@ -3,6 +3,7 @@ import { Error } from "~/scripts/library/Error"
 import { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
 import { ApplicationNameReservation } from "~/scripts/models/ApplicationNameReservation"
 import { User } from "~/scripts/models/User"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class Section27OneFourController {
@@ -14,6 +15,8 @@ export class Section27OneFourController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
+  documentRef: any | null = null
+
   language = useLanguage()
   time = useLocalTime()
   dayjs = useDayjs()
@@ -21,6 +24,10 @@ export class Section27OneFourController {
   constructor(applicationId: string, applicationIncorporateId: string) {
     this.applicationIncorporateId.value = applicationIncorporateId
     this.setApplicationId(applicationId)
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async setApplicationId(applicationId: string): Promise<void> {
@@ -187,5 +194,16 @@ export class Section27OneFourController {
 
   applicationDate(): string {
     return this.time.formatDateOnlyWithSlash(this.application.value.submittedAt)
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    return pdfPages
   }
 }

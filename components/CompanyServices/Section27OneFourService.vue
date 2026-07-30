@@ -25,6 +25,7 @@
           class="documents"
         >
           <Section27OneFour
+            ref="documentRef"
             :application-id="controller.applicationNameReservationId.value"
             :application-incorporate-id="controller.applicationIncorporationId.value"
           />
@@ -46,6 +47,8 @@
 
   const emit = defineEmits(EmitMessages.COMPANY_SERVICES)
 
+  const documentRef = ref(null)
+
   const controller = new Section27OneFourServiceController(props, emit)
 
   watch(
@@ -54,6 +57,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 
