@@ -7,6 +7,7 @@ import { StringUtil } from "~/scripts/utils/String"
 
 export class Section27OneFourController {
   applicationId: Ref<string> = ref<string>("")
+  applicationIncorporateId: Ref<string> = ref<string>("")
   application = ref<ApplicationNameReservation>(new ApplicationNameReservation())
   applicationIncorporate = ref<ApplicationIncorporate>(new ApplicationIncorporate())
   applicant = ref<User>(new User())
@@ -17,21 +18,50 @@ export class Section27OneFourController {
   time = useLocalTime()
   dayjs = useDayjs()
 
-  constructor(applicationId: string) {
+  constructor(applicationId: string, applicationIncorporateId: string) {
+    this.applicationIncorporateId.value = applicationIncorporateId
     this.setApplicationId(applicationId)
   }
 
   async setApplicationId(applicationId: string): Promise<void> {
     this.applicationId.value = applicationId
 
-    if (StringUtil.isNullOrEmpty(this.applicationId.value) || this.isLoading.value) {
+    if (this.isLoading.value) {
       return
     }
 
     try {
       this.isLoading.value = true
 
-      await this.fetchApplication()
+      if (StringUtil.isNullOrEmpty(this.applicationId.value)) {
+        await this.fetchIncorporation()
+      } else {
+        await this.fetchApplication()
+        await this.fetchIncorporation()
+      }
+      await this.fetchApplicant()
+    } catch (e: any) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetchAll()
+        errorMessage.handle()
+      }
+    } finally {
+      this.isLoading.value = false
+    }
+  }
+
+  async setIncorporationId(applicationIncorporateId: string): Promise<void> {
+    this.applicationIncorporateId.value = applicationIncorporateId
+
+    if (StringUtil.isNullOrEmpty(this.applicationIncorporateId.value) || this.isLoading.value) {
+      return
+    }
+
+    try {
+      this.isLoading.value = true
       await this.fetchIncorporation()
       await this.fetchApplicant()
     } catch (e: any) {
@@ -48,6 +78,9 @@ export class Section27OneFourController {
   }
 
   async fetchApplication(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.applicationId.value)) {
+      return
+    }
     let repository = useApplicationNameReservationStore()
     let response = await repository.fetch(this.applicationId.value)
     if (repository.error !== null) {
@@ -55,15 +88,16 @@ export class Section27OneFourController {
     }
 
     this.application.value = new ApplicationNameReservation(response)
+    this.applicationIncorporateId.value = this.application.value.applicationIncorporateId
   }
 
   async fetchIncorporation(): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.application.value.applicationIncorporateId)) {
+    if (StringUtil.isNullOrEmpty(this.applicationIncorporateId.value)) {
       return
     }
 
     let repository = useApplicationIncorporateStore()
-    let response = await repository.fetch(this.application.value.applicationIncorporateId)
+    let response = await repository.fetch(this.applicationIncorporateId.value)
     if (repository.error !== null) {
       throw repository.error
     }
@@ -86,10 +120,18 @@ export class Section27OneFourController {
   }
 
   proposedName(): string {
-    let name = this.application.value.name.toUpperCase()
+    let name = ""
+    if (
+      StringUtil.isNullOrEmpty(this.application.value.id) &&
+      !StringUtil.isNullOrEmpty(this.applicationIncorporate.value.nameSelected?.name ?? "")
+    ) {
+      name = this.applicationIncorporate.value.nameSelected?.getCompleteName() ?? ""
+    } else {
+      name = this.application.value.name.toUpperCase()
 
-    if (this.application.value.nameType === "sdnbhd") {
-      name = `${name} SDN.BHD.`
+      if (this.application.value.nameType === "sdnbhd") {
+        name = `${name} SDN.BHD.`
+      }
     }
 
     return name

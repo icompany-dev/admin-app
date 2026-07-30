@@ -1,11 +1,18 @@
 <template>
   <div id="legal-document-section-27">
-    <Paper :paper-orientation="PaperOrientation.Portrait" :additional-css-class="'legal-document section-27'"
-      :is-include-logo="false" :show-page-number="true" :page-number="1">
+    <Paper
+      :paper-orientation="PaperOrientation.Portrait"
+      :additional-css-class="'legal-document section-27'"
+      :is-include-logo="false"
+      :show-page-number="true"
+      :page-number="1"
+    >
       <template #paperContent>
         <div class="document-title">
-          COMPANIES ACT 2016<br>
-          Section 27(1)(4)<br>
+          COMPANIES ACT 2016
+          <br />
+          Section 27(1)(4)
+          <br />
           APPLICATION AND RESERVATION FOR AVAILABILITY OF NAMES
         </div>
         <div class="document-section">
@@ -46,41 +53,31 @@
               <tr>
                 <td>Applicant Name</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Identification Number</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Address</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Email Address</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
                 <td>Mobile Phone Number</td>
                 <td>
-                  <span class="placeholder-value">
-                    To be determined by iCompany
-                  </span>
+                  <span class="placeholder-value">To be determined by iCompany</span>
                 </td>
               </tr>
               <tr>
@@ -103,15 +100,11 @@
             </thead>
             <tbody>
               <tr>
-                <td>
-                  1) Single letters included in the name stand for?
-                </td>
+                <td>1) Single letters included in the name stand for?</td>
                 <td>NIL</td>
               </tr>
               <tr>
-                <td>
-                  2) If the proposed name is not in Bahasa Malaysia or English, please clarify.
-                </td>
+                <td>2) If the proposed name is not in Bahasa Malaysia or English, please clarify.</td>
                 <td>NIL</td>
               </tr>
               <tr>
@@ -138,28 +131,30 @@
               <tr>
                 <td>
                   6) If proposed name is to be used for change of name of a corporation, please give the following :
-                  <br><br>
-                  Existing Company Name :<br>
+                  <br />
+                  <br />
+                  Existing Company Name :
+                  <br />
                   Company Number:
                 </td>
                 <td>
-                  <br><br><br><br>
-                  NIL<br>
+                  <br />
+                  <br />
+                  <br />
+                  <br />
+                  NIL
+                  <br />
                   NIL
                 </td>
               </tr>
               <tr>
-                <td>
-                  7) Business Nature
-                </td>
+                <td>7) Business Nature</td>
                 <td>
                   {{ controller.applicationIncorporate.value.businessDescription }}
                 </td>
               </tr>
               <tr>
-                <td>
-                  8) Other Comments
-                </td>
+                <td>8) Other Comments</td>
                 <td>NIL</td>
               </tr>
             </tbody>
@@ -329,24 +324,38 @@
 </template>
 
 <script setup lang="ts">
-import Paper from '../Papers/Paper.vue'
-import { PaperOrientation } from '~/scripts/constants/Paper'
-import { Section27OneFourController } from '~/scripts/components/legal-documents/Section27OneFourController'
+  import Paper from "../Papers/Paper.vue"
+  import { PaperOrientation } from "~/scripts/constants/Paper"
+  import { Section27OneFourController } from "~/scripts/components/legal-documents/Section27OneFourController"
 
-const props = defineProps({
-  applicationId: {
-    type: String,
-    required: true
-  }
-})
+  const props = defineProps({
+    applicationId: {
+      type: String,
+      required: true,
+    },
+    applicationIncorporateId: {
+      type: String,
+      required: true,
+    },
+  })
 
-const controller = new Section27OneFourController(props.applicationId)
+  const controller = new Section27OneFourController(props.applicationId, props.applicationIncorporateId)
 
-watch(() => props.applicationId, (newVal) => {
-  controller.setApplicationId(newVal)
-})
+  watch(
+    () => props.applicationId,
+    (newVal) => {
+      controller.setApplicationId(newVal)
+    }
+  )
+
+  watch(
+    () => props.applicationIncorporateId,
+    (newVal) => {
+      controller.setIncorporationId(newVal ?? "")
+    }
+  )
 </script>
 
 <style lang="scss">
-@use '~/assets/scss/components/LegalDocuments/Section27OneFour' as *;
+  @use "~/assets/scss/components/LegalDocuments/Section27OneFour" as *;
 </style>

@@ -192,7 +192,7 @@ export class ApplicationController {
   onNameReservationStepClicked(): void {
     this.resetAllDocumentValues()
     this.isShowSection27.value = true
-    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT //DocumentTargets.TARGET_INCORP_SECTION_27
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
   }
 
   onProposedNamesClicked(): void {
