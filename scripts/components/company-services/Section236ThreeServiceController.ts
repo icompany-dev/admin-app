@@ -16,7 +16,7 @@ export class Section236ThreeServiceController {
   language = useLanguage()
   repository = useApplicationNameReservationStore()
 
-  target: string = CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION27
+  target: string = CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION236
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 

@@ -5,6 +5,7 @@ import type { Secretary } from "~/scripts/types/Secretary"
 import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 import { PaperOrientation } from "~/scripts/constants/Paper"
 import { PropsSection236Three } from "~/scripts/props/PropsSection236Three"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class Section236ThreeController {
   companyName: Ref<string> = ref<string>("")
@@ -12,6 +13,8 @@ export class Section236ThreeController {
   companyRegistrationNumberOld: Ref<string> = ref<string>("")
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  documentRef: any | null = null
 
   secretaries: Secretary[] = SecretaryInformation.SECRETARY_NAME_LIST
   selectedSecretary: Ref<Secretary> = ref<Secretary>(SecretaryInformation.SECRETARY_NAME_LIST[0])
@@ -32,6 +35,25 @@ export class Section236ThreeController {
     this.companyName.value = props.companyName
     this.companyRegistrationNumberNew.value = props.companyRegistrationNumberNew
     this.companyRegistrationNumberOld.value = props.companyRegistrationNumberOld
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    this.isPrinting.value = true
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    this.isPrinting.value = false
+
+    return pdfPages
   }
 
   get loaderLabel(): string {

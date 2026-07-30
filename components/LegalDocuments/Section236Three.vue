@@ -1,5 +1,8 @@
 <template>
-  <div id="legal-documents-section236-three">
+  <div
+    id="legal-documents-section236-three"
+    ref="documentRef"
+  >
     <Paper
       v-if="controller.isLoading.value"
       :is-loader="true"
@@ -178,6 +181,8 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new Section236ThreeController(props, emit)
 
   watch(
@@ -187,6 +192,18 @@
     },
     { deep: true }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

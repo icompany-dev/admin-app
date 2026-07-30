@@ -92,6 +92,7 @@
   import SetFinancialYearEnd from "./SetFinancialYearEnd.vue"
   import ShareIssuance from "./ShareIssuance.vue"
   import Section201 from "./Section201.vue"
+  import Section236Three from "./Section236Three.vue"
   import Section27ForCompany from "./Section27ForCompany.vue"
   import Section27OneFour from "./Section27OneFour.vue"
   import Section28 from "./Section28.vue"
@@ -125,6 +126,7 @@
     [CompanyConstants.TARGET_AMENDMENT_REGISTERED_ADDRESS]: ChangeOfRegisteredAddress,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE]: NewIncorporation,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION27]: Section27OneFour,
+    [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION236]: Section236Three,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointmentOfAuditor,
     [CompanyConstants.TARGET_APPLICATION_SWITCH]: NewSwitch,
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,

@@ -448,7 +448,7 @@ export class ApplicationController {
     this.resetAllDocumentValues()
     this.isShowCOI.value = true
 
-    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT // update the document target
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
   }
 
   async onCompleteIncorporation(): Promise<void> {
@@ -509,6 +509,11 @@ export class ApplicationController {
     } finally {
       this.isUpdatingCOI.value = false
     }
+  }
+
+  onSection236Clicked(): void {
+    this.isShowCOIActions.value = false
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE
   }
 
   // getters

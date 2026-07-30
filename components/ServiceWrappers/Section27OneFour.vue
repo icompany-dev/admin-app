@@ -66,5 +66,6 @@
 </script>
 
 <style lang="scss">
+  @use "~/assets/scss/components/Services/CosecServiceDocuments" as *;
   @use "~/assets/scss/components/ServiceWrappers/Section27OneFour" as *;
 </style>

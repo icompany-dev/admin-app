@@ -219,8 +219,7 @@
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      :disabled="!controller.isIncorporationApproved"
-                      @click="controller.onIncorporationApproved()"
+                      @click.self="controller.onSection236Clicked()"
                     >
                       {{ controller.generateSection236Label }}
                     </button>
