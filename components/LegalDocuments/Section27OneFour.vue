@@ -32,7 +32,17 @@
               </tr>
               <tr>
                 <td>Lodging Ref No</td>
-                <td>{{ controller.application.value.ssmTemplateReferenceNumber }}</td>
+                <td>
+                  <input
+                    v-if="!controller.isPrinting.value"
+                    type="text"
+                    class="form-control required"
+                    v-model="controller.application.value.ssmTemplateReferenceNumber"
+                  />
+                  <span v-if="controller.isPrinting.value">
+                    {{ controller.application.value.ssmTemplateReferenceNumber }}
+                  </span>
+                </td>
               </tr>
               <tr>
                 <td>Purpose of Application</td>

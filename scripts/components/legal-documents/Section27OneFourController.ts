@@ -14,6 +14,7 @@ export class Section27OneFourController {
   applicant = ref<User>(new User())
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+  isPrinting: Ref<boolean> = ref<boolean>(false)
 
   documentRef: any | null = null
 
@@ -201,8 +202,12 @@ export class Section27OneFourController {
       return []
     }
 
+    this.isPrinting.value = true
+
     await nextTick()
     let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    this.isPrinting.value = false
 
     return pdfPages
   }
