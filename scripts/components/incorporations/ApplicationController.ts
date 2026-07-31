@@ -894,9 +894,12 @@ export class ApplicationController {
   get companyToConvert(): Company {
     let company = new Company()
 
+    let registrationNumberNew = this.application.value.metaData?.company_data?.registrationNumberNew ?? ""
+    let registrationNumberOld = this.application.value.metaData?.company_data?.registrationNumberOld ?? ""
+
     company.name = this.application.value.nameSelected?.getCompleteName() ?? ""
-    company.registrationNumberNew = this.registrationNumberNew.value ?? ""
-    company.registrationNumberOld = this.registrationNumberOld.value ?? ""
+    company.registrationNumberNew = registrationNumberNew ?? ""
+    company.registrationNumberOld = registrationNumberOld ?? ""
 
     return company
   }

@@ -23,7 +23,7 @@
 
     .company-registration-box {
       padding: 3px 10px;
-      width: 200px;
+      width: fit-content;
       text-align: center;
       border: 1px solid var(--bs-black);
       display: flex;
@@ -31,10 +31,6 @@
       justify-content: center;
       align-items: center;
       gap: 5px;
-
-      &.printing {
-        width: fit-content;
-      }
 
       .form-control {
         width: calc(60% - 10px);

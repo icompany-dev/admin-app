@@ -30,23 +30,7 @@
             class="company-registration-box"
             :class="{ printing: controller.isPrinting.value }"
           >
-            <template v-if="!controller.isPrinting.value">
-              <input
-                type="text"
-                class="form-control"
-                v-model="controller.companyRegistrationNumberNew.value"
-              />
-              (
-              <input
-                type="text"
-                class="form-control small"
-                v-model="controller.companyRegistrationNumberOld.value"
-              />
-              )
-            </template>
-            <span v-if="controller.isPrinting.value">
-              {{ controller.companyRegistrationNumberNew.value }} ({{ controller.companyRegistrationNumberOld.value }})
-            </span>
+            {{ controller.companyRegistrationNumberNew.value }} ({{ controller.companyRegistrationNumberOld.value }})
           </div>
         </div>
         <div class="document-header">

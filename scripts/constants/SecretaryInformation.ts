@@ -13,26 +13,6 @@ export class SecretaryInformation {
 
   static SECRETARY_NAME_LIST: Secretary[] = [
     {
-      name: "NUR ASHIKIN BINTI SHAHARUDIN",
-      nric: "941024-04-5428",
-      license: "LS0010853",
-      certificate: "202408000763",
-      phone: "017 778 3260",
-      email: "connect@icompany.my",
-      firmName: "Cosec Tech Solutions Sdn Bhd",
-      firmPhone: "03 3310 0896",
-      firmFax: "03 3310 0896",
-      address: new Location({
-        address_line_1: "D-1-6, FIRST FLOOR, BLOCK D, SEKITAR26 ENTERPRISE",
-        address_line_2: "PERSIARAN HULU SELANGOR, SEKSYEN 26",
-        postcode: "40400",
-        city: { name: "Shah Alam" },
-        state: { name: "Selangor" },
-        country: { name: "Malaysia" },
-      }),
-      signatureUrl: "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/signatures/cosec-signature.png",
-    },
-    {
       name: "AHMAD ASYRAQ BIN ABDUL RASID",
       nric: "870523-04-5275",
       license: "BC/A/2271",
@@ -51,6 +31,26 @@ export class SecretaryInformation {
         country: { name: "Malaysia" },
       }),
       signatureUrl: "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/signatures/asy-signature.png",
+    },
+    {
+      name: "NUR ASHIKIN BINTI SHAHARUDIN",
+      nric: "941024-04-5428",
+      license: "LS0010853",
+      certificate: "202408000763",
+      phone: "017 778 3260",
+      email: "connect@icompany.my",
+      firmName: "Cosec Tech Solutions Sdn Bhd",
+      firmPhone: "03 3310 0896",
+      firmFax: "03 3310 0896",
+      address: new Location({
+        address_line_1: "D-1-6, FIRST FLOOR, BLOCK D, SEKITAR26 ENTERPRISE",
+        address_line_2: "PERSIARAN HULU SELANGOR, SEKSYEN 26",
+        postcode: "40400",
+        city: { name: "Shah Alam" },
+        state: { name: "Selangor" },
+        country: { name: "Malaysia" },
+      }),
+      signatureUrl: "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/signatures/cosec-signature.png",
     },
   ]
 
