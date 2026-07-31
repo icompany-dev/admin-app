@@ -14,11 +14,14 @@ export class CorporateProfilePurchaser {
   registrationNumberNew: string = ""
   registrationNumberOld: string = ""
 
+  uploadedFileId: string = ""
+
   purchaseResponse: MyDataPurchaseCorporateProfileResponse | null = null
 
   jsonData: any | null = null
   pdfBlob: any | null = null
 
+  isUploadFile: boolean = false
   isPurchasing: boolean = false
 
   constructor() {
@@ -163,17 +166,21 @@ export class CorporateProfilePurchaser {
       : this.registrationNumberNew
     let fileName = `${companyRegistrationNumber} Corporate Profile.pdf`
 
-    //upload to S3
-    if (this.companyId !== null && !StringUtil.isNullOrEmpty(this.companyId)) {
+    if (this.isUploadFile || (this.companyId !== null && !StringUtil.isNullOrEmpty(this.companyId))) {
       let fileToUpload = new File([this.pdfBlob], fileName, { type: "application/pdf" })
       let uploadedFile = new UploadedFile()
       await uploadedFile.uploadFile(fileToUpload, useFileStore())
-      let form = new Form()
-      form.companyId = this.companyId
-      form.type = "business_detail"
-      form.fileId = uploadedFile.id
-      form.status = "active"
-      await form.create(useFormStore())
+
+      this.uploadedFileId = uploadedFile.id
+
+      if (this.companyId !== null && !StringUtil.isNullOrEmpty(this.companyId)) {
+        let form = new Form()
+        form.companyId = this.companyId
+        form.type = "business_detail"
+        form.fileId = uploadedFile.id
+        form.status = "active"
+        await form.create(useFormStore())
+      }
     }
 
     const fileUrl = URL.createObjectURL(this.pdfBlob)

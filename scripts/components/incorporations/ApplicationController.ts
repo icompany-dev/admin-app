@@ -18,6 +18,7 @@ import { NameReservationVariant } from "~/scripts/models/NameReservationVariant"
 import { Toast } from "~/scripts/library/Toast"
 import { Company } from "~/scripts/models/Company"
 import type { CompletionOfIncorporation } from "~/scripts/types/emit-messages/CompletionOfIncorporation"
+import { CorporateProfilePurchaser } from "~/scripts/library/CorporateProfilePurchaser"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -571,8 +572,6 @@ export class ApplicationController {
     try {
       this.isUpdatingCOI.value = true
 
-      // this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE
-
       await nextTick()
       if (!this.documentRef) {
         let error = new Error()
@@ -605,6 +604,50 @@ export class ApplicationController {
       toast.success()
     } catch (e) {
       console.error(e) // check what is the issue
+    } finally {
+      this.isUpdatingCOI.value = false
+    }
+  }
+
+  async onPurchaseCorporateProfile(): Promise<void> {
+    this.isShowCOIActions.value = false
+
+    try {
+      this.isUpdatingCOI.value = true
+
+      let corporateProfilePurchaser = new CorporateProfilePurchaser()
+      corporateProfilePurchaser.isUploadFile = true
+      corporateProfilePurchaser.setRegistrationNumberNew(this.companyToConvert.registrationNumberNew)
+      corporateProfilePurchaser.setRegistrationNumberOld(this.companyToConvert.registrationNumberOld)
+
+      await corporateProfilePurchaser.purchase()
+
+      if (!this.application.value.metaData) {
+        this.application.value.metaData = {}
+      }
+
+      this.application.value.metaData.corporate_profile = {
+        json: corporateProfilePurchaser.jsonData,
+        file_id: corporateProfilePurchaser.uploadedFileId,
+      }
+      await this.application.value.updateMetadata(useApplicationIncorporateStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Profil Korporat SSM telah dibeli bagi Permohonan ini."
+        : "SSM Corporate Profile has been purchased for this Application."
+      let toastMessage = this.language.isMalay()
+        ? "Salinan telah dimuat turun untuk rekod anda."
+        : "A copy has been downloaded for your record."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForPurchaseFail("SSM Corporate Profile", "Profil Korporat SSM")
+        error.handle()
+      }
     } finally {
       this.isUpdatingCOI.value = false
     }

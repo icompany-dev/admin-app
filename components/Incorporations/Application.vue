@@ -226,7 +226,7 @@
                     <button
                       class="btn btn-pill btn-submit"
                       :disabled="!controller.isIncorporationApproved"
-                      @click="controller.onIncorporationApproved()"
+                      @click="controller.onPurchaseCorporateProfile()"
                     >
                       {{ controller.corporateProfileLabel }}
                     </button>
