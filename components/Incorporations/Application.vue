@@ -79,7 +79,7 @@
                 <i class="fa-brands fa-whatsapp" />
                 {{ shareholder.user.phone }}
               </span>
-              <span class="human-detail">Total Shares: {{ shareholder.totalShares }}</span>
+              <span class="human-detail">{{ controller.totalSharesLabel }}: {{ shareholder.totalShares }}</span>
             </div>
           </div>
         </div>

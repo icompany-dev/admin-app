@@ -756,6 +756,10 @@ export class ApplicationController {
     return props
   }
 
+  get totalSharesLabel(): string {
+    return this.language.isMalay() ? "Jumlah Saham" : "Total Shares"
+  }
+
   get hasPaid(): boolean {
     return (
       this.application.value.status !== StatusConstants.DRAFT &&
