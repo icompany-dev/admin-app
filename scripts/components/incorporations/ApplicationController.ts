@@ -458,6 +458,7 @@ export class ApplicationController {
   }
 
   onIncorporationApproved(): void {
+    this.isShowCOIActions.value = false
     /**
      * Items at this step:
      * 1. Incorporation Date
@@ -471,6 +472,36 @@ export class ApplicationController {
 
   async onProceedIncorporationApproved(data: CompletionOfIncorporation): Promise<void> {
     // save the data
+    try {
+      this.isUpdatingCOI.value = true
+
+      if (!this.application.value.metaData) {
+        this.application.value.metaData = {}
+      }
+
+      this.application.value.metaData.company_data = data
+      await this.application.value.updateMetadata(useApplicationIncorporateStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Maklumat baharu telah dikemaskini."
+        : "Your changes have been recorded."
+      let toastMessage = this.language.isMalay()
+        ? "Teruskan dengan Seksyen 236(3) dan Profil Korporat."
+        : "Proceed with generation of Section 236(3) and purchase of Corporate Profile."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      console.log(e)
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingCOI.value = false
+    }
   }
 
   async onDownloadCOIClicked(): Promise<void> {
@@ -841,10 +872,7 @@ export class ApplicationController {
   }
 
   get isIncorporationApproved(): boolean {
-    return (
-      this.application.value.status === StatusConstants.APPROVED ||
-      this.application.value.status === StatusConstants.CONVERTED
-    )
+    return this.application.value.metaData !== null && !!this.application.value.metaData.company_data
   }
 
   get approvedRegistrationLabel(): string {

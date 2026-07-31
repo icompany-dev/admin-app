@@ -405,4 +405,28 @@ export class ApplicationIncorporate implements IApplication {
 
     return response
   }
+
+  async updateMetadata(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      meta_data: this.metaData,
+    }
+    let response = await repository.update(this.id, data)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    if (response instanceof ApplicationIncorporate) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
+  }
 }
