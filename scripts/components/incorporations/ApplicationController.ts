@@ -53,6 +53,8 @@ export class ApplicationController {
 
   language = useLanguage()
 
+  documentRef: any | null = null
+
   isLoading: Ref<boolean> = ref<boolean>(false)
 
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
@@ -106,6 +108,10 @@ export class ApplicationController {
 
   setCompletionOfIncorporationPopup(completionOfIncorporationPopup: any): void {
     this.completionOfIncorporationPopup = completionOfIncorporationPopup
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async init(): Promise<void> {
@@ -558,6 +564,50 @@ export class ApplicationController {
   onSection236Clicked(): void {
     this.isShowCOIActions.value = false
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE
+  }
+
+  async onGenerate236Clicked(): Promise<void> {
+    this.onSection236Clicked()
+    try {
+      this.isUpdatingCOI.value = true
+
+      // this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE
+
+      await nextTick()
+      if (!this.documentRef) {
+        let error = new Error()
+        error.setForDocumentDownload()
+        throw error
+      }
+
+      let uploadedFileId = await this.documentRef.onGenerateClicked()
+      if (!uploadedFileId) {
+        this.isUpdatingCOI.value = false
+        return
+      }
+
+      await this.documentRef.onDownloadClicked()
+
+      if (this.application.value.metaData === null) {
+        this.application.value.metaData = {}
+      }
+
+      this.application.value.metaData.section236 = uploadedFileId
+      await this.application.value.updateMetadata(useApplicationIncorporateStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Seksyen 236(3) telah direkodkan bagi Permohonan ini."
+        : "Section 236(3) has been generated for this Application."
+      let toastMessage = this.language.isMalay()
+        ? "Salinan telah dimuat turun untuk rekod anda."
+        : "A copy has been downloaded for your record."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      console.error(e) // check what is the issue
+    } finally {
+      this.isUpdatingCOI.value = false
+    }
   }
 
   // getters

@@ -219,7 +219,7 @@
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      @click.self="controller.onSection236Clicked()"
+                      @click.self="controller.onGenerate236Clicked()"
                     >
                       {{ controller.generateSection236Label }}
                     </button>
@@ -299,6 +299,8 @@
     [DocumentTargets.TARGET_INCORP_SECTION_236_THREE]: Section236ThreeService,
   }
 
+  const documentRef = ref(null)
+
   const nameReservedPopup = ref(null)
   const nameReservedQueriedPopup = ref(null)
   const completionOfIncorporationPopup = ref(null)
@@ -338,6 +340,14 @@
     completionOfIncorporationPopup,
     (newVal) => {
       controller.setCompletionOfIncorporationPopup(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
     },
     { immediate: true }
   )

@@ -7,6 +7,7 @@ import { PropsCompanyServiceWrapper } from "~/scripts/props/PropsCompanyServiceW
 import type { PropsIncorporationDocumentService } from "~/scripts/props/PropsIncorporationDocumentService"
 import { CompanyAmendmentName } from "~/scripts/models/CompanyAmendmentName"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { File as UploadedFile } from "~/scripts/models/File"
 
 export class Section236ThreeServiceController {
   companyName: Ref<string> = ref<string>("")
@@ -50,7 +51,36 @@ export class Section236ThreeServiceController {
       return
     }
 
-    await PdfPaperUtil.generatePdfFile(pages, 20, "Section 27(1)(4).pdf", PaperSize.A4, PaperOrientation.Portrait)
+    await PdfPaperUtil.generatePdfFile(
+      pages,
+      20,
+      `${this.registrationNumberOld.value} Section 236(3).pdf`,
+      PaperSize.A4,
+      PaperOrientation.Portrait
+    )
+  }
+
+  async onGenerateClicked(): Promise<string | null> {
+    if (!this.documentRef) {
+      return null
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return null
+    }
+
+    let filename = `${this.registrationNumberOld.value} Section 236(3).pdf`
+    let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+    let pdfFile = new File([pdfBlob], filename, {
+      type: "application/pdf",
+    })
+
+    let uploadedFile = new UploadedFile()
+    await uploadedFile.uploadFile(pdfFile, useFileStore())
+
+    return uploadedFile.id
   }
 
   get serviceWrapperProps() {
