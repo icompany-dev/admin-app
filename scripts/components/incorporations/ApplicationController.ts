@@ -24,6 +24,7 @@ import type { ShareholderInvitation } from "~/scripts/models/ShareholderInvitati
 import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { MsicCode } from "~/scripts/models/MsicCode"
 import { Filter } from "~/scripts/library/Filter"
+import { SelectOption } from "~/scripts/types/SelectOption"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -87,9 +88,11 @@ export class ApplicationController {
   registrationNumberOld: Ref<string | null> = ref<string | null>(null)
 
   isEditingDescription: Ref<boolean> = ref<boolean>(false)
+  isUpdatingDescription: Ref<boolean> = ref<boolean>(false)
   isEditingAddress: Ref<boolean> = ref<boolean>(false)
 
   selectedMsicCodeIds: Ref<string[]> = ref<string[]>([])
+  searchTextsForMsicCodes: Ref<string[]> = ref<string[]>([])
   msicCodes: Ref<MsicCode[]> = ref<MsicCode[]>([])
 
   constructor(props: PropsIncorporationApplication, emitEvents: any) {
@@ -259,10 +262,40 @@ export class ApplicationController {
   }
 
   async onSaveBusinessDescriptionClicked(): Promise<void> {
-    await this.application.value.updateBusinessDescriptionAndMsicCodes(
-      this.selectedMsicCodeIds.value,
-      useApplicationIncorporateStore()
-    )
+    try {
+      this.isUpdatingDescription.value = true
+      await this.application.value.updateBusinessDescriptionAndMsicCodes(
+        this.selectedMsicCodeIds.value,
+        useApplicationIncorporateStore()
+      )
+      this.isEditingDescription.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingDescription.value = false
+    }
+  }
+
+  onMsicCodeSelected(msicCode: any, index: number): void {
+    if (this.selectedMsicCodeIds.value[index]) {
+      this.selectedMsicCodeIds.value[index] = msicCode
+    } else {
+      this.selectedMsicCodeIds.value.push(msicCode)
+    }
+  }
+
+  onMsicCodeSearched(searchText: string, index: number): void {
+    if (this.searchTextsForMsicCodes.value[index]) {
+      this.searchTextsForMsicCodes.value[index] = searchText
+    } else {
+      this.searchTextsForMsicCodes.value.push(searchText)
+    }
   }
 
   // Name Reservation Step
@@ -1095,5 +1128,108 @@ export class ApplicationController {
     company.registrationNumberOld = registrationNumberOld ?? ""
 
     return company
+  }
+
+  // MSIC Codes
+  get firstSelectedMsicCodeName(): string {
+    if (!this.selectedMsicCodeIds.value[0] || StringUtil.isNullOrEmpty(this.selectedMsicCodeIds.value[0])) {
+      return ""
+    }
+
+    let msicCode = this.msicCodes.value.find((msicCode: MsicCode) => {
+      return msicCode.id === this.selectedMsicCodeIds.value[0]
+    })
+
+    if (!msicCode) {
+      return ""
+    }
+
+    return `${msicCode.code} - ${msicCode.descriptionEn}`
+  }
+
+  get firstMsicCodeOptions(): SelectOption[] {
+    return this.msicCodes.value
+      .filter((msicCode: MsicCode) => {
+        if (!this.searchTextsForMsicCodes.value[0] || StringUtil.isNullOrEmpty(this.searchTextsForMsicCodes.value[0])) {
+          return true
+        }
+
+        return (
+          StringUtil.contains(msicCode.code, this.searchTextsForMsicCodes.value[0]) ||
+          StringUtil.contains(msicCode.description, this.searchTextsForMsicCodes.value[0]) ||
+          StringUtil.contains(msicCode.descriptionEn, this.searchTextsForMsicCodes.value[0])
+        )
+      })
+      .map((msicCode: MsicCode) => {
+        return new SelectOption(msicCode.id, msicCode.id, `${msicCode.code} - ${msicCode.descriptionEn}`)
+      })
+  }
+
+  get secondSelectedMsicCodeName(): string {
+    if (!this.selectedMsicCodeIds.value[1] || StringUtil.isNullOrEmpty(this.selectedMsicCodeIds.value[1])) {
+      return ""
+    }
+
+    let msicCode = this.msicCodes.value.find((msicCode: MsicCode) => {
+      return msicCode.id === this.selectedMsicCodeIds.value[1]
+    })
+
+    if (!msicCode) {
+      return ""
+    }
+
+    return `${msicCode.code} - ${msicCode.descriptionEn}`
+  }
+
+  get secondMsicCodeOptions(): SelectOption[] {
+    return this.msicCodes.value
+      .filter((msicCode: MsicCode) => {
+        if (!this.searchTextsForMsicCodes.value[1] || StringUtil.isNullOrEmpty(this.searchTextsForMsicCodes.value[1])) {
+          return true
+        }
+
+        return (
+          StringUtil.contains(msicCode.code, this.searchTextsForMsicCodes.value[1]) ||
+          StringUtil.contains(msicCode.description, this.searchTextsForMsicCodes.value[1]) ||
+          StringUtil.contains(msicCode.descriptionEn, this.searchTextsForMsicCodes.value[1])
+        )
+      })
+      .map((msicCode: MsicCode) => {
+        return new SelectOption(msicCode.id, msicCode.id, `${msicCode.code} - ${msicCode.descriptionEn}`)
+      })
+  }
+
+  get thirdSelectedMsicCodeName(): string {
+    if (!this.selectedMsicCodeIds.value[2] || StringUtil.isNullOrEmpty(this.selectedMsicCodeIds.value[2])) {
+      return ""
+    }
+
+    let msicCode = this.msicCodes.value.find((msicCode: MsicCode) => {
+      return msicCode.id === this.selectedMsicCodeIds.value[2]
+    })
+
+    if (!msicCode) {
+      return ""
+    }
+
+    return `${msicCode.code} - ${msicCode.descriptionEn}`
+  }
+
+  get thirdMsicCodeOptions(): SelectOption[] {
+    return this.msicCodes.value
+      .filter((msicCode: MsicCode) => {
+        if (!this.searchTextsForMsicCodes.value[2] || StringUtil.isNullOrEmpty(this.searchTextsForMsicCodes.value[2])) {
+          return true
+        }
+
+        return (
+          StringUtil.contains(msicCode.code, this.searchTextsForMsicCodes.value[2]) ||
+          StringUtil.contains(msicCode.description, this.searchTextsForMsicCodes.value[2]) ||
+          StringUtil.contains(msicCode.descriptionEn, this.searchTextsForMsicCodes.value[2])
+        )
+      })
+      .map((msicCode: MsicCode) => {
+        return new SelectOption(msicCode.id, msicCode.id, `${msicCode.code} - ${msicCode.descriptionEn}`)
+      })
   }
 }

@@ -91,12 +91,12 @@
               {{ controller.businessNatureLabel }}
               <div class="action-icons">
                 <i
-                  v-if="controller.isEditingDescription.value"
+                  v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
                   class="fa-regular fa-xmark clickable cancel"
                   @click="controller.onCancelEditBusinessDescriptionClicked()"
                 />
                 <i
-                  v-if="controller.isEditingDescription.value"
+                  v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
                   class="fa-regular fa-save clickable save"
                   @click="controller.onSaveBusinessDescriptionClicked()"
                 />
@@ -104,6 +104,10 @@
                   v-if="!controller.isEditingDescription.value"
                   class="fa-regular fa-edit clickable edit"
                   @click="controller.onEditBusinessDescriptionClicked()"
+                />
+                <i
+                  v-if="controller.isUpdatingDescription.value"
+                  class="fa-regular fa-spin fa-spinner edit"
                 />
               </div>
             </div>
@@ -123,18 +127,33 @@
             </div>
             <div class="application-item-content">
               <template v-if="controller.isEditingDescription.value">
-                <select
-                  multiple
-                  v-model="controller.selectedMsicCodeIds.value"
-                  class="form-control"
-                >
-                  <option
-                    v-for="(msicCode, i) in controller.msicCodes.value"
-                    :value="msicCode.id"
-                  >
-                    {{ msicCode.code }} - {{ msicCode.descriptionEn }}
-                  </option>
-                </select>
+                <SearchableDropdown
+                  :is-searchable="true"
+                  :options="controller.firstMsicCodeOptions"
+                  :selected-item-name="controller.firstSelectedMsicCodeName"
+                  :label-key="'label'"
+                  :value-key="'id'"
+                  @search="controller.onMsicCodeSearched($event, 0)"
+                  @selected="controller.onMsicCodeSelected($event, 0)"
+                />
+                <SearchableDropdown
+                  :is-searchable="true"
+                  :options="controller.secondMsicCodeOptions"
+                  :selected-item-name="controller.secondSelectedMsicCodeName"
+                  :label-key="'label'"
+                  :value-key="'id'"
+                  @search="controller.onMsicCodeSearched($event, 1)"
+                  @selected="controller.onMsicCodeSelected($event, 1)"
+                />
+                <SearchableDropdown
+                  :is-searchable="true"
+                  :options="controller.thirdMsicCodeOptions"
+                  :selected-item-name="controller.thirdSelectedMsicCodeName"
+                  :label-key="'label'"
+                  :value-key="'id'"
+                  @search="controller.onMsicCodeSearched($event, 2)"
+                  @selected="controller.onMsicCodeSelected($event, 2)"
+                />
               </template>
               <span
                 v-if="!controller.isEditingDescription.value"
@@ -396,6 +415,7 @@
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
+  import SearchableDropdown from "@/components/Forms/SearchableDropdown.vue"
   import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import Section27OneFourService from "@/components/CompanyServices/Section27OneFourService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"

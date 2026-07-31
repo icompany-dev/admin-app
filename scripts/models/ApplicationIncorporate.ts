@@ -319,13 +319,13 @@ export class ApplicationIncorporate implements IApplication {
 
     let data = this.getRequestBodyForBusinessDescriptionAndMsicCodes(msicCodeIds)
     let response = await repository.updateDescriptionMsicCodes(this.id, data)
-    if (repository.error !== null) {
+    if (repository.error !== null || !response) {
       let error: Error = new Error()
       error.setForCUD()
       throw error
     }
 
-    this.convertFromResponse(response)
+    this.clone(response)
   }
 
   canSubmitBusinessAddress(): boolean {

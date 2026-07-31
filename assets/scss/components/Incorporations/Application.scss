@@ -105,11 +105,34 @@
           width: 100%;
 
           .form-control {
-            width: calc(100% - 12px);
+            width: calc(100% - 22px);
             background-color: var(--bs-white);
-            padding: 5px;
+            padding: 10px;
             font-weight: normal;
             border-radius: 3px;
+            border-color: transparent;
+          }
+
+          textarea {
+            min-height: 50px;
+            resize: vertical;
+          }
+
+          .searchable-dropdown {
+            margin-bottom: 5px;
+          }
+
+          .dropdown {
+            background-color: var(--bs-white);
+          }
+
+          .dropdown-menu {
+            background-color: var(--bs-white);
+
+            .form-control {
+              border-color: var(--bs-gray-500);
+              padding: 4px 10px;
+            }
           }
         }
       }
