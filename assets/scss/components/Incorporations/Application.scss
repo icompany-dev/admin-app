@@ -51,7 +51,29 @@
       }
     }
 
+    .application-items {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 30px;
 
+      .application-item {
+        width: calc((100% / 2) - 15px);
+
+        .application-item-title {
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin-bottom: 5px;
+        }
+
+        .application-item-content {
+          margin-bottom: 10px;
+          line-height: 1.3rem;
+        }
+      }
+    }
   }
 
   .human-details {

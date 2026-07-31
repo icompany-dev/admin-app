@@ -21,6 +21,7 @@ import type { CompletionOfIncorporation } from "~/scripts/types/emit-messages/Co
 import { CorporateProfilePurchaser } from "~/scripts/library/CorporateProfilePurchaser"
 import type { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import type { ShareholderInvitation } from "~/scripts/models/ShareholderInvitation"
+import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -733,7 +734,7 @@ export class ApplicationController {
   }
 
   get directorLabel(): string {
-    return this.language.isMalay() ? "Butiran Pengarah" : "Details of Directors"
+    return this.language.isMalay() ? "Butiran Pengarah yang Dilantik" : "Details of Elected Directors"
   }
 
   get directorDetails(): DirectorInvitation[] {
@@ -741,7 +742,7 @@ export class ApplicationController {
   }
 
   get shareholderLabel(): string {
-    return this.language.isMalay() ? "Butiran Pemegang Saham" : "Details of Shareholders"
+    return this.language.isMalay() ? "Butiran Pemegang Saham yang Dinama" : "Details of Nominated Shareholders"
   }
 
   get shareholderDetails(): ShareholderInvitation[] {
@@ -758,6 +759,34 @@ export class ApplicationController {
 
   get totalSharesLabel(): string {
     return this.language.isMalay() ? "Jumlah Saham" : "Total Shares"
+  }
+
+  get businessNatureLabel(): string {
+    return this.language.isMalay() ? "Perihal Perniagaan" : "Nature of Business"
+  }
+
+  get msicCodeLabel(): string {
+    return this.language.isMalay() ? "Kod MSIC" : "MSIC Codes"
+  }
+
+  get msicCodes(): string {
+    return this.application.value.msicCodeAssigns
+      .map((msic: MsicCodeAssign) => {
+        return `${msic.msicCode.code} - ${msic.msicCode.descriptionEn}`
+      })
+      .join("<br>")
+  }
+
+  get businessAddressLabel(): string {
+    return this.language.isMalay() ? "Alamat Perniagaan" : "Business Address"
+  }
+
+  get businessAddress(): string {
+    if (!this.application.value.hasBusinessAddress) {
+      return "(No Business Address)"
+    }
+
+    return this.application.value.businessAddressLocation?.getMultilineAddress() ?? "(No Business Address)"
   }
 
   get hasPaid(): boolean {

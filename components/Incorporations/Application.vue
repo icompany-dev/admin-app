@@ -84,6 +84,34 @@
           </div>
         </div>
       </div>
+      <div class="incorp-application-summary">
+        <div class="application-items">
+          <div class="application-item">
+            <div class="application-item-title">
+              {{ controller.businessNatureLabel }}
+            </div>
+            <div class="application-item-content">
+              {{ controller.application.value.businessDescription }}
+            </div>
+            <div class="application-item-title">
+              {{ controller.msicCodeLabel }}
+            </div>
+            <div
+              class="application-item-content"
+              v-html="controller.msicCodes"
+            />
+          </div>
+          <div class="application-item">
+            <div class="application-item-title">
+              {{ controller.businessAddressLabel }}
+            </div>
+            <div
+              class="application-item-content"
+              v-html="controller.businessAddress"
+            />
+          </div>
+        </div>
+      </div>
       <div class="incorp-application-details">
         <ServiceApplication
           v-bind="controller.serviceApplicationProps"
