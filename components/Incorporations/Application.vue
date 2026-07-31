@@ -20,22 +20,67 @@
             <i class="fa-solid fa-circle-check" />
           </span>
         </div>
-        <div class="summary-item">
-          <div class="summary-item-title">
-            {{ controller.applicantLabel }}
+        <div class="summary-items">
+          <div class="summary-item">
+            <div class="summary-item-title">
+              {{ controller.applicantLabel }}
+            </div>
+            <div class="summary-item-content human-details">
+              <span class="human-detail">
+                <b>{{ controller.applicantName }}</b>
+              </span>
+              <span class="human-detail">
+                <i class="fa-regular fa-envelope" />
+                {{ controller.applicantEmail }}
+              </span>
+              <span class="human-detail">
+                <i class="fa-brands fa-whatsapp" />
+                {{ controller.applicantPhone }}
+              </span>
+            </div>
           </div>
-          <div class="summary-item-content human-details">
-            <span class="human-detail">
-              <b>{{ controller.applicantName }}</b>
-            </span>
-            <span class="human-detail">
-              <i class="fa-regular fa-envelope" />
-              {{ controller.applicantEmail }}
-            </span>
-            <span class="human-detail">
-              <i class="fa-brands fa-whatsapp" />
-              {{ controller.applicantPhone }}
-            </span>
+          <div class="summary-item">
+            <div class="summary-item-title">
+              {{ controller.directorLabel }}
+            </div>
+            <div
+              class="summary-item-content human-details"
+              v-for="(director, index) in controller.directorDetails"
+            >
+              <span class="human-detail">
+                <b>{{ director.name }}</b>
+              </span>
+              <span class="human-detail">
+                <i class="fa-regular fa-envelope" />
+                {{ director.email }}
+              </span>
+              <span class="human-detail">
+                <i class="fa-brands fa-whatsapp" />
+                {{ director.user.phone }}
+              </span>
+            </div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-item-title">
+              {{ controller.shareholderLabel }}
+            </div>
+            <div
+              class="summary-item-content human-details"
+              v-for="(shareholder, index) in controller.shareholderDetails"
+            >
+              <span class="human-detail">
+                <b>{{ shareholder.name }}</b>
+              </span>
+              <span class="human-detail">
+                <i class="fa-regular fa-envelope" />
+                {{ shareholder.email }}
+              </span>
+              <span class="human-detail">
+                <i class="fa-brands fa-whatsapp" />
+                {{ shareholder.user.phone }}
+              </span>
+              <span class="human-detail">Total Shares: {{ shareholder.totalShares }}</span>
+            </div>
           </div>
         </div>
       </div>

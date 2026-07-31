@@ -19,6 +19,8 @@ import { Toast } from "~/scripts/library/Toast"
 import { Company } from "~/scripts/models/Company"
 import type { CompletionOfIncorporation } from "~/scripts/types/emit-messages/CompletionOfIncorporation"
 import { CorporateProfilePurchaser } from "~/scripts/library/CorporateProfilePurchaser"
+import type { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
+import type { ShareholderInvitation } from "~/scripts/models/ShareholderInvitation"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -162,6 +164,18 @@ export class ApplicationController {
     }
 
     this.application.value = new ApplicationIncorporate(response)
+
+    let directorPromises = this.application.value.directorInvitations.map((di: DirectorInvitation) => {
+      return di.setUser(useUserStore())
+    })
+
+    let shareholderPromises = this.application.value.shareholderInvitations.map((si: ShareholderInvitation) => {
+      return si.setUser(useUserStore())
+    })
+
+    let promises = directorPromises.concat(shareholderPromises)
+
+    await Promise.all(promises)
   }
 
   async fetchPaymentOrder(): Promise<void> {
@@ -716,6 +730,22 @@ export class ApplicationController {
 
   get applicantIdentification(): string {
     return this.applicant.value.detail?.identification ?? "-"
+  }
+
+  get directorLabel(): string {
+    return this.language.isMalay() ? "Butiran Pengarah" : "Details of Directors"
+  }
+
+  get directorDetails(): DirectorInvitation[] {
+    return this.application.value.directorInvitations
+  }
+
+  get shareholderLabel(): string {
+    return this.language.isMalay() ? "Butiran Pemegang Saham" : "Details of Shareholders"
+  }
+
+  get shareholderDetails(): ShareholderInvitation[] {
+    return this.application.value.shareholderInvitations
   }
 
   get serviceApplicationProps(): PropsServiceApplication {
