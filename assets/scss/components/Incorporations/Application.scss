@@ -63,14 +63,54 @@
         width: calc((100% / 2) - 15px);
 
         .application-item-title {
+          width: 100%;
           font-size: 1.1rem;
           font-weight: 600;
           margin-bottom: 5px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          gap: 10px;
+
+          .action-icons {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+          }
+
+          .clickable {
+            cursor: pointer;
+
+            &.edit {
+              color: var(--bs-icompany-blue);
+            }
+
+            &.save {
+              color: var(--bs-icompany-green);
+            }
+
+            &.cancel {
+              color: var(--bs-danger);
+            }
+          }
         }
 
         .application-item-content {
           margin-bottom: 10px;
           line-height: 1.3rem;
+          width: 100%;
+
+          .form-control {
+            width: calc(100% - 12px);
+            background-color: var(--bs-white);
+            padding: 5px;
+            font-weight: normal;
+            border-radius: 3px;
+          }
         }
       }
     }

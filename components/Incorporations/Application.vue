@@ -89,17 +89,58 @@
           <div class="application-item">
             <div class="application-item-title">
               {{ controller.businessNatureLabel }}
+              <div class="action-icons">
+                <i
+                  v-if="controller.isEditingDescription.value"
+                  class="fa-regular fa-xmark clickable cancel"
+                  @click="controller.onCancelEditBusinessDescriptionClicked()"
+                />
+                <i
+                  v-if="controller.isEditingDescription.value"
+                  class="fa-regular fa-save clickable save"
+                  @click="controller.onSaveBusinessDescriptionClicked()"
+                />
+                <i
+                  v-if="!controller.isEditingDescription.value"
+                  class="fa-regular fa-edit clickable edit"
+                  @click="controller.onEditBusinessDescriptionClicked()"
+                />
+              </div>
             </div>
             <div class="application-item-content">
-              {{ controller.application.value.businessDescription }}
+              <template v-if="controller.isEditingDescription.value">
+                <textarea
+                  class="form-control"
+                  v-model="controller.application.value.businessDescription"
+                />
+              </template>
+              <template v-if="!controller.isEditingDescription.value">
+                {{ controller.application.value.businessDescription }}
+              </template>
             </div>
             <div class="application-item-title">
               {{ controller.msicCodeLabel }}
             </div>
-            <div
-              class="application-item-content"
-              v-html="controller.msicCodes"
-            />
+            <div class="application-item-content">
+              <template v-if="controller.isEditingDescription.value">
+                <select
+                  multiple
+                  v-model="controller.selectedMsicCodeIds.value"
+                  class="form-control"
+                >
+                  <option
+                    v-for="(msicCode, i) in controller.msicCodes.value"
+                    :value="msicCode.id"
+                  >
+                    {{ msicCode.code }} - {{ msicCode.descriptionEn }}
+                  </option>
+                </select>
+              </template>
+              <span
+                v-if="!controller.isEditingDescription.value"
+                v-html="controller.msicCodesList"
+              />
+            </div>
           </div>
           <div class="application-item">
             <div class="application-item-title">

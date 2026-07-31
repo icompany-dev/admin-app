@@ -22,6 +22,8 @@ import { CorporateProfilePurchaser } from "~/scripts/library/CorporateProfilePur
 import type { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import type { ShareholderInvitation } from "~/scripts/models/ShareholderInvitation"
 import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
+import { MsicCode } from "~/scripts/models/MsicCode"
+import { Filter } from "~/scripts/library/Filter"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -84,6 +86,12 @@ export class ApplicationController {
   registrationNumberNew: Ref<string | null> = ref<string | null>(null)
   registrationNumberOld: Ref<string | null> = ref<string | null>(null)
 
+  isEditingDescription: Ref<boolean> = ref<boolean>(false)
+  isEditingAddress: Ref<boolean> = ref<boolean>(false)
+
+  selectedMsicCodeIds: Ref<string[]> = ref<string[]>([])
+  msicCodes: Ref<MsicCode[]> = ref<MsicCode[]>([])
+
   constructor(props: PropsIncorporationApplication, emitEvents: any) {
     this.setDataFromProps(props)
     this.emitEvents = emitEvents
@@ -138,7 +146,7 @@ export class ApplicationController {
     try {
       this.isLoading.value = true
 
-      await Promise.allSettled([this.fetchApplication(), this.fetchPaymentOrder()])
+      await Promise.allSettled([this.fetchApplication(), this.fetchPaymentOrder(), this.fetchMsicCodes()])
 
       await this.fetchApplicant()
 
@@ -206,6 +214,17 @@ export class ApplicationController {
     this.applicant.value = new User(response)
   }
 
+  async fetchMsicCodes(): Promise<void> {
+    let repository = useMsicCodeStore()
+    let filter = new Filter()
+    filter.takeAll = true
+    let response = await repository.fetchAll(filter)
+
+    this.msicCodes.value = response.data.map((d: any) => {
+      return new MsicCode(d)
+    })
+  }
+
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
     this.isShowSection27.value = false
@@ -226,6 +245,24 @@ export class ApplicationController {
     this.resetAllDocumentValues()
     this.isShowReceipt.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
+  }
+
+  onEditBusinessDescriptionClicked(): void {
+    this.isEditingDescription.value = true
+    this.selectedMsicCodeIds.value = this.application.value.msicCodeAssigns.map((msicCodeAssign: MsicCodeAssign) => {
+      return msicCodeAssign.msicCode.id
+    })
+  }
+
+  onCancelEditBusinessDescriptionClicked(): void {
+    this.isEditingDescription.value = false
+  }
+
+  async onSaveBusinessDescriptionClicked(): Promise<void> {
+    await this.application.value.updateBusinessDescriptionAndMsicCodes(
+      this.selectedMsicCodeIds.value,
+      useApplicationIncorporateStore()
+    )
   }
 
   // Name Reservation Step
@@ -769,7 +806,7 @@ export class ApplicationController {
     return this.language.isMalay() ? "Kod MSIC" : "MSIC Codes"
   }
 
-  get msicCodes(): string {
+  get msicCodesList(): string {
     return this.application.value.msicCodeAssigns
       .map((msic: MsicCodeAssign) => {
         return `${msic.msicCode.code} - ${msic.msicCode.descriptionEn}`
