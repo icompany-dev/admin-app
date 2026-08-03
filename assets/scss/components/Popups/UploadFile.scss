@@ -1,0 +1,160 @@
+// #popups-upload-file {
+//   // Styles go here
+// }
+
+.popup {
+  .popup-content {
+    &.upload-document {
+      max-width: 800px;
+
+      .popup-details {
+        .body {
+          .drop-zone {
+            width: calc(100% - 24px);
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border-radius: 5px;
+            border: 1px dashed var(--bs-icompany-purple);
+            transition: all 1s ease;
+            cursor: pointer;
+
+            .icon {
+              font-size: 5rem;
+              color: var(--bs-icompany-purple);
+              opacity: 0.5;
+              transition: all 1s ease;
+            }
+
+            &.drag-enter,
+            &:hover {
+              border-radius: 10px;
+              border-width: 3px;
+              border-color: var(--bs-icompany-purple-light);
+
+              .icon {
+                opacity: 1;
+              }
+            }
+
+            &.collapsed {
+              height: 50px;
+              flex-direction: row;
+              gap: 50px;
+
+              .icon {
+                font-size: 2rem;
+              }
+            }
+          }
+
+          .hidden {
+            display: none;
+          }
+
+          .selected-values {
+            margin-top: 10px;
+
+            .files-to-upload {
+              border-collapse: collapse;
+
+              thead {
+                tr {
+                  th {
+                    padding: 5px;
+                    color: var(--bs-white);
+                    background-color: var(--bs-icompany-purple);
+                    font-weight: 600;
+
+                    &:first-child {
+                      border-radius: 5px 0 0 0;
+                    }
+
+                    &:last-child {
+                      border-radius: 0 5px 0 0;
+                    }
+                  }
+                }
+              }
+
+              tbody {
+                tr {
+                  td {
+                    padding: 5px 10px;
+                    background-color: var(--bs-white);
+                    vertical-align: top;
+                    text-align: start;
+
+                    .form-control {
+                      border-radius: 3px;
+                      padding: 5px;
+                      font-weight: normal;
+                      cursor: pointer;
+                      width: calc(100% - 10px);
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      text-wrap: nowrap;
+                    }
+
+                    .action-link {
+                      cursor: pointer;
+
+                      &.add {
+                        color: var(--bs-icompany-blue);
+                      }
+
+                      &.remove {
+                        color: var(--bs-danger);
+                      }
+                    }
+
+                    &:nth-child(2) {
+                      width: 250px;
+                    }
+
+                    .uploaded-file-details {
+                      width: 100%;
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: flex-start;
+                      align-items: flex-start;
+                      gap: 5px;
+
+                      .uploaded-file-name {
+                        color: var(--bs-gray-600);
+                        font-size: 10px;
+
+                        .original-name {
+                          display: block;
+                          width: 250px;
+                          text-overflow: ellipsis;
+                          overflow: hidden;
+                          text-wrap: nowrap;
+                        }
+                      }
+                    }
+                  }
+
+                  &:last-of-type {
+                    td {
+                      &:first-child {
+                        border-radius: 0 0 0 5px;
+                      }
+
+                      &:last-child {
+                        border-radius: 0 0 5px 0;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
