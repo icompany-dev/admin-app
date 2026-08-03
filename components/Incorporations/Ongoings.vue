@@ -49,14 +49,14 @@
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
-  import { DraftsController } from "~/scripts/components/incorporations/DraftsController"
-  import type { IPropsIncorporationsDraft } from "~/scripts/props/PropsIncorporationsDraft"
+  import { OngoingsController } from "~/scripts/components/incorporations/OngoingsController"
+  import type { IPropsIncorporationsOngoing } from "~/scripts/props/PropsIncorporationsOngoing"
 
-  const props = defineProps<IPropsIncorporationsDraft>()
+  const props = defineProps<IPropsIncorporationsOngoing>()
 
   const emit = defineEmits([])
 
-  const controller = new DraftsController(props, emit)
+  const controller = new OngoingsController(props, emit)
 
   watch(
     () => props,

@@ -13,9 +13,9 @@
         @unMinimize="pageController.onClearSelected()"
       />
     </div>
-    <Drafts
+    <Ongoings
       v-if="pageController.showAll.value"
-      v-bind="pageController.draftsProps"
+      v-bind="pageController.ongoingsProps"
     />
     <Application
       v-if="pageController.showSelected.value"
@@ -27,11 +27,11 @@
 <script setup lang="ts">
   import Application from "@/components/Incorporations/Application.vue"
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
-  import Drafts from "@/components/Incorporations/Drafts.vue"
+  import Ongoings from "@/components/Incorporations/Ongoings.vue"
   import TableFilters from "@/components/TableData/TableFilters.vue"
-  import { PageIncorporationsDraftController } from "~/scripts/pages/PageIncorporationsDraftController"
+  import { PageIncorporationsOngoingController } from "~/scripts/pages/PageIncorporationsOngoingController"
 
-  const pageController = new PageIncorporationsDraftController()
+  const pageController = new PageIncorporationsOngoingController()
 
   watch(
     () => pageController.route.params,

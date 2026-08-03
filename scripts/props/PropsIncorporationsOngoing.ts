@@ -1,9 +1,9 @@
-export interface IPropsIncorporationsDraft {
+export interface IPropsIncorporationsOngoing {
   searchText: string | null
   isIncludeDemo: boolean
 }
 
-export class PropsIncorporationsDraft implements IPropsIncorporationsDraft {
+export class PropsIncorporationsOngoing implements IPropsIncorporationsOngoing {
   searchText: string | null = null
   isIncludeDemo: boolean = false
 

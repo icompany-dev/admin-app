@@ -1,11 +1,11 @@
 import { StringUtil } from "../utils/String"
 import { PageIncorporationsController } from "./PageIncorporationsController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
-import { PropsIncorporationsDraft } from "~/scripts/props/PropsIncorporationsDraft"
+import { PropsIncorporationsOngoing } from "~/scripts/props/PropsIncorporationsOngoing"
 import { PropsIncorporationApplication } from "../props/PropsIncorporationApplication"
 import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props/PropsTableFilter"
 
-export class PageIncorporationsDraftController extends PageIncorporationsController {
+export class PageIncorporationsOngoingController extends PageIncorporationsController {
   showAll: Ref<boolean> = ref<boolean>(true)
   showSelected: Ref<boolean> = ref<boolean>(false)
 
@@ -57,26 +57,26 @@ export class PageIncorporationsDraftController extends PageIncorporationsControl
   }
 
   onClearSelected(): void {
-    this.router.push({ path: "/incorporations/drafts" })
+    this.router.push({ path: "/incorporations/ongoings" })
   }
 
   get breadCrumbProps(): PropsBreadCrumb {
     if (this.showSelected.value) {
       return new PropsBreadCrumb([
         new PropsBreadCrumbItem("New Incorporations", ""),
-        new PropsBreadCrumbItem("Drafts", "/incorporations/drafts"),
+        new PropsBreadCrumbItem("Ongoings", "/incorporations/ongoings"),
         new PropsBreadCrumbItem("Application", ""),
       ])
     }
 
     return new PropsBreadCrumb([
       new PropsBreadCrumbItem("New Incorporations", ""),
-      new PropsBreadCrumbItem("Drafts", ""),
+      new PropsBreadCrumbItem("Ongoings", ""),
     ])
   }
 
-  get draftsProps(): PropsIncorporationsDraft {
-    return new PropsIncorporationsDraft(this.searchText.value, this.isIncludeDemo.value)
+  get ongoingsProps(): PropsIncorporationsOngoing {
+    return new PropsIncorporationsOngoing(this.searchText.value, this.isIncludeDemo.value)
   }
 
   get applicationProps(): PropsIncorporationApplication {

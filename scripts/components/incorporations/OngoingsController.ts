@@ -3,11 +3,11 @@ import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
 import { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
-import { PropsIncorporationsDraft } from "~/scripts/props/PropsIncorporationsDraft"
+import { PropsIncorporationsOngoing } from "~/scripts/props/PropsIncorporationsOngoing"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { StringUtil } from "~/scripts/utils/String"
 
-export class DraftsController {
+export class OngoingsController {
   tableDataFetcher = ref<TableDataFetcher<ApplicationIncorporate>>(
     new TableDataFetcher(ApplicationIncorporate, useApplicationIncorporateStore())
   )
@@ -22,12 +22,12 @@ export class DraftsController {
 
   language = useLanguage()
 
-  constructor(props: PropsIncorporationsDraft, emitEvents: any) {
+  constructor(props: PropsIncorporationsOngoing, emitEvents: any) {
     this.setDataFromProps(props)
     this.emitEvents = emitEvents
   }
 
-  async setDataFromProps(props: PropsIncorporationsDraft): Promise<void> {
+  async setDataFromProps(props: PropsIncorporationsOngoing): Promise<void> {
     this.searchText.value = props.searchText
     this.isIncludeDemo.value = props.isIncludeDemo
 
