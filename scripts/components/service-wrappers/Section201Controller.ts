@@ -16,7 +16,7 @@ export class Section201Controller
   extends ServiceController
   implements IServiceController<DirectorInvitation, ReturnType<typeof useDirectorInvitationStore>>
 {
-  application: DirectorInvitation = new DirectorInvitation()
+  application: Ref<DirectorInvitation> = ref<DirectorInvitation>(new DirectorInvitation())
   applicationId: string = ""
   repository = useDirectorInvitationStore()
   companyRepository = useCompanyStore()
@@ -67,7 +67,7 @@ export class Section201Controller
         throw this.repository.error
       }
 
-      this.application = new DirectorInvitation(response)
+      this.application.value = new DirectorInvitation(response)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -80,26 +80,34 @@ export class Section201Controller
   }
 
   async fetchTarget(): Promise<void> {
-    if (this.application.target.target === "company") {
-      let response = await this.companyRepository.fetchPublic(this.application.target.id)
+    if (this.application.value.target.target === "company") {
+      let response = await this.companyRepository.fetchPublic(this.application.value.target.id)
       let company = new Company(response)
       this.name.value = company.getFullName()
       this.registrationNumber.value = `${company.registrationNumberNew} (${company.registrationNumberOld})`
       return
     }
 
-    if (this.application.target.target === CompanyConstants.TARGET_APPLICATION_INCORPORATE) {
+    if (this.application.value.target.target === CompanyConstants.TARGET_APPLICATION_INCORPORATE) {
       let repository = useApplicationIncorporateStore()
-      let response = await repository.fetch(this.application.target.id)
+      let response = await repository.fetch(this.application.value.target.id)
       let application = new ApplicationIncorporate(response)
       this.name.value = application.getName()
       this.registrationNumber.value = ""
+      if (
+        application.metaData !== null &&
+        application.metaData.company_data &&
+        StringUtil.isNullOrEmpty(application.metaData.company_data.registrationNumberNew)
+      ) {
+        this.name.value = `${this.name.value} SDN BHD`
+        this.registrationNumber.value = `${application.metaData.company_data.registrationNumberNew} (${application.metaData.company_data.registrationNumberOld})`
+      }
       return
     }
 
-    if (this.application.target.target === CompanyConstants.TARGET_APPLICATION_SWITCH) {
+    if (this.application.value.target.target === CompanyConstants.TARGET_APPLICATION_SWITCH) {
       let repository = useApplicationSwitchStore()
-      let response = await repository.fetch(this.application.target.id)
+      let response = await repository.fetch(this.application.value.target.id)
       let application = new ApplicationSwitch(response)
       this.name.value = `${application.name.toUpperCase()} SDN BHD`
       this.registrationNumber.value = `${application.registrationNumberNew} (${application.registrationNumberOld})`
@@ -107,20 +115,20 @@ export class Section201Controller
   }
 
   async fetchUser(): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.application.userId)) {
+    if (StringUtil.isNullOrEmpty(this.application.value.userId)) {
       return
     }
 
     let repository = useUserStore()
-    let response = await repository.fetch(this.application.userId ?? "")
+    let response = await repository.fetch(this.application.value.userId ?? "")
     this.directorUser.value = new User(response)
   }
 
   setSignatureItem(): void {
     this.signatureItem.value = new SignatureItem(
-      this.application.signature?.url ?? null,
-      this.application.signatureId !== null,
-      this.application.email === this.user.value.email && this.application.signatureId === null,
+      this.application.value.signature?.url ?? null,
+      this.application.value.signatureId !== null,
+      this.application.value.email === this.user.value.email && this.application.value.signatureId === null,
       false,
       this.directorUser.value.name,
       this.directorUser.value.email,
@@ -145,10 +153,10 @@ export class Section201Controller
         today
       )
 
-      this.application.signatureId = uploadedSignatureFile.id
-      await this.application.update(this.repository)
+      this.application.value.signatureId = uploadedSignatureFile.id
+      await this.application.value.update(this.repository)
 
-      await this.application.accept(this.repository)
+      await this.application.value.accept(this.repository)
 
       this.emitEvents("back", this.application)
     } catch (e) {
@@ -175,7 +183,7 @@ export class Section201Controller
   }
 
   hasSigned(): boolean {
-    return this.application.signatureId !== null
+    return this.application.value.signatureId !== null
   }
 
   // override get companyName(): string {
@@ -199,13 +207,13 @@ export class Section201Controller
   }
 
   signatureDate(): string {
-    if (!this.application.signatureId) {
+    if (!this.application.value.signatureId) {
       return "Your Signing Date"
     }
 
     let time = useLocalTime()
     let dayjs = useDayjs()
-    let signatureDate = this.application.signature?.createdAt ?? dayjs().format("YYYY-MM-DD")
+    let signatureDate = this.application.value.signature?.createdAt ?? dayjs().format("YYYY-MM-DD")
 
     return time.formatDateOnlyFull(signatureDate)
   }

@@ -13,6 +13,7 @@ export class Section201Controller {
     this.companyName.value = companyName
     this.emitEvents = emitEvents
     this.signatureItem.value = signatureItem
+    this.hasSigned.value = signatureItem.hasSigned
   }
 
   setCompanyName(companyName: string): void {
@@ -21,6 +22,7 @@ export class Section201Controller {
 
   setSignatureItem(signatureItem: SignatureItem): void {
     this.signatureItem.value = signatureItem
+    this.hasSigned.value = signatureItem.hasSigned
   }
 
   getCompanyNumber(): string {
