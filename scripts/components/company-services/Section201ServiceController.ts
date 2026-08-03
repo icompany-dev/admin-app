@@ -34,6 +34,7 @@ export class Section201ServiceController {
   emitEvents: any | null = null
 
   documentRef: any | null = null
+  wrapperRef: any | null = null
 
   constructor(applicationId: string, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -43,6 +44,10 @@ export class Section201ServiceController {
 
   setDocumentRef(documentRef: any): void {
     this.documentRef = documentRef
+  }
+
+  setWrapperRef(wrapperRef: any): void {
+    this.wrapperRef = wrapperRef
   }
 
   async setApplicationId(applicationId: string): Promise<void> {
@@ -155,6 +160,12 @@ export class Section201ServiceController {
     return this.directorInvitation.value.signatureId !== null
   }
 
+  onExpandDocument(): void {
+    if (this.wrapperRef) {
+      this.wrapperRef.handleDocumentClicked()
+    }
+  }
+
   async onDownloadClicked(): Promise<void> {
     if (!this.documentRef) {
       return
@@ -235,8 +246,6 @@ export class Section201ServiceController {
       CompanyDirectorAppointment,
       useCompanyDirectorAppointmentStore()
     )
-
-    console.log(props)
 
     return props
   }

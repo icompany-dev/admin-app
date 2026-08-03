@@ -60,7 +60,7 @@
               </span>
               <span
                 class="human-detail action-clickable"
-                @click="controller.onViewSection201Clicked(director)"
+                @click="controller.onOpenSection201Clicked(director)"
               >
                 {{ controller.viewSection201Label }}
               </span>

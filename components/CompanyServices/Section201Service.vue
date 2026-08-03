@@ -43,6 +43,7 @@
   const emit = defineEmits([])
 
   const documentRef = ref(null)
+  const wrapperRef = ref(null)
 
   const controller = new Section201ServiceController(props.applicationId, emit)
 
@@ -61,9 +62,18 @@
     { immediate: true }
   )
 
+  watch(
+    wrapperRef,
+    (newVal) => {
+      controller.setWrapperRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     onGenerateClicked: controller.onGenerateClicked.bind(controller),
     onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onExpandDocument: controller.onExpandDocument.bind(controller),
   })
 </script>
 

@@ -343,6 +343,19 @@ export class ApplicationController {
     }
   }
 
+  async onOpenSection201Clicked(directorInvitation: DirectorInvitation): Promise<void> {
+    this.selectedDirectorInvitationFor201.value = directorInvitation
+    this.isShowSection201.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_201
+
+    if (this.documentRef) {
+      await nextTick()
+      setTimeout(() => {
+        this.documentRef.onExpandDocument()
+      }, 500)
+    }
+  }
+
   onViewSection201Clicked(directorInvitation: DirectorInvitation): void {
     this.selectedDirectorInvitationFor201.value = directorInvitation
     this.isShowSection201.value = true
