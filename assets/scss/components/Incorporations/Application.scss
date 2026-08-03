@@ -139,6 +139,41 @@
     }
   }
 
+  .application-details {
+
+    ol,
+    ul {
+      padding-left: 15px;
+      margin: 0;
+      margin-top: 5px;
+
+      li {
+        padding-bottom: 10px;
+
+        &:last-child {
+          padding-bottom: 0px;
+        }
+
+        .document-label {
+          display: inline-block;
+          padding-right: 5px;
+        }
+
+        .document-icon {
+          cursor: pointer;
+
+          &.success {
+            color: var(--bs-icompany-green)
+          }
+
+          &.info {
+            color: var(--bs-icompany-blue);
+          }
+        }
+      }
+    }
+  }
+
   .human-details {
     display: flex;
     flex-direction: column;

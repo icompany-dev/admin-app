@@ -1,5 +1,8 @@
 <template>
-  <div id="legal-document-section-201">
+  <div
+    id="legal-document-section-201"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="PaperOrientation.Portrait"
       :additional-css-class="'legal-document section-201'"
@@ -168,6 +171,8 @@
 
   const emit = defineEmits(["signed"])
 
+  const documentRef = ref(null)
+
   const controller = new Section201Controller(props.companyName, props.signatureItem, emit)
 
   watch(
@@ -185,6 +190,18 @@
     },
     { deep: true }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

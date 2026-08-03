@@ -1,5 +1,8 @@
 <template>
-  <div id="company-services-section201-service">
+  <div
+    id="company-services-section201-service"
+    class="company-services"
+  >
     <CompanyServiceWrapper
       ref="wrapperRef"
       v-bind="controller.serviceWrapperProps"
@@ -49,5 +52,6 @@
 </script>
 
 <style lang="scss">
+  @use "~/assets/scss/components/CompanyServices/Service" as *;
   @use "~/assets/scss/components/CompanyServices/Section201Service" as *;
 </style>

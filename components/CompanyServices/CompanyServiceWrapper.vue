@@ -12,7 +12,7 @@
         @mouseenter="controller.setDocumentHover(true)"
         @mouseleave="controller.setDocumentHover(false)"
       >
-        <div
+        <!-- <div
           ref="overlayRef"
           class="overlay"
           :class="{
@@ -57,7 +57,7 @@
           >
             <slot name="cornerButton" />
           </div>
-        </div>
+        </div> -->
         <div
           v-if="controller.isShowDocument()"
           ref="documentRef"

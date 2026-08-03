@@ -368,6 +368,72 @@
                 <div class="application-container">
                   <div class="node-title">{{ controller.completionOfIncorporationLabel }}</div>
                   <div class="node-subtitle">({{ controller.completionOfIncorporationSublabel }})</div>
+                  <div class="application-details">
+                    <span class="application-label">
+                      {{ controller.documentsToGenerateLabel }}
+                    </span>
+                    <ol>
+                      <li>
+                        <span class="document-label">
+                          {{ controller.viewSection201Label }}
+                        </span>
+                        <ul>
+                          <li
+                            v-for="(director, i) in controller.directorDetails"
+                            :key="i"
+                          >
+                            <span
+                              class="document-label"
+                              @click="controller.onViewSection201Clicked(director)"
+                            >
+                              {{ director.name }}
+                            </span>
+                            <i
+                              class="fa-solid fa-circle-check document-icon success"
+                              v-if="controller.hasGeneratedSection201For(director)"
+                            />
+                            <i
+                              class="fa-solid fa-download document-icon info"
+                              v-if="!controller.hasGeneratedSection201For(director)"
+                              @click="controller.generatedSection201For(director)"
+                            />
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <span
+                          class="document-label"
+                          @click="controller.onSection236Clicked()"
+                        >
+                          {{ controller.generateSection236Label }}
+                        </span>
+                        <i
+                          class="fa-solid fa-circle-check document-icon success"
+                          v-if="controller.hasGeneratedSection236"
+                        />
+                        <i
+                          class="fa-solid fa-download document-icon info"
+                          v-if="!controller.hasGeneratedSection236"
+                          @click="controller.onGenerate236Clicked()"
+                        />
+                      </li>
+                      <li>
+                        <span class="document-label">
+                          {{ controller.corporateProfileLabel }}
+                        </span>
+                        <i
+                          class="fa-solid fa-circle-check document-icon success"
+                          v-if="controller.hasPurchasedCorporateProfile"
+                          @click="controller.onDownloadCorporateProfile()"
+                        />
+                        <i
+                          class="fa-solid fa-circle-dollar document-icon info"
+                          v-if="!controller.hasPurchasedCorporateProfile"
+                          @click="controller.onPurchaseCorporateProfile()"
+                        />
+                      </li>
+                    </ol>
+                  </div>
                 </div>
               </template>
               <template #nodeOptions>
@@ -410,19 +476,6 @@
                   >
                     <button
                       class="btn btn-pill btn-submit"
-                      @click.self="controller.onGenerate236Clicked()"
-                    >
-                      {{ controller.generateSection236Label }}
-                    </button>
-                    <button
-                      class="btn btn-pill btn-submit"
-                      :disabled="!controller.isIncorporationApproved"
-                      @click="controller.onPurchaseCorporateProfile()"
-                    >
-                      {{ controller.corporateProfileLabel }}
-                    </button>
-                    <button
-                      class="btn btn-pill btn-submit"
                       :disabled="!controller.areDocumentsReadyToConvert"
                       @click="controller.onCompleteIncorporation()"
                     >
@@ -438,7 +491,7 @@
           <component
             ref="documentRef"
             :is="activeDocumentComponent"
-            :application-id="controller.applicationId.value"
+            :application-id="controller.serviceApplicationId"
             :target-id="controller.paymentOrderId.value"
             :application-name-reservation-id="controller.latestSection27Application?.id ?? ''"
             :company-name="controller.companyToConvert.getFullName()"
@@ -463,7 +516,7 @@
       :company-name="controller.application.value.getName()"
       @proceed="controller.onProceedIncorporationApproved($event)"
     />
-    <Teleport to="body">
+    <!-- <Teleport to="body">
       <Transition name="fade">
         <div
           class="document-view show"
@@ -477,7 +530,7 @@
           />
         </div>
       </Transition>
-    </Teleport>
+    </Teleport> -->
   </div>
 </template>
 
@@ -489,7 +542,7 @@
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import SearchableDropdown from "@/components/Forms/SearchableDropdown.vue"
-  import Section201 from "@/components/ServiceWrappers/Section201.vue"
+  import Section201Service from "@/components/CompanyServices/Section201Service.vue"
   import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import Section27OneFourService from "@/components/CompanyServices/Section27OneFourService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
@@ -503,6 +556,7 @@
 
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
+    [DocumentTargets.TARGET_SECTION_201]: Section201Service,
     [DocumentTargets.TARGET_INCORP_SECTION_27]: Section27OneFourService,
     [DocumentTargets.TARGET_INCORP_SECTION_236_THREE]: Section236ThreeService,
   }

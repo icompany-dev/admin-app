@@ -61,7 +61,7 @@ export class Section201ServiceController {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error = new Error("", "")
+        let error = new Error()
         error.setForFetch()
         error.handle()
       }
@@ -86,6 +86,14 @@ export class Section201ServiceController {
       let application = new ApplicationIncorporate(response)
       this.name.value = application.getName()
       this.registrationNumber.value = ""
+      if (
+        application.metaData !== null &&
+        application.metaData.company_data &&
+        StringUtil.isNullOrEmpty(application.metaData.company_data.registrationNumberNew)
+      ) {
+        this.name.value = `${this.name.value} SDN BHD`
+        this.registrationNumber.value = `${application.metaData.company_data.registrationNumberNew} (${application.metaData.company_data.registrationNumberOld})`
+      }
       return
     }
 
@@ -139,15 +147,19 @@ export class Section201ServiceController {
   }
 
   get serviceWrapperProps() {
-    return new PropsCompanyServiceWrapper(
-      new CompanyDirectorAppointment(), // this is needed to bypass the service wrapper's setting
+    let application = new CompanyDirectorAppointment()
+    application.id = this.applicationId.value
+    application.status = "paid"
+
+    let props = new PropsCompanyServiceWrapper(
+      application, // this is needed to bypass the service wrapper's setting
       "",
       this.target,
       "",
       ViewMode.Existing,
       true,
       false,
-      "",
+      this.applicationId.value,
       1,
       1,
       "NOTICE",
@@ -171,5 +183,9 @@ export class Section201ServiceController {
       CompanyDirectorAppointment,
       useCompanyDirectorAppointmentStore()
     )
+
+    console.log(props)
+
+    return props
   }
 }

@@ -11,6 +11,8 @@ import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
 import { User } from "~/scripts/models/User"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class Section201Controller
   extends ServiceController
@@ -216,5 +218,28 @@ export class Section201Controller
     let signatureDate = this.application.value.signature?.createdAt ?? dayjs().format("YYYY-MM-DD")
 
     return time.formatDateOnlyFull(signatureDate)
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    let promises = []
+
+    if (this.dcrRef) {
+      let dcrPages = await this.dcrRef.getPdfPages()
+      promises.push(
+        PdfPaperUtil.generatePdfFile(
+          dcrPages,
+          20,
+          `Declaration under Section 201.pdf`,
+          PaperSize.A4,
+          PaperOrientation.Portrait
+        )
+      )
+    }
+
+    if (promises.length <= 0) {
+      return
+    }
+
+    await Promise.all(promises)
   }
 }

@@ -1,5 +1,6 @@
 import { SignatureItem } from "~/scripts/types/SignatureItem"
 import { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class Section201Controller {
   companyName: Ref<string> = ref<string>("")
@@ -8,6 +9,8 @@ export class Section201Controller {
 
   time = useLocalTime()
   emitEvents: any | null = null
+
+  documentRef: any | null = null
 
   constructor(companyName: string, signatureItem: SignatureItem, emitEvents: any | null) {
     this.companyName.value = companyName
@@ -23,6 +26,10 @@ export class Section201Controller {
   setSignatureItem(signatureItem: SignatureItem): void {
     this.signatureItem.value = signatureItem
     this.hasSigned.value = signatureItem.hasSigned
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   getCompanyNumber(): string {
@@ -48,5 +55,16 @@ export class Section201Controller {
 
     this.hasSigned.value = true
     this.emitEvents("signed", signatureData)
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    return pdfPages
   }
 }

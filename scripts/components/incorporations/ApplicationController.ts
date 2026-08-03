@@ -27,6 +27,7 @@ import { Filter } from "~/scripts/library/Filter"
 import { SelectOption } from "~/scripts/types/SelectOption"
 import { City, Country, Location, State } from "~/scripts/models/Location"
 import { Form } from "~/scripts/models/Form"
+import { File } from "~/scripts/models/File"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -313,11 +314,13 @@ export class ApplicationController {
   onViewSection201Clicked(directorInvitation: DirectorInvitation): void {
     this.selectedDirectorInvitationFor201.value = directorInvitation
     this.isShowSection201.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_201
   }
 
   onHideSection201(): void {
     this.isShowSection201.value = false
     this.selectedDirectorInvitationFor201.value = null
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
 
   // Name Reservation Step
@@ -852,6 +855,43 @@ export class ApplicationController {
     }
   }
 
+  async onDownloadCorporateProfile(): Promise<void> {
+    if (!this.hasPurchasedCorporateProfile) {
+      return
+    }
+
+    let fileId = this.application.value.metaData?.corporate_profile?.file_id
+    let repository = useFileStore()
+    let response = await repository.fetch(fileId)
+
+    if (repository.error !== null) {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+      return
+    }
+
+    let file = new File(response)
+    if (!file.url) {
+      return
+    }
+    window.open(file.url, "_blank")
+  }
+
+  async generatedSection201For(directorInvitation: DirectorInvitation): Promise<void> {
+    // get the document ref, upload the document, and update the application metadata
+  }
+
+  hasGeneratedSection201For(directorInvitation: DirectorInvitation): boolean {
+    if (!this.application.value || !this.application.value.metaData || !this.application.value.metaData.section201) {
+      return false
+    }
+
+    return this.application.value.metaData.section201.some((d: any) => {
+      return d.directorInvitationId === directorInvitation.id
+    })
+  }
+
   // getters
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
@@ -982,6 +1022,14 @@ export class ApplicationController {
       this.application.value.status !== StatusConstants.DRAFT &&
       this.application.value.status !== StatusConstants.PENDING
     )
+  }
+
+  get serviceApplicationId(): string {
+    if (this.selectedDocumentTarget.value === DocumentTargets.TARGET_SECTION_201) {
+      return this.selectedDirectorInvitationFor201.value?.id ?? this.applicationId.value
+    }
+
+    return this.applicationId.value
   }
 
   // region for names
@@ -1258,6 +1306,46 @@ export class ApplicationController {
 
   get hasNextStepsForCompletion(): boolean {
     return this.application.value.status !== StatusConstants.COMPLETED
+  }
+
+  get documentsToGenerateLabel(): string {
+    return this.language.isMalay() ? "Dokumen yang Diperlukan" : "Required Documents"
+  }
+
+  get generateLabel(): string {
+    return this.language.isMalay() ? "Hasilkan" : "Generate"
+  }
+
+  get hasGeneratedSection201(): boolean {
+    return this.application.value.metaData !== null && !!this.application.value.metaData.section201
+  }
+
+  get haveAllDirectorsSigned(): boolean {
+    return this.application.value.directorInvitations.every((director: DirectorInvitation) => {
+      return director.signatureId !== null
+    })
+  }
+
+  get nameOfDirectorsNotSigned(): string {
+    let unsignedDirectors = this.application.value.directorInvitations
+      .filter((director: DirectorInvitation) => {
+        return director.signatureId === null
+      })
+      .map((director: DirectorInvitation) => {
+        return director.name
+      })
+
+    let prefix = this.language.isMalay() ? "Pengarah yang belum menandatangani" : "Directors who have not signed"
+
+    return `${prefix}: ${unsignedDirectors.join(", ")}`
+  }
+
+  get hasGeneratedSection236(): boolean {
+    return this.application.value.metaData !== null && !!this.application.value.metaData.section236
+  }
+
+  get hasPurchasedCorporateProfile(): boolean {
+    return this.application.value.metaData !== null && !!this.application.value.metaData.corporate_profile
   }
 
   get completionActionLabel(): string {
