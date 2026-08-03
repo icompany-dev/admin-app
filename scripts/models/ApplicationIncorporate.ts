@@ -111,7 +111,7 @@ export class ApplicationIncorporate implements IApplication {
           })
         : []
     this.businessDescription = data.business_description ?? ""
-    this.hasBusinessAddress = data.has_business_address ?? true
+    this.hasBusinessAddress = data.has_business_address
     this.canReceiveMail = data.can_receive_mail ?? false
     this.businessAddressLocationId = data.business_address_location?.id ?? null
     this.businessAddressLocation = data.business_address_location ? new Location(data.business_address_location) : null

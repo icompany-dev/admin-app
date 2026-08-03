@@ -100,6 +100,7 @@ export class Company implements IModel<Company> {
     this.registrationNumberOld = data.registrationNumberOld
     this.registrationNumberNew = data.registrationNumberNew
     this.hasConstitution = data.hasConstitution
+    this.hasBusinessAddress = data.hasBusinessAddress
     this.constitutionFileId = data.constitutionFileId
     this.constitutionFile = new File(data.constitutionFile)
     this.businessDescription = data.businessDescription
@@ -126,7 +127,7 @@ export class Company implements IModel<Company> {
   }
 
   getRequestBody(): object {
-    return {
+    let data = {
       name: this.name,
       name_type: this.nameType,
       name_description: this.nameDescription,
@@ -134,11 +135,16 @@ export class Company implements IModel<Company> {
       registration_number_old: this.registrationNumberOld,
       business_description: this.businessDescription,
       has_business_address: this.hasBusinessAddress,
-      business_address_location: this.businessAddressLocation?.getRequestBody() ?? null,
       registered_address_location: this.registeredAddressLocation?.getRequestBody() ?? null,
       incorporated_at: this.incorporatedAt,
       application_incorporation_id: this.applicationIncorporationId,
     }
+
+    if (this.hasBusinessAddress) {
+      data.business_address_location = this.businessAddressLocation?.getRequestBody() ?? null
+    }
+
+    return data
   }
 
   getType(): string {

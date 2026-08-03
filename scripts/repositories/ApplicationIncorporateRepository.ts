@@ -77,7 +77,7 @@ export class ApplicationIncorporateRepository extends Repository<ApplicationInco
 
   async notifyApproved(id: string): Promise<any> {
     try {
-      const response = this.post(`${this.singleResourceUrl}/notify-approved/${id}`, {})
+      const response = this.post(`api/incorporation/notify-approved/${id}`, {})
       return response
     } catch (error) {
       throw error

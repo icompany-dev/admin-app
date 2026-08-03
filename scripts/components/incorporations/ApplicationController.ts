@@ -700,6 +700,7 @@ export class ApplicationController {
   }
 
   async onCompleteIncorporation(): Promise<void> {
+    this.isShowCompletionActions.value = false
     try {
       this.isUpdatingCompletion.value = true
 
@@ -729,6 +730,7 @@ export class ApplicationController {
       let companyToConvert = new Company(this.companyToConvert)
       await companyToConvert.create(useCompanyStore())
 
+      let dayjs = useDayjs()
       let formsToAdd: Form[] = []
       // Corporate Profile
       if (
@@ -739,7 +741,7 @@ export class ApplicationController {
         corporateProfileForm.companyId = companyToConvert.id
         corporateProfileForm.type = "business_detail"
         corporateProfileForm.fileId = this.application.value.metaData.corporate_profile.file_id
-        corporateProfileForm.documentDate = companyToConvert.incorporatedAt
+        corporateProfileForm.documentDate = dayjs(companyToConvert.incorporatedAt).format("YYYY-MM-DD")
         corporateProfileForm.status = "active"
         corporateProfileForm.noOfPages = 5 // default
         formsToAdd.push(corporateProfileForm)
@@ -752,12 +754,60 @@ export class ApplicationController {
       ) {
         let section236Form = new Form()
         section236Form.companyId = companyToConvert.id
-        section236Form.type = "section_236"
+        section236Form.type = "business_detail"
         section236Form.fileId = this.application.value.metaData.section236
-        section236Form.documentDate = companyToConvert.incorporatedAt
+        section236Form.documentDate = dayjs(companyToConvert.incorporatedAt).format("YYYY-MM-DD")
         section236Form.status = "active"
         section236Form.noOfPages = 1
         formsToAdd.push(section236Form)
+      }
+
+      // Section 201
+      if (
+        this.application.value.metaData?.section201 &&
+        Array.isArray(this.application.value.metaData.section201) &&
+        this.application.value.metaData.section201.length > 0
+      ) {
+        this.application.value.metaData.section201.forEach((section201: any) => {
+          let section201Form = new Form()
+          section201Form.companyId = companyToConvert.id
+          section201Form.type = "business_detail"
+          section201Form.fileId = section201.fileId
+          section201Form.documentDate = dayjs(companyToConvert.incorporatedAt).format("YYYY-MM-DD")
+          section201Form.status = "active"
+          section201Form.noOfPages = 1
+          formsToAdd.push(section201Form)
+        })
+      }
+
+      // Section 14 / Superform
+      if (
+        this.application.value.metaData?.superform &&
+        !StringUtil.isNullOrEmpty(this.application.value.metaData.superform)
+      ) {
+        let superformForm = new Form()
+        superformForm.companyId = companyToConvert.id
+        superformForm.type = "business_detail"
+        superformForm.fileId = this.application.value.metaData.superform
+        superformForm.documentDate = dayjs(companyToConvert.incorporatedAt).format("YYYY-MM-DD")
+        superformForm.status = "active"
+        superformForm.noOfPages = 5 // default
+        formsToAdd.push(superformForm)
+      }
+
+      // COI
+      if (
+        this.application.value.metaData?.certificate_of_incorporation &&
+        !StringUtil.isNullOrEmpty(this.application.value.metaData.certificate_of_incorporation)
+      ) {
+        let coiForm = new Form()
+        coiForm.companyId = companyToConvert.id
+        coiForm.type = "business_detail"
+        coiForm.fileId = this.application.value.metaData.certificate_of_incorporation
+        coiForm.documentDate = dayjs(companyToConvert.incorporatedAt).format("YYYY-MM-DD")
+        coiForm.status = "active"
+        coiForm.noOfPages = 1
+        formsToAdd.push(coiForm)
       }
 
       let promises = formsToAdd.map((form: Form) => {
@@ -765,6 +815,13 @@ export class ApplicationController {
       })
 
       await Promise.allSettled(promises)
+
+      let toastTitle = this.language.isMalay() ? "Sdn Bhd Baharu telah ditambah." : "New Sdn Bhd successfully created."
+      let toastMessage = this.language.isMalay()
+        ? "Anda akan dihantar ke muka Sdn Bhd."
+        : "You will be redirected to the Sdn Bhd page."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
 
       let router = useRouter()
       router.push({ path: `/sdnbhds/${companyToConvert.id}` })
