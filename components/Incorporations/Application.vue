@@ -317,15 +317,15 @@
                   :class="{ 'is-loading': controller.isUploadingRegistration.value }"
                   @click="controller.onUploadDocumentClicked()"
                 >
-                  {{ controller.uploadlCOILabel }}
+                  {{ controller.uploadSuperformLabel }}
                 </button>
                 <span
                   class="action-link download"
-                  v-if="controller.isCOIUploaded"
+                  v-if="controller.isSuperformUploaded"
                   @click="controller.onDownloadRegistrationClicked()"
                 >
                   <i class="fa-regular fa-cloud-arrow-down"></i>
-                  {{ controller.downloadCOILabel }}
+                  {{ controller.downloadSuperformLabel }}
                 </span>
               </template>
               <template #nodeActions>
@@ -516,21 +516,6 @@
       :company-name="controller.application.value.getName()"
       @proceed="controller.onProceedIncorporationApproved($event)"
     />
-    <!-- <Teleport to="body">
-      <Transition name="fade">
-        <div
-          class="document-view show"
-          v-if="controller.isShowSection201.value"
-          @click.self="controller.onHideSection201()"
-        >
-          <Section201
-            :application-id="controller.selectedDirectorInvitationFor201.value?.id ?? ''"
-            :is-document-enlarged="false"
-            :is-in-preview-mode="false"
-          />
-        </div>
-      </Transition>
-    </Teleport> -->
   </div>
 </template>
 

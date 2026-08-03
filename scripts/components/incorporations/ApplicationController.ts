@@ -28,6 +28,7 @@ import { SelectOption } from "~/scripts/types/SelectOption"
 import { City, Country, Location, State } from "~/scripts/models/Location"
 import { Form } from "~/scripts/models/Form"
 import { File } from "~/scripts/models/File"
+import type { RefSymbol } from "@vue/reactivity"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -1284,20 +1285,27 @@ export class ApplicationController {
     return this.language.isMalay() ? "Pendaftaran Pemerbadanan" : "Registration of Incorporation"
   }
 
-  get uploadlCOILabel(): string {
-    return this.language.isMalay() ? "Muat Naik" : "Upload"
-  }
-
   get registeredLabel(): string {
     return this.language.isMalay() ? "Diluluskan" : "Approved"
   }
 
-  get isCOIUploaded(): boolean {
-    return false
+  get uploadSuperformLabel(): string {
+    return this.language.isMalay() ? "Muat Naik Superform" : "Upload Superform"
   }
 
-  get downloadCOILabel(): string {
-    return this.language.isMalay() ? "Muat Turun" : "Download"
+  get isSuperformUploaded(): boolean {
+    if (!this.application.value.metaData) {
+      return false
+    }
+
+    return (
+      this.application.value.metaData.certificate_of_incorporation !== undefined &&
+      !StringUtil.isNullOrEmpty(this.application.value.metaData.certificate_of_incorporation)
+    )
+  }
+
+  get downloadSuperformLabel(): string {
+    return this.language.isMalay() ? "Muat Turun Superform" : "Download Superform"
   }
 
   get hasNextStepsForRegistration(): boolean {
@@ -1351,6 +1359,25 @@ export class ApplicationController {
 
   get hasNextStepsForCompletion(): boolean {
     return this.application.value.status !== StatusConstants.COMPLETED
+  }
+
+  get uploadlCOILabel(): string {
+    return this.language.isMalay() ? "Muat Naik COI" : "Upload COI"
+  }
+
+  get isCOIUploaded(): boolean {
+    if (!this.application.value.metaData) {
+      return false
+    }
+
+    return (
+      this.application.value.metaData.certificate_of_incorporation !== undefined &&
+      !StringUtil.isNullOrEmpty(this.application.value.metaData.certificate_of_incorporation)
+    )
+  }
+
+  get downloadCOILabel(): string {
+    return this.language.isMalay() ? "Muat Turun COI" : "Download COI"
   }
 
   get documentsToGenerateLabel(): string {
