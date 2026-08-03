@@ -25,6 +25,8 @@ import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { MsicCode } from "~/scripts/models/MsicCode"
 import { Filter } from "~/scripts/library/Filter"
 import { SelectOption } from "~/scripts/types/SelectOption"
+import { City, Country, Location, State } from "~/scripts/models/Location"
+import { Form } from "~/scripts/models/Form"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -638,7 +640,73 @@ export class ApplicationController {
 
   async onCompleteIncorporation(): Promise<void> {
     try {
-      this.isUpdatingRegistration.value = true
+      this.isUpdatingCompletion.value = true
+
+      let repository = useApplicationIncorporateStore()
+      this.application.value.status = StatusConstants.APPROVED
+      let data = {
+        status: StatusConstants.APPROVED,
+      }
+      await repository.update(this.application.value.id, data)
+      let response = await this.application.value.notifyApproved(repository)
+
+      if (!response) {
+        let error = new Error()
+        error.setForCUD()
+        throw error
+      } else {
+        let toastTitle = this.language.isMalay()
+          ? "Promoter telah diberitahu melalui emel dan WhatsApp."
+          : "Promoter has been informed via Email and WhatsApp."
+        let toastMessage = this.language.isMalay()
+          ? "Sila tunggu sementara kami masukkan butiran Sdn Bhd Baharu."
+          : "Please wait while we initialize details of the New Sdn Bhd."
+        let toast = new Toast(toastTitle, toastMessage)
+        toast.success()
+      }
+
+      let companyToConvert = new Company(this.companyToConvert)
+      await companyToConvert.create(useCompanyStore())
+
+      let formsToAdd: Form[] = []
+      // Corporate Profile
+      if (
+        this.application.value.metaData?.corporate_profile &&
+        !StringUtil.isNullOrEmpty(this.application.value.metaData.corporate_profile.file_id)
+      ) {
+        let corporateProfileForm = new Form()
+        corporateProfileForm.companyId = companyToConvert.id
+        corporateProfileForm.type = "business_detail"
+        corporateProfileForm.fileId = this.application.value.metaData.corporate_profile.file_id
+        corporateProfileForm.documentDate = companyToConvert.incorporatedAt
+        corporateProfileForm.status = "active"
+        corporateProfileForm.noOfPages = 5 // default
+        formsToAdd.push(corporateProfileForm)
+      }
+
+      // Section 236
+      if (
+        this.application.value.metaData?.section236 &&
+        !StringUtil.isNullOrEmpty(this.application.value.metaData.section236)
+      ) {
+        let section236Form = new Form()
+        section236Form.companyId = companyToConvert.id
+        section236Form.type = "section_236"
+        section236Form.fileId = this.application.value.metaData.section236
+        section236Form.documentDate = companyToConvert.incorporatedAt
+        section236Form.status = "active"
+        section236Form.noOfPages = 1
+        formsToAdd.push(section236Form)
+      }
+
+      let promises = formsToAdd.map((form: Form) => {
+        return form.create(useFormStore())
+      })
+
+      await Promise.allSettled(promises)
+
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${companyToConvert.id}` })
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -648,19 +716,17 @@ export class ApplicationController {
         error.handle()
       }
     } finally {
-      this.isUpdatingRegistration.value = false
+      this.isUpdatingCompletion.value = false
     }
   }
 
   async onIncorporationCompleted(): Promise<void> {
-    this.isShowRegistrationActions.value = false
-
-    if (this.isUpdatingRegistration.value) {
+    if (this.isUpdatingCompletion.value) {
       return
     }
 
     try {
-      this.isUpdatingRegistration.value = true
+      this.isUpdatingCompletion.value = true
 
       let repository = useApplicationIncorporateStore()
       this.application.value.status = StatusConstants.APPROVED
@@ -691,7 +757,7 @@ export class ApplicationController {
         error.handle()
       }
     } finally {
-      this.isUpdatingRegistration.value = false
+      this.isUpdatingCompletion.value = false
     }
   }
 
@@ -1202,6 +1268,15 @@ export class ApplicationController {
     return this.language.isMalay() ? "Seterusnya" : "Next Steps"
   }
 
+  get areDocumentsReadyToConvert(): boolean {
+    return (
+      this.application.value.metaData !== null &&
+      !!this.application.value.metaData.company_data &&
+      !!this.application.value.metaData.section236 &&
+      !!this.application.value.metaData.corporate_profile
+    )
+  }
+
   get convertLabel(): string {
     return this.language.isMalay() ? "Selesai" : "Complete"
   }
@@ -1213,11 +1288,28 @@ export class ApplicationController {
     let registrationNumberOld = this.application.value.metaData?.company_data?.registrationNumberOld ?? ""
 
     company.name = this.application.value.nameSelected?.name ?? ""
-    company.name = this.application.value.nameSelected?.nameType ?? ""
+    company.nameType = this.application.value.nameSelected?.nameType ?? ""
+    company.nameDescription = this.application.value.nameSelected?.nameDescription ?? "-"
     company.registrationNumberNew = registrationNumberNew ?? ""
     company.registrationNumberOld = registrationNumberOld ?? ""
     company.businessDescription = this.application.value.businessDescription
-    company.businessAddressLocationId = this.application.value.businessAddressLocationId
+    company.hasBusinessAddress = this.application.value.hasBusinessAddress
+    company.businessAddressLocation = this.application.value.hasBusinessAddress
+      ? new Location(this.application.value.businessAddressLocation)
+      : null
+    company.registeredAddressLocation = new Location()
+    company.registeredAddressLocation.addressLine1 = "D-1-6, FIRST FLOOR, BLOCK D, SEKITAR26 ENTERPRISE"
+    company.registeredAddressLocation.addressLine2 = "PERSIARAN HULU SELANGOR, SEKSYEN 26"
+    company.registeredAddressLocation.postcode = "40400"
+    company.registeredAddressLocation.city = new City()
+    company.registeredAddressLocation.city.id = 61096
+    company.registeredAddressLocation.city.name = "SHAH ALAM"
+    company.registeredAddressLocation.state = new State()
+    company.registeredAddressLocation.state.id = 23
+    company.registeredAddressLocation.country = new Country()
+    company.registeredAddressLocation.country.id = 87
+    company.applicationIncorporationId = this.application.value.id
+    company.incorporatedAt = this.application.value.metaData?.company_data?.incorporatedAt ?? null
 
     return company
   }

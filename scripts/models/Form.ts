@@ -67,6 +67,7 @@ export class Form extends CompanyItem implements IModel<Form> {
       document_date: this.documentDate,
       status: this.status,
       form_type_id: this.formTypeId,
+      no_of_pages: this.noOfPages,
     }
   }
 
