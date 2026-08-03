@@ -28,11 +28,11 @@ import { SelectOption } from "~/scripts/types/SelectOption"
 
 /**
  * THINGS THEY WANT TO KNOW
- * 1. Payment
+ * 1. Payment (done)
  * 2. Section 201
- * 3. Names proposed
- * 4. Directors
- * 5. Shareholders
+ * 3. Names proposed (done)
+ * 4. Directors (done)
+ * 5. Shareholders (done)
  * 6. Upload documents for each stage
  * 7. Name rejected
  * 8. Complete incorporation
@@ -81,6 +81,11 @@ export class ApplicationController {
   isDownloadingRegistration: Ref<boolean> = ref<boolean>(false)
   isShowRegistrationActions: Ref<boolean> = ref<boolean>(false)
   isUpdatingRegistration: Ref<boolean> = ref<boolean>(false)
+
+  isUploadingCompletion: Ref<boolean> = ref<boolean>(false)
+  isDownloadingCompletion: Ref<boolean> = ref<boolean>(false)
+  isShowCompletionActions: Ref<boolean> = ref<boolean>(false)
+  isUpdatingCompletion: Ref<boolean> = ref<boolean>(false)
 
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
 
@@ -746,6 +751,10 @@ export class ApplicationController {
     this.isShowCompletion.value = true
 
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
+  }
+
+  onShowCompletionActionsClicked(): void {
+    this.isShowCompletionActions.value = !this.isShowCompletionActions.value
   }
 
   async onCompleteIncorporation(): Promise<void> {

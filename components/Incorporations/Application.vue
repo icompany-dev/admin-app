@@ -387,7 +387,7 @@
               <template #nodeOptions>
                 <button
                   class="btn btn-pill btn-primary"
-                  :class="{ 'is-loading': controller.isUploadingRegistration.value }"
+                  :class="{ 'is-loading': controller.isUploadingCompletion.value }"
                   @click="controller.onUploadDocumentClicked()"
                 >
                   {{ controller.uploadlCOILabel }}
@@ -406,21 +406,21 @@
                   <div
                     class="btn btn-pill btn-submit selected"
                     :class="{
-                      'is-loading': controller.isUpdatingRegistration.value,
+                      'is-loading': controller.isUpdatingCompletion.value,
                       single: !controller.hasNextStepsForRegistration,
                     }"
-                    @click="controller.onShowRegistrationActionsClicked()"
+                    @click="controller.onShowCompletionActionsClicked()"
                   >
                     <span class="label">{{ controller.registrationActionLabel }}</span>
                     <i
                       v-if="controller.hasNextStepsForRegistration"
                       class="fa-solid fa-caret-down"
-                      :class="{ rotate: controller.isShowRegistrationActions.value }"
+                      :class="{ rotate: controller.isShowCompletionActions.value }"
                     ></i>
                   </div>
                   <div
                     class="options"
-                    :class="{ show: controller.isShowRegistrationActions.value }"
+                    :class="{ show: controller.isShowCompletionActions.value }"
                   >
                     <button
                       class="btn btn-pill btn-submit"
