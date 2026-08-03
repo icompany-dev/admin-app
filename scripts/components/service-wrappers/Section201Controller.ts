@@ -72,7 +72,7 @@ export class Section201Controller
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error = new Error("", "")
+        let error = new Error()
         error.setForFetch()
         error.handle()
       }
@@ -155,7 +155,7 @@ export class Section201Controller
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error = new Error("", "")
+        let error = new Error()
         error.setForCUD()
         error.handle()
       }
@@ -178,13 +178,13 @@ export class Section201Controller
     return this.application.signatureId !== null
   }
 
-  companyName(): string {
-    return ""
-  }
+  // override get companyName(): string {
+  //   return ""
+  // }
 
-  companyRegistrationNumber(): string {
-    return ""
-  }
+  // override get companyRegistrationNumber(): string {
+  //   return ""
+  // }
 
   helpTitle(): string {
     return this.language.isMalay() ? `Pengisytiharan bawah Seksyen 201` : "Declaration under Section 201"

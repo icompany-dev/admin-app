@@ -1,6 +1,6 @@
 <template>
   <div
-    id="appointment-of-director"
+    id="section-201-service"
     class="cosec-service-documents"
     :class="{ 'full-size': props.isDocumentEnlarged }"
   >

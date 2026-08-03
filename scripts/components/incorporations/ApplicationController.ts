@@ -64,6 +64,9 @@ export class ApplicationController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
+  isShowSection201: Ref<boolean> = ref<boolean>(false)
+  selectedDirectorInvitationFor201: Ref<DirectorInvitation | null> = ref<DirectorInvitation | null>(null)
+
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
   isShowRegistration: Ref<boolean> = ref<boolean>(false)
@@ -303,6 +306,16 @@ export class ApplicationController {
     } else {
       this.searchTextsForMsicCodes.value.push(searchText)
     }
+  }
+
+  onViewSection201Clicked(directorInvitation: DirectorInvitation): void {
+    this.selectedDirectorInvitationFor201.value = directorInvitation
+    this.isShowSection201.value = true
+  }
+
+  onHideSection201(): void {
+    this.isShowSection201.value = false
+    this.selectedDirectorInvitationFor201.value = null
   }
 
   // Name Reservation Step
@@ -784,6 +797,10 @@ export class ApplicationController {
 
   get serviceName(): string {
     return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
+  }
+
+  get viewSection201Label(): string {
+    return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 201" : "Declaration under Section 201"
   }
 
   get isNameApproved(): boolean {

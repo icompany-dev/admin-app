@@ -58,6 +58,12 @@
                 <i class="fa-brands fa-whatsapp" />
                 {{ director.user.phone }}
               </span>
+              <span
+                class="human-detail action-clickable"
+                @click="controller.onViewSection201Clicked(director)"
+              >
+                {{ controller.viewSection201Label }}
+              </span>
             </div>
           </div>
           <div class="summary-item">
@@ -457,6 +463,21 @@
       :company-name="controller.application.value.getName()"
       @proceed="controller.onProceedIncorporationApproved($event)"
     />
+    <Teleport to="body">
+      <Transition name="fade">
+        <div
+          class="document-view show"
+          v-if="controller.isShowSection201.value"
+          @click.self="controller.onHideSection201()"
+        >
+          <Section201
+            :application-id="controller.selectedDirectorInvitationFor201.value?.id ?? ''"
+            :is-document-enlarged="false"
+            :is-in-preview-mode="false"
+          />
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -468,6 +489,7 @@
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import SearchableDropdown from "@/components/Forms/SearchableDropdown.vue"
+  import Section201 from "@/components/ServiceWrappers/Section201.vue"
   import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import Section27OneFourService from "@/components/CompanyServices/Section27OneFourService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
