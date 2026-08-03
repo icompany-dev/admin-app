@@ -229,7 +229,7 @@ export class Section201Controller
         PdfPaperUtil.generatePdfFile(
           dcrPages,
           20,
-          `Declaration under Section 201.pdf`,
+          `${this.application.value.name} - Declaration under Section 201.pdf`,
           PaperSize.A4,
           PaperOrientation.Portrait
         )

@@ -362,7 +362,7 @@
             </ApplicationNode>
             <ApplicationNode
               v-bind="controller.completionnNodeProps"
-              @click="controller.onCompletionOfIncorporationClicked()"
+              @click.capture="controller.onCompletionOfIncorporationClicked()"
             >
               <template #nodeContent>
                 <div class="application-container">

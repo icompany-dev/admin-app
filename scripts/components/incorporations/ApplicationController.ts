@@ -880,6 +880,51 @@ export class ApplicationController {
 
   async generatedSection201For(directorInvitation: DirectorInvitation): Promise<void> {
     // get the document ref, upload the document, and update the application metadata
+    this.onViewSection201Clicked(directorInvitation)
+    try {
+      await nextTick()
+      if (!this.documentRef) {
+        let error = new Error()
+        error.setForDocumentDownload()
+        throw error
+      }
+
+      let uploadedFileId = await this.documentRef.onGenerateClicked()
+      if (!uploadedFileId) {
+        this.isUpdatingRegistration.value = false
+        return
+      }
+
+      await this.documentRef.onDownloadClicked()
+
+      if (!this.application.value.metaData) {
+        this.application.value.metaData = {}
+      }
+
+      if (!this.application.value.metaData.section201) {
+        this.application.value.metaData.section201 = []
+      }
+
+      this.application.value.metaData.section201.push({
+        directorInvitationId: directorInvitation.id,
+        fileId: uploadedFileId,
+      })
+
+      await this.application.value.updateMetadata(useApplicationIncorporateStore())
+
+      let toastTitle = this.language.isMalay()
+        ? `Pengisytiharan bawah Seksyen 201 telah direkodkan bagi ${directorInvitation.name}.`
+        : `Declaration under Section 201 has been generated for ${directorInvitation.name}.`
+      let toastMessage = this.language.isMalay()
+        ? "Salinan telah dimuat turun untuk rekod anda."
+        : "A copy has been downloaded for your record."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      console.error(e) // check what is the issue
+    } finally {
+      //
+    }
   }
 
   hasGeneratedSection201For(directorInvitation: DirectorInvitation): boolean {

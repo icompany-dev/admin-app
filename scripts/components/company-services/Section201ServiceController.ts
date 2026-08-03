@@ -10,6 +10,9 @@ import { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
 import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
 import { User } from "~/scripts/models/User"
 import { SignatureItem } from "~/scripts/types/SignatureItem"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { File as UploadedFile } from "~/scripts/models/File"
 
 export class Section201ServiceController {
   applicationId: Ref<string> = ref<string>("")
@@ -30,10 +33,16 @@ export class Section201ServiceController {
 
   emitEvents: any | null = null
 
+  documentRef: any | null = null
+
   constructor(applicationId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.setApplicationId(applicationId)
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async setApplicationId(applicationId: string): Promise<void> {
@@ -144,6 +153,49 @@ export class Section201ServiceController {
 
   hasSigned(): boolean {
     return this.directorInvitation.value.signatureId !== null
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (!this.documentRef) {
+      return
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return
+    }
+
+    await PdfPaperUtil.generatePdfFile(
+      pages,
+      20,
+      `${this.directorInvitation.value.name} - Declaration under Section 201.pdf`,
+      PaperSize.A4,
+      PaperOrientation.Portrait
+    )
+  }
+
+  async onGenerateClicked(): Promise<string | null> {
+    if (!this.documentRef) {
+      return null
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return null
+    }
+
+    let filename = `${this.directorInvitation.value.name} - Declaration under Section 201.pdf`
+    let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+    let pdfFile = new File([pdfBlob], filename, {
+      type: "application/pdf",
+    })
+
+    let uploadedFile = new UploadedFile()
+    await uploadedFile.uploadFile(pdfFile, useFileStore())
+
+    return uploadedFile.id
   }
 
   get serviceWrapperProps() {

@@ -16,6 +16,7 @@
           class="documents"
         >
           <Section201
+            ref="documentRef"
             :company-name="controller.name.value"
             :registration-number="controller.registrationNumber.value"
             :signature-item="controller.signatureItem.value"
@@ -41,6 +42,8 @@
   })
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new Section201ServiceController(props.applicationId, emit)
 
   watch(
@@ -49,6 +52,19 @@
       controller.setApplicationId(newVal)
     }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    onGenerateClicked: controller.onGenerateClicked.bind(controller),
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+  })
 </script>
 
 <style lang="scss">
