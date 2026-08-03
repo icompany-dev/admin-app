@@ -1,0 +1,80 @@
+#incorporations-ongoings {
+  margin: 30px auto;
+
+  .applications {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    .application {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      max-width: 550px;
+      padding: 10px 20px;
+      transition: all 0.7s ease;
+
+      .application-details {
+        max-width: 480px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 3px;
+
+        .proposed-name {
+          width: 100%;
+          font-size: 1.5rem;
+          font-weight: 600;
+          text-overflow: ellipsis;
+          text-wrap: nowrap;
+          overflow: hidden;
+          cursor: pointer;
+          color: var(--bs-icompany-purple);
+        }
+
+        .application-date {
+          text-transform: capitalize;
+        }
+
+        .application-status {
+          text-transform: capitalize;
+          padding: 4px 10px;
+          border-radius: 5px;
+          font-size: 0.8rem;
+          letter-spacing: 0.1pt;
+
+          &.info {
+            background-color: var(--bs-icompany-blue);
+            color: var(--bs-white);
+          }
+
+          &.danger {
+            background-color: var(--bs-danger);
+            color: var(--bs-white);
+          }
+
+          &.success {
+            background-color: var(--bs-icompany-green);
+            color: var(--bs-white);
+          }
+
+          &.draft {
+            background-color: var(--bs-gray-600);
+            color: var(--bs-white);
+          }
+        }
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+      }
+    }
+  }
+}

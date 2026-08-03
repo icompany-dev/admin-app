@@ -111,7 +111,7 @@ export class ApplicationIncorporate implements IApplication {
           })
         : []
     this.businessDescription = data.business_description ?? ""
-    this.hasBusinessAddress = data.has_business_address ?? true
+    this.hasBusinessAddress = data.has_business_address
     this.canReceiveMail = data.can_receive_mail ?? false
     this.businessAddressLocationId = data.business_address_location?.id ?? null
     this.businessAddressLocation = data.business_address_location ? new Location(data.business_address_location) : null
@@ -259,7 +259,7 @@ export class ApplicationIncorporate implements IApplication {
 
   async createOrUpdateNamesReservations(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<void> {
     if (!this.canSubmitNameReservation()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -268,7 +268,7 @@ export class ApplicationIncorporate implements IApplication {
     if (StringUtil.isNullOrEmpty(this.id)) {
       let response = await repository.createNameReservations(data)
       if (repository.error !== null) {
-        let error: Error = new Error("", "")
+        let error: Error = new Error()
         error.setForCUD()
         throw error
       }
@@ -279,7 +279,7 @@ export class ApplicationIncorporate implements IApplication {
     } else {
       let response = await repository.updateNameReservations(this.id, data)
       if (repository.error !== null) {
-        let error: Error = new Error("", "")
+        let error: Error = new Error()
         error.setForCUD()
         throw error
       }
@@ -312,20 +312,20 @@ export class ApplicationIncorporate implements IApplication {
     repository: ReturnType<typeof useApplicationIncorporateStore>
   ): Promise<void> {
     if (!this.canSubmitBusinessDescriptionAndMsicCodes(msicCodeIds)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let data = this.getRequestBodyForBusinessDescriptionAndMsicCodes(msicCodeIds)
     let response = await repository.updateDescriptionMsicCodes(this.id, data)
-    if (repository.error !== null) {
-      let error: Error = new Error("", "")
+    if (repository.error !== null || !response) {
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
 
-    this.convertFromResponse(response)
+    this.clone(response)
   }
 
   canSubmitBusinessAddress(): boolean {
@@ -358,7 +358,7 @@ export class ApplicationIncorporate implements IApplication {
 
   async updateBusinessAddress(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<void> {
     if (!this.canSubmitBusinessAddress()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -366,7 +366,7 @@ export class ApplicationIncorporate implements IApplication {
     let data = this.getRequestBodyForBusinessAddress()
     let response = await repository.updateBusinessAddress(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -376,16 +376,57 @@ export class ApplicationIncorporate implements IApplication {
 
   async delete(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     await repository.remove(this.id)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
+    }
+  }
+
+  async notifyApproved(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<boolean> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let response = await repository.notifyApproved(this.id)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    return response
+  }
+
+  async updateMetadata(repository: ReturnType<typeof useApplicationIncorporateStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      meta_data: this.metaData,
+    }
+    let response = await repository.update(this.id, data)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    if (response instanceof ApplicationIncorporate) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
     }
   }
 }

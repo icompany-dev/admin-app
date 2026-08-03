@@ -150,6 +150,10 @@
   --btn-disabled-bg-color: #{$gray-900};
   --btn-disabled-border-color: #{$gray-900};
 
+  --btn-out-focus-color: #{$white};
+  --btn-out-focus-bg-color: transparent;
+  --btn-out-focus-border-color: #{$white};
+
   --btn-primary-bg-color: #{$black};
   --btn-primary-color: #{$icompany-purple-lighter};
   --btn-primary-border-color: #{$icompany-purple-lighter};

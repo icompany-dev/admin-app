@@ -8,6 +8,8 @@ import { useDayjs } from "#imports"
 import { BillingInfo } from "./BillingInfo"
 import { MsicCodeAssign } from "./MsicCodeAssign"
 import { CompanyBranch } from "./CompanyBranch"
+import { Error } from "~/scripts/library/Error"
+import { StringUtil } from "../utils/String"
 
 export class Company implements IModel<Company> {
   id: string = ""
@@ -34,6 +36,8 @@ export class Company implements IModel<Company> {
   companySetting: CompanySetting | null = null // Create company setting type
   subscription: CompanySubscription | null = null // create company subscription type
   branches: CompanyBranch[] = []
+  hasBusinessAddress: boolean = true
+  applicationIncorporationId: string | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
 
@@ -66,6 +70,7 @@ export class Company implements IModel<Company> {
     this.registeredAddressLocation = new Location(data.registered_address_location)
     this.imageId = data.image?.id ?? null
     this.companyLogo = new File(data.image)
+    this.applicationIncorporationId = data.application_incorporation_id ?? null
     this.incorporatedAt = data.incorporated_at
     this.msicCodeAssigns =
       data.msic_code_assigns && Array.isArray(data.msic_code_assigns)
@@ -96,6 +101,7 @@ export class Company implements IModel<Company> {
     this.registrationNumberOld = data.registrationNumberOld
     this.registrationNumberNew = data.registrationNumberNew
     this.hasConstitution = data.hasConstitution
+    this.hasBusinessAddress = data.hasBusinessAddress
     this.constitutionFileId = data.constitutionFileId
     this.constitutionFile = new File(data.constitutionFile)
     this.businessDescription = data.businessDescription
@@ -104,6 +110,7 @@ export class Company implements IModel<Company> {
     this.registeredAddressLocationId = data.registeredAddressLocationId
     this.registeredAddressLocation = new Location(data.registeredAddressLocation)
     this.imageId = data.imageId
+    this.applicationIncorporationId = data.applicationIncorporationId
     this.companyLogo = new File(data.companyLogo)
     this.incorporatedAt = data.incorporatedAt
     this.msicCodeAssigns = data.msicCodeAssigns.map((d: any) => {
@@ -122,7 +129,24 @@ export class Company implements IModel<Company> {
   }
 
   getRequestBody(): object {
-    return {}
+    let data = {
+      name: this.name,
+      name_type: this.nameType,
+      name_description: this.nameDescription,
+      registration_number_new: this.registrationNumberNew,
+      registration_number_old: this.registrationNumberOld,
+      business_description: this.businessDescription,
+      has_business_address: this.hasBusinessAddress,
+      registered_address_location: this.registeredAddressLocation?.getRequestBody() ?? null,
+      incorporated_at: this.incorporatedAt,
+      application_incorporation_id: this.applicationIncorporationId,
+    }
+
+    if (this.hasBusinessAddress) {
+      data.business_address_location = this.businessAddressLocation?.getRequestBody() ?? null
+    }
+
+    return data
   }
 
   getType(): string {
@@ -217,5 +241,34 @@ export class Company implements IModel<Company> {
       return this.registeredAddressLocation.getOnelineAddress()
     }
     return ""
+  }
+
+  canSubmit(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.name) &&
+      !StringUtil.isNullOrEmpty(this.nameType) &&
+      !StringUtil.isNullOrEmpty(this.registrationNumberNew) &&
+      !StringUtil.isNullOrEmpty(this.registrationNumberOld) &&
+      !StringUtil.isNullOrEmpty(this.businessDescription) &&
+      !StringUtil.isNullOrEmpty(this.incorporatedAt)
+    )
+  }
+
+  async create(repository: ReturnType<typeof useCompanyStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    const response = await repository.create(data)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
   }
 }

@@ -162,6 +162,22 @@ export const useApplicationIncorporateStore = defineStore("applicationIncorporat
     }
   }
 
+  async function notifyApproved(id: string): Promise<boolean> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.applicationIncorporates.notifyApproved(id)
+      return response.is_notified ?? false
+    } catch (e: any) {
+      error.value = e
+      console.error("Failed to notify approval", e)
+      return false
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalApplicationIncorporates = computed(() => applicationIncorporates.value.length)
 
   return {
@@ -178,5 +194,6 @@ export const useApplicationIncorporateStore = defineStore("applicationIncorporat
     updateNameReservations,
     updateDescriptionMsicCodes,
     updateBusinessAddress,
+    notifyApproved,
   }
 })

@@ -91,7 +91,7 @@ export class DirectorInvitation extends Invitation implements IInvitation<Direct
 
   async create(repository: ReturnType<typeof useDirectorInvitationStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -99,7 +99,7 @@ export class DirectorInvitation extends Invitation implements IInvitation<Direct
     let data = this.getRequestBody()
     let response = await repository.create(data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -109,13 +109,13 @@ export class DirectorInvitation extends Invitation implements IInvitation<Direct
 
   async update(repository: ReturnType<typeof useDirectorInvitationStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -123,7 +123,7 @@ export class DirectorInvitation extends Invitation implements IInvitation<Direct
     let data = this.getRequestBody()
     let response = await repository.update(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -133,14 +133,14 @@ export class DirectorInvitation extends Invitation implements IInvitation<Direct
 
   async remove(repository: ReturnType<typeof useDirectorInvitationStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.remove(this.id)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -150,14 +150,14 @@ export class DirectorInvitation extends Invitation implements IInvitation<Direct
 
   async accept(repository: ReturnType<typeof useDirectorInvitationStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.accept(this.id)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -167,14 +167,14 @@ export class DirectorInvitation extends Invitation implements IInvitation<Direct
 
   async reject(repository: ReturnType<typeof useDirectorInvitationStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.reject(this.id, this.rejectReason ?? "")
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

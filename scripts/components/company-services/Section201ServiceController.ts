@@ -10,6 +10,9 @@ import { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
 import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
 import { User } from "~/scripts/models/User"
 import { SignatureItem } from "~/scripts/types/SignatureItem"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { File as UploadedFile } from "~/scripts/models/File"
 
 export class Section201ServiceController {
   applicationId: Ref<string> = ref<string>("")
@@ -30,10 +33,21 @@ export class Section201ServiceController {
 
   emitEvents: any | null = null
 
+  documentRef: any | null = null
+  wrapperRef: any | null = null
+
   constructor(applicationId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.setApplicationId(applicationId)
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
+  }
+
+  setWrapperRef(wrapperRef: any): void {
+    this.wrapperRef = wrapperRef
   }
 
   async setApplicationId(applicationId: string): Promise<void> {
@@ -61,7 +75,7 @@ export class Section201ServiceController {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error = new Error("", "")
+        let error = new Error()
         error.setForFetch()
         error.handle()
       }
@@ -86,6 +100,14 @@ export class Section201ServiceController {
       let application = new ApplicationIncorporate(response)
       this.name.value = application.getName()
       this.registrationNumber.value = ""
+      if (
+        application.metaData !== null &&
+        application.metaData.company_data &&
+        StringUtil.isNullOrEmpty(application.metaData.company_data.registrationNumberNew)
+      ) {
+        this.name.value = `${this.name.value} SDN BHD`
+        this.registrationNumber.value = `${application.metaData.company_data.registrationNumberNew} (${application.metaData.company_data.registrationNumberOld})`
+      }
       return
     }
 
@@ -138,16 +160,69 @@ export class Section201ServiceController {
     return this.directorInvitation.value.signatureId !== null
   }
 
+  onExpandDocument(): void {
+    if (this.wrapperRef) {
+      this.wrapperRef.handleDocumentClicked()
+    }
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (!this.documentRef) {
+      return
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return
+    }
+
+    await PdfPaperUtil.generatePdfFile(
+      pages,
+      20,
+      `${this.directorInvitation.value.name} - Declaration under Section 201.pdf`,
+      PaperSize.A4,
+      PaperOrientation.Portrait
+    )
+  }
+
+  async onGenerateClicked(): Promise<string | null> {
+    if (!this.documentRef) {
+      return null
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return null
+    }
+
+    let filename = `${this.directorInvitation.value.name} - Declaration under Section 201.pdf`
+    let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+    let pdfFile = new File([pdfBlob], filename, {
+      type: "application/pdf",
+    })
+
+    let uploadedFile = new UploadedFile()
+    await uploadedFile.uploadFile(pdfFile, useFileStore())
+
+    return uploadedFile.id
+  }
+
   get serviceWrapperProps() {
-    return new PropsCompanyServiceWrapper(
-      new CompanyDirectorAppointment(), // this is needed to bypass the service wrapper's setting
+    let application = new CompanyDirectorAppointment()
+    application.id = this.applicationId.value
+    application.status = "paid"
+
+    let props = new PropsCompanyServiceWrapper(
+      application, // this is needed to bypass the service wrapper's setting
       "",
       this.target,
       "",
       ViewMode.Existing,
       true,
       false,
-      "",
+      this.applicationId.value,
       1,
       1,
       "NOTICE",
@@ -171,5 +246,7 @@ export class Section201ServiceController {
       CompanyDirectorAppointment,
       useCompanyDirectorAppointmentStore()
     )
+
+    return props
   }
 }

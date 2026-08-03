@@ -1,0 +1,25 @@
+// #popups-completion-of-incorporation {
+//   // Styles go here
+// }
+
+.popup-details {
+  .company-name {
+    font-weight: 600;
+    display: block;
+    padding: 5px;
+  }
+
+  .form-group {
+    margin-top: 3px;
+
+    .label {
+      width: 230px;
+      text-align: start;
+    }
+
+    .form-control {
+      width: calc(100% - 180px);
+      resize: vertical;
+    }
+  }
+}

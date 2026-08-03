@@ -25,8 +25,6 @@
 
 <script setup lang="ts">
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
-  import DcrChangeOfNames from "../Resolutions/DcrChangeOfNames.vue"
-  import McrChangeOfNames from "../Resolutions/McrChangeOfNames.vue"
   import Section27ForCompany from "@/components/LegalDocuments/Section27ForCompany.vue"
   import { Section27ForCompanyController } from "~/scripts/components/service-wrappers/Section27ForCompanyController"
 

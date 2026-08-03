@@ -189,7 +189,6 @@ export class UploadDocumentController extends BasePopupController {
         }
 
         f.fileId = uploadedFile.id
-        console.log(f)
 
         promises.push(f.create(useFormStore()))
       })

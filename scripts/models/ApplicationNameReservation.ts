@@ -96,7 +96,9 @@ export class ApplicationNameReservation {
       name: this.name,
       name_type: this.nameType,
       name_description: this.nameDescription,
-      status: this.status,
+      submitted_at: this.submittedAt,
+      ssm_reference_number: this.ssmReferenceNumber,
+      ssm_template_reference_number: this.ssmTemplateReferenceNumber,
     }
   }
 
@@ -106,15 +108,96 @@ export class ApplicationNameReservation {
 
   async create(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let data = this.getRequestBody()
-    let response = await repository.create(data)
+    let response = await repository.submitted(this.applicationIncorporateId, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async queried(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      query_en: this.ssmQueryEn,
+      query_bm: this.ssmQueryBm,
+    }
+    let response = await repository.queried(this.applicationIncorporateId, data)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async resubmitted(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      resubmitted_at: this.resubmittedAt,
+    }
+    let response = await repository.resubmitted(this.applicationIncorporateId, data)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async approve(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.applicationIncorporateId)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      result_at: this.resultAt,
+      name_valid_till: this.nameValidTill,
+      ssm_email_subject: this.ssmEmailSubject,
+    }
+
+    const response = await repository.approve(this.applicationIncorporateId, data)
+    if (repository.error) {
+      let error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async reject(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.applicationIncorporateId)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.reject(this.applicationIncorporateId, this.ssmRemarksEn)
+    if (repository.error) {
+      let error = new Error()
       error.setForCUD()
       throw error
     }

@@ -1,5 +1,5 @@
 export interface IServiceController<T, R> {
-  application: T
+  // application: T
   applicationId: string | null
   companyId: string
 

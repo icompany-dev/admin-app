@@ -24,6 +24,7 @@
             :is="activeDocumentComponent"
             :company-id="props.companyId"
             :application-id="props.targetId"
+            :application-incorporation-id="props.applicationIncorporationId"
             :transfer-id="props.targetId"
             :notice-id="props.targetId"
             :meeting-id="props.targetId"
@@ -38,6 +39,9 @@
             :financial-year-start-date="props.financialYearStartDate"
             :financial-year-end-date="props.financialYearEndDate"
             :target-type="props.applicationTarget"
+            :company-name="props.companyName"
+            :registration-number-new="props.registrationNumberNew"
+            :registration-number-old="props.registrationNumberOld"
             @back="controller.onMinimizeDocument($event)"
             @make-payment="controller.onMakePayment()"
             @applicationUpdated="controller.onApplicationUpdated($event)"
@@ -91,7 +95,9 @@
   import SetFinancialYearEnd from "./SetFinancialYearEnd.vue"
   import ShareIssuance from "./ShareIssuance.vue"
   import Section201 from "./Section201.vue"
+  import Section236Three from "./Section236Three.vue"
   import Section27ForCompany from "./Section27ForCompany.vue"
+  import Section27OneFour from "./Section27OneFour.vue"
   import Section28 from "./Section28.vue"
   import NameReservation from "./NameReservation.vue"
   import Section219And221 from "./Section219And221.vue"
@@ -122,6 +128,8 @@
     [CompanyConstants.TARGET_AMENDMENT_NAME_SECTION28]: Section28,
     [CompanyConstants.TARGET_AMENDMENT_REGISTERED_ADDRESS]: ChangeOfRegisteredAddress,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE]: NewIncorporation,
+    [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION27]: Section27OneFour,
+    [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION236]: Section236Three,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointmentOfAuditor,
     [CompanyConstants.TARGET_APPLICATION_SWITCH]: NewSwitch,
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,

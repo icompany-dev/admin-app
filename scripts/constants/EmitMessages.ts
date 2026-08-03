@@ -17,6 +17,8 @@ export class EmitMessages {
   static UPDATE_CART: string = "updateCart"
   static VIEW_MODE_CHANGED: string = "viewModeChanged"
   static MISSING_STEP: string = "missingStep"
+  static DOCUMENT_GENERATED: string = "documentGenerated"
+  static UPLOADED: string = "uploaded"
 
   static COMPANY_SERVICES: string[] = [
     this.BACK,
@@ -33,5 +35,5 @@ export class EmitMessages {
     this.MISSING_STEP,
   ]
 
-  static POPUPS: string[] = [this.BACK, this.PROCEED]
+  static POPUPS: string[] = [this.BACK, this.PROCEED, this.UPLOADED]
 }

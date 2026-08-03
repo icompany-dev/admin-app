@@ -2,6 +2,7 @@ import { PaperOrientation } from "../constants/Paper"
 
 export interface IPropsServiceWrapper {
   companyId: string
+  applicationIncorporationId: string
   target: string
   targetId: string | null
   isShowing: boolean
@@ -15,10 +16,15 @@ export interface IPropsServiceWrapper {
   yearToLodge: string
   paperOrientation: string
   applicationTarget: string
+
+  companyName: string
+  registrationNumberNew: string
+  registrationNumberOld: string
 }
 
 export class PropsServiceWrapper implements IPropsServiceWrapper {
   companyId: string
+  applicationIncorporationId: string = ""
   target: string
   targetId: string | null
   isShowing: boolean
@@ -31,6 +37,10 @@ export class PropsServiceWrapper implements IPropsServiceWrapper {
   yearToLodge: string = ""
   paperOrientation: string = PaperOrientation.Portrait
   applicationTarget: string = ""
+
+  companyName: string = ""
+  registrationNumberNew: string = ""
+  registrationNumberOld: string = ""
 
   constructor(
     companyId: string,

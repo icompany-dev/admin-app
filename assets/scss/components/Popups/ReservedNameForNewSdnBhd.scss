@@ -1,0 +1,17 @@
+// #popups-reserved-name-for-new-sdn-bhd {
+//   // Styles go here
+// }
+
+.popup-details {
+  .form-group {
+    .label {
+      width: 350px;
+      text-align: start;
+    }
+
+    .form-control {
+      width: calc(100% - 100px);
+      resize: vertical;
+    }
+  }
+}

@@ -13,7 +13,7 @@ export class Sidebar {
 
   onClick(): void {
     let router = useRouter()
-    router.push(this.route)
+    router.push({ path: `/${this.route}` })
   }
 
   get isShowing(): boolean {
@@ -56,23 +56,12 @@ export class PageSidebar {
   static dashboardGroup: SidebarGroup = new SidebarGroup("Dashboard", "Dashboard", [this.commandCentre], true)
 
   static incorpDrafts: Sidebar = new Sidebar(
-    "Applications in Draft",
-    "Permohonan Masih Draf",
-    "incorporations/drafts",
+    "Ongoing Applications",
+    "Permohonan Dalam Proses",
+    "incorporations/ongoings",
     false
   )
-  static incorpNameReservations: Sidebar = new Sidebar(
-    "Applications of Name Reservations",
-    "Permohonan Tempahan Nama",
-    "incorporations/name-reservation",
-    false
-  )
-  static incorpNew: Sidebar = new Sidebar("New Sdn Bhd", "Sdn Bhd Baharu", "incorporations/new", false)
-  static incorpGroup: SidebarGroup = new SidebarGroup("New Incorporation", "Permerbadanan Baharu", [
-    this.incorpDrafts,
-    this.incorpNameReservations,
-    this.incorpNew,
-  ])
+  static incorpGroup: SidebarGroup = new SidebarGroup("New Incorporation", "Permerbadanan Baharu", [this.incorpDrafts])
 
   static switchDrafts: Sidebar = new Sidebar(
     "Application in Drafts",
