@@ -738,6 +738,22 @@ export class ApplicationController {
     }
   }
 
+  async onCompleteIncorporation(): Promise<void> {
+    try {
+      this.isUpdatingCOI.value = true
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingCOI.value = false
+    }
+  }
+
   // getters
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
@@ -1123,9 +1139,12 @@ export class ApplicationController {
     let registrationNumberNew = this.application.value.metaData?.company_data?.registrationNumberNew ?? ""
     let registrationNumberOld = this.application.value.metaData?.company_data?.registrationNumberOld ?? ""
 
-    company.name = this.application.value.nameSelected?.getCompleteName() ?? ""
+    company.name = this.application.value.nameSelected?.name ?? ""
+    company.name = this.application.value.nameSelected?.nameType ?? ""
     company.registrationNumberNew = registrationNumberNew ?? ""
     company.registrationNumberOld = registrationNumberOld ?? ""
+    company.businessDescription = this.application.value.businessDescription
+    company.businessAddressLocationId = this.application.value.businessAddressLocationId
 
     return company
   }

@@ -383,7 +383,7 @@
             :application-id="controller.applicationId.value"
             :target-id="controller.paymentOrderId.value"
             :application-name-reservation-id="controller.latestSection27Application?.id ?? ''"
-            :company-name="controller.companyToConvert.name"
+            :company-name="controller.companyToConvert.getFullName()"
             :registration-number-new="controller.companyToConvert.registrationNumberNew"
             :registration-number-old="controller.companyToConvert.registrationNumberOld"
           />
