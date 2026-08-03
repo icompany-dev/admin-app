@@ -1,5 +1,5 @@
 <template>
-  <div id="incorporations-drafts">
+  <div id="incorporations-ongoings">
     <div
       class="loader-container"
       v-if="controller.tableDataFetcher.value.isLoading"
@@ -40,7 +40,14 @@
             {{ controller.applicationStatus(application) }}
           </div>
         </div>
-        <div class="application-actions">//</div>
+        <div class="application-actions">
+          <button
+            class="btn btn-submit btn-pill"
+            @click="controller.onApplicationClicked(application)"
+          >
+            {{ controller.viewApplicationLabel }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -68,5 +75,5 @@
 </script>
 
 <style lang="scss">
-  @use "~/assets/scss/components/Incorporations/Drafts" as *;
+  @use "~/assets/scss/components/Incorporations/Ongoings" as *;
 </style>

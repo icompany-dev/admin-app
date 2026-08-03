@@ -75,7 +75,7 @@ export class OngoingsController {
 
   onApplicationClicked(application: ApplicationIncorporate): void {
     let router = useRouter()
-    router.push({ path: `/incorporations/drafts/${application.id}` })
+    router.push({ path: `/incorporations/ongoings/${application.id}` })
   }
 
   // getters
@@ -116,5 +116,9 @@ export class OngoingsController {
     return this.language.isMalay()
       ? `Data akan dipaparkan apabila tersedia.`
       : `Data will appear once it becomes available.`
+  }
+
+  get viewApplicationLabel(): string {
+    return this.language.isMalay() ? "Lihat" : "View"
   }
 }
