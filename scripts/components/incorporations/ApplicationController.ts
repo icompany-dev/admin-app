@@ -1097,7 +1097,7 @@ export class ApplicationController {
   }
 
   get isRegistrationCompleted(): boolean {
-    return this.application.value.status === StatusConstants.APPROVED
+    return this.application.value.metaData !== null && !!this.application.value.metaData.company_data
   }
 
   get registrationLabel(): string {
@@ -1112,7 +1112,7 @@ export class ApplicationController {
     return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
-  get completedLabel(): string {
+  get registeredLabel(): string {
     return this.language.isMalay() ? "Diluluskan" : "Approved"
   }
 
@@ -1171,6 +1171,18 @@ export class ApplicationController {
 
   get completionOfIncorporationSublabel(): string {
     return this.language.isMalay() ? "Penubuhan Sdn Bhd Baharu" : "Creation of New Sdn Bhd"
+  }
+
+  get hasNextStepsForCompletion(): boolean {
+    return this.application.value.status !== StatusConstants.COMPLETED
+  }
+
+  get completionActionLabel(): string {
+    if (!this.hasNextStepsForCompletion) {
+      return this.language.isMalay() ? "Selesai" : "Completed"
+    }
+
+    return this.language.isMalay() ? "Seterusnya" : "Next Steps"
   }
 
   get convertLabel(): string {

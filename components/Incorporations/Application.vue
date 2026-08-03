@@ -387,13 +387,13 @@
                     class="btn btn-pill btn-submit selected"
                     :class="{
                       'is-loading': controller.isUpdatingCompletion.value,
-                      single: !controller.hasNextStepsForRegistration,
+                      single: !controller.hasNextStepsForCompletion,
                     }"
                     @click="controller.onShowCompletionActionsClicked()"
                   >
-                    <span class="label">{{ controller.registrationActionLabel }}</span>
+                    <span class="label">{{ controller.completionActionLabel }}</span>
                     <i
-                      v-if="controller.hasNextStepsForRegistration"
+                      v-if="controller.hasNextStepsForCompletion"
                       class="fa-solid fa-caret-down"
                       :class="{ rotate: controller.isShowCompletionActions.value }"
                     ></i>
@@ -402,13 +402,6 @@
                     class="options"
                     :class="{ show: controller.isShowCompletionActions.value }"
                   >
-                    <button
-                      class="btn btn-pill btn-submit"
-                      :disabled="controller.isIncorporationApproved"
-                      @click="controller.onIncorporationApproved()"
-                    >
-                      {{ controller.approvedRegistrationLabel }}
-                    </button>
                     <button
                       class="btn btn-pill btn-submit"
                       @click.self="controller.onGenerate236Clicked()"
