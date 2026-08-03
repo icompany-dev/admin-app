@@ -66,7 +66,8 @@ export class ApplicationController {
 
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
   isShowSection27: Ref<boolean> = ref<boolean>(false)
-  isShowCOI: Ref<boolean> = ref<boolean>(false)
+  isShowRegistration: Ref<boolean> = ref<boolean>(false)
+  isShowCompletion: Ref<boolean> = ref<boolean>(false)
 
   isShowProposedNames: Ref<boolean> = ref<boolean>(false)
   selectedProposedName: Ref<string> = ref<string>("")
@@ -76,10 +77,10 @@ export class ApplicationController {
   isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
   isUpdatingSection27: Ref<boolean> = ref<boolean>(false)
 
-  isUploadingCOI: Ref<boolean> = ref<boolean>(false)
-  isDownloadingCOI: Ref<boolean> = ref<boolean>(false)
-  isShowCOIActions: Ref<boolean> = ref<boolean>(false)
-  isUpdatingCOI: Ref<boolean> = ref<boolean>(false)
+  isUploadingRegistration: Ref<boolean> = ref<boolean>(false)
+  isDownloadingRegistration: Ref<boolean> = ref<boolean>(false)
+  isShowRegistrationActions: Ref<boolean> = ref<boolean>(false)
+  isUpdatingRegistration: Ref<boolean> = ref<boolean>(false)
 
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
 
@@ -231,7 +232,8 @@ export class ApplicationController {
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
     this.isShowSection27.value = false
-    this.isShowCOI.value = false
+    this.isShowRegistration.value = false
+    this.isShowCompletion.value = false
 
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
@@ -541,16 +543,16 @@ export class ApplicationController {
     }
   }
 
-  // Complete Incorporation
+  // Registration Incorporation
   onRegistrationOfIncorporationClicked(): void {
     this.resetAllDocumentValues()
-    this.isShowCOI.value = true
+    this.isShowRegistration.value = true
 
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
   }
 
   onIncorporationApproved(): void {
-    this.isShowCOIActions.value = false
+    this.isShowRegistrationActions.value = false
     /**
      * Items at this step:
      * 1. Incorporation Date
@@ -565,7 +567,7 @@ export class ApplicationController {
   async onProceedIncorporationApproved(data: CompletionOfIncorporation): Promise<void> {
     // save the data
     try {
-      this.isUpdatingCOI.value = true
+      this.isUpdatingRegistration.value = true
 
       if (!this.application.value.metaData) {
         this.application.value.metaData = {}
@@ -592,27 +594,27 @@ export class ApplicationController {
         error.handle()
       }
     } finally {
-      this.isUpdatingCOI.value = false
+      this.isUpdatingRegistration.value = false
     }
   }
 
-  async onDownloadCOIClicked(): Promise<void> {
+  async onDownloadRegistrationClicked(): Promise<void> {
     //
   }
 
-  onShowCOIActionsClicked(): void {
-    this.isShowCOIActions.value = !this.isShowCOIActions.value
+  onShowRegistrationActionsClicked(): void {
+    this.isShowRegistrationActions.value = !this.isShowRegistrationActions.value
   }
 
   async onIncorporationCompleted(): Promise<void> {
-    this.isShowCOIActions.value = false
+    this.isShowRegistrationActions.value = false
 
-    if (this.isUpdatingCOI.value) {
+    if (this.isUpdatingRegistration.value) {
       return
     }
 
     try {
-      this.isUpdatingCOI.value = true
+      this.isUpdatingRegistration.value = true
 
       let repository = useApplicationIncorporateStore()
       this.application.value.status = StatusConstants.APPROVED
@@ -643,19 +645,19 @@ export class ApplicationController {
         error.handle()
       }
     } finally {
-      this.isUpdatingCOI.value = false
+      this.isUpdatingRegistration.value = false
     }
   }
 
   onSection236Clicked(): void {
-    this.isShowCOIActions.value = false
+    this.isShowRegistrationActions.value = false
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE
   }
 
   async onGenerate236Clicked(): Promise<void> {
     this.onSection236Clicked()
     try {
-      this.isUpdatingCOI.value = true
+      this.isUpdatingRegistration.value = true
 
       await nextTick()
       if (!this.documentRef) {
@@ -666,7 +668,7 @@ export class ApplicationController {
 
       let uploadedFileId = await this.documentRef.onGenerateClicked()
       if (!uploadedFileId) {
-        this.isUpdatingCOI.value = false
+        this.isUpdatingRegistration.value = false
         return
       }
 
@@ -690,15 +692,15 @@ export class ApplicationController {
     } catch (e) {
       console.error(e) // check what is the issue
     } finally {
-      this.isUpdatingCOI.value = false
+      this.isUpdatingRegistration.value = false
     }
   }
 
   async onPurchaseCorporateProfile(): Promise<void> {
-    this.isShowCOIActions.value = false
+    this.isShowRegistrationActions.value = false
 
     try {
-      this.isUpdatingCOI.value = true
+      this.isUpdatingRegistration.value = true
 
       let corporateProfilePurchaser = new CorporateProfilePurchaser()
       corporateProfilePurchaser.isUploadFile = true
@@ -734,13 +736,21 @@ export class ApplicationController {
         error.handle()
       }
     } finally {
-      this.isUpdatingCOI.value = false
+      this.isUpdatingRegistration.value = false
     }
+  }
+
+  // completion of incorporation
+  onCompletionOfIncorporationClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowCompletion.value = true
+
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
   }
 
   async onCompleteIncorporation(): Promise<void> {
     try {
-      this.isUpdatingCOI.value = true
+      this.isUpdatingRegistration.value = true
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -750,7 +760,7 @@ export class ApplicationController {
         error.handle()
       }
     } finally {
-      this.isUpdatingCOI.value = false
+      this.isUpdatingRegistration.value = false
     }
   }
 
@@ -1070,7 +1080,11 @@ export class ApplicationController {
 
   // registration of incoporation
   get registrationNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.isNameApproved, this.isRegistrationCompleted, this.isShowCOI.value)
+    return new PropsServiceApplicationNode(
+      this.isNameApproved,
+      this.isRegistrationCompleted,
+      this.isShowRegistration.value
+    )
   }
 
   get isRegistrationCompleted(): boolean {
@@ -1078,11 +1092,11 @@ export class ApplicationController {
   }
 
   get registrationLabel(): string {
-    return this.language.isMalay() ? "Sijil Pemerbadanan" : "Certificate of Incorporation"
+    return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
   }
 
   get registrationSublabel(): string {
-    return this.language.isMalay() ? "Pemerbadanan Selesai" : "Completion of Incorporation"
+    return this.language.isMalay() ? "Pendaftaran Pemerbadanan" : "Registration of Incorporation"
   }
 
   get uploadlCOILabel(): string {
@@ -1127,6 +1141,27 @@ export class ApplicationController {
 
   get corporateProfileLabel(): string {
     return this.language.isMalay() ? "Profil Korporat" : "Corporate Profile"
+  }
+
+  // Completion of Incorporation
+  get completionnNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.isRegistrationCompleted,
+      this.isIncorporationCompleted,
+      this.isShowCompletion.value
+    )
+  }
+
+  get isIncorporationCompleted(): boolean {
+    return this.application.value.status === StatusConstants.COMPLETED
+  }
+
+  get completionOfIncorporationLabel(): string {
+    return this.language.isMalay() ? "Pemerbadanan Selesai" : "Completion of Incorporation"
+  }
+
+  get completionOfIncorporationSublabel(): string {
+    return this.language.isMalay() ? "Penubuhan Sdn Bhd Baharu" : "Creation of New Sdn Bhd"
   }
 
   get convertLabel(): string {
