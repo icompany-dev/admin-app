@@ -611,6 +611,34 @@ export class ApplicationController {
     this.isShowRegistrationActions.value = !this.isShowRegistrationActions.value
   }
 
+  // completion of incorporation
+  onCompletionOfIncorporationClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowCompletion.value = true
+
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
+  }
+
+  onShowCompletionActionsClicked(): void {
+    this.isShowCompletionActions.value = !this.isShowCompletionActions.value
+  }
+
+  async onCompleteIncorporation(): Promise<void> {
+    try {
+      this.isUpdatingRegistration.value = true
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingRegistration.value = false
+    }
+  }
+
   async onIncorporationCompleted(): Promise<void> {
     this.isShowRegistrationActions.value = false
 
@@ -738,34 +766,6 @@ export class ApplicationController {
       } else {
         let error = new Error()
         error.setForPurchaseFail("SSM Corporate Profile", "Profil Korporat SSM")
-        error.handle()
-      }
-    } finally {
-      this.isUpdatingRegistration.value = false
-    }
-  }
-
-  // completion of incorporation
-  onCompletionOfIncorporationClicked(): void {
-    this.resetAllDocumentValues()
-    this.isShowCompletion.value = true
-
-    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
-  }
-
-  onShowCompletionActionsClicked(): void {
-    this.isShowCompletionActions.value = !this.isShowCompletionActions.value
-  }
-
-  async onCompleteIncorporation(): Promise<void> {
-    try {
-      this.isUpdatingRegistration.value = true
-    } catch (e) {
-      if (e instanceof Error) {
-        e.handle()
-      } else {
-        let error = new Error()
-        error.setForCUD()
         error.handle()
       }
     } finally {
