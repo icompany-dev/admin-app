@@ -1125,12 +1125,12 @@ export class ApplicationController {
   }
 
   get hasNextStepsForRegistration(): boolean {
-    return this.application.value.status !== StatusConstants.CONVERTED
+    return !this.isIncorporationApproved
   }
 
   get registrationActionLabel(): string {
     if (!this.hasNextStepsForRegistration) {
-      return this.language.isMalay() ? "Selesai" : "Completed"
+      return this.language.isMalay() ? "Diluluskan" : "Approved"
     }
 
     return this.language.isMalay() ? "Seterusnya" : "Next Steps"

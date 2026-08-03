@@ -350,26 +350,6 @@
                     >
                       {{ controller.approvedRegistrationLabel }}
                     </button>
-                    <button
-                      class="btn btn-pill btn-submit"
-                      @click.self="controller.onGenerate236Clicked()"
-                    >
-                      {{ controller.generateSection236Label }}
-                    </button>
-                    <button
-                      class="btn btn-pill btn-submit"
-                      :disabled="!controller.isIncorporationApproved"
-                      @click="controller.onPurchaseCorporateProfile()"
-                    >
-                      {{ controller.corporateProfileLabel }}
-                    </button>
-                    <button
-                      class="btn btn-pill btn-submit"
-                      :disabled="!controller.isIncorporationApproved"
-                      @click="controller.onIncorporationApproved()"
-                    >
-                      {{ controller.convertLabel }}
-                    </button>
                   </div>
                 </div>
               </template>
