@@ -70,6 +70,7 @@ export class Company implements IModel<Company> {
     this.registeredAddressLocation = new Location(data.registered_address_location)
     this.imageId = data.image?.id ?? null
     this.companyLogo = new File(data.image)
+    this.applicationIncorporationId = data.application_incorporation_id ?? null
     this.incorporatedAt = data.incorporated_at
     this.msicCodeAssigns =
       data.msic_code_assigns && Array.isArray(data.msic_code_assigns)
@@ -109,6 +110,7 @@ export class Company implements IModel<Company> {
     this.registeredAddressLocationId = data.registeredAddressLocationId
     this.registeredAddressLocation = new Location(data.registeredAddressLocation)
     this.imageId = data.imageId
+    this.applicationIncorporationId = data.applicationIncorporationId
     this.companyLogo = new File(data.companyLogo)
     this.incorporatedAt = data.incorporatedAt
     this.msicCodeAssigns = data.msicCodeAssigns.map((d: any) => {
