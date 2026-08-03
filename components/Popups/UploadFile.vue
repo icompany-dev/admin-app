@@ -32,13 +32,12 @@
                 <tr>
                   <th>#</th>
                   <th>Document Name</th>
-                  <th>Document Date</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr
-                  v-for="(form, i) in controller.forms.value"
+                  v-for="(form, i) in controller.files.value"
                   :key="`form-${i}`"
                 >
                   <td>{{ i + 1 }}.</td>
@@ -60,13 +59,6 @@
                         </span>
                       </span>
                     </div>
-                  </td>
-                  <td>
-                    <input
-                      type="date"
-                      class="form-control"
-                      v-model="form.documentDate"
-                    />
                   </td>
                   <td>
                     <i

@@ -29,6 +29,7 @@ import { City, Country, Location, State } from "~/scripts/models/Location"
 import { Form } from "~/scripts/models/Form"
 import { File } from "~/scripts/models/File"
 import type { RefSymbol } from "@vue/reactivity"
+import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -56,7 +57,7 @@ export class ApplicationController {
 
   emitEvents: any | null = null
 
-  uploadDocumentPopup: any | null = null
+  uploadFilePopup: any | null = null
   nameReservedPopup: any | null = null
   nameReservedQueriedPopup: any | null = null
   nameReservationRejectedPopup: any | null = null
@@ -108,6 +109,8 @@ export class ApplicationController {
   searchTextsForMsicCodes: Ref<string[]> = ref<string[]>([])
   msicCodes: Ref<MsicCode[]> = ref<MsicCode[]>([])
 
+  targetForDocumentUpload: Ref<string> = ref<string>("")
+
   constructor(props: PropsIncorporationApplication, emitEvents: any) {
     this.setDataFromProps(props)
     this.emitEvents = emitEvents
@@ -130,8 +133,8 @@ export class ApplicationController {
     this.nameReservedQueriedPopup = nameReservedQueriedPopup
   }
 
-  setUploadDocumentPopup(uploadDocumentPopup: any): void {
-    this.uploadDocumentPopup = uploadDocumentPopup
+  setUploadFilePopup(uploadFilePopup: any): void {
+    this.uploadFilePopup = uploadFilePopup
   }
 
   setCompletionOfIncorporationPopup(completionOfIncorporationPopup: any): void {
@@ -250,12 +253,40 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
 
-  async onUploadDocumentClicked(): Promise<void> {
-    if (!this.uploadDocumentPopup) {
+  async onUploadDocumentClicked(targetForDocumentUpload: string): Promise<void> {
+    if (!this.uploadFilePopup) {
       return
     }
 
-    this.uploadDocumentPopup.show()
+    this.uploadFilePopup.show()
+
+    this.targetForDocumentUpload.value = targetForDocumentUpload
+  }
+
+  async onDocumentUploaded(files: File[]): Promise<void> {
+    try {
+      if (!this.application.value.metaData) {
+        this.application.value.metaData = {}
+      }
+
+      switch (this.targetForDocumentUpload.value) {
+        case "superform":
+          this.application.value.metaData.superform = files[0].id
+          break
+        case "coi":
+          this.application.value.metaData.certificate_of_incorporation = files[0].id
+          break
+        case "notification_of_name_reservation":
+          this.application.value.metaData.notification_of_name_reservation = files[0].id
+          break
+      }
+
+      await this.application.value.updateMetadata(useApplicationIncorporateStore())
+    } catch (e) {
+      console.error(e)
+    } finally {
+      // do something after upload
+    }
   }
 
   onPaymentStepClicked(): void {
@@ -622,8 +653,19 @@ export class ApplicationController {
     }
   }
 
-  async onDownloadRegistrationClicked(): Promise<void> {
-    //
+  async onDownloadSuperformClicked(): Promise<void> {
+    if (
+      !this.application.value.metaData?.superform ||
+      StringUtil.isNullOrEmpty(this.application.value.metaData.superform)
+    ) {
+      return
+    }
+
+    let repository = useFileStore()
+    let response = await repository.fetch(this.application.value.metaData.superform)
+    let file = new File(response)
+
+    window.open(file.url, "_blank")
   }
 
   onShowRegistrationActionsClicked(): void {
@@ -640,6 +682,21 @@ export class ApplicationController {
 
   onShowCompletionActionsClicked(): void {
     this.isShowCompletionActions.value = !this.isShowCompletionActions.value
+  }
+
+  async onDownloadCOIClicked(): Promise<void> {
+    if (
+      !this.application.value.metaData?.certificate_of_incorporation ||
+      StringUtil.isNullOrEmpty(this.application.value.metaData.certificate_of_incorporation)
+    ) {
+      return
+    }
+
+    let repository = useFileStore()
+    let response = await repository.fetch(this.application.value.metaData.certificate_of_incorporation)
+    let file = new File(response)
+
+    window.open(file.url, "_blank")
   }
 
   async onCompleteIncorporation(): Promise<void> {
@@ -1299,8 +1356,8 @@ export class ApplicationController {
     }
 
     return (
-      this.application.value.metaData.certificate_of_incorporation !== undefined &&
-      !StringUtil.isNullOrEmpty(this.application.value.metaData.certificate_of_incorporation)
+      this.application.value.metaData.superform !== undefined &&
+      !StringUtil.isNullOrEmpty(this.application.value.metaData.superform)
     )
   }
 
@@ -1575,5 +1632,14 @@ export class ApplicationController {
       .map((msicCode: MsicCode) => {
         return new SelectOption(msicCode.id, msicCode.id, `${msicCode.code} - ${msicCode.descriptionEn}`)
       })
+  }
+
+  get uploadDocumentProps(): PropsUploadDocument {
+    let props = new PropsUploadDocument("")
+
+    props.canUploadImage = false
+    props.canUploadPdf = true
+
+    return props
   }
 }

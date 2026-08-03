@@ -228,7 +228,7 @@
                 <button
                   class="btn btn-pill btn-primary"
                   :class="{ 'is-loading': controller.isUploadingSection27.value }"
-                  @click="controller.onUploadDocumentClicked()"
+                  @click="controller.onUploadDocumentClicked('notification_of_name_reservation')"
                 >
                   {{ controller.uploadSection27Label }}
                 </button>
@@ -315,14 +315,14 @@
                 <button
                   class="btn btn-pill btn-primary"
                   :class="{ 'is-loading': controller.isUploadingRegistration.value }"
-                  @click="controller.onUploadDocumentClicked()"
+                  @click="controller.onUploadDocumentClicked('superform')"
                 >
                   {{ controller.uploadSuperformLabel }}
                 </button>
                 <span
                   class="action-link download"
                   v-if="controller.isSuperformUploaded"
-                  @click="controller.onDownloadRegistrationClicked()"
+                  @click="controller.onDownloadSuperformClicked()"
                 >
                   <i class="fa-regular fa-cloud-arrow-down"></i>
                   {{ controller.downloadSuperformLabel }}
@@ -440,14 +440,14 @@
                 <button
                   class="btn btn-pill btn-primary"
                   :class="{ 'is-loading': controller.isUploadingCompletion.value }"
-                  @click="controller.onUploadDocumentClicked()"
+                  @click="controller.onUploadDocumentClicked('coi')"
                 >
                   {{ controller.uploadlCOILabel }}
                 </button>
                 <span
                   class="action-link download"
                   v-if="controller.isCOIUploaded"
-                  @click="controller.onDownloadRegistrationClicked()"
+                  @click="controller.onDownloadCOIClicked()"
                 >
                   <i class="fa-regular fa-cloud-arrow-down"></i>
                   {{ controller.downloadCOILabel }}
@@ -516,6 +516,11 @@
       :company-name="controller.application.value.getName()"
       @proceed="controller.onProceedIncorporationApproved($event)"
     />
+    <UploadFile
+      ref="uploadFilePopup"
+      v-bind="controller.uploadDocumentProps"
+      @uploaded="controller.onDocumentUploaded($event)"
+    />
   </div>
 </template>
 
@@ -531,6 +536,7 @@
   import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import Section27OneFourService from "@/components/CompanyServices/Section27OneFourService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
+  import UploadFile from "@/components/Popups/UploadFile.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
@@ -551,6 +557,7 @@
   const nameReservedPopup = ref(null)
   const nameReservedQueriedPopup = ref(null)
   const completionOfIncorporationPopup = ref(null)
+  const uploadFilePopup = ref(null)
 
   const controller = new ApplicationController(props, emit)
 
@@ -587,6 +594,14 @@
     completionOfIncorporationPopup,
     (newVal) => {
       controller.setCompletionOfIncorporationPopup(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    uploadFilePopup,
+    (newVal) => {
+      controller.setUploadFilePopup(newVal)
     },
     { immediate: true }
   )

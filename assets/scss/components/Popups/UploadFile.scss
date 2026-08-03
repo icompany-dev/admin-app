@@ -57,8 +57,10 @@
 
           .selected-values {
             margin-top: 10px;
+            width: calc(100% - 24px);
 
             .files-to-upload {
+              width: 100%;
               border-collapse: collapse;
 
               thead {
@@ -111,8 +113,14 @@
                       }
                     }
 
-                    &:nth-child(2) {
-                      width: 250px;
+                    &:nth-child(3) {
+                      width: 80px;
+                      text-align: center;
+                    }
+
+                    &:first-child {
+                      width: 50px;
+                      text-align: center;
                     }
 
                     .uploaded-file-details {
