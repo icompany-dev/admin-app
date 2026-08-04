@@ -722,7 +722,7 @@ export class ApplicationController {
   }
 
   get isDirectorsResolutionCompleted(): boolean {
-    return false // this needs to depend on previous step, i think
+    return this.hasNotifyPreviousCosecResolution ? this.isNotifyPreviousCosecCompleted : this.hasPaid // this needs to depend on previous step, i think
   }
 
   get directorsResolutionLabel(): string {
