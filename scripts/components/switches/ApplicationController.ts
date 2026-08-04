@@ -60,6 +60,8 @@ export class ApplicationController {
   isUpdatingNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isUploadingDocumentsForPreviousCosec: Ref<boolean> = ref<boolean>(false)
 
+  isGeneratingDCR: Ref<boolean> = ref<boolean>(false)
+
   isGeneratingSection236: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: PropsSwitchApplication, emitEvents: any) {
@@ -280,7 +282,45 @@ export class ApplicationController {
   }
 
   async onGenerateDcrClicked(): Promise<void> {
-    //
+    this.onShowDirectorsResolutionClicked()
+
+    if (this.isGeneratingDCR.value) {
+      return
+    }
+
+    try {
+      this.isGeneratingDCR.value = true
+
+      await nextTick()
+      if (!this.documentRef) {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForDocumentDownload()
+        throw error
+      }
+
+      await this.documentRef.onDownloadClicked()
+
+      let toastTitle = this.language.isMalay()
+        ? "Resolusi Pengarah telah direkodkan bagi Permohonan ini."
+        : "Directors Resolution has been generated for this Application."
+      let toastMessage = this.language.isMalay()
+        ? "Salinan telah dimuat turun untuk rekod anda."
+        : "A copy has been downloaded for your record."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForGenerateDocumentFailed()
+        error.handle()
+      }
+    } finally {
+      this.isGeneratingDCR.value = false
+    }
   }
 
   // Show 236

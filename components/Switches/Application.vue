@@ -267,6 +267,8 @@
               <template #nodeOptions>
                 <button
                   class="btn btn-primary btn-pill"
+                  :class="{ 'is-loading': controller.isGeneratingDCR.value }"
+                  :disabled="controller.isGeneratingDCR.value"
                   @click="controller.onGenerateDcrClicked()"
                 >
                   {{ controller.generateLabel }}

@@ -7,6 +7,7 @@ import type { PropsSwitchDocumentService } from "~/scripts/props/PropsSwitchDocu
 import { CompanyAmendmentName } from "~/scripts/models/CompanyAmendmentName"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
+import { SwitchConstants } from "~/scripts/constants/Switches"
 
 export class SwitchAppointCompanySecretaryController {
   applicationSwitchId: Ref<string> = ref<string>("")
@@ -85,7 +86,12 @@ export class SwitchAppointCompanySecretaryController {
       return
     }
 
-    await PdfPaperUtil.generatePdfFile(pages, 20, "Section 27(1)(4).pdf", PaperSize.A4, PaperOrientation.Portrait)
+    let filename = "Directors' Resolution to Appoint New Company Secretary.pdf"
+    if (this.application.value.switchType === SwitchConstants.TYPE_SETTLE) {
+      filename = "Directors' Resolution to Change Company Secretary.pdf"
+    }
+
+    await PdfPaperUtil.generatePdfFile(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
   }
 
   get serviceWrapperProps() {
