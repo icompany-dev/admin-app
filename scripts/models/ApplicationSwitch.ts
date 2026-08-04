@@ -210,7 +210,7 @@ export class ApplicationSwitch implements IApplication {
 
   async update(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -225,7 +225,7 @@ export class ApplicationSwitch implements IApplication {
 
   async updateMetadata(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -240,7 +240,7 @@ export class ApplicationSwitch implements IApplication {
 
   async delete(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -357,6 +357,17 @@ export class ApplicationSwitch implements IApplication {
   }
 
   getFullName(): string {
-    return `${this.name} ${this.getType()}`
+    if (StringUtil.isNullOrEmpty(this.name)) {
+      return ""
+    }
+
+    let cleanedName = this.name
+      .toLowerCase()
+      .replaceAll("sdn bhd", "")
+      .replaceAll("berhad", "")
+      .replaceAll("sdn. bhd.", "")
+      .toUpperCase()
+
+    return `${cleanedName} ${this.getType()}`
   }
 }
