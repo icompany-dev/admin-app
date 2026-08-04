@@ -30,6 +30,8 @@ export class LetterToExistingCosecController {
   constructor(applicationIncorporationId: string, emitEvents: any) {
     this.applicationSwitchId.value = applicationIncorporationId
     this.emitEvents = emitEvents
+
+    this.init()
   }
 
   setDocumentRef(documentRef: any): void {
