@@ -375,11 +375,25 @@ export class ApplicationSwitch implements IApplication {
     return !StringUtil.isNullOrEmpty(this.getFullName())
   }
 
+  hasCompletedRegistrationNumber(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.registrationNumberNew) && !StringUtil.isNullOrEmpty(this.registrationNumberOld)
+    )
+  }
+
   get companyName(): string {
     if (this.hasCompletedName()) {
       return this.getFullName()
     }
 
     return "Pending Company Details"
+  }
+
+  get companyRegistrationNumber(): string {
+    if (this.hasCompletedRegistrationNumber()) {
+      return `${this.registrationNumberNew} (${this.registrationNumberOld})`
+    }
+
+    return "Pending Registration Number"
   }
 }

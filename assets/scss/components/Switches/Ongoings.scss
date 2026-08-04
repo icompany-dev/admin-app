@@ -41,6 +41,15 @@
           }
         }
 
+        .registration-number {
+          font-weight: 600;
+
+          &.placeholder {
+            color: var(--bs-gray-600);
+            font-weight: normal;
+          }
+        }
+
         .application-date {
           text-transform: capitalize;
         }

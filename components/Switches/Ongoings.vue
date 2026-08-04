@@ -31,6 +31,12 @@
           >
             {{ application.companyName }}
           </div>
+          <div
+            class="registration-number"
+            :class="{ placeholder: !application.hasCompletedRegistrationNumber() }"
+          >
+            {{ application.companyRegistrationNumber }}
+          </div>
           <div class="application-date">
             {{ controller.applicationDate(application) }}
           </div>
