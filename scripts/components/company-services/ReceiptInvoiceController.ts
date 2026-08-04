@@ -29,7 +29,7 @@ export class ReceiptInvoiceServiceController {
     let props = new PropsCompanyServiceWrapper(
       dummyApplication,
       this.companyId.value,
-      CompanyConstants.TARGET_AMENDMENT_NAME,
+      CompanyConstants.TARGET_RECEIPT,
       "",
       "new",
       true,

@@ -208,6 +208,20 @@
           </div>
         </div>
       </div>
+      <div class="switch-application-details">
+        <ServiceApplication
+          v-bind="controller.serviceApplicationProps"
+          @paymentNodeSelected="controller.onPaymentStepClicked()"
+        ></ServiceApplication>
+        <div class="document-display">
+          <component
+            ref="documentRef"
+            :is="activeDocumentComponent"
+            :application-id="controller.applicationId.value"
+            :target-id="controller.paymentOrderId.value"
+          />
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -232,6 +246,11 @@
   }
 
   const controller = new ApplicationController(props, emit)
+
+  const activeDocumentComponent = computed(() => {
+    const target = controller.selectedDocumentTarget.value
+    return target && componentMap[target] ? componentMap[target] : null
+  })
 
   watch(
     () => props,

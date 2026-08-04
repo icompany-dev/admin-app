@@ -18,6 +18,8 @@ import type {
   SsmCorporateProfilePurchaseData,
 } from "~/scripts/models/SsmCorporateProfileJsonData"
 import { UserDetail } from "~/scripts/models/UserDetail"
+import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -41,6 +43,9 @@ export class ApplicationController {
   selectedMsicCodeIds: Ref<string[]> = ref<string[]>([])
   searchTextsForMsicCodes: Ref<string[]> = ref<string[]>([])
   msicCodes: Ref<MsicCode[]> = ref<MsicCode[]>([])
+
+  selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
+  isShowReceipt: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: PropsSwitchApplication, emitEvents: any) {
     this.setDataFromProps(props)
@@ -116,10 +121,7 @@ export class ApplicationController {
 
   async fetchPaymentOrder(): Promise<void> {
     let repository = usePaymentOrderStore()
-    let response = await repository.fetchByTarget(
-      CompanyConstants.TARGET_APPLICATION_INCORPORATE,
-      this.applicationId.value
-    )
+    let response = await repository.fetchByTarget(CompanyConstants.TARGET_APPLICATION_SWITCH, this.applicationId.value)
 
     if (!response || repository.error !== null) {
       this.paymentOrderId.value = ""
@@ -199,6 +201,19 @@ export class ApplicationController {
     } else {
       this.searchTextsForMsicCodes.value.push(searchText)
     }
+  }
+
+  // Application Step functions
+  resetAllDocumentValues(): void {
+    this.isShowReceipt.value = false
+
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
+  }
+
+  onPaymentStepClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowReceipt.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
 
   //getters
@@ -585,5 +600,14 @@ export class ApplicationController {
       .map((msicCode: MsicCode) => {
         return new SelectOption(msicCode.id, msicCode.id, `${msicCode.code} - ${msicCode.descriptionEn}`)
       })
+  }
+
+  // Application Step Nodes
+  get serviceApplicationProps(): PropsServiceApplication {
+    let props = new PropsServiceApplication(this.serviceName, true, this.isShowReceipt.value)
+
+    props.application = this.application.value
+
+    return props
   }
 }
