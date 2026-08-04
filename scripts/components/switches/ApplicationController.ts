@@ -7,7 +7,7 @@ import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
 import { User } from "~/scripts/models/User"
-import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
+import { MsicCodeAssign, MsicCodeAssignTarget } from "~/scripts/models/MsicCodeAssign"
 import { MsicCode } from "~/scripts/models/MsicCode"
 import { Filter } from "~/scripts/library/Filter"
 import { SelectOption } from "~/scripts/types/SelectOption"
@@ -24,6 +24,8 @@ import { SwitchConstants } from "~/scripts/constants/Switches"
 import { PropsServiceApplicationNode } from "~/scripts/props/PropsServiceApplicationNode"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Toast } from "~/scripts/library/Toast"
+import { Company } from "~/scripts/models/Company"
+import { City, Country, Location, State } from "~/scripts/models/Location"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -63,6 +65,8 @@ export class ApplicationController {
   isGeneratingDCR: Ref<boolean> = ref<boolean>(false)
 
   isGeneratingSection236: Ref<boolean> = ref<boolean>(false)
+
+  isCompletingProcess: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: PropsSwitchApplication, emitEvents: any) {
     this.setDataFromProps(props)
@@ -396,7 +400,58 @@ export class ApplicationController {
   }
 
   async onCompleteProcessClicked(): Promise<void> {
-    //
+    if (this.isCompletingProcess.value) {
+      return
+    }
+
+    try {
+      this.isCompletingProcess.value = true
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isCompletingProcess.value = false
+    }
+  }
+
+  setMsicCodes(): void {
+    if (
+      this.application.value.msicCodeAssigns.length > 0 ||
+      !this.ssmCorporateProfileData ||
+      !this.ssmCorporateProfileData.ssm
+    ) {
+      return
+    }
+
+    let businessCodes = this.ssmCorporateProfileData.ssm.businessCodes.map(
+      (businessCode: CorporateProfileJsonBusinessCode) => {
+        return businessCode.businessCode
+      }
+    )
+
+    if (businessCodes.length <= 0) {
+      return
+    }
+
+    this.application.value.msicCodeAssigns = this.msicCodes.value
+      .filter((msicCode: MsicCode) => {
+        return businessCodes.includes(msicCode.code)
+      })
+      .map((msicCode: MsicCode) => {
+        let newMsicCodeAssign = new MsicCodeAssign()
+        newMsicCodeAssign.msicCode = msicCode
+        newMsicCodeAssign.assign = new MsicCodeAssignTarget(null)
+        newMsicCodeAssign.assign.target = "application_switch"
+        newMsicCodeAssign.assign.id = this.application.value.id
+
+        return newMsicCodeAssign
+      })
   }
 
   //getters
@@ -957,5 +1012,51 @@ export class ApplicationController {
 
   get completedLabel(): string {
     return this.language.isMalay() ? "Selesai" : "Completed"
+  }
+
+  // convert process
+  get companyToConvert(): Company {
+    let company = new Company()
+
+    let incorporatedAtDate = ""
+    let time = useLocalTime()
+
+    if (StringUtil.isNullOrEmpty(this.application.value.incorporatedAt)) {
+      if (this.ssmCorporateProfileData && this.ssmCorporateProfileData.ssm) {
+        let incorporateAt = this.ssmCorporateProfileData.ssm.companyInfo?.incorpDate ?? ""
+        if (!StringUtil.isNullOrEmpty(incorporateAt)) {
+          incorporatedAtDate = time.formatDateOnlySystem(incorporateAt)
+        }
+      }
+    } else {
+      incorporatedAtDate = time.formatDateOnlySystem(this.application.value.incorporatedAt ?? "")
+    }
+
+    company.name = this.application.value.companyName
+    company.nameType = this.application.value.nameType
+    company.nameDescription = "-"
+    company.registrationNumberNew = this.application.value.registrationNumberNew
+    company.registrationNumberOld = this.application.value.registrationNumberOld
+    company.businessDescription = this.application.value.businessDescription
+    company.hasBusinessAddress = this.application.value.businessAddressLocation !== null
+    company.businessAddressLocation =
+      this.application.value.businessAddressLocation !== null
+        ? new Location(this.application.value.businessAddressLocation)
+        : null
+    company.registeredAddressLocation = new Location()
+    company.registeredAddressLocation.addressLine1 = "D-1-6, FIRST FLOOR, BLOCK D, SEKITAR26 ENTERPRISE"
+    company.registeredAddressLocation.addressLine2 = "PERSIARAN HULU SELANGOR, SEKSYEN 26"
+    company.registeredAddressLocation.postcode = "40400"
+    company.registeredAddressLocation.city = new City()
+    company.registeredAddressLocation.city.id = 61096
+    company.registeredAddressLocation.city.name = "SHAH ALAM"
+    company.registeredAddressLocation.state = new State()
+    company.registeredAddressLocation.state.id = 23
+    company.registeredAddressLocation.country = new Country()
+    company.registeredAddressLocation.country.id = 87
+    company.applicationIncorporationId = this.application.value.id
+    company.incorporatedAt = incorporatedAtDate
+
+    return company
   }
 }
