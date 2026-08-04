@@ -7,6 +7,7 @@ export class StatusConstants {
   static COMPLETED: string = "completed"
   static CONVERTED: string = "converted"
   static DELIVERED: string = "delivered"
+  static DOCUMENT_RECEIVED: string = "document-received"
   static DRAFT: string = "draft"
   static EXTENDED: string = "extended"
   static FAILED: string = "failed"

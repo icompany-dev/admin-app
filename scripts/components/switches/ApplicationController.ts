@@ -20,6 +20,10 @@ import type {
 import { UserDetail } from "~/scripts/models/UserDetail"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
+import { SwitchConstants } from "~/scripts/constants/Switches"
+import { PropsServiceApplicationNode } from "~/scripts/props/PropsServiceApplicationNode"
+import { StatusConstants } from "~/scripts/constants/Status"
+import { Toast } from "~/scripts/library/Toast"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -45,7 +49,12 @@ export class ApplicationController {
   msicCodes: Ref<MsicCode[]> = ref<MsicCode[]>([])
 
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
+
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
+  isShowNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
+
+  isUpdatingNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
+  isUploadingDocumentsForPreviousCosec: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: PropsSwitchApplication, emitEvents: any) {
     this.setDataFromProps(props)
@@ -206,6 +215,7 @@ export class ApplicationController {
   // Application Step functions
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
+    this.isShowNotifyPreviousCosec.value = false
 
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
@@ -214,6 +224,38 @@ export class ApplicationController {
     this.resetAllDocumentValues()
     this.isShowReceipt.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
+  }
+
+  // NotifyPreviousCosec step functions
+  onNotifyPreviousCosecStepClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowNotifyPreviousCosec.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
+  }
+
+  async onDocumentReceivedClicked(): Promise<void> {
+    try {
+      this.isUpdatingNotifyPreviousCosec.value = true
+
+      this.application.value.status = StatusConstants.DOCUMENT_RECEIVED
+      await this.application.value.update(useApplicationSwitchStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Rekod telah dikemaskini"
+        : "Your Changes has been recorded successfully."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingNotifyPreviousCosec.value = false
+    }
   }
 
   //getters
@@ -226,7 +268,7 @@ export class ApplicationController {
   }
 
   get serviceName(): string {
-    return this.language.isMalay() ? "Pertukaran Setiausaha Syarikat" : "Reassignment of Company Secretary"
+    return this.language.isMalay() ? "Pertukaran Setiausaha Syarikat" : "NotifyPreviousCosec of Company Secretary"
   }
 
   get dateOfIncorporationLabel(): string {
@@ -609,5 +651,43 @@ export class ApplicationController {
     props.application = this.application.value
 
     return props
+  }
+
+  get hasPaid(): boolean {
+    return (
+      this.application.value.status !== StatusConstants.DRAFT &&
+      this.application.value.status !== StatusConstants.PENDING
+    )
+  }
+
+  // NotifyPreviousCosec
+  get hasNotifyPreviousCosecResolution(): boolean {
+    return this.application.value.switchType === SwitchConstants.TYPE_SETTLE
+  }
+
+  get notifyPreviousCosecNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.hasPaid,
+      this.isNotifyPreviousCosecCompleted,
+      this.isShowNotifyPreviousCosec.value
+    )
+  }
+
+  get isNotifyPreviousCosecCompleted(): boolean {
+    return this.application.value.status === StatusConstants.DOCUMENT_RECEIVED
+  }
+
+  get notifyPreviousCosecLabel(): string {
+    return this.language.isMalay() ? "Beritahu Setiausaha Syarikat Sedia Ada" : "Notify Existing Company Secretary"
+  }
+
+  get notifyPreviousCosecSublabel(): string {
+    return this.language.isMalay()
+      ? "Handover of Company Documents from Prev. Company Secretary"
+      : "Handover of Company Documents from Prev. Company Secretary"
+  }
+
+  get documentReceivedLabel(): string {
+    return this.language.isMalay() ? "Dokumen Diterima" : "Documents Received"
   }
 }

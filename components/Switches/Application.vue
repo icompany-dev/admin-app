@@ -212,7 +212,50 @@
         <ServiceApplication
           v-bind="controller.serviceApplicationProps"
           @paymentNodeSelected="controller.onPaymentStepClicked()"
-        ></ServiceApplication>
+        >
+          <template #application>
+            <ApplicationNode
+              v-bind="controller.notifyPreviousCosecNodeProps"
+              v-if="controller.hasNotifyPreviousCosecResolution"
+              @click="controller.onNotifyPreviousCosecStepClicked()"
+            >
+              <template #nodeContent>
+                <div class="application-container">
+                  <div class="node-title">{{ controller.notifyPreviousCosecLabel }}</div>
+                  <div class="node-subtitle">({{ controller.notifyPreviousCosecSublabel }})</div>
+                  <div class="application-details">
+                    <span class="application-label">
+                      {{ controller.companySecretaryLabel }}
+                    </span>
+                    <div class="human-details">
+                      <span class="human-detail">
+                        {{ controller.companySecretaryName }}
+                      </span>
+                      <span class="human-detail">
+                        <i class="fa-regular fa-envelope" />
+                        {{ controller.companySecretaryEmail }}
+                      </span>
+                      <span class="human-detail">
+                        <i class="fa-brands fa-whatsapp" />
+                        {{ controller.companySecretaryPhone }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template #nodeOptions></template>
+              <template #nodeActions>
+                <div
+                  class="btn btn-pill btn-submit single"
+                  :class="{ 'is-loading': controller.isUpdatingNotifyPreviousCosec.value }"
+                  @click="controller.onDocumentReceivedClicked()"
+                >
+                  {{ controller.documentReceivedLabel }}
+                </div>
+              </template>
+            </ApplicationNode>
+          </template>
+        </ServiceApplication>
         <div class="document-display">
           <component
             ref="documentRef"
