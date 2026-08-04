@@ -370,4 +370,16 @@ export class ApplicationSwitch implements IApplication {
 
     return `${cleanedName} ${this.getType()}`
   }
+
+  hasCompletedName(): boolean {
+    return !StringUtil.isNullOrEmpty(this.getFullName())
+  }
+
+  get companyName(): string {
+    if (this.hasCompletedName()) {
+      return this.getFullName()
+    }
+
+    return "Pending Company Details"
+  }
 }

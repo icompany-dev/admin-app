@@ -26,9 +26,10 @@
         <div class="application-details">
           <div
             class="proposed-name"
+            :class="{ placeholder: !application.hasCompletedName() }"
             @click="controller.onApplicationClicked(application)"
           >
-            {{ application.getFullName() }}
+            {{ application.companyName }}
           </div>
           <div class="application-date">
             {{ controller.applicationDate(application) }}

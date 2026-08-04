@@ -35,6 +35,10 @@
           overflow: hidden;
           cursor: pointer;
           color: var(--bs-icompany-purple);
+
+          &.placeholder {
+            color: var(--bs-gray-600);
+          }
         }
 
         .application-date {
