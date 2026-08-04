@@ -1,7 +1,7 @@
 import { StringUtil } from "../utils/String"
 import { PageSwitchesController } from "./PageSwitchesController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
-// import { PropsSwitchesOngoing } from "~/scripts/props/PropsSwitchesOngoing"
+import { PropsSwitchesOngoing } from "~/scripts/props/PropsSwitchesOngoing"
 // import { PropsIncorporationApplication } from "../props/PropsIncorporationApplication"
 import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props/PropsTableFilter"
 
@@ -72,9 +72,9 @@ export class PageSwitchesOngoingController extends PageSwitchesController {
     return new PropsBreadCrumb([new PropsBreadCrumbItem("New Switches", ""), new PropsBreadCrumbItem("Ongoings", "")])
   }
 
-  // get ongoingsProps(): PropsSwitchesOngoing {
-  //   return new PropsSwitchesOngoing(this.searchText.value, this.isIncludeDemo.value)
-  // }
+  get ongoingsProps(): PropsSwitchesOngoing {
+    return new PropsSwitchesOngoing(this.searchText.value, this.isIncludeDemo.value)
+  }
 
   // get applicationProps(): PropsIncorporationApplication {
   //   return new PropsIncorporationApplication(this.selectedApplicationId.value)

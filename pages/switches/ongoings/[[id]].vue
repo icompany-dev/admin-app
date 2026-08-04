@@ -13,11 +13,16 @@
         @unMinimize="pageController.onClearSelected()"
       />
     </div>
+    <Ongoings
+      v-if="pageController.showAll.value"
+      v-bind="pageController.ongoingsProps"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
+  import Ongoings from "@/components/Switches/Ongoings.vue"
   import TableFilters from "@/components/TableData/TableFilters.vue"
   import { PageSwitchesOngoingController } from "~/scripts/pages/PageSwitchesOngoingController"
 
