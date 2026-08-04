@@ -1,6 +1,7 @@
 //NOTE: This controller cannot extend ResolutionController due to the fact that it is for Application Switch
 
 import { CompanySecretaryConstants } from "~/scripts/constants/CompanySecretary"
+import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { SwitchConstants } from "~/scripts/constants/Switches"
 import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
@@ -8,6 +9,7 @@ import type { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import type { CorporateProfileJsonOfficerInfo } from "~/scripts/models/SsmCorporateProfileJsonData"
 import { User } from "~/scripts/models/User"
+import { Secretary } from "~/scripts/types/Secretary"
 import { SignatureItem } from "~/scripts/types/SignatureItem"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import { StringUtil } from "~/scripts/utils/String"
@@ -31,6 +33,9 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   emitEvents: any | null = null
 
   resolutionContentRef: any | null = null
+
+  selectedCompanySecretary: Ref<Secretary> = ref<Secretary>(SecretaryInformation.SECRETARY_NAME_LIST[0])
+  secretaryOptions: Secretary[] = SecretaryInformation.SECRETARY_NAME_LIST
 
   companySecretaryName: string = CompanySecretaryConstants.NAME
   companySecretaryIC: string = CompanySecretaryConstants.NRIC
@@ -259,6 +264,10 @@ export class DcrAppointmentOfNewCompanySecretaryController {
     )
   }
 
+  onSelectedSecretary(secretary: Secretary): void {
+    this.selectedCompanySecretary.value = secretary
+  }
+
   onNameChanged(value: string): void {
     if (this.application.value.name === value) {
       return
@@ -292,35 +301,33 @@ export class DcrAppointmentOfNewCompanySecretaryController {
 
   getSecretaryName(): string {
     if (StringUtil.isNullOrEmpty(this.application.value.id)) {
-      return 'iCompany Secretary Name'
+      return "iCompany Secretary Name"
     }
 
-    return this.companySecretaryName.toUpperCase()
+    return this.selectedCompanySecretary.value.name.toUpperCase()
   }
 
   getSecretaryIC(): string {
     if (StringUtil.isNullOrEmpty(this.application.value.id)) {
-      return 'iCompany Secretary NRIC No.'
+      return "iCompany Secretary NRIC No."
     }
 
-    return this.companySecretaryIC
+    return this.selectedCompanySecretary.value.nric
   }
 
   getSecretaryLicense(): string {
     if (StringUtil.isNullOrEmpty(this.application.value.id)) {
-      return 'iCompany Secretary License No.'
+      return "iCompany Secretary License No."
     }
 
-    return this.companySecretaryLicense
+    return this.selectedCompanySecretary.value.license
   }
 
   getSecretarySsmPcNo(): string {
     if (StringUtil.isNullOrEmpty(this.application.value.id)) {
-      return 'iCompany Secretary SSM Pc No.'
+      return "iCompany Secretary SSM Pc No."
     }
 
-    return this.companySecretarySsmPcNo
+    return this.selectedCompanySecretary.value.certificate
   }
-
-
 }

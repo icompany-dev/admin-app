@@ -89,12 +89,21 @@
           </p>
           <p>
             THAT the appointment of
+            <select
+              class="form-control in-resolution"
+              v-model="controller.selectedCompanySecretary.value"
+            >
+              <option
+                v-for="(secretary, i) in controller.secretaryOptions"
+                :value="secretary"
+              >
+                <b>{{ secretary.name.toUpperCase() }}</b>
+              </option>
+            </select>
             <span :class="{ 'value-placeholder': controller.showPlaceholder() }">
               <b>
-                {{ controller.getSecretaryName() }} (NRIC No: {{ controller.getSecretaryIC() }}) ({{
-                  controller.getSecretaryLicense()
-                }}
-                / SSM PC NO. {{ controller.getSecretarySsmPcNo() }})
+                (NRIC No: {{ controller.getSecretaryIC() }}) ({{ controller.getSecretaryLicense() }} / SSM PC NO.
+                {{ controller.getSecretarySsmPcNo() }})
               </b>
             </span>
             as the Secretary of the Company be and is hereby be accepted with immediate effect.
