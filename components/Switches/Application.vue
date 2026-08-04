@@ -181,6 +181,30 @@
               v-html="controller.businessAddress"
             />
           </div>
+          <div class="application-item">
+            <div class="application-item-title">
+              {{ controller.companySecretaryLabel }}
+            </div>
+            <div class="application-item-content">
+              <b>{{ controller.companySecretaryName }}</b>
+              <br />
+              {{ controller.companySecretaryFirmName }}
+              <div
+                class="address"
+                v-html="controller.companySecretaryFirmAddress"
+              />
+              <div class="human-details">
+                <span class="human-detail">
+                  <i class="fa-regular fa-envelope" />
+                  {{ controller.companySecretaryEmail }}
+                </span>
+                <span class="human-detail">
+                  <i class="fa-brands fa-whatsapp" />
+                  {{ controller.companySecretaryPhone }}
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </template>

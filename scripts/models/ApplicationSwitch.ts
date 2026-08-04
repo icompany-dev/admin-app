@@ -422,4 +422,12 @@ export class ApplicationSwitch implements IApplication {
 
     return ""
   }
+
+  get ssmMetaData(): SsmCorporateProfilePurchaseData | null {
+    if (!this.metadata) {
+      return null
+    }
+
+    return new SsmCorporateProfilePurchaseData(this.metadata)
+  }
 }

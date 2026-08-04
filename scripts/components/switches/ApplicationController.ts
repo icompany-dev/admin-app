@@ -11,6 +11,10 @@ import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { MsicCode } from "~/scripts/models/MsicCode"
 import { Filter } from "~/scripts/library/Filter"
 import { SelectOption } from "~/scripts/types/SelectOption"
+import type {
+  CorporateProfileJsonOfficerInfo,
+  SsmCorporateProfilePurchaseData,
+} from "~/scripts/models/SsmCorporateProfileJsonData"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -273,6 +277,80 @@ export class ApplicationController {
 
   get businessAddress(): string {
     return this.application.value.businessAddressLocation?.getMultilineAddress() ?? "(No Business Address)"
+  }
+
+  get companySecretaryLabel(): string {
+    return this.language.isMalay() ? "Setiausaha Syarikat Sediada" : "Existing Company Secretary"
+  }
+
+  get companySecretaryName(): string {
+    if (
+      StringUtil.isNullOrEmpty(this.application.value.secretaryName) &&
+      this.ssmCorporateProfileData &&
+      this.ssmCorporateProfileData.ssm
+    ) {
+      let secretary = this.ssmCorporateProfileData.ssm.officerInfos.find((officer: CorporateProfileJsonOfficerInfo) => {
+        return officer.designationCode.toLowerCase() === "s"
+      })
+
+      if (secretary) {
+        return secretary.name
+      }
+    }
+
+    return this.application.value.secretaryName ?? "(No Company Secretary)"
+  }
+
+  get companySecretaryFirmName(): string {
+    if (
+      StringUtil.isNullOrEmpty(this.application.value.secretaryCompanyName) &&
+      this.ssmCorporateProfileData &&
+      this.ssmCorporateProfileData.ssm
+    ) {
+      let secretary = this.ssmCorporateProfileData.ssm.officerInfos.find((officer: CorporateProfileJsonOfficerInfo) => {
+        return officer.designationCode.toLowerCase() === "s"
+      })
+
+      if (secretary) {
+        return secretary.name
+      }
+    }
+
+    return this.application.value.secretaryCompanyName ?? ""
+  }
+
+  get companySecretaryFirmAddress(): string {
+    if (
+      StringUtil.isNullOrEmpty(this.application.value.secretaryCompanyAddress) &&
+      this.ssmCorporateProfileData &&
+      this.ssmCorporateProfileData.ssm
+    ) {
+      let secretary = this.ssmCorporateProfileData.ssm.officerInfos.find((officer: CorporateProfileJsonOfficerInfo) => {
+        return officer.designationCode.toLowerCase() === "s"
+      })
+
+      if (secretary) {
+        return `
+          ${secretary.address1}<br>
+          ${secretary.address2}<br>
+          ${secretary.address3}
+        `
+      }
+    }
+
+    return this.application.value.cosecAddressFragments().join("<br>") ?? ""
+  }
+
+  get companySecretaryEmail(): string {
+    return this.application.value.secretaryEmail ?? "(No Email Provided)"
+  }
+
+  get companySecretaryPhone(): string {
+    return this.application.value.secretaryPhone ?? "(No Phone Number Provided)"
+  }
+
+  get ssmCorporateProfileData(): SsmCorporateProfilePurchaseData | null {
+    return this.application.value.ssmMetaData
   }
 
   //MSIC Codes
