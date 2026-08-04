@@ -52,6 +52,16 @@
       }
     }
 
+    .incorporated-date {
+      font-weight: 600;
+      font-size: 1.1rem;
+
+      &.placeholder {
+        text-transform: none;
+        color: var(--bs-gray-600);
+      }
+    }
+
     .summary-items {
       width: 100%;
       display: flex;

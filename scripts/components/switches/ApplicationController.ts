@@ -212,6 +212,29 @@ export class ApplicationController {
     return this.language.isMalay() ? "Pertukaran Setiausaha Syarikat" : "Reassignment of Company Secretary"
   }
 
+  get dateOfIncorporationLabel(): string {
+    return this.language.isMalay() ? "Tarikh Pemerbadanan" : "Date of Incorporation"
+  }
+
+  get incorporatedAt(): string {
+    let time = useLocalTime()
+
+    if (StringUtil.isNullOrEmpty(this.application.value.incorporatedAt)) {
+      if (this.ssmCorporateProfileData && this.ssmCorporateProfileData.ssm) {
+        let incorporateAt = this.ssmCorporateProfileData.ssm.companyInfo?.incorpDate ?? ""
+        if (StringUtil.isNullOrEmpty(incorporateAt)) {
+          return "-"
+        }
+
+        return time.formatDateOnlyFull(incorporateAt)
+      }
+
+      return "-"
+    }
+
+    return time.formatDateOnlyFull(this.application.value.incorporatedAt ?? "")
+  }
+
   get applicantLabel(): string {
     return this.language.isMalay() ? "Butiran Pemohon" : "Details of Applicant"
   }

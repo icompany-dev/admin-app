@@ -31,6 +31,7 @@
         >
           {{ controller.application.value.companyRegistrationNumber }}
         </div>
+        <div class="incorporated-date">{{ controller.dateOfIncorporationLabel }}: {{ controller.incorporatedAt }}</div>
         <div class="summary-items">
           <div class="summary-item">
             <div class="summary-item-title">
