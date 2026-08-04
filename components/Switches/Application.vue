@@ -265,7 +265,30 @@
                 </div>
               </template>
               <template #nodeOptions>
-                <button class="btn btn-primary btn-pill">
+                <button
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onGenerateDcrClicked()"
+                >
+                  {{ controller.generateLabel }}
+                </button>
+              </template>
+              <template #nodeActions></template>
+            </ApplicationNode>
+            <ApplicationNode
+              v-bind="controller.section236NodeProps"
+              @click="controller.onShowSection236Clicked()"
+            >
+              <template #nodeContent>
+                <div class="application-container">
+                  <div class="node-title">{{ controller.section236Label }}</div>
+                  <div class="node-subtitle">({{ controller.section236Label }})</div>
+                </div>
+              </template>
+              <template #nodeOptions>
+                <button
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onGenerateSection236Clicked()"
+                >
                   {{ controller.generateLabel }}
                 </button>
               </template>
@@ -280,6 +303,9 @@
             :application-id="controller.applicationId.value"
             :application-switch-id="controller.applicationId.value"
             :target-id="controller.paymentOrderId.value"
+            :company-name="controller.application.value.companyName"
+            :registration-number-new="controller.application.value.registrationNumberNew"
+            :registration-number-old="controller.application.value.registrationNumberOld"
           />
         </div>
       </div>
@@ -293,6 +319,7 @@
   import LetterToExistingCosecService from "@/components/CompanyServices/LetterToExistingCosecService.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import SearchableDropdown from "@/components/Forms/SearchableDropdown.vue"
+  import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
   import SwitchAppointCompanySecretary from "@/components/CompanyServices/SwitchAppointCompanySecretary.vue"
   import UploadFile from "@/components/Popups/UploadFile.vue"
@@ -308,6 +335,7 @@
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
     [DocumentTargets.TARGET_SWITCH_LETTER_TO_COSEC]: LetterToExistingCosecService,
     [DocumentTargets.TARGET_SWITCH_RESO]: SwitchAppointCompanySecretary,
+    [DocumentTargets.TARGET_SECTION_236]: Section236ThreeService,
   }
 
   const controller = new ApplicationController(props, emit)

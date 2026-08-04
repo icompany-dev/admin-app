@@ -8,6 +8,7 @@ import type { PropsIncorporationDocumentService } from "~/scripts/props/PropsInc
 import { CompanyAmendmentName } from "~/scripts/models/CompanyAmendmentName"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { File as UploadedFile } from "~/scripts/models/File"
+import type { PropsSwitchDocumentService } from "~/scripts/props/PropsSwitchDocumentService"
 
 export class Section236ThreeServiceController {
   companyName: Ref<string> = ref<string>("")
@@ -25,12 +26,12 @@ export class Section236ThreeServiceController {
 
   emitEvents: any | null = null
 
-  constructor(props: PropsIncorporationDocumentService, emitEvents: any) {
+  constructor(props: PropsIncorporationDocumentService | PropsSwitchDocumentService, emitEvents: any) {
     this.setDataFromProps(props)
     this.emitEvents = emitEvents
   }
 
-  async setDataFromProps(props: PropsIncorporationDocumentService): Promise<void> {
+  async setDataFromProps(props: PropsIncorporationDocumentService | PropsSwitchDocumentService): Promise<void> {
     this.companyName.value = props.companyName
     this.registrationNumberNew.value = props.registrationNumberNew
     this.registrationNumberOld.value = props.registrationNumberOld

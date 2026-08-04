@@ -616,7 +616,7 @@ export class ApplicationController {
     this.resetAllDocumentValues()
     this.isShowRegistration.value = true
 
-    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236 // update the document target
   }
 
   onIncorporationApproved(): void {
@@ -690,7 +690,7 @@ export class ApplicationController {
     this.resetAllDocumentValues()
     this.isShowCompletion.value = true
 
-    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE // update the document target
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236 // update the document target
   }
 
   onShowCompletionActionsClicked(): void {
@@ -894,7 +894,7 @@ export class ApplicationController {
 
   onSection236Clicked(): void {
     this.isShowRegistrationActions.value = false
-    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_236_THREE
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236
   }
 
   async onGenerate236Clicked(): Promise<void> {

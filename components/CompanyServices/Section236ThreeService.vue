@@ -41,9 +41,10 @@
   import Section236Three from "@/components/LegalDocuments/Section236Three.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import type { IPropsIncorporationDocumentService } from "~/scripts/props/PropsIncorporationDocumentService"
+  import type { IPropsSwitchDocumentService } from "~/scripts/props/PropsSwitchDocumentService"
   import { Section236ThreeServiceController } from "~/scripts/components/company-services/Section236ThreeServiceController"
 
-  const props = defineProps<IPropsIncorporationDocumentService>()
+  const props = defineProps<IPropsIncorporationDocumentService | IPropsSwitchDocumentService>()
 
   const emit = defineEmits(EmitMessages.COMPANY_SERVICES)
 

@@ -53,6 +53,7 @@ export class ApplicationController {
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
   isShowNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isShowDcrFromDirectors: Ref<boolean> = ref<boolean>(false)
+  isShowSection236: Ref<boolean> = ref<boolean>(false)
 
   isUpdatingNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isUploadingDocumentsForPreviousCosec: Ref<boolean> = ref<boolean>(false)
@@ -218,6 +219,7 @@ export class ApplicationController {
     this.isShowReceipt.value = false
     this.isShowNotifyPreviousCosec.value = false
     this.isShowDcrFromDirectors.value = false
+    this.isShowSection236.value = false
 
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
@@ -268,6 +270,17 @@ export class ApplicationController {
   }
 
   async onGenerateDcrClicked(): Promise<void> {
+    //
+  }
+
+  // Show 236
+  onShowSection236Clicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowSection236.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236
+  }
+
+  async onGenerateSection236Clicked(): Promise<void> {
     //
   }
 
@@ -739,5 +752,26 @@ export class ApplicationController {
 
   get generateLabel(): string {
     return this.language.isMalay() ? "Jana" : "Generate"
+  }
+
+  // Section 236(3)
+  get section236NodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.isDirectorsResolutionCompleted,
+      this.isSection236Completed,
+      this.isShowSection236.value
+    )
+  }
+
+  get isSection236Completed(): boolean {
+    return this.isDirectorsResolutionCompleted
+  }
+
+  get section236Label(): string {
+    return this.language.isMalay() ? "Kebenaran Menjadi Setiausaha Syarikat" : "Consent to Act as Company Secretary"
+  }
+
+  get section236Sublabel(): string {
+    return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 236(3)" : "Declaration under Section 236(3)"
   }
 }
