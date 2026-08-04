@@ -60,6 +60,8 @@ export class ApplicationController {
   isUpdatingNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isUploadingDocumentsForPreviousCosec: Ref<boolean> = ref<boolean>(false)
 
+  isGeneratingSection236: Ref<boolean> = ref<boolean>(false)
+
   constructor(props: PropsSwitchApplication, emitEvents: any) {
     this.setDataFromProps(props)
     this.emitEvents = emitEvents
@@ -68,6 +70,10 @@ export class ApplicationController {
   async setDataFromProps(props: PropsSwitchApplication): Promise<void> {
     this.applicationId.value = props.applicationId
     await this.init()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   // Data initialization
@@ -285,7 +291,45 @@ export class ApplicationController {
   }
 
   async onGenerateSection236Clicked(): Promise<void> {
-    //
+    this.onShowSection236Clicked()
+
+    if (this.isGeneratingSection236.value) {
+      return
+    }
+
+    try {
+      this.isGeneratingSection236.value = true
+
+      await nextTick()
+      if (!this.documentRef) {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForDocumentDownload()
+        throw error
+      }
+
+      await this.documentRef.onDownloadClicked()
+
+      let toastTitle = this.language.isMalay()
+        ? "Seksyen 236(3) telah direkodkan bagi Permohonan ini."
+        : "Section 236(3) has been generated for this Application."
+      let toastMessage = this.language.isMalay()
+        ? "Salinan telah dimuat turun untuk rekod anda."
+        : "A copy has been downloaded for your record."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForGenerateDocumentFailed()
+        error.handle()
+      }
+    } finally {
+      this.isGeneratingSection236.value = false
+    }
   }
 
   // Show submission

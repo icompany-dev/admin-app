@@ -287,6 +287,8 @@
               <template #nodeOptions>
                 <button
                   class="btn btn-primary btn-pill"
+                  :class="{ 'is-loading': controller.isGeneratingSection236.value }"
+                  :disabled="controller.isGeneratingSection236.value"
                   @click="controller.onGenerateSection236Clicked()"
                 >
                   {{ controller.generateLabel }}
@@ -387,6 +389,8 @@
 
   const controller = new ApplicationController(props, emit)
 
+  const documentRef = ref(null)
+
   const activeDocumentComponent = computed(() => {
     const target = controller.selectedDocumentTarget.value
     return target && componentMap[target] ? componentMap[target] : null
@@ -398,6 +402,10 @@
       controller.setDataFromProps(newVal)
     }
   )
+
+  watch(documentRef, (newVal) => {
+    controller.setDocumentRef(newVal)
+  })
 </script>
 
 <style lang="scss">
