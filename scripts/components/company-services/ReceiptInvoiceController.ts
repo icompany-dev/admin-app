@@ -24,7 +24,7 @@ export class ReceiptInvoiceServiceController {
   get serviceWrapperProps(): PropsCompanyServiceWrapper {
     let dummyApplication = new CompanyAmendmentName()
     dummyApplication.status = "paid"
-    dummyApplication.id = "dummy"
+    dummyApplication.id = this.paymentOrderId.value
 
     let props = new PropsCompanyServiceWrapper(
       dummyApplication,
@@ -61,6 +61,10 @@ export class ReceiptInvoiceServiceController {
       false,
       false
     )
+
+    props.serviceWrapperProps.paymentOrderId = this.paymentOrderId.value
+
+    console.log(props)
 
     return props
   }

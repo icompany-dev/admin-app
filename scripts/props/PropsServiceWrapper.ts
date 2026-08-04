@@ -17,6 +17,8 @@ export interface IPropsServiceWrapper {
   paperOrientation: string
   applicationTarget: string
 
+  paymentOrderId: string
+
   companyName: string
   registrationNumberNew: string
   registrationNumberOld: string
@@ -37,6 +39,8 @@ export class PropsServiceWrapper implements IPropsServiceWrapper {
   yearToLodge: string = ""
   paperOrientation: string = PaperOrientation.Portrait
   applicationTarget: string = ""
+
+  paymentOrderId: string = ""
 
   companyName: string = ""
   registrationNumberNew: string = ""
