@@ -25,6 +25,7 @@
             :company-id="props.companyId"
             :application-id="props.targetId"
             :application-incorporation-id="props.applicationIncorporationId"
+            :application-switch-id="props.applicationSwitchId"
             :transfer-id="props.targetId"
             :notice-id="props.targetId"
             :meeting-id="props.targetId"

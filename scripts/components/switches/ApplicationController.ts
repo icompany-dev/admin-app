@@ -230,7 +230,7 @@ export class ApplicationController {
   onNotifyPreviousCosecStepClicked(): void {
     this.resetAllDocumentValues()
     this.isShowNotifyPreviousCosec.value = true
-    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SWITCH_LETTER_TO_COSEC
   }
 
   async onDocumentReceivedClicked(): Promise<void> {

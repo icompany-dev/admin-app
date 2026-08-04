@@ -160,4 +160,6 @@ export class DocumentTargets {
 
   static TARGET_INCORP_SECTION_27: string = "section_27"
   static TARGET_INCORP_SECTION_236_THREE: string = "section_236_three"
+
+  static TARGET_SWITCH_LETTER_TO_COSEC: string = "letter_to_cosec"
 }

@@ -261,6 +261,7 @@
             ref="documentRef"
             :is="activeDocumentComponent"
             :application-id="controller.applicationId.value"
+            :application-switch-id="controller.applicationId.value"
             :target-id="controller.paymentOrderId.value"
           />
         </div>
@@ -272,6 +273,7 @@
 <script lang="ts" setup>
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import LetterToExistingCosecService from "@/components/CompanyServices/LetterToExistingCosecService.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import SearchableDropdown from "@/components/Forms/SearchableDropdown.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
@@ -286,6 +288,7 @@
 
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
+    [DocumentTargets.TARGET_SWITCH_LETTER_TO_COSEC]: LetterToExistingCosecService,
   }
 
   const controller = new ApplicationController(props, emit)
