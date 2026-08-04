@@ -1,6 +1,6 @@
 <template>
   <div
-    id="company-services-section236-three"
+    id="company-services-letter-to-existing-cosec-service"
     class="company-services"
   >
     <div
@@ -23,11 +23,9 @@
           tag="div"
           class="documents"
         >
-          <Section236Three
+          <LetterChangeReassignCoSec
             ref="documentRef"
-            :company-name="controller.companyName.value"
-            :company-registration-number-new="controller.registrationNumberNew.value"
-            :company-registration-number-old="controller.registrationNumberOld.value"
+            v-bind="controller.letterChangeReassignCosecProps"
           />
         </TransitionGroup>
       </template>
@@ -37,20 +35,19 @@
 
 <script lang="ts" setup>
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
+  import LetterChangeReassignCoSec from "@/components/LegalDocuments/LetterChangeReassignCoSec.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
-  import Section236Three from "@/components/LegalDocuments/Section236Three.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
-  import type { IPropsIncorporationDocumentService } from "~/scripts/props/PropsIncorporationDocumentService"
   import type { IPropsSwitchDocumentService } from "~/scripts/props/PropsSwitchDocumentService"
-  import { Section236ThreeServiceController } from "~/scripts/components/company-services/Section236ThreeServiceController"
+  import { LetterToExistingCosecServiceController } from "~/scripts/components/company-services/LetterToExistingCosecServiceController"
 
-  const props = defineProps<IPropsIncorporationDocumentService | IPropsSwitchDocumentService>()
+  const props = defineProps<IPropsSwitchDocumentService>()
 
   const emit = defineEmits(EmitMessages.COMPANY_SERVICES)
 
   const documentRef = ref(null)
 
-  const controller = new Section236ThreeServiceController(props, emit)
+  const controller = new LetterToExistingCosecServiceController(props, emit)
 
   watch(
     () => props,
@@ -67,14 +64,9 @@
     },
     { immediate: true }
   )
-
-  defineExpose({
-    onGenerateClicked: controller.onGenerateClicked.bind(controller),
-    onDownloadClicked: controller.onDownloadClicked.bind(controller),
-  })
 </script>
 
 <style lang="scss">
   @use "~/assets/scss/components/CompanyServices/Service" as *;
-  @use "~/assets/scss/components/CompanyServices/Section236ThreeService" as *;
+  @use "~/assets/scss/components/CompanyServices/LetterToExistingCosecService" as *;
 </style>

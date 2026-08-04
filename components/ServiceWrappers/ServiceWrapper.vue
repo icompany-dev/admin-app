@@ -25,6 +25,7 @@
             :company-id="props.companyId"
             :application-id="props.targetId"
             :application-incorporation-id="props.applicationIncorporationId"
+            :application-switch-id="props.applicationSwitchId"
             :transfer-id="props.targetId"
             :notice-id="props.targetId"
             :meeting-id="props.targetId"
@@ -42,6 +43,7 @@
             :company-name="props.companyName"
             :registration-number-new="props.registrationNumberNew"
             :registration-number-old="props.registrationNumberOld"
+            :payment-order-id="props.paymentOrderId"
             @back="controller.onMinimizeDocument($event)"
             @make-payment="controller.onMakePayment()"
             @applicationUpdated="controller.onApplicationUpdated($event)"
@@ -77,6 +79,7 @@
   import DelegationOfAuthority from "./DelegationOfAuthority.vue"
   import DividendDeclaration from "./DividendDeclaration.vue"
   import EnterContract from "./EnterContract.vue"
+  import LetterToExistingCosec from "./LetterToExistingCosec.vue"
   import LoanToDirector from "./LoanToDirector.vue"
   import LodgeAnnualReturn from "./LodgeAnnualReturn.vue"
   import ManagementAccountForStrikingOff from "./ManagementAccountForStrikingOff.vue"
@@ -87,6 +90,7 @@
   import NotifyBankChangeOfCompanyName from "./NotifyBankChangeOfCompanyName.vue"
   import PracticeDirective2 from "./PracticeDirective2.vue"
   import PreferenceShareRight from "./PreferenceShareRight.vue"
+  import ReceiptInvoice from "./ReceiptInvoice.vue"
   import RegisterTransferOfShares from "./RegisterTransferOfShares.vue"
   import RemoveDirector from "./RemoveDirector.vue"
   import ReplaceCommonSeal from "./ReplaceCommonSeal.vue"
@@ -130,6 +134,8 @@
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE]: NewIncorporation,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION27]: Section27OneFour,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION236]: Section236Three,
+    [CompanyConstants.TARGET_APPLICATION_SWITCH_LETTER]: LetterToExistingCosec,
+    [CompanyConstants.TARGET_APPLICATION_SWITCH_RESO]: NewSwitch,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointmentOfAuditor,
     [CompanyConstants.TARGET_APPLICATION_SWITCH]: NewSwitch,
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,
@@ -159,6 +165,7 @@
     [CompanyConstants.TARGET_NOTIFY_CHANGE_OF_NAME]: NotifyBankChangeOfCompanyName,
     [CompanyConstants.TARGET_PRACTICE_DIRECTIVE_2]: PracticeDirective2,
     [CompanyConstants.TARGET_PREFERENCE_SHARE_RIGHT]: PreferenceShareRight,
+    [CompanyConstants.TARGET_RECEIPT]: ReceiptInvoice,
     [CompanyConstants.TARGET_REMOVAL_OF_DIRECTOR]: RemoveDirector,
     [CompanyConstants.TARGET_SET_FINANCIAL_YEAR_END]: SetFinancialYearEnd,
     [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT]: ShareIssuance,

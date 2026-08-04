@@ -1,6 +1,6 @@
 <template>
   <div
-    id="company-services-section236-three"
+    id="company-services-switch-appoint-company-secretary"
     class="company-services"
   >
     <div
@@ -23,11 +23,9 @@
           tag="div"
           class="documents"
         >
-          <Section236Three
+          <DcrAppointmentOfNewCompanySecretary
             ref="documentRef"
-            :company-name="controller.companyName.value"
-            :company-registration-number-new="controller.registrationNumberNew.value"
-            :company-registration-number-old="controller.registrationNumberOld.value"
+            :application="controller.application.value"
           />
         </TransitionGroup>
       </template>
@@ -37,20 +35,19 @@
 
 <script lang="ts" setup>
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
+  import DcrAppointmentOfNewCompanySecretary from "../Resolutions/DcrAppointmentOfNewCompanySecretary.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
-  import Section236Three from "@/components/LegalDocuments/Section236Three.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
-  import type { IPropsIncorporationDocumentService } from "~/scripts/props/PropsIncorporationDocumentService"
   import type { IPropsSwitchDocumentService } from "~/scripts/props/PropsSwitchDocumentService"
-  import { Section236ThreeServiceController } from "~/scripts/components/company-services/Section236ThreeServiceController"
+  import { SwitchAppointCompanySecretaryController } from "~/scripts/components/company-services/SwitchAppointCompanySecretaryController"
 
-  const props = defineProps<IPropsIncorporationDocumentService | IPropsSwitchDocumentService>()
+  const props = defineProps<IPropsSwitchDocumentService>()
 
   const emit = defineEmits(EmitMessages.COMPANY_SERVICES)
 
   const documentRef = ref(null)
 
-  const controller = new Section236ThreeServiceController(props, emit)
+  const controller = new SwitchAppointCompanySecretaryController(props, emit)
 
   watch(
     () => props,
@@ -69,12 +66,11 @@
   )
 
   defineExpose({
-    onGenerateClicked: controller.onGenerateClicked.bind(controller),
     onDownloadClicked: controller.onDownloadClicked.bind(controller),
   })
 </script>
 
 <style lang="scss">
   @use "~/assets/scss/components/CompanyServices/Service" as *;
-  @use "~/assets/scss/components/CompanyServices/Section236ThreeService" as *;
+  @use "~/assets/scss/components/CompanyServices/SwitchAppointCompanySecretary" as *;
 </style>

@@ -14,11 +14,6 @@
         tag="div"
         class="document-transition-wrapper"
       >
-        <LetterChangeReassignCoSec
-          ref="letterChangeReassignCoSecRef"
-          v-if="controller.showReassignLetter()"
-          v-bind="controller.letterChangeReassignCosecProps"
-        />
         <DcrAppointmentOfNewCompanySecretary
           ref="dcrRef"
           :is-on-preview="props.isInPreviewMode"
@@ -28,11 +23,12 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
-  import LetterChangeReassignCoSec from "../LegalDocuments/LetterChangeReassignCoSec.vue"
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import DcrAppointmentOfNewCompanySecretary from "../Resolutions/DcrAppointmentOfNewCompanySecretary.vue"
   import { NewSwitchController } from "~/scripts/components/service-wrappers/NewSwitchController"
 

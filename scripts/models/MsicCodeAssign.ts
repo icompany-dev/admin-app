@@ -1,14 +1,16 @@
+import { StringUtil } from "../utils/String"
 import { BaseModel } from "./BaseModel"
 import { File } from "./File"
 import type { IModel } from "./IModel"
 import { MsicCode } from "./MsicCode"
+import { Error } from "../library/Error"
 
 export class MsicCodeAssign extends BaseModel<MsicCodeAssign> implements IModel<MsicCodeAssign> {
   msicCode: MsicCode = new MsicCode()
   documentRequired: File | null = null
   assign: MsicCodeAssignTarget = new MsicCodeAssignTarget()
 
-  constructor(data: any | null) {
+  constructor(data: any | null = null) {
     super()
 
     if (!data) {
@@ -41,7 +43,35 @@ export class MsicCodeAssign extends BaseModel<MsicCodeAssign> implements IModel<
   }
 
   getRequestBody(): object {
-    return {}
+    return {
+      msic_code_id: this.msicCode.id,
+      target: this.assign.target,
+      target_id: this.assign.id,
+    }
+  }
+
+  canSubmit(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.msicCode.id) &&
+      !StringUtil.isNullOrEmpty(this.assign.target) &&
+      !StringUtil.isNullOrEmpty(this.assign.id)
+    )
+  }
+
+  async create(repository: ReturnType<typeof useMsicCodeAssignStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    let response = await repository.create(data)
+    if (repository.error !== null || !response) {
+      throw repository.error
+    }
+
+    this.clone(response)
   }
 }
 

@@ -145,6 +145,7 @@ import { LogRepository } from "~/scripts/repositories/LogRepository"
 import { MagicLinkRepository } from "~/scripts/repositories/MagicLinkRepository"
 import { MerchandisePurchaseRepository } from "~/scripts/repositories/MerchandisePurchaseRepository"
 import { MerchandiseRepository } from "~/scripts/repositories/MerchandiseRepository"
+import { MsicCodeAssignRepository } from "~/scripts/repositories/MsicCodeAssignRepository"
 import { MsicCodeRepository } from "~/scripts/repositories/MsicCodeRepository"
 import { MyDataRepository } from "~/scripts/repositories/MyDataRepository"
 import { MyDataNameSearchRepository } from "~/scripts/repositories/MyDataNameSearchRepository"
@@ -322,6 +323,7 @@ interface Repositories {
   magicLinks: MagicLinkRepository
   merchandisePurchases: MerchandisePurchaseRepository
   merchandises: MerchandiseRepository
+  msicCodeAssigns: MsicCodeAssignRepository
   msicCodes: MsicCodeRepository
   myData: MyDataRepository
   myDataNameSearch: MyDataNameSearchRepository
@@ -381,12 +383,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "admin/setting",
       config.public.apiBaseUrl,
       getAuthToken),
-    adminToDos: new AdminToDoRepository(
-      "admin/to-dos",
+    adminToDos: new AdminToDoRepository("admin/to-dos",
       "admin/to-do",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     applicationIncorporates: new ApplicationIncorporateRepository("application/incorporates",
       "application/incorporate",
       config.public.apiBaseUrl,
@@ -416,41 +416,31 @@ export default defineNuxtPlugin((nuxtApp) => {
       "auditor/partner",
       config.public.apiBaseUrl,
       getAuthToken),
-    auth: new AuthRepository(
-      "auth",
+    auth: new AuthRepository("auth",
       "auth",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    banks: new BankRepository(
-      "banks",
+      getAuthToken),
+    banks: new BankRepository("banks",
       "bank",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     billplzPaymentGateways: new BillplzPaymentGatewayRepository("payment/gateways",
       "payment/gateway",
       config.public.apiBaseUrl,
       getAuthToken,
       config.public.systemApiKey),
-    cartItems: new CartItemRepository(
-      "cart/items",
+    cartItems: new CartItemRepository("cart/items",
       "cart/item",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    carts: new CartRepository(
-      "carts",
+      getAuthToken),
+    carts: new CartRepository("carts",
       "cart",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    cities: new CityRepository(
-      "cities",
+      getAuthToken),
+    cities: new CityRepository("cities",
       "city",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companies: new CompanyRepository("companies",
       "company",
       config.public.apiBaseUrl,
@@ -520,12 +510,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/bank/account/opening",
       config.public.apiBaseUrl,
       getAuthToken),
-    companyBanks: new CompanyBankRepository(
-      "company/banks",
+    companyBanks: new CompanyBankRepository("company/banks",
       "company/bank",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyBODeclarations: new CompanyBODeclarationRepository("company/shareholder/bo-declarations",
       "company/shareholder/bo-declaration",
       config.public.apiBaseUrl,
@@ -898,12 +886,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/terms-of-reference",
       config.public.apiBaseUrl,
       getAuthToken),
-    countries: new CountryRepository(
-      "countries",
+    countries: new CountryRepository("countries",
       "country",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     directorDeclarationConflictOfInterests: new DirectorDeclarationConflictOfInterestRepository("director/declarations/conflicts-of-interests",
       "director/declarations/conflicts-of-interest",
       config.public.apiBaseUrl,
@@ -912,40 +898,30 @@ export default defineNuxtPlugin((nuxtApp) => {
       "invitation/director",
       config.public.apiBaseUrl,
       getAuthToken),
-    directors: new DirectorRepository(
-      "directors",
+    directors: new DirectorRepository("directors",
       "director",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     documentTemplates: new DocumentTemplateRepository("resolution-templates",
       "resolution-template",
       config.public.apiBaseUrl,
       getAuthToken),
-    files: new FileRepository(
-      "files",
+    files: new FileRepository("files",
       "file",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    forms: new FormRepository(
-      "forms",
+      getAuthToken),
+    forms: new FormRepository("forms",
       "form",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    formTypes: new FormTypeRepository(
-      "form/types",
+      getAuthToken),
+    formTypes: new FormTypeRepository("form/types",
       "form/type",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    geminiAi: new GeminiAiRepository(
-      "gemini",
+      getAuthToken),
+    geminiAi: new GeminiAiRepository("gemini",
       "gemini",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     geminiAiSessions: new GeminiAiSessionRepository("gemini/sessions",
       "gemini/session",
       config.public.apiBaseUrl,
@@ -954,24 +930,18 @@ export default defineNuxtPlugin((nuxtApp) => {
       "holiday/notification",
       config.public.apiBaseUrl,
       getAuthToken),
-    lalamove: new LalamoveRepository(
-      "deliveries",
+    lalamove: new LalamoveRepository("deliveries",
       "delivery",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    logs: new LogRepository(
-      "logs",
+      getAuthToken),
+    logs: new LogRepository("logs",
       "log",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    magicLinks: new MagicLinkRepository(
-      "auth/magiclinks",
+      getAuthToken),
+    magicLinks: new MagicLinkRepository("auth/magiclinks",
       "auth/magiclink",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     merchandisePurchases: new MerchandisePurchaseRepository("purchases",
       "purchase",
       config.public.apiBaseUrl,
@@ -982,68 +952,56 @@ export default defineNuxtPlugin((nuxtApp) => {
       config.public.apiBaseUrl,
       getAuthToken,
       config.public.systemApiKey),
-    msicCodes: new MsicCodeRepository(
-      "msiccodes",
+    msicCodeAssigns: new MsicCodeAssignRepository(
+      "msiccode/assigns",
+      "msiccode/assign",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
+    msicCodes: new MsicCodeRepository("msiccodes",
       "msiccode",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    myData: new MyDataRepository(
-      "vendor/mydata",
+      getAuthToken),
+    myData: new MyDataRepository("vendor/mydata",
       "vendor/mydata",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     myDataNameSearch: new MyDataNameSearchRepository("vendor/mydata/namesearch/",
       "vendor/mydata/namesearch",
       config.public.apiBaseUrl,
       getAuthToken),
-    notifications: new NotificationRepository(
-      "notifications",
+    notifications: new NotificationRepository("notifications",
       "notification",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    orders: new OrderRepository(
-      "orders",
+      getAuthToken),
+    orders: new OrderRepository("orders",
       "order",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    paymentCarts: new PaymentCartRepository(
-      "payment/carts",
+      getAuthToken),
+    paymentCarts: new PaymentCartRepository("payment/carts",
       "payment/cart",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     paymentOrders: new PaymentOrderRepository("payment/orders",
       "payment/order",
       config.public.apiBaseUrl,
       getAuthToken),
-    postcodes: new PostcodeRepository(
-      "postcodes",
+    postcodes: new PostcodeRepository("postcodes",
       "postcode",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    products: new ProductRepository(
-      "products",
+      getAuthToken),
+    products: new ProductRepository("products",
       "product",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    progresses: new ProgressRepository(
-      "progresses",
+      getAuthToken),
+    progresses: new ProgressRepository("progresses",
       "progress",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    publics: new PublicRepository(
-      "public",
+      getAuthToken),
+    publics: new PublicRepository("public",
       "public",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     purchasedDocumentTemplates: new PurchasedDocumentTemplateRepository("company/purchased-document-templates",
       "company/purchased-document-template",
       config.public.apiBaseUrl,
@@ -1052,12 +1010,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "search/compliance",
       config.public.apiBaseUrl,
       getAuthToken),
-    servicePricings: new ServicePricingRepository(
-      "prices",
+    servicePricings: new ServicePricingRepository("prices",
       "price",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     servicesToPay: new ServiceToPayRepository("services/to-pay",
       "services/to-pay",
       config.public.apiBaseUrl,
@@ -1066,36 +1022,26 @@ export default defineNuxtPlugin((nuxtApp) => {
       "invitation/shareholder",
       config.public.apiBaseUrl,
       getAuthToken),
-    shareholders: new ShareholderRepository(
-      "shareholders",
+    shareholders: new ShareholderRepository("shareholders",
       "shareholder",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    signatures: new SignatureRepository(
-      "signatures",
+      getAuthToken),
+    signatures: new SignatureRepository("signatures",
       "signature",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    states: new StateRepository(
-      "states",
+      getAuthToken),
+    states: new StateRepository("states",
       "state",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    toDos: new ToDoRepository(
-      "services",
+      getAuthToken),
+    toDos: new ToDoRepository("services",
       "service",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    transactions: new TransactionRepository(
-      "transactions",
+      getAuthToken),
+    transactions: new TransactionRepository("transactions",
       "transaction",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     userAccessRoles: new UserAccessRoleRepository("access/user-access-roles",
       "access/user-access-role",
       config.public.apiBaseUrl,
@@ -1112,18 +1058,14 @@ export default defineNuxtPlugin((nuxtApp) => {
       "access/user-invite",
       config.public.apiBaseUrl,
       getAuthToken),
-    users: new UserRepository(
-      "users",
+    users: new UserRepository("users",
       "user",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
-    wiseAi: new WiseAiRepository(
-      "vendor/wiseai",
+      getAuthToken),
+    wiseAi: new WiseAiRepository("vendor/wiseai",
       "vendor/wiseai",
       config.public.apiBaseUrl,
-      getAuthToken
-    )
+      getAuthToken)
   }
 
   nuxtApp.provide("repositories", repositories)
@@ -1279,6 +1221,7 @@ declare module "#app" {
       magicLinks: import("~/scripts/repositories/MagicLinkRepository").MagicLinkRepository
       merchandisePurchases: import("~/scripts/repositories/MerchandisePurchaseRepository").MerchandisePurchaseRepository
       merchandises: import("~/scripts/repositories/MerchandiseRepository").MerchandiseRepository
+      msicCodeAssigns: import("~/scripts/repositories/MsicCodeAssignRepository").MsicCodeAssignRepository
       msicCodes: import("~/scripts/repositories/MsicCodeRepository").MsicCodeRepository
       myData: import("~/scripts/repositories/MyDataRepository").MyDataRepository
       myDataNameSearch: import("~/scripts/repositories/MyDataNameSearchRepository").MyDataNameSearchRepository
@@ -1460,6 +1403,7 @@ declare module "pinia" {
       magicLinks: import("~/scripts/repositories/MagicLinkRepository").MagicLinkRepository
       merchandisePurchases: import("~/scripts/repositories/MerchandisePurchaseRepository").MerchandisePurchaseRepository
       merchandises: import("~/scripts/repositories/MerchandiseRepository").MerchandiseRepository
+      msicCodeAssigns: import("~/scripts/repositories/MsicCodeAssignRepository").MsicCodeAssignRepository
       msicCodes: import("~/scripts/repositories/MsicCodeRepository").MsicCodeRepository
       myData: import("~/scripts/repositories/MyDataRepository").MyDataRepository
       myDataNameSearch: import("~/scripts/repositories/MyDataNameSearchRepository").MyDataNameSearchRepository

@@ -38,6 +38,7 @@ export class Company implements IModel<Company> {
   branches: CompanyBranch[] = []
   hasBusinessAddress: boolean = true
   applicationIncorporationId: string | null = null
+  applicationSwitchId: string | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
 
@@ -71,6 +72,7 @@ export class Company implements IModel<Company> {
     this.imageId = data.image?.id ?? null
     this.companyLogo = new File(data.image)
     this.applicationIncorporationId = data.application_incorporation_id ?? null
+    this.applicationSwitchId = data.application_switch_id ?? null
     this.incorporatedAt = data.incorporated_at
     this.msicCodeAssigns =
       data.msic_code_assigns && Array.isArray(data.msic_code_assigns)
@@ -111,6 +113,7 @@ export class Company implements IModel<Company> {
     this.registeredAddressLocation = new Location(data.registeredAddressLocation)
     this.imageId = data.imageId
     this.applicationIncorporationId = data.applicationIncorporationId
+    this.applicationSwitchId = data.applicationSwitchId
     this.companyLogo = new File(data.companyLogo)
     this.incorporatedAt = data.incorporatedAt
     this.msicCodeAssigns = data.msicCodeAssigns.map((d: any) => {
@@ -140,6 +143,7 @@ export class Company implements IModel<Company> {
       registered_address_location: this.registeredAddressLocation?.getRequestBody() ?? null,
       incorporated_at: this.incorporatedAt,
       application_incorporation_id: this.applicationIncorporationId,
+      application_switch_id: this.applicationSwitchId,
     }
 
     if (this.hasBusinessAddress) {

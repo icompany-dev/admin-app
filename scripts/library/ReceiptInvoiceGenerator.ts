@@ -73,7 +73,7 @@ export class ReceiptInvoiceGenerator {
     receiptData.items.forEach((item: ReceiptDataItem) => {
       let paymentOrderItemMandatory = new PaymentOrderItemMandatory()
       paymentOrderItemMandatory.serviceName = !StringUtil.isNullOrEmpty(item.altName) ? item.altName : item.name
-      paymentOrderItemMandatory.basePrice = item.price
+      paymentOrderItemMandatory.basePrice = Number(item.price)
       paymentOrderItem.mandatories.push(paymentOrderItemMandatory)
     })
     paymentOrderItem.subtotal = receiptData.orderSummary.total
@@ -94,7 +94,7 @@ export class ReceiptInvoiceGenerator {
     try {
       let response = await this.transactionRepository.fetchByTarget(target, targetId)
       if (!response) {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         throw errorMessage
       }
@@ -109,7 +109,7 @@ export class ReceiptInvoiceGenerator {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -132,7 +132,7 @@ export class ReceiptInvoiceGenerator {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -152,7 +152,7 @@ export class ReceiptInvoiceGenerator {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -176,10 +176,9 @@ export class ReceiptInvoiceGenerator {
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage = new Error(
-          Error.ERROR_TYPE_API,
-          "Unable to fetch payment details. Please refresh the page and try again."
-        )
+        let errorMessage = new Error()
+        errorMessage.type = Error.ERROR_TYPE_API
+        errorMessage.title = "Unable to fetch payment details. Please refresh the page and try again."
         errorMessage.handle()
       }
     }
@@ -189,13 +188,13 @@ export class ReceiptInvoiceGenerator {
   async downloadFromTransactionHistory(transactionHistory: TransactionHistory): Promise<void> {
     try {
       if (!this.documentTemplate) {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForIncompleteData()
         throw errorMessage
       }
 
       if (StringUtil.isNullOrEmpty(this.paymentOrder.referenceNumber)) {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForIncompleteData()
         throw errorMessage
       }
@@ -222,7 +221,7 @@ export class ReceiptInvoiceGenerator {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForDocumentDownload()
         errorMessage.handle()
       }

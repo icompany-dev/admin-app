@@ -175,4 +175,13 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_DATA
   }
+
+  setForGenerateDocumentFailed(): void {
+    this.title = this.isMalay
+      ? "Kami hadapi masalah ketika menjana dokumen."
+      : "We encountered an error while generating the document."
+    this.message = this.isMalay ? "Sila cuba lagi sekali." : "Please try again."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
 }

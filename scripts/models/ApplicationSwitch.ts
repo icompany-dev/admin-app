@@ -10,6 +10,7 @@ import type { IModel } from "./IModel"
 import { Location } from "./Location"
 import { ShareholderInvitation } from "./ShareholderInvitation"
 import { SignatureGroup } from "./SignatureGroup"
+import { MsicCodeAssign } from "./MsicCodeAssign"
 import {
   SsmCorporateProfilePurchaseData,
   type CorporateProfileJsonData,
@@ -37,6 +38,7 @@ export class ApplicationSwitch implements IApplication {
   secretaryName: string = ""
   directorInvitations: DirectorInvitation[] = []
   shareholderInvitations: ShareholderInvitation[] = []
+  msicCodeAssigns: MsicCodeAssign[] = []
   status: string = StatusConstants.DRAFT
   signatureGroups: SignatureGroup[] = []
   signatureGroupStatus: string = ""
@@ -95,6 +97,12 @@ export class ApplicationSwitch implements IApplication {
             return new ShareholderInvitation(s)
           })
         : []
+    this.msicCodeAssigns =
+      data.msic_code_assigns && Array.isArray(data.msic_code_assigns)
+        ? data.msic_code_assigns.map((mca: any) => {
+            return new MsicCodeAssign(mca)
+          })
+        : []
     this.status = data.status
     this.signatureGroups =
       data.signature_groups && Array.isArray(data.signature_groups)
@@ -137,6 +145,9 @@ export class ApplicationSwitch implements IApplication {
     })
     this.shareholderInvitations = data.shareholderInvitations.map((s: ShareholderInvitation) => {
       return new ShareholderInvitation(s)
+    })
+    this.msicCodeAssigns = data.msicCodeAssigns.map((mca: MsicCodeAssign) => {
+      return new MsicCodeAssign(mca)
     })
     this.status = data.status
     this.signatureGroups = data.signatureGroups.map((sg: SignatureGroup) => {
@@ -210,7 +221,7 @@ export class ApplicationSwitch implements IApplication {
 
   async update(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -225,7 +236,7 @@ export class ApplicationSwitch implements IApplication {
 
   async updateMetadata(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -240,7 +251,7 @@ export class ApplicationSwitch implements IApplication {
 
   async delete(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -357,6 +368,66 @@ export class ApplicationSwitch implements IApplication {
   }
 
   getFullName(): string {
-    return `${this.name} ${this.getType()}`
+    if (StringUtil.isNullOrEmpty(this.name)) {
+      return ""
+    }
+
+    let cleanedName = this.name
+      .toLowerCase()
+      .replaceAll("sdn bhd", "")
+      .replaceAll("berhad", "")
+      .replaceAll("sdn. bhd.", "")
+      .toUpperCase()
+
+    return `${cleanedName} ${this.getType()}`
+  }
+
+  hasCompletedName(): boolean {
+    return !StringUtil.isNullOrEmpty(this.getFullName())
+  }
+
+  hasCompletedRegistrationNumber(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.registrationNumberNew) && !StringUtil.isNullOrEmpty(this.registrationNumberOld)
+    )
+  }
+
+  get companyName(): string {
+    if (this.hasCompletedName()) {
+      return this.getFullName()
+    }
+
+    return "Pending Company Details"
+  }
+
+  get companyRegistrationNumber(): string {
+    if (this.hasCompletedRegistrationNumber()) {
+      return `${this.registrationNumberNew} (${this.registrationNumberOld})`
+    }
+
+    return "Pending Registration Number"
+  }
+
+  get switchTypeLabel(): string {
+    switch (this.switchType) {
+      case SwitchConstants.TYPE_SETTLE:
+        return "Self-Settle"
+      case SwitchConstants.TYPE_STRIKING_OFF:
+        return "Striking Off"
+      case SwitchConstants.TYPE_VACATED:
+        return "Cosec Vacated"
+      case SwitchConstants.TYPE_SELF_SERVICE:
+        return "Self-Service"
+    }
+
+    return ""
+  }
+
+  get ssmMetaData(): SsmCorporateProfilePurchaseData | null {
+    if (!this.metadata) {
+      return null
+    }
+
+    return new SsmCorporateProfilePurchaseData(this.metadata)
   }
 }

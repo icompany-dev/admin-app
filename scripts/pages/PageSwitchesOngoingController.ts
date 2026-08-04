@@ -1,11 +1,11 @@
 import { StringUtil } from "../utils/String"
-import { PageIncorporationsController } from "./PageIncorporationsController"
+import { PageSwitchesController } from "./PageSwitchesController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
-import { PropsIncorporationsOngoing } from "~/scripts/props/PropsIncorporationsOngoing"
-import { PropsIncorporationApplication } from "../props/PropsIncorporationApplication"
+import { PropsSwitchesOngoing } from "~/scripts/props/PropsSwitchesOngoing"
+import { PropsSwitchApplication } from "../props/PropsSwitchApplication"
 import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props/PropsTableFilter"
 
-export class PageIncorporationsOngoingController extends PageIncorporationsController {
+export class PageSwitchesOngoingController extends PageSwitchesController {
   showAll: Ref<boolean> = ref<boolean>(true)
   showSelected: Ref<boolean> = ref<boolean>(false)
 
@@ -13,9 +13,9 @@ export class PageIncorporationsOngoingController extends PageIncorporationsContr
 
   constructor() {
     super(
-      "Incorporations of New Sdn Bhd - iCompany Malaysia",
-      "Manage all applications for incorporations of New Sdn Bhd",
-      "Incorporation Applications"
+      "Reassignment of Company Secretary - iCompany Malaysia",
+      "Manage all applications for Reassignment of Company Secretary",
+      "Switch Applications"
     )
 
     this.handleRoute()
@@ -57,30 +57,27 @@ export class PageIncorporationsOngoingController extends PageIncorporationsContr
   }
 
   onClearSelected(): void {
-    this.router.push({ path: "/incorporations/ongoings" })
+    this.router.push({ path: "/switches/ongoings" })
   }
 
   get breadCrumbProps(): PropsBreadCrumb {
     if (this.showSelected.value) {
       return new PropsBreadCrumb([
-        new PropsBreadCrumbItem("New Incorporations", ""),
-        new PropsBreadCrumbItem("Ongoings", "/incorporations/ongoings"),
+        new PropsBreadCrumbItem("New Switches", ""),
+        new PropsBreadCrumbItem("Ongoings", "/switches/ongoings"),
         new PropsBreadCrumbItem("Application", ""),
       ])
     }
 
-    return new PropsBreadCrumb([
-      new PropsBreadCrumbItem("New Incorporations", ""),
-      new PropsBreadCrumbItem("Ongoings", ""),
-    ])
+    return new PropsBreadCrumb([new PropsBreadCrumbItem("New Switches", ""), new PropsBreadCrumbItem("Ongoings", "")])
   }
 
-  get ongoingsProps(): PropsIncorporationsOngoing {
-    return new PropsIncorporationsOngoing(this.searchText.value, this.isIncludeDemo.value)
+  get ongoingsProps(): PropsSwitchesOngoing {
+    return new PropsSwitchesOngoing(this.searchText.value, this.isIncludeDemo.value)
   }
 
-  get applicationProps(): PropsIncorporationApplication {
-    return new PropsIncorporationApplication(this.selectedApplicationId.value)
+  get applicationProps(): PropsSwitchApplication {
+    return new PropsSwitchApplication(this.selectedApplicationId.value)
   }
 
   override get tableFilterProps(): PropsTableFilter {

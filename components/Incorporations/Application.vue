@@ -549,7 +549,7 @@
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
     [DocumentTargets.TARGET_SECTION_201]: Section201Service,
     [DocumentTargets.TARGET_INCORP_SECTION_27]: Section27OneFourService,
-    [DocumentTargets.TARGET_INCORP_SECTION_236_THREE]: Section236ThreeService,
+    [DocumentTargets.TARGET_SECTION_236]: Section236ThreeService,
   }
 
   const documentRef = ref(null)

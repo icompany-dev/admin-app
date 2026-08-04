@@ -81,6 +81,9 @@ export class CompanyConstants {
   static TARGET_APPLICATION_INCORPORATE_SECTION236: string = "application_incorporate_section236"
 
   static TARGET_APPLICATION_SWITCH: string = "application_switch"
+  static TARGET_APPLICATION_SWITCH_LETTER: string = "application_switch_letter"
+  static TARGET_APPLICATION_SWITCH_RESO: string = "application_switch_reso"
+
   static TARGET_PURCHASED_DOCUMENT_TEMPLATE: string = "purchased_document_template"
 
   static TARGET_THIRD_SCHEDULE: string = "third_schedule" //this is not a service. but a document
@@ -100,6 +103,8 @@ export class CompanyConstants {
     this.TARGET_APPLICATION_INCORPORATE_SECTION27,
     this.TARGET_APPLICATION_INCORPORATE_SECTION236,
     this.TARGET_APPLICATION_SWITCH,
+    this.TARGET_APPLICATION_SWITCH_LETTER,
+    this.TARGET_APPLICATION_SWITCH_RESO,
     this.TARGET_AUDIT_CIRCULATION,
     this.TARGET_AUDIT_EXTENSION_OF_TIME,
     this.TARGET_AUDITOR_APPOINTMENT,
