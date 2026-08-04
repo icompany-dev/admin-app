@@ -135,6 +135,7 @@
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION27]: Section27OneFour,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION236]: Section236Three,
     [CompanyConstants.TARGET_APPLICATION_SWITCH_LETTER]: LetterToExistingCosec,
+    [CompanyConstants.TARGET_APPLICATION_SWITCH_RESO]: NewSwitch,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointmentOfAuditor,
     [CompanyConstants.TARGET_APPLICATION_SWITCH]: NewSwitch,
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,

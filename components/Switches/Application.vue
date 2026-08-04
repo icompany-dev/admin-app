@@ -254,6 +254,23 @@
                 </div>
               </template>
             </ApplicationNode>
+            <ApplicationNode
+              v-bind="controller.directorsResolutionNodeProps"
+              @click="controller.onShowDirectorsResolutionClicked()"
+            >
+              <template #nodeContent>
+                <div class="application-container">
+                  <div class="node-title">{{ controller.directorsResolutionLabel }}</div>
+                  <div class="node-subtitle">({{ controller.directorsResolutionSublabel }})</div>
+                </div>
+              </template>
+              <template #nodeOptions>
+                <button class="btn btn-primary btn-pill">
+                  {{ controller.generateLabel }}
+                </button>
+              </template>
+              <template #nodeActions></template>
+            </ApplicationNode>
           </template>
         </ServiceApplication>
         <div class="document-display">
@@ -277,6 +294,7 @@
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import SearchableDropdown from "@/components/Forms/SearchableDropdown.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
+  import SwitchAppointCompanySecretary from "@/components/CompanyServices/SwitchAppointCompanySecretary.vue"
   import UploadFile from "@/components/Popups/UploadFile.vue"
   import { ApplicationController } from "~/scripts/components/switches/ApplicationController"
   import type { IPropsSwitchApplication } from "~/scripts/props/PropsSwitchApplication"
@@ -289,6 +307,7 @@
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
     [DocumentTargets.TARGET_SWITCH_LETTER_TO_COSEC]: LetterToExistingCosecService,
+    [DocumentTargets.TARGET_SWITCH_RESO]: SwitchAppointCompanySecretary,
   }
 
   const controller = new ApplicationController(props, emit)

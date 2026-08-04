@@ -14,11 +14,11 @@
         tag="div"
         class="document-transition-wrapper"
       >
-        <LetterChangeReassignCoSec
+        <!-- <LetterChangeReassignCoSec
           ref="letterChangeReassignCoSecRef"
           v-if="controller.showReassignLetter()"
           v-bind="controller.letterChangeReassignCosecProps"
-        />
+        /> -->
         <DcrAppointmentOfNewCompanySecretary
           ref="dcrRef"
           :is-on-preview="props.isInPreviewMode"

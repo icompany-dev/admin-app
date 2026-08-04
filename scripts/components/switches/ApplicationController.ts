@@ -52,6 +52,7 @@ export class ApplicationController {
 
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
   isShowNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
+  isShowDcrFromDirectors: Ref<boolean> = ref<boolean>(false)
 
   isUpdatingNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isUploadingDocumentsForPreviousCosec: Ref<boolean> = ref<boolean>(false)
@@ -216,6 +217,7 @@ export class ApplicationController {
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
     this.isShowNotifyPreviousCosec.value = false
+    this.isShowDcrFromDirectors.value = false
 
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
@@ -256,6 +258,17 @@ export class ApplicationController {
     } finally {
       this.isUpdatingNotifyPreviousCosec.value = false
     }
+  }
+
+  // Show DCR from directors
+  onShowDirectorsResolutionClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowDcrFromDirectors.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SWITCH_RESO // need to change to DCR
+  }
+
+  async onGenerateDcrClicked(): Promise<void> {
+    //
   }
 
   //getters
@@ -689,5 +702,38 @@ export class ApplicationController {
 
   get documentReceivedLabel(): string {
     return this.language.isMalay() ? "Dokumen Diterima" : "Documents Received"
+  }
+
+  // Resolution from directors
+  get directorsResolutionNodeProps(): PropsServiceApplicationNode {
+    if (!this.hasNotifyPreviousCosecResolution) {
+      return new PropsServiceApplicationNode(
+        this.hasPaid,
+        this.isDirectorsResolutionCompleted,
+        this.isShowDcrFromDirectors.value
+      )
+    }
+
+    return new PropsServiceApplicationNode(
+      this.isNotifyPreviousCosecCompleted,
+      this.isDirectorsResolutionCompleted,
+      this.isShowDcrFromDirectors.value
+    )
+  }
+
+  get isDirectorsResolutionCompleted(): boolean {
+    return false // this needs to depend on previous step, i think
+  }
+
+  get directorsResolutionLabel(): string {
+    return this.language.isMalay() ? "Resolusi Pengarah" : "Directors' Resolution"
+  }
+
+  get directorsResolutionSublabel(): string {
+    return this.language.isMalay() ? "Perlantikan Setiausaha Syarikat Baharu" : "Appointment of New Company Secretary"
+  }
+
+  get generateLabel(): string {
+    return this.language.isMalay() ? "Jana" : "Generate"
   }
 }
