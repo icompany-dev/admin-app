@@ -14,7 +14,7 @@ export class SwitchAppointCompanySecretaryController {
 
   language = useLanguage()
 
-  target: string = CompanyConstants.TARGET_APPLICATION_SWITCH_LETTER
+  target: string = CompanyConstants.TARGET_APPLICATION_SWITCH_RESO
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 

@@ -1,5 +1,8 @@
 <template>
-  <div id="company-services-switch-appoint-company-secretary">
+  <div
+    id="company-services-switch-appoint-company-secretary"
+    class="company-services"
+  >
     <div
       class="loader-container"
       v-if="controller.isLoading.value"
