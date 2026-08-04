@@ -64,9 +64,9 @@ export class PageSidebar {
   static incorpGroup: SidebarGroup = new SidebarGroup("New Incorporation", "Permerbadanan Baharu", [this.incorpDrafts])
 
   static switchDrafts: Sidebar = new Sidebar(
-    "Application in Drafts",
-    "Permohonan Masih Draft",
-    "switches/drafts",
+    "Ongoing Applications",
+    "Permohonan Dalam Proses",
+    "switches/ongoings",
     false
   )
   static switchNew: Sidebar = new Sidebar(
