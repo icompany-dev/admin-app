@@ -23,6 +23,7 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: flex-start;
+      margin: auto;
 
       .logo {
         img {
@@ -111,6 +112,7 @@
 
     .transaction-list {
       width: 170mm;
+      margin: auto;
 
       .continue-note {
         font-style: italic;
@@ -288,6 +290,17 @@
           text-align: center;
         }
       }
+    }
+  }
+
+  &.is-printing {
+    width: 210mm;
+    height: 297mm;
+
+    .header-content {
+      padding: 20mm;
+      padding-bottom: 0;
+      width: 170mm;
     }
   }
 }

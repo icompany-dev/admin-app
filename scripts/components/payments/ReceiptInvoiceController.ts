@@ -50,7 +50,7 @@ export class ReceiptInvoiceController {
 
   receiptInvoiceGenerator: ReceiptInvoiceGenerator = new ReceiptInvoiceGenerator()
 
-  additionalCssClass: string = "receipt-paper print"
+  additionalCssClass: string = "receipt-paper"
   paperOrientation: string = PaperOrientation.Portrait
 
   constructor(paymentOrderId: string, paymentOrder: PaymentOrder | null = null, emitEvents: any | null) {
