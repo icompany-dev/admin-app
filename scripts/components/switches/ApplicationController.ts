@@ -12,6 +12,7 @@ import { MsicCode } from "~/scripts/models/MsicCode"
 import { Filter } from "~/scripts/library/Filter"
 import { SelectOption } from "~/scripts/types/SelectOption"
 import type {
+  CorporateProfileJsonBusinessCode,
   CorporateProfileJsonOfficerInfo,
   SsmCorporateProfilePurchaseData,
 } from "~/scripts/models/SsmCorporateProfileJsonData"
@@ -261,7 +262,29 @@ export class ApplicationController {
 
   get msicCodesList(): string {
     if (this.application.value.msicCodeAssigns.length <= 0) {
-      return "No MSIC Code found"
+      // get from ssm data
+      if (this.ssmCorporateProfileData && this.ssmCorporateProfileData.ssm) {
+        let businessCodes = this.ssmCorporateProfileData.ssm.businessCodes.map(
+          (businessCode: CorporateProfileJsonBusinessCode) => {
+            return businessCode.businessCode
+          }
+        )
+
+        if (businessCodes.length <= 0) {
+          return "(No MSIC Codes)"
+        }
+
+        return this.msicCodes.value
+          .filter((msicCode: MsicCode) => {
+            return businessCodes.includes(msicCode.code)
+          })
+          .map((msicCode: MsicCode) => {
+            return `${msicCode.code} - ${msicCode.descriptionEn}`
+          })
+          .join("<br>")
+      } else {
+        return "(No MSIC Codes)"
+      }
     }
 
     return this.application.value.msicCodeAssigns
