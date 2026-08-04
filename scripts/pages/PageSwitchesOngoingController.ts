@@ -13,9 +13,9 @@ export class PageSwitchesOngoingController extends PageSwitchesController {
 
   constructor() {
     super(
-      "Switches of New Sdn Bhd - iCompany Malaysia",
-      "Manage all applications for incorporations of New Sdn Bhd",
-      "Incorporation Applications"
+      "Reassignment of Company Secretary - iCompany Malaysia",
+      "Manage all applications for Reassignment of Company Secretary",
+      "Switch Applications"
     )
 
     this.handleRoute()
@@ -64,7 +64,7 @@ export class PageSwitchesOngoingController extends PageSwitchesController {
     if (this.showSelected.value) {
       return new PropsBreadCrumb([
         new PropsBreadCrumbItem("New Switches", ""),
-        new PropsBreadCrumbItem("Ongoings", "/incorporations/ongoings"),
+        new PropsBreadCrumbItem("Ongoings", "/switches/ongoings"),
         new PropsBreadCrumbItem("Application", ""),
       ])
     }
