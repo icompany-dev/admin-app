@@ -78,6 +78,7 @@
   import DelegationOfAuthority from "./DelegationOfAuthority.vue"
   import DividendDeclaration from "./DividendDeclaration.vue"
   import EnterContract from "./EnterContract.vue"
+  import LetterToExistingCosec from "./LetterToExistingCosec.vue"
   import LoanToDirector from "./LoanToDirector.vue"
   import LodgeAnnualReturn from "./LodgeAnnualReturn.vue"
   import ManagementAccountForStrikingOff from "./ManagementAccountForStrikingOff.vue"
@@ -132,6 +133,7 @@
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE]: NewIncorporation,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION27]: Section27OneFour,
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION236]: Section236Three,
+    [CompanyConstants.TARGET_APPLICATION_SWITCH_LETTER]: LetterToExistingCosec,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointmentOfAuditor,
     [CompanyConstants.TARGET_APPLICATION_SWITCH]: NewSwitch,
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,
