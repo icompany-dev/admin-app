@@ -54,6 +54,7 @@ export class ApplicationController {
   isShowNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isShowDcrFromDirectors: Ref<boolean> = ref<boolean>(false)
   isShowSection236: Ref<boolean> = ref<boolean>(false)
+  isShowSubmissionToSSM: Ref<boolean> = ref<boolean>(false)
 
   isUpdatingNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isUploadingDocumentsForPreviousCosec: Ref<boolean> = ref<boolean>(false)
@@ -281,6 +282,21 @@ export class ApplicationController {
   }
 
   async onGenerateSection236Clicked(): Promise<void> {
+    //
+  }
+
+  // Show submission
+  onShowSubmissionClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowSubmissionToSSM.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236
+  }
+
+  async onSubmitToSSMClicked(): Promise<void> {
+    //
+  }
+
+  async onUploadSection58Clicked(): Promise<void> {
     //
   }
 
@@ -773,5 +789,41 @@ export class ApplicationController {
 
   get section236Sublabel(): string {
     return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 236(3)" : "Declaration under Section 236(3)"
+  }
+
+  // Submit to SSM
+  get submitToSSMNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.isSection236Completed,
+      this.isSubmittedToSSM,
+      this.isShowSection236.value
+    )
+  }
+
+  get isSubmittedToSSM(): boolean {
+    return (
+      this.application.value.status === StatusConstants.SUBMITTED ||
+      this.application.value.status === StatusConstants.APPROVED ||
+      this.application.value.status === StatusConstants.COMPLETED ||
+      this.application.value.status === StatusConstants.CONVERTED
+    )
+  }
+
+  get submitToSSMLabel(): string {
+    return this.language.isMalay()
+      ? "Pemberitahuan Pertukaran dalam Daftar Pengarah, Pengurus dan Setiausaha"
+      : "Notification of Change in Register of Directors, Managers and Secretaries"
+  }
+
+  get submitToSSMSublabel(): string {
+    return this.language.isMalay() ? "Kemaskini Seksyen 58" : "Update Section 58"
+  }
+
+  get submittedLabel(): string {
+    return this.language.isMalay() ? "Dihantar" : "Submitted"
+  }
+
+  get uploadSection58Label(): string {
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 }

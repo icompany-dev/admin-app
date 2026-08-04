@@ -246,11 +246,11 @@
               <template #nodeOptions></template>
               <template #nodeActions>
                 <div
-                  class="btn btn-pill btn-submit single"
+                  class="btn btn-pill btn-submit center"
                   :class="{ 'is-loading': controller.isUpdatingNotifyPreviousCosec.value }"
                   @click="controller.onDocumentReceivedClicked()"
                 >
-                  {{ controller.documentReceivedLabel }}
+                  <span class="label">{{ controller.documentReceivedLabel }}</span>
                 </div>
               </template>
             </ApplicationNode>
@@ -293,6 +293,33 @@
                 </button>
               </template>
               <template #nodeActions></template>
+            </ApplicationNode>
+            <ApplicationNode
+              v-bind="controller.submitToSSMNodeProps"
+              @click="controller.onShowSubmissionClicked()"
+            >
+              <template #nodeContent>
+                <div class="application-container">
+                  <div class="node-title">{{ controller.submitToSSMLabel }}</div>
+                  <div class="node-subtitle">({{ controller.submitToSSMSublabel }})</div>
+                </div>
+              </template>
+              <template #nodeOptions>
+                <button
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onUploadSection58Clicked()"
+                >
+                  {{ controller.uploadSection58Label }}
+                </button>
+              </template>
+              <template #nodeActions>
+                <div
+                  class="btn btn-pill btn-submit center"
+                  @click="controller.onSubmitToSSMClicked()"
+                >
+                  <span class="label">{{ controller.submittedLabel }}</span>
+                </div>
+              </template>
             </ApplicationNode>
           </template>
         </ServiceApplication>
