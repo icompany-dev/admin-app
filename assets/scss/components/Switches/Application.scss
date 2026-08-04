@@ -17,15 +17,38 @@
     align-items: flex-start;
     gap: 10px;
 
-    .company-name {
-      font-size: 1.5rem;
-      font-weight: 600;
-      letter-spacing: 0.1pt;
-      text-transform: uppercase;
+    .company-name-details {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+
+      .company-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        letter-spacing: 0.1pt;
+        text-transform: uppercase;
+
+        &.placeholder {
+          text-transform: none;
+          color: var(--bs-gray-600);
+        }
+      }
 
       .name-completed {
         color: var(--bs-icompany-green);
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+      }
+    }
+
+    .registration-number {
+      font-weight: 600;
+      font-size: 1.1rem;
+
+      &.placeholder {
+        text-transform: none;
+        color: var(--bs-gray-600);
       }
     }
 

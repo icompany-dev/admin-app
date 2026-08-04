@@ -10,6 +10,7 @@ import type { IModel } from "./IModel"
 import { Location } from "./Location"
 import { ShareholderInvitation } from "./ShareholderInvitation"
 import { SignatureGroup } from "./SignatureGroup"
+import { MsicCodeAssign } from "./MsicCodeAssign"
 import {
   SsmCorporateProfilePurchaseData,
   type CorporateProfileJsonData,
@@ -37,6 +38,7 @@ export class ApplicationSwitch implements IApplication {
   secretaryName: string = ""
   directorInvitations: DirectorInvitation[] = []
   shareholderInvitations: ShareholderInvitation[] = []
+  msicCodeAssigns: MsicCodeAssign[] = []
   status: string = StatusConstants.DRAFT
   signatureGroups: SignatureGroup[] = []
   signatureGroupStatus: string = ""
@@ -95,6 +97,12 @@ export class ApplicationSwitch implements IApplication {
             return new ShareholderInvitation(s)
           })
         : []
+    this.msicCodeAssigns =
+      data.msic_code_assigns && Array.isArray(data.msic_code_assigns)
+        ? data.msic_code_assigns.map((mca: any) => {
+            return new MsicCodeAssign(mca)
+          })
+        : []
     this.status = data.status
     this.signatureGroups =
       data.signature_groups && Array.isArray(data.signature_groups)
@@ -137,6 +145,9 @@ export class ApplicationSwitch implements IApplication {
     })
     this.shareholderInvitations = data.shareholderInvitations.map((s: ShareholderInvitation) => {
       return new ShareholderInvitation(s)
+    })
+    this.msicCodeAssigns = data.msicCodeAssigns.map((mca: MsicCodeAssign) => {
+      return new MsicCodeAssign(mca)
     })
     this.status = data.status
     this.signatureGroups = data.signatureGroups.map((sg: SignatureGroup) => {

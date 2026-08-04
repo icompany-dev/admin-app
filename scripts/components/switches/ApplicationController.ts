@@ -7,6 +7,10 @@ import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
 import { User } from "~/scripts/models/User"
+import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
+import { MsicCode } from "~/scripts/models/MsicCode"
+import { Filter } from "~/scripts/library/Filter"
+import { SelectOption } from "~/scripts/types/SelectOption"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -22,6 +26,14 @@ export class ApplicationController {
   documentRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  isEditingDescription: Ref<boolean> = ref<boolean>(false)
+  isUpdatingDescription: Ref<boolean> = ref<boolean>(false)
+  isEditingAddress: Ref<boolean> = ref<boolean>(false)
+
+  selectedMsicCodeIds: Ref<string[]> = ref<string[]>([])
+  searchTextsForMsicCodes: Ref<string[]> = ref<string[]>([])
+  msicCodes: Ref<MsicCode[]> = ref<MsicCode[]>([])
 
   constructor(props: PropsSwitchApplication, emitEvents: any) {
     this.setDataFromProps(props)
@@ -54,7 +66,7 @@ export class ApplicationController {
     try {
       this.isLoading.value = true
 
-      await Promise.allSettled([this.fetchApplication(), this.fetchPaymentOrder()])
+      await Promise.allSettled([this.fetchApplication(), this.fetchPaymentOrder(), this.fetchMsicCodes()])
 
       await this.fetchApplicant()
 
@@ -122,6 +134,66 @@ export class ApplicationController {
     this.applicant.value = new User(response)
   }
 
+  async fetchMsicCodes(): Promise<void> {
+    let repository = useMsicCodeStore()
+    let filter = new Filter()
+    filter.takeAll = true
+    let response = await repository.fetchAll(filter)
+
+    this.msicCodes.value = response.data.map((d: any) => {
+      return new MsicCode(d)
+    })
+  }
+
+  //Update business description
+  onEditBusinessDescriptionClicked(): void {
+    this.isEditingDescription.value = true
+    this.selectedMsicCodeIds.value = this.application.value.msicCodeAssigns.map((msicCodeAssign: MsicCodeAssign) => {
+      return msicCodeAssign.msicCode.id
+    })
+  }
+
+  onCancelEditBusinessDescriptionClicked(): void {
+    this.isEditingDescription.value = false
+  }
+
+  async onSaveBusinessDescriptionClicked(): Promise<void> {
+    try {
+      this.isUpdatingDescription.value = true
+      // await this.application.value.updateBusinessDescriptionAndMsicCodes(
+      //   this.selectedMsicCodeIds.value,
+      //   useApplicationIncorporateStore()
+      // )
+      this.isEditingDescription.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingDescription.value = false
+    }
+  }
+
+  onMsicCodeSelected(msicCode: any, index: number): void {
+    if (this.selectedMsicCodeIds.value[index]) {
+      this.selectedMsicCodeIds.value[index] = msicCode
+    } else {
+      this.selectedMsicCodeIds.value.push(msicCode)
+    }
+  }
+
+  onMsicCodeSearched(searchText: string, index: number): void {
+    if (this.searchTextsForMsicCodes.value[index]) {
+      this.searchTextsForMsicCodes.value[index] = searchText
+    } else {
+      this.searchTextsForMsicCodes.value.push(searchText)
+    }
+  }
+
   //getters
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
@@ -133,5 +205,176 @@ export class ApplicationController {
 
   get serviceName(): string {
     return this.language.isMalay() ? "Pertukaran Setiausaha Syarikat" : "Reassignment of Company Secretary"
+  }
+
+  get applicantLabel(): string {
+    return this.language.isMalay() ? "Butiran Pemohon" : "Details of Applicant"
+  }
+
+  get applicantName(): string {
+    return this.applicant.value.name
+  }
+
+  get applicantEmail(): string {
+    return this.applicant.value.email
+  }
+
+  get applicantPhone(): string {
+    return this.applicant.value.phone
+  }
+
+  get applicantIdentification(): string {
+    return this.applicant.value.detail?.identification ?? "-"
+  }
+
+  get directorLabel(): string {
+    return this.language.isMalay() ? "Butiran Pengarah yang Dilantik" : "Details of Elected Directors"
+  }
+
+  get directorDetails(): DirectorInvitation[] {
+    return this.application.value.directorInvitations
+  }
+
+  get shareholderLabel(): string {
+    return this.language.isMalay() ? "Butiran Pemegang Saham yang Dinama" : "Details of Nominated Shareholders"
+  }
+
+  get shareholderDetails(): ShareholderInvitation[] {
+    return this.application.value.shareholderInvitations
+  }
+
+  get totalSharesLabel(): string {
+    return this.language.isMalay() ? "Jumlah Saham" : "Total Shares"
+  }
+
+  get businessNatureLabel(): string {
+    return this.language.isMalay() ? "Perihal Perniagaan" : "Nature of Business"
+  }
+
+  get msicCodeLabel(): string {
+    return this.language.isMalay() ? "Kod MSIC" : "MSIC Codes"
+  }
+
+  get msicCodesList(): string {
+    if (this.application.value.msicCodeAssigns.length <= 0) {
+      return "No MSIC Code found"
+    }
+
+    return this.application.value.msicCodeAssigns
+      .map((msic: MsicCodeAssign) => {
+        return `${msic.msicCode.code} - ${msic.msicCode.descriptionEn}`
+      })
+      .join("<br>")
+  }
+
+  get businessAddressLabel(): string {
+    return this.language.isMalay() ? "Alamat Perniagaan" : "Business Address"
+  }
+
+  get businessAddress(): string {
+    return this.application.value.businessAddressLocation?.getMultilineAddress() ?? "(No Business Address)"
+  }
+
+  //MSIC Codes
+  get firstSelectedMsicCodeName(): string {
+    if (!this.selectedMsicCodeIds.value[0] || StringUtil.isNullOrEmpty(this.selectedMsicCodeIds.value[0])) {
+      return ""
+    }
+
+    let msicCode = this.msicCodes.value.find((msicCode: MsicCode) => {
+      return msicCode.id === this.selectedMsicCodeIds.value[0]
+    })
+
+    if (!msicCode) {
+      return ""
+    }
+
+    return `${msicCode.code} - ${msicCode.descriptionEn}`
+  }
+
+  get firstMsicCodeOptions(): SelectOption[] {
+    return this.msicCodes.value
+      .filter((msicCode: MsicCode) => {
+        if (!this.searchTextsForMsicCodes.value[0] || StringUtil.isNullOrEmpty(this.searchTextsForMsicCodes.value[0])) {
+          return true
+        }
+
+        return (
+          StringUtil.contains(msicCode.code, this.searchTextsForMsicCodes.value[0]) ||
+          StringUtil.contains(msicCode.description, this.searchTextsForMsicCodes.value[0]) ||
+          StringUtil.contains(msicCode.descriptionEn, this.searchTextsForMsicCodes.value[0])
+        )
+      })
+      .map((msicCode: MsicCode) => {
+        return new SelectOption(msicCode.id, msicCode.id, `${msicCode.code} - ${msicCode.descriptionEn}`)
+      })
+  }
+
+  get secondSelectedMsicCodeName(): string {
+    if (!this.selectedMsicCodeIds.value[1] || StringUtil.isNullOrEmpty(this.selectedMsicCodeIds.value[1])) {
+      return ""
+    }
+
+    let msicCode = this.msicCodes.value.find((msicCode: MsicCode) => {
+      return msicCode.id === this.selectedMsicCodeIds.value[1]
+    })
+
+    if (!msicCode) {
+      return ""
+    }
+
+    return `${msicCode.code} - ${msicCode.descriptionEn}`
+  }
+
+  get secondMsicCodeOptions(): SelectOption[] {
+    return this.msicCodes.value
+      .filter((msicCode: MsicCode) => {
+        if (!this.searchTextsForMsicCodes.value[1] || StringUtil.isNullOrEmpty(this.searchTextsForMsicCodes.value[1])) {
+          return true
+        }
+
+        return (
+          StringUtil.contains(msicCode.code, this.searchTextsForMsicCodes.value[1]) ||
+          StringUtil.contains(msicCode.description, this.searchTextsForMsicCodes.value[1]) ||
+          StringUtil.contains(msicCode.descriptionEn, this.searchTextsForMsicCodes.value[1])
+        )
+      })
+      .map((msicCode: MsicCode) => {
+        return new SelectOption(msicCode.id, msicCode.id, `${msicCode.code} - ${msicCode.descriptionEn}`)
+      })
+  }
+
+  get thirdSelectedMsicCodeName(): string {
+    if (!this.selectedMsicCodeIds.value[2] || StringUtil.isNullOrEmpty(this.selectedMsicCodeIds.value[2])) {
+      return ""
+    }
+
+    let msicCode = this.msicCodes.value.find((msicCode: MsicCode) => {
+      return msicCode.id === this.selectedMsicCodeIds.value[2]
+    })
+
+    if (!msicCode) {
+      return ""
+    }
+
+    return `${msicCode.code} - ${msicCode.descriptionEn}`
+  }
+
+  get thirdMsicCodeOptions(): SelectOption[] {
+    return this.msicCodes.value
+      .filter((msicCode: MsicCode) => {
+        if (!this.searchTextsForMsicCodes.value[2] || StringUtil.isNullOrEmpty(this.searchTextsForMsicCodes.value[2])) {
+          return true
+        }
+
+        return (
+          StringUtil.contains(msicCode.code, this.searchTextsForMsicCodes.value[2]) ||
+          StringUtil.contains(msicCode.description, this.searchTextsForMsicCodes.value[2]) ||
+          StringUtil.contains(msicCode.descriptionEn, this.searchTextsForMsicCodes.value[2])
+        )
+      })
+      .map((msicCode: MsicCode) => {
+        return new SelectOption(msicCode.id, msicCode.id, `${msicCode.code} - ${msicCode.descriptionEn}`)
+      })
   }
 }
