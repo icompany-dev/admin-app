@@ -281,7 +281,7 @@
               <template #nodeContent>
                 <div class="application-container">
                   <div class="node-title">{{ controller.section236Label }}</div>
-                  <div class="node-subtitle">({{ controller.section236Label }})</div>
+                  <div class="node-subtitle">({{ controller.section236Sublabel }})</div>
                 </div>
               </template>
               <template #nodeOptions>
