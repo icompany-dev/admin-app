@@ -325,7 +325,7 @@ export class ApplicationController {
   }
 
   get serviceName(): string {
-    return this.language.isMalay() ? "Pertukaran Setiausaha Syarikat" : "NotifyPreviousCosec of Company Secretary"
+    return this.language.isMalay() ? "Pertukaran Setiausaha Syarikat" : "Reassignment of Company Secretary"
   }
 
   get dateOfIncorporationLabel(): string {
