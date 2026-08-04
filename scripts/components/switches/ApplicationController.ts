@@ -406,6 +406,32 @@ export class ApplicationController {
 
     try {
       this.isCompletingProcess.value = true
+
+      await this.setMsicCodes()
+
+      let repository = useApplicationSwitchStore()
+      this.application.value.status = StatusConstants.APPROVED
+      let data = {
+        status: StatusConstants.APPROVED,
+      }
+      await repository.update(this.application.value.id, data)
+
+      //TODO: Notification need to go out here, backend is not ready
+
+      let companyToConvert = new Company(this.companyToConvert)
+      await companyToConvert.create(useCompanyStore())
+
+      // No documents to upload here. Everything will need to scan AFTER this process.
+
+      let toastTitle = this.language.isMalay() ? "Sdn Bhd telah ditambah." : "Sdn Bhd successfully added."
+      let toastMessage = this.language.isMalay()
+        ? "Anda akan dihantar ke muka Sdn Bhd."
+        : "You will be redirected to the Sdn Bhd page."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${companyToConvert.id}` })
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -420,7 +446,7 @@ export class ApplicationController {
     }
   }
 
-  setMsicCodes(): void {
+  async setMsicCodes(): Promise<void> {
     if (
       this.application.value.msicCodeAssigns.length > 0 ||
       !this.ssmCorporateProfileData ||
@@ -452,6 +478,12 @@ export class ApplicationController {
 
         return newMsicCodeAssign
       })
+
+    let promises = this.application.value.msicCodeAssigns.map((msicCodeAssign: MsicCodeAssign) => {
+      return msicCodeAssign.create(useMsicCodeAssignStore())
+    })
+
+    await Promise.allSettled(promises)
   }
 
   //getters
@@ -1054,7 +1086,7 @@ export class ApplicationController {
     company.registeredAddressLocation.state.id = 23
     company.registeredAddressLocation.country = new Country()
     company.registeredAddressLocation.country.id = 87
-    company.applicationIncorporationId = this.application.value.id
+    company.applicationSwitchId = this.application.value.id
     company.incorporatedAt = incorporatedAtDate
 
     return company

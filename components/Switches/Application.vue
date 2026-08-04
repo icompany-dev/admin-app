@@ -339,6 +339,7 @@
               <template #nodeActions>
                 <div
                   class="btn btn-pill btn-submit center"
+                  :class="{ 'is-loading': controller.isCompletingProcess.value }"
                   @click="controller.onCompleteProcessClicked()"
                 >
                   <span class="label">{{ controller.completedLabel }}</span>
