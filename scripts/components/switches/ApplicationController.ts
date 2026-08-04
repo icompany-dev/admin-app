@@ -1,7 +1,7 @@
 import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
 import { PropsSwitchApplication } from "~/scripts/props/PropsSwitchApplication"
-import type { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
-import type { ShareholderInvitation } from "~/scripts/models/ShareholderInvitation"
+import { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
+import { ShareholderInvitation } from "~/scripts/models/ShareholderInvitation"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { StringUtil } from "~/scripts/utils/String"
@@ -14,8 +14,10 @@ import { SelectOption } from "~/scripts/types/SelectOption"
 import type {
   CorporateProfileJsonBusinessCode,
   CorporateProfileJsonOfficerInfo,
+  CorporateProfileJsonShareInfo,
   SsmCorporateProfilePurchaseData,
 } from "~/scripts/models/SsmCorporateProfileJsonData"
+import { UserDetail } from "~/scripts/models/UserDetail"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -260,6 +262,49 @@ export class ApplicationController {
   }
 
   get directorDetails(): DirectorInvitation[] {
+    let directorsToInvite: DirectorInvitation[] = []
+    if (this.ssmCorporateProfileData && this.ssmCorporateProfileData.ssm) {
+      let directorsFromCorporateProfile = this.ssmCorporateProfileData.ssm.officerInfos.filter(
+        (officer: CorporateProfileJsonOfficerInfo) => {
+          return officer.designationCode.toLowerCase() === "d"
+        }
+      )
+
+      if (directorsFromCorporateProfile.length > 0) {
+        directorsToInvite = directorsFromCorporateProfile.map((director: CorporateProfileJsonOfficerInfo) => {
+          let directorInvitation = new DirectorInvitation()
+          directorInvitation.name = director.name
+          directorInvitation.email = this.language.isMalay() ? "(Tidak Direkodkan)" : "(Not Invited)"
+          directorInvitation.phone = this.language.isMalay() ? "(Tidak Direkodkan)" : "(Not Invited)"
+          directorInvitation.user = new User()
+          directorInvitation.user.detail = new UserDetail()
+          directorInvitation.user.detail.identification = director.idNo
+          directorInvitation.user.detail.identificationType = director.idType === "P" ? "passport" : "id"
+
+          return directorInvitation
+        })
+      }
+    }
+
+    if (directorsToInvite.length > 0) {
+      directorsToInvite.forEach((director: DirectorInvitation) => {
+        let existingInvitation = this.application.value.directorInvitations.find((invitation: DirectorInvitation) => {
+          return (
+            invitation.user?.detail?.identification === director.user?.detail?.identification &&
+            invitation.user?.detail?.identificationType === director.user?.detail?.identificationType
+          )
+        })
+
+        if (existingInvitation) {
+          director.email = existingInvitation.email
+          director.phone = existingInvitation.phone
+          director.user = existingInvitation.user
+        }
+      })
+
+      return directorsToInvite
+    }
+
     return this.application.value.directorInvitations
   }
 
@@ -268,6 +313,46 @@ export class ApplicationController {
   }
 
   get shareholderDetails(): ShareholderInvitation[] {
+    let shareholdersToInvite: ShareholderInvitation[] = []
+    if (this.ssmCorporateProfileData && this.ssmCorporateProfileData.ssm) {
+      let shareholdersFromCorporateProfile = this.ssmCorporateProfileData.ssm.shareholderInfos
+
+      if (shareholdersFromCorporateProfile.length > 0) {
+        shareholdersToInvite = shareholdersFromCorporateProfile.map((shareholder: CorporateProfileJsonShareInfo) => {
+          let shareholderInvitation = new ShareholderInvitation()
+          shareholderInvitation.name = shareholder.name
+          shareholderInvitation.email = this.language.isMalay() ? "(Tidak Direkodkan)" : "(Not Invited)"
+          shareholderInvitation.user = new User()
+          shareholderInvitation.user.detail = new UserDetail()
+          shareholderInvitation.user.detail.identification = shareholder.idNo
+          shareholderInvitation.user.detail.identificationType = shareholder.idType === "P" ? "passport" : "id"
+          shareholderInvitation.totalShares = shareholder.share
+
+          return shareholderInvitation
+        })
+      }
+    }
+
+    if (shareholdersToInvite.length > 0) {
+      shareholdersToInvite.forEach((shareholder: ShareholderInvitation) => {
+        let existingInvitation = this.application.value.shareholderInvitations.find(
+          (invitation: ShareholderInvitation) => {
+            return (
+              invitation.user?.detail?.identification === shareholder.user?.detail?.identification &&
+              invitation.user?.detail?.identificationType === shareholder.user?.detail?.identificationType
+            )
+          }
+        )
+
+        if (existingInvitation) {
+          shareholder.email = existingInvitation.email
+          shareholder.user = existingInvitation.user
+        }
+      })
+
+      return shareholdersToInvite
+    }
+
     return this.application.value.shareholderInvitations
   }
 
