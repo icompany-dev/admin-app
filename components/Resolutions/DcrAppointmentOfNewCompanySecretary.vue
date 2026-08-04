@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-appointment-of-new-company-secretary">
+  <div
+    id="dcr-appointment-of-new-company-secretary"
+    ref="documentRef"
+  >
     <Paper
       v-for="page in pageRange"
       :key="page"
@@ -13,45 +16,12 @@
       <template #paperContent>
         <div class="company-detail-head">
           <div class="company-name">
-            <InputGroupText
-              :input-value="controller.application.value.name"
-              :is-input-valid="true"
-              :is-warning-required="false"
-              :placeholder="'FULL NAME OF YOUR COMPANY'"
-              :pre-or-append-value="'SDN BHD'"
-              :is-append-value="true"
-              v-if="controller.isDocumentEditable()"
-              :is-readonly="false"
-              @updated="controller.onNameChanged($event)"
-            />
-            <span v-if="!controller.isDocumentEditable()">
-              {{ controller.companyName() }}
-            </span>
+            {{ controller.companyName() }}
           </div>
           <div class="company-registration-number">
-            <InputGroupDualField
-              :first-input-value="controller.application.value.registrationNumberNew"
-              :second-input-value="controller.application.value.registrationNumberOld"
-              :is-input-valid="true"
-              :is-warning-required="false"
-              :first-placeholder="'123456789'"
-              :second-placeholder="'123456-X'"
-              :pre-or-append-value="'Company No:'"
-              :is-append-value="false"
-              :is-prepend-value="true"
-              v-if="controller.isDocumentEditable()"
-              :is-readonly="false"
-              @updatedFirst="controller.onRegistrationNumberNewUpdated($event)"
-              @updatedSecond="controller.onRegistrationNumberOldUpdated($event)"
-            >
-              <template #divider1>(</template>
-              <template #divider2>)</template>
-            </InputGroupDualField>
-            <span v-if="!controller.isDocumentEditable()">
-              [Company No:
-              {{ controller.registrationNumberNew() }}
-              ({{ controller.registrationNumberOld() }})]
-            </span>
+            [Company No:
+            {{ controller.registrationNumberNew() }}
+            ({{ controller.registrationNumberOld() }})]
           </div>
           ("Company")
           <br />
@@ -70,7 +40,8 @@
           </div>
           <p>
             <b>RESOLVED:</b>
-            <br />
+          </p>
+          <p>
             <b>{{ controller.resolutionName().toUpperCase() }}</b>
           </p>
           <!--NOTE: We get all these details automatically from the purchase of corporate profile. Users cannot change them.-->
@@ -92,6 +63,7 @@
             <select
               class="form-control in-resolution"
               v-model="controller.selectedCompanySecretary.value"
+              v-if="!controller.isPrinting.value"
             >
               <option
                 v-for="(secretary, i) in controller.secretaryOptions"
@@ -100,12 +72,13 @@
                 <b>{{ secretary.name.toUpperCase() }}</b>
               </option>
             </select>
-            <span :class="{ 'value-placeholder': controller.showPlaceholder() }">
-              <b>
-                (NRIC No: {{ controller.getSecretaryIC() }}) ({{ controller.getSecretaryLicense() }} / SSM PC NO.
-                {{ controller.getSecretarySsmPcNo() }})
-              </b>
+            <span v-if="controller.isPrinting.value">
+              <b>{{ controller.getSecretaryName() }}</b>
             </span>
+            <b>
+              (NRIC No: {{ controller.getSecretaryIC() }}) ({{ controller.getSecretaryLicense() }} / SSM PC NO.
+              {{ controller.getSecretarySsmPcNo() }})
+            </b>
             as the Secretary of the Company be and is hereby be accepted with immediate effect.
           </p>
           <p>
@@ -140,8 +113,14 @@
           Date:
           <span
             class="date"
-            :class="{ unknown: controller.resolutionDate().toLowerCase() === 'to be determined' }"
+            v-if="controller.isPrinting.value"
             v-html="controller.resolutionDate()"
+          />
+          <input
+            type="date"
+            class="form-control in-resolution"
+            v-if="!controller.isPrinting.value"
+            v-model="controller.documentDate.value"
           />
         </div>
       </template>
@@ -180,6 +159,8 @@
 
   const emit = defineEmits(["signed", "onNameChanged", "registrationNoNewUpdated", "registrationNoOldUpdated"])
 
+  const documentRef = ref(null)
+
   const controller = new DcrAppointmentOfNewCompanySecretaryController(props.application, emit)
   const signatureController = new ResolutionSignaturesController(
     controller.signatureItems.value,
@@ -214,6 +195,18 @@
       signatureController.maxSignatureOnFirstPage.value = newVal
     }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(documentRef)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

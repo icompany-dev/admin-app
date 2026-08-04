@@ -130,14 +130,6 @@ export class NewSwitchController
     return true
   }
 
-  companyName(): string {
-    return ""
-  }
-
-  companyRegistrationNumber(): string {
-    return ""
-  }
-
   helpTitle(): string {
     return this.language.isMalay() ? `Tukar kepada kami` : "Switch to Us"
   }

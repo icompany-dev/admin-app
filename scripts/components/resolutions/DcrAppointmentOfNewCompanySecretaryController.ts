@@ -12,12 +12,16 @@ import { User } from "~/scripts/models/User"
 import { Secretary } from "~/scripts/types/Secretary"
 import { SignatureItem } from "~/scripts/types/SignatureItem"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class DcrAppointmentOfNewCompanySecretaryController {
   application = ref<ApplicationSwitch>(new ApplicationSwitch())
   isDcr = ref<boolean>(true)
   isMcr = ref<boolean>(false)
+
+  documentRef: any | null = null
+  isPrinting = ref<boolean>(false)
 
   signatureItems = ref<SignatureItem[]>([])
   isLoading = ref<boolean>(false)
@@ -33,6 +37,8 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   emitEvents: any | null = null
 
   resolutionContentRef: any | null = null
+
+  documentDate: Ref<string> = ref<string>("")
 
   selectedCompanySecretary: Ref<Secretary> = ref<Secretary>(SecretaryInformation.SECRETARY_NAME_LIST[0])
   secretaryOptions: Secretary[] = SecretaryInformation.SECRETARY_NAME_LIST
@@ -65,6 +71,10 @@ export class DcrAppointmentOfNewCompanySecretaryController {
 
   setResolutionContentRef(resolutionContentRef: any | null): void {
     this.resolutionContentRef = resolutionContentRef
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   companyName(): string {
@@ -209,22 +219,14 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   resolutionDate(): string {
-    if (!this.application.value || this.application.value.signatureGroups.length <= 0 || !this.haveAllSigned()) {
-      return "To be determined"
+    let time = useLocalTime()
+    let dayjs = useDayjs()
+
+    if (!StringUtil.isNullOrEmpty(this.documentDate.value)) {
+      return time.formatDateOnlyFull(this.documentDate.value)
     }
 
-    const latestDate = this.application.value.signatureGroups
-      .map((sg: SignatureGroup) => {
-        return sg.createdAt
-      })
-      .reduce((latest: string | null, current: string | null) => {
-        if (!latest) {
-          return current
-        }
-        return this.dayjs(current).isAfter(this.dayjs(latest)) ? current : latest
-      }, null)
-
-    return latestDate ? this.dayjs(latestDate).format("D MMMM YYYY") : "To be determined"
+    return time.formatDateOnlyFull(dayjs().format("YYYY-MM-DD"))
   }
 
   getSignatureOnPage(
@@ -329,5 +331,21 @@ export class DcrAppointmentOfNewCompanySecretaryController {
     }
 
     return this.selectedCompanySecretary.value.certificate
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    console.log(this.documentRef, "pdfpage")
+    if (!this.documentRef.value) {
+      return []
+    }
+
+    this.isPrinting.value = true
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef.value)
+
+    this.isPrinting.value = false
+
+    return pdfPages
   }
 }
