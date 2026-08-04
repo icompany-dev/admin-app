@@ -321,6 +321,26 @@
                 </div>
               </template>
             </ApplicationNode>
+            <ApplicationNode
+              v-bind="controller.completedProcessApplicationNode"
+              @click="controller.onShowCompletedClicked()"
+            >
+              <template #nodeContent>
+                <div class="application-container">
+                  <div class="node-title">{{ controller.completedProcessLabel }}</div>
+                  <div class="node-subtitle">({{ controller.completedProcessSublabel }})</div>
+                </div>
+              </template>
+              <template #nodeOptions></template>
+              <template #nodeActions>
+                <div
+                  class="btn btn-pill btn-submit center"
+                  @click="controller.onCompleteProcessClicked()"
+                >
+                  <span class="label">{{ controller.completedLabel }}</span>
+                </div>
+              </template>
+            </ApplicationNode>
           </template>
         </ServiceApplication>
         <div class="document-display">

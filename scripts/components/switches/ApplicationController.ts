@@ -55,6 +55,7 @@ export class ApplicationController {
   isShowDcrFromDirectors: Ref<boolean> = ref<boolean>(false)
   isShowSection236: Ref<boolean> = ref<boolean>(false)
   isShowSubmissionToSSM: Ref<boolean> = ref<boolean>(false)
+  isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
   isUpdatingNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isUploadingDocumentsForPreviousCosec: Ref<boolean> = ref<boolean>(false)
@@ -221,6 +222,8 @@ export class ApplicationController {
     this.isShowNotifyPreviousCosec.value = false
     this.isShowDcrFromDirectors.value = false
     this.isShowSection236.value = false
+    this.isShowSubmissionToSSM.value = false
+    this.isShowCompleted.value = false
 
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
@@ -297,6 +300,18 @@ export class ApplicationController {
   }
 
   async onUploadSection58Clicked(): Promise<void> {
+    //
+  }
+
+  // Show completed
+  onShowCompletedClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowCompleted.value = true
+
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236
+  }
+
+  async onCompleteProcessClicked(): Promise<void> {
     //
   }
 
@@ -796,7 +811,7 @@ export class ApplicationController {
     return new PropsServiceApplicationNode(
       this.isSection236Completed,
       this.isSubmittedToSSM,
-      this.isShowSection236.value
+      this.isShowSubmissionToSSM.value
     )
   }
 
@@ -825,5 +840,38 @@ export class ApplicationController {
 
   get uploadSection58Label(): string {
     return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
+  // complete node
+  get completedProcessApplicationNode(): PropsServiceApplicationNode {
+    let props = new PropsServiceApplicationNode(
+      this.isSubmittedToSSM,
+      this.isApplicationCompleted,
+      this.isShowCompleted.value
+    )
+
+    props.isLastNode = true
+
+    return props
+  }
+
+  get isApplicationCompleted(): boolean {
+    return (
+      this.application.value.status === StatusConstants.APPROVED ||
+      this.application.value.status === StatusConstants.COMPLETED ||
+      this.application.value.status === StatusConstants.CONVERTED
+    )
+  }
+
+  get completedProcessLabel(): string {
+    return this.language.isMalay() ? "Permohonan Selesai" : "Onboard Company"
+  }
+
+  get completedProcessSublabel(): string {
+    return this.language.isMalay() ? "Proses Pertukaran Selesai" : "Reassignment Process Completed"
+  }
+
+  get completedLabel(): string {
+    return this.language.isMalay() ? "Selesai" : "Completed"
   }
 }
