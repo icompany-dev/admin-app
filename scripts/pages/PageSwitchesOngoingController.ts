@@ -2,7 +2,7 @@ import { StringUtil } from "../utils/String"
 import { PageSwitchesController } from "./PageSwitchesController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
 import { PropsSwitchesOngoing } from "~/scripts/props/PropsSwitchesOngoing"
-// import { PropsIncorporationApplication } from "../props/PropsIncorporationApplication"
+import { PropsSwitchApplication } from "../props/PropsSwitchApplication"
 import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props/PropsTableFilter"
 
 export class PageSwitchesOngoingController extends PageSwitchesController {
@@ -57,7 +57,7 @@ export class PageSwitchesOngoingController extends PageSwitchesController {
   }
 
   onClearSelected(): void {
-    this.router.push({ path: "/incorporations/ongoings" })
+    this.router.push({ path: "/switches/ongoings" })
   }
 
   get breadCrumbProps(): PropsBreadCrumb {
@@ -76,9 +76,9 @@ export class PageSwitchesOngoingController extends PageSwitchesController {
     return new PropsSwitchesOngoing(this.searchText.value, this.isIncludeDemo.value)
   }
 
-  // get applicationProps(): PropsIncorporationApplication {
-  //   return new PropsIncorporationApplication(this.selectedApplicationId.value)
-  // }
+  get applicationProps(): PropsSwitchApplication {
+    return new PropsSwitchApplication(this.selectedApplicationId.value)
+  }
 
   override get tableFilterProps(): PropsTableFilter {
     if (this.showSelected.value) {

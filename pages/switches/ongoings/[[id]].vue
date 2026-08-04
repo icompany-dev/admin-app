@@ -17,10 +17,15 @@
       v-if="pageController.showAll.value"
       v-bind="pageController.ongoingsProps"
     />
+    <Application
+      v-if="pageController.showSelected.value"
+      v-bind="pageController.applicationProps"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
+  import Application from "~/components/Switches/Application.vue"
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
   import Ongoings from "@/components/Switches/Ongoings.vue"
   import TableFilters from "@/components/TableData/TableFilters.vue"
