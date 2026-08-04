@@ -40,11 +40,19 @@
           <div class="application-date">
             {{ controller.applicationDate(application) }}
           </div>
-          <div
-            class="application-status"
-            :class="controller.applicationStatusClass(application)"
-          >
-            {{ controller.applicationStatus(application) }}
+          <div class="application-info">
+            <div
+              class="application-type"
+              :class="application.switchType"
+            >
+              {{ application.switchTypeLabel }}
+            </div>
+            <div
+              class="application-status"
+              :class="controller.applicationStatusClass(application)"
+            >
+              {{ controller.applicationStatus(application) }}
+            </div>
           </div>
         </div>
         <div class="application-actions">

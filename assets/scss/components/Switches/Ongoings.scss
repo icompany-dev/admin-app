@@ -54,31 +54,92 @@
           text-transform: capitalize;
         }
 
-        .application-status {
-          text-transform: capitalize;
-          padding: 4px 10px;
-          border-radius: 5px;
-          font-size: 0.8rem;
-          letter-spacing: 0.1pt;
+        .application-info {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 10px;
 
-          &.info {
-            background-color: var(--bs-icompany-blue);
-            color: var(--bs-white);
+          .application-type {
+            text-transform: capitalize;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.1pt;
+            background-color: transparent;
+            border: 2px solid var(--bs-icompany-blue);
+            color: var(--bs-icompany-blue);
+            transition: all 0.3s ease;
+
+            &.switch-settle {
+              border-color: var(--bs-icompany-blue);
+              color: var(--bs-icompany-blue);
+
+              &:hover {
+                background-color: var(--bs-icompany-blue);
+                color: var(--bs-white);
+              }
+            }
+
+            &.switch-striking-off {
+              border-color: var(--bs-danger);
+              color: var(--bs-danger);
+
+              &:hover {
+                background-color: var(--bs-danger);
+                color: var(--bs-white);
+              }
+            }
+
+            &.switch-vacated {
+              border-color: var(--bs-icompany-green);
+              color: var(--bs-icompany-green);
+
+              &:hover {
+                background-color: var(--bs-icompany-green);
+                color: var(--bs-white);
+              }
+            }
+
+            &.switch-self-service {
+              border-color: var(--bs-gray-600);
+              color: var(--bs-gray-600);
+
+              &:hover {
+                background-color: var(--bs-gray-600);
+                color: var(--bs-white);
+              }
+            }
           }
 
-          &.danger {
-            background-color: var(--bs-danger);
-            color: var(--bs-white);
-          }
+          .application-status {
+            text-transform: capitalize;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            letter-spacing: 0.1pt;
 
-          &.success {
-            background-color: var(--bs-icompany-green);
-            color: var(--bs-white);
-          }
+            &.info {
+              background-color: var(--bs-icompany-blue);
+              color: var(--bs-white);
+            }
 
-          &.draft {
-            background-color: var(--bs-gray-600);
-            color: var(--bs-white);
+            &.danger {
+              background-color: var(--bs-danger);
+              color: var(--bs-white);
+            }
+
+            &.success {
+              background-color: var(--bs-icompany-green);
+              color: var(--bs-white);
+            }
+
+            &.draft {
+              background-color: var(--bs-gray-600);
+              color: var(--bs-white);
+            }
           }
         }
       }

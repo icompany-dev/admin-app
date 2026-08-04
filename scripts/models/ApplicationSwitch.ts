@@ -396,4 +396,19 @@ export class ApplicationSwitch implements IApplication {
 
     return "Pending Registration Number"
   }
+
+  get switchTypeLabel(): string {
+    switch (this.switchType) {
+      case SwitchConstants.TYPE_SETTLE:
+        return "Self-Settle"
+      case SwitchConstants.TYPE_STRIKING_OFF:
+        return "Striking Off"
+      case SwitchConstants.TYPE_VACATED:
+        return "Cosec Vacated"
+      case SwitchConstants.TYPE_SELF_SERVICE:
+        return "Self-Service"
+    }
+
+    return ""
+  }
 }
