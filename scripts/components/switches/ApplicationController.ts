@@ -722,7 +722,11 @@ export class ApplicationController {
   }
 
   get isDirectorsResolutionCompleted(): boolean {
-    return this.hasNotifyPreviousCosecResolution ? this.isNotifyPreviousCosecCompleted : this.hasPaid // this needs to depend on previous step, i think
+    if (this.hasNotifyPreviousCosecResolution && !this.isNotifyPreviousCosecCompleted) {
+      return false
+    }
+
+    return this.hasPaid && this.application.value.signatureGroups.length > 0
   }
 
   get directorsResolutionLabel(): string {
