@@ -18,21 +18,6 @@ export class CompaniesByStateController {
     this.isLoading.value = props.isLoading
   }
 
-  get dateJoinedLabels(): string[] {
-    const labelsFromCompany = Object.keys(this.companiesByLocation.value)
-
-    return [...new Set(labelsFromCompany)]
-      .filter((d: string) => {
-        let dayjs = useDayjs()
-
-        return dayjs(d).isValid()
-      })
-      .sort((a: string, b: string) => {
-        let dayjs = useDayjs()
-        return dayjs(a).isBefore(dayjs(b)) ? -1 : 1
-      })
-  }
-
   get companyDataSeries(): any[] {
     return Object.values(this.companiesByLocation.value)
   }
@@ -87,18 +72,6 @@ export class CompaniesByStateController {
         x: {
           grid: {
             display: false,
-          },
-          ticks: {
-            callback: (value: any, index: any) => {
-              const target = this.companiesByLocation.value ?? {}
-              const keys = Object.keys(target)
-              const fullName = keys[index]
-
-              if (!fullName) return ""
-
-              const mapping = this.stateMapping || {}
-              return mapping[fullName.toLowerCase()] ?? fullName
-            },
           },
         },
         y: {

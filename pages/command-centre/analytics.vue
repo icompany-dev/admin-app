@@ -19,6 +19,9 @@
         <div class="split-container-item-50">
           <CompaniesByState v-bind="pageController.analyticDistributionProps" />
         </div>
+        <div class="split-container-item-25">
+          <UsersByRace v-bind="pageController.analyticDistributionProps" />
+        </div>
       </div>
     </div>
   </div>
@@ -32,6 +35,7 @@
   import CompanyByIncorporationYear from "@/components/Analytics/CompanyByIncorporationYear.vue"
   import DistributionMap from "~/components/Analytics/DistributionMap.vue"
   import UsersByAgeGroup from "@/components/Analytics/UsersByAgeGroup.vue"
+  import UsersByRace from "@/components/Analytics/UsersByRace.vue"
   import { PageAnalyticsController } from "~/scripts/pages/PageAnalyticsController"
 
   const pageController = new PageAnalyticsController()

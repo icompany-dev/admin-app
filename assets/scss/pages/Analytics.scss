@@ -20,7 +20,11 @@
       gap: 20px;
 
       .split-container-item-50 {
-        width: calc(100% - 10px);
+        width: calc(50% - 10px);
+      }
+
+      .split-container-item-25 {
+        width: calc(25% - 10px);
       }
     }
   }
