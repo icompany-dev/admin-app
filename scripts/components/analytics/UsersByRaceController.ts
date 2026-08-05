@@ -53,7 +53,22 @@ export class UsersByRaceController {
             usePointStyle: true,
             boxWidth: 8,
             padding: 15,
-            filter: () => true,
+            generateLabels: (chart: any) => {
+              const data = chart.data
+              if (!data.labels?.length || !data.datasets?.length) return []
+
+              const dataset = data.datasets[0]
+              const bgColors = dataset.backgroundColor || []
+
+              return data.labels.map((label: string, index: number) => ({
+                text: label,
+                fillStyle: Array.isArray(bgColors) ? bgColors[index] : bgColors,
+                strokeStyle: "#fff",
+                lineWidth: 1,
+                hidden: !chart.getDataVisibility(index),
+                index: index,
+              }))
+            },
           },
         },
         tooltip: {

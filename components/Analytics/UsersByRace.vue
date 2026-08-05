@@ -3,7 +3,7 @@
     id="analytics-users-by-race"
     :class="{ 'is-loading': controller.isLoading.value }"
   >
-    <div class="header">Users by Age Group</div>
+    <div class="header">Users by Race</div>
     <div class="chart-wrapper">
       <ClientOnly>
         <Chart
