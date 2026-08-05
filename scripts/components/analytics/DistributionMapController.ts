@@ -2,6 +2,7 @@ import { AnalyticsCompanyCoordinate } from "~/scripts/models/AnalyticsCompanyCoo
 import { AnalyticsUserCoordinate } from "~/scripts/models/AnalyticsUserCoordinate"
 import { State } from "~/scripts/models/Location"
 import { MsicCode } from "~/scripts/models/MsicCode"
+import { Coordinate } from "~/scripts/types/Coordinate"
 
 export class DistributionMapController {
   userCoordinates: Ref<AnalyticsUserCoordinate[]> = ref<AnalyticsUserCoordinate[]>([])
@@ -11,10 +12,18 @@ export class DistributionMapController {
 
   emitEvents: any | null = null
 
+  config = useRuntimeConfig()
+  googleMapApiKey: string = ""
+
+  center: Coordinate = new Coordinate(3.139, 101.6869) // Kuala Lumpur coordinates
+  zoom = 12
+
   isLoading: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
+
+    this.googleMapApiKey = this.config.public.googleMapsApiKey
 
     this.init()
   }
