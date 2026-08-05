@@ -3,12 +3,14 @@
     <div class="page-header">
       <BreadCrumb v-bind="pageController.breadCrumbProps" />
     </div>
+    <CompanyUserCount />
     <DistributionMap />
   </div>
 </template>
 
 <script setup lang="ts">
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
+  import CompanyUserCount from "~/components/Analytics/CompanyUserCount.vue"
   import DistributionMap from "~/components/Analytics/DistributionMap.vue"
   import { PageAnalyticsController } from "~/scripts/pages/PageAnalyticsController"
 

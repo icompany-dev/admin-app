@@ -95,6 +95,57 @@ export const useAnalyticsStore = defineStore("analytics", () => {
     }
   }
 
+  async function fetchCompanyCounts(): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.analytics.fetchCompanyCounts()
+      return response
+    } catch (e) {
+      console.error(`Failed to fetch company counts`, e)
+      error.value = "Failed to fetch company counts"
+
+      return null
+    } finally {
+      isLoading.value = true
+    }
+  }
+
+  async function fetchUserCounts(): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.analytics.fetchUserCounts()
+      return response
+    } catch (e) {
+      console.error(`Failed to fetch user counts`, e)
+      error.value = "Failed to fetch user counts"
+
+      return null
+    } finally {
+      isLoading.value = true
+    }
+  }
+
+  async function fetchPaymentCounts(): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.analytics.fetchPaymentCounts()
+      return response
+    } catch (e) {
+      console.error(`Failed to fetch payment counts`, e)
+      error.value = "Failed to fetch payment counts"
+
+      return null
+    } finally {
+      isLoading.value = true
+    }
+  }
+
   return {
     isLoading,
     error,
@@ -103,5 +154,8 @@ export const useAnalyticsStore = defineStore("analytics", () => {
     fetchPaymentBy,
     fetchUserCoordinates,
     fetchCompanyCoordinates,
+    fetchCompanyCounts,
+    fetchUserCounts,
+    fetchPaymentCounts,
   }
 })

@@ -56,4 +56,31 @@ export class AnalyticsRepository extends Repository<Model> {
       throw e
     }
   }
+
+  async fetchCompanyCounts(): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.resourceUrl}/companies`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async fetchUserCounts(): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.resourceUrl}/users`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async fetchPaymentCounts(): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.resourceUrl}/payments`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }
