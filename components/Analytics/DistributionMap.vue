@@ -29,7 +29,14 @@
             icon: controller.getUserMarkerIcon(user.gender),
           }"
         >
-          <InfoWindow>//</InfoWindow>
+          <InfoWindow>
+            <div class="info-header">
+              <h3>{{ user.name }}</h3>
+            </div>
+            <div class="info-body">
+              <p>Age: {{ user.gender }}</p>
+            </div>
+          </InfoWindow>
         </Marker>
       </GoogleMap>
     </div>

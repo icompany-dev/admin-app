@@ -26,21 +26,6 @@ export class DistributionMapController {
   isShowFemales: Ref<boolean> = ref<boolean>(true)
   selectedStates: Ref<number[]> = ref<number[]>([])
 
-  genderIcons: any = {
-    male: {
-      url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png", // or your custom SVG / asset path
-      scaledSize: { width: 40, height: 40 },
-    },
-    female: {
-      url: "https://maps.google.com/mapfiles/ms/icons/pink-dot.png", // or your custom SVG / asset path
-      scaledSize: { width: 40, height: 40 },
-    },
-    other: {
-      url: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
-      scaledSize: { width: 40, height: 40 },
-    },
-  }
-
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
 
