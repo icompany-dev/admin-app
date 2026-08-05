@@ -1,7 +1,7 @@
-export class CompanyByIncorporationYearController {
+export class UsersByAgeGroupController {
   emitEvents: any | null = null
 
-  companiesByIncorpDate: Ref<any> = ref<any>({})
+  usersByAgeGroup: Ref<any> = ref<any>({})
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
@@ -19,7 +19,7 @@ export class CompanyByIncorporationYearController {
     try {
       this.isLoading.value = true
 
-      await this.fetchCompanyAnalytics()
+      await this.fetchUserAnalytics()
     } catch (e) {
       //
     } finally {
@@ -27,38 +27,19 @@ export class CompanyByIncorporationYearController {
     }
   }
 
-  async fetchCompanyAnalytics(): Promise<void> {
+  async fetchUserAnalytics(): Promise<void> {
     let repository = useAnalyticsStore()
-    let response = await repository.fetchCompanyCounts()
+    let response = await repository.fetchUserCounts()
 
-    this.companiesByIncorpDate.value = response.by_incorp_date ?? 0
-  }
-
-  get dateJoinedLabels(): string[] {
-    const labelsFromCompany = Object.keys(this.companiesByIncorpDate.value)
-
-    return [...new Set(labelsFromCompany)]
-      .filter((d: string) => {
-        let dayjs = useDayjs()
-
-        return dayjs(d).isValid()
-      })
-      .sort((a: string, b: string) => {
-        let dayjs = useDayjs()
-        return dayjs(a).isBefore(dayjs(b)) ? -1 : 1
-      })
-  }
-
-  get companyDataSeries(): any[] {
-    return Object.values(this.companiesByIncorpDate.value)
+    this.usersByAgeGroup.value = response.by_age_group
   }
 
   get byJoinSeries(): any[] {
     return [
       {
-        label: "No. of Companies",
+        label: "No. of Users",
         type: "bar",
-        data: this.companyDataSeries,
+        data: Object.values(this.usersByAgeGroup.value),
         backgroundColor: "#734668",
         yAxisID: "y",
       },
@@ -67,10 +48,7 @@ export class CompanyByIncorporationYearController {
 
   get dataSeries(): any {
     return {
-      labels: this.dateJoinedLabels.map((d: string) => {
-        let dayjs = useDayjs()
-        return dayjs(d).format("YYYY")
-      }),
+      labels: Object.keys(this.usersByAgeGroup.value),
       datasets: this.byJoinSeries,
     }
   }
@@ -104,7 +82,7 @@ export class CompanyByIncorporationYearController {
           position: "left",
           title: {
             display: true,
-            text: "No. of Companies",
+            text: "No. of Users",
           },
           grid: {
             color: "#f0f0f0",
