@@ -5,12 +5,14 @@
     </div>
     <CompanyUserCount />
     <DistributionMap />
+    <CompanyAndUsersBarChart />
   </div>
 </template>
 
 <script setup lang="ts">
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
   import CompanyUserCount from "~/components/Analytics/CompanyUserCount.vue"
+  import CompanyAndUsersBarChart from "~/components/Analytics/CompanyAndUsersBarChart.vue"
   import DistributionMap from "~/components/Analytics/DistributionMap.vue"
   import { PageAnalyticsController } from "~/scripts/pages/PageAnalyticsController"
 
