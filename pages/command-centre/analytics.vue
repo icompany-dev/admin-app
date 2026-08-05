@@ -3,11 +3,19 @@
     <div class="page-header">
       <BreadCrumb v-bind="pageController.breadCrumbProps" />
     </div>
-    <CompanyUserCount />
-    <DistributionMap />
-    <CompanyAndUsersBarChart />
-    <CompanyByIncorporationYear />
-    <UsersByAgeGroup />
+    <div class="analytics-container">
+      <CompanyUserCount />
+      <DistributionMap />
+      <CompanyAndUsersBarChart />
+      <div class="split-container">
+        <div class="split-container-item-50">
+          <CompanyByIncorporationYear />
+        </div>
+        <div class="split-container-item-50">
+          <UsersByAgeGroup />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
