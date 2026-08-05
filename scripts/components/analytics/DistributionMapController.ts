@@ -12,6 +12,8 @@ export class DistributionMapController {
 
   emitEvents: any | null = null
 
+  language = useLanguage()
+
   config = useRuntimeConfig()
   googleMapApiKey: string = ""
 
@@ -19,6 +21,25 @@ export class DistributionMapController {
   zoom = 12
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  isShowMales: Ref<boolean> = ref<boolean>(true)
+  isShowFemales: Ref<boolean> = ref<boolean>(true)
+  selectedStates: Ref<number[]> = ref<number[]>([])
+
+  genderIcons: any = {
+    male: {
+      url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png", // or your custom SVG / asset path
+      scaledSize: { width: 40, height: 40 },
+    },
+    female: {
+      url: "https://maps.google.com/mapfiles/ms/icons/pink-dot.png", // or your custom SVG / asset path
+      scaledSize: { width: 40, height: 40 },
+    },
+    other: {
+      url: "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png",
+      scaledSize: { width: 40, height: 40 },
+    },
+  }
 
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -36,7 +57,7 @@ export class DistributionMapController {
     try {
       this.isLoading.value = true
 
-      await Promise.allSettled([this.fetchUserCoordinates(), this.fetchCompanyCoordinates(), this.fetchStates()])
+      await Promise.allSettled([this.fetchUserCoordinates(), this.fetchStates()])
     } catch (e) {
       console.error(e)
     } finally {
@@ -152,5 +173,46 @@ export class DistributionMapController {
       h /= 6
     }
     return [h * 360, s * 100, l * 100]
+  }
+
+  getUserMarkerIcon(gender: string): any {
+    const colors: any = {
+      male: "#2196F3", // Blue
+      female: "#E91E63", // Pink
+      other: "#9C27B0", // Purple
+    }
+
+    const isMale = gender === "male"
+
+    return {
+      path: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
+      fillColor: colors[gender] || colors.other,
+      fillOpacity: 1,
+      strokeWeight: 1.5,
+      strokeColor: "#FFFFFF",
+      scale: 1,
+    }
+  }
+
+  get users(): AnalyticsUserCoordinate[] {
+    return this.userCoordinates.value.filter((user: AnalyticsUserCoordinate) => {
+      if (!this.isShowFemales.value && user.gender === "female") {
+        return false
+      }
+
+      if (!this.isShowMales.value && user.gender === "male") {
+        return false
+      }
+
+      return true
+    })
+  }
+
+  get loaderLabel(): string {
+    return this.language.isMalay() ? "Sedang Memaut" : "Retrieving All"
+  }
+
+  get loaderSublabel(): string {
+    return this.language.isMalay() ? "Semua Koordinat" : "Coordinates"
   }
 }
