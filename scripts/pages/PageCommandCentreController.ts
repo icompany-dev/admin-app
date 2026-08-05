@@ -1,5 +1,8 @@
 import { FilterPeriod } from "../constants/FilterValues"
+import { ApiRecord } from "../library/ApiRecord"
 import { Filter } from "../library/Filter"
+import { ApplicationIncorporate } from "../models/ApplicationIncorporate"
+import { ApplicationSwitch } from "../models/ApplicationSwitch"
 import { User } from "../models/User"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
 import { StringUtil } from "../utils/String"
@@ -83,7 +86,6 @@ export class PageCommandCentreController extends PageController {
   async fetchNewIncorporations(): Promise<void> {
     let repository = useAnalyticsStore()
 
-    // let repository = useApplicationIncorporateStore()
     let filter = new Filter()
     filter.statuses = [this.selectedNewIncorporationStatus.value]
     if (this.selectedNewIncorporationStatus.value !== "paid") {
@@ -95,22 +97,25 @@ export class PageCommandCentreController extends PageController {
     filter.take = 1
 
     let response = await repository.fetchIncorporationBy(filter)
-    this.newIncorporationCount.value = response.totalRecords
+    let apiRecord = new ApiRecord<ApplicationIncorporate>(response, ApplicationIncorporate)
+    this.newIncorporationCount.value = apiRecord.totalRecords
   }
 
   async fetchNewSwitches(): Promise<void> {
-    let repository = useApplicationSwitchStore()
+    let repository = useAnalyticsStore()
     let filter = new Filter()
     filter.statuses = [this.selectedReassignmentStatus.value]
     if (this.selectedReassignmentStatus.value !== "paid") {
       filter.includeDeleted = true
     }
+    filter.dateColumn = "paid_at"
     filter.startDate = this.startDateForPeriod(this.selectedReassignmentPeriod.value)
     filter.endDate = this.endDateForPeriod(this.selectedReassignmentPeriod.value)
     filter.take = 1
 
-    let response = await repository.fetchAll(filter)
-    this.reassignmentCount.value = response.totalRecords
+    let response = await repository.fetchSwitchBy(filter)
+    let apiRecord = new ApiRecord<ApplicationSwitch>(response, ApplicationSwitch)
+    this.reassignmentCount.value = apiRecord.totalRecords
   }
 
   async fetchUsers(): Promise<void> {

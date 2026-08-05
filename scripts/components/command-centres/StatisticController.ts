@@ -13,6 +13,8 @@ export class StatisticController {
   selectedPeriod: Ref<string> = ref<string>("")
   isShowPeriodOptions: Ref<boolean> = ref<boolean>(false)
 
+  isShowValue: Ref<boolean> = ref<boolean>(true)
+
   language = useLanguage()
 
   emitEvents: any | null = null
@@ -40,7 +42,11 @@ export class StatisticController {
   }
 
   setCount(count: number): void {
-    this.count.value = count
+    this.isShowValue.value = false
+    setTimeout(() => {
+      this.count.value = count
+      this.isShowValue.value = true
+    }, 500)
   }
 
   setPeriods(periods: string[]): void {
