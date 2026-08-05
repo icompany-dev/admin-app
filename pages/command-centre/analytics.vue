@@ -6,6 +6,7 @@
     <CompanyUserCount />
     <DistributionMap />
     <CompanyAndUsersBarChart />
+    <CompanyByIncorporationYear />
   </div>
 </template>
 
@@ -13,6 +14,7 @@
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
   import CompanyUserCount from "~/components/Analytics/CompanyUserCount.vue"
   import CompanyAndUsersBarChart from "~/components/Analytics/CompanyAndUsersBarChart.vue"
+  import CompanyByIncorporationYear from "@/components/Analytics/CompanyByIncorporationYear.vue"
   import DistributionMap from "~/components/Analytics/DistributionMap.vue"
   import { PageAnalyticsController } from "~/scripts/pages/PageAnalyticsController"
 

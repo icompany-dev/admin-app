@@ -1,6 +1,6 @@
 <template>
-  <div id="analytics-company-and-users-bar-chart">
-    <div class="header">iCompany Users and Companies</div>
+  <div id="analytics-company-by-incorporation-year">
+    <div class="header">No. of Companies by Incorporation Year</div>
     <div class="chart-wrapper">
       <ClientOnly>
         <Chart
@@ -28,7 +28,7 @@
     LineController,
   } from "chart.js"
   import { Chart } from "vue-chartjs"
-  import { CompanyAndUsersBarChartController } from "~/scripts/components/analytics/CompanyAndUsersBarChartController"
+  import { CompanyByIncorporationYearController } from "~/scripts/components/analytics/CompanyByIncorporationYearController"
 
   const props = defineProps({})
   const emit = defineEmits([])
@@ -46,9 +46,9 @@
     LineController
   )
 
-  const controller = new CompanyAndUsersBarChartController(props, emit)
+  const controller = new CompanyByIncorporationYearController(props, emit)
 </script>
 
 <style lang="scss">
-  @use "~/assets/scss/components/Analytics/CompanyAndUsersBarChart" as *;
+  @use "~/assets/scss/components/Analytics/CompanyByIncorporationYear" as *;
 </style>
