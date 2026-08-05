@@ -18,7 +18,7 @@ export class DistributionMapController {
   googleMapApiKey: string = ""
 
   center: Coordinate = new Coordinate(3.8558482, 108.8083763) // Kuala Lumpur coordinates
-  zoom = 4
+  zoom = 6
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 

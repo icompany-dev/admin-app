@@ -19,7 +19,7 @@
         :center="controller.center.getJSON()"
         :zoom="controller.zoom"
       >
-        <Marker :options="{ position: controller.center.getJSON() }" />
+        <!-- <Marker :options="{ position: controller.center.getJSON() }" /> -->
         <Marker
           v-for="(user, i) in controller.users"
           :key="`user-${i}`"
