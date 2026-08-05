@@ -81,17 +81,20 @@ export class PageCommandCentreController extends PageController {
   }
 
   async fetchNewIncorporations(): Promise<void> {
-    let repository = useApplicationIncorporateStore()
+    let repository = useAnalyticsStore()
+
+    // let repository = useApplicationIncorporateStore()
     let filter = new Filter()
     filter.statuses = [this.selectedNewIncorporationStatus.value]
     if (this.selectedNewIncorporationStatus.value !== "paid") {
       filter.includeDeleted = true
     }
+    filter.dateColumn = "paid_at"
     filter.startDate = this.startDateForPeriod(this.selectedNewIncorporationPeriod.value)
     filter.endDate = this.endDateForPeriod(this.selectedNewIncorporationPeriod.value)
     filter.take = 1
 
-    let response = await repository.fetchAll(filter)
+    let response = await repository.fetchIncorporationBy(filter)
     this.newIncorporationCount.value = response.totalRecords
   }
 
