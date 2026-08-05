@@ -1,3 +1,5 @@
+import type { PropsAnalyticsDistribution } from "~/scripts/props/PropsAnalyticsDistribution"
+
 export class UsersByAgeGroupController {
   emitEvents: any | null = null
 
@@ -5,33 +7,15 @@ export class UsersByAgeGroupController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
-  constructor(props: any, emitEvents: any) {
+  constructor(props: PropsAnalyticsDistribution, emitEvents: any) {
+    this.setDataFromProps(props)
     this.emitEvents = emitEvents
-
-    this.init()
   }
 
-  async init(): Promise<void> {
-    if (this.isLoading.value) {
-      return
-    }
+  setDataFromProps(props: PropsAnalyticsDistribution): void {
+    this.usersByAgeGroup.value = props.usersByAgeGroup
 
-    try {
-      this.isLoading.value = true
-
-      await this.fetchUserAnalytics()
-    } catch (e) {
-      //
-    } finally {
-      this.isLoading.value = false
-    }
-  }
-
-  async fetchUserAnalytics(): Promise<void> {
-    let repository = useAnalyticsStore()
-    let response = await repository.fetchUserCounts()
-
-    this.usersByAgeGroup.value = response.by_age_group
+    this.isLoading.value = props.isLoading
   }
 
   get byJoinSeries(): any[] {

@@ -1,3 +1,5 @@
+import type { PropsAnalyticsDistribution } from "~/scripts/props/PropsAnalyticsDistribution"
+
 export class CompanyByIncorporationYearController {
   emitEvents: any | null = null
 
@@ -5,33 +7,15 @@ export class CompanyByIncorporationYearController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
-  constructor(props: any, emitEvents: any) {
+  constructor(props: PropsAnalyticsDistribution, emitEvents: any) {
+    this.setDataFromProps(props)
     this.emitEvents = emitEvents
-
-    this.init()
   }
 
-  async init(): Promise<void> {
-    if (this.isLoading.value) {
-      return
-    }
+  setDataFromProps(props: PropsAnalyticsDistribution): void {
+    this.companiesByIncorpDate.value = props.companiesByIncorpDate
 
-    try {
-      this.isLoading.value = true
-
-      await this.fetchCompanyAnalytics()
-    } catch (e) {
-      //
-    } finally {
-      this.isLoading.value = false
-    }
-  }
-
-  async fetchCompanyAnalytics(): Promise<void> {
-    let repository = useAnalyticsStore()
-    let response = await repository.fetchCompanyCounts()
-
-    this.companiesByIncorpDate.value = response.by_incorp_date ?? 0
+    this.isLoading.value = props.isLoading
   }
 
   get dateJoinedLabels(): string[] {

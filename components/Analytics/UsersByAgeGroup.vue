@@ -1,5 +1,8 @@
 <template>
-  <div id="analytics-users-by-age-group">
+  <div
+    id="analytics-users-by-age-group"
+    :class="{ 'is-loading': controller.isLoading.value }"
+  >
     <div class="header">Users by Age Group</div>
     <div class="chart-wrapper">
       <ClientOnly>
@@ -29,8 +32,9 @@
   } from "chart.js"
   import { Chart } from "vue-chartjs"
   import { UsersByAgeGroupController } from "~/scripts/components/analytics/UsersByAgeGroupController"
+  import type { IPropsAnalyticsDistribution } from "~/scripts/props/PropsAnalyticsDistribution"
 
-  const props = defineProps({})
+  const props = defineProps<IPropsAnalyticsDistribution>()
   const emit = defineEmits([])
 
   ChartJS.register(
@@ -47,6 +51,14 @@
   )
 
   const controller = new UsersByAgeGroupController(props, emit)
+
+  watch(
+    () => props,
+    (newVal) => {
+      controller.setDataFromProps(newVal)
+    },
+    { deep: true }
+  )
 </script>
 
 <style lang="scss">

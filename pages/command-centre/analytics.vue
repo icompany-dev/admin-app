@@ -4,15 +4,15 @@
       <BreadCrumb v-bind="pageController.breadCrumbProps" />
     </div>
     <div class="analytics-container">
-      <CompanyUserCount />
+      <CompanyUserCount v-bind="pageController.analyticDistributionProps" />
       <DistributionMap />
-      <CompanyAndUsersBarChart />
+      <CompanyAndUsersBarChart v-bind="pageController.analyticDistributionProps" />
       <div class="split-container">
         <div class="split-container-item-50">
-          <CompanyByIncorporationYear />
+          <CompanyByIncorporationYear v-bind="pageController.analyticDistributionProps" />
         </div>
         <div class="split-container-item-50">
-          <UsersByAgeGroup />
+          <UsersByAgeGroup v-bind="pageController.analyticDistributionProps" />
         </div>
       </div>
     </div>

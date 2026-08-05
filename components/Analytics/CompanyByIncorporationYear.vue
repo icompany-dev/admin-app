@@ -1,5 +1,8 @@
 <template>
-  <div id="analytics-company-by-incorporation-year">
+  <div
+    id="analytics-company-by-incorporation-year"
+    :class="{ 'is-loading': controller.isLoading.value }"
+  >
     <div class="header">No. of Companies by Incorporation Year</div>
     <div class="chart-wrapper">
       <ClientOnly>
@@ -29,8 +32,10 @@
   } from "chart.js"
   import { Chart } from "vue-chartjs"
   import { CompanyByIncorporationYearController } from "~/scripts/components/analytics/CompanyByIncorporationYearController"
+  import type { IPropsAnalyticsDistribution } from "~/scripts/props/PropsAnalyticsDistribution"
 
-  const props = defineProps({})
+  const props = defineProps<IPropsAnalyticsDistribution>()
+
   const emit = defineEmits([])
 
   ChartJS.register(
@@ -47,6 +52,14 @@
   )
 
   const controller = new CompanyByIncorporationYearController(props, emit)
+
+  watch(
+    () => props,
+    (newVal) => {
+      controller.setDataFromProps(newVal)
+    },
+    { deep: true }
+  )
 </script>
 
 <style lang="scss">

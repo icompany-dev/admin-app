@@ -1,5 +1,8 @@
 <template>
-  <div id="analytics-company-user-count">
+  <div
+    id="analytics-company-user-count"
+    :class="{ 'is-loading': controller.isLoading.value }"
+  >
     <div class="item company">
       <div class="title">Companies with iCompany</div>
       <div class="count-to-container">
@@ -69,11 +72,20 @@
 <script lang="ts" setup>
   import VueCountUp from "vue-countup-v3"
   import { CompanyUserCountController } from "~/scripts/components/analytics/CompanyUserCountController"
+  import type { IPropsAnalyticsDistribution } from "~/scripts/props/PropsAnalyticsDistribution"
 
-  const props = defineProps({})
+  const props = defineProps<IPropsAnalyticsDistribution>()
   const emit = defineEmits([])
 
   const controller = new CompanyUserCountController(props, emit)
+
+  watch(
+    () => props,
+    (newVal) => {
+      controller.setDataFromProps(newVal)
+    },
+    { deep: true }
+  )
 </script>
 
 <style lang="scss">

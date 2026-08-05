@@ -29,6 +29,7 @@
       justify-content: flex-start;
       align-items: center;
       gap: 25px;
+      transition: all 0.2s ease;
 
       .countup-wrap {
         min-width: 120px;
@@ -44,6 +45,15 @@
         text-align: end;
         font-size: 16px;
         font-weight: normal;
+      }
+    }
+  }
+
+  &.is-loading {
+    .item {
+
+      .count-to-container {
+        filter: blur(5px);
       }
     }
   }
