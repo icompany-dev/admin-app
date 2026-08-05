@@ -61,11 +61,47 @@ export const useAnalyticsStore = defineStore("analytics", () => {
     }
   }
 
+  async function fetchUserCoordinates(): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.analytics.fetchUserCoordinates()
+      return response
+    } catch (e) {
+      console.error(`Failed to fetch user coordinates`, e)
+      error.value = "Failed to fetch user coordinates"
+
+      return null
+    } finally {
+      isLoading.value = true
+    }
+  }
+
+  async function fetchCompanyCoordinates(): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.analytics.fetchCompanyCoordinates()
+      return response
+    } catch (e) {
+      console.error(`Failed to fetch company coordinates`, e)
+      error.value = "Failed to fetch company coordinates"
+
+      return null
+    } finally {
+      isLoading.value = true
+    }
+  }
+
   return {
     isLoading,
     error,
     fetchIncorporationBy,
     fetchSwitchBy,
     fetchPaymentBy,
+    fetchUserCoordinates,
+    fetchCompanyCoordinates,
   }
 })

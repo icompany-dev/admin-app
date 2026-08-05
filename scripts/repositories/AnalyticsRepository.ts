@@ -38,4 +38,22 @@ export class AnalyticsRepository extends Repository<Model> {
       throw e
     }
   }
+
+  async fetchUserCoordinates(): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.resourceUrl}/user-coordinates`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async fetchCompanyCoordinates(): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.resourceUrl}/company-coordinates`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }
