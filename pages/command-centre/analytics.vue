@@ -15,12 +15,18 @@
           <UsersByAgeGroup v-bind="pageController.analyticDistributionProps" />
         </div>
       </div>
+      <div class="split-container">
+        <div class="split-container-item-50">
+          <CompaniesByState v-bind="pageController.analyticDistributionProps" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
+  import CompaniesByState from "~/components/Analytics/CompaniesByState.vue"
   import CompanyUserCount from "~/components/Analytics/CompanyUserCount.vue"
   import CompanyAndUsersBarChart from "~/components/Analytics/CompanyAndUsersBarChart.vue"
   import CompanyByIncorporationYear from "@/components/Analytics/CompanyByIncorporationYear.vue"
