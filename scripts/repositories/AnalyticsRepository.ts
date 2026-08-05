@@ -1,0 +1,41 @@
+import type { Filter } from "../library/Filter"
+import { Model } from "../models/Model"
+import { Repository } from "./Repository"
+
+export class AnalyticsRepository extends Repository<Model> {
+  constructor(
+    resourceUrl: string,
+    singleResourceUrl: string,
+    baseUrl: string,
+    getAuthToken: () => string | null | undefined
+  ) {
+    super(resourceUrl, singleResourceUrl, baseUrl, getAuthToken, Model)
+  }
+
+  async fetchIncorporationBy(filter: Filter): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.singleResourceUrl}/summary/incorporation?${filter.getSlug()}`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async fetchSwitchBy(filter: Filter): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.singleResourceUrl}/summary/switch?${filter.getSlug()}`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async fetchPaymentBy(filter: Filter): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.singleResourceUrl}/summary/payment?${filter.getSlug()}`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+}

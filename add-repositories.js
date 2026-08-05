@@ -13,9 +13,9 @@ import { generateStores } from "./stores/generate-stores.js"
 // Add or remove classes here. This is the only source of truth.
 const classes = [
   {
-    name: "MsicCodeAssign",
-    url: "msiccode/assigns",
-    singleUrl: "msiccode/assign",
+    name: "Analytics",
+    url: "analytics",
+    singleUrl: "analytics",
   },
 ]
 
