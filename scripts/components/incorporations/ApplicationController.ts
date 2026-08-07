@@ -1559,8 +1559,7 @@ export class ApplicationController {
     return (
       this.application.value.metaData !== null &&
       !!this.application.value.metaData.company_data &&
-      !!this.application.value.metaData.section236 &&
-      !!this.application.value.metaData.corporate_profile
+      !!this.application.value.metaData.section236
     )
   }
 
