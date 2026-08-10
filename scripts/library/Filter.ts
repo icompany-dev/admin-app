@@ -17,6 +17,7 @@ export class Filter {
   companyId: string | null = null
 
   dateColumn: string | null = null
+  isIncludeMinutes: boolean = false
   startDate: string | null = null
   endDate: string | null = null
 
@@ -76,13 +77,19 @@ export class Filter {
     }
 
     if (this.startDate !== null) {
-      const date = this.dayjs(this.startDate).format("YYYY-MM-DD")
+      let format = this.isIncludeMinutes ? "YYYY-MM-DD HH:mm:ss" : "YYYY-MM-DD"
+      const date = this.dayjs(this.startDate).format(format)
       slugElements.push(`start_date=${date}`)
     }
 
     if (this.endDate !== null) {
-      const date = this.dayjs(this.endDate).format("YYYY-MM-DD")
+      let format = this.isIncludeMinutes ? "YYYY-MM-DD HH:mm:ss" : "YYYY-MM-DD"
+      const date = this.dayjs(this.endDate).format(format)
       slugElements.push(`end_date=${date}`)
+    }
+
+    if (this.isIncludeMinutes) {
+      slugElements.push(`include_minutes=1`)
     }
 
     if (this.includeDeleted) {

@@ -1,5 +1,10 @@
 import { CurrentUser } from "../utils/CurrentUser"
 import { ColorModeUtil } from "../utils/ColorMode"
+import { Filter } from "../library/Filter"
+import { PaymentOrder } from "../models/PaymentOrder"
+import { PaymentOrderItem } from "../models/PaymentOrderItem"
+import { StringUtil } from "../utils/String"
+import { Toast } from "../library/Toast"
 
 export class LayoutController {
   onboardingWelcomeRef: any | null = null
@@ -9,14 +14,19 @@ export class LayoutController {
 
   isSidebarCollapsed: Ref<boolean> = ref<boolean>(false)
 
+  isCheckingPayment: Ref<boolean> = ref<boolean>(false)
+  lastDateAnnounced: Ref<string> = ref<string>("")
+
   isDragging: Ref<boolean> = ref<boolean>(false)
   lastY: Ref<number> = ref<number>(0)
   deltaY: Ref<number> = ref<number>(0)
 
+  language = useLanguage()
   eventManager = useEventManagerStore()
 
   constructor() {
     this.initTheme()
+    this.fetchPaymentReceived()
     window.addEventListener("wheel", this.onScrolling.bind(this))
     window.addEventListener("scroll", this.onScrolling.bind(this))
   }
@@ -109,5 +119,62 @@ export class LayoutController {
 
   onSidebarExpanded(): void {
     this.isSidebarCollapsed.value = false
+  }
+
+  async fetchPaymentReceived(): Promise<void> {
+    if (this.isCheckingPayment.value) {
+      return
+    }
+
+    try {
+      this.isCheckingPayment.value = true
+
+      let dayjs = useDayjs()
+      let filter = new Filter()
+      filter.isIncludeMinutes = true
+      filter.startDate = dayjs().subtract(1, "day").format("YYYY-MM-DD HH:mm:ss")
+
+      let repository = useAnalyticsStore()
+      let response = await repository.fetchPaymentSince(filter)
+
+      let paymentToInform = response.data
+        .map((d: any) => {
+          return new PaymentOrder(d)
+        })
+        .filter((po: PaymentOrder) => {
+          return dayjs(po.paidAt).isAfter(dayjs(filter.startDate))
+        })
+
+      if (paymentToInform.length > 0) {
+        // play audio
+        let kachingAudio = new Audio("")
+        kachingAudio.currentTime = 0
+        kachingAudio.play()
+      }
+
+      paymentToInform.forEach((po: PaymentOrder) => {
+        let paymentForFragments = po.items.map((poi: PaymentOrderItem) => {
+          return poi.serviceName
+        })
+        let paymentFor = StringUtil.oxfordJoin("&", paymentForFragments)
+
+        let toastTitle = this.language.isMalay()
+          ? `Bayaran sejumlah RM${po.total} diterima dari ${po.billingInfo.name}`
+          : `Payment Received of RM${po.total} from ${po.billingInfo.name}`
+        let toastMessage = this.language.isMalay() ? `Bayaran Untuk: ${paymentFor}` : `Payment For: ${paymentFor}`
+
+        let toast = new Toast(toastTitle, toastMessage)
+        toast.success()
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isCheckingPayment.value = false
+
+      let timeoutTimer = 1000 * 60
+      setTimeout(() => {
+        this.fetchPaymentReceived()
+      }, timeoutTimer)
+    }
   }
 }
