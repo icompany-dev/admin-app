@@ -59,7 +59,7 @@
         <Activities />
       </div>
       <div class="payment-container">
-        <PaymentsReceived />
+        <Deliveries />
       </div>
     </div>
   </div>
@@ -68,6 +68,7 @@
 <script setup lang="ts">
   import Activities from "@/components/CommandCentres/Activities.vue"
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
+  import Deliveries from "~/components/CommandCentres/Deliveries.vue"
   import PaymentsReceived from "@/components/CommandCentres/PaymentsReceived.vue"
   import Statistic from "@/components/CommandCentres/Statistic.vue"
   import { PageCommandCentreController } from "~/scripts/pages/PageCommandCentreController"
