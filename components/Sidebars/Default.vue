@@ -24,19 +24,17 @@
         >
           {{ group.labelEn }}
         </div>
-        <TransitionGroup name="fade">
-          <template v-if="group.isShowChildren">
-            <div
-              class="sidebar-item"
-              v-for="(item, i) in group.items"
-              :key="i"
-              @click="item.onClick()"
-              :class="{ selected: item.isShowing, disabled: item.isDisabled }"
-            >
-              {{ item.labelEn }}
-            </div>
-          </template>
-        </TransitionGroup>
+        <template v-if="group.isShowChildren">
+          <div
+            class="sidebar-item"
+            v-for="(item, i) in group.items"
+            :key="i"
+            @click="item.onClick()"
+            :class="{ selected: item.isShowing, disabled: item.isDisabled }"
+          >
+            {{ item.labelEn }}
+          </div>
+        </template>
       </div>
     </div>
   </div>
