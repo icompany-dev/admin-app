@@ -19,6 +19,7 @@ export class EmitMessages {
   static MISSING_STEP: string = "missingStep"
   static DOCUMENT_GENERATED: string = "documentGenerated"
   static UPLOADED: string = "uploaded"
+  static REMOVED: string = "removed"
 
   static COMPANY_SERVICES: string[] = [
     this.BACK,
