@@ -39,6 +39,15 @@ export class AnalyticsRepository extends Repository<Model> {
     }
   }
 
+  async fetchDeliveries(filter: Filter): Promise<any> {
+    try {
+      const response = this.get<any>(`${this.singleResourceUrl}/summary/deliveries?${filter.getSlug()}`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
   async fetchUserCoordinates(): Promise<any> {
     try {
       const response = this.get<any>(`${this.resourceUrl}/user-coordinates`)
