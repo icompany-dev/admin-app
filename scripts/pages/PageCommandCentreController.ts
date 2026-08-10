@@ -1,6 +1,7 @@
 import { FilterPeriod } from "../constants/FilterValues"
 import { ApiRecord } from "../library/ApiRecord"
 import { Filter } from "../library/Filter"
+import { AdminPaymentReceived } from "../models/AdminPaymentReceived"
 import { ApplicationIncorporate } from "../models/ApplicationIncorporate"
 import { ApplicationSwitch } from "../models/ApplicationSwitch"
 import { User } from "../models/User"
@@ -9,9 +10,9 @@ import { StringUtil } from "../utils/String"
 import { PageController } from "./PageController"
 
 export class PageCommandCentreController extends PageController {
-  nameReservationCount: Ref<number> = ref<number>(0)
-  selectedNameReservationStatus: Ref<string> = ref<string>("paid")
-  selectedNameReservationPeriod: Ref<string> = ref<string>("month")
+  totalPaymentReceived: Ref<number> = ref<number>(0)
+  selectedPaymentStatus: Ref<string> = ref<string>("paid")
+  selectedPaymentPeriod: Ref<string> = ref<string>("month")
 
   newIncorporationCount: Ref<number> = ref<number>(0)
   selectedNewIncorporationStatus: Ref<string> = ref<string>("paid")
@@ -22,7 +23,7 @@ export class PageCommandCentreController extends PageController {
   selectedReassignmentPeriod: Ref<string> = ref<string>("month")
 
   usersCount: Ref<number> = ref<number>(0)
-  selectedUsersStatus: Ref<string> = ref<string>("paid")
+  selectedUsersStatus: Ref<string> = ref<string>("registered")
   selectedUsersPeriod: Ref<string> = ref<string>("month")
   users = ref<User[]>([])
 
@@ -47,6 +48,7 @@ export class PageCommandCentreController extends PageController {
     this.fetchNewIncorporations()
     this.fetchUsers()
     this.fetchNewSwitches()
+    this.fetchPaymentReceived()
   }
 
   setNameReservationStatisticRef(nameReservationStatisticRef: any): void {
@@ -141,12 +143,33 @@ export class PageCommandCentreController extends PageController {
     }
   }
 
-  async onNameReservationStatusSelected(value: string): Promise<void> {
-    this.selectedNameReservationStatus.value = value
+  async fetchPaymentReceived(): Promise<void> {
+    let repository = useAnalyticsStore()
+    let filter = new Filter()
+    filter.startDate = this.startDateForPeriod(this.selectedPaymentPeriod.value)
+    filter.endDate = this.endDateForPeriod(this.selectedPaymentPeriod.value)
+    filter.takeAll = true
+
+    let response = await repository.fetchPaymentBy(filter)
+
+    this.totalPaymentReceived.value = response.data
+      .map((d: any) => {
+        let data = new AdminPaymentReceived(d)
+
+        return Number(data.amount)
+      })
+      .reduce((a: number, b: number) => {
+        return a + b
+      }, 0.0)
   }
 
-  async onNameReservationPeriodSelected(value: string): Promise<void> {
-    this.selectedNameReservationPeriod.value = value
+  async onNameReservationStatusSelected(value: string): Promise<void> {
+    this.selectedPaymentStatus.value = value
+  }
+
+  async onPaymentPeriodSelected(value: string): Promise<void> {
+    this.selectedPaymentPeriod.value = value
+    await this.fetchPaymentReceived()
   }
 
   async onNewIncorporationStatusSelected(value: string): Promise<void> {
@@ -236,12 +259,12 @@ export class PageCommandCentreController extends PageController {
     return this.time.formatDateOnlySystem(startDate)
   }
 
-  get nameReservationLabel(): string {
-    return this.language.isMalay() ? "Tempahan Nama" : "Name Reservation"
+  get paymentReceivedLabel(): string {
+    return this.language.isMalay() ? "Bayaran Diterima" : "Payment Received"
   }
 
-  get nameReservationStatuses(): string[] {
-    return ["paid", "approved", "rejected"]
+  get paymentStatuses(): string[] {
+    return []
   }
 
   get newIncorporationLabel(): string {

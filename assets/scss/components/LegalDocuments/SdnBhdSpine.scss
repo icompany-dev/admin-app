@@ -1,0 +1,47 @@
+#legal-documents-sdn-bhd-spine {
+  // Styles go here
+  position: fixed;
+  z-index: -999;
+  top: 0;
+  left: 0;
+}
+
+.sdn-bhd-spine {
+  .paper-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 99%;
+    height: 99%;
+
+    .spine {
+      width: calc(99% - 10px);
+      padding: 5px;
+      height: calc(99% / 3 - 40px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid var(--bs-gray-500);
+
+      .company-name {
+        width: 100%;
+        font-family: 'Poppins', sans-serif;
+        font-size: 2.3cqw;
+        line-height: 2.3cqw;
+        font-weight: 600;
+        letter-spacing: 0.5pt;
+        text-align: center;
+      }
+
+      .registration-number {
+        font-family: 'Poppins', sans-serif;
+        font-size: 2cqw;
+        line-height: 2cqw;
+      }
+    }
+  }
+}

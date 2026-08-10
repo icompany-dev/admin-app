@@ -6,6 +6,7 @@
     <div class="statistic-title">
       <div class="statistic-status-selection">
         <i
+          v-if="controller.statuses.value.length > 0"
           class="fa-solid fa-circle-sort"
           @click="controller.onStatusSelectionClicked()"
         ></i>
@@ -31,6 +32,12 @@
       </span>
     </div>
     <div class="statistic-counter">
+      <div
+        class="loader"
+        v-if="!controller.isShowValue.value"
+      >
+        <i class="fa-regular fa-spinner fa-spin" />
+      </div>
       <VueCountUp
         v-if="controller.isShowValue.value"
         class="statistic-count"

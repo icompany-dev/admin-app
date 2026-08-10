@@ -43,6 +43,14 @@
               >
                 <button
                   class="btn btn-pill btn-submit"
+                  :class="{ 'is-loading': controller.isPrintingSpine.value }"
+                  :disabled="controller.isPrintingSpine.value"
+                  @click="controller.onPrintSpineClicked()"
+                >
+                  {{ controller.printSpine }}
+                </button>
+                <button
+                  class="btn btn-pill btn-submit"
                   @click="controller.onEditClicked()"
                 >
                   {{ controller.edit }}
@@ -168,6 +176,12 @@
           />
         </div>
       </TransitionGroup>
+      <Teleport to="body">
+        <SdnBhdSpine
+          ref="spineRef"
+          :company-id="controller.companyId.value"
+        />
+      </Teleport>
     </template>
   </div>
 </template>
@@ -183,6 +197,7 @@
   import Overview from "@/components/Companies/Overview.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
+  import SdnBhdSpine from "../LegalDocuments/SdnBhdSpine.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
@@ -199,6 +214,7 @@
   const emit = defineEmits([])
 
   const documentRef = ref(null)
+  const spineRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -224,9 +240,21 @@
     }
   )
 
-  watch(documentRef, (newVal) => {
-    controller.setDocumentRef(newVal)
-  })
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    spineRef,
+    (newVal) => {
+      controller.setSpineRef(newVal)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style lang="scss">

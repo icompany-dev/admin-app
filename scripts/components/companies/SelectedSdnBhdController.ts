@@ -4,6 +4,7 @@ import { Error } from "~/scripts/library/Error"
 import { Company } from "~/scripts/models/Company"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SelectedSdnBhdController {
@@ -34,6 +35,9 @@ export class SelectedSdnBhdController {
   documentRef: any | null = null
   isDownloading: Ref<boolean> = ref<boolean>(false)
 
+  spineRef: any | null = null
+  isPrintingSpine: Ref<boolean> = ref<boolean>(false)
+
   applicationRefs: any[] = []
 
   constructor(companyId: string, emitEvents: any) {
@@ -53,6 +57,10 @@ export class SelectedSdnBhdController {
 
   setDocumentRef(documentRef: any): void {
     this.documentRef = documentRef
+  }
+
+  setSpineRef(spineRef: any): void {
+    this.spineRef = spineRef
   }
 
   setApplicationRefs(index: number, ref: any): void {
@@ -210,6 +218,43 @@ export class SelectedSdnBhdController {
     })
   }
 
+  async onPrintSpineClicked(): Promise<void> {
+    if (this.isPrintingSpine.value || !this.spineRef) {
+      return
+    }
+
+    try {
+      this.isPrintingSpine.value = true
+      let pages = await this.spineRef.getPdfPages()
+
+      const printWindow = window.open("", "_blank")
+      if (printWindow) {
+        printWindow.document.write("Please wait, generating Spince for printing...")
+      } else {
+        throw "Fail to open new window"
+      }
+
+      if (pages.length <= 0) {
+        printWindow.close()
+        return
+      }
+
+      const blob = await PdfPaperUtil.getPdfBlob(pages, 20, "Sdn Bhd Spine.pdf", "a4", "landscape")
+      const blobURL = URL.createObjectURL(blob)
+
+      await nextTick()
+      printWindow.location.href = blobURL
+
+      setTimeout(() => {
+        printWindow.print()
+      }, 500)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isPrintingSpine.value = false
+    }
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -224,6 +269,10 @@ export class SelectedSdnBhdController {
 
   get more(): string {
     return this.language.isMalay() ? "Lagi" : "More"
+  }
+
+  get printSpine(): string {
+    return this.language.isMalay() ? "Folder Spine" : " Folder Spine"
   }
 
   get edit(): string {

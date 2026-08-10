@@ -81,6 +81,14 @@
     width: 100%;
     text-align: right;
 
+    .loader {
+      min-height: 39px;
+
+      i {
+        font-size: 3rem;
+      }
+    }
+
     .statistic-count {
       color: var(--bs-icompany-purple);
 
