@@ -61,6 +61,40 @@ export const useAnalyticsStore = defineStore("analytics", () => {
     }
   }
 
+  async function fetchDeliveries(filter: Filter): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.analytics.fetchDeliveries(filter)
+      return response
+    } catch (e) {
+      console.error(`Failed to fetch deliveries statistics`, e)
+      error.value = "Failed to fetch deliveries statistics"
+
+      return null
+    } finally {
+      isLoading.value = true
+    }
+  }
+
+  async function fetchPaymentSince(filter: Filter): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.analytics.fetchPaymentSince(filter)
+      return response
+    } catch (e) {
+      console.error(`Failed to fetch payment since`, e)
+      error.value = "Failed to fetch payment since"
+
+      return null
+    } finally {
+      isLoading.value = true
+    }
+  }
+
   async function fetchUserCoordinates(): Promise<any> {
     isLoading.value = true
     error.value = null
@@ -152,6 +186,8 @@ export const useAnalyticsStore = defineStore("analytics", () => {
     fetchIncorporationBy,
     fetchSwitchBy,
     fetchPaymentBy,
+    fetchDeliveries,
+    fetchPaymentSince,
     fetchUserCoordinates,
     fetchCompanyCoordinates,
     fetchCompanyCounts,

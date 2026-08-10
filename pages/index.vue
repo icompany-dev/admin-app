@@ -4,19 +4,6 @@
     <div class="statistics-row">
       <div class="statistic">
         <Statistic
-          ref="nameReservationStatisticRef"
-          :title="pageController.nameReservationLabel"
-          :statuses="pageController.nameReservationStatuses"
-          :selected-status="pageController.selectedNameReservationStatus.value"
-          :periods="pageController.periods"
-          :selected-period="pageController.selectedNameReservationPeriod.value"
-          :count="pageController.nameReservationCount.value"
-          @status-selected="pageController.onNameReservationStatusSelected($event)"
-          @period-selected="pageController.onNameReservationPeriodSelected($event)"
-        />
-      </div>
-      <div class="statistic">
-        <Statistic
           ref="newIncorporationStatisticRef"
           :title="pageController.newIncorporationLabel"
           :statuses="pageController.newIncorporationStatuses"
@@ -54,13 +41,25 @@
           @period-selected="pageController.onUserPeriodSelected($event)"
         />
       </div>
+      <div class="statistic">
+        <Statistic
+          ref="nameReservationStatisticRef"
+          :title="pageController.paymentReceivedLabel"
+          :statuses="pageController.paymentStatuses"
+          :selected-status="pageController.selectedPaymentStatus.value"
+          :periods="pageController.periods"
+          :selected-period="pageController.selectedPaymentPeriod.value"
+          :count="pageController.totalPaymentReceived.value"
+          @period-selected="pageController.onPaymentPeriodSelected($event)"
+        />
+      </div>
     </div>
     <div class="activities-row">
       <div class="activities-container">
         <Activities />
       </div>
       <div class="payment-container">
-        <PaymentsReceived />
+        <Deliveries />
       </div>
     </div>
   </div>
@@ -69,6 +68,7 @@
 <script setup lang="ts">
   import Activities from "@/components/CommandCentres/Activities.vue"
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
+  import Deliveries from "~/components/CommandCentres/Deliveries.vue"
   import PaymentsReceived from "@/components/CommandCentres/PaymentsReceived.vue"
   import Statistic from "@/components/CommandCentres/Statistic.vue"
   import { PageCommandCentreController } from "~/scripts/pages/PageCommandCentreController"

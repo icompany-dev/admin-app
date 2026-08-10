@@ -1,0 +1,148 @@
+#command-centres-deliveries {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 10px;
+  padding: 20px;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  border-radius: 10px;
+  background-color: var(--bs-white);
+
+  .deliveries-title {
+    background-color: var(--bs-icompany-purple);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    z-index: 2;
+
+    .deliveries-status-selection {
+      position: relative;
+
+      .fa-solid {
+        color: var(--bs-white);
+        font-size: 1.2rem;
+        line-height: 1.2rem;
+        cursor: pointer;
+      }
+
+      .deliveries-status-options {
+        width: fit-content;
+        position: absolute;
+        top: 30px;
+        left: -10px;
+        max-height: 0;
+        overflow: hidden;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: all 0.7s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 0 0 5px 5px;
+
+        &.show {
+          max-height: fit-content;
+          transform: scaleY(1);
+        }
+
+        .deliveries-status-option {
+          color: var(--bs-white);
+          padding: 2px;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--bs-icompany-orange);
+          }
+        }
+      }
+    }
+
+    .deliveries-status {
+      color: var(--bs-icompany-orange);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .deliveries-name {
+      color: var(--bs-white);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+  }
+
+  .deliveries-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+
+    .delivery-detail {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+      width: 100%;
+      border-bottom: 2px solid var(--bs-gray-300);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .payee {
+        font-size: 1.2rem;
+        font-weight: 600;
+        line-height: 1.5rem;
+        text-transform: uppercase;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+        overflow: hidden;
+      }
+
+      .delivery-for-amount {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+
+        .amount {
+          width: 200px;
+          font-size: 15px;
+          font-weight: 600;
+          text-align: right;
+        }
+      }
+
+      .delivery-info {
+        ul {
+          padding-left: 15px;
+
+          li {
+            padding-bottom: 5px;
+          }
+        }
+
+        .deliver-to {
+          margin: 10px 0;
+          padding: 10px;
+          background-color: var(--bs-gray-100);
+          border-radius: 5px;
+          border: 2px dashed var(--bs-gray-300);
+        }
+      }
+    }
+  }
+}

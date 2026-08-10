@@ -3,6 +3,7 @@ export enum FilterPeriod {
   Month = "month",
   Quarter = "quarter",
   Year = "year",
+  ToDate = "to_date",
 }
 
 export enum FilterDateShortCuts {
