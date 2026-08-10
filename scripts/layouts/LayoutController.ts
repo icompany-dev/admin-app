@@ -132,7 +132,7 @@ export class LayoutController {
       let dayjs = useDayjs()
       let filter = new Filter()
       filter.isIncludeMinutes = true
-      filter.startDate = dayjs().subtract(1, "day").format("YYYY-MM-DD HH:mm:ss")
+      filter.startDate = dayjs().subtract(8, "hours").subtract(5, "minute").format("YYYY-MM-DD HH:mm:ss")
 
       let repository = useAnalyticsStore()
       let response = await repository.fetchPaymentSince(filter)
@@ -147,7 +147,7 @@ export class LayoutController {
 
       if (paymentToInform.length > 0) {
         // play audio
-        let kachingAudio = new Audio("")
+        let kachingAudio = new Audio("/sounds/kaching-sound.mp3")
         kachingAudio.currentTime = 0
         kachingAudio.play()
       }
