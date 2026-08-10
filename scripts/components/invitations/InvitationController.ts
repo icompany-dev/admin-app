@@ -124,6 +124,23 @@ export abstract class InvitationController {
     }
   }
 
+  onDoubleClicked(event: Event): void {
+    try {
+      let target = event.target as HTMLElement
+      let stringToCopy = target.innerHTML
+      navigator.clipboard.writeText(stringToCopy)
+
+      let toastTitle = this.language.isMalay() ? `${stringToCopy} telah disalin!` : `"${stringToCopy}" has been copied!`
+      let toastMessage = this.language.isMalay()
+        ? `Hanya tampalkan dimana anda perlu.`
+        : `Just paste it anywhere you need to.`
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      //
+    }
+  }
+
   //getters
   get name(): string {
     if (!this.invitation.value.user) {
