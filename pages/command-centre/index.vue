@@ -4,19 +4,6 @@
     <div class="statistics-row">
       <div class="statistic">
         <Statistic
-          ref="nameReservationStatisticRef"
-          :title="pageController.nameReservationLabel"
-          :statuses="pageController.nameReservationStatuses"
-          :selected-status="pageController.selectedNameReservationStatus.value"
-          :periods="pageController.periods"
-          :selected-period="pageController.selectedNameReservationPeriod.value"
-          :count="pageController.nameReservationCount.value"
-          @status-selected="pageController.onNameReservationStatusSelected($event)"
-          @period-selected="pageController.onNameReservationPeriodSelected($event)"
-        />
-      </div>
-      <div class="statistic">
-        <Statistic
           ref="newIncorporationStatisticRef"
           :title="pageController.newIncorporationLabel"
           :statuses="pageController.newIncorporationStatuses"
@@ -52,6 +39,19 @@
           :count="pageController.usersCount.value"
           @status-selected="pageController.onUserStatusSelected($event)"
           @period-selected="pageController.onUserPeriodSelected($event)"
+        />
+      </div>
+      <div class="statistic">
+        <Statistic
+          ref="nameReservationStatisticRef"
+          :title="pageController.paymentReceivedLabel"
+          :statuses="pageController.paymentStatuses"
+          :selected-status="pageController.selectedPaymentStatus.value"
+          :periods="pageController.periods"
+          :selected-period="pageController.selectedPaymentPeriod.value"
+          :count="pageController.totalPaymentReceived.value"
+          @status-selected="pageController.onNameReservationStatusSelected($event)"
+          @period-selected="pageController.onPaymentPeriodSelected($event)"
         />
       </div>
     </div>
