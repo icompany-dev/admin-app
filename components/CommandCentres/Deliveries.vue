@@ -35,32 +35,32 @@
       >
         <div class="payee">{{ delivery.name }}</div>
         <div class="delivery-for-amount">
-          <span class="delivery-info">
-            {{ delivery.paymentFor }}
-            <br />
-            Paid at: {{ controller.formatPaidAt(delivery) }}
-            <br />
-            Delivery By: {{ controller.deliveryMethod(delivery) }}
-            <div
-              class="deliver-to"
-              v-if="controller.hasDeliveryAddress(delivery)"
-              v-html="controller.deliveryTo(delivery)"
-            />
-            <span v-if="delivery.mandatoryItems.length > 0 || delivery.additionalItems.length > 0">Items:</span>
-            <ul>
-              <li v-for="(mandatory, i) in delivery.mandatoryItems">
-                {{ mandatory }}
-              </li>
-              <li v-for="(additional, i) in delivery.additionalItems">
-                {{ additional }}
-              </li>
-            </ul>
-          </span>
+          {{ delivery.paymentFor }}
           <span class="amount">RM {{ delivery.amountPaid }}</span>
+        </div>
+        <div class="delivery-info">
+          Paid at: {{ controller.formatPaidAt(delivery) }}
+          <br />
+          Delivery By: {{ controller.deliveryMethod(delivery) }}
+          <div
+            class="deliver-to"
+            v-if="controller.hasDeliveryAddress(delivery)"
+            v-html="controller.deliveryTo(delivery)"
+          />
+          <span v-if="delivery.mandatoryItems.length > 0 || delivery.additionalItems.length > 0">Items:</span>
+          <ul>
+            <li v-for="(mandatory, i) in delivery.mandatoryItems">
+              {{ mandatory }}
+            </li>
+            <li v-for="(additional, i) in delivery.additionalItems">
+              {{ additional }}
+            </li>
+          </ul>
         </div>
       </div>
     </div>
     <TablePagination
+      v-if="controller.filter.value.totalPages > 1"
       v-bind="controller.tablePaginationProps"
       @goToPage="controller.goToPage($event)"
     />

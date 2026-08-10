@@ -124,23 +124,23 @@
           font-weight: 600;
           text-align: right;
         }
+      }
 
-        .delivery-info {
-          ul {
-            padding-left: 15px;
+      .delivery-info {
+        ul {
+          padding-left: 15px;
 
-            li {
-              padding-bottom: 5px;
-            }
+          li {
+            padding-bottom: 5px;
           }
+        }
 
-          .deliver-to {
-            margin: 10px 0;
-            padding: 10px;
-            background-color: var(--bs-gray-100);
-            border-radius: 5px;
-            border: 2px dashed var(--bs-gray-300);
-          }
+        .deliver-to {
+          margin: 10px 0;
+          padding: 10px;
+          background-color: var(--bs-gray-100);
+          border-radius: 5px;
+          border: 2px dashed var(--bs-gray-300);
         }
       }
     }

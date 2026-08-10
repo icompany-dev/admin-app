@@ -45,17 +45,18 @@ export class DeliveriesController {
     try {
       this.isLoading.value = true
       let repository = useAnalyticsStore()
-      this.filter.value.dateColumn = "paid_at"
-      this.filter.value.startDate = this.startDate
-      this.filter.value.endDate = this.endDate
+      // this.filter.value.dateColumn = "paid_at"
+      // this.filter.value.startDate = this.startDate
+      // this.filter.value.endDate = this.endDate
 
       let response = await repository.fetchDeliveries(this.filter.value)
-      this.deliveries.value = response.data.map((d: any) => {
+      let data = Array.isArray(response.data) ? response.data : Object.values(response.data)
+      this.deliveries.value = data.map((d: any) => {
         return new AdminDelivery(d)
       })
 
-      this.filter.value.totalRecords = this.deliveries.value.length
-      this.filter.value.totalPages = Math.ceil(this.filter.value.totalRecords / this.filter.value.take)
+      this.filter.value.totalRecords = response.totalRecords
+      this.filter.value.totalPages = response.totalPages
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
