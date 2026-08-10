@@ -1,8 +1,11 @@
 <template>
-  <div id="legal-documents-sdn-bhd-spine">
+  <div
+    id="legal-documents-sdn-bhd-spine"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="controller.paperOrientation"
-      :additional-css-class="'sdn-bhd-spine'"
+      :additional-css-class="'sdn-bhd-spine print'"
       :show-page-number="false"
     >
       <template #paperContent>
@@ -36,6 +39,8 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new SdnBhdSpineController(props.companyId, emit)
 
   watch(
@@ -43,6 +48,14 @@
     (newVal) => {
       controller.setCompanyId(newVal)
     }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 
   defineExpose({
