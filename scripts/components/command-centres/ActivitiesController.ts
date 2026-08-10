@@ -51,6 +51,7 @@ export class ActivitiesController {
       })
 
       this.todos.value = ObjectUtil.sort<AdminToDo>(this.todos.value, "paidAt", "desc")
+
       this.setFilteredToDos()
     } catch (e) {
       if (e instanceof Error) {
@@ -92,7 +93,7 @@ export class ActivitiesController {
 
     this.filteredTodos.value = this.todos.value.filter((td: AdminToDo) => {
       let updatedAt = this.dayjs(td.updatedAt)
-      return updatedAt.isAfter(startDate) && updatedAt.isBefore(endDate)
+      return updatedAt.isBefore(endDate)
     })
 
     this.filter.value.totalRecords = this.filteredTodos.value.length

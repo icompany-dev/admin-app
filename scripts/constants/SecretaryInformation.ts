@@ -18,10 +18,10 @@ export class SecretaryInformation {
       license: "BC/A/2271",
       certificate: "202608000324",
       phone: "017 778 3260",
-      email: "connect@icompany.my",
+      email: "cosec@icompany.my",
       firmName: "Cosec Tech Solutions Sdn Bhd",
-      firmPhone: "03 3310 0896",
-      firmFax: "03 3310 0896",
+      firmPhone: "017 778 3260",
+      firmFax: "017 778 3260",
       address: new Location({
         address_line_1: "D-1-6, FIRST FLOOR, BLOCK D, SEKITAR26 ENTERPRISE",
         address_line_2: "PERSIARAN HULU SELANGOR, SEKSYEN 26",

@@ -16,9 +16,9 @@ export class AdminPaymentReceived {
   }
 
   convertFromResponse(data: any): void {
-    this.payee = data.payee
+    this.payee = data.paid_by
     this.paymentFor = data.payment_for
-    this.amount = data.amount
+    this.amount = data.total
   }
 
   clone(data: AdminPaymentReceived): void {

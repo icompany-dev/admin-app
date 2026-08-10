@@ -41,12 +41,12 @@ export class PaymentsReceivedController {
 
     try {
       this.isLoading.value = true
-      let repository = useAdminPaymentReceivedStore()
-
+      let repository = useAnalyticsStore()
+      this.filter.value.dateColumn = "paid_at"
       this.filter.value.startDate = this.startDate
       this.filter.value.endDate = this.endDate
 
-      let response = await repository.fetchAll(this.filter.value)
+      let response = await repository.fetchPaymentBy(this.filter.value)
       this.paymentsReceived.value = response.data.map((d: any) => {
         return new AdminPaymentReceived(d)
       })

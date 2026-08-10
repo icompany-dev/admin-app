@@ -16,6 +16,7 @@ export class Filter {
 
   companyId: string | null = null
 
+  dateColumn: string | null = null
   startDate: string | null = null
   endDate: string | null = null
 
@@ -68,6 +69,10 @@ export class Filter {
 
     if (this.companyId !== null && !StringUtil.isNullOrEmpty(this.companyId)) {
       slugElements.push(`company_id=${this.companyId}`)
+    }
+
+    if (this.dateColumn !== null) {
+      slugElements.push(`by_date=${this.dateColumn}`)
     }
 
     if (this.startDate !== null) {

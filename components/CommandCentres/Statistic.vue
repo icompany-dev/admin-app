@@ -32,6 +32,7 @@
     </div>
     <div class="statistic-counter">
       <VueCountUp
+        v-if="controller.isShowValue.value"
         class="statistic-count"
         :autoplay="true"
         :duration="3"

@@ -83,7 +83,7 @@
             </tr>
             <tr>
               <td>Tel.</td>
-              <td>{{ controller.selectedSecretary.value.firmPhone }}</td>
+              <td>{{ controller.selectedSecretary.value.phone }}</td>
             </tr>
             <tr>
               <td>Email</td>

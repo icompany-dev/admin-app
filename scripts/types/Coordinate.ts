@@ -9,8 +9,8 @@ export class Coordinate {
 
   getJSON(): object {
     return {
-      lat: this.latitude.toString(),
-      lng: this.longitude.toString(),
+      lat: this.latitude,
+      lng: this.longitude,
     }
   }
 }

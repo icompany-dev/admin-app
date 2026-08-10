@@ -107,6 +107,7 @@
 
     .statistic-period-selection {
       position: relative;
+      z-index: 10;
 
       .fa-solid {
         font-size: 1.2rem;
@@ -134,9 +135,11 @@
         justify-content: flex-start;
         align-items: flex-start;
         gap: 5px;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: var(--dropdown-bg-color);
+        box-shadow: var(--box-shadow);
         padding: 15px;
         border-radius: 5px;
+        z-index: 10;
 
         &.show {
           max-height: fit-content;
@@ -144,7 +147,7 @@
         }
 
         .statistic-period-option {
-          color: var(--bs-white);
+          color: var(--dropdown-color);
           padding: 2px;
           cursor: pointer;
 
