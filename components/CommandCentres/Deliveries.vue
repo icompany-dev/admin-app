@@ -1,7 +1,7 @@
 <template>
   <div id="command-centres-deliveries">
     <div class="deliveries-title">
-      <div class="deliveries-status-selection">
+      <!-- <div class="deliveries-status-selection">
         <i
           class="fa-solid fa-circle-sort"
           @click="controller.onPeriodSelectionClicked()"
@@ -22,7 +22,7 @@
       </div>
       <span class="deliveries-status">
         {{ StringUtil.capitalize(controller.selectedPeriod.value) }}
-      </span>
+      </span> -->
       <span class="deliveries-name">
         {{ controller.title }}
       </span>
@@ -35,7 +35,27 @@
       >
         <div class="payee">{{ delivery.name }}</div>
         <div class="delivery-for-amount">
-          <span class="delivery-for">{{ delivery.paymentFor }}</span>
+          <span class="delivery-info">
+            {{ delivery.paymentFor }}
+            <br />
+            Paid at: {{ controller.formatPaidAt(delivery) }}
+            <br />
+            Delivery By: {{ controller.deliveryMethod(delivery) }}
+            <div
+              class="deliver-to"
+              v-if="controller.hasDeliveryAddress(delivery)"
+              v-html="controller.deliveryTo(delivery)"
+            />
+            <span v-if="delivery.mandatoryItems.length > 0 || delivery.additionalItems.length > 0">Items:</span>
+            <ul>
+              <li v-for="(mandatory, i) in delivery.mandatoryItems">
+                {{ mandatory }}
+              </li>
+              <li v-for="(additional, i) in delivery.additionalItems">
+                {{ additional }}
+              </li>
+            </ul>
+          </span>
           <span class="amount">{{ delivery.amountPaid }}</span>
         </div>
       </div>
@@ -49,6 +69,7 @@
 
 <script lang="ts" setup>
   import TablePagination from "@/components/Paginations/TablePagination.vue"
+  import { de } from "zod/v4/locales"
   import { DeliveriesController } from "~/scripts/components/command-centres/DeliveriesController"
   import { StringUtil } from "~/scripts/utils/String"
 

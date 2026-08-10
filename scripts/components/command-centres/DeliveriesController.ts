@@ -4,6 +4,7 @@ import { FilterDateShortCuts } from "~/scripts/constants/FilterValues"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class DeliveriesController {
   deliveries = ref<AdminDelivery[]>([])
@@ -26,10 +27,12 @@ export class DeliveriesController {
     this.emitEvents = emitEvents
 
     this.filter.value = new Filter()
-    this.filter.value.take = 30
+    this.filter.value.take = 10
     this.filter.value.page = 1
     this.filter.value.totalPages = 1
     this.filter.value.totalRecords = 1
+    this.filter.value.orderBy = "paid_at"
+    this.filter.value.sortOrder = "asc"
 
     this.fetchData()
   }
@@ -72,6 +75,45 @@ export class DeliveriesController {
 
   onPeriodSelectionClicked(): void {
     this.isShowPeriodOptions.value = !this.isShowPeriodOptions.value
+  }
+
+  formatPaidAt(delivery: AdminDelivery): string {
+    let time = useLocalTime()
+
+    return time.formatDateTimeFull(delivery.paidAt)
+  }
+
+  deliveryMethod(delivery: AdminDelivery): string {
+    return StringUtil.capitalize(delivery.deliveryMethod)
+  }
+
+  deliveryTo(delivery: AdminDelivery): string {
+    if (delivery.deliveryMethod === "email") {
+      return `Email to: ${delivery.email}`
+    }
+
+    if (delivery.deliveryMethod === "self-pickup") {
+      return ""
+    }
+
+    let addressFragments = [
+      delivery.addressLine1.toUpperCase(),
+      delivery.addressLine2.toUpperCase(),
+      `${delivery.addressPostcode} ${delivery.addressCity.toUpperCase()}`,
+      `${delivery.addressState.toUpperCase()} ${delivery.addressCountry.toUpperCase()}`,
+    ]
+
+    let address = addressFragments
+      .filter((s: string) => {
+        return !StringUtil.isNullOrEmpty(s) && s.toLowerCase() !== "unknown"
+      })
+      .join("<br>")
+
+    return `Ship to:<br>${address}`
+  }
+
+  hasDeliveryAddress(delivery: AdminDelivery): boolean {
+    return delivery.deliveryMethod !== "self-pickup"
   }
 
   async onPeriodSelected(value: FilterDateShortCuts): Promise<void> {
