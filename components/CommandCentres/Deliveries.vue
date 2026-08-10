@@ -56,7 +56,7 @@
               </li>
             </ul>
           </span>
-          <span class="amount">{{ delivery.amountPaid }}</span>
+          <span class="amount">RM {{ delivery.amountPaid }}</span>
         </div>
       </div>
     </div>
