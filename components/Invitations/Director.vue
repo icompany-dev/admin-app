@@ -1,17 +1,47 @@
 <template>
-  <div id="invitations-director">
+  <div
+    id="invitations-director"
+    class="human-details"
+  >
+    <div class="name">
+      {{ controller.name }}
+    </div>
+    <div class="human-detail">
+      <i class="fa-regular fa-envelope" />
+      <span class="human-detail-content">
+        {{ controller.email }}
+      </span>
+    </div>
+    <div class="human-detail">
+      <i class="fa-brands fa-whatsapp" />
+      <span class="human-detail-content">
+        {{ controller.phone }}
+      </span>
+    </div>
+    <div class="director-declaration">//</div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { DirectorController } from '~/scripts/components/invitations/DirectorController'
+  import { DirectorController } from "~/scripts/components/invitations/DirectorController"
+  import { EmitMessages } from "~/scripts/constants/EmitMessages"
+  import type { IPropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 
-const props = defineProps({})
-const emit = defineEmits([]) 
+  const props = defineProps<IPropsInvitationDetail>()
 
-const controller = new DirectorController(props, emit)
+  const emit = defineEmits([EmitMessages.REMOVED])
+
+  const controller = new DirectorController(props, emit)
+
+  watch(
+    () => props,
+    (newVal) => {
+      controller.setDataFromProps(props)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style lang="scss">
-@use '~/assets/scss/components/Invitations/Director' as *;
+  @use "~/assets/scss/components/Invitations/Director" as *;
 </style>
