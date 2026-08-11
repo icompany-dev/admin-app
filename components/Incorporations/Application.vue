@@ -171,8 +171,11 @@
           @paymentNodeSelected="controller.onPaymentStepClicked()"
         >
           <template #titleOptions>
-            <div class="form-check">
-              <span>{{ controller.showCrsViewLabel }}</span>
+            <div
+              class="form-check alternative-view-toggle"
+              :class="{ active: controller.isCompletingCrs.value }"
+            >
+              <span class="label">{{ controller.showCrsViewLabel }}</span>
               <input
                 type="checkbox"
                 class="form-check-input"

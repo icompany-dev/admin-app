@@ -7,6 +7,19 @@
   align-items: stretch;
   gap: 20px;
 
+  .alternative-view-toggle {
+    .label {
+      font-size: 13px;
+      font-weight: normal;
+      color: var(--bs-gray-600);
+
+      &.active {
+        color: var(--bs-gray-900);
+        font-weight: 600;
+      }
+    }
+  }
+
   .incorp-application-summary {
     background-color: rgba(255, 255, 255, 0.5);
     padding: 20px;
