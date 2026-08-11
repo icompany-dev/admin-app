@@ -79,14 +79,14 @@ export class ReservedNameForNewSdnBhdController extends BasePopupController {
   }
 
   get submittedAtLabel(): string {
-    return this.language.isMalay() ? "Tarikh Ditempah" : "Date of Reservation"
+    return this.language.isMalay() ? "Tarikh Permohonan" : "Date of Application"
   }
 
   get referenceNumberLabel(): string {
-    return this.language.isMalay() ? "No. Rujukan SSM" : "SSM Reference Number"
+    return this.language.isMalay() ? "No. Rujukan Tempahan" : "Reservation Ref. No."
   }
 
   get templateReferenceNumberLabel(): string {
-    return this.language.isMalay() ? "No. Rujukan Templat SSM" : "SSM Template Reference Number"
+    return this.language.isMalay() ? "No. Rujukan Permohonan" : "Application Ref. No."
   }
 }
