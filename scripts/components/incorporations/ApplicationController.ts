@@ -1161,7 +1161,7 @@ export class ApplicationController {
   }
 
   get applicantLabel(): string {
-    return this.language.isMalay() ? "Butiran Pemohon" : "Details of Applicant"
+    return this.language.isMalay() ? "Butiran Promoter" : "Details of Promoter"
   }
 
   get applicantName(): string {
