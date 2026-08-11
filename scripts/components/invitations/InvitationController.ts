@@ -1,4 +1,5 @@
 import { EmitMessages } from "~/scripts/constants/EmitMessages"
+import { EmailUser } from "~/scripts/library/EmailUser"
 import { Error } from "~/scripts/library/Error"
 import { Toast } from "~/scripts/library/Toast"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
@@ -139,6 +140,11 @@ export abstract class InvitationController {
     } catch (e) {
       //
     }
+  }
+
+  onEmailClicked(): void {
+    let emailUser = new EmailUser(this.email)
+    emailUser.connectToGmail()
   }
 
   //getters

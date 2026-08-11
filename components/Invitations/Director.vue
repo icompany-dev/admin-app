@@ -8,7 +8,10 @@
     </div>
     <div class="human-detail">
       <i class="fa-regular fa-envelope" />
-      <span class="human-detail-content">
+      <span
+        class="action-clickable"
+        @click="controller.onEmailClicked()"
+      >
         {{ controller.email }}
       </span>
     </div>
@@ -18,7 +21,14 @@
         {{ controller.phone }}
       </span>
     </div>
-    <div class="director-declaration">//</div>
+    <div class="human-detail">
+      <span
+        :class="{ 'action-clickable': controller.hasAcceptedInvitation }"
+        @click="controller.onDeclarationClicked()"
+      >
+        {{ controller.declarationLabel }}
+      </span>
+    </div>
   </div>
 </template>
 
@@ -43,5 +53,6 @@
 </script>
 
 <style lang="scss">
+  @use "~/assets/scss/components/Invitations/Invitation" as *;
   @use "~/assets/scss/components/Invitations/Director" as *;
 </style>

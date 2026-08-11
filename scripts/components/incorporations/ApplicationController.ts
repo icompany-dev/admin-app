@@ -30,6 +30,8 @@ import { Form } from "~/scripts/models/Form"
 import { File } from "~/scripts/models/File"
 import type { RefSymbol } from "@vue/reactivity"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import type { Invitation } from "~/scripts/models/Invitation"
+import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -366,6 +368,10 @@ export class ApplicationController {
     this.isShowSection201.value = false
     this.selectedDirectorInvitationFor201.value = null
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
+  }
+
+  getPropsInvitationDetail(invitation: Invitation): PropsInvitationDetail {
+    return new PropsInvitationDetail(invitation.id, invitation)
   }
 
   // Name Reservation Step

@@ -44,10 +44,12 @@
               {{ controller.directorLabel }}
             </div>
             <div
-              class="summary-item-content human-details"
+              class="summary-item-content"
               v-for="(director, index) in controller.directorDetails"
+              :key="`director-${index}`"
             >
-              <span class="human-detail">
+              <Director v-bind="controller.getPropsInvitationDetail(director)" />
+              <!-- <span class="human-detail">
                 <b>{{ director.name }}</b>
               </span>
               <span class="human-detail">
@@ -63,7 +65,7 @@
                 @click="controller.onOpenSection201Clicked(director)"
               >
                 {{ controller.viewSection201Label }}
-              </span>
+              </span> -->
             </div>
           </div>
           <div class="summary-item">
@@ -527,6 +529,7 @@
 <script lang="ts" setup>
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import CompletionOfIncorporation from "@/components/Popups/CompletionOfIncorporation.vue"
+  import Director from "@/components/Invitations/Director.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
