@@ -193,6 +193,32 @@
         margin-bottom: 5px;
       }
     }
+
+    .name-description-details {
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+    }
+
+    .name-description-ai {
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+
+      .ai-suggested {
+        border-radius: 5px;
+        padding: 10px;
+        border: 1px dashed var(--bs-gray-600);
+        width: calc(100% - 20px);
+        text-align: justify;
+      }
+    }
   }
 
   .human-details {

@@ -32,6 +32,7 @@ import type { RefSymbol } from "@vue/reactivity"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import type { Invitation } from "~/scripts/models/Invitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
+import { BusinessNameDescriptionAI } from "~/scripts/library/BusinessNameDescriptionAI"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -72,6 +73,8 @@ export class ApplicationController {
   isLoading: Ref<boolean> = ref<boolean>(false)
 
   isCompletingCrs: Ref<boolean> = ref<boolean>(false)
+
+  businessNameDescriptionAI = ref<BusinessNameDescriptionAI>(new BusinessNameDescriptionAI())
 
   isShowSection201: Ref<boolean> = ref<boolean>(false)
   selectedDirectorInvitationFor201: Ref<DirectorInvitation | null> = ref<DirectorInvitation | null>(null)
@@ -390,6 +393,33 @@ export class ApplicationController {
   onProposedNamesSelected(name: string): void {
     this.isShowProposedNames.value = false
     this.selectedProposedName.value = name
+  }
+
+  async onRunAskSairaForNameDescription(): Promise<void> {
+    if (
+      this.businessNameDescriptionAI.value.isProcessing ||
+      StringUtil.isNullOrEmpty(this.selectedProposedName.value) ||
+      !this.application.value
+    ) {
+      return
+    }
+
+    this.businessNameDescriptionAI.value.resetValues()
+    this.businessNameDescriptionAI.value.askGemini(
+      this.selectedProposedName.value,
+      this.application.value.businessDescription
+    )
+
+    this.checkAIStatus()
+  }
+
+  checkAIStatus(): void {
+    if (this.businessNameDescriptionAI.value.isProcessing) {
+      setTimeout(() => {
+        this.checkAIStatus()
+      }, 500)
+      return
+    }
   }
 
   onShowSection27ActionClicked(): void {
@@ -1314,6 +1344,49 @@ export class ApplicationController {
     }
 
     return this.nameOptions[0]
+  }
+
+  get nameDescriptionLabel(): string {
+    return this.language.isMalay() ? "Keterangan bagi Nama yang dicadangkan" : "Description of Proposed Name"
+  }
+
+  get selectedNameDescription(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    let selectedName = this.selectedProposedName.value
+    if (this.application.value.nameSelected) {
+      return this.application.value.nameSelected.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name1.name === selectedName) {
+      return this.application.value.name1.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name2?.name === selectedName) {
+      return this.application.value.name2.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name3?.name === selectedName) {
+      return this.application.value.name3.nameDescription ?? "-"
+    }
+
+    return "-"
+  }
+
+  get aiSuggestedNameDescription(): string {
+    if (StringUtil.isNullOrEmpty(this.businessNameDescriptionAI.value.resultDescription)) {
+      if (this.businessNameDescriptionAI.value.isProcessing) {
+        return this.language.isMalay()
+          ? "SAIRA sedang berfikir... Sila tunggu sebentar."
+          : "SAIRA is thinking... Please wait."
+      }
+
+      return this.language.isMalay() ? "Tanya SAIRA untuk cadangan." : "Ask SAIRA for suggestions."
+    }
+
+    return this.businessNameDescriptionAI.value.resultDescription?.toUpperCase() ?? ""
   }
 
   get uploadSection27Label(): string {

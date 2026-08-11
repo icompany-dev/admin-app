@@ -227,6 +227,33 @@
                       v-if="controller.isCompletingCrs.value"
                       class="application-details"
                     >
+                      <b>{{ controller.nameDescriptionLabel }}</b>
+                      <div
+                        class="name-description-details"
+                        v-if="controller.selectedNameDescription !== '-'"
+                      >
+                        {{ controller.selectedNameDescription }}
+                      </div>
+                      <div class="name-description-ai">
+                        <div class="ai-suggested">
+                          {{ controller.aiSuggestedNameDescription }}
+                          <CopyValue :value="controller.aiSuggestedNameDescription" />
+                        </div>
+                        <button
+                          class="btn btn-primary"
+                          @click="controller.onRunAskSairaForNameDescription()"
+                        >
+                          <i
+                            class="fa-solid"
+                            :class="
+                              controller.businessNameDescriptionAI.value.isProcessing
+                                ? 'fa-spinner fa-spin'
+                                : 'fa-sparkle'
+                            "
+                          />
+                          Ask SAIRA
+                        </button>
+                      </div>
                       <b>{{ controller.msicCodeLabel }}</b>
                       <div class="application-details-msic-codes">
                         <div

@@ -46,7 +46,8 @@ export class BusinessNameDescriptionAI {
       Companies Act 2016. You are knowledgable on incorporating new Sdn Bhd in Malaysia. 
       I want to incorporate a new Sdn Bhd. This is the name proposed: ${this.proposedName}.
       This is the description of my Business: ${this.businessDescription}. 
-      Draft me a short description of my business name using less than 150 characters.
+      Draft me a short description of my business name using less than 250 characters that will explain the 
+      reason behind the name and why I want to use that name. This description will be submitted to SSM for the name reservation process.
       Your response must be in the following JSON format: { description: '' }
     `
   }
