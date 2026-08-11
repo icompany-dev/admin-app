@@ -1,0 +1,97 @@
+<template>
+  <div
+    id="invitations-shareholder"
+    class="human-details"
+  >
+    <div
+      class="name human-detail"
+      v-if="controller.isRegisteredUser"
+    >
+      {{ controller.name }}
+      <CopyValue :value="controller.name" />
+    </div>
+    <div
+      class="human-detail"
+      v-if="controller.isRegisteredUser"
+    >
+      <i class="fa-regular fa-id-card" />
+      {{ controller.identificationType }}
+      {{ controller.identificationNumber }}
+      <CopyValue :value="controller.identificationNumber" />
+    </div>
+    <div class="human-detail">
+      <i class="fa-regular fa-envelope" />
+      <span
+        class="action-clickable"
+        @click="controller.onEmailClicked()"
+      >
+        {{ controller.email }}
+      </span>
+      <CopyValue :value="controller.email" />
+    </div>
+    <div class="human-detail">
+      <i class="fa-brands fa-whatsapp" />
+      <span class="human-detail-content">
+        {{ controller.phone }}
+      </span>
+      <CopyValue :value="controller.phone" />
+    </div>
+    <div class="human-detail">
+      <span>{{ controller.totalSharesLabel }}</span>
+      <span v-if="!controller.isInEditMode.value">{{ controller.invitation.value.ordinaryShares }}</span>
+      <input
+        type="text"
+        class="form-control"
+        v-model="controller.invitation.value.ordinaryShares"
+        v-if="controller.isInEditMode.value"
+      />
+      <span
+        v-if="!controller.isInEditMode.value"
+        class="action-clickable cancel"
+        @click="controller.onUpdateClicked()"
+      >
+        <i class="fa-regular fa-edit" />
+      </span>
+      <span
+        v-if="controller.isInEditMode.value"
+        class="action-clickable cancel"
+        @click="controller.onCancelUpdateClicked()"
+      >
+        <i class="fa-solid fa-xmark" />
+      </span>
+      <span
+        v-if="controller.isInEditMode.value"
+        class="action-clickable proceed"
+        @click="controller.onProceedUpdateClicked()"
+      >
+        <i class="fa-solid fa-save" />
+      </span>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+  import CopyValue from "@/components/Buttons/CopyValue.vue"
+  import { ShareholderController } from "~/scripts/components/invitations/ShareholderController"
+  import { EmitMessages } from "~/scripts/constants/EmitMessages"
+  import type { IPropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
+
+  const props = defineProps<IPropsInvitationDetail>()
+
+  const emit = defineEmits([EmitMessages.REMOVED, EmitMessages.SHOW_DOCUMENT])
+
+  const controller = new ShareholderController(props, emit)
+
+  watch(
+    () => props,
+    (newVal) => {
+      controller.setDataFromProps(props)
+    },
+    { immediate: true }
+  )
+</script>
+
+<style lang="scss">
+  @use "~/assets/scss/components/Invitations/Invitation" as *;
+  @use "~/assets/scss/components/Invitations/Shareholder" as *;
+</style>

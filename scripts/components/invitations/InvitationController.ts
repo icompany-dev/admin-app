@@ -157,7 +157,11 @@ export abstract class InvitationController {
   }
 
   get isRegisteredUser(): boolean {
-    return !StringUtil.isNullOrEmpty(this.invitation.value.userId)
+    return (
+      !StringUtil.isNullOrEmpty(this.invitation.value.userId) &&
+      this.invitation.value.user.detail !== null &&
+      !StringUtil.isNullOrEmpty(this.invitation.value.user.detail.identification)
+    )
   }
 
   get email(): string {

@@ -51,6 +51,7 @@
               <Director
                 v-bind="controller.getPropsInvitationDetail(director)"
                 @showDocument="controller.onOpenSection201Clicked(director)"
+                @removed="controller.fetchApplication()"
               />
             </div>
           </div>
@@ -59,10 +60,12 @@
               {{ controller.shareholderLabel }}
             </div>
             <div
-              class="summary-item-content human-details"
+              class="summary-item-content"
               v-for="(shareholder, index) in controller.shareholderDetails"
+              :key="`shareholder-${index}`"
             >
-              <span class="human-detail">
+              <Shareholder v-bind="controller.getPropsInvitationDetail(shareholder)" />
+              <!-- <span class="human-detail">
                 <b>{{ shareholder.name }}</b>
               </span>
               <span class="human-detail">
@@ -73,7 +76,7 @@
                 <i class="fa-brands fa-whatsapp" />
                 {{ shareholder.user.phone }}
               </span>
-              <span class="human-detail">{{ controller.totalSharesLabel }}: {{ shareholder.totalShares }}</span>
+              <span class="human-detail">{{ controller.totalSharesLabel }}: {{ shareholder.totalShares }}</span> -->
             </div>
           </div>
         </div>
@@ -525,6 +528,7 @@
   import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import Section27OneFourService from "@/components/CompanyServices/Section27OneFourService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
+  import Shareholder from "@/components/Invitations/Shareholder.vue"
   import UploadFile from "@/components/Popups/UploadFile.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
