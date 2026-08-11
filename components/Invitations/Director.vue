@@ -3,7 +3,10 @@
     id="invitations-director"
     class="human-details"
   >
-    <div class="name">
+    <div
+      class="name"
+      @dblclick="controller.onDoubleClicked($event)"
+    >
       {{ controller.name }}
     </div>
     <div class="human-detail">
@@ -11,13 +14,17 @@
       <span
         class="action-clickable"
         @click="controller.onEmailClicked()"
+        @dblclick="controller.onDoubleClicked($event)"
       >
         {{ controller.email }}
       </span>
     </div>
     <div class="human-detail">
       <i class="fa-brands fa-whatsapp" />
-      <span class="human-detail-content">
+      <span
+        class="human-detail-content"
+        @dblclick="controller.onDoubleClicked($event)"
+      >
         {{ controller.phone }}
       </span>
     </div>
@@ -39,7 +46,7 @@
 
   const props = defineProps<IPropsInvitationDetail>()
 
-  const emit = defineEmits([EmitMessages.REMOVED])
+  const emit = defineEmits([EmitMessages.REMOVED, EmitMessages.SHOW_DOCUMENT])
 
   const controller = new DirectorController(props, emit)
 

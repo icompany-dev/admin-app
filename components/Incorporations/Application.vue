@@ -48,24 +48,10 @@
               v-for="(director, index) in controller.directorDetails"
               :key="`director-${index}`"
             >
-              <Director v-bind="controller.getPropsInvitationDetail(director)" />
-              <!-- <span class="human-detail">
-                <b>{{ director.name }}</b>
-              </span>
-              <span class="human-detail">
-                <i class="fa-regular fa-envelope" />
-                {{ director.email }}
-              </span>
-              <span class="human-detail">
-                <i class="fa-brands fa-whatsapp" />
-                {{ director.user.phone }}
-              </span>
-              <span
-                class="human-detail action-clickable"
-                @click="controller.onOpenSection201Clicked(director)"
-              >
-                {{ controller.viewSection201Label }}
-              </span> -->
+              <Director
+                v-bind="controller.getPropsInvitationDetail(director)"
+                @showDocument="controller.onOpenSection201Clicked(director)"
+              />
             </div>
           </div>
           <div class="summary-item">
