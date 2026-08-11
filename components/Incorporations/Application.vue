@@ -201,7 +201,10 @@
                         class="btn btn-primary selected"
                         @click="controller.onProposedNamesClicked()"
                       >
-                        <span class="label">{{ controller.selectedProposedNameForDisplay }}</span>
+                        <span
+                          class="label"
+                          v-html="controller.selectedProposedNameForDisplay"
+                        />
                         <i
                           class="fa-solid fa-caret-down"
                           :class="{ rotate: controller.isShowProposedNames.value }"
@@ -215,12 +218,14 @@
                           v-for="(name, index) in controller.nameOptions"
                           :key="index"
                           class="btn btn-primary name-option"
+                          :disabled="!controller.canSelectForNameReservation(name)"
                           @click="controller.onProposedNamesSelected(name)"
                         >
                           {{ name }}
                         </button>
                       </div>
                     </div>
+                    <CopyValue :value="controller.selectedProposedName.value" />
                   </div>
                   <Transition name="fade">
                     <div

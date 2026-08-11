@@ -390,6 +390,24 @@ export class ApplicationController {
     this.isShowProposedNames.value = !this.isShowProposedNames.value
   }
 
+  hasAnyOngoingApplicationForNameReservations(): boolean {
+    return this.nameReservations.some((nr: ApplicationNameReservation) => {
+      return nr.status !== "outcome"
+    })
+  }
+
+  canSelectForNameReservation(name: string): boolean {
+    let nameReservationApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
+      return nr.name === name
+    })
+
+    if (!nameReservationApplication) {
+      return this.hasAnyOngoingApplicationForNameReservations()
+    }
+
+    return nameReservationApplication.status !== "outcome"
+  }
+
   onProposedNamesSelected(name: string): void {
     this.isShowProposedNames.value = false
     this.selectedProposedName.value = name
@@ -1335,15 +1353,20 @@ export class ApplicationController {
       return this.application.value.nameSelected.getCompleteName()
     }
 
+    let selectedName = this.selectedProposedName.value
+    if (StringUtil.isNullOrEmpty(selectedName)) {
+      selectedName = this.nameOptions[0]
+    }
+
     let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
-      return nr.status === StatusConstants.PENDING
+      return nr.status !== StatusConstants.REJECTED && nr.name === selectedName
     })
 
     if (ongoingApplication) {
-      return ongoingApplication.name
+      return `${ongoingApplication.name} <small><i>${this.language.isMalay() ? "(Sedang Berjalan)" : "(Ongoing)"}</i></small>`
     }
 
-    return this.nameOptions[0]
+    return selectedName
   }
 
   get nameDescriptionLabel(): string {
