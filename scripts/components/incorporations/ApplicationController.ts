@@ -71,6 +71,8 @@ export class ApplicationController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
+  isCompletingCrs: Ref<boolean> = ref<boolean>(false)
+
   isShowSection201: Ref<boolean> = ref<boolean>(false)
   selectedDirectorInvitationFor201: Ref<DirectorInvitation | null> = ref<DirectorInvitation | null>(null)
 
@@ -1084,6 +1086,14 @@ export class ApplicationController {
     return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
   }
 
+  get showCrsViewLabel(): string {
+    if (this.isCompletingCrs.value) {
+      return this.language.isMalay() ? "Sedang Menunjuk Butiran untuk Sistem CRS" : "Showing Details for CRS System"
+    }
+
+    return this.language.isMalay() ? "Tunjuk Butiran untuk Sistem CRS" : "Show Details for CRS System"
+  }
+
   get viewSection201Label(): string {
     return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 201" : "Declaration under Section 201"
   }
@@ -1134,6 +1144,16 @@ export class ApplicationController {
 
   get applicantPhone(): string {
     return this.applicant.value.phone
+  }
+
+  get applicantIdentificationType(): string {
+    let type = "MyKad"
+
+    if (this.applicant.value.detail) {
+      type = this.applicant.value.detail.identificationType === "passport" ? "Passport" : "MyKad"
+    }
+
+    return this.language.isMalay() ? `No. ${type}` : `${type} No.`
   }
 
   get applicantIdentification(): string {

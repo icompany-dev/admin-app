@@ -172,9 +172,18 @@
         }
       }
     }
+
+    .application-details-msic-codes {
+      margin-bottom: 10px;
+
+      .application-details-msic-code {
+        margin-bottom: 5px;
+      }
+    }
   }
 
   .human-details {
+    margin-top: 0 !important;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

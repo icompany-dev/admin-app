@@ -28,14 +28,22 @@
             <div class="summary-item-content human-details">
               <span class="human-detail">
                 <b>{{ controller.applicantName }}</b>
+                <CopyValue :value="controller.applicantName" />
               </span>
               <span class="human-detail">
                 <i class="fa-regular fa-envelope" />
                 {{ controller.applicantEmail }}
+                <CopyValue :value="controller.applicantEmail" />
               </span>
               <span class="human-detail">
                 <i class="fa-brands fa-whatsapp" />
                 {{ controller.applicantPhone }}
+                <CopyValue :value="controller.applicantPhone" />
+              </span>
+              <span class="human-detail">
+                <span>{{ controller.applicantIdentificationType }}</span>
+                <span>{{ controller.applicantIdentification }}</span>
+                <CopyValue :value="controller.applicantIdentification" />
               </span>
             </div>
           </div>
@@ -65,18 +73,6 @@
               :key="`shareholder-${index}`"
             >
               <Shareholder v-bind="controller.getPropsInvitationDetail(shareholder)" />
-              <!-- <span class="human-detail">
-                <b>{{ shareholder.name }}</b>
-              </span>
-              <span class="human-detail">
-                <i class="fa-regular fa-envelope" />
-                {{ shareholder.email }}
-              </span>
-              <span class="human-detail">
-                <i class="fa-brands fa-whatsapp" />
-                {{ shareholder.user.phone }}
-              </span>
-              <span class="human-detail">{{ controller.totalSharesLabel }}: {{ shareholder.totalShares }}</span> -->
             </div>
           </div>
         </div>
@@ -174,6 +170,16 @@
           v-bind="controller.serviceApplicationProps"
           @paymentNodeSelected="controller.onPaymentStepClicked()"
         >
+          <template #titleOptions>
+            <div class="form-check">
+              <span>{{ controller.showCrsViewLabel }}</span>
+              <input
+                type="checkbox"
+                class="form-check-input"
+                v-model="controller.isCompletingCrs.value"
+              />
+            </div>
+          </template>
           <template #application>
             <ApplicationNode
               v-bind="controller.nameReservationNodeProps"
@@ -213,6 +219,45 @@
                       </div>
                     </div>
                   </div>
+                  <Transition name="fade">
+                    <div
+                      v-if="controller.isCompletingCrs.value"
+                      class="application-details"
+                    >
+                      <b>{{ controller.msicCodeLabel }}</b>
+                      <div class="application-details-msic-codes">
+                        <div
+                          v-for="(msicCodeAssign, i) in controller.application.value.msicCodeAssigns"
+                          class="application-details-msic-code"
+                        >
+                          {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
+                          <CopyValue :value="msicCodeAssign.msicCode.code" />
+                        </div>
+                      </div>
+                      <b>{{ controller.applicantLabel }}</b>
+                      <div class="human-details">
+                        <span class="human-detail">
+                          <b>{{ controller.applicantName }}</b>
+                          <CopyValue :value="controller.applicantName" />
+                        </span>
+                        <span class="human-detail">
+                          <span>{{ controller.applicantIdentificationType }}</span>
+                          <span>{{ controller.applicantIdentification }}</span>
+                          <CopyValue :value="controller.applicantIdentification" />
+                        </span>
+                        <span class="human-detail">
+                          <i class="fa-regular fa-envelope" />
+                          {{ controller.applicantEmail }}
+                          <CopyValue :value="controller.applicantEmail" />
+                        </span>
+                        <span class="human-detail">
+                          <i class="fa-brands fa-whatsapp" />
+                          {{ controller.applicantPhone }}
+                          <CopyValue :value="controller.applicantPhone" />
+                        </span>
+                      </div>
+                    </div>
+                  </Transition>
                 </div>
               </template>
               <template #nodeOptions>
@@ -518,6 +563,7 @@
 <script lang="ts" setup>
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import CompletionOfIncorporation from "@/components/Popups/CompletionOfIncorporation.vue"
+  import CopyValue from "@/components/Buttons/CopyValue.vue"
   import Director from "@/components/Invitations/Director.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
