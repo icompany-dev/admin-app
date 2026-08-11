@@ -3,30 +3,32 @@
     id="invitations-director"
     class="human-details"
   >
-    <div
-      class="name"
-      @dblclick="controller.onDoubleClicked($event)"
-    >
+    <div class="name human-detail">
       {{ controller.name }}
+      <CopyValue :value="controller.name" />
+    </div>
+    <div class="human-detail">
+      <i class="fa-regular fa-id-card" />
+      {{ controller.identificationType }}
+      {{ controller.identificationNumber }}
+      <CopyValue :value="controller.identificationNumber" />
     </div>
     <div class="human-detail">
       <i class="fa-regular fa-envelope" />
       <span
         class="action-clickable"
         @click="controller.onEmailClicked()"
-        @dblclick="controller.onDoubleClicked($event)"
       >
         {{ controller.email }}
       </span>
+      <CopyValue :value="controller.email" />
     </div>
     <div class="human-detail">
       <i class="fa-brands fa-whatsapp" />
-      <span
-        class="human-detail-content"
-        @dblclick="controller.onDoubleClicked($event)"
-      >
+      <span class="human-detail-content">
         {{ controller.phone }}
       </span>
+      <CopyValue :value="controller.phone" />
     </div>
     <div class="human-detail">
       <span
@@ -40,6 +42,7 @@
 </template>
 
 <script lang="ts" setup>
+  import CopyValue from "@/components/Buttons/CopyValue.vue"
   import { DirectorController } from "~/scripts/components/invitations/DirectorController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import type { IPropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"

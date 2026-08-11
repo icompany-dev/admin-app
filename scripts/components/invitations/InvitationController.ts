@@ -175,4 +175,29 @@ export abstract class InvitationController {
 
     return this.invitation.value.user.phone
   }
+
+  get identificationType(): string {
+    let type = "MyKad"
+    if (this.invitation.value.user) {
+      let detail = this.invitation.value.user.detail
+      if (detail) {
+        type = detail.identificationType === "passport" ? "Passport" : "MyKad"
+      }
+    }
+
+    return this.language.isMalay() ? `No. ${type}` : `${type} No.`
+  }
+
+  get identificationNumber(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.identification
+  }
 }
