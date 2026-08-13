@@ -246,6 +246,7 @@
   .incorp-application-details {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: stretch;
     gap: 20px;
@@ -303,6 +304,20 @@
 
     .application-label {
       font-weight: 600;
+    }
+  }
+
+  @media (max-width: 1366px) {
+    .incorp-application-details {
+      flex-direction: column;
+
+      .services-service-application {
+        width: 100%;
+      }
+
+      .document-display {
+        width: 100%;
+      }
     }
   }
 }
