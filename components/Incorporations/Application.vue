@@ -171,16 +171,21 @@
           @paymentNodeSelected="controller.onPaymentStepClicked()"
         >
           <template #titleOptions>
-            <div
-              class="form-check alternative-view-toggle"
-              :class="{ active: controller.isCompletingCrs.value }"
-            >
-              <span class="label">{{ controller.showCrsViewLabel }}</span>
-              <input
-                type="checkbox"
-                class="form-check-input"
-                v-model="controller.isCompletingCrs.value"
-              />
+            <div class="display-toggles">
+              <button
+                class="btn btn-view btn-pill"
+                :class="{ active: controller.isShowAdminView.value }"
+                @click="controller.onShowAdminViewClicked()"
+              >
+                {{ controller.adminViewLabel }}
+              </button>
+              <button
+                class="btn btn-view btn-pill"
+                :class="{ active: controller.isShowCrsView.value }"
+                @click="controller.onShowCrsViewClicked()"
+              >
+                {{ controller.crsViewLabel }}
+              </button>
             </div>
           </template>
           <template #application>
@@ -229,7 +234,7 @@
                   </div>
                   <Transition name="fade">
                     <div
-                      v-if="controller.isCompletingCrs.value"
+                      v-if="controller.isShowCrsView.value"
                       class="application-details"
                     >
                       <b>{{ controller.nameDescriptionLabel }}</b>

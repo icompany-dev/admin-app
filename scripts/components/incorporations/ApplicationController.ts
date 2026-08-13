@@ -72,7 +72,8 @@ export class ApplicationController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
-  isCompletingCrs: Ref<boolean> = ref<boolean>(false)
+  isShowAdminView: Ref<boolean> = ref<boolean>(true)
+  isShowCrsView: Ref<boolean> = ref<boolean>(false)
 
   businessNameDescriptionAI = ref<BusinessNameDescriptionAI>(new BusinessNameDescriptionAI())
 
@@ -249,6 +250,16 @@ export class ApplicationController {
     this.msicCodes.value = response.data.map((d: any) => {
       return new MsicCode(d)
     })
+  }
+
+  onShowAdminViewClicked(): void {
+    this.isShowAdminView.value = true
+    this.isShowCrsView.value = false
+  }
+
+  onShowCrsViewClicked(): void {
+    this.isShowAdminView.value = false
+    this.isShowCrsView.value = true
   }
 
   resetAllDocumentValues(): void {
@@ -1134,8 +1145,16 @@ export class ApplicationController {
     return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
   }
 
+  get adminViewLabel(): string {
+    return this.language.isMalay() ? "Admin View" : "Admin View"
+  }
+
+  get crsViewLabel(): string {
+    return this.language.isMalay() ? "CRS View" : "CRS View"
+  }
+
   get showCrsViewLabel(): string {
-    if (this.isCompletingCrs.value) {
+    if (this.isShowCrsView.value) {
       return this.language.isMalay() ? "Sedang Menunjuk Butiran untuk Sistem CRS" : "Showing Details for CRS System"
     }
 
