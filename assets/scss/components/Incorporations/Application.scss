@@ -320,6 +320,26 @@
       }
     }
   }
+
+  @media (max-width: 500px) {
+    .incorp-application-summary {
+      .summary-items {
+        flex-direction: column;
+
+        .summary-item {
+          width: 100%;
+        }
+      }
+
+      .application-items {
+        flex-direction: column;
+
+        .application-item {
+          width: 100%;
+        }
+      }
+    }
+  }
 }
 
 .document-view {
