@@ -1,0 +1,144 @@
+#past-annual-returns {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  min-height: 70dvh;
+  margin: auto;
+  padding-top: 50px;
+
+  &.show-flow {
+    width: 90dvw;
+    max-width: unset;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    padding: 30px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    padding: 15px;
+    width: 90%;
+  }
+
+  .annual-return-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 40px;
+    height: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    opacity: 0;
+    transition: all 0.7s ease;
+
+    &.show {
+      height: auto;
+      transform: scaleY(1);
+      opacity: 1;
+    }
+
+    .top-part {
+      width: 100%;
+
+      .annual-return-documents {
+        width: 100%;
+        margin: 20px 0;
+
+        .documents-grid {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          align-items: flex-start;
+          gap: 20px;
+          padding-left: 5px;
+
+          .document-container {
+            width: 200px;
+            height: 282px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+
+            .document-wrapper {
+              height: fit-content;
+              max-height: 252px;
+              max-width: 200px;
+              overflow: hidden;
+
+              .company-documents-document {
+                transform-origin: top;
+                transform: scale(0.3);
+
+                .checkbox {
+                  display: none;
+                }
+
+                .pdf-canvas {
+                  &::after {
+                    width: 305% !important;
+                    height: 305% !important;
+                    max-height: 790px;
+                    left: -102%;
+                    overflow: hidden;
+                  }
+                }
+              }
+            }
+
+            .document-date {
+              width: 100%;
+              max-width: 100%;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              text-wrap: nowrap;
+              text-align: center;
+              font-weight: 600;
+              color: var(--sdn-bhd-documents-name-color);
+            }
+          }
+        }
+
+        .document-carousel-container {
+          position: relative;
+
+          #document-carousel {
+            width: 90dvw;
+            max-width: 297mm;
+            min-height: calc(60dvh);
+            margin: 0 auto;
+            margin-bottom: 150px;
+
+            .company-documents-document {
+              .checkbox {
+                display: none;
+              }
+            }
+          }
+        }
+      }
+
+      .slide-enter-active,
+      .slide-leave-active {
+        transition:
+          transform 1s ease,
+          opacity 0.5s ease;
+      }
+
+      .slide-enter {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .slide-leave-to {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+    }
+  }
+}

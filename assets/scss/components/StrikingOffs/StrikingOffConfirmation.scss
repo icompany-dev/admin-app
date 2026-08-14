@@ -1,0 +1,24 @@
+.striking-off-confirmation {
+  .confirmation-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .form-check {
+      display: flex;
+      gap: 10px;
+
+      .form-check-input {
+        min-width: 15px;
+      }
+      
+      .checkbox-text {
+        text-align: justify;
+      }
+    }
+
+    .disclaimer {
+      text-align: justify;
+    }
+  }
+}

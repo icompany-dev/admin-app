@@ -1,0 +1,16 @@
+#dcr-appointment-of-auditor {
+  span {
+    font-weight: bold;
+  }
+
+  .auditor-name {
+    text-transform: uppercase;
+  }
+
+  .auditor-partner {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+  }
+}

@@ -1,0 +1,61 @@
+.cosec-service-wrapper {
+  width: calc(100% - 100px);
+  height: calc(100% - 100px);
+  padding: 50px;
+  position: relative;
+  margin: auto;
+
+  .cosec-service-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    // background-color: rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    cursor: pointer;
+  }
+
+  .empty-div {
+    margin: auto;
+  }
+
+  .document-wrapper {
+    width: fit-content;
+    margin: auto;
+    position: relative;
+    z-index: 101;
+  }
+
+  .service-wrapper-document {
+    width: 210mm;
+    margin: auto;
+    padding-bottom: 100px;
+
+    &.landscape {
+      width: 297mm;
+    }
+  }
+
+  .document-grow-enter-active {
+    transition: all 0.4s ease-out;
+    transform-origin: center;
+  }
+
+  .document-grow-leave-active {
+    transition: all 0.3s ease-in;
+    transform-origin: center;
+  }
+
+  .document-grow-enter-from,
+  .document-grow-leave-to {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  .document-grow-enter-to,
+  .document-grow-leave-from {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

@@ -1,0 +1,63 @@
+#table-data-table-filters {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+
+  .search-container {
+    width: 350px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--bs-white);
+    padding: 5px 10px;
+    border-radius: 5px;
+
+    .form-control {
+      width: 100%;
+      outline: none;
+      font-weight: normal;
+      border: none;
+
+      &::placeholder {
+        color: var(--bs-gray-400);
+      }
+    }
+
+    .reset {
+      cursor: pointer;
+    }
+  }
+
+  .sort-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .checkbox-toggle {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+
+    .switch-label {
+      font-size: 1.1rem;
+      line-height: 1.1rem;
+      font-weight: 600;
+    }
+  }
+
+  .back-button {
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--bs-icompany-purple);
+  }
+}

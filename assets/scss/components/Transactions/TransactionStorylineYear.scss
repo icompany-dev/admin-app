@@ -1,0 +1,54 @@
+.transactions-storyline-year {
+  width: 100%;
+
+  .year-heading {
+    font-size: 2rem;
+    line-height: 2.2rem;
+    font-weight: 600;
+    color: var(--transactions-year-title-color);
+    text-align: center;
+  }
+
+  .storyline-timeline {
+    position: relative;
+    width: 90%;
+    max-width: 880px;
+    margin: 0 auto;
+    margin-top: 20px;
+    padding: 1em 0;
+    list-style-type: none; //This is for the ul tag
+
+    &::before {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      content: ' ';
+      display: block;
+      width: 6px;
+      height: 100%;
+      margin-left: -3px;
+      border-radius: 3px;
+      background-color: var(--transactions-storyline-timeline-line);
+      z-index: 5;
+    }
+
+    .timeline-card {
+      padding: 1em 0;
+      width: 100%;
+
+      &::after {
+        content: "";
+        display: block;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+      }
+    }
+  }
+
+  @media (max-width: 500px) {
+    .storyline-timeline {
+      width: 100%;
+    }
+  }
+}

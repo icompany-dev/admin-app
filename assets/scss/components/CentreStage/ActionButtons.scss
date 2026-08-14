@@ -1,0 +1,286 @@
+#centre-stage-action-buttons {
+  width: 100%;
+  user-select: none;
+
+  .action-buttons {
+    width: 100%;
+    padding-top: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    transition: all 1s ease;
+
+    $total: 5;
+    $entry-duration: 0.3s;
+    $delay: calc(3s + (#{$total} * 0.1s));
+
+    .action-button-animation-enter-active {
+      opacity: 0;
+
+      @for $i from 1 through $total {
+        &:nth-child(#{$i}) {
+          animation: actionButtonAnimationEnterActive 1s ease-out calc(($total - $i) * 0.1s) forwards;
+        }
+      }
+
+      @keyframes actionButtonAnimationEnterActive {
+        0% {
+          opacity: 0;
+          transform: translateX(50%);
+        }
+
+        100% {
+          opacity: 1;
+          transform: translateX(0%);
+        }
+      }
+    }
+
+    .action-button {
+      position: relative;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.7s ease;
+
+      .icon-button {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--centre-stage-icon-button-bg-color);
+        border: 1px solid var(--centre-stage-icon-button-border-color);
+        color: var(--centre-stage-icon-button-color);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 25px;
+        transition: all 0.7s ease;
+        border-width: 3px;
+        box-shadow: var(--box-shadow);
+
+        &.selected {
+          background-color: var(--centre-stage-icon-button-hover-bg-color);
+          color: var(--centre-stage-icon-button-hover-color);
+          border-color: var(--centre-stage-icon-button-hover-border-color);
+          box-shadow: 0 0.1rem 1rem var(--centre-stage-icon-button-hover-border-color);
+        }
+
+        .action-required-label {
+          span {
+            font-size: 30px;
+            font-weight: 600;
+          }
+        }
+
+        &.has-action-required {
+          animation: hasActionRequiredAnimation 0.3s ease-in-out calc(3s + ($total * 0.1s)) forwards,
+          pulsateActionRequired 1.5s ease-in-out calc(#{$delay} + #{$entry-duration}) infinite;
+
+          @keyframes hasActionRequiredAnimation {
+            0% {
+              // Default
+            }
+
+            100% {
+              background-color: var(--bs-danger);
+              color: var(--bs-white);
+            }
+          }
+
+          @keyframes pulsateActionRequired {
+
+            0%,
+            100% {
+              transform: scale(1);
+              box-shadow: 0 0 0 0 rgba(var(--bs-danger-rgb), 0.7);
+            }
+
+            50% {
+              transform: scale(1.1);
+              box-shadow: 0 0 0 10px rgba(var(--bs-danger-rgb), 0);
+            }
+          }
+        }
+      }
+
+      .action-label {
+        display: none;
+        transition: all 0.7s ease;
+
+        &.show {
+          display: block;
+          opacity: 0;
+
+          @for $i from 1 through $total {
+            &:nth-child(#{$i}) {
+              animation: actionButtonLabelAnimation 1s ease-out calc(1s + ($total * 0.1s)) forwards;
+            }
+          }
+
+          @keyframes actionButtonLabelAnimation {
+            0% {
+              opacity: 0;
+              transform: translateY(-50%);
+            }
+
+            100% {
+              opacity: 1;
+              transform: translateY(0%);
+            }
+          }
+        }
+      }
+
+      .action-description {
+        display: none;
+      }
+
+      .number-marker {
+        position: absolute;
+        width: 30px;
+        height: 0px;
+        border-radius: 50%;
+        opacity: 0;
+        background-color: var(--bs-icompany-orange);
+        color: var(--bs-white);
+        transition: all 0.5s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        top: -5px;
+        right: -10px;
+        font-size: 1.5rem;
+
+        &.show {
+          height: 30px;
+          opacity: 0;
+          transform-origin: center;
+          animation: actionButtonLabelAnimation 0.3s ease-in-out calc(3s + ($total * 0.1s)) forwards;
+
+          @keyframes actionButtonLabelAnimation {
+            0% {
+              opacity: 0;
+              transform: scale(0.5);
+            }
+
+            90% {
+              opacity: 1;
+              transform: scale(1.05);
+            }
+
+            100% {
+              opacity: 1;
+              transform: translateY(100);
+            }
+          }
+        }
+      }
+
+      &:hover {
+        .icon-button {
+          background-color: var(--centre-stage-icon-button-hover-bg-color);
+          color: var(--centre-stage-icon-button-hover-color);
+          border-color: var(--centre-stage-icon-button-hover-border-color);
+
+          &.has-action-required {
+            background-color: var(--bs-icompany-orange) !important; //overwrite animation color
+            color: var(--bs-white) !important;
+            border-color: var(--bs-white) !important;
+          }
+        }
+
+        .action-label {
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 990px) {
+    .action-buttons {
+      gap: 10px;
+      justify-content: space-evenly;
+    }
+
+    &.profile-image-hidden {
+      width: 100%;
+
+      .action-buttons {
+        gap: 10px;
+        justify-content: space-evenly;
+      }
+    }
+  }
+
+  @media (max-width: 600px),
+  (max-height: 820px) {
+    &.profile-image-hidden {
+      width: 100%;
+
+      .action-buttons {
+        gap: 10px;
+        justify-content: space-evenly;
+      }
+    }
+
+    .action-buttons {
+      position: fixed;
+      bottom: 0px;
+      left: 0px;
+      width: 100dvw;
+      padding: 15px 0px;
+      gap: 10px;
+      justify-content: space-evenly;
+      background-color: var(--bs-white);
+
+      .action-button {
+        padding: 0px;
+        gap: 5px;
+
+        .action-label {
+          font-size: 0.7rem;
+          color: var(--bs-black);
+        }
+
+        &:hover {
+          .icon-button {
+            background-color: var(--bs-icompany-purple-dark);
+            color: var(--bs-white);
+            border-color: var(--bs-white);
+
+            &.has-action-required {
+              background-color: var(--bs-danger);
+              color: var(--bs-white);
+              border-color: var(--bs-white);
+            }
+          }
+        }
+
+        .icon-button {
+          border: 3px solid var(--bs-white);
+
+          &.selected {
+            background-color: var(--bs-icompany-purple-lightest);
+            color: var(--bs-primary);
+            border-color: var(--bs-primary);
+
+            &.has-action-required {
+              border-color: var(--bs-white) !important; //overwrite animation color
+              background-color: var(--bs-icompany-orange) !important;
+              color: var(--bs-white) !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}

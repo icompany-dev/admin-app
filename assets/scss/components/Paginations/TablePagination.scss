@@ -1,0 +1,44 @@
+#pagination-table-pagination {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  .prev-next-label {
+    cursor: pointer;
+    padding: 5px;
+    transition: all 0.7s ease;
+
+    &:hover {
+      font-weight: 600;
+      background-color: rgba(0, 0, 0, 0.3);
+      color: var(--bs-white);
+      border-radius: 5px;
+    }
+  }
+
+
+  .page-range-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .page-range {
+      cursor: pointer;
+      padding: 5px;
+      transition: all 0.7s ease;
+
+      &:hover,
+      &.selected {
+        font-weight: 600;
+        background-color: rgba(0, 0, 0, 0.3);
+        color: var(--bs-white);
+        border-radius: 5px;
+      }
+    }
+  }
+}

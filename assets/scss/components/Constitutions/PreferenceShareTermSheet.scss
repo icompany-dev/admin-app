@@ -1,0 +1,262 @@
+#preference-share-term-sheet {
+  .paper {
+    padding: 20mm;
+  }
+
+  #alert-container {
+    margin: auto;
+    margin-bottom: 20px;
+
+    .action-buttons {
+      margin-top: 20px;
+
+      //NOTE: This is needed to override the styling in _alert.scss
+      // --- remove this if _alerts.scss has remove styling on btn
+      .btn {
+        &:disabled {
+          background-color: var(--btn-disabled-bg-color);
+          border-color: var(--btn-disabled-border-color);
+          color: var(--btn-disabled-color);
+          cursor: pointer;
+        }
+      }
+
+      .btn-danger {
+        background-color: var(--btn-danger-bg-color);
+        color: var(--btn-danger-color);
+        border-color: var(--btn-danger-border-color);
+
+        &:hover {
+          background-color: var(--btn-danger-hover-bg-color);
+          color: var(--btn-danger-hover-color);
+        }
+      }
+
+      .btn-submit {
+        background-color: var(--btn-submit-bg-color);
+        color: var(--btn-submit-color);
+        border-color: var(--btn-submit-border-color);
+
+        &:hover {
+          background-color: var(--btn-submit-hover-bg-color);
+          color: var(--btn-submit-hover-color);
+        }
+      }
+    }
+  }
+}
+
+.term-sheet {
+  .paper-content {
+    p {
+      text-align: justify;
+      font-size: 13px;
+      font-family: 'Poppins', sans-serif;
+      line-height: 16px;
+      margin: 1em 0;
+    }
+  }
+
+  .term-sheet-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      tr {
+        td {
+          font-weight: 600;
+          padding: 2px 5px;
+          font-size: 13px;
+          font-family: 'Poppins', sans-serif;
+
+          &:first-child {
+            border-width: 1px 0 0 1px;
+          }
+
+          &:nth-child(2) {
+            border-width: 1px 0 0 1px;
+          }
+
+          &:last-child {
+            border-width: 1px 1px 0 1px;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          font-family: 'Poppins', sans-serif;
+          vertical-align: top;
+          font-size: 13px;
+          padding: 10px;
+
+          div,
+          span {
+            font-family: 'Poppins', sans-serif;
+            font-size: 13px;
+          }
+
+          &:first-child {
+            font-weight: 600;
+            width: 20px;
+            border-width: 1px 0 0 1px;
+          }
+
+          &:nth-child(2) {
+            width: 190px;
+            border-width: 1px 0 0 1px;
+          }
+
+          &:last-child {
+            border-width: 1px 1px 0 1px;
+          }
+
+          .term {
+            font-weight: 600;
+            margin-bottom: 5px;
+
+            &.margin-top {
+              margin-top: 15px;
+            }
+          }
+
+          .term-note {
+            font-size: 11px;
+            text-align: justify;
+            font-weight: normal;
+          }
+
+          .term-detail {
+            margin-bottom: 20px;
+            text-align: justify;
+
+            &:last-child {
+              margin-bottom: 0px;
+            }
+
+            .form-check {
+              padding-bottom: 5px;
+
+              input[type=checkbox] {
+                margin-top: 2px;
+              }
+
+              .empty-checkbox-placeholder {
+                width: 15px;
+              }
+
+              .check-box-label {
+                max-width: calc(100% - 25px);
+                // text-align: justify;
+
+                b {
+                  font-weight: 600;
+                }
+              }
+
+              &.margin-top {
+                padding-top: 5px;
+              }
+            }
+
+            .form-control {
+              padding: 0px 5px;
+              border: none !important;
+              border-bottom: solid 1px var(--bs-black) !important;
+              outline: none;
+              font-weight: inherit !important;
+              font-family: inherit !important;
+              text-align: center;
+              font-size: inherit;
+
+              &.small {
+                max-width: 50px;
+              }
+            }
+
+            .term-description {
+              text-align: justify;
+            }
+
+            ol {
+              list-style: lower-alpha;
+              padding-left: 15px;
+              margin: 0;
+            }
+
+            ul {
+              padding-left: 15px;
+              margin: 0;
+              margin-top: 5px;
+            }
+
+            li {
+              font-family: 'Poppins', sans-serif;
+              font-size: 13px;
+              padding-bottom: 5px;
+              text-align: justify;
+
+              &:last-child {
+                padding-bottom: 0px;
+              }
+
+              b {
+                font-weight: 600;
+              }
+            }
+
+            .strike-through-select {
+              cursor: pointer;
+              transition: all 1s ease;
+            }
+
+            .conversion-formula {
+              padding: 15px 0;
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              align-items: center;
+              width: 100%;
+              gap: 10px;
+
+              div {
+                font-size: 11px;
+              }
+
+              .right-side {
+                .nominator {
+                  padding-bottom: 3px;
+                  border-bottom: 1px solid var(--bs-black);
+                  text-align: center;
+                }
+
+                .denominator {
+                  padding-top: 3px;
+                  text-align: center;
+                }
+              }
+            }
+          }
+        }
+
+        &:last-child {
+          td {
+            &:first-child {
+              border-width: 1px 0 1px 1px;
+            }
+
+            &:nth-child(2) {
+              border-width: 1px 0 1px 1px;
+            }
+
+            &:last-child {
+              border-width: 1px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

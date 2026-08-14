@@ -1,0 +1,35 @@
+.fw-bold {
+  font-weight: bold;
+}
+
+.fw-semi-bold {
+  font-weight: 550 !important;
+}
+
+.fw-semi-thin {
+  font-weight: 250 !important;
+}
+
+.fw-thin {
+  font-weight: 100 !important;
+}
+
+.no-record {
+  width: 100%;
+  text-align: center;
+
+  .emphasis {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .subnote {
+    font-size: 1.1rem;
+
+    .action-link {
+      cursor: pointer;
+      color: var(--bs-icompany-blue);
+    }
+  }
+}

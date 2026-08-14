@@ -1,0 +1,89 @@
+#company-no-constitution-declaration {
+  .paper {
+    &.print {
+      padding: 20mm;
+    }
+  }
+}
+
+.no-constitution-declaration {
+  .letter-head {
+    text-align: center;
+  }
+
+  .document-date {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+
+    .placeholder {
+      font-weight: normal;
+      font-style: italic;
+      color: var(--bs-gray-600);
+    }
+  }
+
+  .greeting {
+    margin-bottom: 10px;
+  }
+
+  .letter-title {
+    letter-spacing: 0.1pt;
+    margin-bottom: 10px;
+
+    p {
+      text-align: justify;
+      padding-bottom: 5px;
+    }
+
+    .form-control {
+      width: 45%;
+    }
+
+    .action-link {
+      cursor: pointer;
+      color: var(--bs-icompany-blue);
+    }
+  }
+
+  .letter-content {
+    padding-top: 10px;
+
+    p,
+    div {
+      text-align: justify;
+      padding-bottom: 5px;
+      line-height: 1.6rem;
+    }
+  }
+
+  .letter-sign-off {
+    margin-top: 30px;
+    width: 40%;
+    position: relative;
+
+    .signature-image {
+      width: 100%;
+      min-height: 100px;
+      margin-bottom: 0;
+
+      img {
+        width: 75%;
+        height: auto;
+      }
+    }
+
+    .cosec-name {
+      font-weight: bold;
+      padding-top: 10px;
+      border-top: 2px solid var(--bs-black);
+
+      .cosec-role {
+        font-weight: normal;
+      }
+    }
+  }
+}

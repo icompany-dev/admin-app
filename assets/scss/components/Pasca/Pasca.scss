@@ -1,0 +1,132 @@
+#pasca {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+
+  .step {
+    padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 15px;
+    min-height: 50px;
+    min-width: 150px;
+
+    .node-container {
+      padding-top: 22px;
+
+      .node {
+        position: relative;
+        width: 1px;
+        height: 100%;
+        border: 2px solid var(--pasca-node-container-default-color);
+        background-color: var(--pasca-node-container-default-color);
+        border-radius: 5px;
+
+        &::before {
+          content: ' ';
+          position: absolute;
+          top: -22px;
+          left: -7px;
+          width: 11px;
+          height: 11px;
+          border-radius: 50%;
+          border: 2px solid var(--pasca-node-inner-border-color);
+          background-color: var(--pasca-node-bg-color);
+        }
+
+        &::after {
+          content: ' ';
+          position: absolute;
+          top: -25px;
+          left: -10px;
+          width: 15px;
+          height: 15px;
+          border-radius: 50%;
+          border: 3px solid var(--pasca-node-outer-border-color);
+        }
+      }
+    }
+
+    .content {
+      width: 100%;
+      background-color: transparent;
+      border-radius: 5px;
+      padding: 5px 10px;
+
+      .label {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--pasca-label-color);
+        opacity: 0.5;
+      }
+
+      .details {
+        padding: 5px 0;
+        display: none;
+      }
+    }
+
+    &.active {
+      .node-container {
+        .node {
+          &::before {
+            background-color: var(--pasca-node-active-bg-color);
+          }
+        }
+      }
+
+      .content {
+        background-color: rgba(255, 255, 255, 0.25);
+
+        .label {
+          opacity: 1;
+        }
+
+        .details {
+          display: block;
+        }
+      }
+    }
+
+    &:has(~ .step.active) {
+      .node-container {
+        .node {
+          border-color: var(--pasca-node-container-completed-color);
+          background-color: var(--pasca-node-container-completed-color);
+
+          &::before {
+            background-color: var(--pasca-node-completed-bg-color);
+          }
+        }
+      }
+
+      .content {
+        .label {
+          opacity: 1;
+        }
+
+        .details {
+          display: block;
+        }
+      }
+    }
+
+    &:last-child {
+      .node-container {
+        .node {
+          background-color: transparent;
+          border-color: transparent;
+        }
+      }
+
+      &.active {
+        .content {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}

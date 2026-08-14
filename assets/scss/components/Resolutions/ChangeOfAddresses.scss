@@ -1,0 +1,22 @@
+#dcr-change-of-addresses {
+  .address-inputs {
+    width: 50%;
+  }
+
+  .address {
+    &.placeholder {
+      color: var(--bs-gray-500);
+      background-color: var(--bs-gray-100);
+      border-radius: 5px;
+      max-width: 30%;
+      padding: 5px;
+      line-height: 18px;
+    }
+  }
+}
+
+.change-of-address {
+  p {
+    margin: 10px 0;
+  }
+}

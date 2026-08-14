@@ -1,0 +1,70 @@
+#dcr-delegation-of-authority {
+  .director-name {
+    text-transform: uppercase;
+  }
+
+  .delegate-to-wrapper {
+    margin-bottom: 10px;
+
+    .remove-link {
+      cursor: pointer;
+      color: var(--bs-danger);
+      font-size: 1rem;
+    }
+  }
+
+  .button-wrapper {
+    margin-top: 5px;
+  }
+
+  .delegate-to-detail {
+    width: 100%;
+    
+    tr {
+      width: 100%;
+
+      td {
+        vertical-align: top;
+  
+        &:first-child {
+          text-wrap: nowrap;
+          width: 120px;
+          font-weight: 600;
+        }
+
+        &:nth-child(2) {
+          width: 20px;
+          font-weight: bold;
+        }
+
+        &:last-child {
+          width: 100%;
+        }
+      }
+    }
+
+    input[type="text"] {
+      width: 100%;
+    }
+
+    select {
+      width: 100%;
+    }
+
+    .scope-checkboxes {
+      .form-check {
+        margin-bottom: 5px;
+
+        .form-check-input {
+          margin-top: 0.2rem;
+        }
+
+        .form-check-label {
+          font-size: 0.9rem;
+          margin-left: 0.25rem;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

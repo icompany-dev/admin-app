@@ -1,0 +1,72 @@
+.editor-content {
+  font-size: 1rem;
+
+  h5 {
+    line-height: 1.6;
+    margin-top: 0px;
+    font-weight: 400;
+  }
+
+  ol,
+  ul {
+    font-size: 1rem;
+    padding-left: 1.2em;
+    margin-left: 0.5em;
+
+    li {
+      font-size: 1rem;
+      position: relative;
+      padding-left: 1.2em;
+      margin-bottom: 1em;
+      line-height: 1.2;
+    }
+  }
+
+  p {
+    line-height: 1.2;
+    margin: 0;
+
+    a {
+      text-decoration: none;
+      cursor: pointer;
+      color: var(--bs-primary);
+    }
+  }
+
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    &:has(> br:only-child) {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .ql-align-justify {
+    text-align: justify;
+  }
+
+  .ql-align-center {
+    text-align: center;
+  }
+
+  .ql-align-right {
+    text-align: right;
+  }
+
+  .clamp {
+    &:has(+ .clamp) {
+      margin-bottom: 0;
+    }
+  }
+
+  @for $i from 1 through 10 {
+    .ql-indent-#{$i} {
+      padding-left: #{1.5 + ($i * 0.15)}em;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+#popup-proceed-change-of-name {
+  .proposed-names {
+    margin-top: 5px;
+
+    .proposed-name {
+      margin-bottom: 5px;
+
+      .label {
+        font-size: 0.8rem
+      }
+
+      .name {
+        font-size: 1.5rem;
+        font-weight: bold;
+
+        &.not-selected {
+          color: var(--bs-gray-400);
+        }
+      }
+    }
+  }
+}

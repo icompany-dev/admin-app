@@ -1,0 +1,150 @@
+// #legal-documents-section236-three {
+//   // Styles go here
+// }
+
+.section-236Three {
+
+  div,
+  p,
+  span,
+  td {
+    font-size: 13px;
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  .company-registration {
+
+    .company-registration-label {
+      font-weight: 600;
+    }
+
+    .company-registration-box {
+      padding: 3px 10px;
+      width: fit-content;
+      text-align: center;
+      border: 1px solid var(--bs-black);
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+
+      .form-control {
+        width: calc(60% - 10px);
+        display: inline;
+
+        &.small {
+          width: calc(40% - 10px);
+        }
+      }
+    }
+  }
+
+  .document-header {
+    padding-top: 30px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .section-table {
+    margin: 20px 0;
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      tr {
+        th {
+          text-align: center;
+          font-weight: 600;
+          font-size: 14px;
+          padding: 5px;
+          border: 1px solid var(--bs-black);
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          vertical-align: middle;
+          padding: 8px 10px;
+          border-right: 1px solid var(--bs-black);
+          border-bottom: 1px solid var(--bs-black);
+
+          &:first-child {
+            border-left: 1px solid var(--bs-black);
+          }
+        }
+      }
+    }
+
+    &.particulars {
+      tbody {
+        tr {
+          td {
+            &:first-child {
+              width: 30%;
+            }
+          }
+        }
+      }
+    }
+
+    &.declaration {
+      tbody {
+        tr {
+          td {
+            &:first-child {
+              width: 10%;
+              text-align: center;
+            }
+
+            &:only-child {
+              width: 100%;
+              text-align: left;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .signature-section {
+    margin-top: 40px;
+
+    .sign-off {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .signature-image {
+      width: 30%;
+      border-bottom: 1px solid var(--bs-black);
+
+      img {
+        height: 80px;
+        width: auto;
+      }
+    }
+
+    .sign-off-details {
+      margin-top: 10px;
+    }
+
+    .sign-off-table {
+      tbody {
+        tr {
+          td {
+            &:last-child {
+              text-transform: uppercase;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
+}

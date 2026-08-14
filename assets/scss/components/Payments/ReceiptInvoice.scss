@@ -1,0 +1,306 @@
+.receipt-invoice {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: none;
+
+  &.printing {
+    opacity: 0;
+    visibility: hidden;
+    z-index: -999;
+  }
+}
+
+.receipt-paper {
+  .header-content {
+    flex-grow: 1;
+    page-break-inside: auto;
+
+    .header {
+      width: 170mm;
+      padding-bottom: 5mm;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: auto;
+
+      .logo {
+        img {
+          height: 50px;
+          width: auto;
+        }
+      }
+
+      .document-name {
+        font-weight: 600;
+        font-size: 2.5rem;
+        line-height: 2.6rem;
+        color: var(--bs-gray-500);
+        text-transform: uppercase;
+      }
+    }
+
+    .bill-to-details {
+      width: 100%;
+      padding-bottom: 1mm;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+
+      .billing-details {
+        width: 100mm;
+        padding-bottom: 20px;
+
+        .billing-name {
+          text-transform: uppercase;
+          font-weight: 600;
+        }
+
+        .billing-address {
+          text-transform: uppercase;
+          line-height: 1.3rem;
+          margin-bottom: 10px;
+        }
+
+        .attention-to {
+          border-collapse: collapse;
+          border: none;
+
+          tr {
+            td {
+              &:first-child {
+                font-weight: 600;
+                width: 80px;
+              }
+
+              &:nth-child(2) {
+                font-weight: 600;
+                width: 10px;
+              }
+            }
+          }
+        }
+      }
+
+      .payment-details {
+        width: 60mm;
+
+        .payment-table {
+          width: 100%;
+          border-collapse: collapse;
+          border: none;
+
+          tr {
+            td {
+              &:first-child {
+                font-weight: 600;
+                width: 80px;
+              }
+
+              &:nth-child(2) {
+                font-weight: 600;
+                width: 10px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .transaction-list {
+      width: 170mm;
+      margin: auto;
+
+      .continue-note {
+        font-style: italic;
+        font-size: 10px;
+        text-align: right;
+        width: 100%;
+        padding-bottom: 5px;
+      }
+
+      .transaction-table {
+        width: 100%;
+        border-collapse: collapse;
+        border: none;
+
+        tr {
+          th {
+            background-color: var(--bs-gray-300);
+            padding: 5px;
+            text-align: left;
+
+            &.quantity {
+              width: 20px;
+              text-align: center;
+            }
+
+            &.price {
+              text-align: right;
+            }
+          }
+
+          td {
+            padding: 5px;
+            font-size: 12px;
+
+            &.service-name {
+              font-weight: bold;
+              text-transform: uppercase;
+              font-size: 14px;
+              letter-spacing: 0.1pt;
+            }
+
+            &.price {
+              text-align: right;
+            }
+
+            &.quantity {
+              width: 20px;
+              text-align: center;
+            }
+          }
+
+          &.subitem {
+            padding: 2px 5px;
+
+            td {
+              font-size: 12px;
+              line-height: 12px;
+
+              &.item-name {
+                .name {
+                  padding: 0px;
+                  font-size: 11px;
+                  line-height: 11px;
+
+                  &::before {
+                    content: '•';
+                    font-size: 15px;
+                    padding-right: 10px;
+                  }
+                }
+              }
+            }
+          }
+
+          &.configuration-row {
+            td {
+              &.item {
+                font-weight: 600;
+              }
+            }
+          }
+
+          &.subtotal-row {
+            td {
+              border-top: solid 1px var(--bs-gray-500);
+
+              &.subtotal {
+                font-size: 14px;
+                font-weight: bold;
+                text-align: right;
+              }
+            }
+          }
+
+          &.grand-total {
+            td {
+              padding-top: 10px;
+
+              &.total-title {
+                font-size: 16px;
+                text-transform: uppercase;
+                font-weight: bold;
+                color: var(--bs-gray-500);
+                text-align: right;
+              }
+
+              &.price {
+                font-size: 16px;
+                font-weight: 600;
+                text-align: right;
+                border: 1px 0 1px 0 solid var(--bs-gray-300);
+              }
+            }
+          }
+
+          &.payment-method {
+            td {
+              &.method-title {
+                text-align: right;
+              }
+
+              &.method {
+                text-align: right;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .receipt-footer {
+    position: absolute;
+    left: -20mm;
+    bottom: -20mm;
+    flex-shrink: 0;
+    width: 210mm;
+
+    .disclaimer {
+      width: 100%;
+      color: var(--bs-gray-500);
+      font-size: 10px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .purple-container {
+      padding: 20px 20mm;
+      background-color: var(--bs-icompany-purple);
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 20px;
+
+      .left-content {
+        width: 100mm;
+        font-size: 10px;
+        line-height: 11px;
+        color: var(--bs-white);
+        text-align: right;
+      }
+
+      .qr-code {
+        img {
+          height: 75px;
+          width: auto;
+        }
+
+        .notes {
+          font-size: 7px;
+          line-height: 9px;
+          color: var(--bs-white);
+          width: 100%;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  &.is-printing {
+    width: 210mm;
+    height: 297mm;
+
+    .header-content {
+      padding: 20mm;
+      padding-bottom: 0;
+      width: 170mm;
+    }
+  }
+}

@@ -1,0 +1,206 @@
+.document-toggler {
+  position: fixed;
+  top: 120px;
+  right: calc((100% - 210mm - 100px) / 2);
+  width: 30px;
+  height: 290px;
+  opacity: 0;
+  z-index: -99;
+  transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+
+  .buttons {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: var(--bs-white);
+    border: 2px solid var(--bs-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s ease;
+
+    i {
+      font-size: 15px;
+    }
+
+    &.back {
+      background-color: var(--bs-icompany-blue-dark);
+
+      &:hover {
+        background-color: var(--bs-icompany-blue-lighter);
+      }
+    }
+
+    &.submit {
+      background-color: var(--bs-icompany-green-dark);
+
+      &:hover {
+        background-color: var(--bs-icompany-green-lighter);
+      }
+    }
+
+    &.delete {
+      background-color: var(--bs-danger);
+
+      &:hover {
+        background-color: var(--bs-icompany-orange-darker);
+      }
+    }
+
+    &.help {
+      background-color: var(--bs-icompany-purple-light);
+
+      &:hover {
+        background-color: var(--bs-icompany-purple-lightest);
+      }
+    }
+
+    &.more {
+      background-color: var(--bs-icompany-orange);
+
+      &:hover {
+        background-color: var(--bs-icompany-orange-dark);
+      }
+    }
+  }
+
+  .zooms {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0;
+
+    .zoom {
+      width: 20px;
+      height: 20px;
+      color: var(--bs-gray-800);
+      border: 1px solid var(--bs-gray-800);
+      background-color: var(--bs-gray-200);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.5s ease;
+
+      i {
+        font-size: 10px;
+      }
+
+      &:hover {
+        background-color: var(--bs-gray-800);
+        color: var(--bs-gray-200);
+      }
+
+      &.disabled {
+        background-color: var(--bs-gray-600);
+        cursor: default;
+
+        &:hover {
+          background-color: var(--bs-gray-600);
+          color: var(--bs-gray-800);
+        }
+      }
+    }
+  }
+
+  .help-container {
+    position: absolute;
+    top: 100px;
+    right: -260px;
+    width: 200px;
+    padding: 0px;
+    opacity: 0;
+    height: 0;
+    border-radius: 5px;
+    background-color: var(--bs-orange-bg-subtle);
+    transition: all 0.7s ease;
+    transform: scaleY(0);
+    transform-origin: top;
+    color: var(--bs-gray-700);
+    font-size: 1rem;
+
+    &.show {
+      padding: 20px;
+      height: auto;
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    .help-title {
+      font-weight: 600;
+      padding-bottom: 5px;
+    }
+
+    .help-description {
+      ul {
+        padding-left: 15px;
+
+        li {
+          padding-bottom: 5px;
+        }
+      }
+    }
+  }
+
+  .more-option-container {
+    position: absolute;
+    top: 150px;
+    right: -220px;
+    width: 200px;
+    padding: 0px;
+    opacity: 0;
+    height: 0;
+    transition: all 0.7s ease;
+    transform: scaleY(0);
+    transform-origin: top;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 5px;
+
+    &.show {
+      height: auto;
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    .more-option {
+      padding: 5px 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 5px;
+      background-color: var(--document-toggler-more-option-bg-color);
+      color: var(--document-toggler-more-option-color);
+      border-radius: 5px;
+
+      .label {
+        width: 50px;
+
+        &.active {
+          font-weight: 600;
+        }
+      }
+
+      .option {
+        cursor: pointer;
+
+        &.active {
+          color: var(--bs-icompany-purple);
+        }
+      }
+    }
+  }
+}

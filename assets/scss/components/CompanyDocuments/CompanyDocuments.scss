@@ -1,0 +1,19 @@
+#company-documents {
+  width: 100%;
+  height: calc(100dvh - 300px);
+  margin: auto;
+  padding-top: 50px;
+  position: relative;
+
+  .form-check {
+    padding: 5px 0;
+    align-items: center;
+  }
+
+  .documents {
+    &.not-multiple-4 {
+      justify-content: flex-start;
+      padding-left: 5px;
+    }
+  }
+}

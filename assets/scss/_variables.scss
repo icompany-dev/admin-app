@@ -1,0 +1,789 @@
+// Use Sass's built-in modules for color functions
+@use "sass:color";
+
+// -- Step 1: Define all color variables in one place, avoiding duplicates --
+// Gray Scale
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$gray-1000: #141618;
+
+// Brand & Core Colors
+$black: #000000;
+$white: #fff;
+$offwhite: #dbdbdb;
+$background: #f5f6f8;
+$darkmode-background: #343a40;
+$purple: #491f46;
+$primary: #6a095c;
+$primary-neon: #ba00ff;
+$purple-gray: #3f354e;
+$cyan: #0dcaf0;
+$cyan-alt: #45cefc;
+$white-blue: #aee5ff;
+$blue: #0d6efd;
+$orange: #ff914d;
+$red: #dc3545;
+$red-alt: #c1272d;
+$yellow: #ffc107;
+$yellow-alt: #fce83b;
+$yellow-light: #fdf9b4;
+$green: #198754;
+$green-alt: #479d19;
+$dark-green: #006837;
+
+$ssm-blue: #20558a;
+
+// Icompany-specific color scales
+$icompany-purple-darker: #240f22;
+$icompany-purple-dark: #361734;
+$icompany-purple: #491f46;
+$icompany-purple-light: #8f3d89;
+$icompany-purple-lighter: #b34dac;
+$icompany-purple-lightest: #e1cede;
+
+$icompany-orange-darker: #cf2a1a;
+$icompany-orange-dark: #e14b1f;
+$icompany-orange: #f69055;
+$icompany-orange-light: #f8874b;
+$icompany-orange-lighter: #fca174;
+
+$icompany-blue-darker: #063dd5;
+$icompany-blue-dark: #0954ea;
+$icompany-blue: #0d6efd;
+$icompany-blue-light: #388dff;
+$icompany-blue-lighter: #66abff;
+
+$icompany-green-darker: #005915;
+$icompany-green-dark: #006125;
+$icompany-green: #006837;
+$icompany-green-light: #32875d;
+$icompany-green-lighter: #64a583;
+
+$icompany-yellow: #fadd7d;
+
+// Status & Semantic Colors
+$secondary: $gray-600;
+$secondary-alt: $gray-500;
+$success: $green;
+$success-alt: $green-alt;
+$info: $cyan;
+$info-alt: $cyan-alt;
+$warning: $yellow;
+$warning-alt: $yellow-alt;
+$danger: $red;
+$danger-alt: $red-alt;
+$disabled: $gray-200; // Using a gray variable to be more explicit
+$table-bg: transparent;
+
+// -- Step 2: Create a single, clean map for all colors --
+$theme-colors: (
+  "primary": $primary,
+  "primary-neon": $primary-neon,
+  "secondary": $secondary,
+  "secondary-alt": $secondary-alt,
+  "secondary-400": $gray-400,
+  "success": $success,
+  "success-alt": $success-alt,
+  "info": $info,
+  "info-alt": $info-alt,
+  "warning": $warning,
+  "warning-alt": $warning-alt,
+  "danger": $danger,
+  "danger-alt": $danger-alt,
+  "black": $black,
+  "blue": $blue,
+  "green": $dark-green,
+  "orange": $orange,
+  "yellow-light": $yellow-light,
+  "icompany-purple-darker": $icompany-purple-darker,
+  "icompany-purple-dark": $icompany-purple-dark,
+  "icompany-purple": $icompany-purple,
+  "icompany-purple-light": $icompany-purple-light,
+  "icompany-purple-lighter": $icompany-purple-lighter,
+  "icompany-purple-lightest": $icompany-purple-lightest,
+  "icompany-orange-darker": $icompany-orange-darker,
+  "icompany-orange-dark": $icompany-orange-dark,
+  "icompany-orange": $icompany-orange,
+  "icompany-orange-light": $icompany-orange-light,
+  "icompany-orange-lighter": $icompany-orange-lighter,
+  "icompany-green-darker": $icompany-green-darker,
+  "icompany-green-dark": $icompany-green-dark,
+  "icompany-green": $icompany-green,
+  "icompany-green-light": $icompany-green-light,
+  "icompany-green-lighter": $icompany-green-lighter,
+  "icompany-blue-darker": $icompany-blue-darker,
+  "icompany-blue-dark": $icompany-blue-dark,
+  "icompany-blue": $icompany-blue,
+  "icompany-blue-light": $icompany-blue-light,
+  "icompany-blue-lighter": $icompany-blue-lighter,
+  "icompany-yellow": $icompany-yellow,
+  "light": $gray-100,
+  "light-200": $gray-200,
+  "light-300": $gray-300,
+  "light-400": $gray-400,
+  "dark": $gray-900,
+  "darker": $gray-1000,
+  "purple": $purple,
+  "purple-gray": $purple-gray,
+  "white": $white,
+  "white-blue": $white-blue,
+  "disabled": $disabled,
+  "offwhite": $offwhite,
+  "super-light": $background,
+  "super-darkmode": $darkmode-background,
+  "gray-100": $gray-100,
+  "gray-200": $gray-200,
+  "gray-300": $gray-300,
+  "gray-400": $gray-400,
+  "gray-500": $gray-500,
+  "gray-600": $gray-600,
+  "gray-700": $gray-700,
+  "gray-800": $gray-800,
+  "gray-900": $gray-900,
+  "gray-1000": $gray-1000,
+  "ssm-blue": $ssm-blue,
+);
+
+// -- Step 3: Helper function & mixin for derived colors --
+// Helper function to safely get RGB values
+@function get-rgb($color) {
+  @return color.channel($color, "red"), color.channel($color, "green"), color.channel($color, "blue");
+}
+
+// Mixin to generate derived colors
+@mixin generate-bs-derived($name, $color) {
+  --bs-#{$name}-rgb: #{get-rgb($color)};
+  --bs-#{$name}-bg-subtle: #{color.mix(white, $color, 90%)};
+  --bs-#{$name}-border-subtle: #{color.mix(white, $color, 75%)};
+  --bs-#{$name}-text-emphasis: #{color.mix(black, $color, 50%)};
+}
+
+// -- Step 4: Dynamically generate :root variables using loops --
+:root {
+  // Static variables first
+  --bg-url: url("https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/img/background-image.webp");
+  --logo-url: url("https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/landing-res/logos/icompany_long.png");
+  --scrollbar-width: calc(100vw - 100%);
+  --default-layout-bg-gradient-from: rgba(255, 255, 255, 0.7);
+  --default-layout-bg-gradient-to: rgba(255, 255, 255, 0.7);
+  --default-layout-color-overlay-gradient-from: rgba(173, 181, 189, 1);
+  --default-layout-color-overlay-gradient-to: rgba(173, 181, 189, 0.8);
+  --sdnbhd-layout-bg-gradient-from: rgba(255, 255, 255, 0.7);
+  --sdnbhd-layout-bg-gradient-to: rgba(255, 255, 255, 0.7);
+  --sdnbhd-layout-color-overlay-gradient-from: rgba(173, 181, 189, 1);
+  --sdnbhd-layout-color-overlay-gradient-to: rgba(173, 181, 189, 0.8);
+  --default-header-scroll-bg-color-from: rgba(173, 181, 189, 1);
+  --default-header-scroll-bg-color-mid: rgba(173, 181, 189, 0.8);
+  --default-header-scroll-bg-color-to: rgba(173, 181, 189, 0);
+  --default-header-mobile-menu-bg-color: rgba(255, 255, 255, 0.5);
+
+  --header-burger-width: 25px;
+  --header-burger-height: 25px;
+  --header-burger-line-height: 4px;
+  --header-burger-line-spacing: 6px;
+  --header-burger-line-open-offset: 2px;
+
+  --header-tool-color: #{$icompany-purple};
+  --header-tool-color-hover: #{$icompany-purple-light};
+  --header-tool-language-color: #{$icompany-purple};
+  --header-tool-language-color-hover: #{$icompany-purple-light};
+  --header-search-bar-card-max-height: calc(70dvh - 180px);
+  --header-search-bar-glossary-result-max-height: calc(var(--header-search-bar-card-max-height) - 170px);
+  --header-search-result-min-height: 50dvh;
+  --prepare-content-loader-icon-color: #{$primary};
+  --prepare-content-loader-notice-color: #{$primary};
+  --centre-stage-loader-icon-color: #{$primary};
+  --centre-stage-loader-notice-color: #{$primary};
+  --centre-stage-icon-button-bg-color: #{$icompany-purple-dark};
+  --centre-stage-icon-button-border-color: #{$white};
+  --centre-stage-icon-button-color: #{$white};
+  --centre-stage-icon-button-hover-color: #{$icompany-purple-dark};
+  --centre-stage-icon-button-hover-bg-color: #{$icompany-purple-lightest};
+  --centre-stage-icon-button-hover-border-color: #{$icompany-purple};
+  --centre-stage-panel-bg-color: rgba(255, 255, 255, 0.5);
+  --centre-stage-content-panel-bg-color: rgba(144, 152, 160, 0.5);
+  --centre-stage-content-panel-has-action-border-color: #{$white};
+  --centre-stage-content-panel-has-action-box-shadow: 0 0.1rem 1rem #{$white};
+  --centre-stage-to-do-list-bg-color: rgba(144, 152, 160, 0.5);
+  --centre-stage-to-do-card-bg-color: #{$white};
+  --centre-stage-to-do-card-incomplete-border-color: #{$icompany-purple};
+  --centre-stage-to-do-card-sign-required-border-color: #{$icompany-orange};
+  --centre-stage-to-do-card-response-required-border-color: #{$red};
+  --centre-stage-to-do-card-success-border-color: #{$icompany-green};
+  --centre-stage-to-do-card-in-progress-border-color: #{$icompany-orange};
+  --centre-stage-heading: #{$icompany-purple-dark};
+  --to-do-list-enlarged-height-offset: 250px;
+  --to-do-list-has-action-border-color: #{$white};
+  --max-width-centre-stage: 1280px;
+  --centre-stage-action-button-tooltip-bg-color: rgba(111, 115, 119, 0.9);
+  --centre-stage-action-button-tooltip-color: #{$white};
+  --centre-stage-action-button-tooltip-title-color: #{$icompany-purple};
+  --centre-stage-action-button-tooltip-pointer-color: #{$icompany-purple-lighter};
+  --centre-stage-action-button-more-filter-bg-color: #{$gray-200};
+  --centre-stage-company-panel-bg-color: #{$white};
+  --centre-stage-company-panel-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  --centre-stage-company-panel-hover-bg-color: #{$icompany-purple-lightest};
+  --centre-stage-company-panel-hover-box-shadow: 0 4px 8px 0 #{$icompany-purple}, 0 6px 20px 0 #{$icompany-purple};
+  --centre-stage-company-panels-navigation-arrow-color: #{$white};
+  --centre-stage-company-panels-navigation-arrow-bg-color: #{color.mix(transparent, $icompany-purple, 50%)};
+
+  --document-toggler-more-option-bg-color: #{$gray-200};
+  --document-toggler-more-option-color: #{$gray-900};
+  --document-button-color: #{$white};
+  --document-button-bg-color: #{$icompany-purple-dark};
+  --document-button-border-color: #{$white};
+
+  --sdn-bhd-sidebar-action-button-color: #{$icompany-purple};
+  --sdn-bhd-sidebar-action-button-label-color: #{$icompany-purple};
+  --sdn-bhd-sidebar-action-button-bg-color: #{$white};
+  --sdn-bhd-sidebar-action-button-border-color: #{$icompany-purple};
+  --sdn-bhd-sidebar-action-button-hover-color: #{$white};
+  --sdn-bhd-sidebar-action-button-hover-bg-color: #{$icompany-purple};
+  --sdn-bhd-sidebar-action-button-hover-border-color: #{$white};
+  --sdn-bhd-sidebar-header-heading-color: #{$purple-gray};
+
+  --sdn-bhd-sidebar-action-button-option-category-border-color: transparent;
+  --sdn-bhd-sidebar-action-button-option-category-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-category-bg-color: #{$gray-800};
+  --sdn-bhd-sidebar-action-button-option-border-color: transparent;
+  --sdn-bhd-sidebar-action-button-option-color: #{$primary};
+  --sdn-bhd-sidebar-action-button-option-bg-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-hover-bg-color: #{$icompany-purple-lightest};
+
+  --sdn-bhd-service-cta-bg-color: #efebeb;
+  --sdn-bhd-service-cta-enlarged-bg-color: #efebeb;
+
+  --sdn-bhd-service-step-node-container-default-color: #{$gray-300};
+  --sdn-bhd-service-step-node-container-completed-color: #{$icompany-purple};
+  --sdn-bhd-service-step-node-outer-border-color: #{$icompany-purple};
+  --sdn-bhd-service-step-node-inner-border-color: #{$white};
+  --sdn-bhd-service-step-node-bg-color: #{$white};
+  --sdn-bhd-service-step-node-active-bg-color: #{$icompany-orange};
+  --sdn-bhd-service-step-node-completed-bg-color: #{$icompany-purple};
+  --sdn-bhd-service-step-label-color: #{$icompany-purple};
+
+  --sdn-bhd-documents-name-color: #{$icompany-purple};
+  --sdn-bhd-documents-placeholder-bg-color: rgba(0, 0, 0, 0.7);
+  --sdn-bhd-documents-placeholder-color: #{$white};
+  --sdn-bhd-documents-placeholder-alt-color: #{$icompany-orange};
+
+  --btn-disabled-color: #{$gray-500};
+  --btn-disabled-bg-color: #{$gray-400};
+  --btn-disabled-border-color: #{$gray-400};
+  --btn-primary-bg-color: #{$white};
+  --btn-primary-color: #{$icompany-purple};
+  --btn-primary-border-color: #{$icompany-purple};
+  --btn-primary-hover-bg-color: #{$icompany-purple};
+  --btn-primary-hover-color: #{$white};
+  --btn-danger-bg-color: #{$red};
+  --btn-danger-color: #{$white};
+  --btn-danger-border-color: #{$red};
+  --btn-danger-hover-bg-color: #{$white};
+  --btn-danger-hover-color: #{$red};
+  --btn-back-bg-color: #{$red};
+  --btn-back-color: #{$white};
+  --btn-back-border-color: #{$red};
+  --btn-back-hover-bg-color: #{$white};
+  --btn-back-hover-color: #{$red};
+  --btn-pay-bg-color: #{$icompany-blue};
+  --btn-pay-color: #{$white};
+  --btn-pay-border-color: #{$icompany-blue};
+  --btn-pay-hover-bg-color: #{$white};
+  --btn-pay-hover-color: #{$icompany-blue};
+  --btn-submit-bg-color: #{$icompany-blue};
+  --btn-submit-color: #{$white};
+  --btn-submit-border-color: #{$icompany-blue};
+  --btn-submit-hover-bg-color: #{$white};
+  --btn-submit-hover-color: #{$icompany-blue};
+  --btn-option-bg-color: transparent;
+  --btn-option-color: #{$gray-800};
+  --btn-option-border-color: #{$gray-800};
+  --btn-option-hover-bg-color: #{$icompany-purple-lightest};
+  --btn-option-hover-color: #{$icompany-purple};
+  --btn-option-hover-border-color: #{$icompany-purple};
+  --btn-option-active-bg-color: #{$icompany-purple};
+  --btn-option-active-color: #{$white};
+  --btn-option-active-border-color: #{$icompany-purple};
+  --btn-sub-option-bg-color: #{$white};
+  --btn-sub-option-color: #{$icompany-purple};
+  --btn-sub-option-border-color: #{$icompany-purple};
+  --btn-sub-option-hover-bg-color: #{$icompany-purple};
+  --btn-sub-option-hover-color: #{$white};
+  --btn-sub-option-hover-border-color: #{$white};
+  --btn-continue-bg-color: #{$white};
+  --btn-continue-color: #{$icompany-blue};
+  --btn-continue-border-color: #{$icompany-blue};
+  --btn-continue-hover-bg-color: #{$icompany-blue};
+  --btn-continue-hover-color: #{$white};
+  --btn-ask-saira-bg-color: transparent;
+  --btn-ask-saira-color: #{$icompany-blue};
+  --btn-ask-saira-border-color: #{$icompany-blue};
+  --btn-ask-saira-hover-bg-color: #{$icompany-blue};
+  --btn-ask-saira-hover-color: #{$white};
+  --btn-ask-saira-hover-border-color: #{$icompany-blue};
+  --btn-download-bg-color: transparent;
+  --btn-download-color: #{$icompany-blue};
+  --btn-download-border-color: #{$icompany-blue};
+  --btn-download-hover-bg-color: #{$icompany-blue};
+  --btn-download-hover-color: #{$white};
+  --btn-download-hover-border-color: #{$icompany-blue};
+  --btn-abstain-bg-color: #{$gray-500};
+  --btn-abstain-color: #{$white};
+  --btn-abstain-border-color: #{$gray-500};
+  --btn-abstain-hover-bg-color: #{$gray-500};
+  --btn-abstain-hover-color: #{$white};
+
+  --btn-hover-label-color: #{$black};
+
+  --pagination-bubble-bg-color: #{$gray-200};
+  --pagination-bubble-selected-bg-color: #{$icompany-purple};
+  --pagination-bubble-border-color: #{$gray-200};
+
+  --popup-bg-color: #{$white};
+  --popup-title-bg-color: #{$icompany-purple};
+  --popup-title-color: #{$white};
+  --popup-body-bg-color: #{$gray-200};
+  --compliance-alert-title-bg-color: #{$danger};
+
+  --default-table-header-color: #{$white};
+  --default-table-header-bg-color: #{$icompany-purple};
+  --default-table-bg-color: #{$white};
+  --default-table-action-button-color: #{$icompany-purple};
+  --default-table-action-button-hover-color: #{$icompany-purple-lighter};
+
+  --transactions-year-title-color: #{$icompany-purple};
+  --transactions-year-active-bg-color: #{color.mix(transparent, $icompany-purple-lightest, 50%)};
+  --transactions-year-hover-bg-color: #{$icompany-purple-lightest};
+  --transactions-storyline-timeline-line: #{$gray-200};
+  --transactions-storyline-timeline-point-bg-color: #{$white};
+  --transactions-storyline-timeline-point-border-color: #{$icompany-purple};
+  --transactions-storyline-timeline-card-bg-color: #{$white};
+  --transactions-storyline-timeline-card-date-color: #{$gray-400};
+
+  --transactions-archive-year-border-color: #{$white};
+  --transaction-archive-color: #{$icompany-purple-lightest};
+  --transaction-archive-hover-color: #{$icompany-purple-light};
+  --transaction-year-color: #{$icompany-purple};
+
+  --cart-bg-color: #{$white};
+  --cart-form-label-color: #{$icompany-purple};
+
+  --form-control-border-color: #{$gray-500};
+  --form-control-checkbox-bg-color: #{$icompany-purple};
+  --form-control-checkbox-disabled-bg-color: #{$gray-500};
+  --form-control-disabled-bg-color: #{$gray-100};
+
+  --large-title-text-gray: #{$gray-400};
+  --large-title-text-purple: #{$icompany-purple};
+
+  --action-tray-bg-color: #{$gray-200};
+  --action-tray-hover-bg-color: #{$icompany-purple-lightest};
+  --action-tray-disabled-bg-color: #{$gray-300};
+  --action-tray-color: #{$gray-900};
+  --action-tray-hover-color: #{$primary};
+  --action-tray-disabled-color: #{$gray-500};
+
+  --pdf-document-filter-bg-color: #{$gray-200};
+  --pdf-document-filter-color: #{$gray-900};
+  --pdf-document-filter-disabled-color: #{$gray-400};
+
+  --responsibility-statement-header-bg-color: #{$icompany-purple};
+  --responsibility-statement-header-color: #{$white};
+
+  --color-text-primary: #{$gray-900};
+  --color-text-secondary: #{$gray-700};
+  --default-bg-color: #{$gray-200};
+  --link-color: #{$icompany-purple};
+  --link-hover-color: #{$icompany-purple-light};
+  --bs-table-bg: #{$table-bg};
+
+  --box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  --paper-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+  --switch-toggle-bg-color: #{color.mix(white, $icompany-purple, 50%)};
+  --switch-toggle-color: #{$white};
+  --switch-toggle-checked-bg-color: #{$icompany-purple};
+
+  --slider-container-border-color: #{$icompany-purple-dark};
+  --slider-container-bottom-border-color: #{$white};
+
+  --payment-gateway-logo-bg-color: #{$white};
+  --payment-gateway-logo-hover-bg-color: #{$icompany-purple-lightest};
+  --payment-gateway-logo-border-color: #{$icompany-purple};
+  --payment-gateway-logo-selected-bg-color: #{$icompany-purple-lightest};
+
+  --payment-cart-bg-color: #{$white};
+  --payment-cart-hover-bg-color: #{$icompany-purple-lightest};
+
+  --collapsible-ring-border-color: #{$icompany-purple};
+  --collapsible-ring-hover-bg-color: #{$icompany-purple-lightest};
+  --collapsible-box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+
+  --page-header-title-color: #3f354e;
+
+  --mailroom-service-notice-link-color: #{$icompany-blue};
+
+  --director-name: #{$purple-gray};
+  --shareholder-name: #{$purple-gray};
+
+  --drawer-wrapper-bg-color: #{$white};
+  --drawer-wrapper-overlay-bg-color: rgba(0, 0, 0, 0.5);
+
+  --post-ocr-select-option-group-bg-color: #{$gray-100};
+  --post-ocr-select-option-button-bg-color: transparent;
+  --post-ocr-select-option-button-border-color: #{$white};
+  --post-ocr-select-option-button-hover-color: #{$white};
+  --post-ocr-select-option-button-hover-bg-color: #{$gray-400};
+  --post-ocr-select-option-button-selected-bg-color: #{$gray-700};
+  --post-ocr-select-option-button-selected-color: #{$white};
+  --post-ocr-select-option-button-selected-border-color: #{$gray-700};
+  --post-ocr-sub-select-option-button-bg-color: transparent;
+  --post-ocr-sub-select-option-button-border-color: #{$white};
+  --post-ocr-sub-select-option-button-hover-color: #{$white};
+  --post-ocr-sub-select-option-button-hover-bg-color: #{$gray-300};
+  --post-ocr-sub-select-option-button-selected-bg-color: #{$gray-500};
+  --post-ocr-sub-select-option-button-selected-color: #{$white};
+  --post-ocr-sub-select-option-button-selected-border-color: #{$gray-500};
+  --post-ocr-select-option-form-control-color: #{$gray-900};
+
+  --post-ocr-option-bg-color: transparent;
+  --post-ocr-option-color: #{$icompany-purple};
+  --post-ocr-option-border-color: #{$icompany-purple};
+  --post-ocr-option-hover-bg-color: #{$icompany-purple-lightest};
+  --post-ocr-option-hover-color: #{$icompany-purple};
+  --post-ocr-option-hover-border-color: #{$icompany-purple};
+  --post-ocr-option-active-bg-color: #{$icompany-purple};
+  --post-ocr-option-active-color: #{$white};
+  --post-ocr-option-active-border-color: #{$icompany-purple};
+  --post-ocr-dislaimer-bg-color: #{$gray-500};
+
+  --incorporation-page-title-color: #{$purple-gray};
+  --incorporation-promoter-background-color: #{$purple-gray};
+  --incorporation-step-active-bg-color: rgba(255, 255, 255, 0.2);
+
+  --ask-saira-additional-input-bg-color: #{$white};
+  --ask-saira-additional-input-textarea-bg-color: rgba(0, 0, 0, 0.1);
+  --ask-saira-label-color: #{$icompany-purple};
+
+  --slip-case-bg-color: #{$gray-200};
+
+  --process-step-header-color: #{$gray-600};
+  --process-step-header-active-color: #{$gray-900};
+  --process-step-active-bg-color: rgba(255, 255, 255, 0.2);
+
+  //screen sizes
+  --phone-screen: 500px;
+  --tablet-screen: 768px;
+  --medium-screen: 1280px;
+  --large-screens: 1440px;
+
+  // Loop through the map to generate all color variables
+  @each $key, $value in $theme-colors {
+    --bs-#{$key}: #{$value};
+  }
+
+  // Generate Bootstrap-like derived colors from core colors
+  @include generate-bs-derived("primary", $primary);
+  @include generate-bs-derived("orange", $orange);
+  @include generate-bs-derived("green", $dark-green);
+  @include generate-bs-derived("blue", $blue);
+  @include generate-bs-derived("danger", $danger);
+  @include generate-bs-derived("icompany-purple", $icompany-purple);
+}
+
+[data-theme="dark"] {
+  --logo-url: url("https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/landing-res/logos/icompany_long_white.png");
+  --default-layout-bg-gradient-from: rgba(255, 255, 255, 0.7);
+  --default-layout-bg-gradient-to: rgba(73, 31, 70, 1);
+  --default-layout-color-overlay-gradient-from: #{$icompany-purple};
+  --default-layout-color-overlay-gradient-to: rgba(73, 31, 70, 0.8);
+  --sdnbhd-layout-bg-gradient-from: rgba(255, 255, 255, 0.7);
+  --sdnbhd-layout-bg-gradient-to: rgba(73, 31, 70, 1);
+  --sdnbhd-layout-color-overlay-gradient-from: #{$icompany-purple};
+  --sdnbhd-layout-color-overlay-gradient-to: rgba(73, 31, 70, 0.8);
+  --default-header-scroll-bg-color-from: rgba(0, 0, 0, 1);
+  --default-header-scroll-bg-color-mid: rgba(0, 0, 0, 0.5);
+  --default-header-scroll-bg-color-to: rgba(0, 0, 0, 0);
+  --default-header-mobile-menu-bg-color: rgba(0, 0, 0, 0.5);
+
+  --header-burger-width: 25px;
+  --header-burger-height: 25px;
+  --header-burger-line-height: 4px;
+  --header-burger-line-spacing: 6px;
+  --header-burger-line-open-offset: 2px;
+
+  --header-tool-color: #{$offwhite};
+  --header-tool-color-hover: #{$gray-500};
+  --header-tool-language-color: #{$offwhite};
+  --header-tool-language-color-hover: #{$gray-500};
+  --prepare-content-loader-icon-color: #{$white};
+  --prepare-content-loader-notice-color: #{$gray-200};
+  --centre-stage-loader-icon-color: #{$white};
+  --centre-stage-loader-notice-color: #{$gray-200};
+  --centre-stage-icon-button-bg-color: rgba(0, 0, 0, 0.7);
+  --centre-stage-icon-button-border-color: rgba(0, 0, 0, 0.7);
+  --centre-stage-icon-button-color: #{$white};
+  --centre-stage-icon-button-hover-color: #{$white};
+  --centre-stage-icon-button-hover-bg-color: #{$icompany-purple-lighter};
+  --centre-stage-icon-button-hover-border-color: #{$white};
+  --centre-stage-panel-bg-color: rgba(0, 0, 0, 0.8);
+  --centre-stage-content-panel-bg-color: rgba(0, 0, 0, 0.5);
+  --centre-stage-content-panel-has-action-border-color: #{$icompany-purple-lightest};
+  --centre-stage-content-panel-has-action-box-shadow: 0 0.1rem 1rem #{$icompany-purple-lightest};
+  --centre-stage-to-do-list-bg-color: rgba(0, 0, 0, 0.5);
+  --centre-stage-to-do-card-bg-color: #{$black};
+  --centre-stage-to-do-card-incomplete-border-color: #{$icompany-purple};
+  --centre-stage-to-do-card-sign-required-border-color: #{$icompany-orange};
+  --centre-stage-to-do-card-response-required-border-color: #{$red};
+  --centre-stage-to-do-card-success-border-color: #{$icompany-green};
+  --centre-stage-to-do-card-in-progress-border-color: #{$icompany-orange};
+  --to-do-list-has-action-border-color: #{$icompany-purple-lightest};
+  --centre-stage-heading: #{$icompany-orange};
+  --centre-stage-action-button-tooltip-bg-color: rgba(0, 0, 0, 0.9);
+  --centre-stage-action-button-tooltip-color: #{$icompany-purple-lightest};
+  --centre-stage-action-button-tooltip-title-color: #{$icompany-purple-light};
+  --centre-stage-action-button-tooltip-pointer-color: #{$icompany-purple-lighter};
+  --centre-stage-action-button-more-filter-bg-color: #{$black};
+  --centre-stage-company-panel-bg-color: #{$black};
+  --centre-stage-company-panel-box-shadow: 0 4px 8px 0 rgba(73, 31, 70, 0.2), 0 6px 20px 0 rgba(73, 31, 70, 0.19);
+  --centre-stage-company-panel-hover-bg-color: #{$icompany-purple-darker};
+  --centre-stage-company-panel-hover-box-shadow: 0 4px 8px 0 #{$icompany-purple}, 0 6px 20px 0 #{$icompany-purple};
+  --centre-stage-company-panels-navigation-arrow-color: #{$white};
+  --centre-stage-company-panels-navigation-arrow-bg-color: #{color.mix(transparent, $icompany-purple-light, 50%)};
+
+  --document-button-color: #{$white};
+  --document-button-bg-color: rgba(0, 0, 0, 0.7);
+  --document-button-border-color: rgba(0, 0, 0, 0.7);
+
+  --sdn-bhd-sidebar-action-button-color: #{$primary};
+  --sdn-bhd-sidebar-action-button-label-color: #{$white};
+  --sdn-bhd-sidebar-action-button-bg-color: #{$white};
+  --sdn-bhd-sidebar-action-button-border-color: #{$white};
+  --sdn-bhd-sidebar-action-button-hover-color: #{$white};
+  --sdn-bhd-sidebar-action-button-hover-bg-color: #{$primary};
+  --sdn-bhd-sidebar-action-button-hover-border-color: #{$white};
+  --sdn-bhd-sidebar-header-heading-color: #{$white};
+
+  --sdn-bhd-sidebar-action-button-option-category-border-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-category-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-category-bg-color: #{$gray-800};
+  --sdn-bhd-sidebar-action-button-option-border-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-color: #{$primary};
+  --sdn-bhd-sidebar-action-button-option-bg-color: #{$white};
+  --sdn-bhd-sidebar-action-button-option-hover-bg-color: #{$icompany-purple-lightest};
+
+  --sdn-bhd-service-cta-bg-color: #{$black};
+
+  --sdn-bhd-service-step-node-container-default-color: #{$gray-300};
+  --sdn-bhd-service-step-node-container-completed-color: #{$icompany-purple};
+  --sdn-bhd-service-step-node-outer-border-color: #{$icompany-purple};
+  --sdn-bhd-service-step-node-inner-border-color: #{$white};
+  --sdn-bhd-service-step-node-bg-color: #{$white};
+  --sdn-bhd-service-step-node-active-bg-color: #{$icompany-orange};
+  --sdn-bhd-service-step-node-completed-bg-color: #{$icompany-purple};
+  --sdn-bhd-service-step-label-color: #{$icompany-purple};
+
+  --sdn-bhd-documents-name-color: #{$white};
+  --sdn-bhd-documents-placeholder-bg-color: #{$black};
+  --sdn-bhd-documents-placeholder-color: #{$white};
+
+  --btn-disabled-color: #{$gray-500};
+  --btn-disabled-bg-color: #{$gray-900};
+  --btn-disabled-border-color: #{$gray-900};
+  --btn-primary-bg-color: #{$black};
+  --btn-primary-color: #{$icompany-purple-lighter};
+  --btn-primary-border-color: #{$icompany-purple-lighter};
+  --btn-primary-hover-bg-color: #{$icompany-purple-lighter};
+  --btn-primary-hover-color: #{$white};
+  --btn-danger-bg-color: #{$red};
+  --btn-danger-color: #{$white};
+  --btn-danger-border-color: #{$red};
+  --btn-danger-hover-bg-color: #{$black};
+  --btn-danger-hover-color: #{$red};
+  --btn-back-bg-color: #{$red};
+  --btn-back-color: #{$white};
+  --btn-back-border-color: #{$red};
+  --btn-back-hover-bg-color: #{$white};
+  --btn-back-hover-color: #{$red};
+  --btn-pay-bg-color: #{$icompany-blue};
+  --btn-pay-color: #{$white};
+  --btn-pay-border-color: #{$icompany-blue};
+  --btn-pay-hover-bg-color: #{$black};
+  --btn-pay-hover-color: #{$icompany-blue};
+  --btn-submit-bg-color: #{$icompany-blue};
+  --btn-submit-color: #{$white};
+  --btn-submit-border-color: #{$icompany-blue};
+  --btn-submit-hover-bg-color: #{$black};
+  --btn-submit-hover-color: #{$icompany-blue};
+  --btn-option-bg-color: transparent;
+  --btn-option-color: #{$white};
+  --btn-option-border-color: #{$white};
+  --btn-option-hover-bg-color: #{$icompany-orange};
+  --btn-option-hover-color: #{$white};
+  --btn-option-hover-border-color: #{$white};
+  --btn-option-active-bg-color: #{$icompany-orange};
+  --btn-option-active-color: #{$white};
+  --btn-option-active-border-color: #{$white};
+  --btn-sub-option-bg-color: #{$black};
+  --btn-sub-option-color: #{$icompany-orange-lighter};
+  --btn-sub-option-border-color: #{$icompany-orange-lighter};
+  --btn-sub-option-hover-bg-color: #{$icompany-orange};
+  --btn-sub-option-hover-color: #{$white};
+  --btn-sub-option-hover-border-color: #{$white};
+  --btn-abstain-bg-color: #{$gray-700};
+  --btn-abstain-color: #{$white};
+  --btn-abstain-border-color: #{$gray-700};
+  --btn-abstain-hover-bg-color: #{$gray-700};
+  --btn-abstain-hover-color: #{$white};
+
+  --btn-hover-label-color: #{$white};
+
+  --pagination-bubble-bg-color: #{$white};
+  --pagination-bubble-selected-bg-color: #{$icompany-orange};
+  --pagination-bubble-border-color: #{$white};
+
+  --popup-bg-color: #{$black};
+  --popup-title-bg-color: #{$icompany-purple};
+  --popup-title-color: #{$white};
+  --popup-body-bg-color: #{$gray-900};
+
+  --default-table-header-color: #{$white};
+  --default-table-header-bg-color: #{$icompany-purple-darker};
+  --default-table-bg-color: #{$black};
+  --default-table-action-button-color: #{$icompany-purple-lightest};
+  --default-table-action-button-hover-color: #{$icompany-purple-lighter};
+
+  --transactions-year-title-color: #{$white};
+  --transactions-year-active-bg-color: #{$icompany-purple-darker};
+  --transactions-year-hover-bg-color: #{$icompany-purple-dark};
+  --transactions-storyline-timeline-line: rgba(0, 0, 0, 0.7);
+  --transactions-storyline-timeline-point-bg-color: #{$black};
+  --transactions-storyline-timeline-point-border-color: #{$icompany-purple-lighter};
+  --transactions-storyline-timeline-card-bg-color: #{$black};
+  --transactions-storyline-timeline-card-date-color: #{$gray-200};
+
+  --transactions-archive-year-border-color: #{$white};
+  --transaction-archive-color: #{$icompany-purple-lightest};
+  --transaction-archive-hover-color: #{$icompany-purple-light};
+  --transaction-year-color: #{$icompany-orange};
+
+  --cart-bg-color: #{$black};
+  --cart-form-label-color: #{$icompany-purple-lightest};
+
+  --form-control-border-color: #{$gray-200};
+  --form-control-checkbox-bg-color: #{$icompany-purple-lightest};
+  --form-control-checkbox-disabled-bg-color: #{$gray-400};
+
+  --large-title-text-gray: #{$gray-200};
+  --large-title-text-purple: #{$icompany-purple-light};
+
+  --action-tray-bg-color: #{$black};
+  --action-tray-hover-bg-color: #{$icompany-purple-darker};
+  --action-tray-disabled-bg-color: #{$gray-900};
+  --action-tray-color: #{$white};
+  --action-tray-hover-color: #{$icompany-purple-lightest};
+  --action-tray-disabled-color: #{$gray-700};
+
+  --pdf-document-filter-bg-color: #{$black};
+  --pdf-document-filter-color: #{$white};
+  --pdf-document-filter-disabled-color: #{$gray-700};
+
+  --slider-container-border-color: #{$icompany-purple-lighter};
+  --slider-container-bottom-border-color: #{$black};
+
+  --payment-gateway-logo-bg-color: #{$icompany-purple-darker};
+  --payment-gateway-logo-hover-bg-color: #{$icompany-purple};
+  --payment-gateway-logo-border-color: #{$icompany-purple-light};
+  --payment-gateway-logo-selected-bg-color: #{$icompany-purple};
+
+  --payment-cart-bg-color: #{$black};
+  --payment-cart-hover-bg-color: #{$icompany-purple};
+
+  --collapsible-ring-border-color: #{$icompany-purple-light};
+  --collapsible-ring-hover-bg-color: #{$icompany-purple};
+  --collapsible-box-shadow: 2px 2px 8px #{$icompany-purple};
+
+  --mailroom-service-notice-link-color: #{$icompany-orange};
+
+  --color-text-primary: #{$offwhite};
+  --color-text-secondary: #{$gray-400};
+  --default-bg-color: #{$icompany-purple};
+  --link-color: #{$icompany-orange};
+  --link-hover-color: #{$icompany-orange-light};
+
+  --page-header-title-color: #{$gray-200};
+
+  --director-name: #{$gray-200};
+  --shareholder-name: #{$gray-200};
+
+  --drawer-wrapper-bg-color: #{$black};
+
+  --post-ocr-select-option-group-bg-color: rgba(255, 255, 255, 0.1);
+  --post-ocr-select-option-button-bg-color: transparent;
+  --post-ocr-select-option-button-border-color: #{$white};
+  --post-ocr-select-option-button-hover-color: #{$white};
+  --post-ocr-select-option-button-hover-bg-color: #{$gray-400};
+  --post-ocr-select-option-button-selected-bg-color: #{$gray-700};
+  --post-ocr-select-option-button-selected-color: #{$white};
+  --post-ocr-select-option-button-selected-border-color: #{$gray-700};
+  --post-ocr-sub-select-option-button-bg-color: transparent;
+  --post-ocr-sub-select-option-button-border-color: #{$white};
+  --post-ocr-sub-select-option-button-hover-color: #{$white};
+  --post-ocr-sub-select-option-button-hover-bg-color: #{$gray-300};
+  --post-ocr-sub-select-option-button-selected-bg-color: #{$gray-500};
+  --post-ocr-sub-select-option-button-selected-color: #{$white};
+  --post-ocr-sub-select-option-button-selected-border-color: #{$gray-500};
+  --post-ocr-select-option-form-control-color: #{$white};
+
+  --post-ocr-option-bg-color: transparent;
+  --post-ocr-option-color: #{$white};
+  --post-ocr-option-border-color: #{$white};
+  --post-ocr-option-hover-bg-color: #{$icompany-purple-lightest};
+  --post-ocr-option-hover-color: #{$icompany-purple};
+  --post-ocr-option-hover-border-color: #{$icompany-purple};
+  --post-ocr-option-active-bg-color: #{$icompany-purple};
+  --post-ocr-option-active-color: #{$white};
+  --post-ocr-option-active-border-color: #{$icompany-purple};
+  --post-ocr-dislaimer-bg-color: #{$gray-900};
+
+  --incorporation-page-title-color: #{$white};
+  --incorporation-promoter-background-color: #{$purple-gray};
+  --incorporation-step-active-bg-color: rgba(0, 0, 0, 0.2);
+
+  --ask-saira-additional-input-bg-color: #{$black};
+  --ask-saira-additional-input-textarea-bg-color: rgba(255, 255, 255, 0.1);
+  --ask-saira-label-color: #{$icompany-purple-lightest};
+
+  --slip-case-bg-color: #{$black};
+
+  --process-step-header-color: #{$gray-600};
+  --process-step-header-active-color: #{$gray-900};
+  --process-step-active-bg-color: rgba(0, 0, 0, 0.2);
+}
+
+$spacer: 1rem;
+$spacers: (
+  0: 0,
+  1: $spacer * 0.25,
+  2: $spacer * 0.5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+  6: $spacer * 6,
+);
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+);

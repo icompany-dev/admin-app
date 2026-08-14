@@ -1,0 +1,93 @@
+html {
+  font-size: 13px; // This is the default. Other places should use 'rem' units
+  box-sizing: content-box !important;
+  overscroll-behavior-y: none;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    // background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+
+  scrollbar-width: thin;
+
+  &:hover {
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2); // Visible thumb
+    }
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit !important;
+}
+
+body {
+  font-size: 1rem;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--default-bg-color);
+  color: var(--color-text-primary);
+  margin: 0;
+
+  transition: all 1.5s ease;
+
+  p,
+  span,
+  div {
+    font-size: 1rem;
+  }
+
+  .no-touch {
+    pointer-events: none !important;
+    -khtml-user-select: none !important;
+    -o-user-select: none !important;
+    -moz-user-select: none !important;
+    -webkit-user-select: none !important;
+    user-select: none !important;
+    // user-drag: none !important; NOTE: Commented out. unknown css property
+    -webkit-user-drag: none !important;
+    -ms-user-select: none !important;
+  }
+
+  &.no-scroll {
+    // Prevent scrolling
+    overflow: clip;
+    // overflow: hidden; 
+    touch-action: none;
+    -webkit-overflow-scrolling: none;
+
+    // Standard fix for mobile height
+    // height: 100%;
+    // position: fixed;
+    // width: 100%;
+
+    // Optional: If you want to prevent that "jump" when scrollbar disappears
+    // padding-right: 15px; // You'd ideally calculate this value with JS
+    // overflow: hidden;
+    // height: 100vh;
+  }
+
+  &.no-overscroll {
+    overscroll-behavior: none;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none;
+    visibility: hidden;
+  }
+
+  .print-breakpage {
+    page-break-after: always;
+  }
+}

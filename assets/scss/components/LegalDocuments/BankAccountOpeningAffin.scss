@@ -1,0 +1,303 @@
+#appendix-a-bank-account-opening-affin {
+  .paper-wrapper {
+    .paper {
+      .letter-head {
+        border-bottom: 1px solid var(--bs-black);
+      }
+
+      &.legal-document {
+        .document-content {
+          font-size: 12px;
+          line-height: 1.5;
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+
+            td,
+            th {
+              padding: 8px;
+              border: 1px solid #000;
+              vertical-align: top;
+            }
+
+            &.no-border {
+              td {
+                border: none !important;
+              }
+            }
+
+            &.director-details {
+              td {
+                font-weight: 600;
+
+                &:first-child {
+                  width: 20px;
+                }
+              }
+            }
+          }
+
+          .searchable-dropdown {
+            display: inline-block !important;
+            width: fit-content;
+            max-width: 300px;
+            position: relative;
+
+            &.dropdown-visible {
+              color: var(--bs-gray-700);
+            }
+
+            .dropdown {
+              cursor: pointer;
+              font-weight: 600;
+
+              &:hover {
+                background-color: var(--bs-icompany-purple-lightest);
+              }
+            }
+
+            .dropdown-menu {
+              position: absolute;
+              top: 20px;
+              width: 300px;
+              padding: 10px;
+              height: 0;
+              transform: scaleY(0);
+              transform-origin: top;
+              opacity: 0;
+              background-color: var(--bs-white);
+              border-radius: 5px;
+              box-shadow: var(--box-shadow);
+              transition: all 0.7s ease 0.2s;
+
+              &.show {
+                height: 300px;
+                max-height: 300px;
+                overflow-y: auto;
+                transform: scaleY(1);
+                opacity: 1;
+                transition: transform 0.7s ease 0.2s;
+              }
+
+              .form-control {
+                width: calc(100% - 20px);
+                margin: 5px;
+                padding: 5px;
+              }
+
+              .dropdown-item {
+                width: calc(100% - 20px);
+                padding: 5px 10px !important;
+                display: block;
+                font-size: 13px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-wrap: nowrap;
+                cursor: pointer;
+
+                &:hover {
+                  background-color: var(--bs-gray-100);
+                }
+              }
+
+              .dropdown-divider {
+                display: block;
+                font-weight: 600;
+                text-transform: uppercase;
+                color: var(--bs-gray-700);
+                width: calc(100% - 10px);
+                padding: 5px !important;
+                background-color: var(--bs-gray-200);
+                margin-top: 10px;
+
+                &:first-child {
+                  margin-top: 0;
+                }
+              }
+            }
+          }
+
+          .text-center {
+            text-align: center;
+          }
+
+          .text-justify {
+            text-align: justify;
+          }
+
+          table {
+            &.affin-online-banking {
+              margin-top: 10px;
+              border-collapse: collapse;
+              width: 100%;
+
+              thead {
+                td {
+                  padding: 5px;
+                  border: 1px solid var(--bs-black);
+                  font-weight: 600;
+                }
+              }
+
+              tbody {
+                td {
+                  padding: 10px 5px;
+                  border: 1px solid var(--bs-black);
+                  font-weight: 400;
+                  vertical-align: middle;
+                  height: 45px;
+
+                  &:first-child {
+                    width: 5%;
+                    text-align: center;
+                  }
+
+                  &:nth-child(2) {
+                    width: 30%;
+                  }
+
+                  &:nth-child(3) {
+                    width: 20%;
+                  }
+
+                  &:nth-child(4) {
+                    width: 20%;
+                    text-align: center;
+                  }
+
+                  .form-control {
+                    padding: 2px 8px;
+                    text-transform: uppercase;
+                    width: calc(100% - 20px);
+                    font-weight: 400;
+                  }
+
+                  .remove-button {
+                    display: inline-block;
+                    vertical-align: middle;
+                    margin-left: 5px;
+                  }
+
+                  &:has(.remove-button) {
+                    .form-control {
+                      width: calc(100% - 30px);
+                    }
+                  }
+                }
+
+                tr.mode-of-operation {
+                  td {
+                    text-align: left;
+                    padding: 10px;
+                  }
+                }
+              }
+            }
+          }
+
+          .remove-button {
+            cursor: pointer;
+            color: var(--bs-danger);
+          }
+
+          .action-link {
+            cursor: pointer;
+            color: var(--bs-icompany-blue);
+            float: right;
+            width: fit-content;
+            padding: 5px 0;
+            font-style: italic;
+          }
+
+          .mode-of-operation-select {
+            display: inline-block;
+            width: auto;
+            min-width: 80px;
+            max-width: 100px;
+            padding: 2px 5px;
+            font-size: 12px;
+          }
+
+          .signature-section {
+            max-width: 50%;
+
+            .signature-line {
+              border-bottom: 1px solid #000;
+              width: 200px;
+              margin-bottom: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.affin-declaration {
+  .letter-head {
+    border-bottom: 1px solid var(--bs-black);
+  }
+
+  .document-content {
+    padding-top: 15px;
+
+    .document-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      padding-bottom: 15px;
+    }
+
+    ol {
+      margin: 0;
+      padding-left: 15px;
+
+      li {
+        line-height: 18px;
+        padding-left: 15px;
+        padding-bottom: 15px;
+        text-align: justify;
+      }
+    }
+
+    .signature-section {
+      margin-top: 30px;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+
+      .signature-title {
+        width: 100%;
+        font-weight: 600;
+        text-align: center;
+        text-transform: uppercase;
+        padding-bottom: 20px;
+      }
+
+      .signature-item {
+        width: calc(50% - 55px);
+        padding-left: 15px;
+        padding-right: 15px;
+
+        &:nth-child(2n) {
+          padding-left: 0;
+          padding-right: 30px;
+
+          &:last-of-type {
+            padding: 0 15px;
+          }
+        }
+
+        &:nth-child(2n-1) {
+          padding-left: 30px;
+          padding-right: 0;
+        }
+      }
+    }
+  }
+}

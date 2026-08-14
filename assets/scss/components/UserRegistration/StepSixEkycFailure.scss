@@ -1,0 +1,19 @@
+.step-ekyc-failure {
+  display: contents;
+
+  .step-content {
+    text-align: start;
+    width: 100%;
+
+    &.step-title {
+      margin-bottom: 0;
+    }
+  }
+
+  .failure-list {
+    margin: 15px 0;
+    padding-left: 1.5rem;
+    text-align: start;
+    line-height: 1.8rem;
+  }
+}

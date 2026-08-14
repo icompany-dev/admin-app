@@ -1,0 +1,221 @@
+#bank-account-opening-checklist {
+  width: calc(100% - 80px);
+  max-width: 650px;
+  margin: auto;
+  border-radius: 5px;
+
+  .checklist-content {
+    padding: 30px 40px;
+    padding-bottom: 0px;
+
+    .checklist-title-wrapper {
+      display: flex;
+      justify-content: space-between;
+
+      .caret-icon,
+      .checklist-title {
+        font-size: 1.6rem;
+        text-transform: uppercase;
+      }
+    }
+
+    .checklist-subtitle {
+      text-align: justify;
+    }
+
+    .checklist-step-subtitle {
+      margin-bottom: 20px;
+    }
+
+    .header-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .list-wrapper {
+      padding-left: 15px;
+      margin: 5px 0px;
+
+      li {
+        padding-left: 15px;
+        margin-bottom: 15px;
+
+        .total-page {
+          font-size: 0.8rem;
+        }
+
+        .sub-list {
+          padding-left: 15px;
+
+          li {
+            margin-bottom: 0px;
+          }
+        }
+      }
+    }
+
+    .form-check {
+      margin-top: 5px;
+      margin-bottom: 15px;
+
+      .check-label-title {
+        font-size: 1.1rem;
+      }
+
+      .check-label-note {
+        font-size: 0.9rem;
+        font-style: italic;
+      }
+    }
+
+    .application-processing-wrapper {
+      text-align: center;
+
+      .spinner-wrapper {
+        margin-bottom: 15px;
+        i {
+          font-size: 5rem;
+        }
+      }
+
+      .title {
+        font-weight: bold;
+      }
+    }
+
+    .action-buttons {
+      margin-top: 30px;
+
+      .btn {
+        min-width: 100px;
+      }
+    }
+
+    .alert-container {
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    .checklist-section-title {
+      padding: 10px 15px;
+      background-color: var(--bs-primary);
+      color: var(--bs-white);
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+      text-transform: uppercase;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+
+    .bank-detail-wrapper {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      border-bottom: 1px solid var(--bs-primary);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+
+      &.is-minimize {
+        border-color: transparent;
+        padding-bottom: 0px;
+      }
+
+      .checklist-title {
+        font-weight: 600;
+      }
+
+      .bank-image-wrapper {
+        width: 60px;
+        display: flex;
+        aspect-ratio: 1/1;
+        background-color: var(--bs-white);
+        border-radius: 5px;
+        justify-content: center;
+        align-items: center;
+
+        .bank-image {
+          width: 100%;
+          height: auto;
+          border-radius: 5px;
+        }
+      }
+    }
+
+    .separator {
+      width: 100%;
+      border-top: 1px solid var(--bs-white);
+      padding-top: 15px;
+    }
+
+    .caret-icon {
+      cursor: pointer;
+      height: fit-content;
+      transition: all 0.3s ease-in-out;
+
+      &.icon-flip {
+        transform: rotate(-180deg);
+      }
+    }
+
+    .checklist-header-section {
+      transition: all 0.5s ease-in-out;
+      border: 1px solid transparent;
+      padding: 5px;
+
+      &:hover {
+        border-color: var(--bs-white);
+        background-color: var(--bs-white);
+        border-radius: 5px;
+      }
+
+      .checklist-header-title {
+        font-size: 1.4rem;
+        font-weight: 600;
+        cursor: pointer;
+
+        .icon {
+          margin-left: 5px;
+        }
+      }
+
+      .checklist-header-subtitle {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        cursor: pointer;
+      }
+    }
+
+    .checklist-content-section {
+      padding-top: 0px;
+      transform-origin: top;
+      height: 0px;
+      max-height: 0px;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 1s ease;
+
+      &.show {
+        height: 100%;
+        max-height: 750px;
+        opacity: 1;
+        border-radius: 10px;
+        padding-top: 15px;
+      }
+    }
+
+    .checklist-notes {
+      background-color: var(--bs-white);
+      padding: 15px;
+      margin: 15px 0px;
+      border-radius: 5px;
+
+      .note-title {
+        margin-bottom: 5px;
+      }
+    }
+  }
+}

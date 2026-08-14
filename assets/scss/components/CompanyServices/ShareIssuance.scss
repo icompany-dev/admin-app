@@ -1,0 +1,16 @@
+#company-service-issuance-of-shares {
+  .documents-list {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 5px;
+
+    .btn {
+      width: fit-content;
+      font-size: 0.8rem;
+      width: 60px;
+    }
+  }
+}

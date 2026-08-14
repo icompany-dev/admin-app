@@ -1,0 +1,199 @@
+#headers-notifications {
+  position: relative;
+
+  .page-tool {
+    .count-badge {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      transform: scale(1) translate(25%, -25%);
+      background-color: var(--bs-orange);
+      color: var(--bs-white);
+      border-radius: 50%;
+      width: 17px;
+      height: 17px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset: -4px;
+        border-radius: 50%;
+        border: 2px solid var(--bs-orange);
+        opacity: 0.7;
+        transform: scale(0.6);
+        animation: pulse-ring-lg 1.3s ease-out infinite;
+      }
+    }
+  }
+
+  .delivery-dropdown {
+    position: absolute;
+    z-index: 5;
+    width: 250px;
+    margin-top: 30px;
+    right: 0;
+    transform: translate(50%);
+
+    .orders-container {
+      max-height: calc(90dvh - 150px);
+      height: 100%;
+      overflow-y: auto;
+
+      .order-container {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: calc(100% - 30px);
+        transition: all 0.5s ease 0.2s;
+        $total: 20;
+
+        @for $i from 1 through $total {
+          &:nth-child(#{$i}) {
+            $x: ($i - 1);
+            top: $x * 10px;
+            filter: brightness(1 - ($x * 0.05));
+            z-index: calc(#{$total} - $i);
+
+            &.view-more-link {
+              filter: brightness(1);
+
+              .btn {
+                &.btn-view-more {
+                  background-color: var(--delivery-buttons-card-bg);
+
+                  &:hover {
+                    background-color: var(--btn-primary-hover-bg-color);
+                    color: var(--btn-primary-hover-color);
+                  }
+                }
+              }
+
+              @if $i == 1 {
+                top: 0px;
+              } @else {
+                top: calc(70px + (10px * (#{$i} - 1)));
+              }
+            }
+          }
+        }
+
+        &:nth-child(n + #{$total + 1}) {
+          top: calc($total * 10px);
+          z-index: -5;
+          box-shadow: unset;
+          opacity: 0;
+
+          &.view-more-link {
+            top: calc(70px + (10px * ($total - 1)));
+            opacity: 1;
+          }
+        }
+
+        &.order-card {
+          background-color: var(--delivery-buttons-card-bg);
+          padding: 15px;
+          border-radius: 5px;
+          box-shadow: var(--delivery-buttons-card-box-shadow);
+          cursor: pointer;
+
+          .notification-label {
+            padding: 5px 10px;
+            text-align: center;
+            background-color: var(--bs-icompany-purple);
+            color: var(--bs-white);
+            font-size: 13px;
+            margin-bottom: 5px;
+
+            &.compliance {
+              background-color: var(--bs-danger);
+            }
+          }
+
+          .sub-label {
+            text-align: center;
+            font-weight: 600;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+            overflow: hidden;
+          }
+        }
+
+        .order-label {
+          margin-bottom: 10px;
+          display: flex;
+          gap: 10px;
+        }
+
+        &.view-more-link {
+          opacity: 1;
+        }
+      }
+    }
+
+    .orders-container {
+      &.show-all {
+        .order-container {
+          @for $i from 1 through 20 {
+            &:nth-child(#{$i}) {
+              top: 90px * ($i - 1);
+              left: 0px;
+              width: calc(100% - 30px);
+              filter: brightness(1);
+              opacity: 1;
+
+              &.view-more-link {
+                padding: 0px;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .view-more-link {
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.5s ease 0.2;
+      padding-top: 10px;
+      width: calc(100% - 30px);
+
+      .btn {
+        width: 100%;
+      }
+
+      &:hover {
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+.document-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  z-index: -999;
+  opacity: 0;
+  width: calc(100dvw - var(--scrollbar-width));
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  transform-origin: bottom;
+  transition:
+    opacity 0.7s ease,
+    padding 0s ease 0.7s,
+    height 0s ease 0.7s;
+
+  &.show {
+    padding: 30px 0;
+    padding-top: 70px;
+    opacity: 1;
+    transition: opacity 0.7s ease;
+    z-index: 10;
+  }
+}

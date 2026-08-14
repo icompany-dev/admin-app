@@ -1,0 +1,59 @@
+#document-buttons {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .docs-button {
+    cursor: pointer;
+    width: 30px;
+    aspect-ratio: 1/1;
+    font-size: 16px;
+    color: var(--document-button-color);
+    background-color: var(--document-button-bg-color);
+    border: 2px solid var(--document-button-border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box !important;
+    transition: all 0.5s ease-in-out;
+
+    @for $i from 1 through 3 {
+      &:nth-child(#{$i}) {
+        transition-delay: $i * 0.1s;
+      }
+    }
+
+    &.fade-up-enter-from {
+      opacity: 0;
+      transform: translateY(-25px);
+    }
+
+    &:hover {
+      border-color: var(--bs-white);
+      
+      &.return-button {
+        background-color: var(--bs-icompany-blue);
+      }
+
+      &.help-button {
+        background-color: var(--bs-icompany-purple-lighter);
+      }
+
+      &.more-button {
+        background-color: var(--bs-icompany-orange);
+      }
+    }
+
+    &:disabled {
+      cursor: unset;
+      pointer-events: none;
+      background-color: var(--bs-gray-600);
+    }
+
+    &.active {
+      background-color: var(--bs-primary);
+    }
+  }
+}

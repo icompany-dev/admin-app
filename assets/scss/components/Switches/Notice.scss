@@ -1,0 +1,15 @@
+#switch-notice {
+  position: relative;
+
+  .help-button-wrapper {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+  }
+
+  span {
+    &.clickable {
+      cursor: pointer;
+    }
+  }
+}

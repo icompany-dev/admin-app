@@ -1,0 +1,204 @@
+#banking-information-content-section {
+  padding: 3rem;
+  margin-top: 1.25rem;
+  position: relative;
+  min-height: 70vh;
+  border-radius: 0.625rem;
+
+  @media only screen and (max-width: 1024px) {
+    padding: 2rem;
+  }
+
+  @media only screen and (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+#bank-comparison-component {
+  .icon-wrapper {
+    position: relative;
+
+    .icon {
+      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.3125rem;
+
+      i {
+        font-size: 0.9375rem;
+
+        &.large {
+          font-size: 1.875rem;
+        }
+      }
+
+      &:hover {
+        color: var(--bs-primary);
+      }
+    }
+  }
+
+  #bank-comparison-table-wrapper {
+    overflow: auto;
+    margin-bottom: 50px;
+
+    table {
+      border-collapse: collapse;
+      border: unset;
+      margin: auto;
+
+      tr {
+        margin: 1.5625rem;
+        td {
+          padding: 1.5625rem;
+          margin: auto;
+          vertical-align: baseline;
+
+          &.highlight {
+            background-color: var(--bank-comparison-highlight-bg);
+          }
+        }
+      }
+
+      .item-cell {
+        text-align: center;
+        width: 12.5rem;
+
+        .fixed-bank-header {
+          top: 9.375rem;
+          width: 7.8125rem;
+          z-index: 1;
+          background-color: var(--bank-comparison-fixed-header-bg);
+          border-bottom-left-radius: 0.625rem;
+          border-bottom-right-radius: 0.625rem;
+          padding-bottom: 0.625rem;
+          box-shadow: var(--box-shadow);
+        }
+      }
+
+      .header-cell {
+        font-weight: bold;
+
+        .subtext {
+          color: var(--bank-comparison-subtext-color);
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 1366px) {
+    #bank-comparison-table-wrapper {
+      table {
+        .item-cell {
+          .fixed-bank-header {
+            top: 12.5rem;
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    #bank-comparison-table-wrapper {
+      table {
+        tr {
+          td {
+            padding: 0.625rem;
+
+            &:not(:first-child) {
+              border-left: 1px solid var(--bank-comparison-border-color);
+            }
+          }
+        }
+
+        .header-cell {
+          padding-top: 2.8125rem;
+          padding-bottom: 1.875rem;
+          text-align: center;
+        }
+
+        .item-cell {
+          width: 12.5rem;
+        }
+      }
+    }
+  }
+}
+
+#bank-comparison-img-cell {
+  width: 9.375rem;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+
+  .image-cell-wrapper {
+    .img-wrapper {
+      width: 9.375rem;
+      margin: auto;
+      aspect-ratio: 1/1;
+
+      .bank-img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        height: auto;
+        background: var(--bs-white);
+        border-radius: 0.9375rem;
+        object-fit: contain;
+      }
+    }
+
+    .form-select {
+      width: 9.375rem;
+      margin: auto;
+    }
+  }
+
+  @media only screen and (max-width: 768px) {
+    width: 6.25rem;
+
+    .image-cell-wrapper {
+      .img-wrapper {
+        width: 6.25rem;
+      }
+
+      .form-select {
+        width: 6.25rem;
+      }
+    }
+  }
+}
+
+.bank-comparison-text-cell {
+
+  .content-with-icon {
+    .icon {
+      font-size: 4rem;
+      color: var(--bank-comparison-icon-color);
+      margin-bottom: 20px;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 1.875rem;
+    }
+  }
+
+  .subtext-color {
+    color: var(--bank-comparison-subtext-color);
+  }
+
+  ul {
+    padding-left: 15px;
+    margin: 0;
+    text-align: left;
+  }
+
+  .tooltip-text {
+    cursor: pointer;
+    color: var(--bank-comparison-tooltip-color);
+    font-weight: bold;
+  }
+}

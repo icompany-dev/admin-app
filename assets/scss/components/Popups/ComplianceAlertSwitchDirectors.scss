@@ -1,0 +1,99 @@
+#popup-switch-directors {
+  .notice-result {
+    text-align: center;
+    font-size: 1.1rem;
+  }
+
+  .director-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    margin: 10px 0;
+    text-align: left;
+
+    .director-detail {
+      width: 100%;
+      margin-bottom: 10px;
+      text-align: justify;
+
+      .director-name {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+
+        .name {
+          font-weight: bold;
+          letter-spacing: 0.1pt;
+          font-size: 1.5rem;
+          line-height: 1.5rem;
+          text-transform: uppercase;
+          width: 70%;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          text-wrap: nowrap;
+        }
+
+        .badge {
+          background-color: var(--bs-icompany-orange);
+          color: var(--bs-white);
+          padding: 4px 10px;
+          font-size: 0.8rem;
+          line-height: 0.8rem;
+          border-radius: 3px;
+        }
+      }
+
+      .invitation-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+        width: 60%;
+
+        .form-control {
+          padding: 5px 10px;
+          width: 100%;
+          border-radius: 5px;
+          background-color: var(--bs-white);
+          transition: all 0.7s ease;
+
+          &.error {
+            border-color: var(--bs-danger);
+            border-width: 2px;
+          }
+        }
+      }
+
+      .error-message {
+        color: var(--bs-danger);
+        font-weight: 600;
+      }
+    }
+
+    .requirement-detail {
+      .note {
+        font-size: 1.1rem;
+        font-weight: 600;
+        text-align: justify;
+      }
+
+      ul {
+        padding-left: 15px;
+        width: 50%;
+        margin: auto;
+
+        li {
+          text-align: justify;
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+}

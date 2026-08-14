@@ -1,0 +1,206 @@
+#company-services-steps {
+  opacity: 0;
+  pointer-events: unset;
+  user-select: none;
+  transition: all 1s ease-in-out;
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+
+    .step {
+      padding-top: 10px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 15px;
+      min-height: 50px;
+      min-width: 150px;
+
+      .node-container {
+        padding-top: 22px;
+
+        .node {
+          position: relative;
+          width: 1px;
+          height: 100%;
+          border: 2px solid var(--sdn-bhd-service-step-node-container-default-color);
+          background-color: var(--sdn-bhd-service-step-node-container-default-color);
+          border-radius: 5px;
+
+          &::before {
+            content: ' ';
+            position: absolute;
+            top: -22px;
+            left: -7px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            border: 2px solid var(--sdn-bhd-service-step-node-inner-border-color);
+            background-color: var(--sdn-bhd-service-step-node-bg-color);
+          }
+
+          &::after {
+            content: ' ';
+            position: absolute;
+            top: -25px;
+            left: -10px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 3px solid var(--sdn-bhd-service-step-node-outer-border-color);
+          }
+        }
+      }
+
+      .content {
+        width: 100%;
+        background-color: transparent;
+        border-radius: 5px;
+        padding: 5px 10px;
+
+        .label {
+          font-size: 1.2rem;
+          font-weight: 600;
+          color: var(--sdn-bhd-service-step-label-color);
+          opacity: 0.5;
+        }
+
+        .details {
+          padding: 5px 0;
+          display: none;
+
+          .signature-markers {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 3px;
+
+            .signature-marker {
+              color: var(--bs-gray-300);
+
+              &.signed {
+                color: var(--bs-icompany-purple);
+              }
+            }
+          }
+
+          .signature-notes {
+            font-size: 0.8rem;
+            color: var(--bs-gray-600);
+          }
+
+          .check-icon {
+            color: var(--bs-success);
+          }
+
+          .step-date {
+            font-size: 0.9rem;
+            color: var(--bs-gray-700);
+          }
+
+          .step-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+
+            .btn {
+              font-size: 0.8rem;
+              min-width: 60px;
+              text-align: center;
+            }
+          }
+
+          .confirmation-step-notes {
+            margin-top: 5px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--bs-gray-700);
+          }
+
+          .reject-reason {
+            text-align: justify;
+            padding: 2px;
+            margin: 3px 0 5px 0;
+            min-width: 200px;
+          }
+
+          .action-link {
+            cursor: pointer;
+            color: var(--bs-icompany-blue);
+            margin: 5px 0;
+          }
+        }
+      }
+
+      &.active {
+        .node-container {
+          .node {
+            &::before {
+              background-color: var(--sdn-bhd-service-step-node-active-bg-color);
+            }
+          }
+        }
+
+        .content {
+          background-color: rgba(255, 255, 255, 0.25);
+
+          .label {
+            opacity: 1;
+          }
+
+          .details {
+            display: block;
+          }
+        }
+      }
+
+      &.completed {
+        .node-container {
+          .node {
+            border-color: var(--sdn-bhd-service-step-node-container-completed-color);
+            background-color: var(--sdn-bhd-service-step-node-container-completed-color);
+
+            &::before {
+              background-color: var(--sdn-bhd-service-step-node-completed-bg-color);
+            }
+          }
+        }
+
+        .content {
+          .label {
+            opacity: 1;
+          }
+
+          .details {
+            display: block;
+          }
+        }
+      }
+
+      &:last-child {
+        .node-container {
+          .node {
+            background-color: transparent;
+            border-color: transparent;
+          }
+        }
+
+        &.active {
+          .content {
+            background-color: transparent;
+          }
+        }
+      }
+    }
+  }
+
+  &.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

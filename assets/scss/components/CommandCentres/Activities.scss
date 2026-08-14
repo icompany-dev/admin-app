@@ -1,0 +1,138 @@
+#command-centres-activities {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 10px;
+  padding: 20px;
+  width: calc(100% - 40px);
+  height: calc(100% - 40px);
+  border-radius: 10px;
+  background-color: var(--bs-white);
+
+  .activities-title {
+    background-color: var(--bs-icompany-purple);
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    z-index: 2;
+
+    .activities-status-selection {
+      position: relative;
+
+      .fa-solid {
+        color: var(--bs-white);
+        font-size: 1.2rem;
+        line-height: 1.2rem;
+        cursor: pointer;
+      }
+
+      .activities-status-options {
+        width: fit-content;
+        position: absolute;
+        top: 30px;
+        left: -10px;
+        max-height: 0;
+        overflow: hidden;
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: all 0.7s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        border-radius: 0 0 5px 5px;
+
+        &.show {
+          max-height: fit-content;
+          transform: scaleY(1);
+        }
+
+        .activities-status-option {
+          color: var(--bs-white);
+          padding: 2px;
+          cursor: pointer;
+
+          &:hover {
+            color: var(--bs-icompany-orange);
+          }
+        }
+      }
+    }
+
+    .activities-status {
+      color: var(--bs-icompany-orange);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .activities-name {
+      color: var(--bs-white);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+  }
+
+  .activities-table {
+    width: 100%;
+    min-height: 500px;
+    z-index: 1;
+
+    table {
+      &.activities {
+        width: 100%;
+
+        tbody {
+          tr {
+            td {
+              padding: 5px;
+
+              &:first-child {
+                width: 50px;
+                height: 50px;
+                max-width: 50px;
+                max-height: 50px;
+
+                img {
+                  width: 100%;
+                  height: auto;
+                  aspect-ratio: 1 / 1;
+                  object-position: center;
+                }
+
+                &.no-logo {
+                  img {
+                    opacity: 0.5;
+                    filter: grayscale(1);
+                  }
+                }
+              }
+
+              &.company-name {
+                width: 25%;
+                text-transform: uppercase;
+                text-overflow: ellipsis;
+                text-wrap: nowrap;
+                overflow: hidden;
+              }
+
+              &.status {
+                width: 50%;
+
+                b {
+                  font-weight: 600;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

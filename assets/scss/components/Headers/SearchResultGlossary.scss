@@ -1,0 +1,125 @@
+.search-result-glossary {
+  position: relative;
+
+  .sort-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: all 0.5s ease-in-out;
+
+    &.is-visible {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  .letter-display {
+    position: absolute;
+    font-size: 10rem;
+    pointer-events: none;
+    user-select: none;
+    font-weight: 900;
+    top: 30px;
+    right: 30px;
+    color: var(--bs-secondary);
+    opacity: 15%;
+  }
+
+  .results-list {
+    display: flex;
+    flex-direction: column;
+    margin-top: 15px;
+    max-height: var(--header-search-bar-glossary-result-max-height);
+    overflow: scroll;
+
+    .result-item {
+      cursor: pointer;
+      line-height: 18px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      padding: 15px;
+      transition: all 0.3s ease-in-out;
+
+      .item-title {
+        color: var(--bs-black);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 2px;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .item-summary {
+        text-align: justify;
+        font-size: 1.2rem;
+        color: var(--bs-gray-600);
+      }
+
+      .item-description {
+        margin-top: 15px;
+        text-align: justify;
+        font-size: 1.2rem;
+        color: var(--bs-gray-600);
+
+        ul,
+        ol {
+          padding-left: 15px;
+        }
+      }
+
+      .glossary-link {
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: var(--bs-purple-gray);
+        font-weight: bold;
+        text-decoration: unset;
+
+        &:hover {
+          color: var(--bs-blue);
+        }
+      }
+
+      &:hover {
+        background-color: var(--bs-icompany-purple-lightest);
+      }
+
+      &.is-selected {
+        border-color: var(--bs-gray-400);
+        background-color: var(--bs-white);
+        padding: 15px;
+      }
+
+      &.is-hidden {
+        display: none;
+      }
+    }
+  }
+
+  #placeholder-no-record {
+    min-height: calc(70dvh - 300px);
+  }
+
+  .content-enter-active,
+  .content-leave-active {
+    transition:
+      max-height 0.4s ease-in-out,
+      opacity 0.3s ease,
+      margin-top 0.4s ease;
+  }
+
+  .content-enter-from,
+  .content-leave-to {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+  }
+
+  .content-enter-to,
+  .content-leave-from {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: 10px;
+  }
+}

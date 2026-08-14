@@ -1,0 +1,33 @@
+#propose-transfer-of-shares {
+  max-width: 600px;
+  margin: auto;
+  padding-bottom: 30px;
+
+  .document-preview-contents {
+    max-width: 600px;
+    margin: auto;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    transition: all 0.7s ease;
+
+    .documents-to-preview {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 30px;
+    }
+
+    .document-container {
+      &.small {
+        .resolution-steps {
+          margin-top: 0;
+        }
+      }
+    }
+  }
+}

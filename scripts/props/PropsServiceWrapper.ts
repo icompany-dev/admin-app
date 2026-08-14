@@ -1,0 +1,66 @@
+import { PaperOrientation } from "../constants/Paper"
+
+export interface IPropsServiceWrapper {
+  companyId: string
+  applicationIncorporationId: string
+  applicationSwitchId: string
+  target: string
+  targetId: string | null
+  isShowing: boolean
+  isInPreviewMode: boolean
+  isByShareholder: boolean
+
+  financialYearStartDate: string
+  financialYearEndDate: string
+  showWatermarkText: boolean
+  watermarkText: string
+  yearToLodge: string
+  paperOrientation: string
+  applicationTarget: string
+
+  paymentOrderId: string
+
+  companyName: string
+  registrationNumberNew: string
+  registrationNumberOld: string
+}
+
+export class PropsServiceWrapper implements IPropsServiceWrapper {
+  companyId: string
+  applicationIncorporationId: string = ""
+  applicationSwitchId: string = ""
+  target: string
+  targetId: string | null
+  isShowing: boolean
+  isInPreviewMode: boolean
+  isByShareholder: boolean
+  financialYearStartDate: string = ""
+  financialYearEndDate: string = ""
+  showWatermarkText: boolean = false
+  watermarkText: string = ""
+  yearToLodge: string = ""
+  paperOrientation: string = PaperOrientation.Portrait
+  applicationTarget: string = ""
+
+  paymentOrderId: string = ""
+
+  companyName: string = ""
+  registrationNumberNew: string = ""
+  registrationNumberOld: string = ""
+
+  constructor(
+    companyId: string,
+    target: string,
+    targetId: string | null,
+    isShowing: boolean | null,
+    isInPreviewMode: boolean | null,
+    isByShareholder: boolean = false
+  ) {
+    this.companyId = companyId
+    this.target = target
+    this.targetId = targetId
+    this.isShowing = isShowing ?? false
+    this.isInPreviewMode = isInPreviewMode ?? true
+    this.isByShareholder = isByShareholder
+  }
+}

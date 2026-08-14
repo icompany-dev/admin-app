@@ -1,0 +1,57 @@
+#incorporation-step-five {
+  .business-address {
+    padding: 10px 0;
+
+    .address-inputs {
+      width: 100%;
+
+      .form-control {
+        width: calc(100% - 24px);
+        background-color: var(--bs-white);
+        padding: 5px 10px;
+        border-color: transparent;
+        border-width: 2px;
+        font-size: 1.1rem;
+        line-height: 1.1rem;
+      }
+
+      .form-row {
+        justify-content: flex-start;
+      }
+
+      .form-group {
+        margin-top: 5px;
+        width: calc((100% / 3) - 8px);
+
+        label {
+          padding-bottom: 5px;
+        }
+
+        .dropdown {
+          width: 100%;
+
+          .dropdown-toggle {
+            min-height: 28px;
+            text-align: left;
+            background-color: var(--bs-white);
+            border-color: transparent;
+            border-width: 2px;
+            font-size: 1.1rem;
+            line-height: 1.1rem;
+          }
+
+          .dropdown-menu {
+            width: 50%;
+            text-align: left;
+          }
+        }
+      }
+    }
+
+    .checkbox-container {
+      .table-form-checkbox {
+        border-color: var(--incorporation-step-five-checkbox-border-color);
+      }
+    }
+  }
+}

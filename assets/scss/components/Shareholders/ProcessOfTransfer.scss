@@ -1,0 +1,117 @@
+#process-of-transfer {
+  width: 90%;
+  max-width: 650px;
+  margin: auto;
+  padding-bottom: 100px;
+  height: 0;
+  transform: scaleY(0);
+  opacity: 0;
+  transform-origin: top;
+  transition: all 0.5s ease;
+
+  .process-container {
+    width: calc(100% - 80px);
+    margin-bottom: 20px;
+    padding: 10px 40px;
+    position: relative;
+    transition: all 1s ease;
+
+    .step {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+      text-transform: uppercase;
+      color: var(--process-of-transfer-step-inactive-color);
+      opacity: 0.8;
+
+      &.is-complete {
+        opacity: 1;
+        color: var(--process-of-transfer-step-active-color);
+      }
+    }
+
+    .step-title {
+      font-weight: bold;
+      font-size: 2rem;
+      letter-spacing: 0.1pt;
+      text-transform: uppercase;
+      margin-bottom: 0;
+      color: var(--process-of-transfer-step-inactive-color);
+      opacity: 0.8;
+      transition: all 1s ease 0.5s;
+
+      &.is-complete {
+        opacity: 1;
+        color: var(--process-of-transfer-step-active-color);
+      }
+    }
+
+    // override default
+    .action-buttons {
+      margin-top: 15px;
+    }
+
+    .action-link {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--bs-icompany-purple);
+    }
+
+    .help-button-wrapper {
+      position: absolute;
+      right: -410px;
+      top: 0;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .alert-container,
+    .content-wrapper {
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+
+      animation-duration: 3s;
+      animation-timing-function: ease;
+      animation-delay: 1s;
+      animation-fill-mode: forwards;
+      animation-name: none;
+    }
+
+    &.active {
+      background-color: var(--process-of-transfer-step-active-bg-color);
+      border-radius: 5px;
+
+      .step, .step-title {
+        color: var(--process-of-transfer-step-active-color);
+        opacity: 1;
+      }
+    }
+
+    &.is-ready {
+      padding: 30px 40px;
+
+      .step-title {
+        margin-bottom: 20px;
+      }
+
+      .help-button-wrapper {
+        opacity: 1;
+      }
+
+      .alert-container {
+        animation-name: step-alert-expand;
+      }
+
+      .content-wrapper {
+        animation-name: step-content-expand;
+      }
+    }
+  }
+
+  &.show {
+    height: auto;
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}

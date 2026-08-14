@@ -1,0 +1,191 @@
+#user-management-access-role {
+  width: 100%;
+
+  .access-content {
+    width: 100%;
+    padding-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 30px;
+
+    .all-roles {
+      flex: 0.2;
+      width: calc(20% - 15px);
+      transition: all 0.5s ease;
+      padding-top: 40px;
+
+      .section-title {
+        font-weight: 600;
+        font-size: 15px;
+        margin-bottom: 10px;
+      }
+
+      .role-list {
+        width: 100%;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 10px;
+        transition: all 0.3s ease-in-out;
+
+        .role {
+          position: relative;
+          cursor: pointer;
+          width: 200px;
+          border-radius: 10px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
+          padding: 15px 20px;
+          background-color: rgba(255, 255, 255, 0.4);
+          box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.075);
+          transition: all 0.5s ease-in, color 0.2s ease-in;
+          z-index: 1;
+          overflow: hidden;
+
+          .name {
+            font-size: 12px;
+            text-align: left;
+            text-transform: uppercase;
+            width: 100%;
+            text-wrap: nowrap;
+            text-overflow: ellipsis;
+            overflow-x: hidden;
+          }
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(106, 9, 92, 0.5), rgba(242, 111, 36, 0.4));
+            transition: left 0.6s ease-in-out;
+            z-index: 0;
+          }
+
+          div {
+            z-index: 1;
+          }
+
+          &:hover {
+            background-color: var(--bs-icompany-purple);
+            color: var(--bs-white);
+
+            &::before {
+              left: 0;
+            }
+          }
+
+          &.selected {
+            background-color: var(--bs-icompany-purple);
+            color: var(--bs-white);
+          }
+        }
+
+        .add-new {
+          width: 200px;
+          border-radius: 10px;
+          padding: 15px 20px;
+          border: 1px dashed var(--bs-gray-600);
+          cursor: pointer;
+          text-align: center;
+          color: var(--bs-gray-600);
+          transition: all 0.5s ease-in, color 0.2s ease-in;
+
+          &:hover {
+            border-color: var(--bs-gray-900);
+            color: var(--bs-gray-900);
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.075);
+          }
+        }
+      }
+    }
+
+    .access-manager {
+      width: calc(80% - 15px);
+      flex: 0.8;
+      transition: all 0.5s ease 0.3s;
+      border-radius: 15px;
+
+      .title-close {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .title {
+          font-weight: 600;
+          font-size: 15px;
+          text-align: left;
+        }
+
+        .btn-close-access {
+          font-size: 14px;
+          cursor: pointer;
+        }
+      }
+
+      .action-buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .access-content {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      .all-roles {
+        flex: 1;
+        width: 100%;
+        padding-top: 0px;
+
+        .role-list {
+          .role {
+            width: 100%;
+          }
+
+          .add-new {
+            width: 100%;
+          }
+        }
+      }
+
+      .access-manager {
+        width: 100%;
+        height: auto;
+        flex: 1;
+        border-left: none;
+        padding: 15px;
+      }
+
+    }
+  }
+
+  &.darkmode {
+    .access-content {
+      .access-manager {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+    }
+  }
+}

@@ -1,0 +1,74 @@
+// #legal-documents-special-notice-egm-acknowledgement {
+//   // Styles go here
+// }
+
+.special-notice-acknowledgement {
+
+  div,
+  span,
+  li {
+    font-size: 13px;
+    text-align: justify;
+  }
+
+  .placeholder {
+    color: var(--bs-gray-500);
+  }
+
+  .document-header {
+    font-weight: 600;
+  }
+
+  .document-content {
+    div {
+      margin-bottom: 10px;
+    }
+
+    .instruction {
+      color: var(--bs-gray-500);
+    }
+
+    .form-check {
+      &.selected {
+        .option-label {
+          font-weight: 600;
+        }
+      }
+
+      &.not-selected {
+        .option-label {
+          color: var(--bs-gray-500);
+        }
+      }
+
+      span {
+        &.disabled {
+          color: var(--bs-gray-500);
+        }
+      }
+    }
+
+    .section-content {
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+
+    .proxy-details {
+      margin-bottom: 10px;
+    }
+
+
+  }
+
+  .signature-section {
+    .signature-details {
+      tbody {
+        tr {
+          td {
+            vertical-align: bottom;
+          }
+        }
+      }
+    }
+  }
+}

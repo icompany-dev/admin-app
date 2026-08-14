@@ -1,0 +1,145 @@
+#user-profile-drawer {
+  $preference-width: 20dvw;
+  $portfolio-width: 35dvw;
+  $profile-width: 35dvw;
+  $total-width: $preference-width + $portfolio-width + $profile-width;
+
+  .profile-drawer {
+    position: fixed;
+    background-color: var(--bs-white);
+    height: 100dvh;
+    width: 0;
+    right: 0;
+    top: 0;
+    z-index: 10;
+    transition: all 1s ease-in-out;
+
+    .user-profile-header {
+      position: relative;
+      padding: 15px;
+      height: 30px;
+      display: grid;
+      grid-template-columns: repeat(3, calc(100% / 3));
+      transition: all 1s ease-in-out;
+
+      .option {
+        width: fit-content;
+        cursor: pointer;
+        font-weight: 900;
+        font-size: 2rem;
+        text-align: start;
+        color: var(--bs-gray-300);
+        transition: all 1s ease-in-out;
+        user-select: none;
+
+        &.is-active,
+        &:hover {
+          color: var(--bs-primary);
+        }
+      }
+    }
+
+    .user-content {
+      position: fixed;
+      height: calc(100dvh - 60px);
+      background-color: var(--bs-white);
+      transition: all 1s ease-in-out;
+      right: -$profile-width;
+
+      &.preference-wrapper {
+        z-index: 1;
+        width: $preference-width;
+      }
+
+      &.portfolio-wrapper {
+        z-index: 2;
+        width: $portfolio-width;
+      }
+
+      &.profile-wrapper {
+        z-index: 3;
+        width: $profile-width;
+      }
+    }
+  }
+
+  .user-profile-overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100dvw;
+    height: 100dvh;
+    background-color: black;
+    z-index: 9;
+    opacity: 0;
+    pointer-events: none;
+    transform-origin: center;
+    transition: all 0.5s ease-in-out;
+
+    &.show {
+      pointer-events: all;
+      opacity: 0.8;
+    }
+  }
+
+  &.profile {
+    .profile-drawer {
+      width: $profile-width;
+
+      .user-content {
+        right: 0;
+
+        &.preference-wrapper {
+          right: $profile-width - $preference-width;
+        }
+      }
+    }
+  }
+
+  &.portfolio {
+    .profile-drawer {
+      width: $portfolio-width + $profile-width;
+
+      .user-profile-header {
+        grid-template-columns: 25% 25% 50%;
+      }
+
+      .user-content {
+        right: 0;
+
+        &.preference-wrapper {
+          right: ($portfolio-width + $profile-width) - $preference-width;
+        }
+
+        &.portfolio-wrapper {
+          right: $profile-width;
+        }
+      }
+    }
+  }
+
+  &.preferences {
+    .profile-drawer {
+      width: $total-width;
+
+      .user-profile-header {
+        grid-template-columns:
+          calc($preference-width / $total-width * 100%)
+          calc($portfolio-width / $total-width * 100%)
+          calc($profile-width / $total-width * 100%);
+      }
+
+      .user-content {
+        right: 0;
+
+        &.preference-wrapper {
+          right: $portfolio-width + $profile-width;
+        }
+
+        &.portfolio-wrapper {
+          right: $profile-width;
+        }
+      }
+    }
+  }
+}

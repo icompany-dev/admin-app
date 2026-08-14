@@ -1,0 +1,27 @@
+#popup-discard-changes {
+  .popup-content {
+    max-width: 450px;
+
+    .popup-details {
+      .heading {
+        font-size: 1.8rem;
+        line-height: 2rem;
+      }
+
+      .body {
+        font-size: 1rem;
+        padding: 20px;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+
+        .btn {
+          min-width: 120px;
+        }
+      }
+    }
+  }
+}

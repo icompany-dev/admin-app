@@ -1,0 +1,15 @@
+#constitutions-main {
+  .constitution-content {
+    height: 0;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: all 0.5s ease;
+
+    &.show {
+      height: fit-content;
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
+}

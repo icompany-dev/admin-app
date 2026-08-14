@@ -1,0 +1,118 @@
+.search-result-system-card {
+  cursor: pointer;
+  padding: 10px;
+  border: 1px solid var(--bs-gray-400);
+  border-radius: 5px;
+  margin: 1px;
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 4px;
+
+    .card-title {
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--bs-primary);
+    }
+
+    .card-side-title {
+      color: var(--bs-gray-700);
+    }
+
+    .card-tooltip {
+      color: var(--bs-gray-600);
+
+      &:hover {
+        color: var(--bs-primary);
+      }
+    }
+
+    .subscription-status {
+      font-size: 0.7rem;
+      padding: 3px 15px;
+      color: var(--bs-white);
+      border-radius: 2px;
+      flex-shrink: 0;
+      
+      &.status-active {
+        background-color: var(--bs-success);
+      }
+
+      &.status-warning {
+        background-color: var(--bs-waring);
+      }
+
+      &.status-danger {
+         background-color: var(--bs-danger);
+      }
+    }
+
+    .icon-wrapper {
+      font-size: 1.2rem;
+    }
+  }
+
+  .card-description {
+    color: var(--bs-black);
+  }
+
+  .card-info,
+  .closing-question,
+  .card-content {
+    font-size: 0.8rem;
+    text-align: justify;
+  }
+
+  .alert-message {
+    color: var(--bs-danger);
+    font-weight: 600;
+    margin-top: 3px;
+    font-size: 0.8rem;
+    text-align: justify;
+  }
+
+  &:hover {
+    background-color: var(--bs-icompany-purple-lightest);
+    border-color: var(--bs-primary);
+    border-width: 2px;
+    margin: 0px;
+  }
+}
+
+.search-result-system-card-tooltip-text {
+  position: absolute;
+  width: 280px;
+  max-width: 500px;
+  background-color: var(--bs-black);
+  color: var(--bs-white);
+  text-align: justify;
+  font-size: 0.85rem;
+  font-weight: 400;
+  border-radius: 6px;
+  padding: 8px 12px;
+  z-index: 5;
+  pointer-events: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent var(--bs-black) transparent;
+  }
+}
+
+.search-result-system-card-tooltip-fade-enter-active,
+.search-result-system-card-tooltip-fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.search-result-system-card-tooltip-fade-enter-from,
+.search-result-system-card-tooltip-fade-leave-to {
+  opacity: 0;
+}

@@ -1,0 +1,74 @@
+#analytics-distribution-map {
+  // margin-top: 20px;
+
+  // .map-container {
+
+  // }
+}
+
+// Google map part
+.custom-infowindow {
+  color: #ffffff;
+  padding: 4px;
+  min-width: 180px;
+}
+
+.info-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  /* Leaves room so header text doesn't overlap the absolute-positioned X button */
+  padding-right: 24px;
+}
+
+.info-body {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #cccccc;
+}
+
+/* -------------------------------------------------------------
+   GOOGLE MAPS INFOWINDOW OVERRIDES
+   Targets Google's native container structure dynamically
+------------------------------------------------------------- */
+
+/* 1. Black background for main card & tip/beak arrow */
+:deep(.gm-style-iw) {
+  background-color: #121212 !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+:deep(.gm-style-iw-tc::after) {
+  background-color: #121212 !important;
+  /* Sets the small triangle point to black */
+}
+
+/* Removes default white background container wrapper */
+:deep(.gm-style-iw-d) {
+  background-color: transparent !important;
+  overflow: hidden !important;
+}
+
+/* 2. Smaller Close (X) Button */
+:deep(.gm-ui-hover-effect) {
+  top: 6px !important;
+  right: 6px !important;
+  width: 20px !important;
+  height: 20px !important;
+  opacity: 0.8;
+}
+
+:deep(.gm-ui-hover-effect:hover) {
+  opacity: 1;
+}
+
+/* Shrink the inner X SVG icon specifically */
+:deep(.gm-ui-hover-effect span) {
+  margin: 2px !important;
+  width: 16px !important;
+  height: 16px !important;
+  background-color: #ffffff !important;
+  /* Turns default dark X icon white for dark mode */
+}

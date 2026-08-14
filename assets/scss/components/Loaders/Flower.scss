@@ -1,0 +1,22 @@
+#loader-flower {
+  min-height: 150px;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  .flower {
+    color: var(--bs-icompany-purple);
+
+    i {
+      font-size: 7rem;
+    }
+  }
+
+  .loader-message {
+    font-size: 1.5rem;
+  }
+}

@@ -1,0 +1,199 @@
+//NOTE: This is containers for steps - like the ones in Process of Allotment, Process of Transfer, Financial Statement Setup
+.step-container {
+  width: 100%;
+  margin-bottom: 30px;
+  padding: 30px 40px;
+  transition: all 1s ease;
+
+  .step-header {
+    width: 100%;
+
+    .step-number {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+      text-transform: uppercase;
+      color: var(--process-step-header-color);
+      opacity: 0.8;
+    }
+
+    .step-title-help {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      margin-bottom: 20px;
+
+      .step-title {
+        font-weight: bold;
+        font-size: 2rem;
+        line-height: 38px; // Height of help container
+        letter-spacing: 0.1pt;
+        text-transform: uppercase;
+        width: calc(100% - 50px);
+        color: var(--process-step-header-color);
+        opacity: 0.7;
+      }
+
+      .help-container {
+        position: absolute;
+        top: 0;
+        right: -365px; //Help button size + gap
+        transition: opacity 1s ease;
+      }
+    }
+  }
+
+  #alert-container {
+    margin-top: 10px;
+  }
+
+  .step-details {
+    margin: 10px 0;
+    font-size: 1.1rem;
+    line-height: 1.5rem;
+    text-align: justify;
+
+    b {
+      font-weight: 600;
+    }
+
+    .action-link {
+      color: var(--bs-icompany-blue);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.1rem;
+      line-height: 1.5rem;
+    }
+  }
+
+  .step-form {
+    width: 100%;
+    margin-bottom: 10px;
+
+    .form-control {
+      width: calc(95% - 20px);
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: normal;
+      font-size: 1.1rem;
+      line-height: 1.5rem;
+      background-color: var(--process-step-form-control-bg-color);
+      border: var(--process-step-form-control-border);
+      outline: none;
+    }
+
+    .file-drop-zone {
+      width: calc(95% - 20px);
+      padding: 5px 10px;
+      border-radius: 5px;
+      background-color: var(--process-step-form-control-bg-color);
+      border: var(--process-step-form-control-border);
+
+      .instruction {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+
+        span {
+          font-size: 1.1rem;
+          line-height: 1.5rem;
+        }
+
+        i {
+          font-size: 1.5rem;
+          line-height: 1.5rem;
+        }
+      }
+
+      .drop-zone {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        transform: scaleY(0);
+        transform-origin: top;
+        height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: all 0.7s ease;
+
+        &.expand {
+          transform: scaleY(1);
+          height: 200px;
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &.active {
+    background-color: var(--process-step-active-bg-color);
+    border-radius: 5px;
+
+    .step-header {
+      .step-number {
+        opacity: 1;
+      }
+
+      .step-title-help {
+        .step-title {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &.is-complete {
+    .step-header {
+      .step-number {
+        opacity: 1;
+      }
+
+      .step-title-help {
+        .step-title {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .step-content-container {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+
+    animation-duration: 3s;
+    animation-timing-function: ease;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+    animation-name: none;
+    animation-name: step-content-expand;
+
+    .step-document-container {
+      width: 100%; // calc(100% - 80px);
+      opacity: 0;
+      height: 0;
+      max-height: 0;
+      overflow: hidden;
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: all 0.7s ease;
+
+      &.show {
+        opacity: 1;
+        height: fit-content;
+        max-height: unset;
+        transform: scaleY(1);
+        transition: transform 0.7s ease, opacity 0.5s ease 0.3s, height 0.5s ease 0.7s;
+      }
+    }
+  }
+}

@@ -1,0 +1,98 @@
+#legal-document-section-132 {
+  .paper {
+    padding: 20mm;
+  }
+}
+
+.section-132 {
+  .registration-number {
+    font-weight: 600;
+    width: fit-content;
+
+    .box {
+      padding: 5px 10px;
+      border: 1px solid var(--bs-black);
+    }
+  }
+
+  .document-header {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    letter-spacing: 0.1pt;
+    text-transform: uppercase;
+    margin: 10px 0;
+    margin-bottom: 20px;
+  }
+
+  .company-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+    width: 100%;
+
+    .detail {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 3px;
+      width: 100%;
+
+      .label {
+        font-weight: 600;
+        width: 100px;
+      }
+
+      .info {
+        font-weight: 600;
+        width: calc(100% - 150px);
+        padding: 2px 5px;
+        border-bottom: 1px solid var(--bs-black);
+      }
+    }
+  }
+
+  .document-title {
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .document-content {
+
+    div,
+    p {
+      line-height: 18px;
+      text-align: justify;
+    }
+
+    ol {
+      li {
+        padding-bottom: 10px;
+      }
+    }
+
+    span {
+      &.placeholder {
+        background-color: var(--bs-gray-100);
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 2px;
+        color: var(--bs-gray-500);
+        font-weight: normal;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .signature-container {
+    width: 40%;
+  }
+}

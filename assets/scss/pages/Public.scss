@@ -1,0 +1,27 @@
+.page-public {
+  &:has(.loader-container) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100dvh - 200px);
+  }
+
+  .document-container {
+    max-width: 210mm;
+    margin: auto;
+    padding-bottom: 50px;
+
+    &.landscape {
+      max-width: 297mm;
+    }
+
+    #alert-container {
+      margin-bottom: 20px;
+
+      .action-buttons {
+        margin-top: 20px;
+      }
+    }
+  }
+}

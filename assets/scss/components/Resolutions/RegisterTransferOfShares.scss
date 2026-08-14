@@ -1,0 +1,32 @@
+.table-with-border {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  thead {
+    tr {
+      td {
+        border: solid 1px var(--bs-black);
+        padding: 5px;
+        text-align: center;
+        font-weight: 600;
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        border: solid 1px var(--bs-black);
+        padding: 5px;
+        text-align: center;
+
+        &:first-child,
+        &:nth-child(2) {
+          width: 30%;
+        }
+      }
+    }
+  }
+}

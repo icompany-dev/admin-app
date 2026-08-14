@@ -1,0 +1,40 @@
+#my-sdn-bhd {
+  // min-height: 100dvh;
+
+  .alert-container {
+    width: 90%;
+    max-width: 700px;
+    margin: auto;
+    text-align: justify;
+
+    .section-header {
+      .section-title {
+        font-size: 1.2rem;
+        line-height: 2rem;
+      }
+
+      .help-container {
+        top: 0;
+        right: -370px;
+      }
+    }
+  }
+
+  .bank-list-wrapper {
+    flex-grow: 1;
+    margin-top: 30px;
+  }
+
+  .sdn-bhd-content {
+    height: fit-content;
+    opacity: 1;
+    z-index: 1;
+    transition: opacity 0.2s ease 0.1s;
+
+    &.hide {
+      opacity: 0;
+      z-index: -99;
+      height: 0;
+    }
+  }
+}

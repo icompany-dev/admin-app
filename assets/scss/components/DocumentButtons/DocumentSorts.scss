@@ -1,0 +1,31 @@
+#document-button-sorts {
+  position: absolute;
+  z-index: 5;
+
+  .more-options {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+
+    .sort-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 15px;
+      gap: 15px;
+      width: 100px;
+      background-color: var(--bs-gray-200);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border-radius: 5px;
+    }
+
+    .sort-label {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 990px) {
+    display: none;
+    pointer-events: none;
+  }
+}

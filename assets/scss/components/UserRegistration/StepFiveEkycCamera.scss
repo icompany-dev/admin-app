@@ -1,0 +1,116 @@
+.step-ekyc-camera-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 15;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 1s ease;
+  
+  &.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.step-ekyc-camera-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#wise-ai {
+  .wise-container-fluid {
+    width: 100dvw !important;
+    height: 90dvh !important;
+    margin: auto;
+
+    [class~=wise-video-overlay-message] {
+      max-width: calc(100dvw - 20px);
+    }
+
+    .wise-title-1 {
+      color: var(--bs-white);
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .wise-preview-message {
+      color: var(--bs-white); 
+    }
+
+    // WiseAi Camera capture button style
+    [class~=wise-shuttle-button] {
+      display: none; // Force user to use camera instead of button.
+      color: var(--bs-white) !important;
+      border-radius: 5px !important;
+      border-width:  1px !important;
+      border-style: solid !important;
+      width: 120px !important;
+      padding: 8px 16px !important;
+      height: fit-content;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.5s ease;
+
+      background-color: var(--btn-submit-bg-color);
+      color: var(--btn-submit-color);
+      border-color: var(--btn-submit-border-color);
+
+      &:hover {
+        background-color: var(--btn-submit-hover-bg-color);
+        color: var(--btn-submit-hover-color) !important;
+      }
+
+      &::before {
+        content: "Capture";
+        font-size: 1rem !important
+      }
+    }
+
+    .wise-button {
+      &.btn {
+        font-size: 1rem !important;
+        width: 100px !important;
+        min-width: 100px;
+        height: fit-content !important;
+        cursor: pointer !important;
+        margin-top: 15px;
+        padding: 2px 15px !important;
+        border-radius: 5px !important;
+        border-width: 1px !important;
+        border-style: solid !important;
+        transition: all 0.5s ease !important;
+        background-color: transparent !important;
+
+        &.btn-danger {
+          background-color: var(--btn-danger-bg-color) !important;
+          color: var(--btn-danger-color) !important;
+          border-color: var(--btn-danger-border-color) !important;
+
+          &:hover {
+            background-color: var(--btn-danger-hover-bg-color) !important;
+            color: var(--btn-danger-hover-color) !important;
+          }
+        }
+
+        &.btn-submit {
+          background-color: var(--btn-submit-bg-color) !important;
+          color: var(--btn-submit-color) !important;
+          border-color: var(--btn-submit-border-color) !important;
+
+          &:hover {
+            background-color: var(--btn-submit-hover-bg-color) !important;
+            color: var(--btn-submit-hover-color) !important;
+          }
+        }
+      }
+    }
+  }
+}

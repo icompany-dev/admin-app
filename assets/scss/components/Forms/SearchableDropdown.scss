@@ -1,0 +1,117 @@
+#forms-searchable-dropdown {
+  position: relative;
+  width: 100%;
+  display: block !important;
+  max-width: unset !important;
+
+  .dropdown {
+    padding: 5px 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(----searchable-dropdown-bg);
+    border: solid 1px var(--searchable-dropdown-border-color);
+    border-radius: 5px;
+    transition: all 0.7s ease;
+    position: relative;
+
+    .label {
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+      overflow: hidden;
+    }
+
+    .fa-caret-down {
+      position: absolute;
+      top: 7px;
+      right: 10px;
+      transition: all 0.7s ease;
+
+      &.rotate {
+        transform: rotate(-180deg);
+      }
+    }
+
+    &.menu-showing {
+      border-bottom-width: 0px;
+      border-radius: 5px 5px 0 0;
+    }
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: calc(100% - 22px);
+    max-height: 0;
+    z-index: -99;
+    opacity: 0;
+    padding: 10px;
+    border-radius: 0 0 5px 5px;
+    background-color: var(--searchable-dropdown-menu-bg-color);
+    box-shadow: none !important;
+    border: solid 1px var(--searchable-dropdown-border-color);
+    border-top-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: all 0.7s ease;
+    scrollbar-width: thin;
+
+    &.drop-up {
+      top: -100%;
+      border-radius: 5px;
+      transform-origin: bottom;
+    }
+
+    &.show {
+      height: fit-content;
+      max-height: 200px;
+      opacity: 1;
+      z-index: 2;
+      transform: scaleY(1);
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: transparent;
+        border-radius: 10px;
+        transition: background 0.3s ease;
+      }
+
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+
+      &:hover {
+        &::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.2); // Visible thumb
+        }
+
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+      }
+    }
+
+    .search-field,
+    .dropdown-item {
+      height: fit-content;
+      min-height: 20px;
+      padding: 5px;
+    }
+
+    .search-field {
+      width: calc(100% - 10px);
+    }
+  }
+}

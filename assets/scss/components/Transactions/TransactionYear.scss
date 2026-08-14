@@ -1,0 +1,129 @@
+#transaction-year {
+  padding: 20px 10px;
+
+  .year-title {
+    font-size: 2.5rem;
+    line-height: 2.7rem;
+    text-align: right;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--transactions-year-title-color);
+  }
+
+  .transaction-table {
+    overflow: auto;
+
+    .default-table {
+      thead,
+      tbody {
+        tr {
+          th,
+          td {
+            &.clickable {
+              cursor: pointer;
+            }
+
+            &:first-child {
+              width: 20px;
+              text-align: center;
+              font-weight: 300;
+
+              .form-check-input {
+                display: inline-block;
+              }
+            }
+
+            &:nth-child(2) {
+              width: calc((100% - 130px) / 5);
+              font-weight: 300;
+              text-overflow: ellipsis;
+              text-wrap: nowrap;
+              overflow: hidden;
+            }
+
+            &:nth-child(3) {
+              width: calc((100% - 130px) / 5 * 2);
+              text-transform: uppercase;
+              font-weight: 400;
+              text-overflow: ellipsis;
+              text-wrap: nowrap;
+              overflow: hidden;
+            }
+
+            &:nth-child(4) {
+              width: calc((100% - 130px) / 5 * 2);
+              text-align: center;
+              text-transform: uppercase;
+              font-weight: 400;
+              text-overflow: ellipsis;
+              text-wrap: nowrap;
+              overflow: hidden;
+            }
+
+            &:nth-child(5) {
+              font-weight: 300;
+              text-align: center;
+              text-wrap: nowrap;
+              width: 110px;
+            }
+          }
+
+          &.no-record-alert-row {
+            .alert {
+              padding: 50px 0px;
+            }
+          }
+
+          &:hover {
+            cursor: pointer;
+
+            td {
+              background-color: var(--transactions-year-hover-bg-color);
+              font-weight: 600;
+            }
+
+            .transaction-description {
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between;
+              align-items: flex-start;
+              height: 1rem;
+              transition: all 0.7s ease;
+
+              .descriptions {
+                width: 90%;
+
+                span {
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  text-wrap: nowrap;
+                  transition: all 0.7s ease;
+                  line-height: 1.2rem;
+
+                  &.hidden {
+                    opacity: 0;
+                  }
+                }
+              }
+
+              .toggle {
+                cursor: pointer;
+              }
+
+              &.expanded {
+                height: fit-content;
+              }
+            }
+          }
+
+          &.is-selected {
+            td {
+              background-color: var(--transactions-year-active-bg-color);
+            }
+          }
+        }
+      }
+    }
+  }
+}

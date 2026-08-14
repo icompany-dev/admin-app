@@ -1,0 +1,16 @@
+#dcr-section-47 {
+  .not-kept-document-list {
+    padding-left: 1.5rem;
+
+    li {
+      .document-option {
+        display: flex;
+        gap: 5px;
+      }
+    }
+  }
+
+  .address-inputs {
+    width: 50%;
+  }
+}

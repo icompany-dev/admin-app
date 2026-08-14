@@ -1,0 +1,34 @@
+#placeholder-no-record {
+  text-align: center;
+  min-height: calc(70dvh - 100px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  animation: zoom-in 0.5s forwards ease;
+
+  .no-record-wrapper {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 0px 0px 0px rgba(0, 0, 0, 0);
+    width: fit-content;
+    padding: 30px;
+    border-radius: 15px;
+
+    .title {
+      font-weight: 600;
+      font-size: 2rem;
+      line-height: 3rem;
+    }
+
+    .content {
+      font-weight: 400;
+      font-size: 1.3rem;
+      line-height: 1.5rem;
+    }
+
+    .action-buttons {
+      margin-top: 30px;
+    }
+  }
+}

@@ -1,0 +1,78 @@
+#mcr-appointment-of-director,
+#dcr-appointment-of-director {
+  span {
+    font-weight: bold;
+  }
+
+  .director-name {
+    text-transform: uppercase;
+  }
+
+  .new-director-details {
+    width: 50%;
+
+    .input-field {
+      width: 100%;
+      margin-bottom: 5px;
+
+      .form-control {
+        width: calc(100% - 16px);
+        padding: 4px 8px;
+
+        &::placeholder {
+          text-transform: uppercase;
+        }
+      }
+
+      &.split-30-70 {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+
+        .form-control {
+          width: 70%;
+
+          &:first-child {
+            width: 30%;
+          }
+        }
+      }
+    }
+
+    &.non-editable {
+      .input-field {
+        &.split-30-70 {
+          display: block;
+        }
+      }
+    }
+  }
+
+  select {
+    max-width: 120px;
+
+    &.large {
+      max-width: unset;
+    }
+  }
+
+  span {
+    &.placeholder {
+      // width: 100%;
+    }
+
+    &.fit-content {
+      width: fit-content !important;
+    }
+  }
+
+  .form-control {
+    margin-bottom: 5px;
+
+    &:only-child {
+      width: 50%;
+    }
+  }
+}

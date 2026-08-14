@@ -1,0 +1,612 @@
+.paper {
+  width: 170mm;
+  height: 257mm;
+  padding: 20mm;
+  color: var(--bs-black);
+  position: relative;
+  overflow: hidden;
+  font-family: 'Roboto', sans-serif;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  img {
+    pointer-events: none;
+    -webkit-user-drag: none;
+  }
+
+  p,
+  div,
+  li {
+    font-size: 13px;
+    line-height: 16px;
+    font-family: 'Roboto', sans-serif;
+  }
+
+  &.landscape {
+    width: 257mm;
+    height: 170mm;
+  }
+
+  &.narrow-margin {
+    padding: 10mm;
+    width: 190mm;
+    height: 277mm;
+  }
+
+  span {
+    &.value-placeholder {
+      color: var(--bs-gray-500);
+    }
+  }
+
+  .icompany-letter-head {
+    width: 170mm;
+    margin: auto;
+    padding: 0;
+    padding-top: 20mm;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .logo {
+      content: ' ';
+      height: 15.33mm;
+      width: 62mm;
+      background-image: var(--logo-url);
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .qr {
+      img {
+        width: auto;
+        height: 15mm;
+      }
+    }
+  }
+
+  .icompany-footer {
+    position: absolute;
+    left: 0;
+    bottom: 0mm;
+    width: 100%;
+    color: var(--bs-primary);
+    padding-bottom: 5px;
+    border-bottom: 20px solid var(--bs-primary);
+
+    .icon-sections {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 10px;
+
+      .icon-section {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+
+        .icon {
+          width: 20px;
+          height: 20px;
+          border-radius: 10px;
+          background-color: var(--bs-primary);
+          color: var(--bs-white);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          i {
+            font-size: 10px;
+          }
+        }
+
+        .text-detail {
+          font-size: 10px;
+
+          .sub-text {
+            font-size: 6px;
+            display: block;
+          }
+        }
+      }
+    }
+
+    .subtitle {
+      width: 100%;
+      text-align: center;
+      font-size: 10px;
+    }
+  }
+
+  &.print {
+    padding: 0mm;
+
+    &.use-letter-head {
+      width: 210mm;
+      height: 296.5mm;
+
+      .paper-content {
+        padding: 0 20mm;
+      }
+    }
+
+    .paper-page-number {
+      color: var(--bs-gray-500);
+      bottom: 0;
+      right: 0;
+
+      &.top {
+        bottom: unset;
+        top: 0;
+        right: 0;
+      }
+    }
+  }
+
+  .value-placeholder {
+    color: var(--bs-gray-600);
+  }
+}
+
+.paper-wrapper {
+  width: 210mm;
+  height: 297mm;
+  margin: auto;
+  background-color: var(--bs-white);
+  margin-bottom: 20px;
+  box-shadow: var(--paper-box-shadow);
+
+  &.landscape {
+    width: 297mm;
+    height: 210mm;
+  }
+
+  &.loader {
+    background-color: var(--bs-gray-200);
+  }
+
+  .paper {
+    position: relative;
+    overflow-y: hidden;
+
+    &.print {
+      padding: 20mm;
+
+      &.use-letter-head {
+        width: 170mm;
+
+        .paper-content {
+          padding: 0;
+        }
+      }
+
+      .paper-page-number {
+        top: unset;
+        bottom: 20mm;
+        right: 20mm;
+
+        &.top {
+          bottom: unset;
+          top: 20mm;
+          right: 20mm;
+        }
+      }
+    }
+
+    &.use-letter-head {
+      width: 210mm;
+      height: 297mm;
+
+      .paper-content {
+        padding: 0;
+      }
+
+      .icompany-letter-head {
+        padding: 0;
+      }
+    }
+  }
+}
+
+.resolution {
+
+  .company-detail-head {
+    width: 100%;
+    text-align: center;
+
+    .company-name {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 1.2em;
+    }
+
+    .company-registration-number {
+      font-weight: 600;
+    }
+
+    &.maybank-other-pages {
+      text-align: left;
+      font-size: 1rem;
+    }
+  }
+
+  .resolution-title {
+    margin-top: 25px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--bs-black);
+    text-align: justify;
+
+    span {
+      font-size: 13px;
+    }
+
+    &.maybank-other-pages {
+      margin-top: 0;
+      font-weight: normal;
+      font-style: italic;
+    }
+  }
+
+  .resolution-content {
+    .resolution-name {
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    p,
+    div {
+      text-align: justify;
+    }
+
+    ol,
+    ul {
+      margin: 5px 0;
+      padding-left: 15px;
+    }
+
+    li {
+      text-align: justify;
+      padding: 0 0 5px 5px;
+    }
+
+    span {
+      &.value-placeholder {
+        color: var(--bs-gray-500);
+        background-color: var(--bs-gray-100);
+        padding: 2px 5px;
+      }
+    }
+
+    .blockquote {
+      padding-left: 20px;
+      padding-bottom: 20px;
+    }
+
+    .continue-page {
+      font-size: 0.8rem;
+      color: var(--bs-gray-800);
+    }
+
+    span {
+      &.placeholder {
+        background-color: var(--bs-gray-100);
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 2px;
+        color: var(--bs-gray-500);
+        font-weight: normal;
+      }
+
+      &.fit-content {
+        width: fit-content !important;
+      }
+    }
+
+    &.accompanying-document {
+      padding-top: 20px;
+
+      .resolution-title-name {
+        padding-bottom: 10px;
+        text-transform: none;
+      }
+
+      ol,
+      ul {
+        padding: 0;
+        padding-left: 15px;
+
+        li {
+          padding: 0;
+          padding-bottom: 10px;
+        }
+      }
+    }
+  }
+
+  .signature-section {
+    margin-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+
+    .signature-title {
+      width: 100%;
+      font-weight: 600;
+      text-align: center;
+      text-transform: uppercase;
+      padding-bottom: 20px;
+    }
+
+    .signature-item {
+      width: calc(50% - 55px);
+      padding-left: 15px;
+      padding-right: 15px;
+
+      &:nth-child(2n) {
+        padding-left: 0;
+        padding-right: 30px;
+
+        &:last-of-type {
+          padding: 0 15px;
+        }
+      }
+
+      &:nth-child(2n-1) {
+        padding-left: 30px;
+        padding-right: 0;
+      }
+    }
+  }
+
+  .resolution-date {
+    margin-top: 40px;
+    font-weight: 600;
+
+    .date {
+      font-weight: normal;
+      font-size: 13px;
+
+      &.unknown {
+        color: var(--bs-gray-600);
+        font-style: italic;
+      }
+    }
+  }
+}
+
+.paper-page-number {
+  position: absolute;
+  bottom: 20mm;
+  right: 20mm;
+  color: var(--bs-black);
+
+  &.top {
+    bottom: unset;
+    top: 20mm;
+  }
+}
+
+.document-ear-mark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  height: 40mm;
+  width: 40mm;
+  padding: 5mm;
+  color: var(--bs-white);
+  font-size: 1.4cqw;
+  box-shadow: 10px 10px 4px rgba(0, 0, 0, 0.7);
+  background-color: var(--bs-icompany-purple);
+
+  .document-text {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    font-size: 3cqw;
+    position: absolute;
+    top: 35%;
+    left: 35%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    width: max-content;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  &.dcr,
+  &.mcr,
+  &.notice {
+    background-color: var(--bs-icompany-purple);
+  }
+
+  &.notice {
+    .document-text {
+      font-size: 2.5cqw;
+    }
+  }
+}
+
+.document-watermark {
+  position: absolute;
+  user-select: unset;
+  pointer-events: none;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  opacity: 0.05;
+
+  .watermark-text {
+    font-size: 18rem;
+    font-weight: 900;
+  }
+
+  &.preview {
+    color: var(--bs-icompany-purple);
+    opacity: 0.1;
+
+    .watermark-text {
+      font-size: 16rem;
+    }
+  }
+}
+
+.legal-document {
+  .title {
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 0.1pt;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .company-details {
+    padding-bottom: 10px;
+
+    .name {
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+    }
+
+    .registration-number {
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+    }
+
+    &.align-center {
+      text-align: center;
+    }
+  }
+
+  .section {
+    .header {
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+      padding: 10px 0;
+    }
+
+    .sub-header {
+      font-weight: 600;
+      letter-spacing: 0.1pt;
+      padding: 10px 0;
+    }
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    tr {
+      td {
+        padding: 10px 5px;
+        border: 1px solid var(--bs-black);
+      }
+
+      &.no-border {
+        &:only-child {
+          td {
+            border: none;
+          }
+        }
+
+        &:first-child {
+          td {
+            border: none;
+            border-bottom: 1px solid var(--bs-black);
+          }
+        }
+
+        &:last-child {
+          td {
+            border: none;
+            border-top: 1px solid var(--bs-black);
+          }
+        }
+      }
+    }
+  }
+
+  .signature-section {
+    .signature-image {
+      width: 200px;
+      height: 150px;
+      border-bottom: 2px solid var(--bs-black);
+    }
+
+    .signee-name {
+      padding: 10px 5px;
+      font-weight: bold;
+      letter-spacing: 0.1pt;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.icompany-logo {
+  content: ' ';
+  height: 40px;
+  width: 150px;
+  background-image: var(--logo-url);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.paper-tag {
+  position: absolute;
+  top: 10mm;
+  right: -5mm;
+  padding: 10px 20px;
+  width: 100px;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-align: left;
+  z-index: 10;
+  border-radius: 5px 0 0 5px;
+
+  &.sign {
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.1pt;
+    background-color: var(--paper-tag-sign-bg-color);
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+.is-printing {
+  .document-ear-mark {
+    display: none;
+  }
+
+  .document-watermark {
+    display: none;
+  }
+
+  .no-print {
+    display: none;
+  }
+
+  .print-only {
+    display: initial;
+  }
+}
