@@ -1377,12 +1377,8 @@ export class ApplicationController {
         s = `${s} <small><i>${this.language.isMalay() ? "(Sedang berjalan)" : "(Ongoing)"}</i></small>`
       }
 
-      console.log("name", s)
-
       return s
     })
-
-    console.log("names", formattednames)
 
     return names
   }
