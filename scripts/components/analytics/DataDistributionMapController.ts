@@ -18,7 +18,7 @@ export class DataDistributionMapController {
     return new OfficeLocation({
       id: "icompany",
       name: "iCompany",
-      address: "D-1-6 SEKITAR26 ENTERPRISE, PERSIARAN HULU SELANGOR, 40400 SHAH ALAM, SELANGOR, MALAYSIA",
+      address: "D-1-6 SEKITAR26 ENTERPRISE,<br>PERSIARAN HULU SELANGOR,<br>40400 SHAH ALAM,<br>SELANGOR, MALAYSIA",
       lat: 3.034333062104476,
       lng: 101.56259931349219,
       state: "Selangor",

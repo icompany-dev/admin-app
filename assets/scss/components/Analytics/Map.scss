@@ -13,6 +13,50 @@
   width: 100%;
   height: 100%;
   z-index: 0;
+
+  .office-marker {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+
+    .office-radar {
+      //
+    }
+
+    .office-icon {
+      color: var(--bs-icompany-orange);
+      font-size: 1.5cqw;
+    }
+
+    .office-name {
+      font-weight: 600;
+    }
+  }
+
+  .office-location-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .office-logo-name {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 100px;
+        height: auto;
+      }
+    }
+  }
 }
 
 // Custom Leaflet pulse effect for HQ Radar pin

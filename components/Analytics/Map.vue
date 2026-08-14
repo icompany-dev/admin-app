@@ -24,7 +24,17 @@
 
   const controller = new MapController(props, emit)
 
+  const handleWindowResize = () => {
+    controller.renderLayers()
+  }
+
+  onMounted(() => {
+    window.addEventListener("resize", handleWindowResize)
+  })
+
   onBeforeUnmount(() => {
+    window.removeEventListener("resize", handleWindowResize)
+
     if (controller.mapInstance) {
       controller.mapInstance.remove()
       controller.mapInstance = null

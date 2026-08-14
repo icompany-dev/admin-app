@@ -192,15 +192,13 @@ export class MapController {
 
     // todo: deal with the styling, change this to class
     const officeHtml = `
-    <div class="relative flex items-center justify-center cursor-pointer group" style="width: 44px; height: 44px;">
+    <div class="office-marker">
       <div class="office-radar"></div>
-      <div class="w-10 h-10 rounded-2xl bg-rose-600 border-2 border-white dark:border-slate-900 shadow-xl flex items-center justify-center text-white transform group-hover:scale-110 transition-transform">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-        </svg>
+      <div class="office-icon">
+       <i class="fa-solid fa-location-pin"></i>
       </div>
-      <div class="absolute -bottom-6 bg-slate-900/90 text-white text-[10px] font-semibold px-2 py-0.5 rounded shadow whitespace-nowrap border border-slate-700 pointer-events-none">
-        My Office (HQ)
+      <div class="office-name">
+        iCompany
       </div>
     </div>
   `
@@ -215,22 +213,18 @@ export class MapController {
 
     const officeMarker = L.marker([this.office.lat, this.office.lng], {
       icon: officeIcon,
-      draggable: true,
+      draggable: false,
       zIndexOffset: 1000,
     }).addTo(this.markersLayer)
 
     officeMarker.bindPopup(`
-      <div class="p-3.5 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-w-[240px] rounded-xl">
-        <div class="flex items-center gap-2 mb-1.5">
-          <span class="inline-flex items-center justify-center p-1 rounded-md bg-rose-100 dark:bg-rose-950 text-rose-600 dark:text-rose-400">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-          </span>
+      <div class="office-location-details">
+        <div class="office-logo-name">
+          <img src="/img/loader/loader.gif" > 
           <h4 class="font-bold text-sm text-slate-900 dark:text-white leading-tight">${this.office.name}</h4>
         </div>
-        <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 leading-relaxed">${this.office.address}</p>
-        <div class="text-[11px] text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800/80 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
-          <div class="font-medium text-rose-600 dark:text-rose-400">Drag to reposition office</div>
-          <div>All proximity calculations update automatically.</div>
+        <div class="office-address">
+          ${this.office.address}
         </div>
       </div>
     `)
