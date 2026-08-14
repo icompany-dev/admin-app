@@ -45,7 +45,7 @@ export class MapController {
     this.isDarkMode.value = ColorModeUtil.isDarkMode()
     this.setDatafromProps(props)
 
-    this.initMap()
+    // this.initMap()
   }
 
   setDatafromProps(props: PropsMap, oldProps: PropsMap | null = null): void {
@@ -90,9 +90,11 @@ export class MapController {
 
   setMapContainerRef(mapContainerRef: HTMLDivElement | null): void {
     this.mapContainerRef.value = mapContainerRef
+    console.log("set", this.mapContainerRef.value)
   }
 
   async initMap(): Promise<void> {
+    console.log("container", !this.mapContainerRef.value, this.mapInstance)
     if (!this.mapContainerRef.value || this.mapInstance) {
       return
     }
@@ -129,10 +131,15 @@ export class MapController {
     this.polylineLayer = L.layerGroup().addTo(map)
 
     this.mapInstance = map
+
+    this.renderLayers()
   }
 
   renderLayers(): void {
-    if (!this.mapInstance || !this.LeafletLib || !this.markersLayer) return
+    if (!this.mapInstance || !this.LeafletLib || !this.markersLayer) {
+      console.log("skipping???")
+      return
+    }
     const L = this.LeafletLib
 
     this.markersLayer.clearLayers()
@@ -179,6 +186,7 @@ export class MapController {
 
   renderOffice(): void {
     if (!this.mapInstance || !this.LeafletLib || !this.markersLayer) {
+      console.log("not marking")
       return
     }
 

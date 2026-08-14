@@ -5,7 +5,8 @@
     </div>
     <div class="analytics-container">
       <CompanyUserCount v-bind="pageController.analyticDistributionProps" />
-      <DistributionMap />
+      <!-- <DistributionMap /> -->
+      <DataDistributionMap />
       <CompanyAndUsersBarChart v-bind="pageController.analyticDistributionProps" />
       <div class="split-container">
         <div class="split-container-item-50">
@@ -33,6 +34,7 @@
   import CompanyUserCount from "~/components/Analytics/CompanyUserCount.vue"
   import CompanyAndUsersBarChart from "~/components/Analytics/CompanyAndUsersBarChart.vue"
   import CompanyByIncorporationYear from "@/components/Analytics/CompanyByIncorporationYear.vue"
+  import DataDistributionMap from "~/components/Analytics/DataDistributionMap.vue"
   import DistributionMap from "~/components/Analytics/DistributionMap.vue"
   import UsersByAgeGroup from "@/components/Analytics/UsersByAgeGroup.vue"
   import UsersByRace from "@/components/Analytics/UsersByRace.vue"

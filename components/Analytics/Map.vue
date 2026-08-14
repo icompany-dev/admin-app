@@ -20,6 +20,8 @@
 
   const emit = defineEmits(["updateOfficePosition", "selectUser", "selectCompany"])
 
+  const mapContainerRef = ref<HTMLDivElement | null>(null)
+
   const controller = new MapController(props, emit)
 
   onBeforeUnmount(() => {
@@ -37,6 +39,18 @@
       controller.renderLayers()
     },
     { deep: true }
+  )
+
+  watch(
+    mapContainerRef,
+    async (newVal) => {
+      controller.setMapContainerRef(newVal)
+
+      if (newVal) {
+        await controller.initMap()
+      }
+    },
+    { immediate: true }
   )
 </script>
 

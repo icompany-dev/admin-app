@@ -11,8 +11,8 @@ export interface IPropsMap {
   office: OfficeLocation
   filters: FilterState // FilterState --TODO
   effectiveTheme: "light" | "dark"
-  selectedUser?: UserLocation // UserLocation
-  selectedCompany?: CompanyLocation
+  selectedUser?: UserLocation | null
+  selectedCompany?: CompanyLocation | null
   mapTarget?: { lat: number; lng: number; zoom: number } | null
 }
 
@@ -20,20 +20,20 @@ export class PropsMap implements IPropsMap {
   users: UserLocation[] //UserLocation
   companies: CompanyLocation[] // CompanyLocation
   office: OfficeLocation // Company Coordinate
-  filters: any // FilterState --TODO
+  filters: FilterState // FilterState --TODO
   effectiveTheme: "light" | "dark"
-  selectedUser?: UserLocation // UserLocation
-  selectedCompany?: CompanyLocation
+  selectedUser?: UserLocation | null
+  selectedCompany?: CompanyLocation | null
   mapTarget?: { lat: number; lng: number; zoom: number } | null
 
   constructor(
     users: UserLocation[], //UserLocation
     companies: CompanyLocation[], // CompanyLocation
     office: OfficeLocation, // Company Coordinate
-    filters: any, // FilterState --TODO
+    filters: FilterState, // FilterState --TODO
     effectiveTheme: "light" | "dark",
-    selectedUser?: UserLocation, // UserLocation
-    selectedCompany?: CompanyLocation,
+    selectedUser?: UserLocation | null,
+    selectedCompany?: CompanyLocation | null,
     mapTarget?: { lat: number; lng: number; zoom: number } | null
   ) {
     this.users = users
