@@ -191,7 +191,6 @@ export class MapController {
       return
     }
 
-    // todo: deal with the styling, change this to class
     const officeHtml = `
     <div class="office-marker">
       <div class="office-radar"></div>
