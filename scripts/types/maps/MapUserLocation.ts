@@ -1,8 +1,8 @@
 import type { MalaysiaState } from "./MapStates"
 
 export type Gender = "Male" | "Female"
-export type AgeGroup = "< 30" | "30 - 49" | "> 50"
-export type CompanyRole = "Director" | "Shareholder" | "Officer"
+export type AgeGroup = "< 30" | "30 - 49" | "> 50" | "Unknown"
+export type CompanyRole = "Director" | "Shareholder" | "Director & Shareholder" | "Officer"
 
 export class UserLocation {
   id: string

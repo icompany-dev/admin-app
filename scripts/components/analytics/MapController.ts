@@ -5,6 +5,7 @@ import { ColorModeUtil } from "~/scripts/utils/ColorMode"
 import type { UserLocation } from "~/scripts/types/maps/MapUserLocation"
 import type { CompanyLocation } from "~/scripts/types/maps/MapCompanyLocation"
 import { OfficeLocation } from "~/scripts/types/maps/MapOfficeLocation"
+import { MapUtil } from "~/scripts/utils/Map"
 
 export class MapController {
   mapContainerRef = ref<HTMLDivElement | null>(null)
@@ -284,53 +285,51 @@ export class MapController {
     // }
 
     // --- Draw Users ---
-    // if (this.filters.viewMode === "all" || this.filters.viewMode === "users") {
-    //   this.users.forEach((user) => {
-    //     const color = getUserMarkerColor(user, this.filters.userCategoryMode)
-    //     const isSelected = this.selectedUser?.id === user.id
+    if (this.filters.viewMode === "all" || this.filters.viewMode === "users") {
+      this.users.forEach((user) => {
+        const color = MapUtil.getUserMarkerColor(user, this.filters.userCategoryMode)
+        const isSelected = this.selectedUser?.id === user.id
 
-    //     const roleInitial = user.role.charAt(0)
-    //     const userHtml = `
-    //   <div class="custom-map-pin relative flex flex-col items-center group">
-    //     <div class="w-7 h-7 rounded-full shadow-md flex items-center justify-center text-white text-[11px] font-bold border-2 ${
-    //       isSelected ? "ring-4 ring-amber-400 scale-125 z-50" : "border-white dark:border-slate-900"
-    //     }" style="background-color: ${color};">
-    //       ${
-    //         this.filters.userCategoryMode === "gender"
-    //           ? user.gender === "Male"
-    //             ? "♂"
-    //             : "♀"
-    //           : this.filters.userCategoryMode === "age_group"
-    //             ? user.age
-    //             : roleInitial
-    //       }
-    //     </div>
-    //     <div class="w-1 h-1 bg-slate-800 dark:bg-white rounded-full mt-0.5 opacity-60"></div>
-    //   </div>
-    // `
+        const roleInitial = user.role.charAt(0)
+        const userHtml = `
+          <div class="user-pin">
+            <div class="detail ${isSelected ? "selected" : ""}" style="background-color: ${color};">
+              ${
+                this.filters.userCategoryMode === "gender"
+                  ? user.gender === "Male"
+                    ? "<i class='fa-solid fa-person'></i>"
+                    : "<i class='fa-solid fa-person-dress'></i>"
+                  : this.filters.userCategoryMode === "age_group"
+                    ? user.age
+                    : roleInitial
+              }
+            </div>
+            <div class="w-1 h-1 bg-slate-800 dark:bg-white rounded-full mt-0.5 opacity-60"></div>
+          </div>
+        `
 
-    //     const icon = L.divIcon({
-    //       html: userHtml,
-    //       className: "user-pin-icon",
-    //       iconSize: [28, 34],
-    //       iconAnchor: [14, 32],
-    //     })
+        const icon = L.divIcon({
+          html: userHtml,
+          className: "user-pin-icon",
+          iconSize: [28, 34],
+          iconAnchor: [14, 32],
+        })
 
-    //     const marker = L.marker([user.lat, user.lng], { icon }).addTo(markersLayer)
+        const marker = L.marker([user.lat, user.lng], { icon }).addTo(this.markersLayer)
 
-    //     marker.bindTooltip(
-    //       `
-    //   <div class="font-semibold text-xs text-slate-900 dark:text-slate-100">${user.name}</div>
-    //   <div class="text-[10px] text-slate-500">${user.role} @ ${user.companyName} (${user.gender}, ${user.age} y/o)</div>
-    // `,
-    //       { direction: "top", offset: [0, -28], opacity: 0.95 }
-    //     )
+        marker.bindTooltip(
+          `
+      <div class="font-semibold text-xs text-slate-900 dark:text-slate-100">${user.name}</div>
+      <div class="text-[10px] text-slate-500">${user.role} @ ${user.companyName} (${user.gender}, ${user.age} y/o)</div>
+    `,
+          { direction: "top", offset: [0, -28], opacity: 0.95 }
+        )
 
-    //     marker.on("click", () => {
-    //       emit("selectUser", user)
-    //     })
-    //   })
-    // }
+        marker.on("click", () => {
+          this.emitEvents("selectUser", user)
+        })
+      })
+    }
 
     // --- Draw Connecting Lines ---
     // if (this.filters.showConnectingLines) {

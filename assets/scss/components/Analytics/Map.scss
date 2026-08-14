@@ -57,6 +57,47 @@
       }
     }
   }
+
+  .user-pin {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    color: var(--bs-white);
+    border-radius: 5px;
+
+    &.male {
+      background-color: #3b82f6;
+    }
+
+    &.female {
+      background-color: #ec4899;
+    }
+
+    .detail {
+      width: 15px;
+      height: 15px;
+      border-radius: 2px;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--bs-white);
+      font-size: 8px;
+      transition: all 0.7s ease;
+      border: 2px solid var(--bs-black);
+
+      &.selected {
+        width: 15px;
+        height: 15px;
+        border-radius: 5px;
+        transform: scale(1.25);
+      }
+    }
+  }
 }
 
 // Custom Leaflet pulse effect for HQ Radar pin

@@ -2,15 +2,95 @@ import { PropsMap } from "~/scripts/props/PropsMap"
 import type { CompanyLocation } from "~/scripts/types/maps/MapCompanyLocation"
 import { FilterState } from "~/scripts/types/maps/MapFilterState"
 import { OfficeLocation } from "~/scripts/types/maps/MapOfficeLocation"
-import type { UserLocation } from "~/scripts/types/maps/MapUserLocation"
+import { UserLocation, type AgeGroup, type CompanyRole } from "~/scripts/types/maps/MapUserLocation"
+import { AnalyticsCompanyCoordinate } from "~/scripts/models/AnalyticsCompanyCoordinate"
+import { AnalyticsUserCoordinate } from "~/scripts/models/AnalyticsUserCoordinate"
+import { State } from "~/scripts/models/Location"
+import { MALAYSIA_STATES, type MalaysiaState } from "~/scripts/types/maps/MapStates"
 
 export class DataDistributionMapController {
   emitEvents: any | null = null
+
+  userCoordinates: Ref<AnalyticsUserCoordinate[]> = ref<AnalyticsUserCoordinate[]>([])
+  companyCoordinates: Ref<AnalyticsCompanyCoordinate[]> = ref<AnalyticsCompanyCoordinate[]>([])
+  natureOfBusinesses: Ref<any[]> = ref<any[]>([])
+  states: Ref<State[]> = ref<State[]>([])
+
+  isLoading: Ref<boolean> = ref<boolean>(false)
+
+  selectedUser: Ref<UserLocation | null> = ref<UserLocation | null>(null)
+  selectedCompany: Ref<CompanyLocation | null> = ref<CompanyLocation | null>(null)
 
   effectiveTheme: Ref<"light" | "dark"> = ref<"light" | "dark">("light")
 
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
+
+    this.init()
+  }
+
+  async init(): Promise<void> {
+    if (this.isLoading.value) {
+      return
+    }
+
+    try {
+      this.isLoading.value = true
+
+      await Promise.allSettled([this.fetchUserCoordinates(), this.fetchStates()])
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isLoading.value = false
+    }
+  }
+
+  async fetchUserCoordinates(): Promise<void> {
+    this.userCoordinates.value = []
+
+    let repository = useAnalyticsStore()
+    let response = await repository.fetchUserCoordinates()
+    this.userCoordinates.value = response.map((d: any) => {
+      return new AnalyticsUserCoordinate(d)
+    })
+  }
+
+  async fetchCompanyCoordinates() {
+    this.companyCoordinates.value = []
+    this.natureOfBusinesses.value = []
+
+    let repository = useAnalyticsStore()
+    let response = await repository.fetchCompanyCoordinates()
+    this.companyCoordinates.value = response.map((d: any) => {
+      return new AnalyticsCompanyCoordinate(d)
+    })
+
+    this.natureOfBusinesses.value = Array.from(
+      new Set(
+        this.companyCoordinates.value.flatMap((cc) => {
+          return cc.msicCodes
+        })
+      )
+    ).map((msicCode) => {
+      return {
+        code: msicCode.code,
+        color: null,
+      }
+    })
+  }
+
+  async fetchStates() {
+    this.states.value = []
+
+    let repository = useStateStore()
+    let response = await repository.byCountryId(87) //malaysia only
+    this.states.value = repository.states.map((d: any) => {
+      return new State(d)
+    })
+  }
+
+  onSelectedUser(user: UserLocation | null): void {
+    this.selectedUser.value = user
   }
 
   // getters
@@ -27,7 +107,47 @@ export class DataDistributionMapController {
   }
 
   get userLocations(): UserLocation[] {
-    return []
+    return this.userCoordinates.value.map((uc: AnalyticsUserCoordinate) => {
+      let ageGroup: AgeGroup = "Unknown"
+      if (uc.age !== null) {
+        ageGroup = uc.age < 30 ? "< 30" : uc.age >= 30 && uc.age < 50 ? "30 - 49" : "> 50"
+      }
+
+      let role: CompanyRole = "Officer"
+      if (uc.isADirector && uc.isAShareholder) {
+        role = "Director & Shareholder"
+      } else if (uc.isADirector) {
+        role = "Director"
+      } else if (uc.isAShareholder) {
+        role = "Shareholder"
+      }
+
+      let state: MalaysiaState | null =
+        (MALAYSIA_STATES.find((state: string) => {
+          return uc.address.includes(state.toLowerCase())
+        }) as MalaysiaState) ?? null
+
+      return new UserLocation(
+        uc.name, //id
+        uc.name, //name
+        uc.email, //email
+        uc.phone, //phone
+        "", //avatarUrl
+        uc.gender === "female" ? "Female" : "Male", //gender
+        uc.age ?? 0, //age
+        ageGroup, //ageGroup
+        role, //role
+        "", //companyId
+        "", //companyName
+        uc.coordinate.lat, //lat
+        uc.coordinate.lng, //lng
+        uc.address, //city
+        state ?? "(Not in Malaysia)", //state
+        uc.address, //address
+        "Active" //activeStatus
+        //lastSeen
+      )
+    })
   }
 
   get companyLocations(): CompanyLocation[] {
@@ -59,8 +179,8 @@ export class DataDistributionMapController {
       this.officeLocation, //office
       this.filterState, //filters
       this.effectiveTheme.value, //effectiveTheme
-      null, //selectedUser
-      null, //selectedCompany
+      this.selectedUser.value, //selectedUser
+      this.selectedCompany.value, //selectedCompany
       null //mapTarget
     )
   }

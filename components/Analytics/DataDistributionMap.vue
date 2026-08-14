@@ -1,6 +1,9 @@
 <template>
   <div id="analytics-data-distribution-map">
-    <Map v-bind="controller.mapProps" />
+    <Map
+      v-bind="controller.mapProps"
+      @selectUser="controller.onSelectedUser($event)"
+    />
   </div>
 </template>
 
