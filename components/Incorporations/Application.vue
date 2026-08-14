@@ -597,6 +597,11 @@
       v-bind="controller.uploadDocumentProps"
       @uploaded="controller.onDocumentUploaded($event)"
     />
+    <NameReservationRejected
+      v-bind="controller.nameReservationRejectedProps"
+      ref="nameReservationRejectedPopup"
+      @proceed="controller.onProceedNameReservationRejected($event)"
+    />
   </div>
 </template>
 
@@ -606,6 +611,7 @@
   import CopyValue from "@/components/Buttons/CopyValue.vue"
   import Director from "@/components/Invitations/Director.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import NameReservationRejected from "@/components/Popups/NameReservationRejected.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
@@ -635,6 +641,7 @@
 
   const nameReservedPopup = ref(null)
   const nameReservedQueriedPopup = ref(null)
+  const nameReservationRejectedPopup = ref(null)
   const completionOfIncorporationPopup = ref(null)
   const uploadFilePopup = ref(null)
 
@@ -689,6 +696,14 @@
     documentRef,
     (newVal) => {
       controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    nameReservationRejectedPopup,
+    (newVal) => {
+      controller.setNameReservationRejectedPopup(newVal)
     },
     { immediate: true }
   )
