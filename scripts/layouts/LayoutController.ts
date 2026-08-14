@@ -132,7 +132,7 @@ export class LayoutController {
       let dayjs = useDayjs()
       let filter = new Filter()
       filter.isIncludeMinutes = true
-      filter.startDate = dayjs().subtract(8, "hours").subtract(5, "minute").format("YYYY-MM-DD HH:mm:ss")
+      filter.startDate = dayjs().subtract(8, "hours").subtract(1, "minute").format("YYYY-MM-DD HH:mm:ss")
 
       let repository = useAnalyticsStore()
       let response = await repository.fetchPaymentSince(filter)

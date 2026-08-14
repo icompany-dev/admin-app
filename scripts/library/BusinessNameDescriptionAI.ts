@@ -5,10 +5,11 @@ import { StringUtil } from "../utils/String"
 import { Error } from "./Error"
 import { GeminiAi } from "./GeminiAi"
 
-export class BusinessDescriptionAI {
+export class BusinessNameDescriptionAI {
   geminiAi: GeminiAi = new GeminiAi()
 
-  draftDescription: string = ""
+  proposedName: string = ""
+  businessDescription: string = ""
   prompt: string = ""
 
   isProcessing: boolean = false
@@ -18,16 +19,15 @@ export class BusinessDescriptionAI {
   intervalGap: number = 1000
 
   resultDescription: string | null = null
-  recommendedMsicCodes: string[] = []
 
   constructor() {
     this.resetValues()
   }
 
   resetValues(): void {
-    this.draftDescription = ""
+    this.proposedName = ""
+    this.businessDescription = ""
     this.resultDescription = null
-    this.recommendedMsicCodes = []
     this.isProcessing = false
     this.jobIds = []
     this.geminiAi.jobStatuses = []
@@ -36,7 +36,7 @@ export class BusinessDescriptionAI {
   }
 
   formPrompt(): void {
-    if (StringUtil.isNullOrEmpty(this.draftDescription)) {
+    if (StringUtil.isNullOrEmpty(this.proposedName)) {
       this.prompt = ""
       return
     }
@@ -44,21 +44,22 @@ export class BusinessDescriptionAI {
     this.prompt = `
       You are a Company Secretary in Malaysia. You have been working for 10 years. You are bounded by the 
       Companies Act 2016. You are knowledgable on incorporating new Sdn Bhd in Malaysia. 
-      I want to incorporate a new Sdn Bhd. This is the description of my Business: 
-      ${this.draftDescription}. 
-      Draft me a short description of my business nature in 255 characters or less. Then suggest at least 1, 
-      at most 3 MSIC codes that match my nature of business. Refer to LHDN for the list of MSIC Codes. 
-      Your response must be in the following JSON format: { description: '', msic_codes: [] }
+      I want to incorporate a new Sdn Bhd. This is the name proposed: ${this.proposedName}.
+      This is the description of my Business: ${this.businessDescription}. 
+      Draft me a short description of my business name using less than 250 characters that will explain the 
+      reason behind the name and why I want to use that name. This description will be submitted to SSM for the name reservation process.
+      Your response must be in the following JSON format: { description: '' }
     `
   }
 
-  async askGemini(draftDescription: string): Promise<void> {
+  async askGemini(proposedName: string, businesDescription: string): Promise<void> {
     if (this.isProcessing) {
       return
     }
 
     this.isProcessing = true
-    this.draftDescription = draftDescription
+    this.proposedName = proposedName
+    this.businessDescription = businesDescription
     this.formPrompt()
 
     if (StringUtil.isNullOrEmpty(this.prompt)) {
@@ -152,7 +153,6 @@ export class BusinessDescriptionAI {
     info = info.replace("json", "")
 
     let object = JSON.parse(info)
-    this.resultDescription = object.description ?? this.draftDescription
-    this.recommendedMsicCodes = object.msic_codes ?? []
+    this.resultDescription = object.description ?? this.proposedName
   }
 }

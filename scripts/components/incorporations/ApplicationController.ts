@@ -30,6 +30,9 @@ import { Form } from "~/scripts/models/Form"
 import { File } from "~/scripts/models/File"
 import type { RefSymbol } from "@vue/reactivity"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import type { Invitation } from "~/scripts/models/Invitation"
+import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
+import { BusinessNameDescriptionAI } from "~/scripts/library/BusinessNameDescriptionAI"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -68,6 +71,11 @@ export class ApplicationController {
   documentRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  isShowAdminView: Ref<boolean> = ref<boolean>(true)
+  isShowCrsView: Ref<boolean> = ref<boolean>(false)
+
+  businessNameDescriptionAI = ref<BusinessNameDescriptionAI>(new BusinessNameDescriptionAI())
 
   isShowSection201: Ref<boolean> = ref<boolean>(false)
   selectedDirectorInvitationFor201: Ref<DirectorInvitation | null> = ref<DirectorInvitation | null>(null)
@@ -244,6 +252,16 @@ export class ApplicationController {
     })
   }
 
+  onShowAdminViewClicked(): void {
+    this.isShowAdminView.value = true
+    this.isShowCrsView.value = false
+  }
+
+  onShowCrsViewClicked(): void {
+    this.isShowAdminView.value = false
+    this.isShowCrsView.value = true
+  }
+
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
     this.isShowSection27.value = false
@@ -368,6 +386,10 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
 
+  getPropsInvitationDetail(invitation: Invitation): PropsInvitationDetail {
+    return new PropsInvitationDetail(invitation.id, invitation)
+  }
+
   // Name Reservation Step
   onNameReservationStepClicked(): void {
     this.resetAllDocumentValues()
@@ -379,9 +401,54 @@ export class ApplicationController {
     this.isShowProposedNames.value = !this.isShowProposedNames.value
   }
 
+  hasAnyOngoingApplicationForNameReservations(): boolean {
+    return this.nameReservations.some((nr: ApplicationNameReservation) => {
+      return nr.status !== "outcome"
+    })
+  }
+
+  canSelectForNameReservation(name: string): boolean {
+    let nameReservationApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
+      return nr.name === name
+    })
+
+    if (!nameReservationApplication) {
+      return this.hasAnyOngoingApplicationForNameReservations()
+    }
+
+    return nameReservationApplication.status !== "outcome"
+  }
+
   onProposedNamesSelected(name: string): void {
     this.isShowProposedNames.value = false
     this.selectedProposedName.value = name
+  }
+
+  async onRunAskSairaForNameDescription(): Promise<void> {
+    if (
+      this.businessNameDescriptionAI.value.isProcessing ||
+      StringUtil.isNullOrEmpty(this.selectedProposedName.value) ||
+      !this.application.value
+    ) {
+      return
+    }
+
+    this.businessNameDescriptionAI.value.resetValues()
+    this.businessNameDescriptionAI.value.askGemini(
+      this.selectedProposedName.value,
+      this.application.value.businessDescription
+    )
+
+    this.checkAIStatus()
+  }
+
+  checkAIStatus(): void {
+    if (this.businessNameDescriptionAI.value.isProcessing) {
+      setTimeout(() => {
+        this.checkAIStatus()
+      }, 500)
+      return
+    }
   }
 
   onShowSection27ActionClicked(): void {
@@ -1078,6 +1145,22 @@ export class ApplicationController {
     return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
   }
 
+  get adminViewLabel(): string {
+    return this.language.isMalay() ? "Admin View" : "Admin View"
+  }
+
+  get crsViewLabel(): string {
+    return this.language.isMalay() ? "CRS View" : "CRS View"
+  }
+
+  get showCrsViewLabel(): string {
+    if (this.isShowCrsView.value) {
+      return this.language.isMalay() ? "Sedang Menunjuk Butiran untuk Sistem CRS" : "Showing Details for CRS System"
+    }
+
+    return this.language.isMalay() ? "Tunjuk Butiran untuk Sistem CRS" : "Show Details for CRS System"
+  }
+
   get viewSection201Label(): string {
     return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 201" : "Declaration under Section 201"
   }
@@ -1115,7 +1198,7 @@ export class ApplicationController {
   }
 
   get applicantLabel(): string {
-    return this.language.isMalay() ? "Butiran Pemohon" : "Details of Applicant"
+    return this.language.isMalay() ? "Butiran Promoter" : "Details of Promoter"
   }
 
   get applicantName(): string {
@@ -1128,6 +1211,16 @@ export class ApplicationController {
 
   get applicantPhone(): string {
     return this.applicant.value.phone
+  }
+
+  get applicantIdentificationType(): string {
+    let type = "MyKad"
+
+    if (this.applicant.value.detail) {
+      type = this.applicant.value.detail.identificationType === "passport" ? "Passport" : "MyKad"
+    }
+
+    return this.language.isMalay() ? `No. ${type}` : `${type} No.`
   }
 
   get applicantIdentification(): string {
@@ -1263,6 +1356,30 @@ export class ApplicationController {
       names.push(this.application.value.name3.name)
     }
 
+    let formattednames = names.map((s: string) => {
+      let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
+        return nr.name === s
+      })
+
+      if (!ongoingApplication) {
+        return s
+      }
+
+      if (ongoingApplication.status === StatusConstants.OUTCOME) {
+        if (ongoingApplication.status === StatusConstants.APPROVED) {
+          s = `${s} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
+        }
+
+        if (ongoingApplication.status === StatusConstants.REJECTED) {
+          s = `${s} <small><i>${this.language.isMalay() ? "(Ditolak)" : "(Rejected)"}</i></small>`
+        }
+      } else {
+        s = `${s} <small><i>${this.language.isMalay() ? "(Sedang berjalan)" : "(Ongoing)"}</i></small>`
+      }
+
+      return s
+    })
+
     return names
   }
 
@@ -1279,15 +1396,65 @@ export class ApplicationController {
       return this.application.value.nameSelected.getCompleteName()
     }
 
+    let selectedName = this.selectedProposedName.value
+    if (StringUtil.isNullOrEmpty(selectedName)) {
+      selectedName = this.nameOptions[0]
+    }
+
     let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
-      return nr.status === StatusConstants.PENDING
+      return (
+        nr.status !== StatusConstants.OUTCOME && nr.ssmResult !== StatusConstants.REJECTED && nr.name === selectedName
+      )
     })
 
     if (ongoingApplication) {
-      return ongoingApplication.name
+      return `${ongoingApplication.name} <small><i>${this.language.isMalay() ? "(Sedang Berjalan)" : "(Ongoing)"}</i></small>`
     }
 
-    return this.nameOptions[0]
+    return selectedName
+  }
+
+  get nameDescriptionLabel(): string {
+    return this.language.isMalay() ? "Keterangan bagi Nama yang dicadangkan" : "Description of Proposed Name"
+  }
+
+  get selectedNameDescription(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    let selectedName = this.selectedProposedName.value
+    if (this.application.value.nameSelected) {
+      return this.application.value.nameSelected.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name1.name === selectedName) {
+      return this.application.value.name1.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name2?.name === selectedName) {
+      return this.application.value.name2.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name3?.name === selectedName) {
+      return this.application.value.name3.nameDescription ?? "-"
+    }
+
+    return "-"
+  }
+
+  get aiSuggestedNameDescription(): string {
+    if (StringUtil.isNullOrEmpty(this.businessNameDescriptionAI.value.resultDescription)) {
+      if (this.businessNameDescriptionAI.value.isProcessing) {
+        return this.language.isMalay()
+          ? "SAIRA sedang berfikir... Sila tunggu sebentar."
+          : "SAIRA is thinking... Please wait."
+      }
+
+      return this.language.isMalay() ? "Tanya SAIRA untuk cadangan." : "Ask SAIRA for suggestions."
+    }
+
+    return this.businessNameDescriptionAI.value.resultDescription?.toUpperCase() ?? ""
   }
 
   get uploadSection27Label(): string {

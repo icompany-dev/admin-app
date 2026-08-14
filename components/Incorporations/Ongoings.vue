@@ -22,12 +22,10 @@
         class="application"
         v-for="(application, i) in controller.tableDataFetcher.value.data"
         :key="i"
+        @click="controller.onApplicationClicked(application)"
       >
         <div class="application-details">
-          <div
-            class="proposed-name"
-            @click="controller.onApplicationClicked(application)"
-          >
+          <div class="proposed-name">
             {{ application.getName() }}
           </div>
           <div class="application-date">
@@ -41,10 +39,7 @@
           </div>
         </div>
         <div class="application-actions">
-          <button
-            class="btn btn-submit btn-pill"
-            @click="controller.onApplicationClicked(application)"
-          >
+          <button class="btn btn-submit btn-pill">
             {{ controller.viewApplicationLabel }}
           </button>
         </div>

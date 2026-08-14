@@ -28,14 +28,22 @@
             <div class="summary-item-content human-details">
               <span class="human-detail">
                 <b>{{ controller.applicantName }}</b>
+                <CopyValue :value="controller.applicantName" />
               </span>
               <span class="human-detail">
                 <i class="fa-regular fa-envelope" />
                 {{ controller.applicantEmail }}
+                <CopyValue :value="controller.applicantEmail" />
               </span>
               <span class="human-detail">
                 <i class="fa-brands fa-whatsapp" />
                 {{ controller.applicantPhone }}
+                <CopyValue :value="controller.applicantPhone" />
+              </span>
+              <span class="human-detail">
+                <span>{{ controller.applicantIdentificationType }}</span>
+                <span>{{ controller.applicantIdentification }}</span>
+                <CopyValue :value="controller.applicantIdentification" />
               </span>
             </div>
           </div>
@@ -44,26 +52,15 @@
               {{ controller.directorLabel }}
             </div>
             <div
-              class="summary-item-content human-details"
+              class="summary-item-content"
               v-for="(director, index) in controller.directorDetails"
+              :key="`director-${index}`"
             >
-              <span class="human-detail">
-                <b>{{ director.name }}</b>
-              </span>
-              <span class="human-detail">
-                <i class="fa-regular fa-envelope" />
-                {{ director.email }}
-              </span>
-              <span class="human-detail">
-                <i class="fa-brands fa-whatsapp" />
-                {{ director.user.phone }}
-              </span>
-              <span
-                class="human-detail action-clickable"
-                @click="controller.onOpenSection201Clicked(director)"
-              >
-                {{ controller.viewSection201Label }}
-              </span>
+              <Director
+                v-bind="controller.getPropsInvitationDetail(director)"
+                @showDocument="controller.onOpenSection201Clicked(director)"
+                @removed="controller.fetchApplication()"
+              />
             </div>
           </div>
           <div class="summary-item">
@@ -71,21 +68,11 @@
               {{ controller.shareholderLabel }}
             </div>
             <div
-              class="summary-item-content human-details"
+              class="summary-item-content"
               v-for="(shareholder, index) in controller.shareholderDetails"
+              :key="`shareholder-${index}`"
             >
-              <span class="human-detail">
-                <b>{{ shareholder.name }}</b>
-              </span>
-              <span class="human-detail">
-                <i class="fa-regular fa-envelope" />
-                {{ shareholder.email }}
-              </span>
-              <span class="human-detail">
-                <i class="fa-brands fa-whatsapp" />
-                {{ shareholder.user.phone }}
-              </span>
-              <span class="human-detail">{{ controller.totalSharesLabel }}: {{ shareholder.totalShares }}</span>
+              <Shareholder v-bind="controller.getPropsInvitationDetail(shareholder)" />
             </div>
           </div>
         </div>
@@ -183,6 +170,24 @@
           v-bind="controller.serviceApplicationProps"
           @paymentNodeSelected="controller.onPaymentStepClicked()"
         >
+          <template #titleOptions>
+            <div class="display-toggles">
+              <button
+                class="btn btn-view btn-pill"
+                :class="{ active: controller.isShowAdminView.value }"
+                @click="controller.onShowAdminViewClicked()"
+              >
+                {{ controller.adminViewLabel }}
+              </button>
+              <button
+                class="btn btn-view btn-pill"
+                :class="{ active: controller.isShowCrsView.value }"
+                @click="controller.onShowCrsViewClicked()"
+              >
+                {{ controller.crsViewLabel }}
+              </button>
+            </div>
+          </template>
           <template #application>
             <ApplicationNode
               v-bind="controller.nameReservationNodeProps"
@@ -201,7 +206,10 @@
                         class="btn btn-primary selected"
                         @click="controller.onProposedNamesClicked()"
                       >
-                        <span class="label">{{ controller.selectedProposedNameForDisplay }}</span>
+                        <span
+                          class="label"
+                          v-html="controller.selectedProposedNameForDisplay"
+                        />
                         <i
                           class="fa-solid fa-caret-down"
                           :class="{ rotate: controller.isShowProposedNames.value }"
@@ -215,13 +223,81 @@
                           v-for="(name, index) in controller.nameOptions"
                           :key="index"
                           class="btn btn-primary name-option"
+                          :disabled="!controller.canSelectForNameReservation(name)"
                           @click="controller.onProposedNamesSelected(name)"
                         >
                           {{ name }}
                         </button>
                       </div>
                     </div>
+                    <CopyValue :value="controller.selectedProposedName.value" />
                   </div>
+                  <Transition name="fade">
+                    <div
+                      v-if="controller.isShowCrsView.value"
+                      class="application-details"
+                    >
+                      <b>{{ controller.nameDescriptionLabel }}</b>
+                      <div
+                        class="name-description-details"
+                        v-if="controller.selectedNameDescription !== '-'"
+                      >
+                        {{ controller.selectedNameDescription }}
+                      </div>
+                      <div class="name-description-ai">
+                        <div class="ai-suggested">
+                          {{ controller.aiSuggestedNameDescription }}
+                          <CopyValue :value="controller.aiSuggestedNameDescription" />
+                        </div>
+                        <button
+                          class="btn btn-primary"
+                          @click="controller.onRunAskSairaForNameDescription()"
+                        >
+                          <i
+                            class="fa-solid"
+                            :class="
+                              controller.businessNameDescriptionAI.value.isProcessing
+                                ? 'fa-spinner fa-spin'
+                                : 'fa-sparkle'
+                            "
+                          />
+                          Ask SAIRA
+                        </button>
+                      </div>
+                      <b>{{ controller.msicCodeLabel }}</b>
+                      <div class="application-details-msic-codes">
+                        <div
+                          v-for="(msicCodeAssign, i) in controller.application.value.msicCodeAssigns"
+                          class="application-details-msic-code"
+                        >
+                          {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
+                          <CopyValue :value="msicCodeAssign.msicCode.code" />
+                        </div>
+                      </div>
+                      <b>{{ controller.applicantLabel }}</b>
+                      <div class="human-details">
+                        <span class="human-detail">
+                          <b>{{ controller.applicantName }}</b>
+                          <CopyValue :value="controller.applicantName" />
+                        </span>
+                        <span class="human-detail">
+                          <span>{{ controller.applicantIdentificationType }}</span>
+                          <span>{{ controller.applicantIdentification }}</span>
+                          <CopyValue :value="controller.applicantIdentification" />
+                        </span>
+                        <span class="human-detail">
+                          <i class="fa-regular fa-envelope" />
+                          {{ controller.applicantEmail }}
+                          <CopyValue :value="controller.applicantEmail" />
+                        </span>
+                        <span class="human-detail">
+                          <i class="fa-brands fa-whatsapp" />
+                          {{ controller.applicantPhone }}
+                          <CopyValue :value="controller.applicantPhone" />
+                        </span>
+                      </div>
+                    </div>
+                  </Transition>
                 </div>
               </template>
               <template #nodeOptions>
@@ -521,13 +597,21 @@
       v-bind="controller.uploadDocumentProps"
       @uploaded="controller.onDocumentUploaded($event)"
     />
+    <NameReservationRejected
+      v-bind="controller.nameReservationRejectedProps"
+      ref="nameReservationRejectedPopup"
+      @proceed="controller.onProceedNameReservationRejected($event)"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import CompletionOfIncorporation from "@/components/Popups/CompletionOfIncorporation.vue"
+  import CopyValue from "@/components/Buttons/CopyValue.vue"
+  import Director from "@/components/Invitations/Director.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import NameReservationRejected from "@/components/Popups/NameReservationRejected.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
@@ -536,6 +620,7 @@
   import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import Section27OneFourService from "@/components/CompanyServices/Section27OneFourService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
+  import Shareholder from "@/components/Invitations/Shareholder.vue"
   import UploadFile from "@/components/Popups/UploadFile.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
@@ -556,6 +641,7 @@
 
   const nameReservedPopup = ref(null)
   const nameReservedQueriedPopup = ref(null)
+  const nameReservationRejectedPopup = ref(null)
   const completionOfIncorporationPopup = ref(null)
   const uploadFilePopup = ref(null)
 
@@ -610,6 +696,14 @@
     documentRef,
     (newVal) => {
       controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    nameReservationRejectedPopup,
+    (newVal) => {
+      controller.setNameReservationRejectedPopup(newVal)
     },
     { immediate: true }
   )

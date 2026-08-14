@@ -45,6 +45,15 @@
     }
   }
 
+  .node-content-action-options {
+    width: calc(100% - 50px);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 20px;
+  }
+
   .node-content {
     flex: 3;
     opacity: 0.6;
@@ -154,6 +163,20 @@
 
     &:hover {
       font-weight: 600;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .node-content-action-options {
+      flex-direction: column;
+      gap: 10px;
+
+      .node-content,
+      .node-options,
+      .node-actions {
+        width: 100%;
+        padding: 5px;
+      }
     }
   }
 }

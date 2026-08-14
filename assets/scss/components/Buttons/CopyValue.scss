@@ -1,0 +1,17 @@
+#buttons-copy-value {
+  font-size: 14px;
+  line-height: 14px;
+  cursor: pointer !important;
+  color: var(--bs-icompany-blue);
+  transition: all 0.5s ease;
+  display: inline-block;
+  padding-left: 10px;
+
+  &.success {
+    color: var(--bs-icompany-green);
+  }
+
+  .icon {
+    cursor: pointer !important;
+  }
+}

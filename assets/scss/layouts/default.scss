@@ -43,15 +43,34 @@
     margin: auto;
     margin-top: 100px; // Header height 90px
     z-index: 2;
-    width: 90%;
+    width: 99%;
+    height: 100%;
+    overflow: auto;
     min-height: calc(100dvh - 200px);
     max-width: calc(100% - 300px);
     transform: translateX(150px); //sidebar width
     padding-bottom: 30px;
     transition: all 0.7s ease;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 10px;
+      transition: background 0.3s ease;
+    }
+
+    &:hover {
+      &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2); // Visible thumb
+      }
+    }
 
     &.expand {
-      max-width: 90%;
+      max-width: calc(100% - 50px);
       transform: translateX(0);
     }
 

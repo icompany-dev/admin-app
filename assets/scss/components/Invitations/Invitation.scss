@@ -1,0 +1,30 @@
+.human-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5px;
+  margin: 20px 0;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+
+  .name {
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .human-detail {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 3px;
+
+    .action-clickable {
+      cursor: pointer;
+      color: var(--bs-icompany-blue);
+    }
+  }
+}

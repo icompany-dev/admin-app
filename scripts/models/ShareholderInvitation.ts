@@ -148,6 +148,23 @@ export class ShareholderInvitation extends Invitation implements IInvitation<Sha
 
     this.convertFromResponseDetails(response)
   }
+
+  async remove(repository: ReturnType<typeof useShareholderInvitationStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let response = await repository.remove(this.id)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    return response
+  }
 }
 
 export class ShareholderInvitationCompany {
