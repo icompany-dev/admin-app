@@ -1356,6 +1356,34 @@ export class ApplicationController {
       names.push(this.application.value.name3.name)
     }
 
+    let formattednames = names.map((s: string) => {
+      let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
+        return nr.name === s
+      })
+
+      if (!ongoingApplication) {
+        return s
+      }
+
+      if (ongoingApplication.status === StatusConstants.OUTCOME) {
+        if (ongoingApplication.status === StatusConstants.APPROVED) {
+          s = `${s} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
+        }
+
+        if (ongoingApplication.status === StatusConstants.REJECTED) {
+          s = `${s} <small><i>${this.language.isMalay() ? "(Ditolak)" : "(Rejected)"}</i></small>`
+        }
+      } else {
+        s = `${s} <small><i>${this.language.isMalay() ? "(Sedang berjalan)" : "(Ongoing)"}</i></small>`
+      }
+
+      console.log("name", s)
+
+      return s
+    })
+
+    console.log("names", formattednames)
+
     return names
   }
 
@@ -1378,7 +1406,9 @@ export class ApplicationController {
     }
 
     let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
-      return nr.status !== StatusConstants.REJECTED && nr.name === selectedName
+      return (
+        nr.status !== StatusConstants.OUTCOME && nr.ssmResult !== StatusConstants.REJECTED && nr.name === selectedName
+      )
     })
 
     if (ongoingApplication) {
