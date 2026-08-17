@@ -1,4 +1,5 @@
 import type { MalaysiaState } from "./MapStates"
+import type { UserCompanyAppointment } from "./MapUserCompanyAppointment"
 
 export type Gender = "Male" | "Female"
 export type AgeGroup = "< 30" | "30 - 49" | "> 50" | "Unknown"
@@ -16,6 +17,8 @@ export class UserLocation {
   role: CompanyRole
   companyId: string
   companyName: string
+  companyIds: string[]
+  appointments: UserCompanyAppointment[]
   lat: number
   lng: number
   city: string
@@ -36,6 +39,8 @@ export class UserLocation {
     role: CompanyRole,
     companyId: string,
     companyName: string,
+    companyIds: string[],
+    appointments: UserCompanyAppointment[],
     lat: number,
     lng: number,
     city: string,
@@ -55,6 +60,8 @@ export class UserLocation {
     this.role = role
     this.companyId = companyId
     this.companyName = companyName
+    this.companyIds = companyIds
+    this.appointments = appointments
     this.lat = lat
     this.lng = lng
     this.city = city

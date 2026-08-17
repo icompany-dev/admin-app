@@ -139,6 +139,8 @@ export class DataDistributionMapController {
         role, //role
         "", //companyId
         "", //companyName
+        [], //companyIds
+        [], //appointments
         uc.coordinate.lat, //lat
         uc.coordinate.lng, //lng
         uc.address, //city

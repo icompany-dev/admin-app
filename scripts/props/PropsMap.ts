@@ -3,6 +3,7 @@ import type { AnalyticsUserCoordinate } from "../models/AnalyticsUserCoordinate"
 import type { CompanyLocation } from "../types/maps/MapCompanyLocation"
 import type { FilterState } from "../types/maps/MapFilterState"
 import type { OfficeLocation } from "../types/maps/MapOfficeLocation"
+import type { MapTarget } from "../types/maps/MapTarget"
 import type { UserLocation } from "../types/maps/MapUserLocation"
 
 export interface IPropsMap {
@@ -13,7 +14,7 @@ export interface IPropsMap {
   effectiveTheme: "light" | "dark"
   selectedUser?: UserLocation | null
   selectedCompany?: CompanyLocation | null
-  mapTarget?: { lat: number; lng: number; zoom: number } | null
+  mapTarget?: MapTarget | null
 }
 
 export class PropsMap implements IPropsMap {
@@ -24,7 +25,7 @@ export class PropsMap implements IPropsMap {
   effectiveTheme: "light" | "dark"
   selectedUser?: UserLocation | null
   selectedCompany?: CompanyLocation | null
-  mapTarget?: { lat: number; lng: number; zoom: number } | null
+  mapTarget?: MapTarget | null
 
   constructor(
     users: UserLocation[], //UserLocation
@@ -34,7 +35,7 @@ export class PropsMap implements IPropsMap {
     effectiveTheme: "light" | "dark",
     selectedUser?: UserLocation | null,
     selectedCompany?: CompanyLocation | null,
-    mapTarget?: { lat: number; lng: number; zoom: number } | null
+    mapTarget?: MapTarget | null
   ) {
     this.users = users
     this.companies = companies
