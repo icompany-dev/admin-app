@@ -242,46 +242,42 @@ export class MapController {
     const L = this.LeafletLib
 
     // --- Draw Companies ---
-    // if (this.filters.viewMode === "all" || this.filters.viewMode === "companies") {
-    //   this.companies.forEach((company) => {
-    //     const color = getCompanyMarkerColor(company, this.filters.companyCategoryMode)
-    //     const isSelected = this.selectedCompany?.id === company.id
+    if (this.filters.viewMode === "all" || this.filters.viewMode === "companies") {
+      this.companies.forEach((company) => {
+        const color = MapUtil.getCompanyMarkerColor(company, this.filters.companyCategoryMode)
+        const isSelected = this.selectedCompany?.id === company.id
 
-    //     const companyHtml = `
-    //   <div class="custom-map-pin relative flex flex-col items-center group">
-    //     <div class="w-8 h-8 rounded-lg shadow-lg flex items-center justify-center text-white border-2 ${
-    //       isSelected ? "ring-4 ring-sky-400 scale-125 z-50" : "border-white dark:border-slate-900"
-    //     }" style="background-color: ${color};">
-    //       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    //         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-    //       </svg>
-    //     </div>
-    //     <div class="w-1.5 h-1.5 bg-slate-800 dark:bg-white rounded-full mt-0.5 opacity-60"></div>
-    //   </div>
-    // `
+        const companyHtml = `
+          <div class="company-pin">
+          <div class="detail ${isSelected ? "selected" : ""}" style="background-color: ${color};">
+              <i class="fa-solid fa-building"></i>
+            </div>
+            <div class="w-1.5 h-1.5 bg-slate-800 dark:bg-white rounded-full mt-0.5 opacity-60"></div>
+          </div>
+        `
 
-    //     const icon = L.divIcon({
-    //       html: companyHtml,
-    //       className: "company-pin-icon",
-    //       iconSize: [32, 38],
-    //       iconAnchor: [16, 36],
-    //     })
+        const icon = L.divIcon({
+          html: companyHtml,
+          className: "company-pin-icon",
+          iconSize: [32, 38],
+          iconAnchor: [16, 36],
+        })
 
-    //     const marker = L.marker([company.lat, company.lng], { icon }).addTo(markersLayer)
+        const marker = L.marker([company.lat, company.lng], { icon }).addTo(this.markersLayer)
 
-    //     marker.bindTooltip(
-    //       `
-    //   <div class="font-semibold text-xs text-slate-900 dark:text-slate-100">${company.name}</div>
-    //   <div class="text-[10px] text-slate-500">${company.businessNature} &bull; ${company.state}</div>
-    // `,
-    //       { direction: "top", offset: [0, -32], opacity: 0.95 }
-    //     )
+        marker.bindTooltip(
+          `
+            <div class="font-semibold text-xs text-slate-900 dark:text-slate-100">${company.name}</div>
+            <div class="text-[10px] text-slate-500">${company.businessNature} &bull; ${company.state}</div>
+          `,
+          { direction: "top", offset: [0, -32], opacity: 0.95 }
+        )
 
-    //     marker.on("click", () => {
-    //       emit("selectCompany", company)
-    //     })
-    //   })
-    // }
+        marker.on("click", () => {
+          this.emitEvents("selectCompany", company)
+        })
+      })
+    }
 
     // --- Draw Users ---
     if (this.filters.viewMode === "all" || this.filters.viewMode === "users") {
@@ -318,9 +314,9 @@ export class MapController {
 
         marker.bindTooltip(
           `
-      <div class="font-semibold text-xs text-slate-900 dark:text-slate-100">${user.name}</div>
-      <div class="text-[10px] text-slate-500">${user.role} @ ${user.companyName} (${user.gender}, ${user.age} y/o)</div>
-    `,
+            <div class="font-semibold text-xs text-slate-900 dark:text-slate-100">${user.name}</div>
+            <div class="text-[10px] text-slate-500">${user.role} @ ${user.companyName} (${user.gender}, ${user.age} y/o)</div>
+          `,
           { direction: "top", offset: [0, -28], opacity: 0.95 }
         )
 

@@ -1,5 +1,5 @@
 import { PropsMap } from "~/scripts/props/PropsMap"
-import type { CompanyLocation } from "~/scripts/types/maps/MapCompanyLocation"
+import { CompanyLocation } from "~/scripts/types/maps/MapCompanyLocation"
 import { FilterState } from "~/scripts/types/maps/MapFilterState"
 import { OfficeLocation } from "~/scripts/types/maps/MapOfficeLocation"
 import { UserLocation, type AgeGroup, type CompanyRole } from "~/scripts/types/maps/MapUserLocation"
@@ -40,7 +40,7 @@ export class DataDistributionMapController {
     try {
       this.isLoading.value = true
 
-      await Promise.allSettled([this.fetchUserCoordinates(), this.fetchStates()])
+      await Promise.allSettled([this.fetchUserCoordinates(), this.fetchCompanyCoordinates(), this.fetchStates()])
     } catch (e) {
       console.error(e)
     } finally {
@@ -95,11 +95,13 @@ export class DataDistributionMapController {
   onSelectedUser(user: UserLocation | null): void {
     this.selectedUser.value = user
     this.selectedMapTarget.value = null
+    this.selectedCompany.value = null
   }
 
   onSelectedCompany(company: CompanyLocation | null): void {
     this.selectedCompany.value = company
     this.selectedMapTarget.value = null
+    this.selectedUser.value = null
   }
 
   onFlyTo(mapTarget: MapTarget): void {
@@ -171,7 +173,37 @@ export class DataDistributionMapController {
   }
 
   get companyLocations(): CompanyLocation[] {
-    return []
+    return this.companyCoordinates.value.map((cc: AnalyticsCompanyCoordinate) => {
+      let businessNature = "" // need to handle
+
+      let state: MalaysiaState | null =
+        (MALAYSIA_STATES.find((state: string) => {
+          return cc.address.includes(state.toLowerCase())
+        }) as MalaysiaState) ?? null
+
+      return new CompanyLocation(
+        cc.companyId,
+        cc.name,
+        "", //reg no
+        businessNature,
+        state ?? "(Not in Malaysia)",
+        "", //city,
+        cc.address,
+        cc.coordinate.lat,
+        cc.coordinate.lng,
+        1, //director count
+        1, //shareholder count
+        0, //officeers count
+        2026, //incorporated year,
+        "100", //total shares,
+        0, // office distance?,
+        "< 5 km", // need to deal with this,
+        "", //email
+        "", // phone,
+        "", //website,
+        []
+      )
+    })
   }
 
   get filterState(): FilterState {

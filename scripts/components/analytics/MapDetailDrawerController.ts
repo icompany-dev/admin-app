@@ -207,4 +207,8 @@ export class MapDetailDrawerController {
   get selectedUserLng(): number {
     return this.selectedUser.value?.lng ?? 0
   }
+
+  get isSelectedCompany(): boolean {
+    return this.selectedCompany.value !== null
+  }
 }
