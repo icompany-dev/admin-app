@@ -7,6 +7,8 @@ import { AnalyticsCompanyCoordinate } from "~/scripts/models/AnalyticsCompanyCoo
 import { AnalyticsUserCoordinate } from "~/scripts/models/AnalyticsUserCoordinate"
 import { State } from "~/scripts/models/Location"
 import { MALAYSIA_STATES, type MalaysiaState } from "~/scripts/types/maps/MapStates"
+import { PropsMapDetailDrawer } from "~/scripts/props/PropsMapDetailDrawer"
+import { MapTarget } from "~/scripts/types/maps/MapTarget"
 
 export class DataDistributionMapController {
   emitEvents: any | null = null
@@ -20,6 +22,7 @@ export class DataDistributionMapController {
 
   selectedUser: Ref<UserLocation | null> = ref<UserLocation | null>(null)
   selectedCompany: Ref<CompanyLocation | null> = ref<CompanyLocation | null>(null)
+  selectedMapTarget: Ref<MapTarget | null> = ref<MapTarget | null>(null)
 
   effectiveTheme: Ref<"light" | "dark"> = ref<"light" | "dark">("light")
 
@@ -91,6 +94,21 @@ export class DataDistributionMapController {
 
   onSelectedUser(user: UserLocation | null): void {
     this.selectedUser.value = user
+    this.selectedMapTarget.value = null
+  }
+
+  onSelectedCompany(company: CompanyLocation | null): void {
+    this.selectedCompany.value = company
+    this.selectedMapTarget.value = null
+  }
+
+  onFlyTo(mapTarget: MapTarget): void {
+    this.selectedMapTarget.value = mapTarget
+  }
+
+  onCloseDetailDrawer(): void {
+    this.selectedUser.value = null
+    this.selectedCompany.value = null
   }
 
   // getters
@@ -183,7 +201,17 @@ export class DataDistributionMapController {
       this.effectiveTheme.value, //effectiveTheme
       this.selectedUser.value, //selectedUser
       this.selectedCompany.value, //selectedCompany
-      null //mapTarget
+      this.selectedMapTarget.value //mapTarget
+    )
+  }
+
+  get mapDetailDrawerProps(): PropsMapDetailDrawer {
+    return new PropsMapDetailDrawer(
+      this.selectedUser.value,
+      this.selectedCompany.value,
+      this.officeLocation,
+      this.userLocations,
+      this.companyLocations
     )
   }
 }

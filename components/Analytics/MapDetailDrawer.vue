@@ -19,9 +19,28 @@
           <span class="entity-type">
             {{ selectedUser ? "User Profile" : "Company Entity" }}
           </span>
-          <h3 class="entity-name">
+          <div class="entity-name">
             {{ selectedUser ? selectedUser.name : selectedCompany?.name }}
-          </h3>
+          </div>
+          <div class="badge-container">
+            <span
+              class="badge gender"
+              :class="controller.selectedUser.value?.gender.toLowerCase()"
+            >
+              {{ controller.selectedUser.value?.gender }}
+            </span>
+
+            <span
+              class="badge age-group"
+              :class="controller.selectedUserAgeGroupClass"
+            >
+              {{ controller.selectedUserAge }}
+            </span>
+
+            <span class="badge">
+              {{ controller.selectedUserActiveStatus }}
+            </span>
+          </div>
         </div>
       </div>
       <button
@@ -46,24 +65,6 @@
           :class="controller.roleClass(role)"
         >
           {{ role }}
-        </span>
-
-        <span
-          class="badge gender"
-          :class="controller.selectedUser.value?.gender"
-        >
-          {{ controller.selectedUser.value?.gender }}
-        </span>
-
-        <span
-          class="badge age-group"
-          :class="controller.selectedUserAgeGroupClass"
-        >
-          {{ controller.selectedUserAge }}
-        </span>
-
-        <span class="badge">
-          {{ controller.selectedUserActiveStatus }}
         </span>
       </div>
 
@@ -115,7 +116,9 @@
       <!-- Contact & Location Info -->
       <div class="contact-details-container">
         <div class="contact-item">
-          <i class="fa-regular fa-envelope icon" />
+          <div class="icon">
+            <i class="fa-regular fa-envelope" />
+          </div>
           <span
             class="action-link"
             @click="controller.onEmailClicked(controller.selectedUserMail)"
@@ -125,14 +128,18 @@
         </div>
 
         <div class="contact-item">
-          <i class="fa-brands fa-whatsapp icon" />
+          <div class="icon">
+            <i class="fa-brands fa-whatsapp" />
+          </div>
           <span>{{ controller.selectedUserPhone }}</span>
         </div>
 
         <div class="contact-item">
-          <i class="fa-regular fa-location-dot icon" />
+          <div class="icon">
+            <i class="fa-regular fa-location-dot" />
+          </div>
           <div>
-            <div>{{ controller.selectedUserAddress }}</div>
+            <div>{{ controller.selectedUserAddress.toUpperCase() }}</div>
           </div>
         </div>
       </div>

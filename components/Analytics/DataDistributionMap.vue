@@ -3,12 +3,21 @@
     <Map
       v-bind="controller.mapProps"
       @selectUser="controller.onSelectedUser($event)"
+      @selectCompany="controller.onSelectedCompany($event)"
+    />
+    <MapDetailDrawer
+      v-bind="controller.mapDetailDrawerProps"
+      @close="controller.onCloseDetailDrawer()"
+      @selectUser="controller.onSelectedUser($event)"
+      @selectCompany="controller.onSelectedCompany($event)"
+      @flyTo="controller.onFlyTo($event)"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
   import Map from "./Map.vue"
+  import MapDetailDrawer from "./MapDetailDrawer.vue"
   import { DataDistributionMapController } from "~/scripts/components/analytics/DataDistributionMapController"
 
   const props = defineProps({})

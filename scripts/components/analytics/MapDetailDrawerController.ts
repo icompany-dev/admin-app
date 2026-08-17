@@ -28,6 +28,8 @@ export class MapDetailDrawerController {
     this.office.value = props.office
     this.allUsers.value = props.allUsers
     this.allCompanies.value = props.allCompanies
+
+    console.log("called", this.selectedUser.value)
   }
 
   getCompanyById(companyId: string): CompanyLocation | null {
