@@ -1,22 +1,37 @@
 <template>
   <div id="secretarial-services-application">
-    <div class="company-details">
-      <div class="company-name">
-        {{ controller.companyName }}
-      </div>
-      <div class="company-registration-number">
-        {{ controller.registrationNumber }}
-      </div>
+    <div
+      class="loader-container"
+      v-if="controller.isLoading"
+    >
+      <LoaderPrepare
+        :label="controller.loaderLabel"
+        :sublabel="controller.loaderSublabel"
+      />
     </div>
-    <component
-      :is="activeDocumentComponent"
-      v-bind="props"
-      @company="controller.onCompanyUpdated($event)"
-    />
+    <div
+      class="application-container"
+      :class="{ hide: controller.isLoading }"
+    >
+      <div class="company-details">
+        <div class="company-name">
+          {{ controller.companyName }}
+        </div>
+        <div class="company-registration-number">
+          {{ controller.registrationNumber }}
+        </div>
+      </div>
+      <component
+        :is="activeDocumentComponent"
+        v-bind="props"
+        @company="controller.onCompanyUpdated($event)"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"

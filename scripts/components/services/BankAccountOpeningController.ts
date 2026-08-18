@@ -59,11 +59,15 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
   onPaymentStepClicked(): void {
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
   }
 
   onApplicationDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_OPEN_BANK_ACCOUNT_RESOLUTIONS)
   }
 
   async onDownloadClicked(): Promise<void> {

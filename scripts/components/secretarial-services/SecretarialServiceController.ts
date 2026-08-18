@@ -4,6 +4,9 @@ import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
 import type { IModelApplication } from "~/scripts/models/IModelApplication"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
+import type { Company } from "~/scripts/models/Company"
 
 export abstract class SecretarialServiceController<T, R> {
   companyId: Ref<string> = ref<string>("")
@@ -24,6 +27,7 @@ export abstract class SecretarialServiceController<T, R> {
 
   documentRef: any | null = null
   isDownloading: Ref<boolean> = ref<boolean>(false)
+  selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
 
   constructor(props: PropsSecretarialService, target: string, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -84,6 +88,11 @@ export abstract class SecretarialServiceController<T, R> {
     this.paymentOrderId.value = id
   }
 
+  onCompanyUpdated(company: Company): void {
+    this.companyId.value = company.id
+    this.emitEvents("company", company)
+  }
+
   async onDownloadClicked(): Promise<void> {
     if (this.isDownloading.value || !this.documentRef) {
       return
@@ -98,6 +107,10 @@ export abstract class SecretarialServiceController<T, R> {
     } finally {
       this.isDownloading.value = false
     }
+  }
+
+  onDocumentTargetSelected(target: string): void {
+    this.selectedDocumentTarget.value = target
   }
 
   get applicationProps(): PropsApplication {

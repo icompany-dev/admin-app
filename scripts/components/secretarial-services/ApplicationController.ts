@@ -5,6 +5,8 @@ export class ApplicationController {
   company = ref<Company>(new Company())
   emitEvents: any | null = null
 
+  language = useLanguage()
+
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
   }
@@ -25,5 +27,13 @@ export class ApplicationController {
 
   get isLoading(): boolean {
     return StringUtil.isNullOrEmpty(this.company.value.id)
+  }
+
+  get loaderLabel(): string {
+    return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
+  }
+
+  get loaderSublabel(): string {
+    return this.language.isMalay() ? "Permohonan" : "Application"
   }
 }

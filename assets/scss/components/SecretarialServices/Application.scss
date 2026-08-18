@@ -1,27 +1,36 @@
 #secretarial-services-application {
   margin-top: 30px;
 
-  .company-details {
-    text-align: center;
-    margin: 15px auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
+  .application-container {
+    opacity: 1;
+    transition: all 0.7s ease;
 
-    .company-name {
-      font-size: 2.5rem;
-      line-height: 2rem;
-      font-weight: 800;
-      letter-spacing: 0.5pt;
-      font-family: 'Roboto', sans-serif;
+    &.hide {
+      opacity: 0;
     }
 
-    .company-registration-number {
-      font-size: 1.5rem;
-      line-height: 1.5rem;
-      font-weight: 600;
+    .company-details {
+      text-align: center;
+      margin: 15px auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+
+      .company-name {
+        font-size: 2.5rem;
+        line-height: 2rem;
+        font-weight: 800;
+        letter-spacing: 0.5pt;
+        font-family: 'Roboto', sans-serif;
+      }
+
+      .company-registration-number {
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+        font-weight: 600;
+      }
     }
   }
 }
