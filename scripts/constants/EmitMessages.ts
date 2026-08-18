@@ -38,4 +38,15 @@ export class EmitMessages {
   ]
 
   static POPUPS: string[] = [this.BACK, this.PROCEED, this.UPLOADED]
+
+  static APPLICATION_SERVICES: string[] = [
+    "applicationId",
+    "paymentOrderId",
+    "pa",
+    "documentSelected",
+    "download",
+    "company",
+    "show",
+    "hide",
+  ]
 }

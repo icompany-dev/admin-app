@@ -94,6 +94,7 @@ export abstract class ApplicationController<Application> {
 
       this.emitEvents("applicationId", this.application.value.id)
       this.emitEvents("paymentOrderId", this.paymentOrderId.value)
+      this.emitEvents("company", this.application.value.company)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()

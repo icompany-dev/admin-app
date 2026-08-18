@@ -1,8 +1,17 @@
 <template>
   <div id="secretarial-services-application">
+    <div class="company-details">
+      <div class="company-name">
+        {{ controller.companyName }}
+      </div>
+      <div class="company-registration-number">
+        {{ controller.registrationNumber }}
+      </div>
+    </div>
     <component
       :is="activeDocumentComponent"
       v-bind="props"
+      @company="controller.onCompanyUpdated($event)"
     />
   </div>
 </template>

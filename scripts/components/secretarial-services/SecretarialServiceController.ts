@@ -3,6 +3,7 @@ import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
 import type { IModelApplication } from "~/scripts/models/IModelApplication"
+import { PropsApplication } from "~/scripts/props/PropsApplication"
 
 export abstract class SecretarialServiceController<T, R> {
   companyId: Ref<string> = ref<string>("")
@@ -21,6 +22,9 @@ export abstract class SecretarialServiceController<T, R> {
 
   target: string
 
+  documentRef: any | null = null
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+
   constructor(props: PropsSecretarialService, target: string, emitEvents: any) {
     this.emitEvents = emitEvents
     this.target = target
@@ -34,6 +38,10 @@ export abstract class SecretarialServiceController<T, R> {
     this.paymentOrderId.value = props.paymentOrderId
 
     await this.initializeService()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async initializeService(): Promise<void> {
@@ -70,5 +78,29 @@ export abstract class SecretarialServiceController<T, R> {
     let repository = usePaymentOrderStore()
     let response = await repository.fetch(this.paymentOrderId.value)
     this.paymentOrder.value = new PaymentOrder(response)
+  }
+
+  onPaymentOrderIdUpdated(id: string): void {
+    this.paymentOrderId.value = id
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value || !this.documentRef) {
+      return
+    }
+
+    try {
+      this.isDownloading.value = true
+
+      await this.documentRef.onDownloadClicked()
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+    }
+  }
+
+  get applicationProps(): PropsApplication {
+    return new PropsApplication("", this.applicationId.value)
   }
 }
