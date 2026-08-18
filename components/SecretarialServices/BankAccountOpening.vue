@@ -4,7 +4,7 @@
     class="secretarial-service-application"
   >
     <div class="service-application">
-      <BankAccountOpening
+      <BankAccountOpeningApplication
         v-bind="controller.applicationProps"
         @company="controller.onCompanyUpdated($event)"
         @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
@@ -29,7 +29,7 @@
 <script lang="ts" setup>
   import BankAccountOpeningService from "../CompanyServices/BankAccountOpeningService.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
-  import BankAccountOpening from "../Services/BankAccountOpening.vue"
+  import BankAccountOpeningApplication from "../Services/BankAccountOpeningApplication.vue"
   import { BankAccountOpeningController } from "~/scripts/components/secretarial-services/BankAccountOpeningController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"

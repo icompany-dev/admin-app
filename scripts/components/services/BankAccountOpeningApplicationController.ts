@@ -13,8 +13,11 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"
 import { Bank } from "~/scripts/models/Bank"
 import { Filter } from "~/scripts/library/Filter"
+import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
+import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderItemMandatory"
+import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 
-export class BankAccountOpeningController extends ApplicationController<CompanyBankAccountOpening> {
+export class BankAccountOpeningApplicationController extends ApplicationController<CompanyBankAccountOpening> {
   resolutionsRef: any | null = null
 
   banks: Ref<Bank[]> = ref<Bank[]>([])
@@ -131,6 +134,99 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
 
   get branchAddress(): string {
     return this.application.value?.bankBranch.address ?? "-"
+  }
+
+  get itemsToPrepareLabel(): string {
+    return this.language.isMalay() ? "Perkara perlu disediakan" : "Items to Prepare"
+  }
+
+  get itemsToPrepare(): string[] {
+    let paymentOrderItem = this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
+      return poi.targetType === this.target.value && poi.targetId === this.applicationId.value
+    })
+
+    if (!paymentOrderItem) {
+      return []
+    }
+
+    let items: string[] = []
+    paymentOrderItem.mandatories.forEach((poim: PaymentOrderItemMandatory) => {
+      if (StringUtil.contains(poim.serviceName, "bundle of documents")) {
+        items.push("Section 14 - Superform")
+        items.push("Section 15 - Notification of Incorporation")
+        items.push("Section 51 - Register of Members")
+        items.push("Section 58 - Register of Directors")
+      } else {
+        items.push(StringUtil.capitalize(poim.serviceName))
+      }
+    })
+
+    paymentOrderItem.optionals.forEach((poio: PaymentOrderItemOptional) => {
+      if (!StringUtil.contains(poio.serviceName, "printed")) {
+        items.push(StringUtil.capitalize(poio.serviceName))
+      }
+    })
+
+    return items
+  }
+
+  get deliverToLabel(): string {
+    return this.language.isMalay() ? "Hantar ke" : "Deliver to"
+  }
+
+  get deliveryAddress(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    if (!this.application.value.company?.hasBusinessAddress) {
+      let addressFragments: string[] = [`<b>${this.paymentOrder.value.billingInfo.name}</b>`]
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
+      )
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
+      )
+
+      return addressFragments
+        .filter((s: string) => {
+          return !StringUtil.isNullOrEmpty(s)
+        })
+        .join("<br>")
+    }
+
+    return `
+      <b>${this.paymentOrder.value.billingInfo.name}</b><br>
+      ${this.application.value.company?.businessAddressLocation?.getMultilineAddress()}
+    `
+  }
+
+  get deliveryAddressToCopy(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    if (!this.application.value.company?.hasBusinessAddress) {
+      let addressFragments: string[] = []
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
+      )
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
+      )
+
+      return addressFragments
+        .filter((s: string) => {
+          return !StringUtil.isNullOrEmpty(s)
+        })
+        .join(", ")
+    }
+
+    return this.application.value.company?.businessAddressLocation?.getOnelineAddress() ?? ""
   }
 
   get downloadLabel(): string {

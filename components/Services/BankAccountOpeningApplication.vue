@@ -31,6 +31,21 @@
               {{ controller.branchName }}
               <br />
               {{ controller.branchAddress }}
+              <br />
+              <br />
+              <b>{{ controller.itemsToPrepareLabel }}</b>
+              <ol>
+                <li
+                  v-for="(item, i) in controller.itemsToPrepare"
+                  :key="i"
+                >
+                  {{ item }}
+                </li>
+              </ol>
+              <b>{{ controller.deliverToLabel }}</b>
+              <br />
+              <span v-html="controller.deliveryAddress" />
+              <CopyValue :value="controller.deliveryAddressToCopy" />
             </div>
           </template>
           <template #nodeOptions>
@@ -89,10 +104,11 @@
 
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"
-  import { BankAccountOpeningController } from "~/scripts/components/services/BankAccountOpeningController"
+  import { BankAccountOpeningApplicationController } from "~/scripts/components/services/BankAccountOpeningApplicationController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
 
@@ -104,7 +120,7 @@
 
   const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
 
-  const controller = new BankAccountOpeningController(props, emit)
+  const controller = new BankAccountOpeningApplicationController(props, emit)
 
   watch(
     () => props.companyId,
@@ -144,5 +160,5 @@
 </script>
 
 <style lang="scss">
-  @use "~/assets/scss/components/Services/BankAccountOpening" as *;
+  @use "~/assets/scss/components/Services/BankAccountOpeningApplication" as *;
 </style>
