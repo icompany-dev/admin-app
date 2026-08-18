@@ -117,7 +117,7 @@ export class BankAccountOpeningController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -250,7 +250,7 @@ export class BankAccountOpeningController
       this.companyId,
       this.applicationId,
       this.applicationRef.value as CompanyBankAccountOpening,
-      this.showWatermark,
+      false,
       this.watermarkText,
       false,
       false,
@@ -258,7 +258,7 @@ export class BankAccountOpeningController
       this.bankId.value
     )
 
-    props.isShowTag = this.applicationRef.value.status === StatusConstants.PAID
+    props.isShowTag = false
 
     return props
   }
