@@ -157,6 +157,15 @@
               @download="controller.onDownloadClicked()"
               @show="controller.onPanelShow(2)"
             />
+            <BankAccountOpeningApplication
+              :ref="(el) => controller.setApplicationRefs(3, el)"
+              v-bind="controller.applicationProps"
+              @applicationId="controller.onApplicationIdUpdated($event)"
+              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
+              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_OPEN_BANK_ACCOUNT)"
+              @download="controller.onDownloadClicked()"
+              @show="controller.onPanelShow(3)"
+            />
           </div>
         </TransitionGroup>
       </div>
@@ -187,17 +196,19 @@
 </template>
 
 <script lang="ts" setup>
+  import BankAccountOpeningApplication from "@/components/Services/BankAccountOpeningApplication.vue"
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
-  import ChangeOfAddressApplication from "../Services/ChangeOfAddressApplication.vue"
-  import ChangeOfBranchApplication from "../Services/ChangeOfBranchApplication.vue"
+  import ChangeOfAddressApplication from "@/components/Services/ChangeOfAddressApplication.vue"
+  import ChangeOfBranchApplication from "@/components/Services/ChangeOfBranchApplication.vue"
+  import BankAccountOpeningService from "@/components/CompanyServices/BankAccountOpeningService.vue"
   import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
-  import ChangeOfBusinessBranchService from "../CompanyServices/ChangeOfBusinessBranchService.vue"
+  import ChangeOfBusinessBranchService from "@/components/CompanyServices/ChangeOfBusinessBranchService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Overview from "@/components/Companies/Overview.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
-  import SdnBhdSpine from "../LegalDocuments/SdnBhdSpine.vue"
+  import SdnBhdSpine from "@/components/LegalDocuments/SdnBhdSpine.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
@@ -224,6 +235,7 @@
     [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28]: Section28Service,
     [DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS]: ChangeOfAddressService,
     [DocumentTargets.TARGET_AMENDMENT_BRANCH_RESOLUTIONS]: ChangeOfBusinessBranchService,
+    [DocumentTargets.TARGET_OPEN_BANK_ACCOUNT_RESOLUTIONS]: BankAccountOpeningService,
     [DocumentTargets.TARGET_PD2]: PracticeDirective2Service,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
