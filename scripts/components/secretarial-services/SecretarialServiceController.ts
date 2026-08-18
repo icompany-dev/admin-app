@@ -2,8 +2,9 @@ import type { PropsSecretarialService } from "~/scripts/props/PropsSecretarialSe
 import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
+import type { IModelApplication } from "~/scripts/models/IModelApplication"
 
-export abstract class SecretarialServiceController {
+export abstract class SecretarialServiceController<T, R> {
   companyId: Ref<string> = ref<string>("")
   applicationId: Ref<string> = ref<string>("")
   paymentOrderId: Ref<string> = ref<string>("")
@@ -12,13 +13,17 @@ export abstract class SecretarialServiceController {
 
   language = useLanguage()
 
+  abstract application: Ref<IModelApplication<T, R>>
+
   isLoading: Ref<boolean> = ref<boolean>(false)
 
-  abstract application: Ref<any | null>
   paymentOrder: Ref<PaymentOrder> = ref<PaymentOrder>(new PaymentOrder())
 
-  constructor(props: PropsSecretarialService, emitEvents: any) {
+  target: string
+
+  constructor(props: PropsSecretarialService, target: string, emitEvents: any) {
     this.emitEvents = emitEvents
+    this.target = target
 
     this.setDataFromProps(props)
   }
