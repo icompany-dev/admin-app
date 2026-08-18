@@ -75,6 +75,14 @@
     case CompanyConstants.TARGET_OPEN_BANK_ACCOUNT:
       controller = new BankAccountOpeningsController(props, emit)
   }
+
+  watch(
+    () => props,
+    (newVal) => {
+      controller.setDataFromProps(newVal)
+    },
+    { deep: true }
+  )
 </script>
 
 <style lang="scss">
