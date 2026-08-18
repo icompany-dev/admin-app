@@ -7,6 +7,8 @@ import { StringUtil } from "../utils/String"
 import { PropsSecretarialServices } from "../props/PropsSecretarialServices"
 
 export class PageSdnBhdSecretarialServicesController extends PageController {
+  targetName: Ref<string> = ref<string>("")
+
   searchText: Ref<string> = ref<string>("")
   sortOrder: Ref<string> = ref<string>("asc")
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
@@ -39,17 +41,31 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   }
 
   setTitleDescription(): void {
+    this.setTargetName()
     this.setPageAlias()
     this.setSeoMetadata(`My Sdn Bhd, ${this.pageAlias} - iCompany`, this.pageAlias)
     this.addPageViewLog()
   }
 
-  setPageAlias() {
-    if (StringUtil.isNullOrEmpty(this.targetName)) {
+  setTargetName(): void {
+    let serviceTarget = ServiceNames.names.find((name: ServiceName) => {
+      return name.link !== null && name.link === this.serviceName
+    })
+
+    if (!serviceTarget) {
+      this.targetName.value = "404"
       return
     }
 
-    switch (this.targetName) {
+    this.targetName.value = serviceTarget.target
+  }
+
+  setPageAlias() {
+    if (StringUtil.isNullOrEmpty(this.targetName.value)) {
+      return
+    }
+
+    switch (this.targetName.value) {
       case CompanyConstants.TARGET_AMENDMENT_ADDRESS:
         this.pageAlias = "Change Business Address"
         break
@@ -168,18 +184,6 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
       : this.route.params.service_name
   }
 
-  get targetName(): string {
-    let serviceTarget = ServiceNames.names.find((name: ServiceName) => {
-      return name.link !== null && name.link === this.serviceName
-    })
-
-    if (!serviceTarget) {
-      return "404"
-    }
-
-    return serviceTarget.target
-  }
-
   get breadCrumbProps(): PropsBreadCrumb {
     return new PropsBreadCrumb([new PropsBreadCrumbItem("Services", ""), new PropsBreadCrumbItem(this.pageAlias, "")])
   }
@@ -205,6 +209,6 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   }
 
   get secretarialServicesProps(): PropsSecretarialServices {
-    return new PropsSecretarialServices(this.searchText.value, this.isIncludeDemo.value, this.targetName)
+    return new PropsSecretarialServices(this.searchText.value, this.isIncludeDemo.value, this.targetName.value)
   }
 }

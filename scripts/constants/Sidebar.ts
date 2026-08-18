@@ -87,13 +87,24 @@ export class PageSidebar {
   ])
 
   static sdnbhdAll: Sidebar = new Sidebar("All Sdn Bhd", "Semua Sdn Bhd", "sdnbhds", false)
-  static sdnbhdServices: Sidebar = new Sidebar(
-    "Secretarial Services",
-    "Servis Setiausaha",
+  static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [this.sdnbhdAll])
+
+  static changeBusinessName: Sidebar = new Sidebar(
+    "Change of Name",
+    "Penukaran Nama",
+    "services/change-business-name",
+    false
+  )
+  static openBankAccount: Sidebar = new Sidebar(
+    "Open Bank Account",
+    "Buka Akaun Bank",
     "services/open-bank-account",
     false
   )
-  static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [this.sdnbhdAll, this.sdnbhdServices])
+  static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
+    this.changeBusinessName,
+    this.openBankAccount,
+  ])
 
   static personsDraft: Sidebar = new Sidebar(
     "Registrations in Draft",
@@ -152,6 +163,7 @@ export class PageSidebar {
     this.incorpGroup,
     this.switchGroup,
     this.sdnbhdGroup,
+    this.servicesGroup,
     this.personsGroup,
     this.controlPanelGroup,
   ]
