@@ -168,12 +168,6 @@
         </div>
       </template>
     </CompanyServiceWrapper>
-
-    <ActionTray
-      v-if="controller.showActionTray()"
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
   </div>
 </template>
 

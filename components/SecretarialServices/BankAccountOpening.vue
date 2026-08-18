@@ -3,12 +3,15 @@
     id="secretarial-services-bank-account-opening"
     class="secretarial-service-application"
   >
-    <BankAccountOpening
-      v-bind="controller.applicationProps"
-      @company="controller.onCompanyUpdated($event)"
-      @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
-      @documentSelected="controller.onDocumentTargetSelected($event)"
-    />
+    <div class="service-application">
+      <BankAccountOpening
+        v-bind="controller.applicationProps"
+        @company="controller.onCompanyUpdated($event)"
+        @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
+        @documentSelected="controller.onDocumentTargetSelected($event)"
+        @download="controller.onDownloadClicked()"
+      />
+    </div>
     <div class="document-container">
       <component
         ref="documentRef"
@@ -59,5 +62,6 @@
 </script>
 
 <style lang="scss">
+  @use "~/assets/scss/components/SecretarialServices/SecretarialService" as *;
   @use "~/assets/scss/components/SecretarialServices/BankAccountOpening" as *;
 </style>
