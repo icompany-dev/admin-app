@@ -50,7 +50,7 @@
 
   const props = defineProps<IPropsServiceApplication>()
 
-  const emit = defineEmits(["documentSelected", "paymentNodeSelected", "show", "hide"])
+  const emit = defineEmits(["documentSelected", "paymentNodeSelected", "download", "show", "hide"])
 
   const controller = new ServiceApplicationController(props, emit)
 

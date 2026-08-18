@@ -66,7 +66,7 @@ export class ServiceApplicationController {
   }
 
   async onDownloaReceiptClicked(): Promise<void> {
-    // do
+    this.emitEvents("download", DocumentTargets.TARGET_RECEIPT)
   }
 
   get canDownloadReceipt(): boolean {

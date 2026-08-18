@@ -6,23 +6,76 @@
       @paymentNodeSelected="controller.onPaymentStepClicked()"
       @show="controller.onShowPanel()"
       @hide="emit('hide')"
+      @download="emit('download', $event)"
     >
       <template #application>
         <ApplicationNode
           v-bind="controller.applicationDetailsNodeProps"
           @click="controller.onApplicationDetailsClicked()"
         >
-          <template #nodeContent>//</template>
-          <template #nodeOptions>//</template>
-          <template #nodeActions>//</template>
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.applicationDetailsLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.applicationDetailsSublabel }}
+              </div>
+            </div>
+            <div class="application-details">
+              <b>{{ controller.bankLabel }}</b>
+              : {{ controller.bankName }}
+              <br />
+              <b>{{ controller.branchLabel }}</b>
+              :
+              {{ controller.branchName }}
+              <br />
+              {{ controller.branchAddress }}
+            </div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onDownloadClicked()"
+            >
+              {{ controller.downloadLabel }}
+            </button>
+          </template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              @click="controller.onShippedClicked()"
+            >
+              {{ controller.shipLabel }}
+            </button>
+          </template>
         </ApplicationNode>
         <ApplicationNode
           v-bind="controller.completedNodeProps"
           @click="controller.onApplicationDetailsClicked()"
         >
-          <template #nodeContent>//</template>
-          <template #nodeOptions>//</template>
-          <template #nodeActions>//</template>
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.applicationCompletedLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.completedSublabel }}
+              </div>
+            </div>
+            <div class="application-details">
+              {{ controller.completedStatus }}
+            </div>
+          </template>
+          <template #nodeOptions></template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              @click="controller.onCompleteClicked()"
+            >
+              {{ controller.markCompletedLabel }}
+            </button>
+          </template>
         </ApplicationNode>
       </template>
     </ServiceApplication>

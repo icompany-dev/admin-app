@@ -20,6 +20,7 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
   banks: Ref<Bank[]> = ref<Bank[]>([])
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
+  isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -59,6 +60,7 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
   onPaymentStepClicked(): void {
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false
+    this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
   }
@@ -66,6 +68,7 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
   onApplicationDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
+    this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_OPEN_BANK_ACCOUNT_RESOLUTIONS)
   }
@@ -80,7 +83,9 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
   }
 
   async onShippedClicked(): Promise<void> {
-    //
+    if (this.shipApplicationRef) {
+      this.shipApplicationRef.show()
+    }
   }
 
   async onCompleteClicked(): Promise<void> {
@@ -100,6 +105,42 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
     return new PropsServiceApplicationNode(this.hasPaid, this.isShipped, this.isShowResolutions.value)
   }
 
+  get applicationDetailsLabel(): string {
+    return this.language.isMalay() ? "Butiran Permohonan" : "Application Details"
+  }
+
+  get applicationDetailsSublabel(): string {
+    return this.language.isMalay() ? "Bank, Cawangan & Penandatangan" : "Bank, Branch & Authorised Signatories"
+  }
+
+  get bankLabel(): string {
+    return "Bank"
+  }
+
+  get bankName(): string {
+    return this.application.value?.bank.name ?? "-"
+  }
+
+  get branchLabel(): string {
+    return this.language.isMalay() ? "Cawangan" : "Branch"
+  }
+
+  get branchName(): string {
+    return this.application.value?.bankBranch.name ?? "-"
+  }
+
+  get branchAddress(): string {
+    return this.application.value?.bankBranch.address ?? "-"
+  }
+
+  get downloadLabel(): string {
+    return this.language.isMalay() ? "Muat Turun" : "Download"
+  }
+
+  get shipLabel(): string {
+    return this.language.isMalay() ? "Hantar" : "Shipped"
+  }
+
   get isShipped(): boolean {
     if (!this.application.value) {
       return false
@@ -114,7 +155,11 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
   }
 
   get completedNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.isShipped, this.isCompleted, this.isShowResolutions.value)
+    let props = new PropsServiceApplicationNode(this.isShipped, this.isCompleted, this.isShowCompleted.value)
+
+    props.isLastNode = true
+
+    return props
   }
 
   get isCompleted(): boolean {
@@ -126,5 +171,29 @@ export class BankAccountOpeningController extends ApplicationController<CompanyB
       this.application.value.status === StatusConstants.CONVERTED ||
       this.application.value.status === StatusConstants.COMPLETED
     )
+  }
+
+  get applicationCompletedLabel(): string {
+    return this.language.isMalay() ? "Dokumen Dihantar" : "Documents Delivered"
+  }
+
+  get completedSublabel(): string {
+    return this.language.isMalay() ? "(Status Penghantaran Dokumen)" : "(Document Delivery Status)"
+  }
+
+  get completedStatus(): string {
+    if (!this.isCompleted) {
+      return this.language.isMalay() ? "Menunggu pengesahan dari klien" : "Pending confirmation from client"
+    }
+
+    let time = useLocalTime()
+
+    let completedAt = time.formatDateOnlyFull(this.application.value?.completedAt ?? "")
+
+    return this.language.isMalay() ? `Disahkan pada ${completedAt}` : `Confirmed on ${completedAt}`
+  }
+
+  get markCompletedLabel(): string {
+    return this.language.isMalay() ? "Tanda Lengkap" : "Mark Completed"
   }
 }
