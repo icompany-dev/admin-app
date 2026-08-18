@@ -33,7 +33,7 @@ export class BankAccountOpeningsController extends SecretarialServicesController
       return this.language.isMalay() ? "Belum Dibayar" : "(Unpaid)"
     }
 
-    return this.time.formatDateTimeShort(application.paidAt)
+    return this.time.formatDateTimeFull(application.paidAt)
   }
 
   applicationStatusClass(data: any): string {

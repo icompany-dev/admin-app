@@ -90,7 +90,7 @@ export class PageSidebar {
   static sdnbhdServices: Sidebar = new Sidebar(
     "Secretarial Services",
     "Servis Setiausaha",
-    "sdnbhds/secretarial-services",
+    "services/open-bank-account",
     false
   )
   static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [this.sdnbhdAll, this.sdnbhdServices])
