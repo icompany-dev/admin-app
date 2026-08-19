@@ -23,7 +23,7 @@
     <Paper
       v-if="!controller.isLoading.value"
       :paper-orientation="PaperOrientation.Portrait"
-      :additional-css-class="'print legal-document'"
+      :additional-css-class="'print legal-document authorised-signatories-bank-account-opening-maybank'"
       :total-pages="1"
       :page-number="1"
       :show-ear-mark="false"

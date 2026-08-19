@@ -668,13 +668,15 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
     }
 
     this.isPrinting.value = true
+    this.setContent()
     await nextTick()
 
     let pages = await PdfPaperUtil.getPdfElements(this.documentRef)
 
     setTimeout(() => {
       this.isPrinting.value = false
-    }, 500)
+      this.setContent()
+    }, 1000)
 
     return pages
   }
