@@ -1,5 +1,8 @@
 <template>
-  <div id="authorised-signatories-bank-account-opening-maybank">
+  <div
+    id="authorised-signatories-bank-account-opening-maybank"
+    ref="documentRef"
+  >
     <Paper
       v-if="controller.isLoading.value"
       :paper-orientation="PaperOrientation.Portrait"
@@ -31,8 +34,8 @@
         v-if="controller.isDocumentEditable() && props.isShowTags"
         #paperMargins
       >
-        <div class="paper-tag select-branch"><span>Insert Information</span></div>
-        <div class="paper-tag signatory-type"><span>Insert Information</span></div>
+        <div class="paper-tag point-right select-branch"><span>Insert Information</span></div>
+        <div class="paper-tag point-right signatory-type"><span>Insert Information</span></div>
       </template>
       <template #paperContent>
         <div class="letter-head company-details align-center">
@@ -53,8 +56,7 @@
           <div class="signature-section">
             <Signature
               :signature-item="controller.signatureItem.value"
-              :is-tinted="true"
-              :tint-label="'WET INK REQUIRED'"
+              :is-tinted="false"
               @signed="emit('signed', $event)"
             />
           </div>
@@ -104,6 +106,7 @@
   })
 
   const documentContent = ref(null)
+  const documentRef = ref(null)
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "updated"])
 
@@ -151,12 +154,21 @@
     { deep: true }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     getBranchId: controller.getBranchId.bind(controller),
     getSignatories: controller.getSignatories.bind(controller),
     getSignatoryType: controller.getSignatoryType.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -16,6 +16,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { StatusConstants } from "~/scripts/constants/Status"
 import type { State } from "~/scripts/models/Location"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends SdnBhdLegalDocumentController {
   companyBankAccountOpeningRepository = useCompanyBankAccountOpeningStore()
@@ -33,6 +34,8 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
   originalContent = ref<string>("")
   application = ref<CompanyBankAccountOpening>(new CompanyBankAccountOpening())
 
+  approvedResolutionDate: Ref<string> = ref<string>("")
+
   private documentTemplateId: string = "56fa748b-5ad1-4dee-be17-69cccef8a204"
   private bankId: string = "f112c274-f545-4596-830b-50e337aa9ed4"
 
@@ -43,6 +46,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
   showBranchOption = ref<boolean>(false)
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+  isPrinting: Ref<boolean> = ref<boolean>(false)
 
   time = useLocalTime()
   language = useLanguage()
@@ -66,6 +70,8 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
       this.fetchBank(),
       this.fetchDirectors(),
     ])
+
+    this.setSignatureItem()
 
     this.setContent()
 
@@ -157,7 +163,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -332,6 +338,16 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
     return table
   }
 
+  getApprovedResolutionDate(): string {
+    if (this.isDocumentEditable()) {
+      return `<input type='date' class='form-control in-resolution approved-resolution' value='${this.approvedResolutionDate.value}' >`
+    }
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyFull(this.approvedResolutionDate.value)
+  }
+
   setContent(): void {
     this.resolutionContent.value = this.getContent()
   }
@@ -358,6 +374,12 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
       "$date.&lt;name=documentDate&gt;$",
       this.time.formatDateOnlyFull(dayjs().format("YYYY-MM-DD"))
+    )
+
+    let resolutionDateSearchString = "[To Be Determined By iCompany]"
+    this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+      resolutionDateSearchString,
+      this.getApprovedResolutionDate()
     )
 
     //replace hidden checkboxes
@@ -411,7 +433,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
   }
 
   isDocumentEditable(): boolean {
-    return this.application.value.status === StatusConstants.PAID
+    return !this.isPrinting.value //this.application.value.status === StatusConstants.PAID
   }
 
   async setApplicationId(id: string | null): Promise<void> {
@@ -463,6 +485,12 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
       "Director",
       false
     )
+  }
+
+  handleApprovedResolutionDate(event: Event): void {
+    //approved-resolution
+    let target = event.target as HTMLInputElement
+    this.approvedResolutionDate.value = target.value
   }
 
   handleCheckBoxClicked(event: Event): void {
@@ -585,6 +613,12 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
       sf.removeEventListener("change", this.handleSearchSelect.bind(this))
       sf.addEventListener("change", this.handleSearchSelect.bind(this))
     })
+
+    const approvedDates = document.querySelectorAll(".approved-resolution")
+    approvedDates.forEach((el) => {
+      el.removeEventListener("change", this.handleApprovedResolutionDate.bind(this))
+      el.addEventListener("change", this.handleApprovedResolutionDate.bind(this))
+    })
   }
 
   totalPages(): number {
@@ -626,5 +660,22 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
 
   loaderSublabel(): string {
     return "Authorised Signatories for Account"
+  }
+
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    this.isPrinting.value = true
+    await nextTick()
+
+    let pages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    setTimeout(() => {
+      this.isPrinting.value = false
+    }, 500)
+
+    return pages
   }
 }

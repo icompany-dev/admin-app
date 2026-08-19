@@ -8,6 +8,8 @@ export class MaybankDocumentsController extends BankDocumentsController {
 
   authorisedSignatoryRef: any | null = null
   onlineBankingRef: any | null = null
+  accountOpeningRef: any | null = null
+  declarationRef: any | null = null
 
   setAuthorisedSignatoryRef(authorisedSignatoryRef: any): void {
     this.authorisedSignatoryRef = authorisedSignatoryRef
@@ -15,6 +17,14 @@ export class MaybankDocumentsController extends BankDocumentsController {
 
   setOnlineBankingRef(onlineBankingRef: any): void {
     this.onlineBankingRef = onlineBankingRef
+  }
+
+  setAccountOpeningRef(accountOpeningRef: any): void {
+    this.accountOpeningRef = accountOpeningRef
+  }
+
+  setDeclarationRef(declarationRef: any): void {
+    this.declarationRef = declarationRef
   }
 
   override getBranchId(): string {
@@ -47,5 +57,21 @@ export class MaybankDocumentsController extends BankDocumentsController {
     }
 
     return this.onlineBankingRef.getAuthorisedPersonsForOnlineBanking()
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    let pages: HTMLElement[] = []
+
+    if (this.authorisedSignatoryRef) {
+      let docPages = await this.authorisedSignatoryRef.getPdfPages()
+      pages = pages.concat(docPages)
+    }
+    //onlineBankingRef
+    //accountOpeningRef
+    //declarationRef
+
+    console.log(pages)
+
+    return pages
   }
 }

@@ -123,12 +123,16 @@
           }
 
           .signature-section {
-            max-width: 50%;
+            max-width: 40%;
 
             .signature-line {
               border-bottom: 1px solid #000;
               width: 200px;
               margin-bottom: 5px;
+            }
+
+            .signee-name {
+              padding: 2px 0;
             }
           }
         }
