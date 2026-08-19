@@ -134,6 +134,27 @@
 }
 
 .dcr-maybank-online-banking {
+  ol {
+    counter-reset: pdf-list-counter; // Resets counter at list root
+    list-style-type: none; // Hide native list markers html2canvas drops
+    padding-left: 0 !important;
+
+    li {
+      counter-increment: pdf-list-counter; // Increment on each item
+      display: flex; // Force box-model alignment html2canvas understands
+      align-items: flex-start;
+      margin-bottom: 8px;
+
+      // Render the number dynamically as content
+      &::before {
+        content: counter(pdf-list-counter) ".";
+        min-width: 25px; // Keeps numbers aligned
+        display: inline-block;
+        font-weight: normal;
+      }
+    }
+  }
+
   table {
     &.maybank-online-banking {
       margin-top: 10px;

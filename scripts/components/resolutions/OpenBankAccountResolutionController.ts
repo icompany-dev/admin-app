@@ -107,6 +107,8 @@ export abstract class OpenBankAccountResolutionController<T> {
     this.watermarkText.value = watermarkText
   }
 
+  abstract setContent(): void
+
   companyName(): string {
     if (!this.application.value?.company) {
       return ""
@@ -305,25 +307,26 @@ export abstract class OpenBankAccountResolutionController<T> {
   }
 
   isDocumentEditable(): boolean {
-    if (this.isInPreviewMode.value) {
-      return false
-    }
+    return !this.isGettingPdfPages.value
+    // if (this.isInPreviewMode.value) {
+    //   return false
+    // }
 
-    if (!this.application.value) {
-      return false
-    }
+    // if (!this.application.value) {
+    //   return false
+    // }
 
-    if (this.application.value && this.application.value.signatureGroups.length > 0) {
-      return false
-    }
+    // if (this.application.value && this.application.value.signatureGroups.length > 0) {
+    //   return false
+    // }
 
-    return (
-      this.application.value &&
-      (StringUtil.isNullOrEmpty(this.application.value.id) ||
-        this.application.value.status === StatusConstants.DRAFT ||
-        this.application.value.status === StatusConstants.PENDING ||
-        this.application.value.status === StatusConstants.PAID)
-    )
+    // return (
+    //   this.application.value &&
+    //   (StringUtil.isNullOrEmpty(this.application.value.id) ||
+    //     this.application.value.status === StatusConstants.DRAFT ||
+    //     this.application.value.status === StatusConstants.PENDING ||
+    //     this.application.value.status === StatusConstants.PAID)
+    // )
   }
 
   getApplication(): T | null {
@@ -371,16 +374,17 @@ export abstract class OpenBankAccountResolutionController<T> {
 
     this.isGettingPdfPages.value = true
 
-    let originalResolutionContent = this.resolutionContent.value
-    if (!StringUtil.isNullOrEmpty(this.resolutionContent.value)) {
-      let templateProcessor = new TemplateProcessor(null)
-      this.resolutionContent.value = templateProcessor.replaceInputsWithValues(this.resolutionContent.value)
-    }
+    // let originalResolutionContent = this.resolutionContent.value
+    // if (!StringUtil.isNullOrEmpty(this.resolutionContent.value)) {
+    //   let templateProcessor = new TemplateProcessor(null)
+    //   this.resolutionContent.value = templateProcessor.replaceInputsWithValues(this.resolutionContent.value)
+    // }
 
+    this.setContent()
     await nextTick()
     let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
 
-    this.resolutionContent.value = originalResolutionContent
+    // this.resolutionContent.value = originalResolutionContent
 
     this.isGettingPdfPages.value = false
 

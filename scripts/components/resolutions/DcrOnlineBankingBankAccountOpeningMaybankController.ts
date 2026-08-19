@@ -174,7 +174,7 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
   getContent(): string {
     this.documentTemplate.value.content = this.originalResolutionContent.value
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
-      "$textarea.&lt;name=onlineBanking&gt;$",
+      "The authority be in and is hereby given to the following below appointed person(s) to operate all of the Company’s accounts linked to the Maybank2u Biz internet banking facility for and on behalf of the Company i.e Add Favourites list for 3rd Party, Add Bill Payment and any other services of which the Bank may add from time to time. $textarea.&lt;name=onlineBanking&gt;$",
       this.authorisedOnlineBankingHtml()
     )
 
@@ -283,22 +283,27 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
     }
 
     return `
-      <table class='maybank-online-banking'>
-        <thead>
-          <tr>
-            <td colspan='3'>Viewer, Maker and Checker Information</td>
-          </tr>
-          <tr>
-            <td>NAME</td>
-            <td>PASSPORT/NRIC No.</td>
-            <td>VIEWER OR MAKER OR CHECKER</td>
-          </tr>
-        </thead>
-        <tbody>
-          ${content.join("")}
-        </tbody>
-      </table>
-      ${addMoreButton}
+      <div>
+        The authority be in and is hereby given to the following below appointed person(s) to operate all of the Company’s accounts linked 
+        to the Maybank2u Biz internet banking facility for and on behalf of the Company i.e Add Favourites list for 3rd Party, Add Bill Payment 
+        and any other services of which the Bank may add from time to time.
+        <table class='maybank-online-banking'>
+          <thead>
+            <tr>
+              <td colspan='3'>Viewer, Maker and Checker Information</td>
+            </tr>
+            <tr>
+              <td>NAME</td>
+              <td>PASSPORT/NRIC No.</td>
+              <td>VIEWER OR MAKER OR CHECKER</td>
+            </tr>
+          </thead>
+          <tbody>
+            ${content.join("")}
+          </tbody>
+        </table>
+        ${addMoreButton}
+      </div>
     `
   }
 
