@@ -33,6 +33,6 @@ export class PageSdnBhdSecretarialServiceController extends PageSdnBhdSecretaria
   }
 
   get secretarialServiceProps(): PropsSecretarialService {
-    return new PropsSecretarialService("", this.applicationId, "", this.targetName)
+    return new PropsSecretarialService("", this.applicationId, "", this.targetName.value)
   }
 }
