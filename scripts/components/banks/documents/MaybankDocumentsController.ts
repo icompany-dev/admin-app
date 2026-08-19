@@ -66,7 +66,11 @@ export class MaybankDocumentsController extends BankDocumentsController {
       let docPages = await this.authorisedSignatoryRef.getPdfPages()
       pages = pages.concat(docPages)
     }
-    //onlineBankingRef
+
+    if (this.onlineBankingRef) {
+      let docPages = await this.onlineBankingRef.getPdfPages()
+      pages = pages.concat(docPages)
+    }
     //accountOpeningRef
     //declarationRef
 

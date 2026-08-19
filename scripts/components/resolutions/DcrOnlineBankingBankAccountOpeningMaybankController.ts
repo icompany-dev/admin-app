@@ -10,6 +10,7 @@ import { Director } from "~/scripts/models/Director"
 import _ from "lodash"
 import { User } from "~/scripts/models/User"
 import { OnlineBanking } from "~/scripts/types/banks/OnlineBanking"
+import { PropsResolution } from "~/scripts/props/PropsResolution"
 
 export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBankAccountResolutionController<CompanyBankAccountOpening> {
   companyBankAccountOpeningRepository = useCompanyBankAccountOpeningStore()
@@ -21,9 +22,6 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
 
   directors = ref<Director[]>([])
   directorUsers = ref<User[]>([])
-
-  resolutionContent = ref<string>("")
-  originalResolutionContent = ref<string>("")
 
   private documentTemplateId: string = "fc711763-c8f4-48ff-99d4-a291739b26de"
 
@@ -481,5 +479,35 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
 
   getAuthorisedPersonsForOnlineBanking(): OnlineBanking[] {
     return this.onlineAccessPersons.value
+  }
+
+  override get resolutionProps() {
+    let props = new PropsResolution(
+      this.companyName(), //companyName
+      this.registrationNumberOld(), //registrationNumberOld
+      this.registrationNumberNew(), //registrationNumberNew
+      this.resolutionTitle(), //resolutionTitle
+      "", //resolutionName
+      this.signatureTitle(), //signatureTitle
+      this.signatureItems.value, //signatureItems
+      this.resolutionDate(), //resolutionDate
+      this.totalPages(), //totalPages
+      this.signatureStartOnPage.value, //signatureStartOnPage
+      this.maxSignatureOnFirstPage.value, //maxSignatureOnFirstPage
+      this.maxSignatureOnOtherPages.value, //maxSignatureOnOtherPage
+      false, //hasAccompanyingDocument
+      this.isDcr.value, //isDcr
+      this.showWatermark.value, //showWatermark
+      this.watermarkText.value, //watermarkText
+      [], //contentPages
+      true, //isUsingTemplate
+      this.isLoading.value, //isLoading
+      true, //isSignatureTinted
+      "Wet Ink Required" //signatureTintLabel
+    )
+
+    props.additionalCssClass = "dcr-maybank-online-banking"
+
+    return props
   }
 }

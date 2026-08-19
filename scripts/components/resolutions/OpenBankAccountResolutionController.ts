@@ -12,6 +12,8 @@ import { StringUtil } from "~/scripts/utils/String"
 import { Company } from "~/scripts/models/Company"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { PropsResolution } from "~/scripts/props/PropsResolution"
+import { TemplateProcessor } from "~/scripts/library/TemplateProcessor"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export abstract class OpenBankAccountResolutionController<T> {
   companyId: Ref<string> = ref<string>("")
@@ -29,11 +31,16 @@ export abstract class OpenBankAccountResolutionController<T> {
 
   emitEvents: any | null = null
 
+  resolutionContent = ref<string>("")
+  originalResolutionContent = ref<string>("")
+
   resolutionContentRef: any | null = null
+  documentRef: any | null = null
 
   excludeResigningDirectors: boolean = false
 
   isInPreviewMode = ref<boolean>(false)
+  isGettingPdfPages = ref<boolean>(false)
 
   signatureStartOnPage = ref<number>(1)
   maxSignatureOnFirstPage = ref<number>(2)
@@ -78,6 +85,10 @@ export abstract class OpenBankAccountResolutionController<T> {
 
   setResolutionContentRef(resolutionContentRef: any | null): void {
     this.resolutionContentRef = resolutionContentRef
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   setIsInPreviewMode(isInPreviewMode: boolean): void {
@@ -351,6 +362,29 @@ export abstract class OpenBankAccountResolutionController<T> {
   async updateApplicationContent(updatedApplicationData: T): Promise<void> {
     this.application.value.cloneDetails(updatedApplicationData)
     await this.getPersonsToSign()
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    this.isGettingPdfPages.value = true
+
+    let originalResolutionContent = this.resolutionContent.value
+    if (!StringUtil.isNullOrEmpty(this.resolutionContent.value)) {
+      let templateProcessor = new TemplateProcessor(null)
+      this.resolutionContent.value = templateProcessor.replaceInputsWithValues(this.resolutionContent.value)
+    }
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    this.resolutionContent.value = originalResolutionContent
+
+    this.isGettingPdfPages.value = false
+
+    return pdfPages
   }
 
   abstract totalPages(): number

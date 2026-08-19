@@ -93,7 +93,7 @@
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
     }
 
-    :where(div.text-justify, p, li) > .fake-marker {
+    :where(div.text-justify, p, li)>.fake-marker {
       position: absolute;
       left: calc(var(--indent-level) * var(--indent-step));
       width: var(--marker-width);
@@ -106,7 +106,7 @@
       position: relative;
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
 
-      > .fake-indent {
+      >.fake-indent {
         display: none !important;
       }
     }
@@ -133,16 +133,7 @@
   }
 }
 
-#dcr-online-banking-bank-account-opening-maybank {
-  ol {
-    padding-left: 15px;
-
-    li {
-      padding-bottom: 5px;
-      font-size: 13px;
-    }
-  }
-
+.dcr-maybank-online-banking {
   table {
     &.maybank-online-banking {
       margin-top: 10px;
@@ -150,23 +141,39 @@
       width: 100%;
 
       thead {
-        td {
-          padding: 5px;
-          border: 1px solid var(--bs-black);
-          text-align: center;
-          font-weight: 600;
+        tr {
+          td {
+            padding: 5px;
+            border-right: 1px solid var(--bs-black);
+            border-bottom: 1px solid var(--bs-black);
+            text-align: center;
+            font-weight: 600;
+
+            &:first-child {
+              border-left: 1px solid var(--bs-black);
+            }
+          }
+
+          &:first-child {
+            td {
+              border-top: 1px solid var(--bs-black);
+              border-left: 1px solid var(--bs-black);
+            }
+          }
         }
       }
 
       tbody {
         td {
           padding: 5px;
-          border: 1px solid var(--bs-black);
+          border-right: 1px solid var(--bs-black);
+          border-bottom: 1px solid var(--bs-black);
           text-align: center;
           font-weight: 600;
 
           &:first-child {
             width: 50%;
+            border-left: 1px solid var(--bs-black);
           }
 
           &:nth-child(2) {
@@ -237,7 +244,7 @@
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
     }
 
-    :where(div, p, li) > .fake-marker {
+    :where(div, p, li)>.fake-marker {
       position: absolute;
       left: calc(var(--indent-level) * var(--indent-step));
       width: var(--marker-width);
@@ -250,7 +257,7 @@
       position: relative;
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
 
-      > .fake-indent {
+      >.fake-indent {
         display: none !important;
       }
     }
