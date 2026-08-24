@@ -359,19 +359,19 @@
             font-size: 11px;
           }
         }
-
-        .btn-locate {
-          font-size: 11px;
-          background-color: var(--bs-icompany-orange);
-          color: var(--bs-white);
-          border-color: var(--bs-icompany-orange);
-
-          &:hover {
-            background-color: var(--bs-white);
-            color: var(--bs-icompany-orange);
-          }
-        }
       }
+    }
+  }
+
+  .btn-locate {
+    font-size: 11px;
+    background-color: var(--bs-icompany-orange);
+    color: var(--bs-white);
+    border-color: var(--bs-icompany-orange);
+
+    &:hover {
+      background-color: var(--bs-white);
+      color: var(--bs-icompany-orange);
     }
   }
 }

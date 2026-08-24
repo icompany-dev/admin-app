@@ -150,7 +150,7 @@ export class DataDistributionMapController {
       }
 
       let companyIds = [...new Set(uc.companiesAsDirector.concat(uc.companiesAsShareholder))]
-      let appointments = []
+      let appointments: UserCompanyAppointment[] = []
       companyIds.forEach((companyId: string) => {
         let company = this.companyCoordinates.value.find((cc: AnalyticsCompanyCoordinate) => {
           return cc.companyId === companyId
@@ -175,12 +175,18 @@ export class DataDistributionMapController {
           return
         }
 
+        let shareholding = uc.shareholdings.find((s: any) => {
+          return s.company_id === companyId
+        })
+
         let appointment = new UserCompanyAppointment({
           companyId: companyId,
           companyName: company.name,
           role: role,
-          shareholdingPercent: 10, // percentage of shares -- need backend for this,
+          shareholdingPercent: shareholding?.ordinary_shares ?? null, // percentage of shares -- need backend for this,
         })
+
+        appointments.push(appointment)
       })
 
       let state: MalaysiaState | null =
@@ -193,7 +199,7 @@ export class DataDistributionMapController {
         uc.name, //name
         uc.email, //email
         uc.phone, //phone
-        "", //avatarUrl
+        uc.image?.url || "", //avatarUrl
         uc.gender === "female" ? "Female" : "Male", //gender
         uc.age ?? 0, //age
         ageGroup, //ageGroup
@@ -201,14 +207,14 @@ export class DataDistributionMapController {
         "", //companyId
         "", //companyName
         companyIds, //companyIds
-        [], //appointments
+        appointments, //appointments
         uc.coordinate.lat, //lat
         uc.coordinate.lng, //lng
         uc.address, //city
         state ?? "(Not in Malaysia)", //state
         uc.address, //address
-        "Active" //activeStatus
-        //lastSeen
+        "Active", //activeStatus
+        this.time.formatDateOnlyShort(uc.lastLogin)
       )
     })
   }

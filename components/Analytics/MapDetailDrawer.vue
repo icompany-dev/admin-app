@@ -118,11 +118,10 @@
               <button
                 v-if="controller.getCompanyById(appt.companyId)"
                 @click="controller.handleSelectCompany(controller.getCompanyById(appt.companyId)!)"
-                class="locate-button"
+                class="btn btn-locate"
                 title="Locate company on map"
               >
-                <span>Locate</span>
-                <i class="fa-solid fa-arrow-right" />
+                Locate
               </button>
             </div>
           </div>
