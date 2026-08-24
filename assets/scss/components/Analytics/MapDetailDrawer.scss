@@ -242,6 +242,31 @@
       }
     }
 
+    .company-items-container {
+      width: calc(100% - 30px);
+      padding: 15px;
+      background-color: var(--bs-gray-200);
+      border-radius: 5px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 10px;
+
+      .company-item {
+        width: calc(50% - 10px);
+        min-width: 150px;
+
+        .item-title {
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--bs-gray-700);
+          text-transform: uppercase;
+        }
+      }
+    }
+
     .contact-details-container {
       margin-top: 10px;
       display: flex;

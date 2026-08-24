@@ -208,6 +208,22 @@ export class MapDetailDrawerController {
     return this.selectedUser.value?.lng ?? 0
   }
 
+  get selectedCompanyAddress(): string {
+    if (!this.isSelectedCompany || !this.selectedCompany.value) {
+      return "Unknown"
+    }
+
+    return this.selectedCompany.value.address
+  }
+
+  get selectedCompanyLat(): number {
+    return this.selectedCompany.value?.lat ?? 0
+  }
+
+  get selectedCompanyLng(): number {
+    return this.selectedCompany.value?.lng ?? 0
+  }
+
   get isSelectedCompany(): boolean {
     return this.selectedCompany.value !== null
   }

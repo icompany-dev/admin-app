@@ -9,6 +9,9 @@ import { State } from "~/scripts/models/Location"
 import { MALAYSIA_STATES, type MalaysiaState } from "~/scripts/types/maps/MapStates"
 import { PropsMapDetailDrawer } from "~/scripts/props/PropsMapDetailDrawer"
 import { MapTarget } from "~/scripts/types/maps/MapTarget"
+import { UserCompanyAppointment } from "~/scripts/types/maps/MapUserCompanyAppointment"
+import { StringUtil } from "~/scripts/utils/String"
+import { NumberUtil } from "~/scripts/utils/Number"
 
 export class DataDistributionMapController {
   emitEvents: any | null = null
@@ -25,6 +28,9 @@ export class DataDistributionMapController {
   selectedMapTarget: Ref<MapTarget | null> = ref<MapTarget | null>(null)
 
   effectiveTheme: Ref<"light" | "dark"> = ref<"light" | "dark">("light")
+
+  time = useLocalTime()
+  dayjs = useDayjs()
 
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -142,6 +148,40 @@ export class DataDistributionMapController {
         role = "Shareholder"
       }
 
+      let companyIds = [...new Set(uc.companiesAsDirector.concat(uc.companiesAsShareholder))]
+      let appointments = []
+      companyIds.forEach((companyId: string) => {
+        let company = this.companyCoordinates.value.find((cc: AnalyticsCompanyCoordinate) => {
+          return cc.companyId === companyId
+        })
+
+        if (!company) {
+          return
+        }
+
+        let isDirector = uc.companiesAsDirector.includes(companyId)
+        let isShareholder = uc.companiesAsShareholder.includes(companyId)
+        let role = ""
+        if (isDirector && isShareholder) {
+          role = "Director & Shareholder"
+        } else if (isDirector) {
+          role = "Director"
+        } else if (isShareholder) {
+          role = "Shareholder"
+        }
+
+        if (StringUtil.isNullOrEmpty(role)) {
+          return
+        }
+
+        let appointment = new UserCompanyAppointment({
+          companyId: companyId,
+          companyName: company.name,
+          role: role,
+          shareholdingPercent: 10, // percentage of shares -- need backend for this,
+        })
+      })
+
       let state: MalaysiaState | null =
         (MALAYSIA_STATES.find((state: string) => {
           return uc.address.includes(state.toLowerCase())
@@ -159,7 +199,7 @@ export class DataDistributionMapController {
         role, //role
         "", //companyId
         "", //companyName
-        [], //companyIds
+        companyIds, //companyIds
         [], //appointments
         uc.coordinate.lat, //lat
         uc.coordinate.lng, //lng
@@ -181,21 +221,24 @@ export class DataDistributionMapController {
           return cc.address.includes(state.toLowerCase())
         }) as MalaysiaState) ?? null
 
+      let incorporatedDate = this.time.formatDateOnlyShort(cc.incorporatedAt)
+      let incorporatedYear = this.dayjs(cc.incorporatedAt).format("YYYY")
+
       return new CompanyLocation(
         cc.companyId,
         cc.name,
-        "", //reg no
+        `${cc.registrationNumberNew} (${cc.registrationNumberOld})`, //reg no
         businessNature,
         state ?? "(Not in Malaysia)",
         "", //city,
         cc.address,
         cc.coordinate.lat,
         cc.coordinate.lng,
-        1, //director count
-        1, //shareholder count
+        cc.numberOfDirectors, //director count
+        cc.numberOfShareholders, //shareholder count
         0, //officeers count
-        2026, //incorporated year,
-        "100", //total shares,
+        Number(incorporatedYear), //incorporated year,
+        NumberUtil.thousandSeparator(cc.totalShares), //total shares,
         0, // office distance?,
         "< 5 km", // need to deal with this,
         "", //email
