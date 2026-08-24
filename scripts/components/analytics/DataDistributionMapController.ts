@@ -194,6 +194,8 @@ export class DataDistributionMapController {
           return uc.address.includes(state.toLowerCase())
         }) as MalaysiaState) ?? null
 
+      let isActive = this.dayjs().diff(this.dayjs(uc.lastLogin), "hours") < 48
+
       return new UserLocation(
         uc.name, //id
         uc.name, //name
@@ -213,7 +215,7 @@ export class DataDistributionMapController {
         uc.address, //city
         state ?? "(Not in Malaysia)", //state
         uc.address, //address
-        "Active", //activeStatus
+        isActive ? "Active" : "Inactive", //activeStatus
         this.time.formatDateOnlyShort(uc.lastLogin)
       )
     })
