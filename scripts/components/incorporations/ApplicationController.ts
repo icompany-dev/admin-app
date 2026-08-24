@@ -461,29 +461,35 @@ export class ApplicationController {
     }
 
     try {
-      // TODO: Update download function
-      // let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
-      //   DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27,
-      //   this.application.value?.createdAt ?? ""
-      // )
-      // if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
-      //   throw "new file"
-      // }
-      // this.isDownloadingSection27.value = true
-      // let url = companyDocument.fileUrl
-      // const response = await fetch(url)
-      // if (!response.ok) {
-      //   throw "Unable to fetch PDF document from source."
-      // }
-      // const blob = await response.blob()
-      // const blobUrl = window.URL.createObjectURL(blob)
-      // const link = document.createElement("a")
-      // link.href = blobUrl
-      // link.setAttribute("download", companyDocument.documentName)
-      // document.body.appendChild(link)
-      // link.click()
-      // document.body.removeChild(link)
-      // window.URL.revokeObjectURL(blobUrl)
+      this.isDownloadingSection27.value = true
+      let repository = useFileStore()
+      let fileId = this.application.value.metaData?.notification_of_name_reservation ?? ""
+      let fileResponse = await repository.fetch(fileId)
+      let file = new File(fileResponse)
+
+      if (StringUtil.isNullOrEmpty(file.url)) {
+        let error = new Error()
+        error.title = this.language.isMalay() ? "Tiada fail untuk dimuat turun." : "There is no file to download."
+        error.message = this.language.isMalay()
+          ? "Sila muat naik dokumen untuk disimpan."
+          : "Please upload the document first."
+        throw error
+      }
+
+      let url = file.url
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", file.name)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
     } catch {
       let error = new Error()
       error.setForFetch()
@@ -1486,7 +1492,11 @@ export class ApplicationController {
   }
 
   get isSection27Uploaded(): boolean {
-    return false // TODO: update this
+    if (!this.application.value.metaData || !this.application.value.metaData.notification_of_name_reservation) {
+      return false
+    }
+
+    return true // TODO: update this
     // return this.uploadedDocumentChecker.value.isDocumentUploaded(
     //   DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27,
     //   this.application.value?.createdAt ?? ""

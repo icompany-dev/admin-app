@@ -2,9 +2,13 @@ import { NameReservationEmailTypes } from "~/scripts/constants/NameReservations"
 import { Error } from "~/scripts/library/Error"
 import { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
 import { ApplicationNameReservation } from "~/scripts/models/ApplicationNameReservation"
+import { File } from "~/scripts/models/File"
 import { User } from "~/scripts/models/User"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
+import * as pdfjsLib from "pdfjs-dist"
+import type { PDFPageProxy } from "pdfjs-dist"
+import { PdfRenderer } from "~/scripts/library/PdfRenderer"
 
 export class Section27OneFourController {
   applicationId: Ref<string> = ref<string>("")
@@ -18,6 +22,11 @@ export class Section27OneFourController {
 
   documentRef: any | null = null
 
+  pdfRenderer: Ref<PdfRenderer> = ref<PdfRenderer>(new PdfRenderer(""))
+  canvasRefs: any[] = []
+  pdfFileUrl: Ref<string> = ref<string>("")
+  numberOfPages: Ref<number> = ref<number>(1)
+
   language = useLanguage()
   time = useLocalTime()
   dayjs = useDayjs()
@@ -29,6 +38,15 @@ export class Section27OneFourController {
 
   setDocumentRef(documentRef: any): void {
     this.documentRef = documentRef
+  }
+
+  setCanvasRefs(el: any, index: number): void {
+    // if (this.canvasRefs[index]) {
+    //   this.canvasRefs[index] = el
+    // } else {
+    //   this.canvasRefs.push(el)
+    // }
+    this.pdfRenderer.value.setPageCanvas(index, el)
   }
 
   async setApplicationId(applicationId: string): Promise<void> {
@@ -48,7 +66,9 @@ export class Section27OneFourController {
         await this.fetchIncorporation()
       }
       await this.fetchApplicant()
+      await this.fetchFile()
     } catch (e: any) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {
@@ -72,6 +92,7 @@ export class Section27OneFourController {
       this.isLoading.value = true
       await this.fetchIncorporation()
       await this.fetchApplicant()
+      await this.fetchFile()
     } catch (e: any) {
       if (e instanceof Error) {
         e.handle()
@@ -125,6 +146,85 @@ export class Section27OneFourController {
     }
 
     this.applicant.value = new User(response)
+  }
+
+  async fetchFile(): Promise<void> {
+    if (
+      this.applicationIncorporate.value &&
+      this.applicationIncorporate.value.metaData &&
+      this.applicationIncorporate.value.metaData.notification_of_name_reservation
+    ) {
+      let fileRepository = useFileStore()
+      let fileResponse = await fileRepository.fetch(
+        this.applicationIncorporate.value.metaData.notification_of_name_reservation
+      )
+      let file = new File(fileResponse)
+      this.pdfFileUrl.value = file.url
+    }
+
+    if (this.isShowPdfFile) {
+      this.pdfRenderer.value.pdfUrl = this.pdfFileUrl.value
+      await this.pdfRenderer.value.loadPdf()
+      this.numberOfPages.value = this.pdfRenderer.value.numberOfPages
+      await nextTick()
+      await this.pdfRenderer.value.renderAllPages()
+    }
+  }
+
+  async loadPdf() {
+    const loadingTask = pdfjsLib.getDocument(this.pdfFileUrl.value)
+    const pdf = await loadingTask.promise
+    this.numberOfPages.value = pdf.numPages
+    return pdf
+  }
+
+  async renderPdf(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.pdfFileUrl.value)) {
+      return
+    }
+
+    await this.renderAllPages()
+  }
+
+  async renderPage(page: PDFPageProxy, canvas: HTMLCanvasElement): Promise<void> {
+    const defaultViewport = page.getViewport({ scale: 1 })
+    const viewportWidth = defaultViewport.width
+    const viewportHeight = defaultViewport.height
+    // this.documentScaler.value.setViewPortScale(viewportWidth, viewportHeight)
+
+    const viewport = page.getViewport({ scale: 1.3 })
+    // this.documentHeight.value = viewport.height
+
+    const context = canvas.getContext("2d")
+
+    if (!context) {
+      return
+    }
+
+    canvas.width = viewport.width
+    canvas.height = viewport.height
+
+    await page.render({ canvas: canvas, canvasContext: context, viewport }).promise
+  }
+
+  async renderAllPages(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.pdfFileUrl.value)) {
+      return
+    }
+
+    const pdf = await this.loadPdf()
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      const canvas = this.canvasRefs[pageNumber]
+      if (!canvas) {
+        continue
+      }
+
+      const page = await pdf.getPage(pageNumber)
+      nextTick(async () => {
+        await this.renderPage(page, canvas)
+      })
+    }
   }
 
   proposedName(): string {
@@ -210,5 +310,13 @@ export class Section27OneFourController {
     this.isPrinting.value = false
 
     return pdfPages
+  }
+
+  get isShowPdfFile(): boolean {
+    return !StringUtil.isNullOrEmpty(this.pdfFileUrl.value)
+  }
+
+  get pdfPaperRanges(): number[] {
+    return Array.from({ length: this.numberOfPages.value }, (_, i) => i)
   }
 }
