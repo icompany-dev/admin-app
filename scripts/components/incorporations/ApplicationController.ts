@@ -1213,6 +1213,22 @@ export class ApplicationController {
     return this.applicant.value.phone
   }
 
+  get applicantAddress(): string {
+    if (!this.applicant.value.detail) {
+      return ""
+    }
+
+    return this.applicant.value.detail.location?.getMultilineAddress() ?? ""
+  }
+
+  get applicantOneLineAddress(): string {
+    if (!this.applicant.value.detail) {
+      return ""
+    }
+
+    return this.applicant.value.detail.location?.getOnelineAddress() ?? ""
+  }
+
   get applicantIdentificationType(): string {
     let type = "MyKad"
 

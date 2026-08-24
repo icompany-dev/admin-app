@@ -240,6 +240,10 @@
         cursor: pointer;
         color: var(--bs-icompany-blue);
       }
+
+      &.align-top {
+        align-items: flex-start;
+      }
     }
   }
 

@@ -295,6 +295,11 @@
                           {{ controller.applicantPhone }}
                           <CopyValue :value="controller.applicantPhone" />
                         </span>
+                        <span class="human-detail align-top">
+                          <i class="fa-regular fa-location-pin" />
+                          <span v-html="controller.applicantAddress" />
+                          <CopyValue :value="controller.applicantOneLineAddress" />
+                        </span>
                       </div>
                     </div>
                   </Transition>
@@ -609,7 +614,7 @@
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import CompletionOfIncorporation from "@/components/Popups/CompletionOfIncorporation.vue"
   import CopyValue from "@/components/Buttons/CopyValue.vue"
-  import Director from "@/components/Invitations/Director.vue"
+  // import Director from "@/components/Invitations/Director.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NameReservationRejected from "@/components/Popups/NameReservationRejected.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
@@ -620,7 +625,7 @@
   import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import Section27OneFourService from "@/components/CompanyServices/Section27OneFourService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
-  import Shareholder from "@/components/Invitations/Shareholder.vue"
+  // import Shareholder from "@/components/Invitations/Shareholder.vue"
   import UploadFile from "@/components/Popups/UploadFile.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
