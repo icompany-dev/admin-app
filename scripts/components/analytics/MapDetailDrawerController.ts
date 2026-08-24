@@ -28,8 +28,6 @@ export class MapDetailDrawerController {
     this.office.value = props.office
     this.allUsers.value = props.allUsers
     this.allCompanies.value = props.allCompanies
-
-    console.log("called", this.selectedUser.value)
   }
 
   getCompanyById(companyId: string): CompanyLocation | null {
@@ -222,6 +220,20 @@ export class MapDetailDrawerController {
 
   get selectedCompanyLng(): number {
     return this.selectedCompany.value?.lng ?? 0
+  }
+
+  get selectedCompanyUsers(): UserLocation[] {
+    if (this.selectedCompany.value === null) {
+      return []
+    }
+
+    return this.allUsers.value.filter((uc: UserLocation) => {
+      if (!this.selectedCompany.value) {
+        return false
+      }
+
+      return uc.companyIds.includes(this.selectedCompany.value.id)
+    })
   }
 
   get isSelectedCompany(): boolean {

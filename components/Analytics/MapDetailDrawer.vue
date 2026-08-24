@@ -45,6 +45,17 @@
                 {{ controller.selectedUserActiveStatus }}
               </span>
             </div>
+            <div
+              class="badge-container"
+              v-if="controller.isSelectedCompany"
+            >
+              <span
+                class="badge"
+                v-for="(nature, n) in controller.selectedCompany.value?.businessNature"
+              >
+                {{ nature }}
+              </span>
+            </div>
           </div>
         </div>
         <button
@@ -198,6 +209,43 @@
               <div>{{ controller.selectedCompanyAddress.toUpperCase() }}</div>
             </div>
           </div>
+        </div>
+
+        <div class="directors-shareholders-container">
+          <div class="directors-shareholders-title">Directors & Shareholders</div>
+          <div
+            v-for="(user, i) in controller.selectedCompanyUsers"
+            class="director-shareholder"
+          >
+            <div class="name-details">
+              <div class="user-name">
+                {{ user.name }}
+              </div>
+              <div class="user-detail">
+                {{ user.role }}
+                <i class="fa-solid fa-dot" />
+                {{ user.gender }}
+                <i class="fa-solid fa-dot" />
+                {{ user.age }} y/o
+              </div>
+            </div>
+            <button
+              class="btn btn-locate"
+              @click="controller.handleSelectUser(user)"
+            >
+              Locate
+            </button>
+          </div>
+        </div>
+
+        <div class="quick-fly-container">
+          <button
+            @click="controller.handleFlyToEntity(controller.selectedCompanyLat, controller.selectedCompanyLng, 15)"
+            class="fly-button"
+          >
+            <i class="fa-regular fa-paper-plane" />
+            <span>Center Company on Map</span>
+          </button>
         </div>
       </div>
     </div>

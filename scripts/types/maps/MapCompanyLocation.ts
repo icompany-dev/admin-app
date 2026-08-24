@@ -5,7 +5,7 @@ export class CompanyLocation {
   id: string
   name: string
   regNo: string // SSM registration number
-  businessNature: string //BusinessNature;
+  businessNature: string[] //BusinessNature;
   state: MalaysiaState
   city: string
   address: string
@@ -27,7 +27,7 @@ export class CompanyLocation {
     id: string,
     name: string,
     regNo: string, // SSM registration number,
-    businessNature: string, //BusinessNature;,
+    businessNature: string[], //BusinessNature;,
     state: MalaysiaState,
     city: string,
     address: string,

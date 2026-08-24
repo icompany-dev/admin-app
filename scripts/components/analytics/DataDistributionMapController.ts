@@ -12,6 +12,7 @@ import { MapTarget } from "~/scripts/types/maps/MapTarget"
 import { UserCompanyAppointment } from "~/scripts/types/maps/MapUserCompanyAppointment"
 import { StringUtil } from "~/scripts/utils/String"
 import { NumberUtil } from "~/scripts/utils/Number"
+import type { MsicCode } from "~/scripts/models/MsicCode"
 
 export class DataDistributionMapController {
   emitEvents: any | null = null
@@ -214,21 +215,22 @@ export class DataDistributionMapController {
 
   get companyLocations(): CompanyLocation[] {
     return this.companyCoordinates.value.map((cc: AnalyticsCompanyCoordinate) => {
-      let businessNature = "" // need to handle
+      let businessNature = cc.msicCodes.map((msicCode: MsicCode) => {
+        return msicCode.categoryDescriptionEn
+      })
 
       let state: MalaysiaState | null =
         (MALAYSIA_STATES.find((state: string) => {
           return cc.address.includes(state.toLowerCase())
         }) as MalaysiaState) ?? null
 
-      let incorporatedDate = this.time.formatDateOnlyShort(cc.incorporatedAt)
       let incorporatedYear = this.dayjs(cc.incorporatedAt).format("YYYY")
 
       return new CompanyLocation(
         cc.companyId,
         cc.name,
         `${cc.registrationNumberNew} (${cc.registrationNumberOld})`, //reg no
-        businessNature,
+        [...new Set(businessNature)],
         state ?? "(Not in Malaysia)",
         "", //city,
         cc.address,
