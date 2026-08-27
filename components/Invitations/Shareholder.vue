@@ -37,6 +37,31 @@
       <CopyValue :value="controller.phone" />
     </div>
     <div class="human-detail">
+      <i class="fa-regular fa-user" />
+      <span class="human-detail-content">
+        {{ controller.race }}
+      </span>
+      <CopyValue :value="controller.race" />
+    </div>
+    <div class="human-detail align-start">
+      <i class="fa-regular fa-home" />
+      <span class="human-detail-content">
+        {{ controller.addressLine1 }}
+        <CopyValue :value="controller.addressLine1" />
+        <br />
+        <span v-if="controller.addressLine2.length > 0">
+          {{ controller.addressLine2 }}
+          <CopyValue :value="controller.addressLine2" />
+          <br />
+        </span>
+        {{ controller.addressPostcode }} {{ controller.addressCity }}
+        <CopyValue :value="controller.addressPostcode" />
+        <br />
+        {{ controller.addressState }} {{ controller.addressCountry }}
+        <br />
+      </span>
+    </div>
+    <div class="human-detail">
       <span>{{ controller.totalSharesLabel }}</span>
       <span v-if="!controller.isInEditMode.value">{{ controller.invitation.value.ordinaryShares }}</span>
       <input

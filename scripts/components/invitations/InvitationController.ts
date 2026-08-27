@@ -192,6 +192,105 @@ export abstract class InvitationController {
     return detail.identification
   }
 
+  get raceLabel(): string {
+    return this.language.isMalay() ? "Bangsa" : "Race"
+  }
+
+  get race(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.race?.toUpperCase() ?? "(Unknown)"
+  }
+
+  get addressLabel(): string {
+    return this.language.isMalay() ? "Alamat" : "Address"
+  }
+
+  get addressLine1(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.addressLine1 ?? "-"
+  }
+
+  get addressLine2(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.addressLine2 ?? "-"
+  }
+
+  get addressPostcode(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.postcode ?? "-"
+  }
+
+  get addressCity(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.city?.name.toUpperCase() ?? "-"
+  }
+
+  get addressState(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.state?.name.toUpperCase() ?? "-"
+  }
+
+  get addressCountry(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.country?.name.toUpperCase() ?? "-"
+  }
+
   get removeLabel(): string {
     return this.language.isMalay() ? "Padam" : "Remove"
   }
