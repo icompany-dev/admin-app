@@ -7,7 +7,7 @@ import { Invitation } from "./Invitation"
 import { User } from "./User"
 
 export class ShareholderInvitation extends Invitation implements IInvitation<ShareholderInvitation> {
-  type: string = ""
+  type: string = ShareholdingType.Individual
   company: ShareholderInvitationCompany = new ShareholderInvitationCompany()
   ordinaryShares: number = 0
   preferenceShares: number = 0
@@ -169,7 +169,7 @@ export class ShareholderInvitation extends Invitation implements IInvitation<Sha
 
 export class ShareholderInvitationCompany {
   name: string | null = null
-  type: string | null = null
+  type: string | null = "sdnbhd"
   registrationNumberNew: string | null = null
   registrationNumberOld: string | null = null
   resolution: File | null = null

@@ -113,6 +113,7 @@
               </template>
               <template v-if="!controller.isEditingDescription.value">
                 {{ controller.application.value.businessDescription }}
+                <CopyValue :value="controller.application.value.businessDescription" />
               </template>
             </div>
             <div class="application-item-title">
@@ -148,20 +149,35 @@
                   @selected="controller.onMsicCodeSelected($event, 2)"
                 />
               </template>
-              <span
-                v-if="!controller.isEditingDescription.value"
-                v-html="controller.msicCodesList"
-              />
+              <template v-if="!controller.isEditingDescription.value">
+                <span v-for="msic in controller.msicCodesList">
+                  {{ msic }}
+                  <br />
+                </span>
+              </template>
             </div>
           </div>
           <div class="application-item">
             <div class="application-item-title">
               {{ controller.businessAddressLabel }}
             </div>
-            <div
-              class="application-item-content"
-              v-html="controller.businessAddress"
-            />
+            <div class="application-item-content">
+              <template v-if="controller.hasBusinessAddress">
+                {{ controller.addressLine1 }}
+                <CopyValue :value="controller.addressLine1" />
+                <br />
+                <span v-if="controller.addressLine2.length > 0">
+                  {{ controller.addressLine2 }}
+                  <CopyValue :value="controller.addressLine2" />
+                  <br />
+                </span>
+                {{ controller.addressPostcode }} {{ controller.addressCity }}
+                <CopyValue :value="controller.addressPostcode" />
+                <br />
+                {{ controller.addressState }} {{ controller.addressCountry }}
+              </template>
+              <template v-if="!controller.hasBusinessAddress">(No Business Address)</template>
+            </div>
           </div>
         </div>
       </div>

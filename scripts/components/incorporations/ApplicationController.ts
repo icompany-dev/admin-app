@@ -1285,16 +1285,18 @@ export class ApplicationController {
     return this.language.isMalay() ? "Kod MSIC" : "MSIC Codes"
   }
 
-  get msicCodesList(): string {
-    return this.application.value.msicCodeAssigns
-      .map((msic: MsicCodeAssign) => {
-        return `${msic.msicCode.code} - ${msic.msicCode.descriptionEn}`
-      })
-      .join("<br>")
+  get msicCodesList(): string[] {
+    return this.application.value.msicCodeAssigns.map((msic: MsicCodeAssign) => {
+      return `${msic.msicCode.code} - ${msic.msicCode.descriptionEn}`
+    })
   }
 
   get businessAddressLabel(): string {
     return this.language.isMalay() ? "Alamat Perniagaan" : "Business Address"
+  }
+
+  get hasBusinessAddress(): boolean {
+    return this.application.value.hasBusinessAddress
   }
 
   get businessAddress(): string {
@@ -1303,6 +1305,54 @@ export class ApplicationController {
     }
 
     return this.application.value.businessAddressLocation?.getMultilineAddress() ?? "(No Business Address)"
+  }
+
+  get addressLine1(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.addressLine1.toUpperCase() ?? "-"
+  }
+
+  get addressLine2(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.addressLine2?.toUpperCase() ?? "-"
+  }
+
+  get addressPostcode(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.postcode ?? "-"
+  }
+
+  get addressCity(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.city?.name?.toUpperCase() ?? "-"
+  }
+
+  get addressState(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.state?.name?.toUpperCase() ?? "-"
+  }
+
+  get addressCountry(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.country?.name?.toUpperCase() ?? "-"
   }
 
   get hasPaid(): boolean {
