@@ -1,4 +1,4 @@
-// #popups-ship-application {
+// #popups-invite-director {
 //   // Styles go here
 // }
 
@@ -19,6 +19,12 @@
             display: inline-block;
             width: 150px;
             padding-top: 5px;
+            text-align: left;
+          }
+
+          .form-control {
+            width: calc(100% - 160px);
+            font-weight: normal;
           }
         }
       }

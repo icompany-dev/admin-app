@@ -32,21 +32,7 @@ export abstract class InvitationController {
     this.setDataFromProps(props)
   }
 
-  async setDataFromProps(props: PropsInvitationDetail): Promise<void> {
-    this.id.value = props.id
-    this.invitation.value = props.invitation
-
-    if (!StringUtil.isNullOrEmpty(this.invitation.value.userId)) {
-      this.isLoading.value = true
-      try {
-        await this.invitation.value.setUser(useUserStore())
-      } catch (e) {
-        //
-      } finally {
-        this.isLoading.value = false
-      }
-    }
-  }
+  abstract setDataFromProps(props: PropsInvitationDetail): Promise<void>
 
   setRemoveConfirmationRef(removeConfirmationRef: any): void {
     this.removeConfirmationRef = removeConfirmationRef
@@ -97,6 +83,7 @@ export abstract class InvitationController {
   }
 
   async onProceedRemove(): Promise<void> {
+    console.log("called???")
     if (this.isRemoving.value) {
       return
     }
@@ -203,5 +190,108 @@ export abstract class InvitationController {
     }
 
     return detail.identification
+  }
+
+  get raceLabel(): string {
+    return this.language.isMalay() ? "Bangsa" : "Race"
+  }
+
+  get race(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.race?.toUpperCase() ?? "(Unknown)"
+  }
+
+  get addressLabel(): string {
+    return this.language.isMalay() ? "Alamat" : "Address"
+  }
+
+  get addressLine1(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.addressLine1 ?? "-"
+  }
+
+  get addressLine2(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.addressLine2 ?? "-"
+  }
+
+  get addressPostcode(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.postcode ?? "-"
+  }
+
+  get addressCity(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.city?.name.toUpperCase() ?? "-"
+  }
+
+  get addressState(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.state?.name.toUpperCase() ?? "-"
+  }
+
+  get addressCountry(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.country?.name.toUpperCase() ?? "-"
+  }
+
+  get removeLabel(): string {
+    return this.language.isMalay() ? "Padam" : "Remove"
   }
 }
