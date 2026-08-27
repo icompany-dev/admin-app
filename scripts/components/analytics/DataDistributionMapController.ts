@@ -13,6 +13,7 @@ import { UserCompanyAppointment } from "~/scripts/types/maps/MapUserCompanyAppoi
 import { StringUtil } from "~/scripts/utils/String"
 import { NumberUtil } from "~/scripts/utils/Number"
 import type { MsicCode } from "~/scripts/models/MsicCode"
+import { PropsMapFilterDrawer } from "~/scripts/props/PropsMapFilterDrawer"
 
 export class DataDistributionMapController {
   emitEvents: any | null = null
@@ -298,5 +299,9 @@ export class DataDistributionMapController {
       this.userLocations,
       this.companyLocations
     )
+  }
+
+  get mapFilterDrawerProps(): PropsMapFilterDrawer {
+    return new PropsMapFilterDrawer(null, [], [], [], [])
   }
 }

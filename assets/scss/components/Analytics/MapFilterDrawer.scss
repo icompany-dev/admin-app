@@ -1,0 +1,52 @@
+#analytics-map-filter-drawer {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 300px;
+  // max-height: 85vh;
+  // overflow-y: auto;
+  border-radius: 1rem;
+  background-color: var(--bs-white);
+  border: solid 2px var(--bs-gray-200);
+  box-shadow: var(--box-shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  .header-search-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 5px;
+    width: 100%;
+
+    .header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+
+      .label {
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 600;
+      }
+
+      .reset {
+        font-size: 11px;
+        color: var(--bs-gray-500);
+        cursor: pointer;
+        transition: all 0.7s ease;
+
+        &:hover {
+          color: var(--bs-gray-800);
+        }
+      }
+    }
+  }
+}
