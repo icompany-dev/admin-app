@@ -52,7 +52,6 @@
         <CopyValue :value="controller.addressPostcode" />
         <br />
         {{ controller.addressState }} {{ controller.addressCountry }}
-        <br />
       </span>
     </div>
     <div
