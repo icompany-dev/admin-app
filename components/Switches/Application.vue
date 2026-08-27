@@ -59,17 +59,10 @@
               class="summary-item-content human-details"
               v-for="(director, index) in controller.directorDetails"
             >
-              <span class="human-detail">
-                <b>{{ director.name }}</b>
-              </span>
-              <span class="human-detail">
-                <i class="fa-regular fa-envelope" />
-                {{ director.email }}
-              </span>
-              <span class="human-detail">
-                <i class="fa-brands fa-whatsapp" />
-                {{ director.user.phone }}
-              </span>
+              <Director
+                v-bind="controller.getPropsInvitationDetail(director)"
+                @removed="controller.fetchApplication()"
+              />
             </div>
           </div>
           <div class="summary-item">
@@ -80,18 +73,7 @@
               class="summary-item-content human-details"
               v-for="(shareholder, index) in controller.shareholderDetails"
             >
-              <span class="human-detail">
-                <b>{{ shareholder.name }}</b>
-              </span>
-              <span class="human-detail">
-                <i class="fa-regular fa-envelope" />
-                {{ shareholder.email }}
-              </span>
-              <span class="human-detail">
-                <i class="fa-brands fa-whatsapp" />
-                {{ shareholder.user.phone }}
-              </span>
-              <span class="human-detail">{{ controller.totalSharesLabel }}: {{ shareholder.totalShares }}</span>
+              <Shareholder v-bind="controller.getPropsInvitationDetail(shareholder)" />
             </div>
           </div>
         </div>
@@ -368,11 +350,13 @@
 <script lang="ts" setup>
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import Director from "@/components/Invitations/Director.vue"
   import LetterToExistingCosecService from "@/components/CompanyServices/LetterToExistingCosecService.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import SearchableDropdown from "@/components/Forms/SearchableDropdown.vue"
   import Section236ThreeService from "@/components/CompanyServices/Section236ThreeService.vue"
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
+  import Shareholder from "@/components/Invitations/Shareholder.vue"
   import SwitchAppointCompanySecretary from "@/components/CompanyServices/SwitchAppointCompanySecretary.vue"
   import UploadFile from "@/components/Popups/UploadFile.vue"
   import { ApplicationController } from "~/scripts/components/switches/ApplicationController"

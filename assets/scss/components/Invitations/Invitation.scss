@@ -25,6 +25,10 @@
     .action-clickable {
       cursor: pointer;
       color: var(--bs-icompany-blue);
+
+      &.remove {
+        color: var(--bs-danger);
+      }
     }
   }
 }

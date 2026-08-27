@@ -14,4 +14,8 @@ export class ShareholderController extends InvitationController {
   get totalSharesLabel(): string {
     return this.language.isMalay() ? "Jumlah Saham" : "Total Shares"
   }
+
+  get removeItemName(): string {
+    return this.language.isMalay() ? "Pemegang Saham" : "Shareholder"
+  }
 }

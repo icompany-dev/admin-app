@@ -204,4 +204,8 @@ export abstract class InvitationController {
 
     return detail.identification
   }
+
+  get removeLabel(): string {
+    return this.language.isMalay() ? "Padam" : "Remove"
+  }
 }

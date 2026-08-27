@@ -26,6 +26,8 @@ import { StatusConstants } from "~/scripts/constants/Status"
 import { Toast } from "~/scripts/library/Toast"
 import { Company } from "~/scripts/models/Company"
 import { City, Country, Location, State } from "~/scripts/models/Location"
+import type { Invitation } from "~/scripts/models/Invitation"
+import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -177,6 +179,14 @@ export class ApplicationController {
     this.msicCodes.value = response.data.map((d: any) => {
       return new MsicCode(d)
     })
+  }
+
+  getPropsInvitationDetail(invitation: Invitation): PropsInvitationDetail {
+    let props = new PropsInvitationDetail(invitation.id, invitation)
+
+    props.hasSection201 = false
+
+    return props
   }
 
   //Update business description

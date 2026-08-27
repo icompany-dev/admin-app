@@ -30,7 +30,10 @@
       </span>
       <CopyValue :value="controller.phone" />
     </div>
-    <div class="human-detail">
+    <div
+      class="human-detail"
+      v-if="props.hasSection201"
+    >
       <span
         :class="{ 'action-clickable': controller.hasAcceptedInvitation }"
         @click="controller.onDeclarationClicked()"
@@ -38,10 +41,24 @@
         {{ controller.declarationLabel }}
       </span>
     </div>
+    <div class="human-detail">
+      <button
+        class="btn btn-danger btn-pill"
+        @click="controller.onRemoveClicked()"
+      >
+        {{ controller.removeLabel }}
+      </button>
+    </div>
+    <ConfirmToDelete
+      ref="removeConfirmationRef"
+      :remove-item-name="controller.removeItemName"
+      @proceeed="controller.onProceedRemove()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import CopyValue from "@/components/Buttons/CopyValue.vue"
   import { DirectorController } from "~/scripts/components/invitations/DirectorController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
@@ -51,12 +68,22 @@
 
   const emit = defineEmits([EmitMessages.REMOVED, EmitMessages.SHOW_DOCUMENT])
 
+  const removeConfirmationRef = ref(null)
+
   const controller = new DirectorController(props, emit)
 
   watch(
     () => props,
     (newVal) => {
       controller.setDataFromProps(props)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    removeConfirmationRef,
+    (newVal) => {
+      controller.setRemoveConfirmationRef(newVal)
     },
     { immediate: true }
   )

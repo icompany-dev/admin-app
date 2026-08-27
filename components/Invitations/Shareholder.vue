@@ -67,10 +67,24 @@
         <i class="fa-solid fa-save" />
       </span>
     </div>
+    <div class="human-detail">
+      <button
+        class="btn btn-danger btn-pill"
+        @click="controller.onRemoveClicked()"
+      >
+        {{ controller.removeLabel }}
+      </button>
+    </div>
+    <ConfirmToDelete
+      ref="removeConfirmationRef"
+      :remove-item-name="controller.removeItemName"
+      @proceeed="controller.onProceedRemove()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import CopyValue from "@/components/Buttons/CopyValue.vue"
   import { ShareholderController } from "~/scripts/components/invitations/ShareholderController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
@@ -80,12 +94,22 @@
 
   const emit = defineEmits([EmitMessages.REMOVED, EmitMessages.SHOW_DOCUMENT])
 
+  const removeConfirmationRef = ref(null)
+
   const controller = new ShareholderController(props, emit)
 
   watch(
     () => props,
     (newVal) => {
       controller.setDataFromProps(props)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    removeConfirmationRef,
+    (newVal) => {
+      controller.setRemoveConfirmationRef(newVal)
     },
     { immediate: true }
   )

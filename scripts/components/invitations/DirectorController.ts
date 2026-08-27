@@ -59,4 +59,8 @@ export class DirectorController extends InvitationController {
 
     return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 201" : "Declaration under Section 201"
   }
+
+  get removeItemName(): string {
+    return this.language.isMalay() ? "Pengarah" : "Director"
+  }
 }
