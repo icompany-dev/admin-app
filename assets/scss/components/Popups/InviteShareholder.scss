@@ -1,0 +1,41 @@
+// #popups-invite-shareholder {
+//   // Styles go here
+// }
+
+.popup {
+  .popup-content {
+    .popup-details {
+      .body {
+        .form-group {
+          width: 90%;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: flex-start;
+          gap: 10px;
+
+          .label {
+            font-size: 1.1rem;
+            display: inline-block;
+            width: 150px;
+            padding-top: 5px;
+            text-align: left;
+          }
+
+          .form-control {
+            width: calc(100% - 160px);
+            font-weight: normal;
+
+            &.company-name {
+              width: calc(100% - 270px);
+            }
+
+            &.company-type {
+              width: 100px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

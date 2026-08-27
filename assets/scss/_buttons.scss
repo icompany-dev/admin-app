@@ -94,6 +94,19 @@
   }
 }
 
+.btn-view {
+  background-color: var(--btn-view-bg-color);
+  color: var(--btn-view-color);
+  border-color: var(--btn-view-border-color);
+
+  &:hover,
+  &.active {
+    background-color: var(--btn-view-hover-bg-color);
+    color: var(--btn-view-hover-color);
+    border-color: var(--btn-view-hove-border-color);
+  }
+}
+
 .btn-pay {
   background-color: var(--btn-pay-bg-color);
   color: var(--btn-pay-color);

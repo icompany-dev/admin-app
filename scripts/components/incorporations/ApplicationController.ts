@@ -30,6 +30,9 @@ import { Form } from "~/scripts/models/Form"
 import { File } from "~/scripts/models/File"
 import type { RefSymbol } from "@vue/reactivity"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import type { Invitation } from "~/scripts/models/Invitation"
+import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
+import { BusinessNameDescriptionAI } from "~/scripts/library/BusinessNameDescriptionAI"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -68,6 +71,11 @@ export class ApplicationController {
   documentRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  isShowAdminView: Ref<boolean> = ref<boolean>(true)
+  isShowCrsView: Ref<boolean> = ref<boolean>(false)
+
+  businessNameDescriptionAI = ref<BusinessNameDescriptionAI>(new BusinessNameDescriptionAI())
 
   isShowSection201: Ref<boolean> = ref<boolean>(false)
   selectedDirectorInvitationFor201: Ref<DirectorInvitation | null> = ref<DirectorInvitation | null>(null)
@@ -244,6 +252,16 @@ export class ApplicationController {
     })
   }
 
+  onShowAdminViewClicked(): void {
+    this.isShowAdminView.value = true
+    this.isShowCrsView.value = false
+  }
+
+  onShowCrsViewClicked(): void {
+    this.isShowAdminView.value = false
+    this.isShowCrsView.value = true
+  }
+
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
     this.isShowSection27.value = false
@@ -368,6 +386,10 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
 
+  getPropsInvitationDetail(invitation: Invitation): PropsInvitationDetail {
+    return new PropsInvitationDetail(invitation.id, invitation)
+  }
+
   // Name Reservation Step
   onNameReservationStepClicked(): void {
     this.resetAllDocumentValues()
@@ -379,9 +401,54 @@ export class ApplicationController {
     this.isShowProposedNames.value = !this.isShowProposedNames.value
   }
 
+  hasAnyOngoingApplicationForNameReservations(): boolean {
+    return this.nameReservations.some((nr: ApplicationNameReservation) => {
+      return nr.status !== "outcome"
+    })
+  }
+
+  canSelectForNameReservation(name: string): boolean {
+    let nameReservationApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
+      return nr.name === name
+    })
+
+    if (!nameReservationApplication) {
+      return this.hasAnyOngoingApplicationForNameReservations()
+    }
+
+    return nameReservationApplication.status !== "outcome"
+  }
+
   onProposedNamesSelected(name: string): void {
     this.isShowProposedNames.value = false
     this.selectedProposedName.value = name
+  }
+
+  async onRunAskSairaForNameDescription(): Promise<void> {
+    if (
+      this.businessNameDescriptionAI.value.isProcessing ||
+      StringUtil.isNullOrEmpty(this.selectedProposedName.value) ||
+      !this.application.value
+    ) {
+      return
+    }
+
+    this.businessNameDescriptionAI.value.resetValues()
+    this.businessNameDescriptionAI.value.askGemini(
+      this.selectedProposedName.value,
+      this.application.value.businessDescription
+    )
+
+    this.checkAIStatus()
+  }
+
+  checkAIStatus(): void {
+    if (this.businessNameDescriptionAI.value.isProcessing) {
+      setTimeout(() => {
+        this.checkAIStatus()
+      }, 500)
+      return
+    }
   }
 
   onShowSection27ActionClicked(): void {
@@ -394,29 +461,35 @@ export class ApplicationController {
     }
 
     try {
-      // TODO: Update download function
-      // let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
-      //   DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27,
-      //   this.application.value?.createdAt ?? ""
-      // )
-      // if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
-      //   throw "new file"
-      // }
-      // this.isDownloadingSection27.value = true
-      // let url = companyDocument.fileUrl
-      // const response = await fetch(url)
-      // if (!response.ok) {
-      //   throw "Unable to fetch PDF document from source."
-      // }
-      // const blob = await response.blob()
-      // const blobUrl = window.URL.createObjectURL(blob)
-      // const link = document.createElement("a")
-      // link.href = blobUrl
-      // link.setAttribute("download", companyDocument.documentName)
-      // document.body.appendChild(link)
-      // link.click()
-      // document.body.removeChild(link)
-      // window.URL.revokeObjectURL(blobUrl)
+      this.isDownloadingSection27.value = true
+      let repository = useFileStore()
+      let fileId = this.application.value.metaData?.notification_of_name_reservation ?? ""
+      let fileResponse = await repository.fetch(fileId)
+      let file = new File(fileResponse)
+
+      if (StringUtil.isNullOrEmpty(file.url)) {
+        let error = new Error()
+        error.title = this.language.isMalay() ? "Tiada fail untuk dimuat turun." : "There is no file to download."
+        error.message = this.language.isMalay()
+          ? "Sila muat naik dokumen untuk disimpan."
+          : "Please upload the document first."
+        throw error
+      }
+
+      let url = file.url
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", file.name)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
     } catch {
       let error = new Error()
       error.setForFetch()
@@ -1078,6 +1151,22 @@ export class ApplicationController {
     return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
   }
 
+  get adminViewLabel(): string {
+    return this.language.isMalay() ? "Admin View" : "Admin View"
+  }
+
+  get crsViewLabel(): string {
+    return this.language.isMalay() ? "CRS View" : "CRS View"
+  }
+
+  get showCrsViewLabel(): string {
+    if (this.isShowCrsView.value) {
+      return this.language.isMalay() ? "Sedang Menunjuk Butiran untuk Sistem CRS" : "Showing Details for CRS System"
+    }
+
+    return this.language.isMalay() ? "Tunjuk Butiran untuk Sistem CRS" : "Show Details for CRS System"
+  }
+
   get viewSection201Label(): string {
     return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 201" : "Declaration under Section 201"
   }
@@ -1115,7 +1204,7 @@ export class ApplicationController {
   }
 
   get applicantLabel(): string {
-    return this.language.isMalay() ? "Butiran Pemohon" : "Details of Applicant"
+    return this.language.isMalay() ? "Butiran Promoter" : "Details of Promoter"
   }
 
   get applicantName(): string {
@@ -1128,6 +1217,32 @@ export class ApplicationController {
 
   get applicantPhone(): string {
     return this.applicant.value.phone
+  }
+
+  get applicantAddress(): string {
+    if (!this.applicant.value.detail) {
+      return ""
+    }
+
+    return this.applicant.value.detail.location?.getMultilineAddress() ?? ""
+  }
+
+  get applicantOneLineAddress(): string {
+    if (!this.applicant.value.detail) {
+      return ""
+    }
+
+    return this.applicant.value.detail.location?.getOnelineAddress() ?? ""
+  }
+
+  get applicantIdentificationType(): string {
+    let type = "MyKad"
+
+    if (this.applicant.value.detail) {
+      type = this.applicant.value.detail.identificationType === "passport" ? "Passport" : "MyKad"
+    }
+
+    return this.language.isMalay() ? `No. ${type}` : `${type} No.`
   }
 
   get applicantIdentification(): string {
@@ -1170,16 +1285,18 @@ export class ApplicationController {
     return this.language.isMalay() ? "Kod MSIC" : "MSIC Codes"
   }
 
-  get msicCodesList(): string {
-    return this.application.value.msicCodeAssigns
-      .map((msic: MsicCodeAssign) => {
-        return `${msic.msicCode.code} - ${msic.msicCode.descriptionEn}`
-      })
-      .join("<br>")
+  get msicCodesList(): string[] {
+    return this.application.value.msicCodeAssigns.map((msic: MsicCodeAssign) => {
+      return `${msic.msicCode.code} - ${msic.msicCode.descriptionEn}`
+    })
   }
 
   get businessAddressLabel(): string {
     return this.language.isMalay() ? "Alamat Perniagaan" : "Business Address"
+  }
+
+  get hasBusinessAddress(): boolean {
+    return this.application.value.hasBusinessAddress
   }
 
   get businessAddress(): string {
@@ -1188,6 +1305,54 @@ export class ApplicationController {
     }
 
     return this.application.value.businessAddressLocation?.getMultilineAddress() ?? "(No Business Address)"
+  }
+
+  get addressLine1(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.addressLine1.toUpperCase() ?? "-"
+  }
+
+  get addressLine2(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.addressLine2?.toUpperCase() ?? "-"
+  }
+
+  get addressPostcode(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.postcode ?? "-"
+  }
+
+  get addressCity(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.city?.name?.toUpperCase() ?? "-"
+  }
+
+  get addressState(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.state?.name?.toUpperCase() ?? "-"
+  }
+
+  get addressCountry(): string {
+    if (!this.hasBusinessAddress) {
+      return "-"
+    }
+
+    return this.application.value.businessAddressLocation?.country?.name?.toUpperCase() ?? "-"
   }
 
   get hasPaid(): boolean {
@@ -1263,6 +1428,30 @@ export class ApplicationController {
       names.push(this.application.value.name3.name)
     }
 
+    let formattednames = names.map((s: string) => {
+      let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
+        return nr.name === s
+      })
+
+      if (!ongoingApplication) {
+        return s
+      }
+
+      if (ongoingApplication.status === StatusConstants.OUTCOME) {
+        if (ongoingApplication.status === StatusConstants.APPROVED) {
+          s = `${s} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
+        }
+
+        if (ongoingApplication.status === StatusConstants.REJECTED) {
+          s = `${s} <small><i>${this.language.isMalay() ? "(Ditolak)" : "(Rejected)"}</i></small>`
+        }
+      } else {
+        s = `${s} <small><i>${this.language.isMalay() ? "(Sedang berjalan)" : "(Ongoing)"}</i></small>`
+      }
+
+      return s
+    })
+
     return names
   }
 
@@ -1279,15 +1468,65 @@ export class ApplicationController {
       return this.application.value.nameSelected.getCompleteName()
     }
 
+    let selectedName = this.selectedProposedName.value
+    if (StringUtil.isNullOrEmpty(selectedName)) {
+      selectedName = this.nameOptions[0]
+    }
+
     let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
-      return nr.status === StatusConstants.PENDING
+      return (
+        nr.status !== StatusConstants.OUTCOME && nr.ssmResult !== StatusConstants.REJECTED && nr.name === selectedName
+      )
     })
 
     if (ongoingApplication) {
-      return ongoingApplication.name
+      return `${ongoingApplication.name} <small><i>${this.language.isMalay() ? "(Sedang Berjalan)" : "(Ongoing)"}</i></small>`
     }
 
-    return this.nameOptions[0]
+    return selectedName
+  }
+
+  get nameDescriptionLabel(): string {
+    return this.language.isMalay() ? "Keterangan bagi Nama yang dicadangkan" : "Description of Proposed Name"
+  }
+
+  get selectedNameDescription(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    let selectedName = this.selectedProposedName.value
+    if (this.application.value.nameSelected) {
+      return this.application.value.nameSelected.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name1.name === selectedName) {
+      return this.application.value.name1.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name2?.name === selectedName) {
+      return this.application.value.name2.nameDescription ?? "-"
+    }
+
+    if (this.application.value.name3?.name === selectedName) {
+      return this.application.value.name3.nameDescription ?? "-"
+    }
+
+    return "-"
+  }
+
+  get aiSuggestedNameDescription(): string {
+    if (StringUtil.isNullOrEmpty(this.businessNameDescriptionAI.value.resultDescription)) {
+      if (this.businessNameDescriptionAI.value.isProcessing) {
+        return this.language.isMalay()
+          ? "SAIRA sedang berfikir... Sila tunggu sebentar."
+          : "SAIRA is thinking... Please wait."
+      }
+
+      return this.language.isMalay() ? "Tanya SAIRA untuk cadangan." : "Ask SAIRA for suggestions."
+    }
+
+    return this.businessNameDescriptionAI.value.resultDescription?.toUpperCase() ?? ""
   }
 
   get uploadSection27Label(): string {
@@ -1303,7 +1542,11 @@ export class ApplicationController {
   }
 
   get isSection27Uploaded(): boolean {
-    return false // TODO: update this
+    if (!this.application.value.metaData || !this.application.value.metaData.notification_of_name_reservation) {
+      return false
+    }
+
+    return true // TODO: update this
     // return this.uploadedDocumentChecker.value.isDocumentUploaded(
     //   DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27,
     //   this.application.value?.createdAt ?? ""

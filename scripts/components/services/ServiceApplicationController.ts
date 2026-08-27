@@ -2,6 +2,7 @@ import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Application } from "~/scripts/models/Application"
 import type { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
+import type { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
 import type { IPropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
 import { PropsServiceApplicationNode } from "~/scripts/props/PropsServiceApplicationNode"
 
@@ -10,7 +11,7 @@ export class ServiceApplicationController {
 
   serviceName: Ref<string> = ref<string>("")
   hasApplication: Ref<boolean> = ref<boolean>(false)
-  application = ref<Application | ApplicationIncorporate | null>(null)
+  application = ref<Application | ApplicationIncorporate | ApplicationSwitch | null>(null)
 
   emitEvents: any | null = null
 
@@ -35,7 +36,7 @@ export class ServiceApplicationController {
     this.hasApplication.value = hasApplication
   }
 
-  setApplication(application: Application | ApplicationIncorporate | null): void {
+  setApplication(application: Application | ApplicationIncorporate | ApplicationSwitch | null): void {
     this.application.value = application
   }
 

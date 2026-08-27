@@ -62,7 +62,7 @@ export class BusinessDescriptionAI {
     this.formPrompt()
 
     if (StringUtil.isNullOrEmpty(this.prompt)) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForIncompleteData()
       throw errorMessage
     }
@@ -76,7 +76,7 @@ export class BusinessDescriptionAI {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForAI()
         errorMessage.handle()
       }

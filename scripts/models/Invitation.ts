@@ -1,5 +1,6 @@
 import { StringUtil } from "../utils/String"
 import { User } from "./User"
+import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
 
 export abstract class Invitation {
   id: string = ""
@@ -44,6 +45,10 @@ export abstract class Invitation {
     let response = await repository.fetch(this.userId)
     this.user = new User(response)
   }
+
+  abstract create(repository: IRepositoryStore): Promise<void>
+  abstract update(repository: IRepositoryStore): Promise<void>
+  abstract remove(repository: IRepositoryStore): Promise<void>
 }
 
 export class InvitationTarget {

@@ -184,4 +184,11 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_DATA
   }
+
+  setForAI(): void {
+    this.title = this.isMalay ? "SAIRA sedang menghadapi masalah" : "SAIRA is facing an issue"
+    this.message = this.isMalay ? "Sila cuba sekali lagi." : "Please try again."
+
+    this.type = Error.ERROR_TYPE_API
+  }
 }

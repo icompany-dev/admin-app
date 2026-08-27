@@ -1,6 +1,12 @@
 import * as pdfjsLib from "pdfjs-dist"
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url"
 
 export default defineNuxtPlugin(() => {
-  // This plugin only runs on the client side
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdfjs/pdf.worker.min.mjs"
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker
+
+  return {
+    provide: {
+      pdfjs: pdfjsLib,
+    },
+  }
 })

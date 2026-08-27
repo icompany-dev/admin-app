@@ -1,0 +1,41 @@
+export const MALAYSIA_STATES = [
+  "Kuala Lumpur",
+  "Selangor",
+  "Penang",
+  "Johor",
+  "Perak",
+  "Melaka",
+  "Negeri Sembilan",
+  "Pahang",
+  "Terengganu",
+  "Kelantan",
+  "Kedah",
+  "Perlis",
+  "Sabah",
+  "Sarawak",
+  "Putrajaya",
+  "Labuan",
+  "(Not in Malaysia)",
+] as const
+
+export type MalaysiaState = (typeof MALAYSIA_STATES)[number]
+
+export const MALAYSIA_STATE_COORDINATES: Record<MalaysiaState, { lat: number; lng: number; zoom: number }> = {
+  "Kuala Lumpur": { lat: 3.139, lng: 101.6869, zoom: 12 },
+  Selangor: { lat: 3.0738, lng: 101.5183, zoom: 10 },
+  Penang: { lat: 5.4164, lng: 100.3327, zoom: 11 },
+  Johor: { lat: 1.4854, lng: 103.7618, zoom: 10 },
+  Perak: { lat: 4.5921, lng: 101.0901, zoom: 10 },
+  Melaka: { lat: 2.1896, lng: 102.2501, zoom: 12 },
+  "Negeri Sembilan": { lat: 2.7258, lng: 101.9424, zoom: 11 },
+  Pahang: { lat: 3.8126, lng: 103.3256, zoom: 9 },
+  Terengganu: { lat: 5.3117, lng: 103.1324, zoom: 9 },
+  Kelantan: { lat: 6.1254, lng: 102.2381, zoom: 9 },
+  Kedah: { lat: 6.1184, lng: 100.3685, zoom: 10 },
+  Perlis: { lat: 6.4449, lng: 100.2048, zoom: 12 },
+  Sabah: { lat: 5.9804, lng: 116.0735, zoom: 8 },
+  Sarawak: { lat: 1.5533, lng: 110.3592, zoom: 8 },
+  Putrajaya: { lat: 2.9264, lng: 101.6964, zoom: 13 },
+  Labuan: { lat: 5.2831, lng: 115.2308, zoom: 12 },
+  "(Not in Malaysia)": { lat: 5.2831, lng: 115.2308, zoom: 12 },
+}

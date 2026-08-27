@@ -7,6 +7,19 @@
   align-items: stretch;
   gap: 20px;
 
+  .alternative-view-toggle {
+    .label {
+      font-size: 13px;
+      font-weight: normal;
+      color: var(--bs-gray-600);
+
+      &.active {
+        color: var(--bs-gray-900);
+        font-weight: 600;
+      }
+    }
+  }
+
   .incorp-application-summary {
     background-color: rgba(255, 255, 255, 0.5);
     padding: 20px;
@@ -172,9 +185,44 @@
         }
       }
     }
+
+    .application-details-msic-codes {
+      margin-bottom: 10px;
+
+      .application-details-msic-code {
+        margin-bottom: 5px;
+      }
+    }
+
+    .name-description-details {
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+    }
+
+    .name-description-ai {
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+
+      .ai-suggested {
+        border-radius: 5px;
+        padding: 10px;
+        border: 1px dashed var(--bs-gray-600);
+        width: calc(100% - 20px);
+        text-align: justify;
+      }
+    }
   }
 
   .human-details {
+    margin-top: 0 !important;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -192,12 +240,17 @@
         cursor: pointer;
         color: var(--bs-icompany-blue);
       }
+
+      &.align-top {
+        align-items: flex-start;
+      }
     }
   }
 
   .incorp-application-details {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: stretch;
     gap: 20px;
@@ -255,6 +308,40 @@
 
     .application-label {
       font-weight: 600;
+    }
+  }
+
+  @media (max-width: 1366px) {
+    .incorp-application-details {
+      flex-direction: column;
+
+      .services-service-application {
+        width: 100%;
+      }
+
+      .document-display {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 500px) {
+    .incorp-application-summary {
+      .summary-items {
+        flex-direction: column;
+
+        .summary-item {
+          width: 100%;
+        }
+      }
+
+      .application-items {
+        flex-direction: column;
+
+        .application-item {
+          width: 100%;
+        }
+      }
     }
   }
 }
