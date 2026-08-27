@@ -1,6 +1,5 @@
 import { PopupTitles, PopupTitlesBm } from "~/scripts/constants/Popups"
 import { BasePopupController } from "./BasePopupController"
-import { remove } from "lodash"
 import { EmitMessages } from "~/scripts/constants/EmitMessages"
 
 export class ConfirmToDeleteController extends BasePopupController {
