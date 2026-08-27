@@ -1,5 +1,5 @@
 <template>
-  <div id="popups-invite-director">
+  <div id="popups-invite-shareholder">
     <Popup
       ref="popupRef"
       v-bind="controller.popupProps"
@@ -9,11 +9,47 @@
           {{ controller.content }}
         </div>
         <div class="form-group">
+          <span class="label">{{ controller.typeLabel }}</span>
+          <select
+            class="form-control"
+            v-model="controller.shareholderInvitation.value.type"
+          >
+            <option
+              v-for="opt in controller.typeOptions"
+              :value="opt.value"
+            >
+              {{ opt.label }}
+            </option>
+          </select>
+        </div>
+        <div
+          class="form-group"
+          v-if="controller.isTypeRepresentative"
+        >
+          <span class="label">{{ controller.companyNameLabel }}</span>
+          <input
+            type="text"
+            class="form-control text-uppercase company-name"
+            v-model="controller.shareholderInvitation.value.company.name"
+          />
+          <select
+            class="form-control company-type"
+            v-model="controller.shareholderInvitation.value.company.type"
+          >
+            <option
+              v-for="opt in controller.companyNameTypeOptions"
+              :value="opt.value"
+            >
+              {{ opt.label }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
           <span class="label">{{ controller.nameLabel }}</span>
           <input
             type="text"
             class="form-control text-uppercase"
-            v-model="controller.directorInvitation.value.name"
+            v-model="controller.shareholderInvitation.value.name"
           />
         </div>
         <div class="form-group">
@@ -21,7 +57,7 @@
           <input
             type="text"
             class="form-control"
-            v-model="controller.directorInvitation.value.email"
+            v-model="controller.shareholderInvitation.value.email"
           />
         </div>
       </template>
@@ -36,7 +72,7 @@
           class="btn btn-submit"
           :disabled="!controller.canProceed"
           :class="{ 'is-loading': controller.isSubmitting.value }"
-          @click="controller.onAddDirectorClicked()"
+          @click="controller.onAddShareholderClicked()"
         >
           {{ controller.proceedLabel }}
         </button>
@@ -46,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-  import { InviteDirectorController } from "~/scripts/components/popups/InviteDirectorController"
+  import { InviteShareholderController } from "~/scripts/components/popups/InviteShareholderController"
   import Popup from "./Popup.vue"
   import type { IPropsInvitationPopup } from "~/scripts/props/PropsInvitationPopup"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
@@ -57,7 +93,7 @@
 
   const popupRef = ref(null)
 
-  const controller = new InviteDirectorController(props, emit)
+  const controller = new InviteShareholderController(props, emit)
 
   watch(
     () => props,
@@ -81,5 +117,5 @@
 </script>
 
 <style lang="scss">
-  @use "~/assets/scss/components/Popups/InviteDirector" as *;
+  @use "~/assets/scss/components/Popups/InviteShareholder" as *;
 </style>

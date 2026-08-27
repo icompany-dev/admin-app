@@ -64,6 +64,12 @@
                 @removed="controller.fetchApplication()"
               />
             </div>
+            <button
+              class="btn btn-submit"
+              @click="controller.onAddDirectorClicked()"
+            >
+              {{ controller.addLabel }}
+            </button>
           </div>
           <div class="summary-item">
             <div class="summary-item-title">
@@ -75,6 +81,12 @@
             >
               <Shareholder v-bind="controller.getPropsInvitationDetail(shareholder)" />
             </div>
+            <button
+              class="btn btn-submit"
+              @click="controller.onAddShareholderClicked()"
+            >
+              {{ controller.addLabel }}
+            </button>
           </div>
         </div>
       </div>
@@ -344,6 +356,16 @@
         </div>
       </div>
     </template>
+    <InviteDirector
+      ref="inviteDirectorRef"
+      v-bind="controller.invitationPopupProps"
+      @success="controller.onAddedDirector($event)"
+    />
+    <InviteShareholder
+      ref="inviteShareholderRef"
+      v-bind="controller.invitationPopupProps"
+      @success="controller.onAddedShareholder($event)"
+    />
   </div>
 </template>
 
@@ -351,6 +373,8 @@
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Director from "@/components/Invitations/Director.vue"
+  import InviteDirector from "../Popups/InviteDirector.vue"
+  import InviteShareholder from "../Popups/InviteShareholder.vue"
   import LetterToExistingCosecService from "@/components/CompanyServices/LetterToExistingCosecService.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import SearchableDropdown from "@/components/Forms/SearchableDropdown.vue"
@@ -377,6 +401,8 @@
   const controller = new ApplicationController(props, emit)
 
   const documentRef = ref(null)
+  const inviteDirectorRef = ref(null)
+  const inviteShareholderRef = ref(null)
 
   const activeDocumentComponent = computed(() => {
     const target = controller.selectedDocumentTarget.value
@@ -393,6 +419,22 @@
   watch(documentRef, (newVal) => {
     controller.setDocumentRef(newVal)
   })
+
+  watch(
+    inviteDirectorRef,
+    (newVal) => {
+      controller.setInviteDirectorRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    inviteShareholderRef,
+    (newVal) => {
+      controller.setInviteShareholderRef(newVal)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style lang="scss">

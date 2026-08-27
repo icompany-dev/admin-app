@@ -28,6 +28,7 @@ import { Company } from "~/scripts/models/Company"
 import { City, Country, Location, State } from "~/scripts/models/Location"
 import type { Invitation } from "~/scripts/models/Invitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
+import { PropsInvitationPopup } from "~/scripts/props/PropsInvitationPopup"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -41,6 +42,8 @@ export class ApplicationController {
   language = useLanguage()
 
   documentRef: any | null = null
+  inviteDirectorRef: any | null = null
+  inviteShareholderRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
@@ -82,6 +85,14 @@ export class ApplicationController {
 
   setDocumentRef(documentRef: any): void {
     this.documentRef = documentRef
+  }
+
+  setInviteDirectorRef(inviteDirectorRef: any): void {
+    this.inviteDirectorRef = inviteDirectorRef
+  }
+
+  setInviteShareholderRef(inviteShareholderRef: any): void {
+    this.inviteShareholderRef = inviteShareholderRef
   }
 
   // Data initialization
@@ -187,6 +198,26 @@ export class ApplicationController {
     props.hasSection201 = false
 
     return props
+  }
+
+  onAddDirectorClicked(): void {
+    if (this.inviteDirectorRef) {
+      this.inviteDirectorRef.show()
+    }
+  }
+
+  onAddedDirector(data: any): void {
+    this.application.value.directorInvitations.push(new DirectorInvitation(data))
+  }
+
+  onAddShareholderClicked(): void {
+    if (this.inviteShareholderRef) {
+      this.inviteShareholderRef.show()
+    }
+  }
+
+  onAddedShareholder(data: any): void {
+    this.application.value.shareholderInvitations.push(new ShareholderInvitation(data))
   }
 
   //Update business description
@@ -597,7 +628,13 @@ export class ApplicationController {
         }
       })
 
-      return directorsToInvite
+      let otherInvitations = this.application.value.directorInvitations.filter((s: DirectorInvitation) => {
+        return !directorsToInvite.some((si: DirectorInvitation) => {
+          return si.email === s.email
+        })
+      })
+
+      return directorsToInvite.concat(otherInvitations)
     }
 
     return this.application.value.directorInvitations
@@ -609,6 +646,7 @@ export class ApplicationController {
 
   get shareholderDetails(): ShareholderInvitation[] {
     let shareholdersToInvite: ShareholderInvitation[] = []
+
     if (this.ssmCorporateProfileData && this.ssmCorporateProfileData.ssm) {
       let shareholdersFromCorporateProfile = this.ssmCorporateProfileData.ssm.shareholderInfos
 
@@ -645,7 +683,13 @@ export class ApplicationController {
         }
       })
 
-      return shareholdersToInvite
+      let otherInvitations = this.application.value.shareholderInvitations.filter((s: ShareholderInvitation) => {
+        return !shareholdersToInvite.some((si: ShareholderInvitation) => {
+          return si.email === s.email
+        })
+      })
+
+      return shareholdersToInvite.concat(otherInvitations)
     }
 
     return this.application.value.shareholderInvitations
@@ -1100,5 +1144,13 @@ export class ApplicationController {
     company.incorporatedAt = incorporatedAtDate
 
     return company
+  }
+
+  get addLabel(): string {
+    return this.language.isMalay() ? "+ Tambah" : "+ Add"
+  }
+
+  get invitationPopupProps(): PropsInvitationPopup {
+    return new PropsInvitationPopup("application_switch", this.application.value.id)
   }
 }

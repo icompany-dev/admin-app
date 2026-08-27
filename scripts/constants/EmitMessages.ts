@@ -20,6 +20,7 @@ export class EmitMessages {
   static DOCUMENT_GENERATED: string = "documentGenerated"
   static UPLOADED: string = "uploaded"
   static REMOVED: string = "removed"
+  static SUCCESS: string = "success"
   static SHOW_DOCUMENT: string = "showDocument"
 
   static COMPANY_SERVICES: string[] = [
@@ -37,5 +38,5 @@ export class EmitMessages {
     this.MISSING_STEP,
   ]
 
-  static POPUPS: string[] = [this.BACK, this.PROCEED, this.UPLOADED]
+  static POPUPS: string[] = [this.BACK, this.PROCEED, this.UPLOADED, this.SUCCESS]
 }
