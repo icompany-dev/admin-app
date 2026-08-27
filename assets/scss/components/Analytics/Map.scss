@@ -1,0 +1,163 @@
+// #analytics-map {
+//   // Styles go here
+// }
+@import "leaflet/dist/leaflet.css";
+
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.map-container {
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+
+  .office-marker {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+
+    .office-radar {
+      //
+    }
+
+    .office-icon {
+      color: var(--bs-icompany-orange);
+      font-size: 1.5cqw;
+    }
+
+    .office-name {
+      font-weight: 600;
+    }
+  }
+
+  .office-location-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .office-logo-name {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 100px;
+        height: auto;
+      }
+    }
+  }
+
+  .user-pin {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    color: var(--bs-white);
+    border-radius: 5px;
+
+    &.male {
+      background-color: #3b82f6;
+    }
+
+    &.female {
+      background-color: #ec4899;
+    }
+
+    .detail {
+      width: 15px;
+      height: 15px;
+      border-radius: 2px;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--bs-white);
+      font-size: 8px;
+      transition: all 0.7s ease;
+      border: 2px solid var(--bs-black);
+
+      &.selected {
+        width: 15px;
+        height: 15px;
+        border-radius: 5px;
+        transform: scale(1.25);
+      }
+    }
+  }
+
+  .company-pin {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    color: var(--bs-white);
+    border-radius: 5px;
+
+    .detail {
+      width: 15px;
+      height: 15px;
+      border-radius: 2px;
+      box-shadow: var(--box-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--bs-white);
+      font-size: 8px;
+      transition: all 0.7s ease;
+      border: 2px solid var(--bs-black);
+
+      &.selected {
+        width: 15px;
+        height: 15px;
+        border-radius: 5px;
+        transform: scale(1.25);
+      }
+    }
+  }
+}
+
+// Custom Leaflet pulse effect for HQ Radar pin
+:global {
+  @keyframes radarPulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7);
+    }
+
+    70% {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 15px rgba(225, 29, 72, 0);
+    }
+
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(225, 29, 72, 0);
+    }
+  }
+
+  .office-radar {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    animation: radarPulse 2s infinite;
+    pointer-events: none;
+  }
+}
