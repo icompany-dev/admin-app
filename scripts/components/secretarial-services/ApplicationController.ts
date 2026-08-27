@@ -13,8 +13,6 @@ export class ApplicationController {
 
   onCompanyUpdated(company: Company): void {
     this.company.value = new Company(company)
-
-    console.log("yo??", company)
   }
 
   get companyName(): string {

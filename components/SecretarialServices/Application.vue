@@ -33,6 +33,7 @@
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
+  import ChangeOfName from "./ChangeOfName.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
   import { CompanyConstants } from "~/scripts/constants/Company"
@@ -44,6 +45,7 @@
   const controller = new ApplicationController(props, emit)
 
   const componentMap: Record<string, any> = {
+    [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
     [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
   }
 

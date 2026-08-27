@@ -62,18 +62,25 @@
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
+  import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
+  import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
   import { CompanyConstants } from "~/scripts/constants/Company"
+  import type { Application } from "~/scripts/models/Application"
   import type { IPropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
 
   const props = defineProps<IPropsSecretarialServices>()
 
   const emit = defineEmits([])
 
-  let controller = new ApplicationsController(props, emit)
+  let controller: SecretarialServicesController<Application> = new ApplicationsController(props, emit)
 
   switch (props.target) {
+    case CompanyConstants.TARGET_AMENDMENT_NAME:
+      controller = new ChangeOfNamesController(props, emit)
+      break
     case CompanyConstants.TARGET_OPEN_BANK_ACCOUNT:
       controller = new BankAccountOpeningsController(props, emit)
+      break
   }
 
   watch(
