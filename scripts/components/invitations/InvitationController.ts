@@ -32,21 +32,7 @@ export abstract class InvitationController {
     this.setDataFromProps(props)
   }
 
-  async setDataFromProps(props: PropsInvitationDetail): Promise<void> {
-    this.id.value = props.id
-    this.invitation.value = props.invitation
-
-    if (!StringUtil.isNullOrEmpty(this.invitation.value.userId)) {
-      this.isLoading.value = true
-      try {
-        await this.invitation.value.setUser(useUserStore())
-      } catch (e) {
-        //
-      } finally {
-        this.isLoading.value = false
-      }
-    }
-  }
+  abstract setDataFromProps(props: PropsInvitationDetail): Promise<void>
 
   setRemoveConfirmationRef(removeConfirmationRef: any): void {
     this.removeConfirmationRef = removeConfirmationRef
@@ -97,6 +83,7 @@ export abstract class InvitationController {
   }
 
   async onProceedRemove(): Promise<void> {
+    console.log("called???")
     if (this.isRemoving.value) {
       return
     }

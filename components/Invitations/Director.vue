@@ -44,6 +44,8 @@
     <div class="human-detail">
       <button
         class="btn btn-danger btn-pill"
+        :disabled="controller.isRemoving.value"
+        :class="{ 'is-loading': controller.isRemoving.value }"
         @click="controller.onRemoveClicked()"
       >
         {{ controller.removeLabel }}

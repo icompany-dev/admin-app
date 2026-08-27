@@ -19,6 +19,22 @@ export class DirectorController extends InvitationController {
     this.emitEvents(EmitMessages.SHOW_DOCUMENT)
   }
 
+  async setDataFromProps(props: PropsInvitationDetail): Promise<void> {
+    this.id.value = props.id
+    this.invitation.value = props.invitation as DirectorInvitation
+
+    if (!StringUtil.isNullOrEmpty(this.invitation.value.userId)) {
+      this.isLoading.value = true
+      try {
+        await this.invitation.value.setUser(useUserStore())
+      } catch (e) {
+        //
+      } finally {
+        this.isLoading.value = false
+      }
+    }
+  }
+
   // getters
   get hasNotResponded(): boolean {
     return this.invitation.value.responseType === null
