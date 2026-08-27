@@ -1,0 +1,377 @@
+// #analytics-map-detail-drawer {
+//   // Styles go here
+// }
+
+.drawer-wrapper {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: calc(100% - 40px);
+  max-width: 28rem;
+  max-height: 85vh;
+  overflow-y: auto;
+  border-radius: 1rem;
+  background-color: var(--bs-white);
+  border: solid 2px var(--bs-gray-200);
+  box-shadow: var(--box-shadow);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: flex-start;
+
+  .badge-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+
+    .badge {
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-size: 10px;
+      border: 1px solid var(--bs-gray-700);
+
+      &.role {
+        font-weight: 600;
+      }
+
+      &.gender {
+        text-transform: capitalize;
+        color: var(--bs-white);
+
+        &.male {
+          background-color: var(--bs-icompany-blue);
+          border-color: var(--bs-icompany-blue);
+        }
+
+        &.female {
+          background-color: var(--bs-danger);
+          border-color: var(--bs-danger);
+        }
+      }
+
+      &.age-group {
+        color: var(--bs-white);
+
+        &.less-30 {
+          background-color: var(--bs-icompany-green);
+          border-color: var(--bs-icompany-green);
+        }
+
+        &.between-30-49 {
+          background-color: var(--bs-icompany-orange);
+          border-color: var(--bs-icompany-orange);
+        }
+
+        &.more-50 {
+          background-color: var(--bs-icompany-purple);
+          border-color: var(--bs-icompany-purple);
+        }
+
+        &.unknown {
+          background-color: var(--bs-gray-500);
+          border-color: var(--bs-gray-500);
+          color: var(--bs-gray-700);
+        }
+      }
+    }
+  }
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding-bottom: 5px;
+    border-bottom: 2px solid var(--bs-gray-200);
+
+    .header-title {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+
+      .icon {
+        padding: 5px;
+        color: var(--bs-white);
+        border-radius: 5px;
+        font-size: 13px;
+
+        &.user {
+          background-color: var(--bs-danger);
+        }
+
+        &.company {
+          background-color: var(--bs-icompany-blue);
+        }
+      }
+
+      .details {
+        .entity-type {
+          font-size: 10px;
+          font-weight: 600;
+          text-transform: uppercase;
+          color: var(--bs-gray-500);
+          margin-bottom: 3px;
+        }
+
+        .entity-name {
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: -0.1pt;
+          font-size: 15px;
+        }
+      }
+    }
+
+    .close-button {
+      cursor: pointer;
+      color: var(--bs-gray-400);
+      transition: all 0.7s ease;
+      font-size: 13px;
+      border: none;
+      background-color: transparent;
+
+      &:hover {
+        color: var(--bs-gray-700);
+      }
+    }
+  }
+
+  .content-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+
+    .item-container {
+      width: calc(100% - 30px);
+      padding: 15px;
+      background-color: var(--bs-gray-200);
+      border-radius: 5px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      .item-title-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+
+        .item-title {
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--bs-gray-700);
+          text-transform: uppercase;
+        }
+      }
+
+      .item-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 5px;
+
+        .company-detail-container {
+          padding: 10px;
+          border-radius: 5px;
+          background-color: var(--bs-white);
+          border: 1px solid var(--bs-gray-200);
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          gap: 5px;
+
+          .company-detail {
+            width: 90%;
+
+            .company-name {
+              text-transform: uppercase;
+              text-overflow: ellipsis;
+              text-wrap: nowrap;
+              overflow: hidden;
+              font-weight: 600;
+            }
+
+            .role-details {
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-start;
+              align-items: center;
+              gap: 3px;
+              margin-top: 3px;
+
+              .shareholding {
+                font-size: 10px;
+                font-weight: 500;
+                color: var(--bs-icompany-green);
+              }
+            }
+          }
+
+          .locate-button {
+            padding: 2px 4px;
+            font-size: 11px;
+            color: var(--bs-icompany-blue-light);
+            font-weight: 600;
+            transition: all 0.7s ease;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+
+            &:hover {
+              color: var(--bs-icompany-blue-darker);
+              background-color: var(--bs-icompany-blue-light);
+            }
+          }
+        }
+      }
+    }
+
+    .company-items-container {
+      width: calc(100% - 30px);
+      padding: 15px;
+      background-color: var(--bs-gray-200);
+      border-radius: 5px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 10px;
+
+      .company-item {
+        width: calc(50% - 10px);
+        min-width: 150px;
+
+        .item-title {
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--bs-gray-700);
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .contact-details-container {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+
+      .contact-item {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 10px;
+
+        .icon {
+          font-size: 13px;
+          width: 20px;
+          text-align: center;
+        }
+
+        .action-link {
+          cursor: pointer;
+          color: var(--bs-icompany-blue);
+        }
+      }
+    }
+
+    .quick-fly-container {
+      border-top: 2px solid var(--bs-gray-200);
+      width: 100%;
+
+      .fly-button {
+        width: calc(100% - 20px);
+        padding: 6px 10px;
+        color: var(--bs-white);
+        background-color: var(--bs-icompany-purple);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        box-shadow: var(--box-shadow);
+        border: none;
+        border-radius: 5px;
+        font-size: 13px;
+      }
+    }
+
+    .directors-shareholders-container {
+      margin-top: 10px;
+      padding: 10px 0;
+      border-top: 2px solid var(--bs-gray-200);
+      // border-bottom: 2px solid var(--bs-gray-400);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 5px;
+      width: 100%;
+
+      .directors-shareholders-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--bs-gray-700);
+        text-transform: uppercase;
+      }
+
+      .director-shareholder {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px 0;
+
+        .name-details {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: flex-start;
+          gap: 3px;
+
+          .user-name {
+            text-transform: uppercase;
+            font-weight: 600;
+          }
+
+          .user-detail {
+            font-size: 11px;
+          }
+        }
+      }
+    }
+  }
+
+  .btn-locate {
+    font-size: 11px;
+    background-color: var(--bs-icompany-orange);
+    color: var(--bs-white);
+    border-color: var(--bs-icompany-orange);
+
+    &:hover {
+      background-color: var(--bs-white);
+      color: var(--bs-icompany-orange);
+    }
+  }
+}

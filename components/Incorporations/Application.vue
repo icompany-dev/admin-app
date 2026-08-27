@@ -295,6 +295,11 @@
                           {{ controller.applicantPhone }}
                           <CopyValue :value="controller.applicantPhone" />
                         </span>
+                        <span class="human-detail align-top">
+                          <i class="fa-regular fa-location-pin" />
+                          <span v-html="controller.applicantAddress" />
+                          <CopyValue :value="controller.applicantOneLineAddress" />
+                        </span>
                       </div>
                     </div>
                   </Transition>
