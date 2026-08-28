@@ -22,6 +22,7 @@ export interface IPropsResolution {
   isLoading: boolean
   isSignatureTinted: boolean
   signatureTintLabel: string
+  additionalCssClass: string
 }
 
 export class PropsResolution implements IPropsResolution {
@@ -46,6 +47,7 @@ export class PropsResolution implements IPropsResolution {
   isLoading: boolean
   isSignatureTinted: boolean
   signatureTintLabel: string
+  additionalCssClass: string = ""
 
   constructor(
     companyName: string,

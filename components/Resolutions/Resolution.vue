@@ -23,7 +23,7 @@
     <div v-if="!props.isLoading">
       <Paper
         v-for="page in pageRange"
-        :additional-css-class="'resolution'"
+        :additional-css-class="`resolution ${props.additionalCssClass}`"
         :is-printable="true"
         :page-number="page"
         :total-pages="props.totalPages"

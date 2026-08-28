@@ -135,7 +135,7 @@ export class ServiceNames {
     "Open New Bank Account",
     "Pembukaan Akaun Bank Baharu",
     "company_bank_resolution",
-    "",
+    "open-bank-account",
     "banks"
   )
   static closureOfBankAccount: ServiceName = new ServiceName(

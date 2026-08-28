@@ -168,78 +168,21 @@
         </div>
       </template>
     </CompanyServiceWrapper>
-
-    <ActionTray
-      v-if="controller.showActionTray()"
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
-
-    <BankAccountOpeningChecklist
-      ref="checklistRef"
-      :bank-id="controller.bankId.value"
-      :company-id="controller.companyId"
-      :is-processing="controller.isShowProcessing()"
-      :is-submitting="controller.isSubmitting.value"
-      :has-paid="controller.hasPaid()"
-      :is-checklist-visible="controller.isShowInfo.value"
-      :application="controller.applicationValue"
-      @close="controller.onCloseChecklist()"
-      @back="controller.onBackButtonClicked()"
-      @pay="controller.onProceedClicked()"
-      @hide="controller.onMoreInfoClicked()"
-    />
-
-    <Teleport to="body">
-      <AddOnOpenBankAccount
-        ref="addOnOpenBankAccountRef"
-        @proceed="controller.onProceedToPayment($event)"
-      />
-      <BankReview ref="bankReviewRef" />
-      <div
-        class="alert-tray"
-        :class="{ show: controller.isShowInfo.value }"
-        @click.self="controller.onMoreInfoClicked()"
-      >
-        <Transition name="alert-appear">
-          <Alert
-            :is-dismissible="true"
-            :type="'default'"
-            :is-show="controller.isShowInfo.value"
-            @hide="controller.onMoreInfoClicked()"
-          >
-            <template #alertContent>
-              <div class="title">
-                {{ controller.alertTitle() }}
-              </div>
-              <div
-                class="content"
-                v-html="controller.alertContent()"
-              />
-            </template>
-          </Alert>
-        </Transition>
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
   import ActionTray from "../ActionTrays/ActionTray.vue"
-  import Alert from "../Alerts/Alert.vue"
   import LoaderPrepare from "~/components/Loaders/Prepare.vue"
   import CompanyServiceWrapper from "./CompanyServiceWrapper.vue"
   import { BankAccountOpeningServiceController } from "~/scripts/components/company-services/BankAccountOpeningServiceController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
-  import BankAccountOpeningChecklist from "../Banks/BankAccountOpeningChecklist.vue"
   import BankDocuments from "@/components/Banks/Documents/BankDocuments.vue"
   import HongLeongBankDocuments from "@/components/Banks/Documents/HongLeongBankDocuments.vue"
   import MaybankDocuments from "@/components//Banks/Documents/MaybankDocuments.vue"
   import BankIslamDocuments from "../Banks/Documents/BankIslamDocuments.vue"
   import AllianceBankDocuments from "../Banks/Documents/AllianceBankDocuments.vue"
   import AffinBankDocuments from "../Banks/Documents/AffinBankDocuments.vue"
-  import AddOnOpenBankAccount from "../Popups/AddOnOpenBankAccount.vue"
-  import BankReview from "../Popups/BankReview.vue"
   import { BankConstants } from "~/scripts/constants/Banks"
 
   const props = defineProps({
