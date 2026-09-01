@@ -5,7 +5,10 @@
       :label="controller.loaderLabel"
       :sublabel="controller.loaderSublabel"
     />
-    <div v-if="!controller.tableDataFetcher.value.isLoading">
+    <div
+      class="companies-document"
+      v-if="!controller.tableDataFetcher.value.isLoading"
+    >
       <NoRecord
         v-if="controller.tableDataFetcher.value.data.length === 0"
         :title="controller.noRecordTitle"
@@ -20,7 +23,10 @@
             type="checkbox"
             class="form-control form-check-input"
           />
-          <div class="company-name">
+          <div
+            class="company-name"
+            @click="controller.onCompanySelected(sdnbhd.id)"
+          >
             {{ sdnbhd.getFullName() }}
             <div class="registration-numbers">
               {{ sdnbhd.registrationNumberNew }} ({{ sdnbhd.registrationNumberOld }})
@@ -32,6 +38,17 @@
           @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
         />
       </div>
+      <Transition class="slide-left">
+        <div
+          class="document-in-view"
+          v-if="controller.isShowDocument"
+        >
+          <AppointJointCompanySecretary
+            :company-id="controller.selectedCompanyId.value"
+            :view-type="'new'"
+          />
+        </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -40,6 +57,7 @@
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import SdnBhd from "@/components/Companies/SdnBhd.vue"
+  import AppointJointCompanySecretary from "../CompanyServices/AppointJointCompanySecretary.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
   import { AssignCosecController } from "~/scripts/components/companies/AssignCosecController"
 

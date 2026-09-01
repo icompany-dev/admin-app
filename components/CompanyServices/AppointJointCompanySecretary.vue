@@ -38,7 +38,7 @@
         >
           <DcrAppointmentOfJointCompanySecretary
             ref="dcrRef"
-            :company-id="controller.companyId"
+            :company-id="controller.companyIdRef.value"
           />
         </TransitionGroup>
       </template>
@@ -113,6 +113,13 @@
       controller.handlePostDelete()
     },
     { immediate: true }
+  )
+
+  watch(
+    () => props.companyId,
+    (newVal) => {
+      controller.setCompanyId(newVal)
+    }
   )
 </script>
 

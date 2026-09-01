@@ -61,6 +61,7 @@
   import AdoptCommonSeal from "./AdoptCommonSeal.vue"
   import AllotmentOfShares from "./AllotmentOfShares.vue"
   import AppointChairman from "./AppointChairman.vue"
+  import AppointJointCompanySecretary from "./AppointJointCompanySecretary.vue"
   import AppointManager from "./AppointManager.vue"
   import AppointmentOfDirector from "./AppointmentOfDirector.vue"
   import AppointmentOfAuditor from "./AppointmentOfAuditor.vue"
@@ -136,6 +137,7 @@
     [CompanyConstants.TARGET_APPLICATION_INCORPORATE_SECTION236]: Section236Three,
     [CompanyConstants.TARGET_APPLICATION_SWITCH_LETTER]: LetterToExistingCosec,
     [CompanyConstants.TARGET_APPLICATION_SWITCH_RESO]: NewSwitch,
+    [CompanyConstants.TARGET_APPOINT_JOINT_COSEC]: AppointJointCompanySecretary,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointmentOfAuditor,
     [CompanyConstants.TARGET_APPLICATION_SWITCH]: NewSwitch,
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,

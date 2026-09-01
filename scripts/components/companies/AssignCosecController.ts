@@ -19,27 +19,43 @@ export class AssignCosecController {
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
 
+    this.init()
+  }
+
+  async init(): Promise<void> {
     this.tableDataFetcher.value.filter.take = 20
     this.tableDataFetcher.value.filter.takeAll = false
     this.tableDataFetcher.value.filter.orderBy = "name"
     this.tableDataFetcher.value.filter.sortOrder = "asc"
 
-    this.tableDataFetcher.value.fetchData()
+    await this.tableDataFetcher.value.fetchData()
+
+    this.selectedCompanyId.value =
+      this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
   }
 
   async setSearch(searchText: string): Promise<void> {
     this.tableDataFetcher.value.filter.searchText = searchText
     await this.tableDataFetcher.value.fetchData()
+
+    this.selectedCompanyId.value =
+      this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
   }
 
   async setSortOrder(sortOrder: string): Promise<void> {
     this.tableDataFetcher.value.filter.sortOrder = sortOrder
     await this.tableDataFetcher.value.fetchData()
+
+    this.selectedCompanyId.value =
+      this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
   }
 
   async setIsIncludeDemo(isIncludeDemo: boolean): Promise<void> {
     this.tableDataFetcher.value.filter.includeTestAccount = isIncludeDemo
     await this.tableDataFetcher.value.fetchData()
+
+    this.selectedCompanyId.value =
+      this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
   }
 
   async goToPage(page: number): Promise<void> {
@@ -49,8 +65,8 @@ export class AssignCosecController {
   onCompanySelected(companyId: string): void {
     this.selectedCompanyId.value = companyId
 
-    let router = useRouter()
-    router.push(`/sdnbhds/${this.selectedCompanyId.value}`)
+    // let router = useRouter()
+    // router.push(`/sdnbhds/${this.selectedCompanyId.value}`)
     //this.emitEvents("sdnbhdSelected")
   }
 
@@ -87,7 +103,7 @@ export class AssignCosecController {
     return new PropsTablePagination(this.tableDataFetcher.value.filter)
   }
 
-  get isShowSelectedSdnBhd(): boolean {
+  get isShowDocument(): boolean {
     return !StringUtil.isNullOrEmpty(this.selectedCompanyId.value)
   }
 }

@@ -16,6 +16,8 @@ import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItem
 export class AppointJointCompanySecretaryController extends CompanyServiceController<CompanyDirectorManagerAppointment> {
   companyDirectorManagerAppointment = ref<CompanyDirectorManagerAppointment>(new CompanyDirectorManagerAppointment())
 
+  companyIdRef: Ref<string> = ref<string>("")
+
   wrapperRef: any | null = null
 
   constructor(companyId: string, viewType: string, emitEvents: any | null) {
@@ -28,9 +30,15 @@ export class AppointJointCompanySecretaryController extends CompanyServiceContro
       emitEvents
     )
 
+    this.setCompanyId(companyId)
     this.target = CompanyConstants.TARGET_APPOINT_JOINT_COSEC
     this.setViewType(viewType)
     this.initializeData()
+  }
+
+  setCompanyId(companyId: string): void {
+    this.companyIdRef.value = companyId
+    this.companyDirectorManagerAppointment.value.id = this.companyIdRef.value
   }
 
   async initializeData(): Promise<void> {
@@ -40,7 +48,7 @@ export class AppointJointCompanySecretaryController extends CompanyServiceContro
 
     this.isLoading.value = true
     this.companyDirectorManagerAppointment.value = new CompanyDirectorManagerAppointment()
-    this.companyDirectorManagerAppointment.value.id = this.companyId
+    this.companyDirectorManagerAppointment.value.id = this.companyIdRef.value
     this.companyDirectorManagerAppointment.value.status = "paid"
     // if (this.viewType.value !== ViewMode.Past) {
     //   await Promise.all([this.fetchPrice(), this.fetchOngoingApplication()])
@@ -342,7 +350,7 @@ export class AppointJointCompanySecretaryController extends CompanyServiceContro
 
     return new PropsCompanyServiceWrapper(
       this.companyDirectorManagerAppointment.value,
-      this.companyId,
+      this.companyIdRef.value,
       this.target,
       this.slipCaseTitle(),
       this.viewType.value,
@@ -378,7 +386,7 @@ export class AppointJointCompanySecretaryController extends CompanyServiceContro
 
   get resolutionDocumentProps() {
     return new PropsResolutionDocument<CompanyDirectorManagerAppointment>(
-      this.companyId,
+      this.companyIdRef.value,
       this.companyDirectorManagerAppointment.value.id,
       null,
       this.showWatermark(),

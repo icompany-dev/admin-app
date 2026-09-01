@@ -1,12 +1,25 @@
 #companies-assign-cosec {
   margin-top: 40px;
 
+  .companies-document {
+    position: relative;
+    max-height: 90dvh;
+
+    .document-in-view {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+
   .sdn-bhd-container {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
     gap: 20px;
+    max-height: 80dvh;
+    overflow-y: auto;
 
     .form-check {
       justify-content: flex-start;
