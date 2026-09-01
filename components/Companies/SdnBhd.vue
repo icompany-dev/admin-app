@@ -12,6 +12,15 @@
         @click="controller.onCompanyClicked()"
       >
         {{ controller.company.value.getFullName() }}
+        <Transition name="fade">
+          <span
+            class="notification"
+            v-if="controller.hasAnnualReturnDue"
+            :title="controller.annualReturnDueYears"
+          >
+            <i class="fa-solid fa-bell" />
+          </span>
+        </Transition>
         <div class="registration-numbers">
           {{ controller.company.value.registrationNumberNew }} ({{ controller.company.value.registrationNumberOld }})
         </div>

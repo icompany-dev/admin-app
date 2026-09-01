@@ -39,6 +39,12 @@
       line-height: 1.8rem;
       cursor: pointer;
 
+      .notification {
+        font-size: 1.5rem;
+        line-height: 1.8rem;
+        color: var(--bs-icompany-orange-dark);
+      }
+
       .registration-numbers {
         font-weight: normal;
         font-size: 1.1rem;
