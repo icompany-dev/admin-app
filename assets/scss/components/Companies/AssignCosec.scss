@@ -1,0 +1,38 @@
+#companies-assign-cosec {
+  margin-top: 40px;
+
+  .sdn-bhd-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+
+    .form-check {
+      justify-content: flex-start;
+      gap: 20px;
+
+      input[type=checkbox] {
+        border-color: var(--bs-white);
+      }
+
+      .company-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.8rem;
+        cursor: pointer;
+
+        .notification {
+          font-size: 1.5rem;
+          line-height: 1.8rem;
+          color: var(--bs-icompany-orange-dark);
+        }
+
+        .registration-numbers {
+          font-weight: normal;
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+}

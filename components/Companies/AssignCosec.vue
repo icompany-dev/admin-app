@@ -1,5 +1,5 @@
 <template>
-  <div id="companies-all">
+  <div id="companies-assign-cosec">
     <LoaderPrepare
       v-if="controller.tableDataFetcher.value.isLoading"
       :label="controller.loaderLabel"
@@ -12,19 +12,25 @@
         :subtitle="controller.noRecordSubtitle"
       />
       <div class="sdn-bhd-container">
-        <TransitionGroup name="fade">
-          <template v-if="!controller.isShowSelectedSdnBhd">
-            <SdnBhd
-              v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
-              :company="sdnbhd"
-              @selected="controller.onCompanySelected(sdnbhd.id)"
-            />
-            <TablePagination
-              v-bind="controller.tablePaginationProps"
-              @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
-            />
-          </template>
-        </TransitionGroup>
+        <div
+          class="form-check"
+          v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
+        >
+          <input
+            type="checkbox"
+            class="form-control form-check-input"
+          />
+          <div class="company-name">
+            {{ sdnbhd.getFullName() }}
+            <div class="registration-numbers">
+              {{ sdnbhd.registrationNumberNew }} ({{ sdnbhd.registrationNumberOld }})
+            </div>
+          </div>
+        </div>
+        <TablePagination
+          v-bind="controller.tablePaginationProps"
+          @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
+        />
       </div>
     </div>
   </div>
@@ -33,10 +39,9 @@
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
-  import SelectedSdnBhd from "@/components/Companies/SelectedSdnBhd.vue"
   import SdnBhd from "@/components/Companies/SdnBhd.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
-  import { AllController } from "~/scripts/components/companies/AllController"
+  import { AssignCosecController } from "~/scripts/components/companies/AssignCosecController"
 
   const props = defineProps({
     searchText: {
@@ -59,7 +64,7 @@
 
   const emit = defineEmits(["sdnbhdSelected"])
 
-  const controller = new AllController(emit)
+  const controller = new AssignCosecController(emit)
 
   watch(
     () => props.searchText,
@@ -97,5 +102,5 @@
 </script>
 
 <style lang="scss">
-  @use "~/assets/scss/components/Companies/All" as *;
+  @use "~/assets/scss/components/Companies/AssignCosec" as *;
 </style>

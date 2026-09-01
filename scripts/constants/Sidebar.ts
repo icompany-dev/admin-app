@@ -87,7 +87,13 @@ export class PageSidebar {
   ])
 
   static sdnbhdAll: Sidebar = new Sidebar("All Sdn Bhd", "Semua Sdn Bhd", "sdnbhds", false)
-  static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [this.sdnbhdAll])
+  static sdnbhdAssign: Sidebar = new Sidebar(
+    "Assign Company Secretary",
+    "Lantik Setiausaha Syarikat",
+    "sdnbhds/assign-cosec",
+    false
+  )
+  static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [this.sdnbhdAll, this.sdnbhdAssign])
 
   static changeBusinessName: Sidebar = new Sidebar(
     "Change of Name",
