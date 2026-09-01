@@ -33,7 +33,6 @@ import type { ServicePricingOptional } from "~/scripts/models/ServicePricingOpti
 import { PaymentCartItemOptional } from "~/scripts/models/PaymentCartItemOptional"
 
 export class BankAccountOpeningServiceController extends CompanyServiceController<CompanyBankAccountOpening> {
-  company: Company = new Company()
   companyBankAccountOpening = ref<CompanyBankAccountOpening>(new CompanyBankAccountOpening())
   bankId: Ref<string> = ref<string>("")
   isDocumentShow: Ref<boolean> = ref<boolean>(true)
@@ -181,8 +180,8 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -226,8 +225,8 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -533,8 +532,8 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     } finally {
@@ -734,7 +733,7 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage = new Error("", "")
+        let errorMessage = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -806,7 +805,7 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
   }
 
   isAffin(): boolean {
-    return this.bankId === BankAccountOpeningServiceController.AFFIN_ID
+    return this.bankId.value === BankAccountOpeningServiceController.AFFIN_ID
   }
 
   setDcrMaybankRef(ref: any | null): void {
@@ -1656,7 +1655,7 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
     }
 
     if (StringUtil.isNullOrEmpty(this.bankAccountNumber.value)) {
-      let error = new Error("", "")
+      let error = new Error()
       error.setForIncompleteData()
       error.handle()
       return

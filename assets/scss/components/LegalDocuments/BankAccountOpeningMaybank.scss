@@ -1,136 +1,136 @@
-#authorised-signatories-bank-account-opening-maybank {
-  .paper-wrapper {
-    .paper {
-      &.legal-document {
-        .document-content {
-          font-size: 12px;
-          line-height: 1.5;
+.authorised-signatories-bank-account-opening-maybank {
+  &.legal-document {
+    .document-content {
+      font-size: 12px;
+      line-height: 1.5;
 
-          table {
-            width: 100%;
-            border-collapse: collapse;
+      table {
+        width: 100%;
+        border-collapse: collapse;
 
-            td,
-            th {
-              padding: 8px;
-              border: 1px solid #000;
-              vertical-align: top;
+        td,
+        th {
+          padding: 8px;
+          border: 1px solid #000;
+          vertical-align: top;
+        }
+
+        &.no-border {
+          td {
+            border: none !important;
+          }
+        }
+
+        &.director-details {
+          td {
+            font-weight: 600;
+
+            &:first-child {
+              width: 20px;
             }
+          }
+        }
+      }
 
-            &.no-border {
-              td {
-                border: none !important;
-              }
-            }
+      .searchable-dropdown {
+        display: inline-block !important;
+        width: fit-content;
+        max-width: 300px;
+        position: relative;
 
-            &.director-details {
-              td {
-                font-weight: 600;
+        &.dropdown-visible {
+          color: var(--bs-gray-700);
+        }
 
-                &:first-child {
-                  width: 20px;
-                }
-              }
+        .dropdown {
+          cursor: pointer;
+          font-weight: 600;
+
+          &:hover {
+            background-color: var(--bs-icompany-purple-lightest);
+          }
+        }
+
+        .dropdown-menu {
+          position: absolute;
+          top: 20px;
+          width: 300px;
+          padding: 10px;
+          height: 0;
+          transform: scaleY(0);
+          transform-origin: top;
+          opacity: 0;
+          background-color: var(--bs-white);
+          border-radius: 5px;
+          box-shadow: var(--box-shadow);
+          transition: all 0.7s ease 0.2s;
+
+          &.show {
+            height: 300px;
+            max-height: 300px;
+            overflow-y: auto;
+            transform: scaleY(1);
+            opacity: 1;
+            transition: transform 0.7s ease 0.2s;
+          }
+
+          .form-control {
+            width: calc(100% - 20px);
+            margin: 5px;
+            padding: 5px;
+          }
+
+          .dropdown-item {
+            width: calc(100% - 20px);
+            padding: 5px 10px !important;
+            display: block;
+            font-size: 13px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+            cursor: pointer;
+
+            &:hover {
+              background-color: var(--bs-gray-100);
             }
           }
 
-          .searchable-dropdown {
-            display: inline-block !important;
-            width: fit-content;
-            max-width: 300px;
-            position: relative;
+          .dropdown-divider {
+            display: block;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--bs-gray-700);
+            width: calc(100% - 10px);
+            padding: 5px !important;
+            background-color: var(--bs-gray-200);
+            margin-top: 10px;
 
-            &.dropdown-visible {
-              color: var(--bs-gray-700);
-            }
-
-            .dropdown {
-              cursor: pointer;
-              font-weight: 600;
-
-              &:hover {
-                background-color: var(--bs-icompany-purple-lightest);
-              }
-            }
-
-            .dropdown-menu {
-              position: absolute;
-              top: 20px;
-              width: 300px;
-              padding: 10px;
-              height: 0;
-              transform: scaleY(0);
-              transform-origin: top;
-              opacity: 0;
-              background-color: var(--bs-white);
-              border-radius: 5px;
-              box-shadow: var(--box-shadow);
-              transition: all 0.7s ease 0.2s;
-
-              &.show {
-                height: 300px;
-                max-height: 300px;
-                overflow-y: auto;
-                transform: scaleY(1);
-                opacity: 1;
-                transition: transform 0.7s ease 0.2s;
-              }
-
-              .form-control {
-                width: calc(100% - 20px);
-                margin: 5px;
-                padding: 5px;
-              }
-
-              .dropdown-item {
-                width: calc(100% - 20px);
-                padding: 5px 10px !important;
-                display: block;
-                font-size: 13px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                text-wrap: nowrap;
-                cursor: pointer;
-
-                &:hover {
-                  background-color: var(--bs-gray-100);
-                }
-              }
-
-              .dropdown-divider {
-                display: block;
-                font-weight: 600;
-                text-transform: uppercase;
-                color: var(--bs-gray-700);
-                width: calc(100% - 10px);
-                padding: 5px !important;
-                background-color: var(--bs-gray-200);
-                margin-top: 10px;
-
-                &:first-child {
-                  margin-top: 0;
-                }
-              }
+            &:first-child {
+              margin-top: 0;
             }
           }
+        }
+      }
 
-          .text-center {
-            text-align: center;
-          }
+      .text-center {
+        text-align: center;
+      }
 
-          .text-justify {
-            text-align: justify;
-          }
+      .text-justify {
+        text-align: justify;
+      }
 
-          .signature-section {
-            max-width: 50%;
+      .signature-section {
+        max-width: 40%;
 
-            .signature-line {
-              border-bottom: 1px solid #000;
-              width: 200px;
-              margin-bottom: 5px;
-            }
-          }
+        .signature-line {
+          border-bottom: 1px solid #000;
+          width: 200px;
+          margin-bottom: 5px;
+        }
+
+        .signee-name {
+          padding: 2px 0;
         }
       }
     }

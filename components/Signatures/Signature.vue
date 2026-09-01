@@ -3,7 +3,7 @@
     <div class="signature">
       <div
         v-if="props.isTinted"
-        class="tint-overlay"
+        class="tint-overlay no-print"
       >
         {{ props.tintLabel }}
       </div>
@@ -13,10 +13,10 @@
       />
       <div
         v-if="!controller.showSignature()"
-        class="sign-marker signature-pending"
+        class="sign-marker signature-pending no-print"
       ></div>
       <div
-        class="signature-buttons"
+        class="signature-buttons no-print"
         v-if="controller.canSign()"
       >
         <button

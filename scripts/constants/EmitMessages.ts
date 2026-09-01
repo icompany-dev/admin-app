@@ -38,5 +38,15 @@ export class EmitMessages {
     this.MISSING_STEP,
   ]
 
+  static APPLICATION_SERVICES: string[] = [
+    "applicationId",
+    "paymentOrderId",
+    "pa",
+    "documentSelected",
+    "download",
+    "company",
+    "show",
+    "hide",
+  ]
   static POPUPS: string[] = [this.BACK, this.PROCEED, this.UPLOADED, this.SUCCESS]
 }

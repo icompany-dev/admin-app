@@ -10,6 +10,8 @@ import { TemplateProcessor } from "~/scripts/library/TemplateProcessor"
 import type { Director } from "~/scripts/models/Director"
 import _ from "lodash"
 import type { SignatureItem } from "~/scripts/types/SignatureItem"
+import type { CompanyBankSignatory } from "~/scripts/models/CompanyBankSignatory"
+import { PropsResolution } from "~/scripts/props/PropsResolution"
 
 export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResolutionController<CompanyBankAccountOpening> {
   companyBankAccountOpeningRepository = useCompanyBankAccountOpeningStore()
@@ -20,8 +22,6 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
   pages = ref<string[]>([])
-  resolutionContent = ref<string>("")
-
   originalTemplateContent: string = ""
 
   private documentTemplateId: string = "2ba92d6d-dbb3-4551-b096-7c22509d4a9b"
@@ -49,7 +49,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
     this.bankId.value = bankId
 
     this.signatureStartOnPage.value = 3
-    this.maxSignatureOnFirstPage.value = 4
+    this.maxSignatureOnFirstPage.value = 2
     this.maxSignatureOnOtherPages.value = 6
 
     this.initializeResolution(applicationId, companyId)
@@ -71,6 +71,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       await this.setApplication()
     }
 
+    this.initializeData()
     this.setContent()
   }
 
@@ -95,16 +96,16 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       return
     }
 
+    this.application.value = new CompanyBankAccountOpening()
+    this.application.value.companyId = this.companyId.value
+
     let response = await this.companyRepository.fetch(this.companyId.value)
-    let company = new Company(response)
     if (!this.companyRepository.error) {
-      this.application.value = new CompanyBankAccountOpening()
-      this.application.value.companyId = this.companyId.value
-      this.application.value.company = new Company(company)
-      this.application.value.bankId = this.bankId.value
-      if (this.bank.value?.id) {
-        this.application.value.bank = this.bank.value
-      }
+      this.application.value.company = new Company(response)
+    }
+    this.application.value.bankId = this.bankId.value
+    if (this.bank.value?.id) {
+      this.application.value.bank = this.bank.value
       this.initializeData()
     }
   }
@@ -122,7 +123,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -157,6 +158,9 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       return content
     }
 
+    let searchString = "%signature-specimen%"
+    content = content.replaceAll(searchString, this.getSpecimenSignature())
+
     content = content.replace(/%\[([^\]]*)\]%/g, (match, markerText) => {
       if (markerText) {
         return `<span class="fake-marker">${markerText}</span>`
@@ -165,6 +169,61 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
     })
 
     return content
+  }
+
+  getSpecimenSignature(): string {
+    let specimenSignatures: string[] = []
+    if (!this.application.value || this.isInPreviewMode.value) {
+      specimenSignatures = [
+        `
+          <div class='specimen-signature'>
+            <div class='signature-placeholder'></div>
+            <div class='specimen-sign-off'>
+              Name: <br>
+              Title: <br>
+            </div>
+          </div>
+        `,
+        `
+          <div class='specimen-signature'>
+            <div class='signature-placeholder'></div>
+            <div class='specimen-sign-off'>
+              Name: <br>
+              Title: <br>
+            </div>
+          </div>
+        `,
+        `
+          <div class='specimen-signature'>
+            <div class='signature-placeholder'></div>
+            <div class='specimen-sign-off'>
+              Name: <br>
+              Title: <br>
+            </div>
+          </div>
+        `,
+      ]
+    }
+
+    if (this.application.value && this.isDocumentEditable()) {
+      specimenSignatures = this.application.value.signatories.map((signatory: CompanyBankSignatory) => {
+        return `
+          <div class='specimen-signature'>
+            <div class='signature-placeholder'></div>
+            <div class='specimen-sign-off'>
+              Name: ${signatory.name} <br>
+              Title: <input type='text' value=${signatory.designation ?? "Director"} class='form-control in-resolution'> <br>
+            </div>
+          </div>
+        `
+      })
+    }
+
+    return `
+        <div class='specimen-signatures-container'>
+          ${specimenSignatures.join("")}
+        </div>
+      `
   }
 
   getBankName(): string {

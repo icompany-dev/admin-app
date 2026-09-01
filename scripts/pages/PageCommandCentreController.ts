@@ -161,6 +161,11 @@ export class PageCommandCentreController extends PageController {
       .reduce((a: number, b: number) => {
         return a + b
       }, 0.0)
+
+    let timeoutTimer = 1000 * 60
+    setTimeout(() => {
+      this.fetchPaymentReceived()
+    }, timeoutTimer)
   }
 
   async onNameReservationStatusSelected(value: string): Promise<void> {

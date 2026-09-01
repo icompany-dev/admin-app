@@ -1,15 +1,12 @@
 <template>
-  <div id="dcr-online-banking-bank-account-opening-maybank">
+  <div
+    id="dcr-online-banking-bank-account-opening-maybank"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
     >
-      <template
-        #paperMargins1
-        v-if="controller.isDocumentEditable()"
-      >
-        <div class="paper-tag checker-maker-table"><span>Insert Information</span></div>
-      </template>
       <template #page1>
         <div
           ref="resolutionContent"
@@ -30,6 +27,7 @@
   const props = defineProps<IPropsResolutionDocument<CompanyBankAccountOpening>>()
 
   const resolutionContent = ref(null)
+  const documentRef = ref(null)
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "updated"])
 
@@ -104,12 +102,21 @@
     { deep: true }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     isLoading: controller.isLoading.value,
     getAuthorisedPersonsForOnlineBanking: controller.getAuthorisedPersonsForOnlineBanking.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

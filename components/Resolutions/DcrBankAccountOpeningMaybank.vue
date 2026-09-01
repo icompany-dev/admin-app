@@ -1,9 +1,12 @@
 <template>
-  <div id="dcr-bank-account-opening-maybank">
+  <div
+    id="dcr-bank-account-opening-maybank"
+    ref="documentRef"
+  >
     <Paper
       v-for="(page, index) in controller.pages.value"
       :paper-orientation="PaperOrientation.Portrait"
-      :additional-css-class="'resolution'"
+      :additional-css-class="'resolution dcr-bank-account-opening-maybank'"
       :total-pages="controller.totalPages()"
       :page-number="index + 1"
       :show-ear-mark="true"
@@ -70,7 +73,7 @@
     <Paper
       v-for="(page, index) in controller.pageRangeForSignatures()"
       :paper-orientation="PaperOrientation.Portrait"
-      :additional-css-class="'resolution'"
+      :additional-css-class="'resolution dcr-bank-account-opening-maybank'"
       :total-pages="controller.totalPages()"
       :page-number="page"
       :show-ear-mark="true"
@@ -145,6 +148,7 @@
   })
 
   const resolutionContent = ref(null)
+  const documentRef = ref(null)
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed"])
 
@@ -185,6 +189,14 @@
   )
 
   watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
     () => props.showWatermark,
     (newVal) => {
       controller.setShowWatermark(newVal)
@@ -203,6 +215,7 @@
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     isLoading: controller.isLoading.value,
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

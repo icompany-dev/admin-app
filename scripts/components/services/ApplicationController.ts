@@ -14,6 +14,7 @@ import { StringUtil } from "~/scripts/utils/String"
 
 export abstract class ApplicationController<Application> {
   companyId: Ref<string> = ref<string>("")
+  applicationId: Ref<string | null> = ref<string | null>(null)
 
   applications = ref<Application[]>([])
   application = ref<Application | null>(null)
@@ -55,11 +56,13 @@ export abstract class ApplicationController<Application> {
     repository: IRepositoryStore,
     applicationClassType: new (data: any) => Application,
     target: string,
-    emitEvents: any | null
+    emitEvents: any | null,
+    applicationId: string | null = null
   ) {
     this.repository = repository
     this.applicationClassType = applicationClassType
     this.companyId.value = companyId
+    this.applicationId.value = applicationId
 
     this.application.value = new this.applicationClassType(null)
 
@@ -91,6 +94,7 @@ export abstract class ApplicationController<Application> {
 
       this.emitEvents("applicationId", this.application.value.id)
       this.emitEvents("paymentOrderId", this.paymentOrderId.value)
+      this.emitEvents("company", this.application.value.company)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -130,7 +134,25 @@ export abstract class ApplicationController<Application> {
     this.serviceApplicationRef = serviceApplicationRef
   }
 
+  async fetchApplication(): Promise<void> {
+    if (!this.applicationId.value || StringUtil.isNullOrEmpty(this.applicationId.value)) {
+      return
+    }
+
+    let response = await this.repository.fetch(this.applicationId.value)
+    if (this.repository.error !== null) {
+      throw this.repository.error
+    }
+
+    this.application.value = new this.applicationClassType(response)
+  }
+
   async fetchOngoing(): Promise<void> {
+    if (!StringUtil.isNullOrEmpty(this.applicationId.value)) {
+      await this.fetchApplication()
+      return
+    }
+
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       this.application.value = new this.applicationClassType(null)
       return

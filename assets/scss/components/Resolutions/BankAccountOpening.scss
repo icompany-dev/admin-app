@@ -60,13 +60,13 @@
   }
 }
 
-#dcr-bank-account-opening-maybank {
+.dcr-bank-account-opening-maybank {
   .resolution-content {
     --indent-step: 2.5em;
     --marker-width: 2.5em;
 
     p {
-      margin-bottom: 1rem;
+      margin-bottom: 10px;
     }
 
     :where(p, div, li) {
@@ -93,7 +93,7 @@
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
     }
 
-    :where(div.text-justify, p, li) > .fake-marker {
+    :where(div.text-justify, p, li)>.fake-marker {
       position: absolute;
       left: calc(var(--indent-level) * var(--indent-step));
       width: var(--marker-width);
@@ -106,7 +106,7 @@
       position: relative;
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
 
-      > .fake-indent {
+      >.fake-indent {
         display: none !important;
       }
     }
@@ -119,7 +119,46 @@
       margin-left: 0 !important;
       padding-left: 0 !important;
       text-indent: 0 !important;
-      margin-bottom: 1rem;
+      margin-bottom: 5px;
+    }
+
+    .specimen-signatures-container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+      padding-left: 5em !important;
+      width: calc(100% - 5em);
+
+      .specimen-signature {
+        width: calc(50% - 5px);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+
+        .signature-placeholder {
+          height: 50px;
+          border-bottom: 1px solid var(--bs-black);
+          // background-color: rgba(0, 0, 0, 0.1);
+          width: 100%;
+
+          // &::before {
+          //   content: 'Wet Ink Required';
+          //   font-size: 2rem;
+          //   display: flex;
+          //   flex-direction: column;
+          //   justify-content: center;
+          //   align-items: center;
+          //   width: 100%;
+          //   height: 100%;
+          //   color: var(--bs-white);
+          // }
+        }
+      }
     }
   }
 
@@ -133,13 +172,25 @@
   }
 }
 
-#dcr-online-banking-bank-account-opening-maybank {
+.dcr-maybank-online-banking {
   ol {
-    padding-left: 15px;
+    counter-reset: pdf-list-counter; // Resets counter at list root
+    list-style-type: none; // Hide native list markers html2canvas drops
+    padding-left: 0 !important;
 
     li {
-      padding-bottom: 5px;
-      font-size: 13px;
+      counter-increment: pdf-list-counter; // Increment on each item
+      display: flex; // Force box-model alignment html2canvas understands
+      align-items: flex-start;
+      margin-bottom: 8px;
+
+      // Render the number dynamically as content
+      &::before {
+        content: counter(pdf-list-counter) ".";
+        min-width: 25px; // Keeps numbers aligned
+        display: inline-block;
+        font-weight: normal;
+      }
     }
   }
 
@@ -150,23 +201,39 @@
       width: 100%;
 
       thead {
-        td {
-          padding: 5px;
-          border: 1px solid var(--bs-black);
-          text-align: center;
-          font-weight: 600;
+        tr {
+          td {
+            padding: 5px;
+            border-right: 1px solid var(--bs-black);
+            border-bottom: 1px solid var(--bs-black);
+            text-align: center;
+            font-weight: 600;
+
+            &:first-child {
+              border-left: 1px solid var(--bs-black);
+            }
+          }
+
+          &:first-child {
+            td {
+              border-top: 1px solid var(--bs-black);
+              border-left: 1px solid var(--bs-black);
+            }
+          }
         }
       }
 
       tbody {
         td {
           padding: 5px;
-          border: 1px solid var(--bs-black);
+          border-right: 1px solid var(--bs-black);
+          border-bottom: 1px solid var(--bs-black);
           text-align: center;
           font-weight: 600;
 
           &:first-child {
             width: 50%;
+            border-left: 1px solid var(--bs-black);
           }
 
           &:nth-child(2) {
@@ -237,7 +304,7 @@
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
     }
 
-    :where(div, p, li) > .fake-marker {
+    :where(div, p, li)>.fake-marker {
       position: absolute;
       left: calc(var(--indent-level) * var(--indent-step));
       width: var(--marker-width);
@@ -250,7 +317,7 @@
       position: relative;
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
 
-      > .fake-indent {
+      >.fake-indent {
         display: none !important;
       }
     }

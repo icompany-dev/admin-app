@@ -21,12 +21,14 @@
           @updated="emit('updated')"
         />
         <DcrBankAccountOpeningMaybank
+          ref="accountOpeningRef"
           :company-id="controller.companyId.value"
           :application-id="props.resolutionDocument.applicationId"
           :bank-id="controller.bankId"
           :is-in-preview-mode="props.resolutionDocument.isInPreviewMode"
         />
         <DeclarationBankAccountOpeningMaybank
+          ref="declarationRef"
           :company-id="controller.companyId.value"
           :application-id="props.resolutionDocument.applicationId"
           :bank-id="controller.bankId"
@@ -90,6 +92,8 @@
 
   const authorisedSignatoryRef = ref(null)
   const onlineBankingRef = ref(null)
+  const accountOpeningRef = ref(null)
+  const declarationRef = ref(null)
 
   const controller = new MaybankDocumentsController(props.companyId, emit)
 
@@ -116,11 +120,28 @@
     { immediate: true }
   )
 
+  watch(
+    accountOpeningRef,
+    (newVal) => {
+      controller.setAccountOpeningRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    declarationRef,
+    (newVal) => {
+      controller.setDeclarationRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     getBranchId: controller.getBranchId.bind(controller),
     getSignatories: controller.getSignatories.bind(controller),
     getSignatoryType: controller.getSignatoryType.bind(controller),
     getAuthorisedPersonsForOnlineBanking: controller.getAuthorisedPersonsForOnlineBanking.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

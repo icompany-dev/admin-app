@@ -24,6 +24,7 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
     <Teleport to="body">
       <Transition name="slide-left">
         <div
@@ -45,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import BankDocuments from "@/components/Banks/Documents/BankDocuments.vue"
   import HongLeongBankDocuments from "@/components/Banks/Documents/HongLeongBankDocuments.vue"
   import MaybankDocuments from "@/components//Banks/Documents/MaybankDocuments.vue"
