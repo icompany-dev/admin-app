@@ -35,7 +35,6 @@ export class DcrAppointmentOfAuditorController extends ResolutionController<Comp
   time = useLocalTime()
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
-  resolutionContent = ref<string>("")
   originalResolutionContent = ref<string>("")
 
   private documentTemplateId: string = "4a5665e8-1f6c-48c5-ba3f-3ae3eef9c042"
@@ -171,7 +170,7 @@ export class DcrAppointmentOfAuditorController extends ResolutionController<Comp
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
