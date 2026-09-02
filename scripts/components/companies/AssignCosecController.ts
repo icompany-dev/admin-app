@@ -22,6 +22,13 @@ export class AssignCosecController {
 
   isGeneratingPdf: Ref<boolean> = ref<boolean>(false)
 
+  allCompanies: Ref<Company[]> = ref<Company[]>([])
+  allCompanyIds: Ref<string[]> = ref<string[]>([])
+  currentBatchNumber: Ref<number> = ref<number>(0)
+  batchSize: number = 5
+  documentToGenerateRefs: any[] = []
+  totalCompleted: Ref<number> = ref<number>(0)
+
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
 
@@ -32,13 +39,31 @@ export class AssignCosecController {
     this.documentRef = documentRef
   }
 
+  setDocumentToGenerateRefs(documentToGenerateRef: any, index: number): void {
+    this.documentToGenerateRefs[index] = documentToGenerateRef
+  }
+
   async init(): Promise<void> {
     this.tableDataFetcher.value.filter.take = 20
     this.tableDataFetcher.value.filter.takeAll = false
     this.tableDataFetcher.value.filter.orderBy = "name"
     this.tableDataFetcher.value.filter.sortOrder = "asc"
 
-    await this.tableDataFetcher.value.fetchData()
+    // For the table
+    let repository = useCompanyStore()
+    let promises = [
+      this.tableDataFetcher.value.fetchData(),
+      repository.fetchCompact("take_all=1").then((response) => {
+        this.allCompanies.value = response.map((item: any) => {
+          return new Company(item)
+        })
+
+        this.allCompanyIds.value = response.map((item: any) => {
+          return item.id
+        })
+      }),
+    ]
+    await Promise.allSettled(promises)
 
     this.selectedCompanyId.value =
       this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
@@ -74,10 +99,6 @@ export class AssignCosecController {
 
   onCompanySelected(companyId: string): void {
     this.selectedCompanyId.value = companyId
-
-    // let router = useRouter()
-    // router.push(`/sdnbhds/${this.selectedCompanyId.value}`)
-    //this.emitEvents("sdnbhdSelected")
   }
 
   onCompanyUnselected(): void {
@@ -92,33 +113,33 @@ export class AssignCosecController {
     this.isGeneratingPdf.value = true
 
     try {
-      let repository = useCompanyStore()
-      let response = await repository.fetchCompact("")
-      let companies = response.map((item: any) => {
-        return new Company(item)
-      })
-
       let blobs: Blob[] = []
       let files: DownloadFileData[] = []
-      for (let index = 0; index < companies.length; index++) {
-        let company = companies[index]
+
+      for (let i = 0; i < this.allCompanies.value.length; i++) {
+        let company = this.allCompanies.value[i]
         this.selectedCompanyId.value = company.id
+
         await nextTick()
-        let filename = `${company.getFullName().toUpperCase()} - Assignment of Company Secretary.pdf`
-        console.log(`Generating PDF for ${company.getFullName()}...`)
-        let blob = await this.documentRef.onGenerateBlob(filename)
+        await this.documentRef.isPageReady()
+
+        console.log(`Generating PDF for ${company.name}...`)
+
+        let filename = `${company.name.toUpperCase()} - Assignment of Company Secretary.pdf`
+        let blob = await this.documentRef.onGenerateBlob(filename, company.id)
         if (!blob) {
           continue
         }
-        console.log("blob", blob)
+
         blobs.push(blob)
         files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
+        this.totalCompleted.value = this.totalCompleted.value + 1
       }
 
       console.log("blobs", blobs.length)
       console.log("files", files.length)
 
-      await FileZipper.zipAndDownload(files, "assignment-of-company-secretary.zip")
+      await FileZipper.zipAndDownload(files, `DCR Appointment of Joint Company Secretary.zip`)
 
       console.log(`All PDFs generated and downloaded successfully.`)
     } catch (e) {
@@ -159,5 +180,11 @@ export class AssignCosecController {
 
   get isShowDocument(): boolean {
     return !StringUtil.isNullOrEmpty(this.selectedCompanyId.value)
+  }
+
+  get companyIdsByBatch(): string[] {
+    let startIndex = this.currentBatchNumber.value * this.batchSize
+    let endIndex = startIndex + this.batchSize
+    return this.allCompanyIds.value.slice(startIndex, endIndex)
   }
 }

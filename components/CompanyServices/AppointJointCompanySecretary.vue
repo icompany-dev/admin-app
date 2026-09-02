@@ -125,6 +125,7 @@
   defineExpose({
     onDownloadClicked: controller.onDownloadClicked.bind(controller),
     onGenerateBlob: controller.onGenerateBlob.bind(controller),
+    isPageReady: controller.isPageReady.bind(controller),
   })
 </script>
 

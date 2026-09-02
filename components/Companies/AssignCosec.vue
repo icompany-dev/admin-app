@@ -5,19 +5,16 @@
       :label="controller.loaderLabel"
       :sublabel="controller.loaderSublabel"
     />
-    <div class="companies-document">
+    <div
+      class="companies-document"
+      v-if="!controller.tableDataFetcher.value.isLoading"
+    >
       <NoRecord
         v-if="controller.tableDataFetcher.value.data.length === 0"
         :title="controller.noRecordTitle"
         :subtitle="controller.noRecordSubtitle"
       />
       <div class="sdn-bhd-container">
-        <button
-          class="btn btn-submit"
-          @click="controller.onDownloadAll()"
-        >
-          Generate
-        </button>
         <div
           class="form-check"
           v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
@@ -51,8 +48,29 @@
             :company-id="controller.selectedCompanyId.value"
             :view-type="'new'"
           />
+          <button
+            class="btn btn-submit"
+            @click="controller.onDownloadAll()"
+          >
+            <i
+              class="fa-regular fa-spin fa-spinner"
+              v-if="controller.isGeneratingPdf.value"
+            />
+            Generate for All
+          </button>
         </div>
       </Transition>
+      <!-- <div
+        class="documents-to-generate"
+        v-if="controller.isGeneratingPdf.value"
+      >
+        <AppointJointCompanySecretary
+          v-for="(companyId, index) in controller.companyIdsByBatch"
+          :ref="(el) => controller.setDocumentToGenerateRefs(el, index)"
+          :company-id="companyId"
+          :view-type="'new'"
+        />
+      </div> -->
     </div>
   </div>
 </template>

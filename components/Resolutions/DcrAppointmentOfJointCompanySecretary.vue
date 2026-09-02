@@ -15,9 +15,9 @@
           THAT the appointment of
           <b>
             {{ controller.newCosecName }} (NRIC No. {{ controller.newCosecNric }}) ({{ controller.newCosecLicense }} /
-            SSM PC No. {{ controller.newCosecCertificate }}) as the Secretary of the Company be and is hereby accepted
-            with immediate effect.
+            SSM PC No. {{ controller.newCosecCertificate }})
           </b>
+          as the Secretary of the Company be and is hereby accepted with immediate effect.
         </p>
       </template>
     </Resolution>
@@ -59,6 +59,8 @@
   defineExpose({
     getPdfPages: controller.getPdfPages.bind(controller),
     totalPages: controller.totalPages.bind(controller),
+    isPageReady: controller.isPageReady.bind(controller),
+    waitForReady: controller.waitForReady.bind(controller),
   })
 </script>
 

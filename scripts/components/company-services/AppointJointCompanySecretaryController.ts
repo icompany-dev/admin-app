@@ -50,22 +50,6 @@ export class AppointJointCompanySecretaryController extends CompanyServiceContro
     this.companyDirectorManagerAppointment.value = new CompanyDirectorManagerAppointment()
     this.companyDirectorManagerAppointment.value.id = this.companyIdRef.value
     this.companyDirectorManagerAppointment.value.status = "paid"
-    // if (this.viewType.value !== ViewMode.Past) {
-    //   await Promise.all([this.fetchPrice(), this.fetchOngoingApplication()])
-
-    //   if (this.hasOngoingApplication.value) {
-    //     this.viewType.value = ViewMode.Existing
-    //     this.emitEvents(EmitMessages.GO_TO_EXISTING)
-    //   } else {
-    //     this.viewType.value = ViewMode.New
-    //     this.emitEvents(EmitMessages.GO_TO_NEW)
-    //   }
-    // } else {
-    //   this.isInPreviewMode.value = true
-    //   await Promise.all([this.fetchPrice(), this.companyServiceInitializer.setPastApplications()])
-    //   this.hasPastApplications.value = this.companyServiceInitializer.pastApplications.length > 0
-    //   this.emitEvents(EmitMessages.HAS_PAST_APPLICATIONS, this.hasPastApplications.value)
-    // }
 
     this.init(this.companyDirectorManagerAppointment.value as CompanyDirectorManagerAppointment)
 
@@ -244,6 +228,15 @@ export class AppointJointCompanySecretaryController extends CompanyServiceContro
     }
 
     this.eventManager.setIsHandlePostPayment(false)
+  }
+
+  async isPageReady(): Promise<boolean> {
+    if (!this.dcrRef) {
+      return false
+    }
+
+    let isReady = await this.dcrRef.waitForReady()
+    return isReady
   }
 
   setWrapperRef(wrapperRef: any | null): void {

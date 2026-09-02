@@ -102,6 +102,17 @@ export class DcrAppointmentOfJointCompanySecretaryController {
     return 1
   }
 
+  isPageReady(): boolean {
+    return !this.isLoading.value
+  }
+
+  async waitForReady(): Promise<void> {
+    await nextTick()
+    while (this.isLoading.value) {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    }
+  }
+
   async getPdfPages(): Promise<HTMLElement[]> {
     if (!this.documentRef) {
       return []
