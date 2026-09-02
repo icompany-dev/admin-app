@@ -60,25 +60,18 @@
           </button>
         </div>
       </Transition>
-      <!-- <div
-        class="documents-to-generate"
-        v-if="controller.isGeneratingPdf.value"
-      >
-        <AppointJointCompanySecretary
-          v-for="(companyId, index) in controller.companyIdsByBatch"
-          :ref="(el) => controller.setDocumentToGenerateRefs(el, index)"
-          :company-id="companyId"
-          :view-type="'new'"
-        />
-      </div> -->
     </div>
+    <ActionInProgress
+      ref="actionInProgressRef"
+      v-bind="controller.actionInProgressProps"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ActionInProgress from "../Popups/ActionInProgress.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
-  import SdnBhd from "@/components/Companies/SdnBhd.vue"
   import AppointJointCompanySecretary from "../CompanyServices/AppointJointCompanySecretary.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
   import { AssignCosecController } from "~/scripts/components/companies/AssignCosecController"
@@ -105,6 +98,7 @@
   const emit = defineEmits(["sdnbhdSelected"])
 
   const documentRef = ref(null)
+  const actionInProgressRef = ref(null)
 
   const controller = new AssignCosecController(emit)
 
@@ -142,6 +136,14 @@
     documentRef,
     (newVal) => {
       controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    actionInProgressRef,
+    (newVal) => {
+      controller.setActionInProgressRef(newVal)
     },
     { immediate: true }
   )

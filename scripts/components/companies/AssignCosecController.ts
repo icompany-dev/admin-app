@@ -6,6 +6,7 @@ import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
 import { StringUtil } from "~/scripts/utils/String"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 import { FileZipper } from "~/scripts/utils/FileZipper"
+import { PropsActionInProgress } from "~/scripts/props/PropsActionInProgress"
 
 export class AssignCosecController {
   tableDataFetcher = ref<TableDataFetcher<Company>>(new TableDataFetcher(Company, useCompanyStore()))
@@ -19,6 +20,7 @@ export class AssignCosecController {
   emitEvents: any | null = null
 
   documentRef: any | null = null
+  actionInProgressRef: any | null = null
 
   isGeneratingPdf: Ref<boolean> = ref<boolean>(false)
 
@@ -37,6 +39,10 @@ export class AssignCosecController {
 
   setDocumentRef(documentRef: any): void {
     this.documentRef = documentRef
+  }
+
+  setActionInProgressRef(actionInProgressRef: any): void {
+    this.actionInProgressRef = actionInProgressRef
   }
 
   setDocumentToGenerateRefs(documentToGenerateRef: any, index: number): void {
@@ -110,6 +116,10 @@ export class AssignCosecController {
       return
     }
 
+    if (this.actionInProgressRef) {
+      this.actionInProgressRef.show()
+    }
+
     this.isGeneratingPdf.value = true
 
     try {
@@ -146,6 +156,10 @@ export class AssignCosecController {
       console.error(e)
     } finally {
       this.isGeneratingPdf.value = false
+
+      if (this.actionInProgressRef) {
+        this.actionInProgressRef.hide()
+      }
     }
   }
 
@@ -186,5 +200,13 @@ export class AssignCosecController {
     let startIndex = this.currentBatchNumber.value * this.batchSize
     let endIndex = startIndex + this.batchSize
     return this.allCompanyIds.value.slice(startIndex, endIndex)
+  }
+
+  get actionInProgressProps(): PropsActionInProgress {
+    return new PropsActionInProgress(
+      this.allCompanies.value.length,
+      this.totalCompleted.value,
+      this.language.isMalay() ? "menjana resolusi" : "generating the resolutions"
+    )
   }
 }
