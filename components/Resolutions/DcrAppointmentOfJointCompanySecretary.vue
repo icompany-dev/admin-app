@@ -1,5 +1,8 @@
 <template>
-  <div id="resolutions-dcr-appointment-of-joint-company-secretary">
+  <div
+    id="resolutions-dcr-appointment-of-joint-company-secretary"
+    ref="documentRef"
+  >
     <Resolution v-bind="controller.resolutionProps">
       <template #page1>
         <p>
@@ -34,6 +37,8 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new DcrAppointmentOfJointCompanySecretaryController(props.companyId, emit)
 
   watch(
@@ -42,6 +47,19 @@
       controller.setCompanyId(newVal)
     }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+    totalPages: controller.totalPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

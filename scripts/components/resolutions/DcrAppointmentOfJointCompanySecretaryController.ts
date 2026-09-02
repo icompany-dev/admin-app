@@ -5,6 +5,7 @@ import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { PropsResolution } from "~/scripts/props/PropsResolution"
 import { SignatureItem } from "~/scripts/types/SignatureItem"
 import { ObjectUtil } from "~/scripts/utils/Object"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class DcrAppointmentOfJointCompanySecretaryController {
@@ -17,6 +18,8 @@ export class DcrAppointmentOfJointCompanySecretaryController {
   isLoading: Ref<boolean> = ref<boolean>(true)
 
   emitEvents: any | null = null
+
+  documentRef: any | null = null
 
   companySecretaryId: string = "d76d3a2f-a5e9-11f1-a76b-42010a8c0003" //hard code for now
 
@@ -38,6 +41,10 @@ export class DcrAppointmentOfJointCompanySecretaryController {
     } finally {
       this.isLoading.value = false
     }
+  }
+
+  setDocumentRef(documentRef: any | null): void {
+    this.documentRef = documentRef
   }
 
   async fetchCompany(): Promise<void> {
@@ -89,6 +96,21 @@ export class DcrAppointmentOfJointCompanySecretaryController {
     this.signatureGroups.value = response.map((item: any) => {
       return new SignatureGroup(item)
     })
+  }
+
+  totalPages(): number {
+    return 1
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    return pdfPages
   }
 
   get companyName(): string {
