@@ -86,7 +86,7 @@ export class PageSidebar {
     this.switchNew,
   ])
 
-  static sdnbhdAll: Sidebar = new Sidebar("All Sdn Bhd", "Semua Sdn Bhd", "sdnbhds", false)
+  static sdnbhdAll: Sidebar = new Sidebar("All Sdn Bhd", "Semua Sdn Bhd", "sdnbhds/all", false)
   static sdnbhdAssign: Sidebar = new Sidebar(
     "Assign Company Secretary",
     "Lantik Setiausaha Syarikat",
