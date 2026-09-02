@@ -24,12 +24,12 @@
   import BreadCrumb from "@/components/BreadCrumbs/Default.vue"
   import AssignCosec from "@/components/Companies/AssignCosec.vue"
   import TableFilters from "~/components/TableData/TableFilters.vue"
-  import { PageAllSdnBhdController } from "~/scripts/pages/PageAllSdnBhdController"
+  import { PageAssignCosecController } from "~/scripts/pages/PageAssignCosecController"
 
   const props = defineProps({})
   const emit = defineEmits([])
 
-  const pageController = new PageAllSdnBhdController()
+  const pageController = new PageAssignCosecController()
 </script>
 
 <style lang="scss">

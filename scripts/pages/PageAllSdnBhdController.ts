@@ -40,10 +40,7 @@ export class PageAllSdnBhdController extends PageController {
   }
 
   get breadCrumbProps(): PropsBreadCrumb {
-    return new PropsBreadCrumb([
-      new PropsBreadCrumbItem("Companies", ""),
-      new PropsBreadCrumbItem("Assign Company Secretary", ""),
-    ])
+    return new PropsBreadCrumb([new PropsBreadCrumbItem("Companies", ""), new PropsBreadCrumbItem("All", "")])
   }
 
   get sortOrderLabel(): string {
