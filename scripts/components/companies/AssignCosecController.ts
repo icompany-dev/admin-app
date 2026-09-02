@@ -4,6 +4,8 @@ import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
 import { StringUtil } from "~/scripts/utils/String"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class AssignCosecController {
   tableDataFetcher = ref<TableDataFetcher<Company>>(new TableDataFetcher(Company, useCompanyStore()))
@@ -16,10 +18,18 @@ export class AssignCosecController {
 
   emitEvents: any | null = null
 
+  documentRef: any | null = null
+
+  isGeneratingPdf: Ref<boolean> = ref<boolean>(false)
+
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.init()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async init(): Promise<void> {
@@ -72,6 +82,50 @@ export class AssignCosecController {
 
   onCompanyUnselected(): void {
     this.selectedCompanyId.value = ""
+  }
+
+  async onDownloadAll(): Promise<void> {
+    if (!this.documentRef) {
+      return
+    }
+
+    this.isGeneratingPdf.value = true
+
+    try {
+      let repository = useCompanyStore()
+      let response = await repository.fetchCompact("")
+      let companies = response.map((item: any) => {
+        return new Company(item)
+      })
+
+      let blobs: Blob[] = []
+      let files: DownloadFileData[] = []
+      for (let index = 0; index < companies.length; index++) {
+        let company = companies[index]
+        this.selectedCompanyId.value = company.id
+        await nextTick()
+        let filename = `${company.getFullName().toUpperCase()} - Assignment of Company Secretary.pdf`
+        console.log(`Generating PDF for ${company.getFullName()}...`)
+        let blob = await this.documentRef.onGenerateBlob(filename)
+        if (!blob) {
+          continue
+        }
+        console.log("blob", blob)
+        blobs.push(blob)
+        files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
+      }
+
+      console.log("blobs", blobs.length)
+      console.log("files", files.length)
+
+      await FileZipper.zipAndDownload(files, "assignment-of-company-secretary.zip")
+
+      console.log(`All PDFs generated and downloaded successfully.`)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isGeneratingPdf.value = false
+    }
   }
 
   // getters

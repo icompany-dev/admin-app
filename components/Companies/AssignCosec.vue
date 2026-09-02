@@ -5,16 +5,19 @@
       :label="controller.loaderLabel"
       :sublabel="controller.loaderSublabel"
     />
-    <div
-      class="companies-document"
-      v-if="!controller.tableDataFetcher.value.isLoading"
-    >
+    <div class="companies-document">
       <NoRecord
         v-if="controller.tableDataFetcher.value.data.length === 0"
         :title="controller.noRecordTitle"
         :subtitle="controller.noRecordSubtitle"
       />
       <div class="sdn-bhd-container">
+        <button
+          class="btn btn-submit"
+          @click="controller.onDownloadAll()"
+        >
+          Generate
+        </button>
         <div
           class="form-check"
           v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
@@ -44,6 +47,7 @@
           v-if="controller.isShowDocument"
         >
           <AppointJointCompanySecretary
+            ref="documentRef"
             :company-id="controller.selectedCompanyId.value"
             :view-type="'new'"
           />
@@ -82,6 +86,8 @@
 
   const emit = defineEmits(["sdnbhdSelected"])
 
+  const documentRef = ref(null)
+
   const controller = new AssignCosecController(emit)
 
   watch(
@@ -112,6 +118,14 @@
         controller.onCompanyUnselected()
       }
     }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 
   defineExpose({
