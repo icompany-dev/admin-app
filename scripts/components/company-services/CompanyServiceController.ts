@@ -657,4 +657,26 @@ export abstract class CompanyServiceController<T> {
 
     await PdfPaperUtil.generatePdfFile(pages, 20, "Resolutions.pdf", PaperSize.A4, PaperOrientation.Portrait)
   }
+
+  async onGenerateBlob(filename: string): Promise<Blob | null> {
+    let pages: HTMLElement[] = []
+
+    if (this.dcrRef) {
+      let dcrPages = await this.dcrRef.getPdfPages()
+      pages = pages.concat(dcrPages)
+    }
+
+    if (this.mcrRef) {
+      let mcrPages = await this.mcrRef.getPdfPages()
+      pages = pages.concat(mcrPages)
+    }
+
+    if (pages.length <= 0) {
+      return null
+    }
+
+    let blob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+
+    return blob
+  }
 }
