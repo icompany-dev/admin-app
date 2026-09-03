@@ -130,6 +130,42 @@ export class AssignCosecController {
     await this.tableDataFetcher.value.goToPage(page)
   }
 
+  async onUnassignedStatusClicked(): Promise<void> {
+    this.tableDataFetcher.value.filter.isUnassigned =
+      this.tableDataFetcher.value.filter.isUnassigned === true
+        ? (this.tableDataFetcher.value.filter.isUnassigned = null)
+        : (this.tableDataFetcher.value.filter.isUnassigned = true)
+
+    await this.tableDataFetcher.value.fetchData()
+
+    this.selectedCompanyId.value =
+      this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
+  }
+
+  async onAssignedStatusClicked(): Promise<void> {
+    this.tableDataFetcher.value.filter.isUnassigned =
+      this.tableDataFetcher.value.filter.isUnassigned === false
+        ? (this.tableDataFetcher.value.filter.isUnassigned = null)
+        : (this.tableDataFetcher.value.filter.isUnassigned = false)
+
+    await this.tableDataFetcher.value.fetchData()
+
+    this.selectedCompanyId.value =
+      this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
+  }
+
+  async onWithoutSignatureClicked(): Promise<void> {
+    this.tableDataFetcher.value.filter.isWithoutSignatures =
+      this.tableDataFetcher.value.filter.isWithoutSignatures === true
+        ? (this.tableDataFetcher.value.filter.isWithoutSignatures = null)
+        : (this.tableDataFetcher.value.filter.isWithoutSignatures = true)
+
+    await this.tableDataFetcher.value.fetchData()
+
+    this.selectedCompanyId.value =
+      this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
+  }
+
   onCompanySelected(companyId: string): void {
     this.selectedCompanyId.value = companyId
   }
