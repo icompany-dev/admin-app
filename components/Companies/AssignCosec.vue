@@ -22,6 +22,8 @@
           <input
             type="checkbox"
             class="form-control form-check-input"
+            :checked="controller.isCompanySelected(sdnbhd.id)"
+            @click="controller.onCompanyCheckboxClicked(sdnbhd.id)"
           />
           <div
             class="company-name"
@@ -48,7 +50,7 @@
             :company-id="controller.selectedCompanyId.value"
             :view-type="'new'"
           />
-          <button
+          <!-- <button
             class="btn btn-submit"
             @click="controller.onDownloadAll()"
           >
@@ -57,7 +59,7 @@
               v-if="controller.isGeneratingPdf.value"
             />
             Generate for All
-          </button>
+          </button> -->
         </div>
       </Transition>
     </div>
@@ -65,11 +67,17 @@
       ref="actionInProgressRef"
       v-bind="controller.actionInProgressProps"
     />
+    <ActionTray
+      v-if="!controller.tableDataFetcher.value.isLoading"
+      :is-lock-position="true"
+      :actions="controller.actionTrayElements"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ActionInProgress from "../Popups/ActionInProgress.vue"
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import AppointJointCompanySecretary from "../CompanyServices/AppointJointCompanySecretary.vue"

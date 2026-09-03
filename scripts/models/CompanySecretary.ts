@@ -1,4 +1,5 @@
 export class CompanySecretary {
+  id: string = ""
   name: string = ""
   nric: string = ""
   license: string = ""
@@ -28,6 +29,7 @@ export class CompanySecretary {
   }
 
   convertFromResponse(data: any): void {
+    this.id = data.id
     this.name = data.name
     this.nric = data.nric
     this.license = data.license
@@ -46,6 +48,7 @@ export class CompanySecretary {
   }
 
   clone(data: CompanySecretary): void {
+    this.id = data.id
     this.name = data.name
     this.nric = data.nric
     this.license = data.license
