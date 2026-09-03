@@ -1,5 +1,6 @@
 import { Compliance } from "~/scripts/library/Compliance"
 import { Company } from "~/scripts/models/Company"
+import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SdnBhdController {
@@ -95,5 +96,11 @@ export class SdnBhdController {
     return this.language.isMalay()
       ? `Penyata Tahunan Perlu Dikemukakan untuk ${years}`
       : `Annual Return Due for ${years}`
+  }
+
+  get msicCodes(): string[] {
+    return this.company.value.msicCodeAssigns.map((msicCodeAssign: MsicCodeAssign) => {
+      return `${msicCodeAssign.msicCode.code} - ${msicCodeAssign.msicCode.descriptionEn}`
+    })
   }
 }

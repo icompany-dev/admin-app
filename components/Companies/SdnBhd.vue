@@ -21,9 +21,23 @@
             <i class="fa-solid fa-bell" />
           </span>
         </Transition>
-        <div class="registration-numbers">
-          {{ controller.company.value.registrationNumberNew }} ({{ controller.company.value.registrationNumberOld }})
+        <div class="details">
+          <div class="registration-numbers">
+            {{ controller.company.value.registrationNumberNew }} ({{ controller.company.value.registrationNumberOld }})
+          </div>
         </div>
+      </div>
+      <div class="display-detail">
+        {{ controller.company.value.businessDescription.toUpperCase() }}
+        <CopyValue :value="controller.company.value.businessDescription.toUpperCase()" />
+      </div>
+      <div class="msic-codes">
+        <ul>
+          <li v-for="(msicCodeAssign, id) in controller.company.value.msicCodeAssigns">
+            {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
+            <CopyValue :value="msicCodeAssign.msicCode.code" />
+          </li>
+        </ul>
       </div>
       <div class="action-buttons">
         <button
@@ -46,10 +60,12 @@
         </button>
       </div>
     </div>
+    <div class="compliance-details">//</div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import CopyValue from "../Buttons/CopyValue.vue"
   import { SdnBhdController } from "~/scripts/components/companies/SdnBhdController"
   import { Company } from "~/scripts/models/Company"
 

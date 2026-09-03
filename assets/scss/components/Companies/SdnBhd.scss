@@ -1,9 +1,14 @@
 .company-sdn-bhd {
+  width: calc(100% - 20px);
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   gap: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: all 0.5s ease;
 
   .logo {
     width: 100px;
@@ -32,6 +37,7 @@
     justify-content: flex-start;
     align-items: stretch;
     gap: 5px;
+    width: calc(100% - 600px);
 
     .company-name {
       font-size: 1.5rem;
@@ -51,8 +57,34 @@
       }
     }
 
+    .msic-codes {
+      ul {
+        margin: 5px 0;
+        padding-left: 15px;
+
+        li {
+          font-weight: normal;
+        }
+      }
+    }
+
     .action-buttons {
       justify-content: flex-start;
     }
+
+    .display-detail {
+      text-align: justify;
+    }
+  }
+
+  .compliance-details {
+    width: 400px;
+    padding-left: 20px;
+  }
+
+  &:hover {
+    width: calc(100% - 40px);
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.3);
   }
 }
