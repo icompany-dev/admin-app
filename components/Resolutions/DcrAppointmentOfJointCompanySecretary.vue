@@ -15,6 +15,7 @@
           THAT the appointment of
           <b>
             {{ controller.newCosecName }} (NRIC No. {{ controller.newCosecNric }}) ({{ controller.newCosecLicense }} /
+            <br />
             SSM PC No. {{ controller.newCosecCertificate }})
           </b>
           as the Secretary of the Company be and is hereby accepted with immediate effect.
