@@ -30,6 +30,7 @@ export class AssignCosecController {
   documentRef: any | null = null
   actionInProgressRef: any | null = null
 
+  isLoading: Ref<boolean> = ref<boolean>(false)
   isGeneratingPdf: Ref<boolean> = ref<boolean>(false)
 
   allCompanies: Ref<Company[]> = ref<Company[]>([])
@@ -38,6 +39,10 @@ export class AssignCosecController {
   batchSize: number = 5
   documentToGenerateRefs: any[] = []
   totalCompleted: Ref<number> = ref<number>(0)
+
+  totalAssigned: Ref<number> = ref<number>(0)
+  totalUnassigned: Ref<number> = ref<number>(0)
+  totalWithoutSignatures: Ref<number> = ref<number>(0)
 
   companySecretaries: Ref<CompanySecretary[]> = ref<CompanySecretary[]>([])
   selectedCompanySecretaryId: Ref<string> = ref<string>("")
@@ -61,30 +66,43 @@ export class AssignCosecController {
   }
 
   async init(): Promise<void> {
-    this.tableDataFetcher.value.filter.take = 20
-    this.tableDataFetcher.value.filter.takeAll = false
-    this.tableDataFetcher.value.filter.orderBy = "name"
-    this.tableDataFetcher.value.filter.sortOrder = "asc"
+    this.isLoading.value = true
 
-    // For the table
-    let repository = useCompanyStore()
-    let promises = [
-      this.fetchCompanySecretaries(),
-      this.tableDataFetcher.value.fetchData(),
-      repository.fetchCompact("take_all=1").then((response) => {
-        this.allCompanies.value = response.map((item: any) => {
-          return new Company(item)
-        })
+    try {
+      this.tableDataFetcher.value.filter.take = 20
+      this.tableDataFetcher.value.filter.takeAll = false
+      this.tableDataFetcher.value.filter.orderBy = "name"
+      this.tableDataFetcher.value.filter.sortOrder = "asc"
+      this.tableDataFetcher.value.filter.isUnassigned = null
+      this.tableDataFetcher.value.filter.isWithoutSignatures = null
 
-        this.allCompanyIds.value = response.map((item: any) => {
-          return item.id
-        })
-      }),
-    ]
-    await Promise.allSettled(promises)
+      // For the table
+      let repository = useCompanyStore()
+      let promises = [
+        this.fetchCompanySecretaries(),
+        this.fetchStatistics(),
+        this.tableDataFetcher.value.fetchData(),
+        repository.fetchCompact("take_all=1").then((response) => {
+          this.allCompanies.value = response.map((item: any) => {
+            return new Company(item)
+          })
 
-    this.selectedCompanyId.value =
-      this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
+          this.allCompanyIds.value = response.map((item: any) => {
+            return item.id
+          })
+        }),
+      ]
+      await Promise.allSettled(promises)
+
+      this.selectedCompanyId.value =
+        this.tableDataFetcher.value.data.length > 0 ? this.tableDataFetcher.value.data[0].id : ""
+    } catch (e) {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isLoading.value = false
+    }
   }
 
   async setSearch(searchText: string): Promise<void> {
@@ -125,12 +143,29 @@ export class AssignCosecController {
     this.selectedCompanySecretaryId.value = this.companySecretaries.value[0].id
   }
 
+  async fetchStatistics(): Promise<void> {
+    let repository = useCompanyStore()
+    let response = await repository.fetchStatisticsForAssignment()
+
+    if (!response) {
+      this.totalAssigned.value = 0
+      this.totalUnassigned.value = 0
+      this.totalWithoutSignatures.value = 0
+      return
+    }
+
+    this.totalUnassigned.value = response.total_unassigned ?? 0
+    this.totalAssigned.value = response.total_companies - response.total_unassigned
+    this.totalWithoutSignatures.value = response.total_without_signatures ?? 0
+  }
+
   async goToPage(page: number): Promise<void> {
     this.selectedCompanyIds.value = []
     await this.tableDataFetcher.value.goToPage(page)
   }
 
   async onUnassignedStatusClicked(): Promise<void> {
+    this.tableDataFetcher.value.filter.isWithoutSignatures = null
     this.tableDataFetcher.value.filter.isUnassigned =
       this.tableDataFetcher.value.filter.isUnassigned === true
         ? (this.tableDataFetcher.value.filter.isUnassigned = null)
@@ -143,6 +178,7 @@ export class AssignCosecController {
   }
 
   async onAssignedStatusClicked(): Promise<void> {
+    this.tableDataFetcher.value.filter.isWithoutSignatures = null
     this.tableDataFetcher.value.filter.isUnassigned =
       this.tableDataFetcher.value.filter.isUnassigned === false
         ? (this.tableDataFetcher.value.filter.isUnassigned = null)
@@ -155,6 +191,7 @@ export class AssignCosecController {
   }
 
   async onWithoutSignatureClicked(): Promise<void> {
+    this.tableDataFetcher.value.filter.isUnassigned = null
     this.tableDataFetcher.value.filter.isWithoutSignatures =
       this.tableDataFetcher.value.filter.isWithoutSignatures === true
         ? (this.tableDataFetcher.value.filter.isWithoutSignatures = null)
@@ -398,5 +435,17 @@ export class AssignCosecController {
     return this.companySecretaries.value.map((cs: CompanySecretary) => {
       return new SelectOption(cs.id, cs.id, `${cs.name} (${cs.license})`)
     })
+  }
+
+  get noSignaturesCompaniesLabel(): string {
+    return this.language.isMalay() ? "Bil. Syarikat tanpa Tandatangan" : "No. of Companies with No Signature"
+  }
+
+  get unassignedCompaniesLabel(): string {
+    return this.language.isMalay() ? "Bil. Syarikat Tanpa Setiausaha" : "No. of Companies Pending Assignment"
+  }
+
+  get assignedCompaniesLabel(): string {
+    return this.language.isMalay() ? "Bil. Syarikat Ada Setiausaha" : "No. of Companies Completed Assignment"
   }
 }

@@ -1,5 +1,58 @@
 <template>
   <div id="companies-assign-cosec">
+    <div
+      v-if="!controller.isLoading.value"
+      class="statistics"
+    >
+      <div
+        class="statistic"
+        @click="controller.onWithoutSignatureClicked()"
+      >
+        <div class="header">{{ controller.noSignaturesCompaniesLabel }}</div>
+        <div class="statistic-counter">
+          <VueCountUp
+            class="statistic-count"
+            :autoplay="true"
+            :duration="3"
+            :decimal-places="0"
+            :start-val="0"
+            :end-val="controller.totalWithoutSignatures.value"
+          />
+        </div>
+      </div>
+      <div
+        class="statistic"
+        @click="controller.onUnassignedStatusClicked()"
+      >
+        <div class="header">{{ controller.unassignedCompaniesLabel }}</div>
+        <div class="statistic-counter">
+          <VueCountUp
+            class="statistic-count"
+            :autoplay="true"
+            :duration="3"
+            :decimal-places="0"
+            :start-val="0"
+            :end-val="controller.totalUnassigned.value"
+          />
+        </div>
+      </div>
+      <div
+        class="statistic"
+        @click="controller.onAssignedStatusClicked()"
+      >
+        <div class="header">{{ controller.assignedCompaniesLabel }}</div>
+        <div class="statistic-counter">
+          <VueCountUp
+            class="statistic-count"
+            :autoplay="true"
+            :duration="3"
+            :decimal-places="0"
+            :start-val="0"
+            :end-val="controller.totalAssigned.value"
+          />
+        </div>
+      </div>
+    </div>
     <LoaderPrepare
       v-if="controller.tableDataFetcher.value.isLoading"
       :label="controller.loaderLabel"
@@ -82,6 +135,7 @@
   import NoRecord from "../Placeholders/NoRecord.vue"
   import AppointJointCompanySecretary from "../CompanyServices/AppointJointCompanySecretary.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
+  import VueCountUp from "vue-countup-v3"
   import { AssignCosecController } from "~/scripts/components/companies/AssignCosecController"
 
   const props = defineProps({

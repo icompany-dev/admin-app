@@ -123,5 +123,6 @@ export const useCompanyStore = defineStore("company", () => {
     fetchCompact,
     updateDetails,
     fetchPublic,
+    fetchStatisticsForAssignment,
   }
 })
