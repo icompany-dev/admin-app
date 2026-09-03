@@ -18,6 +18,20 @@ export const useCompanySecretaryStore = defineStore("companySecretary", () => {
     error: error,
   })
 
+  async function assignCompaniesTo(id: string, companyIds: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.companySecretaries.assignCompaniesTo(id, companyIds)
+      return response
+    } catch (e) {
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanySecretaries = computed(() => companySecretaries.value.length)
 
   return {
@@ -26,6 +40,7 @@ export const useCompanySecretaryStore = defineStore("companySecretary", () => {
     isLoading,
     error,
     totalCompanySecretaries,
-    ...crudActions
+    ...crudActions,
+    assignCompaniesTo,
   }
 })
