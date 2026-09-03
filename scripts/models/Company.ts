@@ -43,6 +43,9 @@ export class Company implements IModel<Company> {
   createdAt: string | null = null
   updatedAt: string | null = null
 
+  //Custom Properties
+  annualReturnYearsDue: any | null = null
+
   constructor(data: any | null = null) {
     if (!data) {
       return
@@ -95,6 +98,8 @@ export class Company implements IModel<Company> {
     this.companySecretaryId = data.company_secretary_id ?? null
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
+
+    this.annualReturnYearsDue = data.years_due ?? null
   }
 
   clone(data: Company): void {
@@ -132,6 +137,8 @@ export class Company implements IModel<Company> {
     this.companySecretaryId = data.companySecretaryId
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
+
+    this.annualReturnYearsDue = data.annualReturnYearsDue
   }
 
   getRequestBody(): object {

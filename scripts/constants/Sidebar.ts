@@ -95,6 +95,7 @@ export class PageSidebar {
   )
   static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [this.sdnbhdAll, this.sdnbhdAssign])
 
+  static annualReturn: Sidebar = new Sidebar("Annual Returns", "Penyata Tahun", "services/annual-returns", false)
   static changeBusinessName: Sidebar = new Sidebar(
     "Change of Name",
     "Penukaran Nama",
@@ -108,6 +109,7 @@ export class PageSidebar {
     false
   )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
+    this.annualReturn,
     this.changeBusinessName,
     this.openBankAccount,
   ])
