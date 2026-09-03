@@ -39,6 +39,7 @@ export class Company implements IModel<Company> {
   hasBusinessAddress: boolean = true
   applicationIncorporationId: string | null = null
   applicationSwitchId: string | null = null
+  companySecretaryId: string | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
 
@@ -91,6 +92,7 @@ export class Company implements IModel<Company> {
             return new CompanyBranch(d)
           })
         : []
+    this.companySecretaryId = data.company_secretary_id ?? null
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
   }
@@ -127,6 +129,7 @@ export class Company implements IModel<Company> {
     this.branches = data.branches.map((d: CompanyBranch) => {
       return new CompanyBranch(d)
     })
+    this.companySecretaryId = data.companySecretaryId
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
   }
@@ -144,6 +147,7 @@ export class Company implements IModel<Company> {
       incorporated_at: this.incorporatedAt,
       application_incorporation_id: this.applicationIncorporationId,
       application_switch_id: this.applicationSwitchId,
+      company_secretary_id: this.companySecretaryId,
     }
 
     if (this.hasBusinessAddress) {

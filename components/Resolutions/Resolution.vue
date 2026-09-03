@@ -173,7 +173,8 @@
     props.signatureItems,
     props.maxSignatureOnFirstPage,
     props.maxSignatureOnOtherPage,
-    props.signatureStartOnPage
+    props.signatureStartOnPage,
+    props.resolutionDate
   )
 
   watch(

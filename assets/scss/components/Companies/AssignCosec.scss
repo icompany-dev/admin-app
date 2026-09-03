@@ -1,0 +1,120 @@
+#companies-assign-cosec {
+  margin-top: 40px;
+
+  .statistics {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: 20px;
+    margin-bottom: 40px;
+
+    .statistic {
+      width: calc(33% - 40px);
+      min-width: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: stretch;
+      border-radius: 10px;
+      background-color: var(--bs-white);
+
+      .header {
+        background-color: var(--bs-icompany-purple);
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        color: var(--bs-white);
+        font-weight: 600;
+        font-size: 1.2rem;
+        border-radius: 10px 10px 0 0;
+      }
+
+      .statistic-counter {
+        width: calc(100% - 20px);
+        text-align: right;
+        padding: 10px;
+        cursor: pointer;
+
+        .loader {
+          min-height: 39px;
+
+          i {
+            font-size: 3rem;
+          }
+        }
+
+        .statistic-count {
+          color: var(--bs-icompany-purple);
+
+          span {
+            font-size: 3rem;
+            line-height: 3rem;
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+
+  .companies-document {
+    position: relative;
+    max-height: 90dvh;
+
+    .document-in-view {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .documents-to-generate {
+      position: fixed;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      z-index: -999;
+    }
+  }
+
+  .sdn-bhd-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    max-height: 80dvh;
+    overflow-y: auto;
+
+    .form-check {
+      justify-content: flex-start;
+      gap: 20px;
+
+      input[type=checkbox] {
+        border-color: var(--bs-white);
+      }
+
+      .company-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.8rem;
+        cursor: pointer;
+
+        .notification {
+          font-size: 1.5rem;
+          line-height: 1.8rem;
+          color: var(--bs-icompany-orange-dark);
+        }
+
+        .registration-numbers {
+          font-weight: normal;
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+}

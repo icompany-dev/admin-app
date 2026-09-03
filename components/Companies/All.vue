@@ -24,9 +24,6 @@
               @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
             />
           </template>
-          <!-- <template v-if="controller.isShowSelectedSdnBhd">
-            <SelectedSdnBhd :company-id="controller.selectedCompanyId.value" />
-          </template> -->
         </TransitionGroup>
       </div>
     </div>

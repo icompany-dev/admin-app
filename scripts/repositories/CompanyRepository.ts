@@ -80,4 +80,13 @@ export class CompanyRepository extends Repository<Company> {
       throw error
     }
   }
+
+  async fetchStatisticsForAssignment(): Promise<any> {
+    try {
+      const response = this.get<any>(`/api/company/statistics-for-assignement`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }
