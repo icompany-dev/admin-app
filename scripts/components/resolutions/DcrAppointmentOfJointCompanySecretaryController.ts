@@ -212,7 +212,7 @@ export class DcrAppointmentOfJointCompanySecretaryController {
       "",
       this.signatureTitle,
       this.signatureItems,
-      "3 August 2026",
+      "2026-08-03",
       1,
       1,
       2,
