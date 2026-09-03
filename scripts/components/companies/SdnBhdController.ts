@@ -1,6 +1,7 @@
 import { Compliance } from "~/scripts/library/Compliance"
 import { Company } from "~/scripts/models/Company"
 import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
+import { AnnualReturnRecord } from "~/scripts/types/AnnualReturnRecord"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SdnBhdController {
@@ -101,6 +102,116 @@ export class SdnBhdController {
   get msicCodes(): string[] {
     return this.company.value.msicCodeAssigns.map((msicCodeAssign: MsicCodeAssign) => {
       return `${msicCodeAssign.msicCode.code} - ${msicCodeAssign.msicCode.descriptionEn}`
+    })
+  }
+
+  get annualReturnLabel(): string {
+    return this.language.isMalay() ? "Penyata Tahunan" : "Annual Return"
+  }
+
+  get annualReturns(): AnnualReturnRecord[] {
+    let dayjs = useDayjs()
+    let time = useLocalTime()
+
+    let currentYear = dayjs().year()
+
+    let incorporatedAt = dayjs(this.company.value.incorporatedAt)
+
+    let firstAnnualReturn = dayjs(incorporatedAt).add(1, "year").year()
+    let endYear = Math.max(currentYear, firstAnnualReturn)
+
+    let annualReturns: AnnualReturnRecord[] = []
+    for (let annualReturnYear = firstAnnualReturn; annualReturnYear <= endYear; annualReturnYear++) {
+      let annualReturnDate = dayjs(incorporatedAt).year(annualReturnYear)
+      let lodgementDueDate = dayjs(incorporatedAt).year(annualReturnYear).add(30, "days")
+      let daysTillLodgment = dayjs().diff(lodgementDueDate, "days")
+
+      let record = new AnnualReturnRecord()
+      record.year = annualReturnYear
+      record.date = time.formatDateOnlyShort(annualReturnDate.format("YYYY-MM-DD"))
+      record.lodgementDueDate = time.formatDateOnlyShort(lodgementDueDate.format("YYYY-MM-DD"))
+      record.daysTillLodgment = daysTillLodgment
+
+      record.isIncoming = annualReturnYear === currentYear && Math.abs(daysTillLodgment) <= 28
+
+      let isOutstanding = this.compliance.value.annualReturnYearsToLodge.includes(annualReturnYear)
+      if (isOutstanding) {
+        if (daysTillLodgment > 0) {
+          record.isOverdue = true
+          record.isPaid = false
+          record.isLodged = false
+          record.noOfDaysOverDue = daysTillLodgment
+        } else {
+          record.isOverdue = false
+          record.isPaid = false
+          record.isLodged = false
+        }
+      } else {
+        record.isOverdue = false
+        record.isPaid = annualReturnYear <= currentYear
+        record.isLodged = daysTillLodgment >= 0
+        record.noOfDaysOverDue = 0
+      }
+
+      annualReturns.push(record)
+    }
+
+    return annualReturns
+  }
+
+  get pastAnnualReturnLabel(): string {
+    return this.language.isMalay() ? `${this.annualReturnLabel} Yang Lepas` : `Past ${this.annualReturnLabel}`
+  }
+
+  get hasPastAnnualReturn(): boolean {
+    return this.pastAnnualReturn.length > 0
+  }
+
+  get pastAnnualReturn(): AnnualReturnRecord[] {
+    let dayjs = useDayjs()
+    let currentYear = dayjs().year()
+
+    return this.annualReturns.filter((record: AnnualReturnRecord) => {
+      return record.year < currentYear
+    })
+  }
+
+  get currentAnnualReturnLabel(): string {
+    let dayjs = useDayjs()
+    let currentYear = dayjs().year()
+
+    return this.language.isMalay()
+      ? `${this.annualReturnLabel} Untuk ${currentYear}`
+      : `${this.annualReturnLabel} For ${currentYear}`
+  }
+
+  get hasCurrentAnnualReturn(): boolean {
+    return this.currentAnnualReturn.length > 0
+  }
+
+  get currentAnnualReturn(): AnnualReturnRecord[] {
+    let dayjs = useDayjs()
+    let currentYear = dayjs().year()
+
+    return this.annualReturns.filter((record: AnnualReturnRecord) => {
+      return record.year === currentYear
+    })
+  }
+
+  get futureAnnualReturnLabel(): string {
+    return this.language.isMalay() ? `${this.annualReturnLabel} Akan Datang` : `Future ${this.annualReturnLabel}`
+  }
+
+  get hasFutureAnnualReturn(): boolean {
+    return this.futureAnnualReturn.length > 0
+  }
+
+  get futureAnnualReturn(): AnnualReturnRecord[] {
+    let dayjs = useDayjs()
+    let currentYear = dayjs().year()
+
+    return this.annualReturns.filter((record: AnnualReturnRecord) => {
+      return record.year > currentYear
     })
   }
 }

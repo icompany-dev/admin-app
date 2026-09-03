@@ -39,6 +39,104 @@
           </li>
         </ul>
       </div>
+      <div class="compliance-details">
+        <div class="compliance">
+          <div class="label">
+            {{ controller.pastAnnualReturnLabel }}
+          </div>
+          <div v-if="!controller.hasPastAnnualReturn">-</div>
+          <ul>
+            <li v-for="(annualReturn, i) in controller.pastAnnualReturn">
+              {{ annualReturn.date }}
+              <span
+                v-if="annualReturn.isOverdue"
+                class="text-danger"
+                :title="'Not Paid & Overdue'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+              <span
+                v-if="!annualReturn.isLodged && annualReturn.isPaid"
+                class="text-warning"
+                :title="'Pending Lodgement'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+              <span
+                v-if="annualReturn.isLodged"
+                class="text-success"
+                :title="'Lodged'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div class="compliance">
+          <div class="label">
+            {{ controller.currentAnnualReturnLabel }}
+          </div>
+          <div v-if="!controller.hasCurrentAnnualReturn">-</div>
+          <ul>
+            <li v-for="(annualReturn, i) in controller.currentAnnualReturn">
+              {{ annualReturn.date }}
+              <span
+                v-if="annualReturn.isOverdue"
+                class="text-danger"
+                :title="'Not Paid & Overdue'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+              <span
+                v-if="!annualReturn.isLodged && annualReturn.isPaid"
+                class="text-warning"
+                :title="'Pending Lodgement'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+              <span
+                v-if="annualReturn.isLodged"
+                class="text-success"
+                :title="'Lodged'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div class="compliance">
+          <div class="label">
+            {{ controller.futureAnnualReturnLabel }}
+          </div>
+          <div v-if="!controller.hasFutureAnnualReturn">-</div>
+          <ul>
+            <li v-for="(annualReturn, i) in controller.futureAnnualReturn">
+              {{ annualReturn.date }}
+              <span
+                v-if="annualReturn.isOverdue"
+                class="text-danger"
+                :title="'Not Paid & Overdue'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+              <span
+                v-if="!annualReturn.isLodged && annualReturn.isPaid"
+                class="text-warning"
+                :title="'Pending Lodgement'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+              <span
+                v-if="annualReturn.isLodged"
+                class="text-success"
+                :title="'Lodged'"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
       <div class="action-buttons">
         <button
           class="btn btn-pill btn-submit"
@@ -60,7 +158,6 @@
         </button>
       </div>
     </div>
-    <div class="compliance-details">//</div>
   </div>
 </template>
 

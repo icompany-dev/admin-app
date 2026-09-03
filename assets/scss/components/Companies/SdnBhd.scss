@@ -78,8 +78,43 @@
   }
 
   .compliance-details {
-    width: 400px;
-    padding-left: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+
+    .compliance {
+      width: 150px;
+
+      .label {
+        font-weight: 600;
+      }
+
+      ul,
+      ol {
+        margin: 5px 0;
+        padding-left: 15px;
+
+        li {
+          padding-bottom: 3px;
+
+          .text-danger {
+            color: var(--bs-danger);
+          }
+
+          .text-warning {
+            color: var(--bs-icompany-orange);
+          }
+
+          .text-success {
+            color: var(--bs-icompany-green);
+          }
+        }
+      }
+    }
   }
 
   &:hover {
