@@ -89,4 +89,14 @@ export class CompanyRepository extends Repository<Company> {
       throw error
     }
   }
+
+  async fetchForAnnualReturn(filter: Filter): Promise<any> {
+    try {
+      const slug = filter.getSlug()
+      const response: any = await this.get(`/api/sdnbhds/for-annual-returns${slug ? "?" + slug : ""}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

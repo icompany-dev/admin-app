@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import { useNuxtApp } from "#app"
 import { useStoreActions } from "~/stores/StoreActions"
 import { Company } from "~/scripts/models/Company"
+import type { Filter } from "~/scripts/library/Filter"
 
 export const useCompanyStore = defineStore("company", () => {
   const { $repositories } = useNuxtApp()
@@ -109,6 +110,21 @@ export const useCompanyStore = defineStore("company", () => {
     }
   }
 
+  async function fetchForAnnualReturn(filter: Filter): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companies.fetchForAnnualReturn(filter)
+      return response.data
+    } catch (e: any) {
+      console.error(`Error to check isSwitched`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanies = computed(() => companies.value.length)
 
   return {
@@ -124,5 +140,6 @@ export const useCompanyStore = defineStore("company", () => {
     updateDetails,
     fetchPublic,
     fetchStatisticsForAssignment,
+    fetchForAnnualReturn,
   }
 })
