@@ -8,7 +8,11 @@ import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 import { FileZipper } from "~/scripts/utils/FileZipper"
 import { PropsActionInProgress } from "~/scripts/props/PropsActionInProgress"
 import { CompanySecretary } from "~/scripts/models/CompanySecretary"
-import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import {
+  ActionTrayElement,
+  ActionTrayElementParams,
+  ActionTrayLabel,
+} from "~/scripts/types/action-trays/ActionTrayElement"
 import { SelectOption } from "~/scripts/types/SelectOption"
 
 export class AssignCosecController {
@@ -216,9 +220,12 @@ export class AssignCosecController {
     })
   }
 
-  onCosecSelected(data: any): void {
-    //
-    console.log(data)
+  onCosecSelected(data?: ActionTrayElementParams): void {
+    if (!data) {
+      return
+    }
+
+    this.selectedCompanySecretaryId.value = data.outcome
   }
 
   async onDownloadAll(): Promise<void> {
@@ -339,14 +346,14 @@ export class AssignCosecController {
       new ActionTrayElement("select-all", this.onSelectAllClicked.bind(this), {
         label: new ActionTrayLabel(selectAllLabelEn, selectAllLabelBm),
       }),
-      new ActionTrayElement("assign", this.onAssignSelected.bind(this), {
-        label: new ActionTrayLabel("Assign to", "Serah kepada"),
-        isDisabled: !this.canAssignCosec,
-      }),
       new ActionTrayElement("cosec-option", this.onCosecSelected.bind(this), {
-        label: new ActionTrayLabel("Company Secretary", "Setiausaha Syarikat"),
+        label: new ActionTrayLabel("", ""),
         isSelectElement: true,
         selectElementOptions: this.cosecOptions,
+      }),
+      new ActionTrayElement("assign", this.onAssignSelected.bind(this), {
+        label: new ActionTrayLabel("Assign", "Serah"),
+        isDisabled: !this.canAssignCosec,
       }),
     ]
   }
