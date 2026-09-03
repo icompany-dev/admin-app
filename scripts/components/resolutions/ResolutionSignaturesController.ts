@@ -14,12 +14,14 @@ export class ResolutionSignaturesController {
     signatureItems: Array<SignatureItem>,
     maxSignatureOnFirstPage: number,
     maxSignatureOnOtherPages: number,
-    signatureStartPage: number
+    signatureStartPage: number,
+    documentDate: string | null
   ) {
     this.signatureItems.value = signatureItems
     this.maxSignatureOnFirstPage.value = maxSignatureOnFirstPage
     this.maxSignatureOnOtherPages.value = maxSignatureOnOtherPages
     this.signatureStartPage.value = signatureStartPage
+    this.documentDate.value = documentDate
   }
 
   getSignatureOnPage(page: number): SignatureItem[] {
