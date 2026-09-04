@@ -158,6 +158,31 @@
         </div>
       </div>
     </div>
+    <div class="company-overview-section">
+      <div class="company-overview-section-split">
+        <div class="split-section-item">
+          <div class="overview-title">Auditor</div>
+          <ol>
+            <li
+              v-for="(auditor, i) in controller.auditors.value"
+              :key="i"
+            >
+              <div class="human-details">
+                <div class="name">{{ auditor.auditorCompanyName }}</div>
+                <div class="human-detail">
+                  <i class="fa-regular fa-envelope"></i>
+                  <span class="email">{{ auditor.auditorEmail }}</span>
+                </div>
+                <div class="human-detail">
+                  <i class="fa-brands fa-whatsapp" />
+                  <span class="phone">{{ auditor.auditorPhone }}</span>
+                </div>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

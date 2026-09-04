@@ -9,6 +9,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import type { ChartData, ChartOptions } from "chart.js"
 import { Filter } from "~/scripts/library/Filter"
 import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
+import { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -16,6 +17,7 @@ export class OverviewController {
 
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+  auditors = ref<CompanyAuditor[]>([])
 
   companyBanks: Ref<CompanyBank[]> = ref<CompanyBank[]>([])
 
@@ -64,6 +66,7 @@ export class OverviewController {
         this.fetchDirectors(),
         this.fetchShareholders(),
         this.fetchCompanyBanks(),
+        this.fetchCompanyAuditors(),
       ])
     } catch (e) {
       if (e instanceof Error) {
@@ -124,6 +127,18 @@ export class OverviewController {
 
     this.companyBanks.value = response.data.map((d: any) => {
       return new CompanyBank(d)
+    })
+  }
+
+  async fetchCompanyAuditors(): Promise<void> {
+    let repository = useCompanyAuditorStore()
+    let filter = new Filter()
+    filter.takeAll = true
+    filter.companyId = this.companyId.value
+    let response = await repository.fetchAll(filter)
+
+    this.auditors.value = response.data.map((d: any) => {
+      return new CompanyAuditor(d)
     })
   }
 

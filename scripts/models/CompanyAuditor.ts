@@ -161,4 +161,8 @@ export class CompanyAuditor {
 
     return response
   }
+
+  get gmailComposeLink(): string {
+    return `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=${this.auditorEmail}`
+  }
 }
