@@ -14,7 +14,14 @@
       <div class="sdn-bhd-container">
         <TransitionGroup name="fade">
           <template v-if="!controller.isShowSelectedSdnBhd">
-            ////
+            <div
+              class="sdn-bhd"
+              v-for="(company, index) in controller.tableDataFetcher.value.dataOnPage"
+            >
+              <div class="name">
+                {{ company.getFullName().toUpperCase() }}
+              </div>
+            </div>
             <TablePagination
               v-bind="controller.tablePaginationProps"
               @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
