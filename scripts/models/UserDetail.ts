@@ -1,3 +1,4 @@
+import { StringUtil } from "../utils/String"
 import { File } from "./File"
 import { Location } from "./Location"
 
@@ -89,7 +90,7 @@ export class UserDetail {
       body.verification_file_alt_id = this.verificationFileAlt.id
     }
 
-    if (this.location) {
+    if (this.location && !StringUtil.isNullOrEmpty(this.location.addressLine1)) {
       body.location = this.location.getRequestBody()
     }
 
