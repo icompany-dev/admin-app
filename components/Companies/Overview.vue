@@ -179,14 +179,27 @@
                 </div>
               </div>
             </li>
+            <li>
+              <button
+                class="btn btn-pill btn-submit"
+                @click="controller.onAddCompanyAuditorClicked()"
+              >
+                {{ controller.addAuditorLabel }}
+              </button>
+            </li>
           </ol>
         </div>
       </div>
     </div>
+    <AddCompanyAuditor
+      ref="addCompanyAuditorRef"
+      v-bind="controller.addCompanyAuditorProps"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 
@@ -199,6 +212,8 @@
 
   const emit = defineEmits([])
 
+  const addCompanyAuditorRef = ref(null)
+
   const controller = new OverviewController(props.companyId, emit)
 
   watch(
@@ -206,6 +221,14 @@
     (newVal) => {
       controller.setCompanyId(newVal)
     }
+  )
+
+  watch(
+    addCompanyAuditorRef,
+    (newVal) => {
+      controller.setAddCompanyAuditorRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

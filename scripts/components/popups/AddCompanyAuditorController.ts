@@ -27,6 +27,8 @@ export class AddCompanyAuditorController extends BasePopupController {
   constructor(props: PropsAddCompanyAuditor, emitEvents: any) {
     super(emitEvents)
 
+    this.isCompliance.value = false
+
     this.setDataProps(props)
 
     this.init()
@@ -67,6 +69,17 @@ export class AddCompanyAuditorController extends BasePopupController {
     this.auditorAccessRole.value.name = "Appointed Auditor"
     this.auditorAccessRole.value.description = "Role for Appointed Auditors"
     await this.auditorAccessRole.value.create(accessRolesRepository)
+  }
+
+  override show(): void {
+    this.companyAuditor.value = new CompanyAuditor()
+    this.auditorAccessRole.value.companyId = this.companyId.value
+
+    if (!this.popupRef) {
+      return
+    }
+
+    this.popupRef.show()
   }
 
   override onCancelClicked(): void {

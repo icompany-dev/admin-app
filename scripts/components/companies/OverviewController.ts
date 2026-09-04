@@ -10,6 +10,7 @@ import type { ChartData, ChartOptions } from "chart.js"
 import { Filter } from "~/scripts/library/Filter"
 import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 import { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
+import { PropsAddCompanyAuditor } from "~/scripts/props/PropsAddCompanyAuditor"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -28,6 +29,8 @@ export class OverviewController {
 
   emitEvents: any | null = null
 
+  addCompanyAuditorRef: any | null = null
+
   language = useLanguage()
   time = useLocalTime()
   dayjs = useDayjs()
@@ -41,6 +44,10 @@ export class OverviewController {
     this.companyId.value = companyId
 
     await this.init()
+  }
+
+  setAddCompanyAuditorRef(addCompanyAuditorRef: any): void {
+    this.addCompanyAuditorRef = addCompanyAuditorRef
   }
 
   async init(): Promise<void> {
@@ -144,6 +151,12 @@ export class OverviewController {
 
   onShowSharePercentageClicked(): void {
     this.isShowShareDistribution.value = !this.isShowShareDistribution.value
+  }
+
+  onAddCompanyAuditorClicked(): void {
+    if (this.addCompanyAuditorRef) {
+      this.addCompanyAuditorRef.show()
+    }
   }
 
   // getters
@@ -305,5 +318,17 @@ export class OverviewController {
     }
 
     return this.language.isMalay() ? "Tunjuk Percentage" : "Show Percentage"
+  }
+
+  get auditorLabel(): string {
+    return this.language.isMalay() ? "Juruaudit" : "Auditor"
+  }
+
+  get addAuditorLabel(): string {
+    return this.language.isMalay() ? "Tambah Juruaudit" : "Add Auditor"
+  }
+
+  get addCompanyAuditorProps(): PropsAddCompanyAuditor {
+    return new PropsAddCompanyAuditor(this.companyId.value)
   }
 }
