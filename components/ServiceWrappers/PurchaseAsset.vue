@@ -23,10 +23,12 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrAssetPurchase from "@/components/Resolutions/DcrAssetPurchase.vue"
   import { PurchaseAssetController } from "~/scripts/components/service-wrappers/PurchaseAssetController"
 

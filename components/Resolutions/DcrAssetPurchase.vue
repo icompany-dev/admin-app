@@ -87,7 +87,7 @@
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
-    isLoading: controller.isLoading.value,
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 
