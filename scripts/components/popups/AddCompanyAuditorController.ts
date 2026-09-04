@@ -169,7 +169,7 @@ export class AddCompanyAuditorController extends BasePopupController {
       }
 
       if (StringUtil.isNullOrEmpty(user.detail.identification)) {
-        user.name = this.companyAuditor.value.auditorCompanyName
+        user.name = this.companyAuditor.value.auditorCompanyName.toUpperCase()
         user.phone = this.companyAuditor.value.auditorPhone
         user.detail.identification = this.companyAuditor.value.auditorLicense
         user.detail.identificationType = "ic" //leave it as it is

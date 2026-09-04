@@ -78,7 +78,7 @@ export class CompanyAuditor {
       company_id: this.companyId,
       appointment_date: this.appointmentDate,
       auditor_partner_id: this.auditorPartnerId,
-      auditor_company_name: this.auditorCompanyName,
+      auditor_company_name: this.auditorCompanyName.toUpperCase(),
       auditor_license: this.auditorLicense,
       // auditor_location: this.auditorLocation?.getRequestBody() ?? null,
       auditor_email: this.auditorEmail,
