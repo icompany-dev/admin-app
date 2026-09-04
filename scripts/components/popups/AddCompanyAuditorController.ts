@@ -21,6 +21,7 @@ export class AddCompanyAuditorController extends BasePopupController {
   isSubmitting: Ref<boolean> = ref<boolean>(false)
 
   searchText: Ref<string> = ref<string>("")
+  dateOfAppointment: Ref<string> = ref<string>("")
 
   auditorAccessRole: Ref<AccessRole> = ref<AccessRole>(new AccessRole())
 
@@ -38,6 +39,8 @@ export class AddCompanyAuditorController extends BasePopupController {
     this.companyId.value = props.companyId
 
     this.companyAuditor.value.companyId = this.companyId.value
+
+    console.log(this.companyId.value)
 
     await this.fetchAuditorAccessRole()
   }
@@ -73,7 +76,7 @@ export class AddCompanyAuditorController extends BasePopupController {
 
   override show(): void {
     this.companyAuditor.value = new CompanyAuditor()
-    this.auditorAccessRole.value.companyId = this.companyId.value
+    this.companyAuditor.value.companyId = this.companyId.value
 
     if (!this.popupRef) {
       return
@@ -165,8 +168,13 @@ export class AddCompanyAuditorController extends BasePopupController {
         return
       }
 
-      user.detail.identification = this.companyAuditor.value.auditorLicense
-      await user.update(userRepository)
+      if (StringUtil.isNullOrEmpty(user.detail.identification)) {
+        user.name = this.companyAuditor.value.auditorCompanyName
+        user.phone = this.companyAuditor.value.auditorPhone
+        user.detail.identification = this.companyAuditor.value.auditorLicense
+        user.detail.identificationType = "ic" //leave it as it is
+        await user.update(userRepository)
+      }
 
       let userInvitation = new UserInvitation()
       userInvitation.companyId = this.companyId.value
@@ -174,9 +182,19 @@ export class AddCompanyAuditorController extends BasePopupController {
       userInvitation.email = this.companyAuditor.value.auditorEmail
       userInvitation.accessRoleId = this.auditorAccessRole.value.id
 
+      if (!userInvitation.canSubmit()) {
+        console.log("invitation", userInvitation)
+      }
+
       await userInvitation.create(useUserInvitationStore())
+
+      console.log("user invitation", userInvitation)
     } catch (e) {
-      ///
+      console.error(e)
+
+      let error = new Error()
+      error.setForCUD()
+      throw error
     }
   }
 
@@ -199,6 +217,10 @@ export class AddCompanyAuditorController extends BasePopupController {
 
   onSearch(searchText: string): void {
     this.searchText.value = searchText
+  }
+
+  onDateOfAppointmentChanged(): void {
+    this.companyAuditor.value.appointmentDate = this.dateOfAppointment.value
   }
 
   get title(): string {
@@ -233,6 +255,10 @@ export class AddCompanyAuditorController extends BasePopupController {
     return this.language.isMalay() ? "No. Lesen" : "License No."
   }
 
+  get auditorAppointmentDateLabel(): string {
+    return this.language.isMalay() ? "Tarikh Perlantikan" : "Date of Appointment"
+  }
+
   get auditorLocationLabel(): string {
     return this.language.isMalay() ? "Alamat Firma" : "Firm Address"
   }
@@ -247,6 +273,10 @@ export class AddCompanyAuditorController extends BasePopupController {
 
   get auditorContactPersonLabel(): string {
     return this.language.isMalay() ? "Nama Orang boleh Dihubungi" : "Name of Contact Person"
+  }
+
+  get grantAccessLabel(): string {
+    return this.language.isMalay() ? "Beri Akses kepada Juruaudit ini?" : "Grant Access to this Auditor?"
   }
 
   get auditorPartnerOptions(): SelectOption[] {

@@ -13,6 +13,11 @@
 
     .form-control {
       font-weight: normal;
+      text-transform: uppercase;
+
+      &.email {
+        text-transform: none;
+      }
     }
 
     #forms-searchable-dropdown {

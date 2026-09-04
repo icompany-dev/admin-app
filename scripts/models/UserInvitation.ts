@@ -85,6 +85,7 @@ export class UserInvitation {
 
   async create(repository: ReturnType<typeof useUserInvitationStore>): Promise<void> {
     if (!this.canSubmit()) {
+      console.log("error", this.companyId, this.name, this.email, this.accessRoleId)
       let error: Error = new Error()
       error.setForIncompleteData()
       throw error

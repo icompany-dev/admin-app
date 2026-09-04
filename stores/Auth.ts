@@ -142,13 +142,13 @@ export const useAuthStore = defineStore("auth", () => {
         credentials.passwordConfirmation
       )
 
-      authToken.value = response.data.token
-      user.value = new User(response.data)
-      userId.value = response.data.id
+      // authToken.value = response.data.token
+      // user.value = new User(response.data)
+      // userId.value = response.data.id
 
-      tokenCookie.value = response.data.token
-      userCookie.value = new User(response.data)
-      userIdCookie.value = response.data.id
+      // tokenCookie.value = response.data.token
+      // userCookie.value = new User(response.data)
+      // userIdCookie.value = response.data.id
 
       error.value = null
 

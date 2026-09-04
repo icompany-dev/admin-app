@@ -80,7 +80,7 @@ export class CompanyAuditor {
       auditor_partner_id: this.auditorPartnerId,
       auditor_company_name: this.auditorCompanyName,
       auditor_license: this.auditorLicense,
-      auditor_location: this.auditorLocation?.getRequestBody() ?? null,
+      // auditor_location: this.auditorLocation?.getRequestBody() ?? null,
       auditor_email: this.auditorEmail,
       auditor_phone: this.auditorPhone,
       auditor_contact_person: this.auditorContactPerson,
@@ -105,7 +105,7 @@ export class CompanyAuditor {
       !StringUtil.isNullOrEmpty(this.auditorLicense) &&
       !StringUtil.isNullOrEmpty(this.auditorEmail) &&
       !StringUtil.isNullOrEmpty(this.auditorPhone) &&
-      this.hasLocation()
+      !StringUtil.isNullOrEmpty(this.appointmentDate)
     )
   }
 

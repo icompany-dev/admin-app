@@ -194,6 +194,7 @@
     <AddCompanyAuditor
       ref="addCompanyAuditorRef"
       v-bind="controller.addCompanyAuditorProps"
+      @proceed="controller.fetchCompanyAuditors()"
     />
   </div>
 </template>

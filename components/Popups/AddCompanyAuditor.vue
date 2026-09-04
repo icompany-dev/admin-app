@@ -51,7 +51,7 @@
             <label>{{ controller.auditorEmailLabel }}</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control email"
               v-model="controller.companyAuditor.value.auditorEmail"
             />
           </div>
@@ -62,6 +62,23 @@
               class="form-control"
               v-model="controller.companyAuditor.value.auditorPhone"
             />
+          </div>
+          <div class="form-group">
+            <label>{{ controller.auditorAppointmentDateLabel }}</label>
+            <input
+              type="date"
+              class="form-control"
+              v-model="controller.dateOfAppointment.value"
+              @change="controller.onDateOfAppointmentChanged()"
+            />
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              v-model="controller.isGrantAccess.value"
+            />
+            <span>{{ controller.grantAccessLabel }}</span>
           </div>
         </div>
       </template>
@@ -76,7 +93,7 @@
         <button
           class="btn btn-submit"
           :class="{ 'is-loading': controller.isSubmitting.value }"
-          :disabled="controller.isSubmitting.value"
+          :disabled="controller.isSubmitting.value || !controller.companyAuditor.value.canSubmit()"
           @click="controller.addAuditor()"
         >
           {{ controller.proceedLabel }}
@@ -92,7 +109,6 @@
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import { AddCompanyAuditorController } from "~/scripts/components/popups/AddCompanyAuditorController"
   import type { IPropsAddCompanyAuditor } from "~/scripts/props/PropsAddCompanyAuditor"
-  import { control } from "leaflet"
 
   const props = defineProps<IPropsAddCompanyAuditor>()
 
