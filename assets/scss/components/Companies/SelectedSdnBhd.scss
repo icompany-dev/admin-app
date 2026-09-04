@@ -55,11 +55,19 @@
             font-size: 1.5rem;
             font-weight: 600;
             line-height: 1.8rem;
+
+            #buttons-copy-value {
+              padding-left: 0px;
+            }
           }
 
           .registration-numbers {
             font-weight: normal;
             font-size: 1.1rem;
+
+            #buttons-copy-value {
+              padding-left: 0px;
+            }
           }
         }
 
