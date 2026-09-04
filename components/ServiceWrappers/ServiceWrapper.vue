@@ -91,6 +91,7 @@
   import NotifyBankChangeOfCompanyName from "./NotifyBankChangeOfCompanyName.vue"
   import PracticeDirective2 from "./PracticeDirective2.vue"
   import PreferenceShareRight from "./PreferenceShareRight.vue"
+  import PurchaseAsset from "./PurchaseAsset.vue"
   import ReceiptInvoice from "./ReceiptInvoice.vue"
   import RegisterTransferOfShares from "./RegisterTransferOfShares.vue"
   import RemoveDirector from "./RemoveDirector.vue"
@@ -167,6 +168,7 @@
     [CompanyConstants.TARGET_NOTIFY_CHANGE_OF_NAME]: NotifyBankChangeOfCompanyName,
     [CompanyConstants.TARGET_PRACTICE_DIRECTIVE_2]: PracticeDirective2,
     [CompanyConstants.TARGET_PREFERENCE_SHARE_RIGHT]: PreferenceShareRight,
+    [CompanyConstants.TARGET_PURCHASE_ASSET]: PurchaseAsset,
     [CompanyConstants.TARGET_RECEIPT]: ReceiptInvoice,
     [CompanyConstants.TARGET_REMOVAL_OF_DIRECTOR]: RemoveDirector,
     [CompanyConstants.TARGET_SET_FINANCIAL_YEAR_END]: SetFinancialYearEnd,

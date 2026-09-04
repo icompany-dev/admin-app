@@ -32,6 +32,7 @@
 
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import AssetPurchase from "./AssetPurchase.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
   import ChangeOfName from "./ChangeOfName.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
@@ -47,6 +48,7 @@
   const componentMap: Record<string, any> = {
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
     [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
+    [CompanyConstants.TARGET_PURCHASE_ASSET]: AssetPurchase,
   }
 
   const activeDocumentComponent = computed(() => {
