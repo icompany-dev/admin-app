@@ -109,7 +109,7 @@ export class CompanyAuditor {
     )
   }
 
-  async create(repository: ReturnType<typeof useCompanyAddressSubscriptionStore>): Promise<void> {
+  async create(repository: ReturnType<typeof useCompanyAuditorStore>): Promise<void> {
     if (!this.canSubmit()) {
       let error: Error = new Error()
       error.setForIncompleteData()
@@ -127,7 +127,7 @@ export class CompanyAuditor {
     this.convertFromResponse(response)
   }
 
-  async update(repository: ReturnType<typeof useCompanyAddressSubscriptionStore>): Promise<void> {
+  async update(repository: ReturnType<typeof useCompanyAuditorStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id) || !this.canSubmit()) {
       let error: Error = new Error()
       error.setForIncompleteData()
@@ -145,7 +145,7 @@ export class CompanyAuditor {
     this.convertFromResponse(response)
   }
 
-  async remove(repository: ReturnType<typeof useCompanyAddressSubscriptionStore>): Promise<void> {
+  async remove(repository: ReturnType<typeof useCompanyAuditorStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
       let error: Error = new Error()
       error.setForIncompleteData()
