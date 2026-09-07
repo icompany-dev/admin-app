@@ -44,7 +44,7 @@ export class PageSdnBhdController extends PageController {
   }
 
   onBackClicked(): void {
-    this.router.push(`/sdnbhds`)
+    this.router.push(`/sdnbhds/all`)
   }
 
   get companyName(): string {
