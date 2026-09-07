@@ -43,7 +43,7 @@
   const controller = new AppointDirectorController(props, emit)
 
   const componentMap: Record<string, any> = {
-    [DocumentTargets.TARGET_OPEN_BANK_ACCOUNT_RESOLUTIONS]: AppointNewDirectorService,
+    [DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS]: AppointNewDirectorService,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 

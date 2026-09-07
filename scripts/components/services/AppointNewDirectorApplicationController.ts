@@ -73,7 +73,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     this.isShowResolutions.value = true
     this.isShowCompleted.value = false
 
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_OPEN_BANK_ACCOUNT_RESOLUTIONS)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS)
   }
 
   async onDownloadClicked(): Promise<void> {

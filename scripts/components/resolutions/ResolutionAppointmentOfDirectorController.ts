@@ -26,6 +26,8 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
 
   isByShareholder: Ref<boolean> = ref<boolean>(false)
 
+  isPrinting: Ref<boolean> = ref<boolean>(false)
+
   dcrResolutionContentId: string = "077ae21e-0084-4f3c-8cc3-b2e604e3cda6"
   mcrResolutionContentId: string = "22489268-c062-4bec-9c7e-eed51f103d2b"
   mcrDcrResolutionContentId: string = "f2dd2a9e-9794-49a2-815d-c3efa2daf32f"
@@ -103,7 +105,7 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -157,6 +159,7 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
           </option>
         </select>
       `
+
       if (this.isShowSelectedEffectFromDetails()) {
         let type = this.isEffectFromEffectiveDate() ? "date" : "text"
         fields = `
