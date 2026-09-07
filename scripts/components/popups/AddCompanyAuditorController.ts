@@ -149,8 +149,8 @@ export class AddCompanyAuditorController extends BasePopupController {
         let auth = useAuthStore()
         let success = await auth.register({
           email: this.companyAuditor.value.auditorEmail,
-          password: "randomPassword1234565",
-          passwordConfirmation: "randomPassword1234565",
+          password: "iCompany2026!!",
+          passwordConfirmation: "iCompany2026!!",
         })
 
         if (!success) {
@@ -182,13 +182,7 @@ export class AddCompanyAuditorController extends BasePopupController {
       userInvitation.email = this.companyAuditor.value.auditorEmail
       userInvitation.accessRoleId = this.auditorAccessRole.value.id
 
-      if (!userInvitation.canSubmit()) {
-        console.log("invitation", userInvitation)
-      }
-
       await userInvitation.create(useUserInvitationStore())
-
-      console.log("user invitation", userInvitation)
     } catch (e) {
       console.error(e)
 
