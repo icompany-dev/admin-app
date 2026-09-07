@@ -1,18 +1,18 @@
-import { PageController } from "~/scripts/pages/PageController"
+import { PageController } from "./PageController"
 import { PropsBreadCrumb, PropsBreadCrumbItem } from "../props/PropsBreadCrumb"
 import { PropsTableFilter, PropsDataDateFilter, PropsDataOrders } from "../props/PropsTableFilter"
 
-export class PageAllSdnBhdController extends PageController {
+export class PageAssignCosecController extends PageController {
   searchText: Ref<string> = ref<string>("")
   sortOrder: Ref<string> = ref<string>("asc")
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
   isSdnBhdSelected: Ref<boolean> = ref<boolean>(false)
 
   constructor() {
-    let title: string = "Admin Dashboard - iCompany Malaysia"
-    let description: string = "Admin Dashboard"
+    let title: string = "Assignment of Company Secretary - iCompany Malaysia"
+    let description: string = "Assign Company Secretary to Sdn Bhd"
 
-    super(title, description, "All Sdn Bhd")
+    super(title, description, "Assign Company Secretary")
   }
 
   onSearchInput(searchInput: string): void {
@@ -40,7 +40,10 @@ export class PageAllSdnBhdController extends PageController {
   }
 
   get breadCrumbProps(): PropsBreadCrumb {
-    return new PropsBreadCrumb([new PropsBreadCrumbItem("Companies", ""), new PropsBreadCrumbItem("All", "")])
+    return new PropsBreadCrumb([
+      new PropsBreadCrumbItem("Companies", ""),
+      new PropsBreadCrumbItem("Assign Company Secretary", ""),
+    ])
   }
 
   get sortOrderLabel(): string {

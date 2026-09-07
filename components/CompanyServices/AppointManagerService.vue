@@ -128,7 +128,7 @@
 
 <script lang="ts" setup>
   import ActionTray from "../ActionTrays/ActionTray.vue"
-  import Alert from "../Alerts/Alert.vue"
+  // import Alert from "../Alerts/Alert.vue"
   import DcrAppointManager from "../Resolutions/DcrAppointManager.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"

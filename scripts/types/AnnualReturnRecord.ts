@@ -10,7 +10,9 @@ export class AnnualReturnRecord {
   cssClass: string = ""
   iconClass: string = ""
   isOverdue: boolean = false
+  isIncoming: boolean = false
   isPaid: boolean = false
+  isLodged: boolean = false
   showDayCount: boolean = false
   canDownload: boolean = false
   canPay: boolean = false

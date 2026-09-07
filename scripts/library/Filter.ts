@@ -24,6 +24,10 @@ export class Filter {
   includeDeleted: boolean = false
   includeTestAccount: boolean = false
 
+  isUnassigned: boolean | null = null
+  isWithoutSignatures: boolean | null = null
+  isInactive: boolean | null = null
+
   statuses: string[] = []
 
   constructor() {
@@ -102,6 +106,18 @@ export class Filter {
 
     if (this.statuses.length > 0) {
       slugElements.push(`statuses=${this.statuses.join(",")}`)
+    }
+
+    if (this.isUnassigned !== null) {
+      slugElements.push(`is_unassigned=${this.isUnassigned ? "1" : "0"}`)
+    }
+
+    if (this.isWithoutSignatures !== null) {
+      slugElements.push(`is_without_signatures=${this.isWithoutSignatures ? "1" : "0"}`)
+    }
+
+    if (this.isInactive !== null) {
+      slugElements.push(`is_inactive=${this.isInactive ? "1" : "0"}`)
     }
 
     return slugElements.join("&")

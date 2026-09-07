@@ -26,6 +26,10 @@ export const useUserStore = defineStore("user", () => {
 
     try {
       const response: any = await $repositories.users.fetchByEmail(email)
+      if (!response.data) {
+        return null
+      }
+
       return new User(response.data)
     } catch (e: any) {
       error.value = e.message || `Failed to fetch users by email`

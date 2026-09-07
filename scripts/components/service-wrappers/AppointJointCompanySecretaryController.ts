@@ -9,7 +9,7 @@ import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 
-export class AppointManagerController
+export class AppointJointCompanySecretaryController
   extends ServiceController
   implements
     IServiceController<CompanyDirectorManagerAppointment, ReturnType<typeof useCompanyDirectorManagerAppointmentStore>>
