@@ -32,13 +32,14 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
 
   isGenerating: Ref<boolean> = ref<boolean>(false)
   isApproving: Ref<boolean> = ref<boolean>(false)
+  isCompleting: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
       props.companyId,
       useCompanyDirectorAppointmentStore(),
       CompanyDirectorAppointment,
-      CompanyConstants.TARGET_OPEN_BANK_ACCOUNT,
+      CompanyConstants.TARGET_DIRECTOR_APPOINTMENT,
       emitEvents,
       props.applicationId
     )
@@ -90,18 +91,26 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
       let toastTitle = this.language.isMalay()
         ? "Anda telah mengemaskini status permohonan ini."
         : "You have updated this application status."
-      let toastMessage = this.language.isMalay()
-        ? "DCR telah dijana dan boleh didapati di Dokumen Syarikat."
-        : "The DCR has been generated and made available in the Company Documents."
+      let toastMessage = this.language.isMalay() ? "Sila muat naik Resolusi." : "Please upload the Resolution."
 
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
+
+      if (this.uploadDocumentRef) {
+        this.uploadDocumentRef.show()
+      }
     } catch (e) {
       let error = new Error()
       error.setForCUD()
       error.handle()
     } finally {
       this.isApproving.value = false
+    }
+  }
+
+  async onProceedPostUpload(): Promise<void> {
+    if (this.isCompleting.value) {
+      await this.proceedCompleteService()
     }
   }
 
@@ -112,7 +121,47 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   async onCompleteClicked(): Promise<void> {
-    //
+    this.isCompleting.value = true
+    if (this.uploadDocumentRef) {
+      this.uploadDocumentRef.show()
+
+      return
+    }
+
+    await this.proceedCompleteService()
+  }
+
+  async proceedCompleteService(): Promise<void> {
+    if (!this.application.value) {
+      return
+    }
+    try {
+      let repository = useCompanyStore()
+      await repository.postService(this.target.value, this.application.value.id)
+
+      if (repository.error !== null) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Permohonan telah Selesai. Pengarah Baharu telah ditambah ke Syarikat."
+        : "Application is Completed. The new Director has been added to the Company."
+      let toastMessage = this.language.isMalay()
+        ? "Anda akan dibawa ke muka Sdn Bhd."
+        : "You will be redirected to the Sdn Bhd page."
+
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${this.companyId.value}` })
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+    } finally {
+      this.isCompleting.value = false
+    }
   }
 
   getInvitationDetailProp(invitation: DirectorInvitation): PropsInvitationDetail {
