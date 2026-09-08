@@ -53,6 +53,8 @@
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isApproving.value }"
+              :disabled="controller.isApproving.value"
               @click="controller.onApprovedClicked()"
             >
               {{ controller.approveLabel }}

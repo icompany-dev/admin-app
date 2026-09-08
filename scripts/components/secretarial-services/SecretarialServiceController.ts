@@ -7,6 +7,9 @@ import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import type { Company } from "~/scripts/models/Company"
+import { File as UploadedFile } from "~/scripts/models/File"
+import { Form } from "~/scripts/models/Form"
+import type { GenerateDocumentDetails } from "~/scripts/types/GenerateDocumentDetails"
 
 export abstract class SecretarialServiceController<T, R> {
   companyId: Ref<string> = ref<string>("")
@@ -27,6 +30,7 @@ export abstract class SecretarialServiceController<T, R> {
 
   documentRef: any | null = null
   isDownloading: Ref<boolean> = ref<boolean>(false)
+  isGenerating: Ref<boolean> = ref<boolean>(false)
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
 
   constructor(props: PropsSecretarialService, target: string, emitEvents: any) {
@@ -108,6 +112,38 @@ export abstract class SecretarialServiceController<T, R> {
       console.error(e)
     } finally {
       this.isDownloading.value = false
+    }
+  }
+
+  async onGenerateClicked(generateDocumentDetails: GenerateDocumentDetails): Promise<void> {
+    if (this.isGenerating.value || !this.documentRef) {
+      return
+    }
+
+    try {
+      this.isGenerating.value = true
+
+      let pdfBlob = await this.documentRef.onGenerateBlob()
+      let pdfFile = new File([pdfBlob], generateDocumentDetails.filename, {
+        type: "application/pdf",
+      })
+
+      let uploadedFile = new UploadedFile()
+      await uploadedFile.uploadFile(pdfFile, useFileStore())
+
+      let form = new Form()
+      form.companyId = this.companyId.value
+      form.type = "business_detail"
+      form.fileId = uploadedFile.id
+      form.documentDate = generateDocumentDetails.documentDate
+      form.status = "active"
+      form.noOfPages = generateDocumentDetails.noOfPages
+
+      await form.create(useFormStore())
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isGenerating.value = false
     }
   }
 

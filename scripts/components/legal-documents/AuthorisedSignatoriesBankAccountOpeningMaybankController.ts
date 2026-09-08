@@ -373,7 +373,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
     let dayjs = useDayjs()
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
       "$date.&lt;name=documentDate&gt;$",
-      this.time.formatDateOnlyFull(dayjs().format("YYYY-MM-DD"))
+      this.getApprovedResolutionDate()
     )
 
     let resolutionDateSearchString = "[To Be Determined By iCompany]"

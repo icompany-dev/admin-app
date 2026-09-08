@@ -18,6 +18,8 @@ import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderIte
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
+import { GenerateDocumentDetails } from "~/scripts/types/GenerateDocumentDetails"
+import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 
 export class AppointNewDirectorApplicationController extends ApplicationController<CompanyDirectorAppointment> {
   resolutionsRef: any | null = null

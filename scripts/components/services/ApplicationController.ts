@@ -51,6 +51,7 @@ export abstract class ApplicationController<Application> {
 
   serviceApplicationRef: any | null = null
   shipApplicationRef: any | null = null
+  uploadDocumentRef: any | null = null
 
   constructor(
     companyId: string,
@@ -129,6 +130,10 @@ export abstract class ApplicationController<Application> {
 
   setShipApplicationRef(shipApplicationRef: any): void {
     this.shipApplicationRef = shipApplicationRef
+  }
+
+  setUploadDocumentRef(uploadDocumentRef: any): void {
+    this.uploadDocumentRef = uploadDocumentRef
   }
 
   setServiceApplicationRef(serviceApplicationRef: any): void {
