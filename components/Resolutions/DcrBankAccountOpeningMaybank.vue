@@ -36,9 +36,10 @@
           class="resolution-title"
           :class="{ 'maybank-other-pages': index > 0 }"
         >
-          <span v-if="index === 0">
-            {{ controller.resolutionTitle() }}
-          </span>
+          <span
+            v-if="index === 0"
+            v-html="controller.resolutionTitleRef.value"
+          />
           <span v-if="index > 0">
             (Directors’ Resolution in Writing Re: Opening of bank Account with Malayan Banking Berhad/ Maybank Islamic
             Berhad – cont’d)

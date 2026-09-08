@@ -186,7 +186,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
     }
 
     if (!this.isDocumentEditable()) {
-      return this.application.value.bankBranch.name
+      return `${this.application.value.bankBranch.name} ${this.application.value.bankBranch.address}`
     }
 
     if (this.bankBranches.value.length <= 0) {
@@ -237,7 +237,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
           addedNames.push(b.name.trim())
 
           return `
-          <span id='${b.id}' class='branch-to-select dropdown-item'>${b.name}</span>
+          <span id='${b.id}' class='branch-to-select dropdown-item'>${b.name} ${b.address}</span>
         `
         })
         .filter((s: string) => {
@@ -258,7 +258,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
 
     let selectedValue = StringUtil.isNullOrEmpty(this.application.value.bankBranchId)
       ? "YOUR SELECTED BRANCH"
-      : this.application.value.bankBranch.name
+      : `${this.application.value.bankBranch.name} ${this.application.value.bankBranch.address}`
 
     let placeholderClass = StringUtil.isNullOrEmpty(this.application.value.bankBranchId) ? "value-placeholder" : ""
 
@@ -284,12 +284,12 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
     if (!this.isDocumentEditable() || this.isInPreviewMode.value) {
       if (this.application.value.signatories.length <= 0) {
         signatoryRows = this.directors.value.map((d: Director, index: number) => {
-          let idType = d.identificationType === "passport" ? "Passport" : "NRIC"
+          let idType = d.identificationType === "passport" ? "Passport" : "MyKad"
           return `
             <tr>
               <td>${index + 1}</td>
               <td>${d.name}</td>
-              <td>(${idType}) No.: ${d.identification}</td>
+              <td>(${idType}) No: ${d.identification}</td>
             </tr>
           `
         })
@@ -299,7 +299,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
             <tr>
               <td>${index + 1}</td>
               <td>${d.name}</td>
-              <td>(${d.type}) No.: ${d.identification}</td>
+              <td>(${d.type}) No: ${d.identification}</td>
             </tr>
           `
         })

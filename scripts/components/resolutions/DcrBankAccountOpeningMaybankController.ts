@@ -21,6 +21,8 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
+  resolutionTitleRef: Ref<string> = ref<string>("")
+
   pages = ref<string[]>([])
   originalTemplateContent: string = ""
 
@@ -49,7 +51,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
     this.bankId.value = bankId
 
     this.signatureStartOnPage.value = 3
-    this.maxSignatureOnFirstPage.value = 2
+    this.maxSignatureOnFirstPage.value = 4
     this.maxSignatureOnOtherPages.value = 6
 
     this.initializeResolution(applicationId, companyId)
@@ -131,6 +133,11 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
   }
 
   setContent(): void {
+    let titleTemplateProcessor = new TemplateProcessor(this.documentTemplate.value)
+    this.resolutionTitleRef.value = this.isDocumentEditable()
+      ? titleTemplateProcessor.getTitle(this.application.value)
+      : titleTemplateProcessor.getTitleForPrint(this.application.value)
+
     let splitPages = this.documentTemplate.value.content.split(TemplateProcessor.BREAKPAGE_MARKER)
 
     this.pages.value = splitPages.map((raw: string) => {
@@ -167,6 +174,21 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       }
       return `<span class="fake-indent"></span>`
     })
+
+    let soleAnyTwoSearch = "a sole director / minimum of any TWO (2) directors*"
+    let soleAnyTwo = "minimum of any TWO (2) directors"
+    let signatoryAuthorisationType = this.application.value?.signatoryType ?? "anyone"
+    if (signatoryAuthorisationType === "solely") {
+      soleAnyTwo = "a sole director"
+    } else if (signatoryAuthorisationType === "all") {
+      soleAnyTwo = "all the directors"
+    } else if (signatoryAuthorisationType === "both") {
+      soleAnyTwo = "minimum of any TWO (2) directors"
+    } else {
+      soleAnyTwo = "any of the directors"
+    }
+
+    content = content.replaceAll(soleAnyTwoSearch, soleAnyTwo)
 
     return content
   }
