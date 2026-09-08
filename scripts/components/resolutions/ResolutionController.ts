@@ -5,7 +5,7 @@ import { useShareholderStore } from "~/stores/Shareholders"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import { Director } from "~/scripts/models/Director"
 import { User } from "~/scripts/models/User"
-import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import type { Shareholder } from "~/scripts/models/Shareholder"
 import { useDayjs } from "#imports"
 import { StringUtil } from "~/scripts/utils/String"
@@ -423,8 +423,29 @@ export abstract class ResolutionController<T> {
     return currentUserSignatureItem !== undefined && !currentUserSignatureItem.hasSigned
   }
 
+  get lastSignatureDate(): string {
+    if (!this.application.value) {
+      return ""
+    }
+
+    let orderedSignatureGroup = ObjectUtil.sort<SignatureGroup>(
+      this.application.value.signatureGroups,
+      "createdAt",
+      "desc"
+    )
+    if (orderedSignatureGroup.length <= 0) {
+      return ""
+    }
+
+    let lastSignatureReceived = orderedSignatureGroup[0]
+    let time = useLocalTime()
+    let dayjs = useDayjs()
+
+    return dayjs(lastSignatureReceived.createdAt).format("YYYY-MM-DD")
+  }
+
   get resolutionProps() {
-    return new PropsResolution(
+    let props = new PropsResolution(
       this.companyName(), //companyName
       this.registrationNumberOld(), //registrationNumberOld
       this.registrationNumberNew(), //registrationNumberNew
@@ -445,6 +466,10 @@ export abstract class ResolutionController<T> {
       this.isUsingTemplate.value, //isUsingTemplate
       this.isLoading.value //isLoading
     )
+
+    props.resolutionDate = this.lastSignatureDate
+
+    return props
   }
 
   async getPdfPages(): Promise<HTMLElement[]> {
