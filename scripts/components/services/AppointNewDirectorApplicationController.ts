@@ -16,6 +16,8 @@ import { Filter } from "~/scripts/library/Filter"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderItemMandatory"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
+import { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
+import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 
 export class AppointNewDirectorApplicationController extends ApplicationController<CompanyDirectorAppointment> {
   resolutionsRef: any | null = null
@@ -111,7 +113,19 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     //
   }
 
+  getInvitationDetailProp(invitation: DirectorInvitation): PropsInvitationDetail {
+    let props = new PropsInvitationDetail(invitation.id, invitation)
+
+    props.hasSection201 = true
+
+    return props
+  }
+
   //getters
+  get directorInvitations(): DirectorInvitation[] {
+    return this.application.value?.directorInvitations ?? []
+  }
+
   get serviceName(): string {
     return this.language.isMalay() ? "Lantik Pengarah Baharu" : "Appoint New Director"
   }
@@ -146,6 +160,26 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     }
 
     return this.application.value?.directorIdentificationType === "passport" ? "Passport No." : "MyKad No."
+  }
+
+  get directorAddressLabel(): string {
+    return this.language.isMalay() ? "Alamat" : "Address"
+  }
+
+  get directorPostcodeLabel(): string {
+    return this.language.isMalay() ? "Poskod" : "Postcode"
+  }
+
+  get directorCityLabel(): string {
+    return this.language.isMalay() ? "Bandar" : "City"
+  }
+
+  get directorStateLabel(): string {
+    return this.language.isMalay() ? "Negeri" : "State"
+  }
+
+  get directorCountryLabel(): string {
+    return this.language.isMalay() ? "Negara" : "Country"
   }
 
   get itemsToPrepareLabel(): string {

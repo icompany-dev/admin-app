@@ -23,12 +23,10 @@
               </div>
             </div>
             <div class="application-details">
-              <b>{{ controller.directorNameLabel }}</b>
-              : {{ controller.directorName }}
-              <br />
-              <b>{{ controller.directorIdentificationLabel }}</b>
-              :
-              {{ controller.application.value?.directorIdentification }}
+              <template v-for="invitation in controller.directorInvitations">
+                <Director v-bind="controller.getInvitationDetailProp(invitation)" />
+              </template>
+
               <template v-if="controller.hasOtherRequirements">
                 <br />
                 <br />
@@ -135,6 +133,7 @@
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
+  import Director from "../Invitations/Director.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"
