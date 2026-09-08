@@ -170,11 +170,7 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
     return items
   }
 
-  get deliverToLabel(): string {
-    return this.language.isMalay() ? "Hantar ke" : "Deliver to"
-  }
-
-  get deliveryAddress(): string {
+  override get deliveryAddress(): string {
     if (!this.application.value) {
       return "-"
     }
@@ -203,7 +199,7 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
     `
   }
 
-  get deliveryAddressToCopy(): string {
+  override get deliveryAddressToCopy(): string {
     if (!this.application.value) {
       return "-"
     }

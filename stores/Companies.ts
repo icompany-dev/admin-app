@@ -109,6 +109,23 @@ export const useCompanyStore = defineStore("company", () => {
     }
   }
 
+  async function postService(targetType: string, targetId: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.companies.postService(targetType, targetId)
+      return response
+    } catch (e: any) {
+      error.value = `Unable to update company. ${e}`
+      console.error("Failed to update company", e)
+
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanies = computed(() => companies.value.length)
 
   return {
@@ -124,5 +141,6 @@ export const useCompanyStore = defineStore("company", () => {
     updateDetails,
     fetchPublic,
     fetchStatisticsForAssignment,
+    postService,
   }
 })

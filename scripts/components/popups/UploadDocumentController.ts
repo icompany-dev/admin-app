@@ -115,7 +115,6 @@ export class UploadDocumentController extends BasePopupController {
       this.uploadedFiles.value = this.files.value.map((f: File) => {
         let uploadedFile = new UploadedFile()
         uploadedFile.name = f.name
-
         return uploadedFile
       })
 

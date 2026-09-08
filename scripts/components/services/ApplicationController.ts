@@ -10,6 +10,7 @@ import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
 import { PropsShipApplication } from "~/scripts/props/PropsShipApplication"
+import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -579,5 +580,13 @@ export abstract class ApplicationController<Application> {
     }
 
     return this.application.value.company?.businessAddressLocation?.getOnelineAddress() ?? ""
+  }
+
+  get uploadDocumentProps(): PropsUploadDocument {
+    let props = new PropsUploadDocument(this.companyId.value)
+
+    props.canUploadPdf = true
+
+    return props
   }
 }

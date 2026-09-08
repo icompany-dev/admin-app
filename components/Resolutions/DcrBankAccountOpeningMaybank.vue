@@ -211,6 +211,16 @@
     }
   )
 
+  watch(
+    () => controller.resolutionTitleRef.value,
+    async (newVal) => {
+      console.log("changed")
+
+      await nextTick()
+      controller.attachEventListeners()
+    }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),

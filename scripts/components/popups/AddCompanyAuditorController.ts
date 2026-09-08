@@ -57,21 +57,25 @@ export class AddCompanyAuditorController extends BasePopupController {
   }
 
   async fetchAuditorAccessRole(): Promise<void> {
-    let accessRolesRepository = useAccessRoleStore()
-    let accessRoleFilter = new Filter()
-    accessRoleFilter.companyId = this.companyId.value
-    accessRoleFilter.searchText = "auditor"
+    try {
+      let accessRolesRepository = useAccessRoleStore()
+      let accessRoleFilter = new Filter()
+      accessRoleFilter.companyId = this.companyId.value
+      accessRoleFilter.searchText = "auditor"
 
-    let response = await accessRolesRepository.fetchAll(accessRoleFilter)
-    if (response.totalRecords >= 0) {
-      this.auditorAccessRole.value = new AccessRole(response.data[0])
-      return
+      let response = await accessRolesRepository.fetchAll(accessRoleFilter)
+      if (response.totalRecords > 0) {
+        this.auditorAccessRole.value = new AccessRole(response.data[0])
+        return
+      }
+
+      this.auditorAccessRole.value.companyId = this.companyId.value
+      this.auditorAccessRole.value.name = "Appointed Auditor"
+      this.auditorAccessRole.value.description = "Role for Appointed Auditors"
+      await this.auditorAccessRole.value.create(accessRolesRepository)
+    } catch (e) {
+      console.error(e)
     }
-
-    this.auditorAccessRole.value.companyId = this.companyId.value
-    this.auditorAccessRole.value.name = "Appointed Auditor"
-    this.auditorAccessRole.value.description = "Role for Appointed Auditors"
-    await this.auditorAccessRole.value.create(accessRolesRepository)
   }
 
   override show(): void {
@@ -112,6 +116,8 @@ export class AddCompanyAuditorController extends BasePopupController {
       if (this.isGrantAccess.value) {
         promises.push(this.grantAccess())
       }
+
+      await Promise.allSettled(promises)
 
       let toastTitle = this.language.isMalay()
         ? "Anda telah berjaya tambah butiran Juruaudit Syarikat"

@@ -28,8 +28,6 @@
               </template>
 
               <template v-if="controller.hasOtherRequirements">
-                <br />
-                <br />
                 <b>{{ controller.itemsToPrepareLabel }}</b>
                 <ol>
                   <li
@@ -129,6 +127,10 @@
       ref="shipApplicationRef"
       @proceed="controller.onProceedShipped()"
     />
+    <PopupUploadDocument
+      v-bind="controller.uploadDocumentProps"
+      ref="uploadDocumenRef"
+    />
   </div>
 </template>
 
@@ -149,6 +151,7 @@
   const resolutionsRef = ref(null)
   const shipApplicationRef = ref(null)
   const serviceApplicationRef = ref(null)
+  const uploadDocumenRef = ref(null)
 
   const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
 
@@ -181,6 +184,14 @@
     serviceApplicationRef,
     (newVal) => {
       controller.setServiceApplicationRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    uploadDocumenRef,
+    (newVal) => {
+      controller.setUploadDocumentRef(newVal)
     },
     { immediate: true }
   )
