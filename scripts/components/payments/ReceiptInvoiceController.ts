@@ -73,9 +73,12 @@ export class ReceiptInvoiceController {
     }
 
     await this.fetchPaymentOrder()
+
+    console.log("fetching??")
   }
 
   async setPaymentOrder(paymentOrder: PaymentOrder): Promise<void> {
+    console.log("here???", paymentOrder)
     this.isSettingPaymentOrder.value = true
     this.paymentOrder.value = new PaymentOrder(paymentOrder)
 

@@ -29,21 +29,19 @@
               <b>{{ controller.directorIdentificationLabel }}</b>
               :
               {{ controller.application.value?.directorIdentification }}
-              <br />
-              <br />
-              <b>{{ controller.itemsToPrepareLabel }}</b>
-              <ol>
-                <li
-                  v-for="(item, i) in controller.itemsToPrepare"
-                  :key="i"
-                >
-                  {{ item }}
-                </li>
-              </ol>
-              <b>{{ controller.deliverToLabel }}</b>
-              <br />
-              <span v-html="controller.deliveryAddress" />
-              <CopyValue :value="controller.deliveryAddressToCopy" />
+              <template v-if="controller.hasOtherRequirements">
+                <br />
+                <br />
+                <b>{{ controller.itemsToPrepareLabel }}</b>
+                <ol>
+                  <li
+                    v-for="(item, i) in controller.itemsToPrepare"
+                    :key="i"
+                  >
+                    {{ item }}
+                  </li>
+                </ol>
+              </template>
             </div>
           </template>
           <template #nodeOptions>
@@ -54,6 +52,43 @@
               {{ controller.downloadLabel }}
             </button>
           </template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              @click="controller.onApprovedClicked()"
+            >
+              {{ controller.approveLabel }}
+            </button>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode
+          v-if="controller.isDeliveryRequired"
+          v-bind="controller.deliveryNodeProps"
+          @click="controller.onApplicationDetailsClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.deliveryLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.deliverySublabel }}
+              </div>
+            </div>
+            <div class="application-details">
+              <b>{{ controller.deliverMethodLabel }}</b>
+              <br />
+              {{ controller.deliveryMethod }}
+              <br />
+              <br />
+              <b>{{ controller.deliverToLabel }}</b>
+              <br />
+              <span v-html="controller.deliveryAddress" />
+              <CopyValue :value="controller.deliveryAddressToCopy" />
+            </div>
+          </template>
+          <!--This will be where the print slips be-->
+          <template #nodeOptions></template>
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
@@ -75,9 +110,6 @@
               <div class="node-subtitle">
                 {{ controller.completedSublabel }}
               </div>
-            </div>
-            <div class="application-details">
-              {{ controller.completedStatus }}
             </div>
           </template>
           <template #nodeOptions></template>

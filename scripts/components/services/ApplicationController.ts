@@ -5,6 +5,7 @@ import { Application } from "~/scripts/models/Application"
 import { Director } from "~/scripts/models/Director"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
 import { PaymentOrder } from "~/scripts/models/PaymentOrder"
+import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
@@ -482,5 +483,96 @@ export abstract class ApplicationController<Application> {
 
   get shipApplicationProps(): PropsShipApplication {
     return new PropsShipApplication(this.application.value, this.target.value, this.repository)
+  }
+
+  get paymentOrderItem(): PaymentOrderItem {
+    let paymentOrderItem = this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
+      return poi.targetType === this.target.value && poi.targetId === this.applicationId.value
+    })
+
+    return paymentOrderItem ?? new PaymentOrderItem()
+  }
+
+  get hasOtherRequirements(): boolean {
+    return this.paymentOrderItem.optionals.length > 0
+  }
+
+  get isDeliveryRequired(): boolean {
+    return this.paymentOrderItem.isDeliveryRequired
+  }
+
+  get deliveryLabel(): string {
+    return this.language.isMalay() ? "Penghantaran" : "Delivery"
+  }
+
+  get deliverySublabel(): string {
+    return this.language.isMalay() ? "Butiran Penghantaran" : "Details of Delivery"
+  }
+
+  get deliverMethodLabel(): string {
+    return this.language.isMalay() ? "Hantar melalui" : "Delivery via"
+  }
+
+  get deliveryMethod(): string {
+    return this.paymentOrderItem.deliveryType ?? "-"
+  }
+
+  get deliverToLabel(): string {
+    return this.language.isMalay() ? "Hantar ke" : "Deliver to"
+  }
+
+  get deliveryAddress(): string {
+    if (!this.application.value || !this.isDeliveryRequired) {
+      return "-"
+    }
+
+    if (!this.application.value.company?.hasBusinessAddress) {
+      let addressFragments: string[] = [`<b>${this.paymentOrder.value.billingInfo.name}</b>`]
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
+      )
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
+      )
+
+      return addressFragments
+        .filter((s: string) => {
+          return !StringUtil.isNullOrEmpty(s)
+        })
+        .join("<br>")
+    }
+
+    return `
+      <b>${this.paymentOrder.value.billingInfo.name}</b><br>
+      ${this.application.value.company?.businessAddressLocation?.getMultilineAddress()}
+    `
+  }
+
+  get deliveryAddressToCopy(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    if (!this.application.value.company?.hasBusinessAddress) {
+      let addressFragments: string[] = []
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
+      )
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
+      )
+
+      return addressFragments
+        .filter((s: string) => {
+          return !StringUtil.isNullOrEmpty(s)
+        })
+        .join(", ")
+    }
+
+    return this.application.value.company?.businessAddressLocation?.getOnelineAddress() ?? ""
   }
 }

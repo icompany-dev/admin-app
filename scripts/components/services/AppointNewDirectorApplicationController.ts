@@ -23,7 +23,11 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   banks: Ref<Bank[]> = ref<Bank[]>([])
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
+  isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
+
+  isGenerating: Ref<boolean> = ref<boolean>(false)
+  isApproving: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -37,27 +41,10 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
 
     this.minimumMajorityRequired.value = 0
     this.selectedApprovalType.value = "director" // this is fixed for this service
-
-    this.fetchBanks()
   }
 
   setResolutionsRef(resolutionsRef: any): void {
     this.resolutionsRef = resolutionsRef
-  }
-
-  async fetchBanks(): Promise<void> {
-    try {
-      let repository = useBankStore()
-      let filter = new Filter()
-      filter.takeAll = true
-      let response = await repository.fetchAll(filter)
-
-      this.banks.value = response.data.map((d: any) => {
-        return new Bank(d)
-      })
-    } catch (e) {
-      console.error(e)
-    }
   }
 
   onPaymentStepClicked(): void {
@@ -83,6 +70,35 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
 
   async onPrintClicked(): Promise<void> {
     //
+  }
+
+  async onApprovedClicked(): Promise<void> {
+    if (!this.application.value) {
+      return
+    }
+
+    this.isApproving.value = true
+    try {
+      this.application.value.status = StatusConstants.APPROVED
+      await this.application.value.update(useCompanyDirectorAppointmentStore())
+      await this.fetchApplication()
+
+      let toastTitle = this.language.isMalay()
+        ? "Anda telah mengemaskini status permohonan ini."
+        : "You have updated this application status."
+      let toastMessage = this.language.isMalay()
+        ? "DCR telah dijana dan boleh didapati di Dokumen Syarikat."
+        : "The DCR has been generated and made available in the Company Documents."
+
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+    } finally {
+      this.isApproving.value = false
+    }
   }
 
   async onShippedClicked(): Promise<void> {
@@ -133,31 +149,16 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   get itemsToPrepareLabel(): string {
-    return this.language.isMalay() ? "Perkara perlu disediakan" : "Items to Prepare"
+    return this.language.isMalay() ? "Perkara Tambahan perlu disediakan" : "Additional Items to Prepare"
   }
 
   get itemsToPrepare(): string[] {
-    let paymentOrderItem = this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
-      return poi.targetType === this.target.value && poi.targetId === this.applicationId.value
-    })
-
-    if (!paymentOrderItem) {
+    if (!this.hasOtherRequirements) {
       return []
     }
 
     let items: string[] = []
-    paymentOrderItem.mandatories.forEach((poim: PaymentOrderItemMandatory) => {
-      if (StringUtil.contains(poim.serviceName, "bundle of documents")) {
-        items.push("Section 14 - Superform")
-        items.push("Section 15 - Notification of Incorporation")
-        items.push("Section 51 - Register of Members")
-        items.push("Section 58 - Register of Directors")
-      } else {
-        items.push(StringUtil.capitalize(poim.serviceName))
-      }
-    })
-
-    paymentOrderItem.optionals.forEach((poio: PaymentOrderItemOptional) => {
+    this.paymentOrderItem.optionals.forEach((poio: PaymentOrderItemOptional) => {
       if (!StringUtil.contains(poio.serviceName, "printed")) {
         items.push(StringUtil.capitalize(poio.serviceName))
       }
@@ -166,67 +167,26 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     return items
   }
 
-  get deliverToLabel(): string {
-    return this.language.isMalay() ? "Hantar ke" : "Deliver to"
-  }
-
-  get deliveryAddress(): string {
-    if (!this.application.value) {
-      return "-"
-    }
-
-    if (!this.application.value.company?.hasBusinessAddress) {
-      let addressFragments: string[] = [`<b>${this.paymentOrder.value.billingInfo.name}</b>`]
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
-      )
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
-      )
-
-      return addressFragments
-        .filter((s: string) => {
-          return !StringUtil.isNullOrEmpty(s)
-        })
-        .join("<br>")
-    }
-
-    return `
-      <b>${this.paymentOrder.value.billingInfo.name}</b><br>
-      ${this.application.value.company?.businessAddressLocation?.getMultilineAddress()}
-    `
-  }
-
-  get deliveryAddressToCopy(): string {
-    if (!this.application.value) {
-      return "-"
-    }
-
-    if (!this.application.value.company?.hasBusinessAddress) {
-      let addressFragments: string[] = []
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
-      )
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
-      )
-
-      return addressFragments
-        .filter((s: string) => {
-          return !StringUtil.isNullOrEmpty(s)
-        })
-        .join(", ")
-    }
-
-    return this.application.value.company?.businessAddressLocation?.getOnelineAddress() ?? ""
-  }
-
   get downloadLabel(): string {
     return this.language.isMalay() ? "Muat Turun" : "Download"
+  }
+
+  get isApproved(): boolean {
+    if (!this.application.value) {
+      return false
+    }
+
+    return (
+      this.application.value.status === StatusConstants.APPROVED ||
+      this.application.value.status === StatusConstants.SHIPPED ||
+      this.application.value.status === StatusConstants.DELIVERED ||
+      this.application.value.status === StatusConstants.CONVERTED ||
+      this.application.value.status === StatusConstants.COMPLETED
+    )
+  }
+
+  get approveLabel(): string {
+    return this.language.isMalay() ? "Diluluskan" : "Approved"
   }
 
   get shipLabel(): string {
@@ -246,8 +206,14 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     )
   }
 
+  get deliveryNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isApproved, this.isShipped, this.isShowShipped.value)
+  }
+
   get completedNodeProps(): PropsServiceApplicationNode {
-    let props = new PropsServiceApplicationNode(this.isShipped, this.isCompleted, this.isShowCompleted.value)
+    let isPreviousStepCompleted = this.isDeliveryRequired ? this.isShipped : this.isApproved
+
+    let props = new PropsServiceApplicationNode(isPreviousStepCompleted, this.isCompleted, this.isShowCompleted.value)
 
     props.isLastNode = true
 
@@ -266,11 +232,14 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   get applicationCompletedLabel(): string {
-    return this.language.isMalay() ? "Dokumen Dihantar" : "Documents Delivered"
+    if (this.isDeliveryRequired) {
+      return this.language.isMalay() ? "Dokumen Dihantar" : "Documents Delivered"
+    }
+    return this.language.isMalay() ? "Permohonan Selesai" : "Completion of Application"
   }
 
   get completedSublabel(): string {
-    return this.language.isMalay() ? "(Status Penghantaran Dokumen)" : "(Document Delivery Status)"
+    return this.language.isMalay() ? "Masukkan Permohonan ke dalam Arkib" : "Move Application to Company Documents"
   }
 
   get completedStatus(): string {
@@ -283,6 +252,10 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     let completedAt = time.formatDateOnlyFull(this.application.value?.completedAt ?? "")
 
     return this.language.isMalay() ? `Disahkan pada ${completedAt}` : `Confirmed on ${completedAt}`
+  }
+
+  get uploadLabel(): string {
+    return this.language.isMalay() ? "Muat Naik Seksyen 58" : "Upload Section 58"
   }
 
   get markCompletedLabel(): string {
