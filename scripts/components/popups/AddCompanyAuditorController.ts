@@ -40,8 +40,6 @@ export class AddCompanyAuditorController extends BasePopupController {
 
     this.companyAuditor.value.companyId = this.companyId.value
 
-    console.log(this.companyId.value)
-
     await this.fetchAuditorAccessRole()
   }
 
