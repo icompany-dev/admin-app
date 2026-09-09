@@ -9,16 +9,18 @@
       :class="'identification-marker'"
     >
       <template #paperContent>
-        <div class="idenfication-image-container">
-          <div class="marker">{{ controller.markerText.value }}</div>
-          <img :src="controller.identificationFileUrl.value" />
-        </div>
+        <div class="image-containers">
+          <div class="idenfication-image-container">
+            <div class="marker">{{ controller.markerText.value }}</div>
+            <img :src="controller.identificationFileUrl.value" />
+          </div>
 
-        <div
-          class="idenfication-image-container"
-          v-if="controller.hasAltIdentificationFile"
-        >
-          <img :src="controller.identificationFileUrl.value" />
+          <div
+            class="idenfication-image-container"
+            v-if="controller.hasAltIdentificationFile"
+          >
+            <img :src="controller.identificationFileUrl.value" />
+          </div>
         </div>
       </template>
     </Paper>

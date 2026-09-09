@@ -1,20 +1,29 @@
 #identifications-identification-document-watermark {
   .identification-marker {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 100px;
-    height: 100%;
-    width: 100%;
+
 
     img {
-      max-width: 90%;
+      width: 100%;
       height: auto;
+    }
+
+    .image-containers {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 100px;
+      height: 100%;
+      width: 100%;
     }
 
     .idenfication-image-container {
       position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 80%;
 
       .marker {
         position: absolute;
