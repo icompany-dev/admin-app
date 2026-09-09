@@ -583,7 +583,8 @@ export abstract class ApplicationController<Application> {
   }
 
   get uploadDocumentProps(): PropsUploadDocument {
-    let props = new PropsUploadDocument(this.companyId.value)
+    let companyId = this.application.value.companyId ?? this.companyId.value
+    let props = new PropsUploadDocument(companyId)
 
     props.canUploadPdf = true
 

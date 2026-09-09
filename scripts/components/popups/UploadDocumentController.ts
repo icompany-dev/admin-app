@@ -187,6 +187,8 @@ export class UploadDocumentController extends BasePopupController {
           return
         }
 
+        f.companyId = this.companyId.value
+        f.status = "active"
         f.fileId = uploadedFile.id
 
         promises.push(f.create(useFormStore()))
