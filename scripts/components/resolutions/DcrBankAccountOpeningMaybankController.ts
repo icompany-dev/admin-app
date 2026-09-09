@@ -52,7 +52,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
     this.bankId.value = bankId
 
     this.signatureStartOnPage.value = 3
-    this.maxSignatureOnFirstPage.value = 4
+    this.maxSignatureOnFirstPage.value = 6
     this.maxSignatureOnOtherPages.value = 6
 
     this.initializeResolution(applicationId, companyId)
