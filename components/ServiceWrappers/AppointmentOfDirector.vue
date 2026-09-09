@@ -18,22 +18,20 @@
         <DcrAppointmentOfDirector
           ref="dcrRef"
           v-bind="controller.resolutionDocumentProps"
-          @signed="controller.onSigned($event)"
-          @applicationUpdated="emit('applicationUpdated', $event)"
         />
         <McrAppointmentOfDirector
           ref="mcrRef"
           v-if="props.isByShareholder"
           v-bind="controller.resolutionDocumentProps"
-          @signed="controller.onSigned($event)"
-          @applicationUpdated="emit('applicationUpdated', $event)"
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrAppointmentOfDirector from "../Resolutions/DcrAppointmentOfDirector.vue"
   import McrAppointmentOfDirector from "../Resolutions/McrAppointmentOfDirector.vue"
   import { AppointmentOfDirectorController } from "~/scripts/components/service-wrappers/AppointmentOfDirectorController"

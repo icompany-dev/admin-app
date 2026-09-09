@@ -44,6 +44,7 @@ export class EmitMessages {
     "pa",
     "documentSelected",
     "download",
+    "generate",
     "company",
     "show",
     "hide",

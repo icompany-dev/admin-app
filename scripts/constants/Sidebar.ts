@@ -107,9 +107,16 @@ export class PageSidebar {
     "services/open-bank-account",
     false
   )
+  static appointDirector: Sidebar = new Sidebar(
+    "Appoint New Director",
+    "Lantik Pengarah",
+    "services/appoint-director-new",
+    false
+  )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
     this.openBankAccount,
+    this.appointDirector,
   ])
 
   static personsDraft: Sidebar = new Sidebar(

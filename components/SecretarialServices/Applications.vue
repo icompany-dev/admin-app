@@ -61,6 +61,7 @@
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
+  import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
@@ -80,6 +81,9 @@
       break
     case CompanyConstants.TARGET_OPEN_BANK_ACCOUNT:
       controller = new BankAccountOpeningsController(props, emit)
+      break
+    case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
+      controller = new AppointDirectorsController(props, emit)
       break
   }
 

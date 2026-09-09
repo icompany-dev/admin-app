@@ -50,92 +50,11 @@
           />
         </TransitionGroup>
       </template>
-      <template #step-status>
-        <div v-if="controller.isStepStatusVisible()">
-          <div v-if="!controller.isSubmittedToSSM()">
-            {{ controller.processingLabel() }}
-            <i class="fa-solid fa-loader fa-spin"></i>
-          </div>
-
-          <div v-if="controller.isSubmittedToSSM()">
-            <b>{{ controller.submittedToSsmLabel() }}:</b>
-            <div class="step-date">
-              {{ controller.getSubmissionDate() }}
-              <i class="check-icon fa-solid fa-circle-check"></i>
-            </div>
-
-            <div class="step-buttons">
-              <button
-                class="btn btn-submit"
-                @click="controller.onPayForAccess()"
-              >
-                {{ controller.payForAccessLabel() }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #cornerButton>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-primary"
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </button>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-pay"
-          @click="controller.onProceedClicked()"
-        >
-          {{ controller.payLabel() }}
-        </button>
-      </template>
-      <template #learnMoreButton>
-        <div
-          class="learn-more"
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </div>
-      </template>
     </CompanyServiceWrapper>
-    <ActionTray
-      v-if="controller.showActionTray()"
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
-    <Teleport to="body">
-      <div
-        class="alert-tray"
-        :class="{ show: controller.isShowInfo.value }"
-      >
-        <Transition name="alert-appear">
-          <Alert
-            :is-dismissible="true"
-            :type="'default'"
-            :is-show="controller.isShowInfo.value"
-            @hide="controller.onMoreInfoClicked()"
-          >
-            <template #alertContent>
-              <div class="title">
-                {{ controller.alertTitle() }}
-              </div>
-              <div
-                class="content"
-                v-html="controller.alertContent()"
-                @click="controller.onGlossaryLinkClicked($event)"
-              />
-            </template>
-          </Alert>
-        </Transition>
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-  import Alert from "../Alerts/Alert.vue"
   import DcrAppointmentOfDirector from "../Resolutions/DcrAppointmentOfDirector.vue"
   import McrAppointmentOfDirector from "../Resolutions/McrAppointmentOfDirector.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
@@ -210,6 +129,11 @@
       controller.setIsByShareholder(newVal)
     }
   )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onGenerateBlob: controller.onGenerateBlob.bind(controller),
+  })
 </script>
 
 <style lang="scss">

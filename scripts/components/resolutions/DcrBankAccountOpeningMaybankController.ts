@@ -21,6 +21,9 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
+  resolutionTitleRef: Ref<string> = ref<string>("")
+  originalResolutionTitle: Ref<string> = ref<string>("")
+
   pages = ref<string[]>([])
   originalTemplateContent: string = ""
 
@@ -49,7 +52,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
     this.bankId.value = bankId
 
     this.signatureStartOnPage.value = 3
-    this.maxSignatureOnFirstPage.value = 2
+    this.maxSignatureOnFirstPage.value = 4
     this.maxSignatureOnOtherPages.value = 6
 
     this.initializeResolution(applicationId, companyId)
@@ -119,6 +122,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
 
       this.documentTemplate.value = new DocumentTemplate(response)
       this.originalTemplateContent = this.documentTemplate.value.content
+      this.originalResolutionTitle.value = this.documentTemplate.value.title
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -131,6 +135,15 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
   }
 
   setContent(): void {
+    this.documentTemplate.value.title = this.originalResolutionTitle.value
+    this.setTitle()
+    let titleTemplateProcessor = new TemplateProcessor(this.documentTemplate.value)
+
+    this.resolutionTitleRef.value = this.isDocumentEditable()
+      ? titleTemplateProcessor.getTitle(this.application.value)
+      : titleTemplateProcessor.getTitleForPrint(this.application.value)
+    console.log("title", this.documentTemplate.value.title)
+
     let splitPages = this.documentTemplate.value.content.split(TemplateProcessor.BREAKPAGE_MARKER)
 
     this.pages.value = splitPages.map((raw: string) => {
@@ -168,7 +181,48 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       return `<span class="fake-indent"></span>`
     })
 
+    let soleAnyTwoSearch = "a sole director / minimum of any TWO (2) directors*"
+    let soleAnyTwo = "minimum of any TWO (2) directors"
+    let signatoryAuthorisationType = this.application.value?.signatoryType ?? "anyone"
+    if (signatoryAuthorisationType === "solely") {
+      soleAnyTwo = "a sole director"
+    } else if (signatoryAuthorisationType === "all") {
+      soleAnyTwo = "all the directors"
+    } else if (signatoryAuthorisationType === "both") {
+      soleAnyTwo = "minimum of any TWO (2) directors"
+    } else {
+      soleAnyTwo = "any of the directors"
+    }
+
+    content = content.replaceAll(soleAnyTwoSearch, soleAnyTwo)
+
     return content
+  }
+
+  setTitle(): void {
+    let resolutionDateSearchString = "$date.&lt;name=resolutionDate&gt;$"
+    let resolutionDate = ""
+    if (this.isDocumentEditable()) {
+      resolutionDate = `<input type="date" class='form-control in-resolution title-resolution-date' value='${this.application.value?.resolutionDate}'>`
+    } else {
+      let time = useLocalTime()
+      let resolutionDate = this.application.value?.resolutionDate ?? this.dayjs().format("YYYY-MM-DD")
+      resolutionDate = time.formatDateOnlyFull(resolutionDate).toUpperCase()
+    }
+    this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
+      resolutionDateSearchString,
+      resolutionDate
+    )
+
+    let actOrConstitutionSearchString = "$text.&lt;name=actOrConstitution&gt;$"
+    let actOrConstitution =
+      this.application.value?.company && this.application.value.company.hasConstitution
+        ? "COMPANY'S CONSTITUTION"
+        : "PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016"
+    this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
+      actOrConstitutionSearchString,
+      actOrConstitution
+    )
   }
 
   getSpecimenSignature(): string {
@@ -271,5 +325,29 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
     let startRange = this.pages.value.length + 1
     let length = this.totalPages() - this.pages.value.length
     return Array.from({ length: length }, (_, i) => i + startRange)
+  }
+
+  handleResolutionDate(event: Event): void {
+    if (!this.application.value) {
+      return
+    }
+
+    let target = event.target as HTMLInputElement
+
+    this.application.value.resolutionDate = target.value
+
+    this.setContent()
+  }
+
+  attachEventListeners(): void {
+    if (!this.isDocumentEditable()) {
+      return
+    }
+
+    let resolutionDateFields = document.querySelectorAll(".title-resolution-date")
+    resolutionDateFields.forEach((e) => {
+      e.removeEventListener("change", this.handleResolutionDate.bind(this))
+      e.addEventListener("change", this.handleResolutionDate.bind(this))
+    })
   }
 }

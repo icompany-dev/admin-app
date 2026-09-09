@@ -165,22 +165,11 @@
         </template>
       </Paper>
     </div>
-    <!-- <div
-      class="paper-wrapper"
-      ref="documentRef"
-    >
-      <div
-        class="print paper receipt-paper"
-        v-for="page in controller.pageRange.value"
-        :key="page"
-      >
-        
-      </div>
-    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
+  import LoaderPrepare from "../Loaders/Prepare.vue"
   import Paper from "../Papers/Paper.vue"
   import { PaymentOrder } from "~/scripts/models/PaymentOrder"
   import { ReceiptInvoiceController } from "~/scripts/components/payments/ReceiptInvoiceController"
