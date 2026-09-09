@@ -1,5 +1,6 @@
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import type { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class IdentificationDocumentWatermarkController {
@@ -10,6 +11,8 @@ export class IdentificationDocumentWatermarkController {
   markerText: Ref<string> = ref<string>("")
   paperOrientation: Ref<PaperOrientation> = ref<PaperOrientation>(PaperOrientation.Landscape)
   paperSize: Ref<PaperSize> = ref<PaperSize>(PaperSize.A4)
+
+  documentRef: any | null = null
 
   constructor(props: PropsIdentificationDocumentWatermark, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -23,6 +26,20 @@ export class IdentificationDocumentWatermarkController {
     this.markerText.value = props.markerText
     this.paperOrientation.value = props.paperOrientation
     this.paperSize.value = props.paperSize
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    let pages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    return pages
   }
 
   get hasAltIdentificationFile(): boolean {

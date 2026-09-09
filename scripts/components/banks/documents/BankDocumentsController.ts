@@ -25,6 +25,7 @@ export class BankDocumentsController {
   emitEvents: any | null = null
 
   pdfRenderers = ref<PdfRenderer[]>([])
+  identificationRefs = ref<any[]>([])
 
   language = useLanguage()
 
@@ -72,6 +73,10 @@ export class BankDocumentsController {
 
   setCurrentRef(currentRef: any): void {
     this.currentRef = currentRef
+  }
+
+  setIdentificationRefs(ref: any, index: number): void {
+    this.identificationRefs.value[index] = ref
   }
 
   setupPdfRenderers(): void {

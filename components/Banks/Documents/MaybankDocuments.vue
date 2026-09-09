@@ -62,6 +62,11 @@
         <IdentificationDocumentWatermark
           v-for="(director, i) in controller.directors.value"
           v-bind="controller.getIdentificationDocumentWatermarkProps(director)"
+          :ref="
+            (el) => {
+              controller.setIdentificationRefs(el, i)
+            }
+          "
         />
       </template>
     </div>

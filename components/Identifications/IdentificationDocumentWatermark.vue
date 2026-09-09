@@ -1,5 +1,8 @@
 <template>
-  <div id="identifications-identification-document-watermark">
+  <div
+    id="identifications-identification-document-watermark"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="controller.paperOrientation.value"
       :paper-size="controller.paperSize.value"
@@ -33,7 +36,10 @@
   import type { IPropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
 
   const props = defineProps<IPropsIdentificationDocumentWatermark>()
+
   const emit = defineEmits([])
+
+  const documentRef = ref(null)
 
   const controller = new IdentificationDocumentWatermarkController(props, emit)
 
@@ -44,6 +50,18 @@
     },
     { deep: true }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">
