@@ -5,6 +5,8 @@ import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOp
 import { CompanyBankSignatory } from "~/scripts/models/CompanyBankSignatory"
 import { OnlineBanking } from "~/scripts/types/banks/OnlineBanking"
 import type { AllianceBankApplicationDetails } from "~/scripts/types/banks/AllianceBankApplicationDetails"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class BankDocumentsController {
   companyId: Ref<string> = ref<string>("")
@@ -204,5 +206,61 @@ export class BankDocumentsController {
     }
 
     return this.dcrRef.getOtherDetails()
+  }
+
+  async downloadPdfs(): Promise<void> {
+    let files: DownloadFileData[] = []
+
+    for (let index = 0; index < this.documentsToDisplay.length; index++) {
+      let url = this.documentsToDisplay[index]
+
+      if (StringUtil.isNullOrEmpty(url)) {
+        continue
+      }
+
+      let filename = ""
+      switch (url) {
+        case this.documentFetcher.value.section14FileUrl:
+          filename = "Section 14 - Superform.pdf"
+          break
+        case this.documentFetcher.value.section15FileUrl:
+          filename = "Section 15 - Notification of Incorporation.pdf"
+          break
+        case this.documentFetcher.value.section17FileUrl:
+          filename = "Section 17 - Certificate of Incorporation.pdf"
+          break
+        case this.documentFetcher.value.section46FileUrl:
+          filename = "Section 46 - Notification of Change of Registered Address.pdf"
+          break
+        case this.documentFetcher.value.section51FileUrl:
+          filename = "Section 51 - Register of Members.pdf"
+          break
+        case this.documentFetcher.value.section58FileUrl:
+          filename = "Section 58 - Register of Directors.pdf"
+          break
+        case this.documentFetcher.value.section78FileUrl:
+          filename = "Section 78 - Return of Allotment.pdf"
+          break
+        case this.documentFetcher.value.constitutionFileUrl:
+          filename = "Constitution.pdf"
+          break
+      }
+
+      if (StringUtil.isNullOrEmpty(filename)) {
+        continue
+      }
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        continue
+      }
+
+      const blob = await response.blob()
+      files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
+    }
+
+    let zipFilename = `Bank Account Opening.zip`
+
+    await FileZipper.zipAndDownload(files, zipFilename)
   }
 }

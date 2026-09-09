@@ -79,6 +79,8 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
   async onDownloadClicked(): Promise<void> {
     await nextTick()
     this.emitEvents("download")
+
+    // we need to also download other documents
   }
 
   async onPrintClicked(): Promise<void> {

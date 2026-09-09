@@ -142,6 +142,7 @@
     getSignatoryType: controller.getSignatoryType.bind(controller),
     getAuthorisedPersonsForOnlineBanking: controller.getAuthorisedPersonsForOnlineBanking.bind(controller),
     getPdfPages: controller.getPdfPages.bind(controller),
+    downloadPdfs: controller.downloadPdfs.bind(controller),
   })
 </script>
 

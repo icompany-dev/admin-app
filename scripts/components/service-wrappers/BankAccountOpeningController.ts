@@ -12,6 +12,8 @@ import { BankConstants } from "~/scripts/constants/Banks"
 import { AllianceBankApplicationDetails } from "~/scripts/types/banks/AllianceBankApplicationDetails"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { AffinBankApplicationDetails } from "~/scripts/types/banks/AffinBankApplicationDetails"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class BankAccountOpeningController
   extends ServiceController
@@ -227,6 +229,31 @@ export class BankAccountOpeningController
     } finally {
       // this.isUpdating.value = false
     }
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    let promises = []
+
+    if (this.dcrRef) {
+      let dcrPages = await this.dcrRef.getPdfPages()
+      promises.push(
+        PdfPaperUtil.generatePdfFile(
+          dcrPages,
+          20,
+          "Bank Account Opening Resolutions.pdf",
+          PaperSize.A4,
+          PaperOrientation.Portrait
+        )
+      )
+
+      promises.push(this.dcrRef.downloadPdfs())
+    }
+
+    if (promises.length <= 0) {
+      return
+    }
+
+    await Promise.all(promises)
   }
 
   get showWatermark(): boolean {
