@@ -342,26 +342,25 @@ export abstract class ResolutionController<T> {
   }
 
   isDocumentEditable(): boolean {
-    return !this.isGettingPdfPages.value
-    // if (this.isInPreviewMode.value) {
-    //   return false
-    // }
+    if (this.isInPreviewMode.value || this.isGettingPdfPages.value) {
+      return false
+    }
 
-    // if (!this.application.value) {
-    //   return false
-    // }
+    if (!this.application.value) {
+      return false
+    }
 
-    // if (this.application.value && this.application.value.signatureGroups.length > 0) {
-    //   return false
-    // }
+    if (this.application.value && this.application.value.signatureGroups.length > 0) {
+      return false
+    }
 
-    // return (
-    //   this.application.value &&
-    //   (StringUtil.isNullOrEmpty(this.application.value.id) ||
-    //     this.application.value.status === StatusConstants.DRAFT ||
-    //     this.application.value.status === StatusConstants.PENDING ||
-    //     this.application.value.status === StatusConstants.PAID)
-    // )
+    return (
+      this.application.value &&
+      (StringUtil.isNullOrEmpty(this.application.value.id) ||
+        this.application.value.status === StatusConstants.DRAFT ||
+        this.application.value.status === StatusConstants.PENDING ||
+        this.application.value.status === StatusConstants.PAID)
+    )
   }
 
   getApplication(): T | null {

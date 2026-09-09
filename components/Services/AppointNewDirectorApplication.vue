@@ -130,6 +130,7 @@
     <PopupUploadDocument
       v-bind="controller.uploadDocumentProps"
       ref="uploadDocumenRef"
+      @proceed="controller.onProceedPostUpload()"
     />
   </div>
 </template>

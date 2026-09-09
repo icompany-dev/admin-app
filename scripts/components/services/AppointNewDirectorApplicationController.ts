@@ -186,7 +186,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   get applicationDetailsNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isShipped, this.isShowResolutions.value)
+    return new PropsServiceApplicationNode(this.hasPaid, this.isApproved, this.isShowResolutions.value)
   }
 
   get applicationDetailsLabel(): string {

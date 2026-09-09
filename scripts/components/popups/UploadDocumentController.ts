@@ -205,6 +205,8 @@ export class UploadDocumentController extends BasePopupController {
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
 
+      this.emitEvents("proceed")
+
       this.hide()
     } catch (e) {
       if (e instanceof Error) {
