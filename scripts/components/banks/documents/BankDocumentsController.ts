@@ -244,6 +244,9 @@ export class BankDocumentsController {
         case this.documentFetcher.value.constitutionFileUrl:
           filename = "Constitution.pdf"
           break
+        case "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/documents/samples/affin-bank-application-form.pdf":
+          filename = "Affin Bank Universal Business Banking Form.pdf"
+          break
       }
 
       if (StringUtil.isNullOrEmpty(filename)) {
