@@ -90,8 +90,6 @@ export abstract class SecretarialServiceController<T, R> {
 
   onPaymentOrderIdUpdated(id: string): void {
     this.paymentOrderId.value = id
-
-    console.log("Yo???", id)
   }
 
   onCompanyUpdated(company: Company): void {
