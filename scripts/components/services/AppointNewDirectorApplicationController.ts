@@ -154,7 +154,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
       toast.success()
 
       let router = useRouter()
-      router.push({ path: `/sdnbhds/${this.companyId.value}` })
+      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()
