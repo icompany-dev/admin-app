@@ -247,6 +247,9 @@ export class BankDocumentsController {
         case "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/documents/samples/affin-bank-application-form.pdf":
           filename = "Affin Bank Universal Business Banking Form.pdf"
           break
+        case "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/documents/samples/Alliance-BankUniversal-Business-Banking-Form.pdf":
+          filename = "Alliance Bank Universal Business Banking Form.pdf"
+          break
       }
 
       if (StringUtil.isNullOrEmpty(filename)) {
