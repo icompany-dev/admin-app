@@ -1,0 +1,35 @@
+#identifications-identification-document-watermark {
+  .identification-marker {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+    height: 100%;
+    width: 100%;
+
+    img {
+      max-width: 90%;
+      height: auto;
+    }
+
+    .idenfication-image-container {
+      position: relative;
+
+      .marker {
+        position: absolute;
+        left: -60px;
+        top: 70px;
+        border-top: 4px solid black;
+        border-bottom: 4px solid black;
+        font-size: 1cqw;
+        text-align: center;
+        width: 300px;
+        font-weight: 800;
+        padding: 4px 0;
+        text-transform: uppercase;
+        transform: rotate(-40deg);
+      }
+    }
+  }
+}

@@ -7,11 +7,17 @@ import { OnlineBanking } from "~/scripts/types/banks/OnlineBanking"
 import type { AllianceBankApplicationDetails } from "~/scripts/types/banks/AllianceBankApplicationDetails"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 import { FileZipper } from "~/scripts/utils/FileZipper"
+import { Director } from "~/scripts/models/Director"
+import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { User } from "~/scripts/models/User"
 
 export class BankDocumentsController {
   companyId: Ref<string> = ref<string>("")
 
   documentFetcher = ref<BankDocumentFetcher>(new BankDocumentFetcher(""))
+
+  directors: Ref<Director[]> = ref<Director[]>([])
 
   dcrRef: any | null = null
   currentRef: any | null = null
@@ -39,7 +45,7 @@ export class BankDocumentsController {
 
     this.companyId.value = companyId
     this.documentFetcher.value.setCompanyId(this.companyId.value)
-    await this.documentFetcher.value.fetchForms()
+    await Promise.all([this.documentFetcher.value.fetchForms(), this.fetchDirectors()])
 
     this.setupPdfRenderers()
 
@@ -91,6 +97,41 @@ export class BankDocumentsController {
 
   documentName(index: number): string {
     return this.documentNames[index] ?? "Document Name"
+  }
+
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let directorRepository = useDirectorStore()
+    let response = await directorRepository.fetchAllForCompany(this.companyId.value)
+
+    this.directors.value = response.map((d: any) => {
+      return new Director(d)
+    })
+
+    let promises = this.directors.value.map((d: Director) => {
+      return d.getRegisteredUser(useUserStore()).then((response) => {
+        d.user = new User(response)
+        console.log("assign user", response)
+      })
+    })
+
+    await Promise.allSettled(promises)
+
+    console.log("directors", this.directors.value)
+  }
+
+  getIdentificationDocumentWatermarkProps(director: Director): PropsIdentificationDocumentWatermark {
+    let userDetail = director.user?.detail
+    return new PropsIdentificationDocumentWatermark(
+      userDetail?.verificationFile?.url ?? "",
+      userDetail?.verificationFileAlt?.url ?? "",
+      "FOR OPENING BANK ONLY",
+      PaperOrientation.Portrait,
+      PaperSize.A4
+    )
   }
 
   //getters

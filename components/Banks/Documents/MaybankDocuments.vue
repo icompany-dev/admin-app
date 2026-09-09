@@ -59,16 +59,21 @@
             "
           />
         </div>
+        <IdentificationDocumentWatermark
+          v-for="(director, i) in controller.directors.value"
+          v-bind="controller.getIdentificationDocumentWatermarkProps(director)"
+        />
       </template>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import AuthorisedSignatoriesBankAccountOpeningMaybank from "@/components/LegalDocuments/AuthorisedSignatoriesBankAccountOpeningMaybank.vue"
   import DcrBankAccountOpeningMaybank from "@/components/Resolutions/DcrBankAccountOpeningMaybank.vue"
   import DcrOnlineBankingBankAccountOpeningMaybank from "@/components/Resolutions/DcrOnlineBankingBankAccountOpeningMaybank.vue"
-  import AuthorisedSignatoriesBankAccountOpeningMaybank from "@/components/LegalDocuments/AuthorisedSignatoriesBankAccountOpeningMaybank.vue"
   import DeclarationBankAccountOpeningMaybank from "@/components/LegalDocuments/DeclarationBankAccountOpeningMaybank.vue"
+  import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import { MaybankDocumentsController } from "~/scripts/components/banks/documents/MaybankDocumentsController"
   import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"
