@@ -1,10 +1,22 @@
 <template>
   <div id="companies-sdn-bhd-dashboard">
-    <iframe :scr="controller.iframeUrl" />
+    <LoaderPrepare
+      v-if="controller.isLoading.value"
+      :label="controller.loaderLabel"
+      :sublabel="controller.loaderSublabel"
+    />
+    <template v-if="!controller.isLoading.value">
+      <iframe
+        :src="controller.iframeUrl"
+        width="100%"
+        height="100%"
+      />
+    </template>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import { SdnBhdDashboardController } from "~/scripts/components/companies/SdnBhdDashboardController"
 
   const props = defineProps({
@@ -17,13 +29,13 @@
 
   const controller = new SdnBhdDashboardController(props.companyId, emit)
 
-  onMounted(() => {
-    controller.setCookie()
-  })
+  // onMounted(() => {
+  //   controller.setCookie()
+  // })
 
-  onBeforeUnmount(() => {
-    controller.removeCookie()
-  })
+  // onBeforeUnmount(() => {
+  //   controller.removeCookie()
+  // })
 
   watch(
     () => props.companyId,
