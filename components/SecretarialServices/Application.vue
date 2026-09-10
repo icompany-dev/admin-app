@@ -35,6 +35,7 @@
   import BankAccountOpening from "./BankAccountOpening.vue"
   import ChangeOfName from "./ChangeOfName.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import TransferOfShare from "./TransferOfShare.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
   import { CompanyConstants } from "~/scripts/constants/Company"
@@ -47,8 +48,9 @@
 
   const componentMap: Record<string, any> = {
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
-    [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
+    [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
+    [CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES]: TransferOfShare,
   }
 
   const activeDocumentComponent = computed(() => {
