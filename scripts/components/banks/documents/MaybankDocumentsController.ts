@@ -59,7 +59,7 @@ export class MaybankDocumentsController extends BankDocumentsController {
     return this.onlineBankingRef.getAuthorisedPersonsForOnlineBanking()
   }
 
-  async getPdfPages(): Promise<HTMLElement[]> {
+  override async getPdfPages(): Promise<HTMLElement[]> {
     let pages: HTMLElement[] = []
 
     if (this.authorisedSignatoryRef) {

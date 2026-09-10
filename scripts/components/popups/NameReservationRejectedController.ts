@@ -13,6 +13,7 @@ export class NameReservationRejectedController extends BasePopupController {
   dateValue: Ref<any> = ref<any>(null)
   dateRejected: Ref<string> = ref<string>("")
   reason: Ref<string> = ref<string>("")
+  actionToBeTaken: Ref<string> = ref<string>("")
 
   constructor(props: IPropsNameReservationRejected, emitEvents: any | null) {
     super(emitEvents)
@@ -35,7 +36,10 @@ export class NameReservationRejectedController extends BasePopupController {
       return
     }
 
-    this.emitEvents(EmitMessages.PROCEED, new NameReservationRejected(this.dateRejected.value, this.reason.value))
+    this.emitEvents(
+      EmitMessages.PROCEED,
+      new NameReservationRejected(this.dateRejected.value, this.reason.value, this.actionToBeTaken.value)
+    )
 
     this.hide()
   }
@@ -86,5 +90,9 @@ export class NameReservationRejectedController extends BasePopupController {
 
   get reasonLabel(): string {
     return this.language.isMalay() ? "Keterangan" : "Reason"
+  }
+
+  get actionToBeTakenLabel(): string {
+    return this.language.isMalay() ? "Tindakan Seterusnya" : "Action to be Taken"
   }
 }
