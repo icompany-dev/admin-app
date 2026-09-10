@@ -426,7 +426,7 @@ export class ApplicationController {
     })
 
     if (!nameReservationApplication) {
-      return this.hasAnyOngoingApplicationForNameReservations()
+      return !this.hasAnyOngoingApplicationForNameReservations()
     }
 
     return nameReservationApplication.status !== "outcome"
