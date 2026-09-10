@@ -22,6 +22,7 @@
             class="idenfication-image-container"
             v-if="controller.hasAltIdentificationFile"
           >
+            <div class="marker">{{ controller.markerText.value }}</div>
             <img :src="controller.identificationFileUrl.value" />
           </div>
         </div>
