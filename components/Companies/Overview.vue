@@ -1,7 +1,6 @@
 <template>
   <div id="companies-overview">
     <div class="company-overview-section">
-      <div class="overview-title">{{ controller.businessDetailsLabel }}</div>
       <table class="overview-table">
         <tbody>
           <tr>
