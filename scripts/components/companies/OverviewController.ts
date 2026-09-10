@@ -130,6 +130,14 @@ export class OverviewController {
     this.shareholders.value = response.map((d: any) => {
       return new Shareholder(d)
     })
+
+    let promises = this.shareholders.value.map((s: Shareholder) => {
+      return s.getRegisteredUser(useUserStore()).then((response) => {
+        s.user = new User(response)
+      })
+    })
+
+    await Promise.allSettled(promises)
   }
 
   async fetchCompanyBanks(): Promise<void> {
@@ -169,8 +177,8 @@ export class OverviewController {
     }
   }
 
-  getPropsUserDetailForDirector(director: Director): PropsUserDetail {
-    return new PropsUserDetail(director.id, director.user ?? new User())
+  getPropsUserDetail(role: Director | Shareholder): PropsUserDetail {
+    return new PropsUserDetail(role.id, role.user ?? new User(), role)
   }
 
   // getters

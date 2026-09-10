@@ -93,18 +93,7 @@
               v-for="(director, i) in controller.directorsDetails"
               :key="i"
             >
-              <Director v-bind="controller.getPropsUserDetailForDirector(director)" />
-              <!-- <div class="human-details">
-                <div class="name">{{ director.name }}</div>
-                <div class="human-detail">
-                  <i class="fa-regular fa-envelope"></i>
-                  <span class="email">{{ director.email }}</span>
-                </div>
-                <div class="human-detail">
-                  <i class="fa-brands fa-whatsapp" />
-                  <span class="phone">{{ director.phone }}</span>
-                </div>
-              </div> -->
+              <Director v-bind="controller.getPropsUserDetail(director)" />
             </li>
           </ol>
         </div>
@@ -115,27 +104,7 @@
               v-for="(shareholder, i) in controller.shareholdersDetails"
               :key="i"
             >
-              <div class="human-details">
-                <div class="name">{{ shareholder.name }}</div>
-                <div class="human-detail">
-                  <i class="fa-regular fa-envelope"></i>
-                  <span class="email">{{ shareholder.email }}</span>
-                </div>
-                <div class="human-detail">
-                  <i class="fa-brands fa-whatsapp" />
-                  <span class="phone">{{ shareholder.phone }}</span>
-                </div>
-                <div class="human-detail">
-                  <span>
-                    <b>{{ controller.totalSharesLabel }}:</b>
-                  </span>
-                  <span>{{ controller.ordinarySharesLabel }}:</span>
-                  <span>{{ shareholder.ordinaryShares }}</span>
-                  <span>/</span>
-                  <span>{{ controller.preferenceSharesLabel }}:</span>
-                  <span>{{ shareholder.preferenceShares }}</span>
-                </div>
-              </div>
+              <Shareholder v-bind="controller.getPropsUserDetail(shareholder)" />
             </li>
           </ol>
           <div
@@ -202,6 +171,7 @@
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import Director from "../Users/Director.vue"
+  import Shareholder from "../Users/Shareholder.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 
