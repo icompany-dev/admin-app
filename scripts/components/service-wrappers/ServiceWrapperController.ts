@@ -58,7 +58,11 @@ export class ServiceWrapperController {
       return el instanceof HTMLElement && el.classList.contains("enlarged-signature-container")
     })
 
-    if (clickedInsidePaper || clickedInsideSignature) {
+    const clickedInsideActionTray = path.some((el) => {
+      return el instanceof HTMLElement && el.classList.contains("action-tray-element")
+    })
+
+    if (clickedInsidePaper || clickedInsideSignature || clickedInsideActionTray) {
       return
     }
 
