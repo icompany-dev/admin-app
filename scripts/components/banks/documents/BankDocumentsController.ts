@@ -5,11 +5,21 @@ import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOp
 import { CompanyBankSignatory } from "~/scripts/models/CompanyBankSignatory"
 import { OnlineBanking } from "~/scripts/types/banks/OnlineBanking"
 import type { AllianceBankApplicationDetails } from "~/scripts/types/banks/AllianceBankApplicationDetails"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
+import { Director } from "~/scripts/models/Director"
+import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { User } from "~/scripts/models/User"
+import { Company } from "~/scripts/models/Company"
 
 export class BankDocumentsController {
   companyId: Ref<string> = ref<string>("")
+  company: Ref<Company> = ref<Company>(new Company())
 
   documentFetcher = ref<BankDocumentFetcher>(new BankDocumentFetcher(""))
+
+  directors: Ref<Director[]> = ref<Director[]>([])
 
   dcrRef: any | null = null
   currentRef: any | null = null
@@ -17,6 +27,7 @@ export class BankDocumentsController {
   emitEvents: any | null = null
 
   pdfRenderers = ref<PdfRenderer[]>([])
+  identificationRefs = ref<any[]>([])
 
   language = useLanguage()
 
@@ -37,7 +48,7 @@ export class BankDocumentsController {
 
     this.companyId.value = companyId
     this.documentFetcher.value.setCompanyId(this.companyId.value)
-    await this.documentFetcher.value.fetchForms()
+    await Promise.all([this.documentFetcher.value.fetchForms(), this.fetchCompany(), this.fetchDirectors()])
 
     this.setupPdfRenderers()
 
@@ -66,6 +77,10 @@ export class BankDocumentsController {
     this.currentRef = currentRef
   }
 
+  setIdentificationRefs(ref: any, index: number): void {
+    this.identificationRefs.value[index] = ref
+  }
+
   setupPdfRenderers(): void {
     this.pdfRenderers.value = this.documentsToDisplay.map((s: string) => {
       return new PdfRenderer("")
@@ -89,6 +104,50 @@ export class BankDocumentsController {
 
   documentName(index: number): string {
     return this.documentNames[index] ?? "Document Name"
+  }
+
+  async fetchCompany(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let repository = useCompanyStore()
+    let response = await repository.fetch(this.companyId.value)
+    this.company.value = new Company(response)
+  }
+
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let directorRepository = useDirectorStore()
+    let response = await directorRepository.fetchAllForCompany(this.companyId.value)
+
+    this.directors.value = response.map((d: any) => {
+      return new Director(d)
+    })
+
+    let promises = this.directors.value.map((d: Director) => {
+      return d.getRegisteredUser(useUserStore()).then((response) => {
+        d.user = new User(response)
+      })
+    })
+
+    await Promise.allSettled(promises)
+  }
+
+  getIdentificationDocumentWatermarkProps(director: Director): PropsIdentificationDocumentWatermark {
+    let userDetail = director.user?.detail
+    return new PropsIdentificationDocumentWatermark(
+      this.company.value.getFullName(),
+      `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`,
+      userDetail?.verificationFile?.url ?? "",
+      userDetail?.verificationFileAlt?.url ?? "",
+      "FOR OPENING BANK ONLY",
+      PaperOrientation.Portrait,
+      PaperSize.A4
+    )
   }
 
   //getters
@@ -204,5 +263,67 @@ export class BankDocumentsController {
     }
 
     return this.dcrRef.getOtherDetails()
+  }
+
+  async downloadPdfs(): Promise<void> {
+    let files: DownloadFileData[] = []
+
+    for (let index = 0; index < this.documentsToDisplay.length; index++) {
+      let url = this.documentsToDisplay[index]
+
+      if (StringUtil.isNullOrEmpty(url)) {
+        continue
+      }
+
+      let filename = ""
+      switch (url) {
+        case this.documentFetcher.value.section14FileUrl:
+          filename = "Section 14 - Superform.pdf"
+          break
+        case this.documentFetcher.value.section15FileUrl:
+          filename = "Section 15 - Notification of Incorporation.pdf"
+          break
+        case this.documentFetcher.value.section17FileUrl:
+          filename = "Section 17 - Certificate of Incorporation.pdf"
+          break
+        case this.documentFetcher.value.section46FileUrl:
+          filename = "Section 46 - Notification of Change of Registered Address.pdf"
+          break
+        case this.documentFetcher.value.section51FileUrl:
+          filename = "Section 51 - Register of Members.pdf"
+          break
+        case this.documentFetcher.value.section58FileUrl:
+          filename = "Section 58 - Register of Directors.pdf"
+          break
+        case this.documentFetcher.value.section78FileUrl:
+          filename = "Section 78 - Return of Allotment.pdf"
+          break
+        case this.documentFetcher.value.constitutionFileUrl:
+          filename = "Constitution.pdf"
+          break
+        case "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/documents/samples/affin-bank-application-form.pdf":
+          filename = "Affin Bank Universal Business Banking Form.pdf"
+          break
+        case "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/documents/samples/Alliance-BankUniversal-Business-Banking-Form.pdf":
+          filename = "Alliance Bank Universal Business Banking Form.pdf"
+          break
+      }
+
+      if (StringUtil.isNullOrEmpty(filename)) {
+        continue
+      }
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        continue
+      }
+
+      const blob = await response.blob()
+      files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
+    }
+
+    let zipFilename = `Bank Account Opening.zip`
+
+    await FileZipper.zipAndDownload(files, zipFilename)
   }
 }

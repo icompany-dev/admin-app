@@ -21,6 +21,7 @@
         :application-id="controller.applicationId.value"
         :target-id="controller.paymentOrderId.value"
         :target-type="controller.target"
+        :bank-id="controller.application.value.bankId"
       />
     </div>
   </div>
