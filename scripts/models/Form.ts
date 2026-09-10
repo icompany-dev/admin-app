@@ -13,7 +13,7 @@ export class Form extends CompanyItem implements IModel<Form> {
   noOfPages: number = 0
   expiryDate: string | null = null
   removeOnExpired: boolean = false
-  status: string = ""
+  status: string = "active"
   formTypeId: string | null = null
   documentDate: string | null = null
 

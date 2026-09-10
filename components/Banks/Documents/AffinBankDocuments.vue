@@ -35,6 +35,15 @@
             "
           />
         </div>
+        <IdentificationDocumentWatermark
+          v-for="(director, i) in controller.directors.value"
+          v-bind="controller.getIdentificationDocumentWatermarkProps(director)"
+          :ref="
+            (el) => {
+              controller.setIdentificationRefs(el, i)
+            }
+          "
+        />
       </template>
     </div>
   </div>
@@ -42,6 +51,7 @@
 
 <script lang="ts" setup>
   import DcrBankAccountOpeningAffinBank from "~/components/Resolutions/DcrBankAccountOpeningAffinBank.vue"
+  import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import { AffinBankDocumentsController } from "~/scripts/components/banks/documents/AffinBankDocumentsController"
   import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"
@@ -87,6 +97,8 @@
     getSignatoryType: controller.getSignatoryType.bind(controller),
     getAuthorisedPersonsForOnlineBanking: controller.getAuthorisedPersonsForOnlineBanking.bind(controller),
     getOtherDetails: controller.getOtherDetails.bind(controller),
+    downloadPdfs: controller.downloadPdfs.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

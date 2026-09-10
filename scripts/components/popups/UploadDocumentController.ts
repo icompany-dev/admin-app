@@ -115,7 +115,6 @@ export class UploadDocumentController extends BasePopupController {
       this.uploadedFiles.value = this.files.value.map((f: File) => {
         let uploadedFile = new UploadedFile()
         uploadedFile.name = f.name
-
         return uploadedFile
       })
 
@@ -188,6 +187,8 @@ export class UploadDocumentController extends BasePopupController {
           return
         }
 
+        f.companyId = this.companyId.value
+        f.status = "active"
         f.fileId = uploadedFile.id
 
         promises.push(f.create(useFormStore()))
@@ -203,6 +204,8 @@ export class UploadDocumentController extends BasePopupController {
         : `${this.files.value.length > 1 ? "They" : "It"} can be downloaded from the list of Company Documents`
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
+
+      this.emitEvents("proceed")
 
       this.hide()
     } catch (e) {

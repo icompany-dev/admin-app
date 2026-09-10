@@ -34,6 +34,7 @@
                   <th>Document Name</th>
                   <th>Document Date</th>
                   <th>Type</th>
+                  <th>No. of Pages</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -85,6 +86,13 @@
                     </select>
                   </td>
                   <td>
+                    <input
+                      type="number"
+                      class="form-control"
+                      v-model="form.noOfPages"
+                    />
+                  </td>
+                  <td>
                     <i
                       class="fa-solid fa-xmark action-link remove"
                       @click="controller.onRemove(i)"
@@ -123,7 +131,7 @@
 
   const props = defineProps<IPropsUploadDocument>()
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["proceed"])
 
   const popupRef = ref(null)
   const fileInputRef = ref(null)

@@ -188,14 +188,17 @@ export class ApplicationNameReservation {
     this.convertFromResponse(response)
   }
 
-  async reject(repository: ReturnType<typeof useApplicationNameReservationStore>): Promise<void> {
+  async reject(
+    actionToBeTaken: string,
+    repository: ReturnType<typeof useApplicationNameReservationStore>
+  ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.applicationIncorporateId)) {
       let error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
-    const response = await repository.reject(this.applicationIncorporateId, this.ssmRemarksEn)
+    const response = await repository.reject(this.applicationIncorporateId, this.ssmRemarksEn, actionToBeTaken)
     if (repository.error) {
       let error = new Error()
       error.setForCUD()

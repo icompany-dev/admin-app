@@ -64,8 +64,6 @@ export class ReceiptInvoiceServiceController {
 
     props.serviceWrapperProps.paymentOrderId = this.paymentOrderId.value
 
-    console.log(props)
-
     return props
   }
 }

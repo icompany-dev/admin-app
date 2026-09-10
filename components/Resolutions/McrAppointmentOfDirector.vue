@@ -1,5 +1,8 @@
 <template>
-  <div id="mcr-appointment-of-director">
+  <div
+    id="mcr-appointment-of-director"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
@@ -24,6 +27,7 @@
   const props = defineProps<IPropsResolutionDocument<CompanyDirectorAppointment>>()
 
   const resolutionContent = ref(null)
+  const documentRef = ref(null)
 
   const emit = defineEmits(["startLoading", "doneLoading", "totalPageChanged", "applicationUpdated", "signed"])
 
@@ -87,10 +91,19 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -12,6 +12,7 @@ import { SignatureItem } from "~/scripts/types/SignatureItem"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { StatusConstants } from "~/scripts/constants/Status"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalDocumentController {
   companyBankAccountOpeningRepository = useCompanyBankAccountOpeningStore()
@@ -22,6 +23,7 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
   directors = ref<Director[]>([])
   signatureItems = ref<SignatureItem[]>([])
   isADirector = ref<boolean>(false)
+  isPrinting = ref<boolean>(false)
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
   documentContent = ref<string>("")
@@ -149,7 +151,7 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -291,5 +293,24 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
 
   loaderSublabel(): string {
     return "Authorised Persons' Declaration"
+  }
+
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    this.isPrinting.value = true
+    this.setContent()
+    await nextTick()
+
+    let pages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    setTimeout(() => {
+      this.isPrinting.value = false
+      this.setContent()
+    }, 1000)
+
+    return pages
   }
 }

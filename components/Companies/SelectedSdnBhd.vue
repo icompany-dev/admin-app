@@ -20,10 +20,16 @@
           </div>
           <div class="name-registration-numbers-actions">
             <div class="name-registration-number">
-              <div class="company-name">{{ controller.company.value.getFullName() }}</div>
-              <div class="registraiton-numbers">
+              <div class="company-name">
+                {{ controller.company.value.getFullName() }}
+                <CopyValue :value="controller.company.value.getFullName()" />
+              </div>
+              <div class="registration-numbers">
                 {{ controller.company.value.registrationNumberNew }}
-                ({{ controller.company.value.registrationNumberOld }})
+                <CopyValue :value="controller.company.value.registrationNumberNew" />
+                ({{ controller.company.value.registrationNumberOld }}
+                <CopyValue :value="controller.company.value.registrationNumberOld" />
+                )
               </div>
             </div>
             <div class="actions-button-options">
@@ -197,13 +203,14 @@
 
 <script lang="ts" setup>
   import BankAccountOpeningApplication from "@/components/Services/BankAccountOpeningApplication.vue"
+  import BankAccountOpeningService from "@/components/CompanyServices/BankAccountOpeningService.vue"
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
   import ChangeOfAddressApplication from "@/components/Services/ChangeOfAddressApplication.vue"
   import ChangeOfBranchApplication from "@/components/Services/ChangeOfBranchApplication.vue"
-  import BankAccountOpeningService from "@/components/CompanyServices/BankAccountOpeningService.vue"
   import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
   import ChangeOfBusinessBranchService from "@/components/CompanyServices/ChangeOfBusinessBranchService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
+  import CopyValue from "@/components/Buttons/CopyValue.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Overview from "@/components/Companies/Overview.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"

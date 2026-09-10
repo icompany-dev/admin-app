@@ -12,6 +12,8 @@ import { BankConstants } from "~/scripts/constants/Banks"
 import { AllianceBankApplicationDetails } from "~/scripts/types/banks/AllianceBankApplicationDetails"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { AffinBankApplicationDetails } from "~/scripts/types/banks/AffinBankApplicationDetails"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class BankAccountOpeningController
   extends ServiceController
@@ -226,6 +228,45 @@ export class BankAccountOpeningController
       this.isUpdating.value = false
     } finally {
       // this.isUpdating.value = false
+    }
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    try {
+      this.isDownloading.value = true
+      this.setActionTrayElements()
+
+      let promises = []
+
+      if (this.dcrRef) {
+        let dcrPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            20,
+            "Open Bank Account Documents.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+
+        promises.push(this.dcrRef.downloadPdfs())
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
     }
   }
 

@@ -2,6 +2,7 @@ import { Form } from "~/scripts/models/Form"
 import { Filter } from "~/scripts/library/Filter"
 import { StringUtil } from "~/scripts/utils/String"
 import { StatutoryFormKeywords } from "../constants/StatutoryForms"
+import { ObjectUtil } from "../utils/Object"
 
 export class BankDocumentFetcher {
   companyId: string = ""
@@ -50,6 +51,8 @@ export class BankDocumentFetcher {
         return new Form(d)
       })
 
+      this.forms = ObjectUtil.sort<Form>(this.forms, "createdAt", "desc")
+
       this.setSection14FileUrl()
       this.setSection15FileUrl()
       this.setSection17FileUrl()
@@ -72,7 +75,14 @@ export class BankDocumentFetcher {
         return false
       }
 
-      return StringUtil.contains(f.file.name, StatutoryFormKeywords.S14)
+      let splitKeywords = StatutoryFormKeywords.S14.split(",")
+
+      return splitKeywords.some((s: string) => {
+        if (!f.file) {
+          return false
+        }
+        return StringUtil.contains(f.file.name, s)
+      })
     })
 
     if (!form) {
@@ -88,7 +98,15 @@ export class BankDocumentFetcher {
       if (!f.file) {
         return false
       }
-      return StringUtil.contains(f.file.name, StatutoryFormKeywords.S15)
+
+      let splitKeywords = StatutoryFormKeywords.S15.split(",")
+
+      return splitKeywords.some((s: string) => {
+        if (!f.file) {
+          return false
+        }
+        return StringUtil.contains(f.file.name, s)
+      })
     })
 
     if (!form) {
@@ -120,7 +138,14 @@ export class BankDocumentFetcher {
       if (!f.file) {
         return false
       }
-      return StringUtil.contains(f.file.name, StatutoryFormKeywords.S46)
+      let splitKeywords = StatutoryFormKeywords.S46.split(",")
+
+      return splitKeywords.some((s: string) => {
+        if (!f.file) {
+          return false
+        }
+        return StringUtil.contains(f.file.name, s)
+      })
     })
 
     if (!form) {
@@ -136,7 +161,14 @@ export class BankDocumentFetcher {
       if (!f.file) {
         return false
       }
-      return StringUtil.contains(f.file.name, StatutoryFormKeywords.S51)
+      let splitKeywords = StatutoryFormKeywords.S51.split(",")
+
+      return splitKeywords.some((s: string) => {
+        if (!f.file) {
+          return false
+        }
+        return StringUtil.contains(f.file.name, s)
+      })
     })
 
     if (!form) {
@@ -152,7 +184,14 @@ export class BankDocumentFetcher {
       if (!f.file) {
         return false
       }
-      return StringUtil.contains(f.file.name, StatutoryFormKeywords.S58)
+      let splitKeywords = StatutoryFormKeywords.S58.split(",")
+
+      return splitKeywords.some((s: string) => {
+        if (!f.file) {
+          return false
+        }
+        return StringUtil.contains(f.file.name, s)
+      })
     })
 
     if (!form) {
@@ -168,7 +207,14 @@ export class BankDocumentFetcher {
       if (!f.file) {
         return false
       }
-      return StringUtil.contains(f.file.name, StatutoryFormKeywords.S78)
+      let splitKeywords = StatutoryFormKeywords.S78.split(",")
+
+      return splitKeywords.some((s: string) => {
+        if (!f.file) {
+          return false
+        }
+        return StringUtil.contains(f.file.name, s)
+      })
     })
 
     if (!form) {

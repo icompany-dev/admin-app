@@ -193,7 +193,7 @@ export class User implements IModel<User> {
 
   async update(repository: ReturnType<typeof useUserStore>): Promise<void> {
     if (!this.canUpdate()) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForIncompleteData()
       throw errorMessage
     }
@@ -203,7 +203,7 @@ export class User implements IModel<User> {
       let response = await repository.update(this.id, data)
       this.convertFromResponse(response)
     } catch (error) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForIncompleteData()
       throw errorMessage
     }

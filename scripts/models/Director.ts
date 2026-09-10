@@ -116,7 +116,7 @@ export class Director {
   async getRegisteredUser(repository: ReturnType<typeof useUserStore>): Promise<User | null> {
     const response = await repository.fetchByEmail(this.email)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForFetch()
       throw error
     }
@@ -131,7 +131,7 @@ export class Director {
 
     const response = await repository.fetch(this.userId)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForFetch()
       throw error
     }

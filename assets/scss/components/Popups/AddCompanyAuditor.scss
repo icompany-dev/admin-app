@@ -1,0 +1,40 @@
+#popups-add-company-auditor {}
+
+.action {
+  .form-group {
+    width: 100%;
+    margin-bottom: 5px;
+
+    label {
+      width: 180px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .form-control {
+      font-weight: normal;
+      text-transform: uppercase;
+
+      &.email {
+        text-transform: none;
+      }
+    }
+
+    #forms-searchable-dropdown {
+      background-color: var(--bs-white);
+      width: calc(100% - 100px);
+      border-radius: 5px;
+
+      .dropdown-menu {
+        z-index: 10;
+        background-color: var(--bs-white);
+        width: calc(100% - 30px);
+        padding: 4px 10px;
+
+        .dropdown {
+          padding: 4px 10px;
+        }
+      }
+    }
+  }
+}

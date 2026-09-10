@@ -47,11 +47,12 @@ export class ApplicationNameReservationRepository extends Repository<Application
     }
   }
 
-  async rejected(incorporationId: string, reason: string): Promise<any> {
+  async rejected(incorporationId: string, reason: string, actionToBeTaken: string): Promise<any> {
     try {
       let data = {
         ssm_remarks_en: reason,
         ssm_remarks_bm: reason,
+        action_to_be_taken: actionToBeTaken,
       }
 
       const response = this.post(`${this.singleResourceUrl}/rejected/${incorporationId}`, data)

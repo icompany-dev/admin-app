@@ -158,10 +158,49 @@
         </div>
       </div>
     </div>
+    <div class="company-overview-section">
+      <div class="company-overview-section-split">
+        <div class="split-section-item">
+          <div class="overview-title">Auditor</div>
+          <ol>
+            <li
+              v-for="(auditor, i) in controller.auditors.value"
+              :key="i"
+            >
+              <div class="human-details">
+                <div class="name">{{ auditor.auditorCompanyName }}</div>
+                <div class="human-detail">
+                  <i class="fa-regular fa-envelope"></i>
+                  <span class="email">{{ auditor.auditorEmail }}</span>
+                </div>
+                <div class="human-detail">
+                  <i class="fa-brands fa-whatsapp" />
+                  <span class="phone">{{ auditor.auditorPhone }}</span>
+                </div>
+              </div>
+            </li>
+            <li>
+              <button
+                class="btn btn-pill btn-submit"
+                @click="controller.onAddCompanyAuditorClicked()"
+              >
+                {{ controller.addAuditorLabel }}
+              </button>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <AddCompanyAuditor
+      ref="addCompanyAuditorRef"
+      v-bind="controller.addCompanyAuditorProps"
+      @proceed="controller.fetchCompanyAuditors()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 
@@ -174,6 +213,8 @@
 
   const emit = defineEmits([])
 
+  const addCompanyAuditorRef = ref(null)
+
   const controller = new OverviewController(props.companyId, emit)
 
   watch(
@@ -181,6 +222,14 @@
     (newVal) => {
       controller.setCompanyId(newVal)
     }
+  )
+
+  watch(
+    addCompanyAuditorRef,
+    (newVal) => {
+      controller.setAddCompanyAuditorRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 
