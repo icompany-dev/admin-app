@@ -326,4 +326,25 @@ export class BankDocumentsController {
 
     await FileZipper.zipAndDownload(files, zipFilename)
   }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    let pages: HTMLElement[] = []
+
+    if (this.dcrRef) {
+      let docPages = await this.dcrRef.getPdfPages()
+      pages = pages.concat(docPages)
+    }
+
+    for (let i = 0; i <= this.identificationRefs.value.length; i++) {
+      let identificationRef = this.identificationRefs.value[i]
+      if (!identificationRef) {
+        continue
+      }
+
+      let identificationPage = await identificationRef.getPdfPages()
+      pages = pages.concat(identificationPage)
+    }
+
+    return pages
+  }
 }

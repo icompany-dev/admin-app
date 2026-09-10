@@ -40,6 +40,15 @@
             "
           />
         </div>
+        <IdentificationDocumentWatermark
+          v-for="(director, i) in controller.directors.value"
+          v-bind="controller.getIdentificationDocumentWatermarkProps(director)"
+          :ref="
+            (el) => {
+              controller.setIdentificationRefs(el, i)
+            }
+          "
+        />
       </template>
     </div>
   </div>
@@ -48,6 +57,7 @@
 <script lang="ts" setup>
   import DcrBankAccountOpeningAllianceBank from "~/components/Resolutions/DcrBankAccountOpeningAllianceBank.vue"
   import DcrBankAccountOpeningCurrent from "~/components/Resolutions/DcrBankAccountOpeningCurrent.vue"
+  import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import { AllianceBankDocumentsController } from "~/scripts/components/banks/documents/AllianceBankDocumentsController"
   import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"

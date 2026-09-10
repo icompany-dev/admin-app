@@ -76,15 +76,4 @@ export class AffinBankDocumentsController extends BankDocumentsController {
 
     return documents
   }
-
-  async getPdfPages(): Promise<HTMLElement[]> {
-    let pages: HTMLElement[] = []
-
-    if (this.dcrRef) {
-      let docPages = await this.dcrRef.getPdfPages()
-      pages = pages.concat(docPages)
-    }
-
-    return pages
-  }
 }
