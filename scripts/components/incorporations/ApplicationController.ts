@@ -201,6 +201,19 @@ export class ApplicationController {
 
     this.application.value = new ApplicationIncorporate(response)
 
+    let allNameReservationApplications = this.application.value.nameReservationApplications.map(
+      (a: ApplicationNameReservation) => {
+        return new ApplicationNameReservation(a)
+      }
+    )
+    if (allNameReservationApplications.length > 1) {
+      let ongoingApplication = allNameReservationApplications.find((a: ApplicationNameReservation) => {
+        return a.status !== StatusConstants.OUTCOME || a.ssmResult === StatusConstants.APPROVED
+      })
+
+      this.applicationNameReservation.value = new ApplicationNameReservation(ongoingApplication)
+    }
+
     let directorPromises = this.application.value.directorInvitations.map((di: DirectorInvitation) => {
       return di.setUser(useUserStore())
     })
@@ -1452,7 +1465,7 @@ export class ApplicationController {
       return s
     })
 
-    return names
+    return formattednames
   }
 
   get selectedProposedNameForDisplay(): string {
