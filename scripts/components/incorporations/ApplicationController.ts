@@ -206,12 +206,17 @@ export class ApplicationController {
         return new ApplicationNameReservation(a)
       }
     )
-    if (allNameReservationApplications.length > 1) {
+
+    if (allNameReservationApplications.length > 0) {
       let ongoingApplication = allNameReservationApplications.find((a: ApplicationNameReservation) => {
         return a.status !== StatusConstants.OUTCOME || a.ssmResult === StatusConstants.APPROVED
       })
 
       this.applicationNameReservation.value = new ApplicationNameReservation(ongoingApplication)
+
+      this.selectedProposedName.value = this.applicationNameReservation.value.name
+    } else {
+      this.selectedProposedName.value = this.application.value.name1.name
     }
 
     let directorPromises = this.application.value.directorInvitations.map((di: DirectorInvitation) => {
@@ -656,7 +661,7 @@ export class ApplicationController {
 
     try {
       this.isUpdatingSection27.value = true
-      await application.reject(useApplicationNameReservationStore())
+      await application.reject(details.actionToBeTaken, useApplicationNameReservationStore())
       await this.fetchApplication()
     } catch (e) {
       if (e instanceof Error) {
@@ -1483,7 +1488,7 @@ export class ApplicationController {
 
     let selectedName = this.selectedProposedName.value
     if (StringUtil.isNullOrEmpty(selectedName)) {
-      selectedName = this.nameOptions[0]
+      return this.language.isMalay() ? "Pilih Nama yang Dicadangkan" : "Select Proposed Name"
     }
 
     let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
