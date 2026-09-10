@@ -37,6 +37,13 @@
       </span>
       <CopyValue :value="controller.race" />
     </div>
+    <div class="human-detail">
+      <i class="fa-regular fa-venus-mars" />
+      <span class="human-detail-content">
+        {{ controller.gender.toUpperCase() }}
+      </span>
+      <CopyValue :value="controller.gender" />
+    </div>
     <div class="human-detail align-start">
       <i class="fa-regular fa-home" />
       <span class="human-detail-content">

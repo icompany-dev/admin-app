@@ -172,6 +172,7 @@
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import Director from "../Users/Director.vue"
   import Shareholder from "../Users/Shareholder.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 

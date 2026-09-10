@@ -112,4 +112,16 @@ export abstract class UserController {
   get removeLabel(): string {
     return this.language.isMalay() ? "Padam" : "Remove"
   }
+
+  get gender(): string {
+    if (!this.userDetail) {
+      return this.language.isMalay() ? "(Tidak Ketahui)" : "(Unknown)"
+    }
+
+    if (this.userDetail.gender === "male") {
+      return this.language.isMalay() ? "Lelaki" : "Male"
+    }
+
+    return this.language.isMalay() ? "Perempuan" : "Female"
+  }
 }
