@@ -30,6 +30,8 @@ export class AppointNewDirectorServiceController extends CompanyServiceControlle
     this.setViewType(viewType)
     this.setIsByShareholder(isByShareholder)
     this.initializeData()
+
+    this.documentName.value = "DCR Appointment of Director.pdf"
   }
 
   setIsByShareholder(isByShareholder: boolean): void {
@@ -95,8 +97,8 @@ export class AppointNewDirectorServiceController extends CompanyServiceControlle
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -125,8 +127,8 @@ export class AppointNewDirectorServiceController extends CompanyServiceControlle
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -200,8 +202,8 @@ export class AppointNewDirectorServiceController extends CompanyServiceControlle
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForCUD()
         errorMessage.handle()
       }
     } finally {

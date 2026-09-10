@@ -89,4 +89,17 @@ export class CompanyRepository extends Repository<Company> {
       throw error
     }
   }
+
+  async postService(targetType: string, targetId: string): Promise<any> {
+    try {
+      let data = {
+        target: targetType,
+        target_id: targetId,
+      }
+      const response = this.post<any>(`/api/company/post-services`, data)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

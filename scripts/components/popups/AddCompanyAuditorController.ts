@@ -40,8 +40,6 @@ export class AddCompanyAuditorController extends BasePopupController {
 
     this.companyAuditor.value.companyId = this.companyId.value
 
-    console.log(this.companyId.value)
-
     await this.fetchAuditorAccessRole()
   }
 
@@ -57,21 +55,25 @@ export class AddCompanyAuditorController extends BasePopupController {
   }
 
   async fetchAuditorAccessRole(): Promise<void> {
-    let accessRolesRepository = useAccessRoleStore()
-    let accessRoleFilter = new Filter()
-    accessRoleFilter.companyId = this.companyId.value
-    accessRoleFilter.searchText = "auditor"
+    try {
+      let accessRolesRepository = useAccessRoleStore()
+      let accessRoleFilter = new Filter()
+      accessRoleFilter.companyId = this.companyId.value
+      accessRoleFilter.searchText = "auditor"
 
-    let response = await accessRolesRepository.fetchAll(accessRoleFilter)
-    if (response.totalRecords >= 0) {
-      this.auditorAccessRole.value = new AccessRole(response.data[0])
-      return
+      let response = await accessRolesRepository.fetchAll(accessRoleFilter)
+      if (response.totalRecords > 0) {
+        this.auditorAccessRole.value = new AccessRole(response.data[0])
+        return
+      }
+
+      this.auditorAccessRole.value.companyId = this.companyId.value
+      this.auditorAccessRole.value.name = "Appointed Auditor"
+      this.auditorAccessRole.value.description = "Role for Appointed Auditors"
+      await this.auditorAccessRole.value.create(accessRolesRepository)
+    } catch (e) {
+      console.error(e)
     }
-
-    this.auditorAccessRole.value.companyId = this.companyId.value
-    this.auditorAccessRole.value.name = "Appointed Auditor"
-    this.auditorAccessRole.value.description = "Role for Appointed Auditors"
-    await this.auditorAccessRole.value.create(accessRolesRepository)
   }
 
   override show(): void {
@@ -113,6 +115,8 @@ export class AddCompanyAuditorController extends BasePopupController {
         promises.push(this.grantAccess())
       }
 
+      await Promise.allSettled(promises)
+
       let toastTitle = this.language.isMalay()
         ? "Anda telah berjaya tambah butiran Juruaudit Syarikat"
         : "You have successfully added the details of the Company Auditor."
@@ -149,8 +153,8 @@ export class AddCompanyAuditorController extends BasePopupController {
         let auth = useAuthStore()
         let success = await auth.register({
           email: this.companyAuditor.value.auditorEmail,
-          password: "randomPassword1234565",
-          passwordConfirmation: "randomPassword1234565",
+          password: "iCompany2026!!",
+          passwordConfirmation: "iCompany2026!!",
         })
 
         if (!success) {
@@ -182,13 +186,7 @@ export class AddCompanyAuditorController extends BasePopupController {
       userInvitation.email = this.companyAuditor.value.auditorEmail
       userInvitation.accessRoleId = this.auditorAccessRole.value.id
 
-      if (!userInvitation.canSubmit()) {
-        console.log("invitation", userInvitation)
-      }
-
       await userInvitation.create(useUserInvitationStore())
-
-      console.log("user invitation", userInvitation)
     } catch (e) {
       console.error(e)
 

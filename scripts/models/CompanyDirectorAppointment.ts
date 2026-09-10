@@ -90,6 +90,7 @@ export class CompanyDirectorAppointment
       effective_from_type: this.effectiveFromType,
       effective_from_type_details: this.effectiveFromTypeDetails,
       is_appoint_by_shareholder: this.isAppointByShareholder,
+      status: this.status,
     }
 
     const directorInvitationIds = this.getDirectorInvitationIds()
@@ -121,7 +122,7 @@ export class CompanyDirectorAppointment
 
   async create(repository: ReturnType<typeof useCompanyDirectorAppointmentStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -129,7 +130,7 @@ export class CompanyDirectorAppointment
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -139,7 +140,7 @@ export class CompanyDirectorAppointment
 
   async update(repository: ReturnType<typeof useCompanyDirectorAppointmentStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -147,7 +148,7 @@ export class CompanyDirectorAppointment
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -157,14 +158,14 @@ export class CompanyDirectorAppointment
 
   async remove(repository: ReturnType<typeof useCompanyDirectorAppointmentStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -185,7 +186,7 @@ export class CompanyDirectorAppointment
 
     const user = await repository.fetch(userId)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForFetch()
       throw error
     }

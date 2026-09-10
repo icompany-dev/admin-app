@@ -25,6 +25,7 @@ export class CompanyBankAccountOpening
 
   onlineBanking: OnlineBanking[] = []
   signatoryType: string = "anyone"
+  resolutionDate: string = ""
 
   allianceBankApplicationDetails: AllianceBankApplicationDetails | null = null
   affinBankApplicationDetails: AffinBankApplicationDetails | null = null
@@ -105,6 +106,8 @@ export class CompanyBankAccountOpening
       data.affinBankApplicationDetails !== null
         ? new AffinBankApplicationDetails(data.affinBankApplicationDetails)
         : null
+
+    this.resolutionDate = data.resolutionDate
   }
 
   getRequestBody(): object {

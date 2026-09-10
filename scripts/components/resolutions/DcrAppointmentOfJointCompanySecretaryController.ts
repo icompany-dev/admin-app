@@ -141,7 +141,7 @@ export class DcrAppointmentOfJointCompanySecretaryController {
       return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO COMPANY'S CONSTITUTION`
     }
 
-    return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016 PASSED ON 5 AUGUST 2026`
+    return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016 PASSED ON 10 AUGUST 2026`
   }
 
   get signatureTitle(): string {
@@ -170,8 +170,22 @@ export class DcrAppointmentOfJointCompanySecretaryController {
           false
         )
       )
-    }
+    } else {
+      director = this.directors.value[0] ?? null
 
+      items.push(
+        new SignatureItem(
+          "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/signatures/dummy-signature.jpeg",
+          true,
+          false,
+          false,
+          director?.name ?? "",
+          director?.email ?? "",
+          "DIRECTOR",
+          false
+        )
+      )
+    }
     items.push(
       new SignatureItem(
         "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/signatures/cosec-signature.png",
@@ -212,7 +226,7 @@ export class DcrAppointmentOfJointCompanySecretaryController {
       "",
       this.signatureTitle,
       this.signatureItems,
-      "2026-08-05",
+      "2026-08-10",
       1,
       1,
       2,

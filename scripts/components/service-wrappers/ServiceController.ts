@@ -56,6 +56,7 @@ export abstract class ServiceController {
   emitEvents: any | null = null
   isInPreviewMode = ref<boolean>(false)
 
+  isDownloading = ref<boolean>(false)
   actionTrayElements = ref<ActionTrayElement[]>([])
 
   constructor(target: string, companyId: string, emitEvents: any | null) {
@@ -91,9 +92,13 @@ export abstract class ServiceController {
         label: new ActionTrayLabel("Back", "Kembali"),
         isIconStart: true,
         iconClass: "fa-solid fa-circle-arrow-left",
+        isDisabled: this.isDownloading.value,
       }),
       new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
         label: new ActionTrayLabel("Download", "Muat Turun"),
+        isIconStart: this.isDownloading.value,
+        isDisabled: this.isDownloading.value,
+        iconClass: this.isDownloading.value ? "fa-solid fa-spin fa-spinner" : "",
       }),
     ]
   }
@@ -190,33 +195,52 @@ export abstract class ServiceController {
   }
 
   async onDownloadClicked(): Promise<void> {
-    let promises = []
-
-    if (this.dcrRef) {
-      let dcrPages = await this.dcrRef.getPdfPages()
-      promises.push(
-        PdfPaperUtil.generatePdfFile(
-          dcrPages,
-          20,
-          "Directors' Resolutions.pdf",
-          PaperSize.A4,
-          PaperOrientation.Portrait
-        )
-      )
-    }
-
-    if (this.mcrRef) {
-      let mcrPages = await this.mcrRef.getPdfPages()
-      promises.push(
-        PdfPaperUtil.generatePdfFile(mcrPages, 20, "Member's Resolutions.pdf", PaperSize.A4, PaperOrientation.Portrait)
-      )
-    }
-
-    if (promises.length <= 0) {
+    if (this.isDownloading.value) {
       return
     }
 
-    await Promise.all(promises)
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let promises = []
+
+      if (this.dcrRef) {
+        let dcrPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            20,
+            "Directors' Resolutions.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.mcrRef) {
+        let mcrPages = await this.mcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            mcrPages,
+            20,
+            "Member's Resolutions.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   onBackClicked(): void {

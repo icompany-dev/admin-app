@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-bank-account-opening-affin-bank">
+  <div
+    id="dcr-bank-account-opening-affin-bank"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="PaperOrientation.Portrait"
       :is-loader="true"
@@ -991,6 +994,7 @@
 
   const resolutionContent = ref(null)
   const nonDirectorBankSignatoryRef = ref(null)
+  const documentRef = ref(null)
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "updated"])
 
@@ -1058,6 +1062,14 @@
     { immediate: true }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
@@ -1068,6 +1080,7 @@
     getSignatories: controller.getSignatories.bind(controller),
     getBranchId: controller.getBranchId.bind(controller),
     getOtherDetails: controller.getOtherDetails.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -84,6 +84,8 @@ export abstract class CompanyServiceController<T> {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
+  documentName: Ref<string> = ref<string>("Resolutions.pdf")
+
   constructor(
     companyId: string,
     hasDcr: boolean,
@@ -655,7 +657,7 @@ export abstract class CompanyServiceController<T> {
       return
     }
 
-    await PdfPaperUtil.generatePdfFile(pages, 20, "Resolutions.pdf", PaperSize.A4, PaperOrientation.Portrait)
+    await PdfPaperUtil.generatePdfFile(pages, 20, this.documentName.value, PaperSize.A4, PaperOrientation.Portrait)
   }
 
   async onGenerateBlob(filename: string): Promise<Blob | null> {

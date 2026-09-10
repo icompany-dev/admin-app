@@ -1,5 +1,8 @@
 <template>
-  <div id="declaration-bank-account-opening-maybank">
+  <div
+    id="declaration-bank-account-opening-maybank"
+    ref="documentRef"
+  >
     <Paper
       v-if="controller.isLoading.value"
       :paper-orientation="PaperOrientation.Portrait"
@@ -103,6 +106,7 @@
   })
 
   const documentContent = ref(null)
+  const documentRef = ref(null)
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed"])
 
@@ -130,9 +134,18 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 
