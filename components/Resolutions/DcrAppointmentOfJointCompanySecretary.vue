@@ -44,7 +44,8 @@
 
   watch(
     () => props.companyId,
-    (newVal) => {
+    async (newVal) => {
+      await nextTick()
       controller.setCompanyId(newVal)
     }
   )

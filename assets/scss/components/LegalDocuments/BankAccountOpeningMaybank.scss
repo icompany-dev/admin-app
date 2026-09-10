@@ -162,6 +162,21 @@
         padding-bottom: 15px;
         text-align: justify;
       }
+
+      &.lower-alpha {
+        padding-top: 5px;
+        padding-left: 20px;
+        list-style-type: lower-alpha;
+
+        li {
+          padding-left: 10px;
+          padding-bottom: 3px;
+
+          &::marker {
+            content: "(" counter(list-item, lower-alpha) ") ";
+          }
+        }
+      }
     }
 
     .declaration-signature-section {

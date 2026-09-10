@@ -13,6 +13,7 @@ import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 
 export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalDocumentController {
   companyBankAccountOpeningRepository = useCompanyBankAccountOpeningStore()
@@ -200,6 +201,13 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
       stringReplacement
     )
 
+    let descriptionListSearchString = "%company.businessDescription%"
+    let descriptionList = this.getBusinessDescriptionString()
+    this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+      descriptionListSearchString,
+      descriptionList
+    )
+
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace("&lt;br&gt;", "<br>")
 
     let templateProcessor = new TemplateProcessor(this.documentTemplate.value)
@@ -230,6 +238,26 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
     })
 
     return content
+  }
+
+  getBusinessDescriptionString(): string {
+    if (!this.application.value || !this.application.value.company) {
+      return ""
+    }
+
+    let msicCodes = this.application.value.company.msicCodeAssigns.map((msicCodeAssign: MsicCodeAssign) => {
+      return `
+        <li>
+          <b>${msicCodeAssign.msicCode.descriptionEn}</b>
+        </li>
+      `
+    })
+
+    return `
+      <ol class='lower-alpha'>
+        ${msicCodes.join("")}
+      </ol>
+    `
   }
 
   async setApplicationId(id: string | null): Promise<void> {
