@@ -65,6 +65,7 @@
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
+  import { TransferOfSharesController } from "~/scripts/components/secretarial-services/TransferOfSharesController"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import type { Application } from "~/scripts/models/Application"
   import type { IPropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
@@ -79,11 +80,14 @@
     case CompanyConstants.TARGET_AMENDMENT_NAME:
       controller = new ChangeOfNamesController(props, emit)
       break
+    case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
+      controller = new AppointDirectorsController(props, emit)
+      break
     case CompanyConstants.TARGET_OPEN_BANK_ACCOUNT:
       controller = new BankAccountOpeningsController(props, emit)
       break
-    case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
-      controller = new AppointDirectorsController(props, emit)
+    case CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES:
+      controller = new TransferOfSharesController(props, emit)
       break
   }
 

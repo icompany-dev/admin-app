@@ -113,10 +113,17 @@ export class PageSidebar {
     "services/appoint-director-new",
     false
   )
+  static transferOfShares: Sidebar = new Sidebar(
+    "Transfer of Shares",
+    "Pindah Saham",
+    "services/transfer-of-shares",
+    false
+  )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
     this.openBankAccount,
     this.appointDirector,
+    this.transferOfShares,
   ])
 
   static personsDraft: Sidebar = new Sidebar(
