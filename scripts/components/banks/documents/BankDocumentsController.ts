@@ -119,13 +119,10 @@ export class BankDocumentsController {
     let promises = this.directors.value.map((d: Director) => {
       return d.getRegisteredUser(useUserStore()).then((response) => {
         d.user = new User(response)
-        console.log("assign user", response)
       })
     })
 
     await Promise.allSettled(promises)
-
-    console.log("directors", this.directors.value)
   }
 
   getIdentificationDocumentWatermarkProps(director: Director): PropsIdentificationDocumentWatermark {

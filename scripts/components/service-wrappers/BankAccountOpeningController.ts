@@ -232,28 +232,42 @@ export class BankAccountOpeningController
   }
 
   override async onDownloadClicked(): Promise<void> {
-    let promises = []
-
-    if (this.dcrRef) {
-      let dcrPages = await this.dcrRef.getPdfPages()
-      promises.push(
-        PdfPaperUtil.generatePdfFile(
-          dcrPages,
-          20,
-          "Bank Account Opening Resolutions.pdf",
-          PaperSize.A4,
-          PaperOrientation.Portrait
-        )
-      )
-
-      promises.push(this.dcrRef.downloadPdfs())
-    }
-
-    if (promises.length <= 0) {
+    if (this.isDownloading.value) {
       return
     }
 
-    await Promise.all(promises)
+    try {
+      this.isDownloading.value = true
+      this.setActionTrayElements()
+
+      let promises = []
+
+      if (this.dcrRef) {
+        let dcrPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            20,
+            "Open Bank Account Documents.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+
+        promises.push(this.dcrRef.downloadPdfs())
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   get showWatermark(): boolean {
