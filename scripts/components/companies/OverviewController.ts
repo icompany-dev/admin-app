@@ -11,6 +11,8 @@ import { Filter } from "~/scripts/library/Filter"
 import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 import { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
 import { PropsAddCompanyAuditor } from "~/scripts/props/PropsAddCompanyAuditor"
+import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
+import { User } from "~/scripts/models/User"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -108,6 +110,14 @@ export class OverviewController {
     this.directors.value = response.map((d: any) => {
       return new Director(d)
     })
+
+    let promises = this.directors.value.map((d: Director) => {
+      return d.getRegisteredUser(useUserStore()).then((response) => {
+        d.user = new User(response)
+      })
+    })
+
+    await Promise.allSettled(promises)
   }
 
   async fetchShareholders(): Promise<void> {
@@ -157,6 +167,10 @@ export class OverviewController {
     if (this.addCompanyAuditorRef) {
       this.addCompanyAuditorRef.show()
     }
+  }
+
+  getPropsUserDetailForDirector(director: Director): PropsUserDetail {
+    return new PropsUserDetail(director.id, director.user ?? new User())
   }
 
   // getters

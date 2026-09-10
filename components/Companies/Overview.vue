@@ -93,7 +93,8 @@
               v-for="(director, i) in controller.directorsDetails"
               :key="i"
             >
-              <div class="human-details">
+              <Director v-bind="controller.getPropsUserDetailForDirector(director)" />
+              <!-- <div class="human-details">
                 <div class="name">{{ director.name }}</div>
                 <div class="human-detail">
                   <i class="fa-regular fa-envelope"></i>
@@ -103,7 +104,7 @@
                   <i class="fa-brands fa-whatsapp" />
                   <span class="phone">{{ director.phone }}</span>
                 </div>
-              </div>
+              </div> -->
             </li>
           </ol>
         </div>
@@ -200,6 +201,7 @@
 
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
+  import Director from "../Users/Director.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 
