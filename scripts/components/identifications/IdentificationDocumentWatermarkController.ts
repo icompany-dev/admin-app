@@ -6,6 +6,8 @@ import { StringUtil } from "~/scripts/utils/String"
 export class IdentificationDocumentWatermarkController {
   emitEvents: any | null = null
 
+  companyName: Ref<string> = ref<string>("")
+  companyRegistrationNumber: Ref<string> = ref<string>("")
   identificationFileUrl: Ref<string> = ref<string>("")
   altIdentificationFileUrl: Ref<string | null> = ref<string | null>(null)
   markerText: Ref<string> = ref<string>("")
@@ -21,6 +23,8 @@ export class IdentificationDocumentWatermarkController {
   }
 
   setDataFromProps(props: PropsIdentificationDocumentWatermark): void {
+    this.companyName.value = props.companyName
+    this.companyRegistrationNumber.value = props.companyRegistrationNumber
     this.identificationFileUrl.value = props.identificationFileUrl
     this.altIdentificationFileUrl.value = props.altIdentificationFileUrl
     this.markerText.value = props.markerText

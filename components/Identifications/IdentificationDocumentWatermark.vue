@@ -9,21 +9,27 @@
       :show-ear-mark="false"
       :show-page-number="false"
       :show-watermark="false"
-      :class="'identification-marker'"
     >
       <template #paperContent>
-        <div class="image-containers">
-          <div class="idenfication-image-container">
-            <div class="marker">{{ controller.markerText.value }}</div>
-            <img :src="controller.identificationFileUrl.value" />
+        <div class="identification-marker">
+          <div class="company-details">
+            <div class="company-name">{{ controller.companyName.value }}</div>
+            <div class="company-registration-number">{{ controller.companyRegistrationNumber.value }}</div>
           </div>
 
-          <div
-            class="idenfication-image-container"
-            v-if="controller.hasAltIdentificationFile"
-          >
-            <div class="marker">{{ controller.markerText.value }}</div>
-            <img :src="controller.identificationFileUrl.value" />
+          <div class="image-containers">
+            <div class="idenfication-image-container">
+              <div class="marker">{{ controller.markerText.value }}</div>
+              <img :src="controller.identificationFileUrl.value" />
+            </div>
+
+            <div
+              class="idenfication-image-container"
+              v-if="controller.hasAltIdentificationFile"
+            >
+              <div class="marker">{{ controller.markerText.value }}</div>
+              <img :src="controller.identificationFileUrl.value" />
+            </div>
           </div>
         </div>
       </template>

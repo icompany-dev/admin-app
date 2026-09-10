@@ -92,6 +92,7 @@ export abstract class ServiceController {
         label: new ActionTrayLabel("Back", "Kembali"),
         isIconStart: true,
         iconClass: "fa-solid fa-circle-arrow-left",
+        isDisabled: this.isDownloading.value,
       }),
       new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
         label: new ActionTrayLabel("Download", "Muat Turun"),

@@ -11,9 +11,11 @@ import { Director } from "~/scripts/models/Director"
 import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { User } from "~/scripts/models/User"
+import { Company } from "~/scripts/models/Company"
 
 export class BankDocumentsController {
   companyId: Ref<string> = ref<string>("")
+  company: Ref<Company> = ref<Company>(new Company())
 
   documentFetcher = ref<BankDocumentFetcher>(new BankDocumentFetcher(""))
 
@@ -46,7 +48,7 @@ export class BankDocumentsController {
 
     this.companyId.value = companyId
     this.documentFetcher.value.setCompanyId(this.companyId.value)
-    await Promise.all([this.documentFetcher.value.fetchForms(), this.fetchDirectors()])
+    await Promise.all([this.documentFetcher.value.fetchForms(), this.fetchCompany(), this.fetchDirectors()])
 
     this.setupPdfRenderers()
 
@@ -104,6 +106,16 @@ export class BankDocumentsController {
     return this.documentNames[index] ?? "Document Name"
   }
 
+  async fetchCompany(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let repository = useCompanyStore()
+    let response = await repository.fetch(this.companyId.value)
+    this.company.value = new Company(response)
+  }
+
   async fetchDirectors(): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       return
@@ -128,6 +140,8 @@ export class BankDocumentsController {
   getIdentificationDocumentWatermarkProps(director: Director): PropsIdentificationDocumentWatermark {
     let userDetail = director.user?.detail
     return new PropsIdentificationDocumentWatermark(
+      this.company.value.getFullName(),
+      `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`,
       userDetail?.verificationFile?.url ?? "",
       userDetail?.verificationFileAlt?.url ?? "",
       "FOR OPENING BANK ONLY",
