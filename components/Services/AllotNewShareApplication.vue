@@ -23,6 +23,16 @@
               </div>
             </div>
             <div class="application-details">
+              <b>{{ controller.proposalLabel }}</b>
+              <div
+                class="details"
+                v-html="controller.proposalDetails"
+              />
+              <b>{{ controller.section75Label }}</b>
+              <div
+                class="details"
+                v-html="controller.section75Details"
+              />
               <template v-if="controller.hasOtherRequirements">
                 <b>{{ controller.itemsToPrepareLabel }}</b>
                 <ol>

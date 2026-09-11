@@ -20,11 +20,17 @@ import { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { GenerateDocumentDetails } from "~/scripts/types/GenerateDocumentDetails"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import { CompanyShareholderAllotmentDetail } from "~/scripts/models/CompanyShareholderAllotmentDetail"
+import { ShareType } from "~/scripts/constants/Shareholder"
+import { NumberUtil } from "~/scripts/utils/Number"
+import { ConsiderationType } from "~/scripts/constants/AllotmentOfShares"
+import { AllotShares } from "~/scripts/library/AllotShares"
+import type { Shareholder } from "~/scripts/models/Shareholder"
 
 export class AllotNewShareApplicationController extends ApplicationController<CompanyShareholderAllotment> {
   resolutionsRef: any | null = null
 
-  banks: Ref<Bank[]> = ref<Bank[]>([])
+  allotShares = ref<AllotShares>(new AllotShares("", ""))
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowShipped: Ref<boolean> = ref<boolean>(false)
@@ -50,6 +56,16 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
 
   setResolutionsRef(resolutionsRef: any): void {
     this.resolutionsRef = resolutionsRef
+  }
+
+  override async initializeData(): Promise<void> {
+    this.allotShares.value.companyId = this.application.value?.companyId ?? this.companyId.value
+
+    if (StringUtil.isNullOrEmpty(this.allotShares.value.companyId)) {
+      return
+    }
+
+    await this.allotShares.value.fetchExistingAuthorization()
   }
 
   onPaymentStepClicked(): void {
@@ -190,7 +206,85 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get applicationDetailsSublabel(): string {
-    return this.language.isMalay() ? "Butiran Peruntukkan" : "Details of Allotment"
+    return this.language.isMalay()
+      ? "Butiran Cadangan Peruntukkan, Seksyen 75 & 76"
+      : "Details of Proposed Allotment, Section 75 & 76"
+  }
+
+  get allotmentDetails(): CompanyShareholderAllotmentDetail {
+    return this.application.value?.details ?? new CompanyShareholderAllotmentDetail()
+  }
+
+  get proposalLabel(): string {
+    return this.language.isMalay() ? "Cadangan Peruntukkan" : "Proposed Allotment"
+  }
+
+  get proposalDetails(): string {
+    if (this.language.isMalay()) {
+      let considerationType =
+        this.allotmentDetails.considerationType === ConsiderationType.FullyPaid
+          ? "Bayar Penuh"
+          : this.allotmentDetails.considerationType === ConsiderationType.PartiallyPaid
+            ? "Bayar Separa"
+            : "Tidak Berbayar / Belum Dibayar"
+
+      return `
+        <b>Jumlah Saham:</b> ${this.allotmentDetails.numberOfShares}<br>
+        <b>Kelas Saham:</b> ${this.allotmentDetails.typeOfShares === ShareType.Ordinary ? "Ordinary Shares" : "Preference Shares"}<br>
+        <b>Harga Sesaham:</b> RM${NumberUtil.currency(this.allotmentDetails.considerationPerShare)}<br>
+        <b>Jumlah Keseluruhan:</b> RM${NumberUtil.currency(this.allotmentDetails.proposedTotalSubscriptionAmount)}<br>
+        <b>Status Bayaran:</b> ${considerationType}<br>
+        <b>Jumlah telah Dibayar:</b> RM ${NumberUtil.currency(this.allotmentDetails.amountPaid ?? "")}
+      `
+    }
+
+    let considerationType =
+      this.allotmentDetails.considerationType === ConsiderationType.FullyPaid
+        ? "Fully Paid"
+        : this.allotmentDetails.considerationType === ConsiderationType.PartiallyPaid
+          ? "Partially Paid"
+          : "Unpaid"
+
+    return `
+      <b>Number of Shares:</b> ${this.allotmentDetails.numberOfShares}<br>
+      <b>Class of Shares:</b> ${this.allotmentDetails.typeOfShares === ShareType.Ordinary ? "Ordinary Shares" : "Preference Shares"}<br>
+      <b>Issue Price per Share:</b> RM${NumberUtil.currency(this.allotmentDetails.considerationPerShare)}<br>
+      <b>Total Subscription Amount:</b> RM${NumberUtil.currency(this.allotmentDetails.proposedTotalSubscriptionAmount)}<br>
+      <b>Payment Status:</b> ${considerationType}<br>
+      <b>Amount Paid:</b> RM ${NumberUtil.currency(this.allotmentDetails.amountPaid ?? "")}
+    `
+  }
+
+  get section75Label(): string {
+    return this.language.isMalay() ? "Seksyen 75 & 76" : "Section 75 & 76"
+  }
+
+  get section75Details(): string {
+    let signaturesCompleted =
+      this.allotShares.value.existingShareAuthorization.signatureGroups.length >= this.shareholders.value.length
+    let pendingSignaturesFrom = this.shareholders.value
+      .filter((s: Shareholder) => {
+        return !this.allotShares.value.existingShareAuthorization.signatureGroups.some((s: SignatureGroup) => {
+          return s.group?.target === "shareholder" && s.group?.id === s.id
+        })
+      })
+      .map((s: Shareholder) => {
+        return s.fullName().toUpperCase()
+      })
+
+    if (signaturesCompleted) {
+      return this.language.isMalay() ? "Kelulusan Diterima" : "Approval Received"
+    }
+
+    if (this.language.isMalay()) {
+      return `
+        Menunggu Maklum Balas dari: ${StringUtil.oxfordJoin("&", pendingSignaturesFrom)}
+      `
+    }
+
+    return `
+      Awaiting Response from: ${StringUtil.oxfordJoin("&", pendingSignaturesFrom)}
+    `
   }
 
   get itemsToPrepareLabel(): string {
