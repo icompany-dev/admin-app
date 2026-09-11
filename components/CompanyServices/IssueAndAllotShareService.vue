@@ -41,18 +41,18 @@
                 @back="controller.onUpdatingDocument()"
                 @applicationUpdated="controller.onDocumentUpdated()"
               /> -->
-          <!-- <DcrProposedAllotmentOfShares
-                v-if="!controller.isShowMcrFirst"
-                ref="dcrRef"
-                v-bind="controller.resolutionDocumentProps"
-                @doneLoading="controller.handleDisplayedPage()"
-              />
-              <McrAuthorityToAllotShares
-                ref="mcrRef"
-                v-if="controller.isShowMcrFirst"
-                v-bind="controller.mcrResolutionDocumentProps"
-                @doneLoading="controller.handleDisplayedPage()"
-              /> -->
+          <DcrProposeAllotmentOfShares
+            v-if="!controller.isShowMcrFirst"
+            ref="dcrRef"
+            v-bind="controller.resolutionDocumentProps"
+            @doneLoading="controller.handleDisplayedPage()"
+          />
+          <McrAuthorityToAllotShares
+            ref="mcrRef"
+            v-if="controller.isShowMcrFirst"
+            v-bind="controller.mcrResolutionDocumentProps"
+            @doneLoading="controller.handleDisplayedPage()"
+          />
         </TransitionGroup>
       </template>
     </CompanyServiceWrapper>
@@ -64,7 +64,7 @@
   // import AllotmentOfShares from "../Services/AllotmentOfShares.vue"
   import AllotNewSharesService from "@/components/CompanyServices/AllotNewSharesService.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
-  // import DcrProposedAllotmentOfShares from "../Resolutions/DcrProposedAllotmentOfShares.vue"
+  import DcrProposeAllotmentOfShares from "../Resolutions/DcrProposeAllotmentOfShares.vue"
   // import DoNotLieAlert from "../Popups/DoNotLieAlert.vue"
   import FileUploaderLink from "@/components/FileUploaders/Link.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
