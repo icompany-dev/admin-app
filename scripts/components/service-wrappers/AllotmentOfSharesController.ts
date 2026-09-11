@@ -8,43 +8,51 @@ import { useCompanyStore } from "~/stores/Companies"
 import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { StatusConstants } from "~/scripts/constants/Status"
+import { AllotShares } from "~/scripts/library/AllotShares"
+import { CompanyShareAuthorization } from "~/scripts/models/CompanyShareAuthorization"
+import { SignatureGroup, SignatureGroupGroup, SignatureGroupTarget } from "~/scripts/models/SignatureGroup"
+import { ActivityLogger } from "~/scripts/library/ActivityLogger"
 
 export class AllotmentOfSharesController
   extends ServiceController
   implements IServiceController<CompanyShareholderAllotment, ReturnType<typeof useCompanyShareholderAllotmentStore>>
 {
-  application: CompanyShareholderAllotment = new CompanyShareholderAllotment()
+  application = ref<CompanyShareholderAllotment>(new CompanyShareholderAllotment())
   applicationId: string | null = null
   repository = useCompanyShareholderAllotmentStore()
   companyRepository = useCompanyStore()
 
+  allotShares = ref<AllotShares>(new AllotShares("", ""))
+
   showMcrFirst = ref<boolean>(false)
+
+  isLoading: Ref<boolean> = ref<boolean>(false)
 
   constructor(companyId: string, emitEvents: any | null, applicationId: string | null = null) {
     super(CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES, companyId, emitEvents)
 
-    if (!StringUtil.isNullOrEmpty(applicationId)) {
-      this.applicationId = applicationId
-      this.fetchApplication(applicationId ?? "")
-    }
+    this.allotShares.value.companyId = this.companyId
+
+    this.init()
   }
 
-  async fetchApplication(id: string): Promise<void> {
-    let response = await this.repository.fetch(id)
-    if (!this.repository.error) {
-      this.application = new CompanyShareholderAllotment(response)
-      this.applicationId = id
-      this.targetId = id
-    }
-  }
+  async init(): Promise<void> {
+    this.isLoading.value = true
+    await this.allotShares.value.init()
 
-  async setApplication(companyId: string): Promise<void> {
-    let response = await this.companyRepository.fetch(companyId)
-    if (!this.companyRepository.error) {
-      this.application = new CompanyShareholderAllotment()
-      this.application.companyId = companyId
-      this.application.company = new Company(response)
+    if (!StringUtil.isNullOrEmpty(this.allotShares.value.existingApplication.id)) {
+      this.isInPreviewMode.value = false
+      this.application.value = new CompanyShareholderAllotment(this.allotShares.value.existingApplication)
+      this.applicationId = this.allotShares.value.existingApplication.id
+      this.targetId = this.allotShares.value.existingApplication.id
+    } else {
+      this.isInPreviewMode.value = true
+      this.application.value = new CompanyShareholderAllotment()
+      this.applicationId = ""
+      this.targetId = ""
     }
+    this.isLoading.value = false
   }
 
   onShowMcrFirstClicked(): void {
@@ -60,27 +68,17 @@ export class AllotmentOfSharesController
     this.mcrRef.updateApplicationContent(updatedData)
   }
 
-  // onMcrChanged(): void {
-  //   if (!this.dcrRef || !this.mcrRef) {
-  //     return
-  //   }
-  //   let updatedData = this.mcrRef.getApplicationData()
-  //   this.dcrRef.updateApplicationContent(updatedData)
-  // }
+  async onSignedMcr(signatureData: string): Promise<void> {
+    this.signatureFile.value = signatureData
+
+    await this.onSubmitMcrClicked()
+  }
 
   async onSubmitClicked(): Promise<void> {
-    if (this.isADirector.value) {
-      if (this.dcrRef) {
-        let updatedData = this.dcrRef.getApplication()
-        this.application = new CompanyShareholderAllotment(updatedData)
-        this.application.id = this.applicationId ?? ""
-      }
-    } else if (this.isAShareholder.value) {
-      if (this.mcrRef) {
-        let updatedData = this.mcrRef.getApplication()
-        this.application = new CompanyShareholderAllotment(updatedData)
-        this.application.id = this.applicationId ?? ""
-      }
+    if (this.dcrRef) {
+      let updatedData = this.dcrRef.getApplication()
+      this.application.value = new CompanyShareholderAllotment(updatedData)
+      this.application.value.id = this.applicationId ?? ""
     }
 
     try {
@@ -97,21 +95,96 @@ export class AllotmentOfSharesController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
   }
 
+  async onSubmitMcrClicked(): Promise<void> {
+    try {
+      this.emitEvents("back", this.application)
+
+      if (this.mcrRef) {
+        let updatedData = this.mcrRef.getApplication()
+        let companyShareAuthorization = new CompanyShareAuthorization(updatedData)
+        if (StringUtil.isNullOrEmpty(companyShareAuthorization.id)) {
+          await companyShareAuthorization.create(useCompanyShareAuthorizationStore())
+        } else {
+          await companyShareAuthorization.update(useCompanyShareAuthorizationStore())
+        }
+        await this.allotShares.value.fetchExistingAuthorization()
+      }
+
+      if (this.isAShareholder.value) {
+        await Promise.all([this.submitSignature(), this.submitMcrSignature()])
+      }
+
+      this.emitEvents("applicationUpdated", this.application.value)
+    } catch (error: any) {
+      if (error instanceof Error) {
+        error.handle()
+      } else {
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
+        errorMessage.handle()
+      }
+    }
+  }
+
+  async submitMcrSignature(): Promise<void> {
+    if (!this.signatureFile.value) {
+      return
+    }
+
+    if (!this.isAShareholder) {
+      return
+    }
+
+    let activityLogger = new ActivityLogger()
+    await activityLogger.init()
+    let signaturePromises = []
+    let role =
+      this.isADirector && this.isAShareholder ? "Director & Shareholder" : this.isADirector ? "Director" : "Shareholder"
+
+    let signatureDate = this.time.currentDataTimeForSignature()
+    if (this.isAShareholder.value && this.mcrRef) {
+      if (!this.existingSignatureAsShareholder.value) {
+        let newSignatureGroup = new SignatureGroup()
+        newSignatureGroup.target = new SignatureGroupTarget(
+          this.allotShares.value.existingShareAuthorization.id ?? "",
+          CompanyConstants.TARGET_SHAREHOLDER_SHARE_AUTHORIZATION
+        )
+        newSignatureGroup.group = new SignatureGroupGroup(this.shareholderId.value ?? "", "shareholder")
+        signaturePromises.push(
+          newSignatureGroup.update(
+            this.signatureFile.value ?? "",
+            this.fileRepository,
+            this.signatureRepository,
+            signatureDate
+          )
+        )
+      }
+    }
+
+    await Promise.all(signaturePromises)
+      .then(() => {
+        activityLogger.addSignLog(this.companyId, role, this.target, this.targetId ?? "", "success")
+      })
+      .catch(() => {
+        activityLogger.addSignLog(this.companyId, role, this.target, this.targetId ?? "", "failed")
+      })
+  }
+
   async onCreate(): Promise<void> {
-    await this.application.create(this.repository)
-    this.applicationId = this.application.id
-    this.targetId = this.application.id
+    await this.application.value.create(this.repository)
+    this.applicationId = this.application.value.id
+    this.targetId = this.application.value.id
   }
 
   async onUpdate(): Promise<void> {
-    await this.application.update(this.repository)
+    await this.application.value.update(this.repository)
   }
 
   async onRemove(): Promise<void> {
@@ -149,19 +222,86 @@ export class AllotmentOfSharesController
         `
   }
 
-  isDraft(): boolean {
-    return this.application.signatureGroups.length <= 0
+  get isShowWatermark(): boolean {
+    if (
+      this.application.value.status === StatusConstants.DRAFT ||
+      this.application.value.status === StatusConstants.PENDING
+    ) {
+      return true
+    }
+
+    return this.application.value.signatureGroups.length <= 0
+  }
+
+  get watermarkText(): string {
+    if (!this.isShowWatermark) {
+      return ""
+    }
+
+    if (
+      this.application.value.status === StatusConstants.DRAFT ||
+      this.application.value.status === StatusConstants.PENDING
+    ) {
+      return "PREVIEW"
+    }
+
+    if (this.application.value.status === StatusConstants.READY) {
+      return "READY FOR DELIVERY"
+    }
+
+    return "DRAFT"
   }
 
   get resolutionDocumentProps() {
     return new PropsResolutionDocument<CompanyShareholderAllotment>(
       this.companyId,
       this.applicationId,
-      this.application,
-      this.isDraft(),
-      "Draft",
+      this.application.value as CompanyShareholderAllotment,
+      this.isShowWatermark,
+      this.watermarkText,
       false,
       false
     )
+  }
+
+  get mcrResolutionDocumentProps() {
+    return new PropsResolutionDocument<CompanyShareAuthorization>(
+      this.companyId,
+      this.allotShares.value.existingShareAuthorization.id,
+      null,
+      this.isShowWatermark,
+      this.watermarkText,
+      this.isInPreviewMode.value,
+      false
+    )
+  }
+
+  get isShowMcrFirst(): boolean {
+    let route = useRoute()
+    if (route.fullPath.includes("shareholders")) {
+      return true
+    }
+
+    return false
+  }
+
+  get hasSignedAsDirector(): boolean {
+    if (!this.isADirector.value) {
+      return true
+    }
+
+    return this.application.value.signatureGroups.some((sg: SignatureGroup) => {
+      return sg.group?.target === "director" && sg.group?.id === this.directorId.value
+    })
+  }
+
+  get hasSignedAsShareholder(): boolean {
+    if (!this.isAShareholder.value) {
+      return true
+    }
+
+    return this.application.value.signatureGroups.some((sg: SignatureGroup) => {
+      return sg.group?.target === "shareholder" && sg.group?.id === this.shareholderId.value
+    })
   }
 }

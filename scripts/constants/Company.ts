@@ -67,6 +67,8 @@ export class CompanyConstants {
   static TARGET_SHAREHOLDER_TRANSFER_OF_SHARES: string = "company_shareholder_transfer"
   static TARGET_SHAREHOLDER_PROPOSE_TRANSFER: string = "company_shareholder_transfer_proposal"
   static TARGET_SHAREHOLDER_POST_SHARE_TRANSFER: string = "company_post_share_transfer"
+  static TARGET_SHAREHOLDER_SHARE_AUTHORIZATION: string = "company_share_authorization"
+  static TARGET_SOURCE_OF_FUND_DECLARATION: string = "company_fund_source_declaration"
   static TARGET_STRIKING_OFF_RESOLUTION: string = "company_striking_off_resolution"
   static TARGET_SWITCH_OUT: string = "company_switch_out"
   static TARGET_SUBSCRIPTION: string = "company_subscription"
