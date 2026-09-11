@@ -13,7 +13,7 @@
       />
     </div>
     <div class="document-container">
-      <!-- <component
+      <component
         ref="documentRef"
         :is="activeDocumentComponent"
         :company-id="controller.companyId.value"
@@ -21,14 +21,14 @@
         :application-id="controller.applicationId.value"
         :target-id="controller.paymentOrderId.value"
         :target-type="controller.target"
-        :bank-id="controller.application.value.bankId"
-      /> -->
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
   import AllotNewShareApplication from "../Services/AllotNewShareApplication.vue"
+  import IssueAndAllotShareService from "../CompanyServices/IssueAndAllotShareService.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
   import { AllotNewShareController } from "~/scripts/components/secretarial-services/AllotNewShareController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
@@ -42,15 +42,15 @@
 
   const controller = new AllotNewShareController(props, emit)
 
-  // const componentMap: Record<string, any> = {
-  //     [DocumentTargets.TARGET_OPEN_BANK_ACCOUNT_RESOLUTIONS]: BankAccountOpeningService,
-  //     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
-  //   }
+  const componentMap: Record<string, any> = {
+    [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
+    [DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS]: IssueAndAllotShareService,
+  }
 
-  // const activeDocumentComponent = computed(() => {
-  //   const target = controller.selectedDocumentTarget.value
-  //   return target && componentMap[target] ? componentMap[target] : null
-  // })
+  const activeDocumentComponent = computed(() => {
+    const target = controller.selectedDocumentTarget.value
+    return target && componentMap[target] ? componentMap[target] : null
+  })
 
   watch(
     documentRef,

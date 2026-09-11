@@ -62,7 +62,7 @@
 <script lang="ts" setup>
   import ActionTray from "../ActionTrays/ActionTray.vue"
   // import AllotmentOfShares from "../Services/AllotmentOfShares.vue"
-  import AllotNewSharesService from "@/components/CompanyServices/AllotNewSharesService.vue"
+  // import AllotNewSharesService from "@/components/CompanyServices/AllotNewSharesService.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import DcrProposeAllotmentOfShares from "../Resolutions/DcrProposeAllotmentOfShares.vue"
   // import DoNotLieAlert from "../Popups/DoNotLieAlert.vue"
@@ -178,5 +178,5 @@
 
 <style lang="scss">
   @use "~/assets/scss/components/CompanyServices/Service" as *;
-  @use "~/assets/scss/components/CompanyServices/IssueAndAllotSharesService" as *;
+  @use "~/assets/scss/components/CompanyServices/IssueAndAllotShareService" as *;
 </style>
