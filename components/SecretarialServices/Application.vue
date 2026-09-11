@@ -31,6 +31,7 @@
 </template>
 
 <script lang="ts" setup>
+  import AllotNewShare from "./AllotNewShare.vue"
   import AppointDirector from "./AppointDirector.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
   import ChangeOfName from "./ChangeOfName.vue"
@@ -47,8 +48,9 @@
 
   const componentMap: Record<string, any> = {
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
-    [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
+    [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
+    [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotNewShare,
   }
 
   const activeDocumentComponent = computed(() => {
