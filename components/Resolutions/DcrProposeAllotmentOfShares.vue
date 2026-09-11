@@ -521,6 +521,8 @@
 
   const emit = defineEmits(["signed", "doneLoading"])
 
+  const documentRef = ref(null)
+
   const controller = new DcrProposedAllotmentOfSharesController(props, emit)
 
   watch(
@@ -552,11 +554,20 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     isLoading: controller.isLoading.value,
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 
