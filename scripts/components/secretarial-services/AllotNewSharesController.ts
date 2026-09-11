@@ -11,7 +11,7 @@ export class AllotNewSharesController extends SecretarialServicesController<Comp
 
   onApplicationClicked(data: any): void {
     let application = new CompanyShareholderAllotment(data)
-    this.router.push({ path: `/services/open-bank-account/${application.id}` })
+    this.router.push({ path: `/services/allotment-of-shares/${application.id}` })
   }
 
   companyName(data: any): string {
