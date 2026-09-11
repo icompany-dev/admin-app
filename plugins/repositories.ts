@@ -97,6 +97,7 @@ import { CompanyDocumentRequestRepository } from "~/scripts/repositories/Company
 import { CompanyFinancialPeriodRepository } from "~/scripts/repositories/CompanyFinancialPeriodRepository"
 import { CompanyFinancialStatementAuthorisedPersonRepository } from "~/scripts/repositories/CompanyFinancialStatementAuthorisedPersonRepository"
 import { CompanyFinancialStatementSetupRepository } from "~/scripts/repositories/CompanyFinancialStatementSetupRepository"
+import { CompanyFundSourceDeclarationRepository } from "~/scripts/repositories/CompanyFundSourceDeclarationRepository"
 import { CompanyLoanApplicationRepository } from "~/scripts/repositories/CompanyLoanApplicationRepository"
 import { CompanyMailroomServiceRepository } from "~/scripts/repositories/CompanyMailroomServiceRepository"
 import { CompanyManagementAccountRepository } from "~/scripts/repositories/CompanyManagementAccountRepository"
@@ -278,6 +279,7 @@ interface Repositories {
   companyFinancialPeriods: CompanyFinancialPeriodRepository
   companyFinancialStatementAuthorisedPersons: CompanyFinancialStatementAuthorisedPersonRepository
   companyFinancialStatementSetups: CompanyFinancialStatementSetupRepository
+  companyFundSourceDeclarations: CompanyFundSourceDeclarationRepository
   companyLoanApplications: CompanyLoanApplicationRepository
   companyMailroomServices: CompanyMailroomServiceRepository
   companyManagementAccounts: CompanyManagementAccountRepository
@@ -764,6 +766,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/financial-statements/setup",
       config.public.apiBaseUrl,
       getAuthToken),
+    companyFundSourceDeclarations: new CompanyFundSourceDeclarationRepository(
+      "company/funds-source-declarations",
+      "company/funds-source-declaration",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     companyLoanApplications: new CompanyLoanApplicationRepository("company/loans",
       "company/loan",
       config.public.apiBaseUrl,
@@ -852,12 +860,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/set-financial-year-end",
       config.public.apiBaseUrl,
       getAuthToken),
-    companyShareAuthorizations: new CompanyShareAuthorizationRepository(
-      "company/shares/authorizations",
+    companyShareAuthorizations: new CompanyShareAuthorizationRepository("company/shares/authorizations",
       "company/shares/authorization",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyShareholderAllotments: new CompanyShareholderAllotmentRepository("company/shareholder/allotments",
       "company/shareholder/allotment",
       config.public.apiBaseUrl,
@@ -1191,6 +1197,7 @@ declare module "#app" {
       companyFinancialPeriods: import("~/scripts/repositories/CompanyFinancialPeriodRepository").CompanyFinancialPeriodRepository
       companyFinancialStatementAuthorisedPersons: import("~/scripts/repositories/CompanyFinancialStatementAuthorisedPersonRepository").CompanyFinancialStatementAuthorisedPersonRepository
       companyFinancialStatementSetups: import("~/scripts/repositories/CompanyFinancialStatementSetupRepository").CompanyFinancialStatementSetupRepository
+      companyFundSourceDeclarations: import("~/scripts/repositories/CompanyFundSourceDeclarationRepository").CompanyFundSourceDeclarationRepository
       companyLoanApplications: import("~/scripts/repositories/CompanyLoanApplicationRepository").CompanyLoanApplicationRepository
       companyMailroomServices: import("~/scripts/repositories/CompanyMailroomServiceRepository").CompanyMailroomServiceRepository
       companyManagementAccounts: import("~/scripts/repositories/CompanyManagementAccountRepository").CompanyManagementAccountRepository
@@ -1376,6 +1383,7 @@ declare module "pinia" {
       companyFinancialPeriods: import("~/scripts/repositories/CompanyFinancialPeriodRepository").CompanyFinancialPeriodRepository
       companyFinancialStatementAuthorisedPersons: import("~/scripts/repositories/CompanyFinancialStatementAuthorisedPersonRepository").CompanyFinancialStatementAuthorisedPersonRepository
       companyFinancialStatementSetups: import("~/scripts/repositories/CompanyFinancialStatementSetupRepository").CompanyFinancialStatementSetupRepository
+      companyFundSourceDeclarations: import("~/scripts/repositories/CompanyFundSourceDeclarationRepository").CompanyFundSourceDeclarationRepository
       companyLoanApplications: import("~/scripts/repositories/CompanyLoanApplicationRepository").CompanyLoanApplicationRepository
       companyMailroomServices: import("~/scripts/repositories/CompanyMailroomServiceRepository").CompanyMailroomServiceRepository
       companyManagementAccounts: import("~/scripts/repositories/CompanyManagementAccountRepository").CompanyManagementAccountRepository
