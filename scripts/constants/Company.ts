@@ -39,6 +39,7 @@ export class CompanyConstants {
   static TARGET_DIRECTOR_APPOINTMENT: string = "company_director_appointment"
   static TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST: string = "director_declaration_conflict_of_interest"
   static TARGET_DIRECTOR_INVITATION: string = "director_invitation"
+  static TARGET_DIRECTOR: string = "director"
   static TARGET_DIRECTOR_LOAN: string = "company_director_loan"
   static TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT: string = "company_director_chairman_appointment"
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT: string = "company_director_manager_appointment"
@@ -121,6 +122,7 @@ export class CompanyConstants {
     this.TARGET_DIRECTOR_APPOINTMENT,
     this.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST,
     this.TARGET_DIRECTOR_INVITATION,
+    this.TARGET_DIRECTOR,
     this.TARGET_DIRECTOR_LOAN,
     this.TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT,
     this.TARGET_DIRECTOR_MANAGER_APPOINTMENT,
