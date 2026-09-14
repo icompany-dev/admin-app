@@ -52,7 +52,7 @@
     />
     <ActionTray
       v-if="!controller.isLoading.value"
-      :is-lock-position="true"
+      :is-lock-position="false"
       :actions="controller.actionTrayElements"
     />
   </div>

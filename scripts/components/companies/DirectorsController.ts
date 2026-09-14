@@ -117,33 +117,16 @@ export class DirectorsController {
     try {
       this.isDownloading.value = true
 
-      this.tableDataFetcher.value.filter.takeAll = true
-      let filter = this.tableDataFetcher.value.filter
-      let repository = useDirectorStore()
-      let response = await repository.fetchAll(filter)
-
-      let directors = response.data.map((d: any) => {
-        return new Director(d)
-      })
-
-      let promises = directors.map((d: Director) => {
-        return d.setRegisteredUser(useUserStore())
-      })
-
-      promises.concat(
-        directors.map((d: Director) => {
-          return d.setCompany(useCompanyStore())
-        })
-      )
-
-      await Promise.allSettled(promises)
-
       let blobs: Blob[] = []
       let files: DownloadFileData[] = []
 
-      for (let i = 0; i < directors.length; i++) {
-        let director = directors[i]
-        this.selectedDirectorId.value = directors[i].id
+      for (let i = 0; i < this.tableDataFetcher.value.data.length; i++) {
+        let director = this.tableDataFetcher.value.data[i]
+        if (StringUtil.isNullOrEmpty(director.userId) || StringUtil.isNullOrEmpty(director.company?.id ?? "")) {
+          continue
+        }
+
+        this.selectedDirectorId.value = this.tableDataFetcher.value.data[i].id
 
         await nextTick()
         await this.documentRef.waitForReady()
@@ -218,7 +201,7 @@ export class DirectorsController {
 
   get actionInProgressProps(): PropsActionInProgress {
     return new PropsActionInProgress(
-      this.tableDataFetcher.value.filter.totalRecords,
+      this.tableDataFetcher.value.data.length,
       this.totalDownloaded.value,
       this.language.isMalay() ? "menjana pengisytiharan" : "generating the declarations"
     )

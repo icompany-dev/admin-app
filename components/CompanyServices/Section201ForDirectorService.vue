@@ -73,6 +73,7 @@
   defineExpose({
     onGenerateClicked: controller.onGenerateClicked.bind(controller),
     onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onGenerateBlob: controller.onGenerateBlob.bind(controller),
     onExpandDocument: controller.onExpandDocument.bind(controller),
     isPageReady: controller.isPageReady.bind(controller),
     waitForReady: controller.waitForReady.bind(controller),
