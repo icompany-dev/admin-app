@@ -14,6 +14,8 @@ export class DirectorsController {
 
   selectedDirectorId: Ref<string> = ref<string>("")
 
+  selectedDirectors: Ref<Director[]> = ref<Director[]>([])
+
   language = useLanguage()
 
   filter = ref<Filter>(new Filter())
@@ -106,6 +108,32 @@ export class DirectorsController {
     this.selectedDirectorId.value = ""
   }
 
+  isDirectorSelected(director: Director): boolean {
+    return this.selectedDirectors.value.some((d: Director) => {
+      return d.id === director.id
+    })
+  }
+
+  onDirectorCheckClicked(director: Director): void {
+    if (this.isDirectorSelected(director)) {
+      this.selectedDirectors.value = this.selectedDirectors.value.filter((d: Director) => {
+        return d.id !== director.id
+      })
+    } else {
+      this.selectedDirectors.value.push(director)
+    }
+  }
+
+  selectAll(): void {
+    this.selectedDirectors.value = this.tableDataFetcher.value.data.map((d: Director) => {
+      return new Director(d)
+    })
+  }
+
+  clearSelection(): void {
+    this.selectedDirectors.value = []
+  }
+
   async onDownloadAll(): Promise<void> {
     if (this.isDownloading.value) {
       return
@@ -121,8 +149,8 @@ export class DirectorsController {
       let blobs: Blob[] = []
       let files: DownloadFileData[] = []
 
-      for (let i = 0; i < this.tableDataFetcher.value.data.length; i++) {
-        let director = this.tableDataFetcher.value.data[i]
+      for (let i = 0; i < this.selectedDirectors.value.length; i++) {
+        let director = this.selectedDirectors.value[i]
         if (
           StringUtil.isNullOrEmpty(director.user?.name ?? "") ||
           StringUtil.isNullOrEmpty(director.company?.id ?? "")
@@ -130,15 +158,11 @@ export class DirectorsController {
           continue
         }
 
-        this.selectedDirectorId.value = this.tableDataFetcher.value.data[i].id
-        console.log("Here?")
+        this.selectedDirectorId.value = director.id
         await nextTick()
         await this.documentRef.waitForReady()
-        console.log("document ready")
 
         let filename = `${director.company?.getFullName().toUpperCase()}, ${director.user?.name.toUpperCase()} - Declaration under Section 201.pdf`
-
-        console.log(i + 1, "generating", filename)
 
         let blob = await this.documentRef.onGenerateBlob()
         if (!blob) {
@@ -196,25 +220,30 @@ export class DirectorsController {
   }
 
   get actionTrayElements(): ActionTrayElement[] {
+    let downloadLabelEn =
+      this.selectedDirectors.value.length > 0 ? `Download (${this.selectedDirectors.value.length})` : "Download"
+
+    let downloadLabelBm =
+      this.selectedDirectors.value.length > 0 ? `Muat Turun (${this.selectedDirectors.value.length})` : "Muat Turun"
+
     return [
-      // new ActionTrayElement("select-all", this.onSelectAllClicked.bind(this), {
-      //   label: new ActionTrayLabel(selectAllLabelEn, selectAllLabelBm),
-      // }),
-      // new ActionTrayElement("cosec-option", this.onCosecSelected.bind(this), {
-      //   label: new ActionTrayLabel("", ""),
-      //   isSelectElement: true,
-      //   selectElementOptions: this.cosecOptions,
-      // }),
+      new ActionTrayElement("select-all", this.selectAll.bind(this), {
+        label: new ActionTrayLabel("Select All", "Pilih Semua"),
+      }),
+      new ActionTrayElement("clear-all", this.clearSelection.bind(this), {
+        label: new ActionTrayLabel("Clear Selection", "Padam Semua"),
+        isDisabled: this.isDownloading.value || this.selectedDirectors.value.length <= 0,
+      }),
       new ActionTrayElement("download", this.onDownloadAll.bind(this), {
-        label: new ActionTrayLabel("Download All", "Muat Turun"),
-        isDisabled: this.isDownloading.value,
+        label: new ActionTrayLabel(downloadLabelEn, downloadLabelBm),
+        isDisabled: this.isDownloading.value || this.selectedDirectors.value.length <= 0,
       }),
     ]
   }
 
   get actionInProgressProps(): PropsActionInProgress {
     return new PropsActionInProgress(
-      this.tableDataFetcher.value.data.length,
+      this.selectedDirectors.value.length,
       this.totalDownloaded.value,
       this.language.isMalay() ? "menjana pengisytiharan" : "generating the declarations"
     )

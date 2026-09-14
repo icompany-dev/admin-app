@@ -1,47 +1,58 @@
 #companies-directors {
   margin-top: 30px;
 
-  .directors {
-    padding-bottom: 50px;
-    overflow-y: auto;
-    max-height: 75dvh;
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    align-items: flex-start;
-    gap: 10px;
-
-    .director-details {
-      display: flex;
-      flex-direction: column;
-      justify-content: stretch;
-      align-items: flex-start;
-      gap: 10px;
-      transition: all 0.7s ease;
-      cursor: pointer;
-      border-radius: 10px;
-      width: calc(100% - 20px);
-      padding: 10px;
-
-      .director-name {
-        font-weight: 600;
-      }
-
-      &:hover {
-        width: calc(100% - 40px);
-        padding: 20px;
-        background-color: rgba(255, 255, 255, 0.3);
-      }
-    }
-  }
-
   .companies-documents {
     position: relative;
     height: 50dvh;
 
     .sdn-bhd-container {
       max-height: 60dvh;
+
+      .directors {
+        padding-bottom: 50px;
+        overflow-y: auto;
+        max-height: 75dvh;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        align-items: flex-start;
+        gap: 10px;
+
+        .director-details {
+          display: flex;
+          flex-direction: column;
+          justify-content: stretch;
+          align-items: flex-start;
+          gap: 10px;
+          transition: all 0.7s ease;
+          cursor: pointer;
+          border-radius: 10px;
+          width: calc(100% - 20px);
+          padding: 10px;
+
+          .form-check {
+            justify-content: flex-start;
+            gap: 20px;
+
+            input[type=checkbox] {
+              border-color: var(--bs-white);
+            }
+
+            .director-name {
+              font-weight: 600;
+            }
+          }
+
+          &:hover {
+            width: calc(100% - 40px);
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+          }
+        }
+      }
+
+
 
       #pagination-table-pagination {
         margin-top: 20px;

@@ -21,11 +21,21 @@
             v-for="(director, index) in controller.tableDataFetcher.value.data"
             @click="controller.onDirectorSelected(director.id)"
           >
-            <div class="director-name">
-              {{ director.user?.name }}
-            </div>
-            <div class="company-name">
-              {{ director.company?.getFullName() }}
+            <div class="form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                :checked="controller.isDirectorSelected(director)"
+                @click="controller.onDirectorCheckClicked(director)"
+              />
+              <div>
+                <div class="director-name">
+                  {{ director.user?.name }}
+                </div>
+                <div class="company-name">
+                  {{ director.company?.getFullName() }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
