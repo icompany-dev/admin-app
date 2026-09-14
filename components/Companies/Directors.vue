@@ -37,7 +37,7 @@
       <TransitionGroup name="slide-left">
         <div
           class="document-in-view"
-          v-if="controller.isShowSelectedSdnBhd"
+          v-if="controller.isShowSelectedDirector"
         >
           <Section201ForDirectorService
             ref="documentRef"

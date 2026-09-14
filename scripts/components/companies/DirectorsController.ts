@@ -191,8 +191,8 @@ export class DirectorsController {
     return new PropsTablePagination(this.tableDataFetcher.value.filter)
   }
 
-  get isShowSelectedSdnBhd(): boolean {
-    return !StringUtil.isNullOrEmpty(this.selectedDirectorId.value)
+  get isShowSelectedDirector(): boolean {
+    return !StringUtil.isNullOrEmpty(this.selectedDirectorId.value) && this.tableDataFetcher.value.data.length > 0
   }
 
   get actionTrayElements(): ActionTrayElement[] {
