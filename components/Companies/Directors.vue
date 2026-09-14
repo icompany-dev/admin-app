@@ -14,12 +14,18 @@
       <div class="sdn-bhd-container">
         <TransitionGroup name="fade">
           <template v-if="!controller.isShowSelectedSdnBhd">
-            <div
-              class="director-details"
-              v-for="(director, index) in controller.tableDataFetcher.value.data"
-            >
-              {{ director.company?.getFullName() }}
-              {{ director.user?.name }}
+            <div class="directors">
+              <div
+                class="director-details"
+                v-for="(director, index) in controller.tableDataFetcher.value.data"
+              >
+                <div class="director-name">
+                  {{ director.user?.name }}
+                </div>
+                <div class="company-name">
+                  {{ director.company?.getFullName() }}
+                </div>
+              </div>
             </div>
             <TablePagination
               v-bind="controller.tablePaginationProps"
