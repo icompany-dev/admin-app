@@ -39,24 +39,28 @@
           class="document-in-view"
           v-if="controller.isShowSelectedSdnBhd"
         >
-          <Section201ForDirectorService :application-id="controller.selectedDirectorId.value" />
-          <!-- <button
-            class="btn btn-submit"
-            @click="controller.onDownloadAll()"
-          >
-            <i
-              class="fa-regular fa-spin fa-spinner"
-              v-if="controller.isGeneratingPdf.value"
-            />
-            Generate for All
-          </button> -->
+          <Section201ForDirectorService
+            ref="documentRef"
+            :application-id="controller.selectedDirectorId.value"
+          />
         </div>
       </TransitionGroup>
     </div>
+    <ActionInProgress
+      ref="actionInProgressRef"
+      v-bind="controller.actionInProgressProps"
+    />
+    <ActionTray
+      v-if="!controller.isLoading.value"
+      :is-lock-position="true"
+      :actions="controller.actionTrayElements"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ActionInProgress from "../Popups/ActionInProgress.vue"
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import Section201ForDirectorService from "../CompanyServices/Section201ForDirectorService.vue"
@@ -84,6 +88,9 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+  const actionInProgressRef = ref(null)
+
   const controller = new DirectorsController(emit)
 
   watch(
@@ -105,6 +112,22 @@
     (newVal) => {
       controller.setIsIncludeDemo(newVal)
     }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    actionInProgressRef,
+    (newVal) => {
+      controller.setActionInProgressRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

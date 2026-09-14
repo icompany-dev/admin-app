@@ -171,7 +171,7 @@ export class Section201ForDirectorServiceController {
     await PdfPaperUtil.generatePdfFile(
       pages,
       20,
-      `${this.director.value.user?.name} - Declaration under Section 201.pdf`,
+      `${this.name.value}, ${this.director.value.user?.name} - Declaration under Section 201.pdf`,
       PaperSize.A4,
       PaperOrientation.Portrait
     )
@@ -188,7 +188,7 @@ export class Section201ForDirectorServiceController {
       return null
     }
 
-    let filename = `${this.director.value.user?.name} - Declaration under Section 201.pdf`
+    let filename = `${this.name.value}, ${this.director.value.user?.name} - Declaration under Section 201.pdf`
     let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
     let pdfFile = new File([pdfBlob], filename, {
       type: "application/pdf",
@@ -198,6 +198,34 @@ export class Section201ForDirectorServiceController {
     await uploadedFile.uploadFile(pdfFile, useFileStore())
 
     return uploadedFile.id
+  }
+
+  async onGenerateBlob(): Promise<Blob | null> {
+    if (!this.documentRef) {
+      return null
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return null
+    }
+
+    let filename = `${this.name.value}, ${this.director.value.user?.name} - Declaration under Section 201.pdf`
+    let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+
+    return pdfBlob
+  }
+
+  isPageReady(): boolean {
+    return !this.isLoading.value
+  }
+
+  async waitForReady(): Promise<void> {
+    await nextTick()
+    while (this.isLoading.value) {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    }
   }
 
   get serviceWrapperProps() {

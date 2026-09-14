@@ -4,6 +4,9 @@ import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
 import { StringUtil } from "~/scripts/utils/String"
+import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { PropsActionInProgress } from "~/scripts/props/PropsActionInProgress"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 
 export class DirectorsController {
   tableDataFetcher = ref<TableDataFetcher<Director>>(new TableDataFetcher(Director, useDirectorStore()))
@@ -16,7 +19,12 @@ export class DirectorsController {
 
   emitEvents: any | null = null
 
+  documentRef: any | null = null
+  actionInProgressRef: any | null = null
+
   isLoading: Ref<boolean> = ref<boolean>(false)
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+  totalDownloaded: Ref<number> = ref<number>(0)
 
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
@@ -27,6 +35,14 @@ export class DirectorsController {
     this.tableDataFetcher.value.filter.sortOrder = "asc"
 
     this.fetchData()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
+  }
+
+  setActionInProgressRef(actionInProgressRef: any): void {
+    this.actionInProgressRef = actionInProgressRef
   }
 
   async setSearch(searchText: string): Promise<void> {
@@ -89,6 +105,67 @@ export class DirectorsController {
     this.selectedDirectorId.value = ""
   }
 
+  async onDownloadAll(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    if (this.actionInProgressRef) {
+      this.actionInProgressRef.show()
+    }
+
+    try {
+      this.isDownloading.value = true
+
+      this.tableDataFetcher.value.filter.takeAll = true
+      let filter = this.tableDataFetcher.value.filter
+      let repository = useDirectorStore()
+      let response = await repository.fetchAll(filter)
+
+      let directors = response.data.map((d: any) => {
+        return new Director(d)
+      })
+
+      let promises = directors.map((d: Director) => {
+        return d.setRegisteredUser(useUserStore())
+      })
+
+      promises.concat(
+        directors.map((d: Director) => {
+          return d.setCompany(useCompanyStore())
+        })
+      )
+
+      await Promise.allSettled(promises)
+
+      let blobs: Blob[] = []
+      let files: DownloadFileData[] = []
+
+      for (let i = 0; i < directors.length; i++) {
+        let director = directors[i]
+        this.selectedDirectorId.value = directors[i].id
+
+        await nextTick()
+        await this.documentRef.waitForReady()
+
+        let filename = `${director.company?.getFullName().toUpperCase()}, ${director.user?.name.toUpperCase()} - Declaration under Section 201.pdf`
+        let blob = await this.documentRef.onGenerateBlob()
+        if (!blob) {
+          continue
+        }
+
+        blobs.push(blob)
+        files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
+        this.totalDownloaded.value = this.totalDownloaded.value + 1
+      }
+    } catch (e) {
+      //
+    } finally {
+      this.tableDataFetcher.value.filter.takeAll = false
+      this.isDownloading.value = false
+    }
+  }
+
   // getters
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
@@ -120,5 +197,30 @@ export class DirectorsController {
 
   get isShowSelectedSdnBhd(): boolean {
     return !StringUtil.isNullOrEmpty(this.selectedDirectorId.value)
+  }
+
+  get actionTrayElements(): ActionTrayElement[] {
+    return [
+      // new ActionTrayElement("select-all", this.onSelectAllClicked.bind(this), {
+      //   label: new ActionTrayLabel(selectAllLabelEn, selectAllLabelBm),
+      // }),
+      // new ActionTrayElement("cosec-option", this.onCosecSelected.bind(this), {
+      //   label: new ActionTrayLabel("", ""),
+      //   isSelectElement: true,
+      //   selectElementOptions: this.cosecOptions,
+      // }),
+      new ActionTrayElement("download", this.onDownloadAll.bind(this), {
+        label: new ActionTrayLabel("Download All", "Muat Turun"),
+        isDisabled: this.isDownloading.value,
+      }),
+    ]
+  }
+
+  get actionInProgressProps(): PropsActionInProgress {
+    return new PropsActionInProgress(
+      this.tableDataFetcher.value.filter.totalRecords,
+      this.totalDownloaded.value,
+      this.language.isMalay() ? "menjana pengisytiharan" : "generating the declarations"
+    )
   }
 }
