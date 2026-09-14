@@ -4,12 +4,11 @@
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
     >
-      <template
+      <!-- <template
         #paperMargins1
         v-if="controller.isDocumentEditable()"
       >
         <TransitionGroup name="fade">
-          <!-- <div class="paper-tag point-right purpose-tag">Select One</div> -->
           <div
             class="paper-tag point-right unsubscribed-shares-tag"
             v-if="controller.isShowExternalAllotToOptions"
@@ -17,8 +16,8 @@
             Complete This
           </div>
         </TransitionGroup>
-      </template>
-      <template
+      </template> -->
+      <!-- <template
         v-for="m in controller.additionalPageRanges"
         #[`paperMargins${m}`]
         :key="`margin${m}`"
@@ -38,7 +37,7 @@
             </TransitionGroup>
           </Teleport>
         </ClientOnly>
-      </template>
+      </template> -->
       <template #page1>
         <p>
           <b>WHEREAS:</b>

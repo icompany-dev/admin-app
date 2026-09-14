@@ -42,10 +42,12 @@
         </template>
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrProposeAllotmentOfShares from "@/components/Resolutions/DcrProposeAllotmentOfShares.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import McrAuthorityToAllotShares from "@/components/Resolutions/McrAuthorityToAllotShares.vue"

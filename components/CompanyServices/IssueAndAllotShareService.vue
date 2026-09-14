@@ -42,14 +42,12 @@
                 @applicationUpdated="controller.onDocumentUpdated()"
               /> -->
           <DcrProposeAllotmentOfShares
-            v-if="!controller.isShowMcrFirst"
             ref="dcrRef"
             v-bind="controller.resolutionDocumentProps"
             @doneLoading="controller.handleDisplayedPage()"
           />
           <McrAuthorityToAllotShares
             ref="mcrRef"
-            v-if="controller.isShowMcrFirst"
             v-bind="controller.mcrResolutionDocumentProps"
             @doneLoading="controller.handleDisplayedPage()"
           />
@@ -174,6 +172,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+  })
 </script>
 
 <style lang="scss">
