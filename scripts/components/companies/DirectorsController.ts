@@ -64,7 +64,8 @@ export class DirectorsController {
   }
 
   async goToPage(page: number): Promise<void> {
-    await this.tableDataFetcher.value.goToPage(page)
+    this.tableDataFetcher.value.filter.page = page
+    await this.fetchData()
   }
 
   async fetchData(): Promise<void> {

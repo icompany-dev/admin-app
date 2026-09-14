@@ -41,7 +41,7 @@
         </div>
         <TablePagination
           v-bind="controller.tablePaginationProps"
-          @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
+          @go-to-page="controller.goToPage($event)"
         />
       </div>
       <TransitionGroup name="slide-left">
