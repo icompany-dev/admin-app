@@ -75,6 +75,9 @@ export class Section201ForDirectorController
 
       await this.application.value.setCompany(useCompanyStore())
       await this.fetchFirstSignature()
+
+      this.name.value = this.application.value.company?.getFullName() ?? ""
+      this.registrationNumber.value = `${this.application.value.company?.registrationNumberNew} (${this.application.value.company?.registrationNumberOld})`
     } catch (e) {
       if (e instanceof Error) {
         e.handle()

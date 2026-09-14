@@ -63,6 +63,8 @@ export class DirectorsController {
       })
 
       await Promise.allSettled(promises)
+
+      this.selectedDirectorId.value = this.tableDataFetcher.value.data[0].id
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -76,11 +78,11 @@ export class DirectorsController {
     }
   }
 
-  onDirectorSelected(companyId: string): void {
-    this.selectedDirectorId.value = companyId
+  onDirectorSelected(directorId: string): void {
+    this.selectedDirectorId.value = directorId
 
-    let router = useRouter()
-    router.push(`/sdnbhds/directors/${this.selectedDirectorId.value}`)
+    // let router = useRouter()
+    // router.push(`/sdnbhds/directors/${this.selectedDirectorId.value}`)
   }
 
   onDirectorUnselected(): void {

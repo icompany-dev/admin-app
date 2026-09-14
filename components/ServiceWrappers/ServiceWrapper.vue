@@ -100,6 +100,7 @@
   import SetFinancialYearEnd from "./SetFinancialYearEnd.vue"
   import ShareIssuance from "./ShareIssuance.vue"
   import Section201 from "./Section201.vue"
+  import Section201ForDirector from "./Section201ForDirector.vue"
   import Section236Three from "./Section236Three.vue"
   import Section27ForCompany from "./Section27ForCompany.vue"
   import Section27OneFour from "./Section27OneFour.vue"
@@ -151,6 +152,7 @@
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointmentOfDirector,
     [CompanyConstants.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST]: Section219And221,
     [CompanyConstants.TARGET_DIRECTOR_INVITATION]: Section201,
+    [CompanyConstants.TARGET_DIRECTOR]: Section201ForDirector,
     [CompanyConstants.TARGET_DIRECTOR_LOAN]: LoanToDirector,
     [CompanyConstants.TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT]: AppointChairman,
     [CompanyConstants.TARGET_DIRECTOR_MANAGER_APPOINTMENT]: AppointManager,
