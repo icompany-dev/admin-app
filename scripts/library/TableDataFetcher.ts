@@ -34,8 +34,6 @@ export class TableDataFetcher<T> {
         return new this.itemClassType(c)
       })
 
-      console.log(response)
-
       this.filter.setDataFromApiRecord(response)
     } catch (e) {
       let error = new Error()
