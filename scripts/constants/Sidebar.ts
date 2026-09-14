@@ -93,7 +93,12 @@ export class PageSidebar {
     "sdnbhds/assign-cosec",
     false
   )
-  static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [this.sdnbhdAll, this.sdnbhdAssign])
+  static sdnbhdDirectors: Sidebar = new Sidebar("Directors", "Pengarah", "sdnbhds/directors", false)
+  static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [
+    this.sdnbhdAll,
+    this.sdnbhdAssign,
+    this.sdnbhdDirectors,
+  ])
 
   static changeBusinessName: Sidebar = new Sidebar(
     "Change of Name",
