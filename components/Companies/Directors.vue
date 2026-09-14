@@ -40,6 +40,7 @@
           </div>
         </div>
         <TablePagination
+          v-if="controller.tableDataFetcher.value.filter.totalPages > 1"
           v-bind="controller.tablePaginationProps"
           @go-to-page="controller.goToPage($event)"
         />
