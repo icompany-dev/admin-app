@@ -204,7 +204,7 @@ export class Section201ForDirectorController
 
     let time = useLocalTime()
     let dayjs = useDayjs()
-    let signatureDate = this.signatureGroup.value.signature?.createdAt ?? dayjs().format("YYYY-MM-DD")
+    let signatureDate = this.application.value.dateAppointed ?? dayjs().format("YYYY-MM-DD")
 
     return time.formatDateOnlyFull(signatureDate)
   }
