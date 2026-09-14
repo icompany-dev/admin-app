@@ -3,15 +3,14 @@
 
   .companies-documents {
     position: relative;
-    height: 50dvh;
+    height: 70dvh;
 
     .sdn-bhd-container {
-      max-height: 60dvh;
+      max-height: 70dvh;
 
       .directors {
-        padding-bottom: 50px;
         overflow-y: auto;
-        max-height: 75dvh;
+        max-height: calc(70dvh - 50px);
         width: 50%;
         display: flex;
         flex-direction: column;
@@ -51,8 +50,6 @@
           }
         }
       }
-
-
 
       #pagination-table-pagination {
         margin-top: 20px;
