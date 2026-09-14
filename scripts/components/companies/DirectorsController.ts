@@ -7,6 +7,7 @@ import { StringUtil } from "~/scripts/utils/String"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 import { PropsActionInProgress } from "~/scripts/props/PropsActionInProgress"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class DirectorsController {
   tableDataFetcher = ref<TableDataFetcher<Director>>(new TableDataFetcher(Director, useDirectorStore()))
@@ -122,16 +123,23 @@ export class DirectorsController {
 
       for (let i = 0; i < this.tableDataFetcher.value.data.length; i++) {
         let director = this.tableDataFetcher.value.data[i]
-        if (StringUtil.isNullOrEmpty(director.userId) || StringUtil.isNullOrEmpty(director.company?.id ?? "")) {
+        if (
+          StringUtil.isNullOrEmpty(director.user?.name ?? "") ||
+          StringUtil.isNullOrEmpty(director.company?.id ?? "")
+        ) {
           continue
         }
 
         this.selectedDirectorId.value = this.tableDataFetcher.value.data[i].id
-
+        console.log("Here?")
         await nextTick()
         await this.documentRef.waitForReady()
+        console.log("document ready")
 
         let filename = `${director.company?.getFullName().toUpperCase()}, ${director.user?.name.toUpperCase()} - Declaration under Section 201.pdf`
+
+        console.log(i + 1, "generating", filename)
+
         let blob = await this.documentRef.onGenerateBlob()
         if (!blob) {
           continue
@@ -141,11 +149,16 @@ export class DirectorsController {
         files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
         this.totalDownloaded.value = this.totalDownloaded.value + 1
       }
+
+      await FileZipper.zipAndDownload(files, `DCR Appointment of Joint Company Secretary.zip`)
     } catch (e) {
       //
     } finally {
-      this.tableDataFetcher.value.filter.takeAll = false
       this.isDownloading.value = false
+
+      if (this.actionInProgressRef) {
+        this.actionInProgressRef.hide()
+      }
     }
   }
 
