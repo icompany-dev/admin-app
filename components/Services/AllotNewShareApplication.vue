@@ -33,7 +33,7 @@
                 class="details"
                 v-html="controller.section75Details"
               />
-              <template v-if="controller.hasOtherRequirements">
+              <template v-if="controller.itemsToPrepare.length > 0">
                 <b>{{ controller.itemsToPrepareLabel }}</b>
                 <ol>
                   <li

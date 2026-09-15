@@ -298,7 +298,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
 
     let items: string[] = []
     this.paymentOrderItem.optionals.forEach((poio: PaymentOrderItemOptional) => {
-      if (!StringUtil.contains(poio.serviceName, "printed")) {
+      if (!StringUtil.contains(poio.serviceName, "printed") && !!StringUtil.contains(poio.serviceName, "per allotee")) {
         items.push(StringUtil.capitalize(poio.serviceName))
       }
     })
