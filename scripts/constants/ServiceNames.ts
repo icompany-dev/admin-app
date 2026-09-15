@@ -149,7 +149,7 @@ export class ServiceNames {
     "Lodgment of Annual Return",
     "Failkan Penyata Tahunan",
     "company_annual_return_request",
-    "annual-return",
+    "annual-returns",
     "compliance"
   )
   static subscription: ServiceName = new ServiceName(
