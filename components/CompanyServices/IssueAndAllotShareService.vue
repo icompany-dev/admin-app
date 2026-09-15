@@ -44,6 +44,21 @@
             v-bind="controller.mcrResolutionDocumentProps"
             @doneLoading="controller.handleDisplayedPage()"
           />
+          <PreemptiveRightNotices
+            ref="noticeRef"
+            :company-id="controller.companyId"
+            :application-id="controller.issuanceId"
+            :application="null"
+            :is-in-preview-mode="controller.isInPreviewMode.value"
+            :is-by-shareholder="false"
+            :financial-period-id="null"
+            :bank-id="null"
+            :name-reservations="[]"
+            :year-to-lodge="null"
+            :type="null"
+            :show-watermark="controller.showWatermark()"
+            :watermark-text="controller.watermarkText()"
+          />
         </TransitionGroup>
       </template>
     </CompanyServiceWrapper>
@@ -55,7 +70,7 @@
   import DcrProposeAllotmentOfShares from "../Resolutions/DcrProposeAllotmentOfShares.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import McrAuthorityToAllotShares from "@/components/Resolutions/McrAuthorityToAllotShares.vue"
-  import PreemptiveRightNoticeService from "./PreemptiveRightNoticeService.vue"
+  import PreemptiveRightNotices from "../Shareholders/AllotmentOfShares/PreemptiveRightNotices.vue"
   import { IssueAndAllotSharesServiceController } from "~/scripts/components/company-services/IssueAndAllotShareServiceController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import { File } from "~/scripts/models/File"
@@ -79,6 +94,7 @@
   const doNotLieAlertRef = ref(null)
   const fileUploaderLinkRef = ref(null)
   const noticePrnExpiryRef = ref(null)
+  const noticeRef = ref(null)
 
   const prepaymentRef = ref(null)
 
@@ -154,6 +170,14 @@
     noticePrnExpiryRef,
     (newVal) => {
       controller.setNoticePrnExpiryRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    noticeRef,
+    (newVal) => {
+      controller.setNoticeRef(newVal)
     },
     { immediate: true }
   )

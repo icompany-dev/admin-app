@@ -40,6 +40,8 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
   fileUploaderLinkRef: any | null = null
   noticePrnExpiryRef: any | null = null
 
+  noticeRef: any | null = null
+
   wrapperRef: any | null = null
 
   constructor(companyId: string, viewType: string, emitEvents: any) {
@@ -234,6 +236,10 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
     this.wrapperRef = wrapperRef
   }
 
+  setNoticeRef(noticeRef: any): void {
+    this.noticeRef = noticeRef
+  }
+
   override hasPaid() {
     return this.allotShares.value.hasPaid()
   }
@@ -363,19 +369,27 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
       pages = pages.concat(mcrPages)
     }
 
+    if (this.noticeRef) {
+      prnPages = await this.noticeRef.getPdfPages()
+      pages = pages.concat(prnPages)
+    }
+
     if (pages.length <= 0) {
       return
     }
 
     let dcrFilename = `Directors' Resolution - Propose Allotment of Shares.pdf`
     let mcrFilename = `Members' Resolution - Authority to Allot Shares.pdf`
+    let prnFilename = `Section 85 - Preemptive Rights Notices.pdf`
 
     let dcrBlob = await PdfPaperUtil.getPdfBlob(dcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
     let mcrBlob = await PdfPaperUtil.getPdfBlob(mcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
+    let prnBlob = await PdfPaperUtil.getPdfBlob(prnPages, 20, prnFilename, PaperSize.A4, PaperOrientation.Portrait)
 
     let files = [
       new DownloadFileData(URL.createObjectURL(dcrBlob), dcrFilename),
       new DownloadFileData(URL.createObjectURL(mcrBlob), mcrFilename),
+      new DownloadFileData(URL.createObjectURL(prnBlob), prnFilename),
     ]
 
     await FileZipper.zipAndDownload(files, `Resolutions and Documents for Allotment of Shares.zip`)
@@ -685,5 +699,9 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
 
   get section78ButtonLabel(): string {
     return this.language.isMalay() ? "Papar" : "View"
+  }
+
+  get issuanceId(): string {
+    return this.allotShares.value.existingIssuance.id
   }
 }
