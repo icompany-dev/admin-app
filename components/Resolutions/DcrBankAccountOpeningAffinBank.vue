@@ -941,7 +941,7 @@
           </div>
         </template>
       </Paper>
-      <!-- <Paper
+      <Paper
         v-for="(signaturePage, i) in controller.otherSignaturePages"
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
@@ -966,37 +966,22 @@
                 class="signature-placeholder"
                 v-for="(signature, si) in controller.getSignaturesOnPage(4 + i)"
               >
-                <div class="signature-container">Wet Ink Required</div>
+                <div class="signature-container">
+                  <span class="no-print">Wet Ink Required</span>
+                </div>
                 <div class="name">{{ signature }}</div>
               </div>
             </div>
           </div>
         </template>
-      </Paper> -->
-      <!-- <Paper
+      </Paper>
+      <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
         :additional-css-class="controller.additionalCssClass"
         :show-watermark="props.showWatermark"
         :watermark-text="props.watermarkText"
       >
-        <template
-          #paperMargins
-          v-if="props.isShowTag"
-        >
-          <div
-            class="paper-tag authorised-details point-left"
-            :style="controller.tagPositionForAuthorisedSignatories"
-          >
-            <span>Insert Information</span>
-          </div>
-          <div
-            class="paper-tag authorised-details-online-banking point-left"
-            :style="controller.tagPositionForAuthorisedOnlineBanking"
-          >
-            <span>Insert Information</span>
-          </div>
-        </template>
         <template #paperContent>
           <div class="paper-footer">V1.0 - C2M -20191008</div>
           <div class="resolution-content">
@@ -1029,7 +1014,9 @@
                     <td>{{ signatory.name }}</td>
                     <td>{{ signatory.identification }}</td>
                     <td>{{ signatory.designation }}</td>
-                    <td class="signature-specimen">Wet Ink Required</td>
+                    <td class="signature-specimen">
+                      <span class="no-print">Wet Ink Required</span>
+                    </td>
                   </tr>
                   <tr>
                     <td colspan="5">
@@ -1038,51 +1025,81 @@
                       :-
                       <div class="form-checks-container">
                         <div class="form-check">
+                          <i
+                            class="fa-regular"
+                            :class="
+                              controller.isCurrentBankingSignatoryType('any-one') ? 'fa-square-check' : 'fa-square'
+                            "
+                            v-if="!controller.isDocumentEditable()"
+                          />
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isCurrentBankingSignatoryType('any-one')"
-                            :disabled="!controller.isDocumentEditable()"
                             @click="controller.onCurrentBankingSignatoryTypeClicked('any-one')"
                           />
                           <span>Any One to Authorise</span>
                         </div>
                         <div class="form-check">
+                          <i
+                            class="fa-regular"
+                            :class="
+                              controller.isCurrentBankingSignatoryType('any-two') ? 'fa-square-check' : 'fa-square'
+                            "
+                            v-if="!controller.isDocumentEditable()"
+                          />
                           <input
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isCurrentBankingSignatoryType('any-two')"
-                            :disabled="!controller.isDocumentEditable()"
+                            v-if="controller.isDocumentEditable()"
                             @click="controller.onCurrentBankingSignatoryTypeClicked('any-two')"
                           />
                           <span>Any Two to Authorise</span>
                         </div>
                         <div class="form-check">
+                          <i
+                            class="fa-regular"
+                            :class="controller.isCurrentBankingSignatoryType('all') ? 'fa-square-check' : 'fa-square'"
+                            v-if="!controller.isDocumentEditable()"
+                          />
                           <input
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isCurrentBankingSignatoryType('all')"
-                            :disabled="!controller.isDocumentEditable()"
+                            v-if="controller.isDocumentEditable()"
                             @click="controller.onCurrentBankingSignatoryTypeClicked('all')"
                           />
                           <span>All to Authorise</span>
                         </div>
                         <div class="form-check">
+                          <i
+                            class="fa-regular"
+                            :class="
+                              controller.isCurrentBankingSignatoryType('others') ? 'fa-square-check' : 'fa-square'
+                            "
+                            v-if="!controller.isDocumentEditable()"
+                          />
                           <input
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isCurrentBankingSignatoryType('others')"
-                            :disabled="!controller.isDocumentEditable()"
+                            v-if="controller.isDocumentEditable()"
                             @click="controller.onCurrentBankingSignatoryTypeClicked('others')"
                           />
                           <span>Others:</span>
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="text"
                             class="form-control in-resolution"
                             :disabled="!controller.isCurrentBankingSignatoryType('others')"
                             v-model="controller.affinBankApplicationDetails.value.currentBankingSignatoryTypeOther"
                             @change="emit('updated')"
                           />
+                          <span v-if="!controller.isDocumentEditable()">
+                            {{ controller.affinBankApplicationDetails.value.currentBankingSignatoryTypeOther }}
+                          </span>
                         </div>
                       </div>
                     </td>
@@ -1111,7 +1128,9 @@
                     <td>{{ onlineBanking.name }}</td>
                     <td>{{ onlineBanking.identification }}</td>
                     <td>{{ onlineBanking.designation }}</td>
-                    <td class="signature-specimen">Wet Ink Required</td>
+                    <td class="signature-specimen">
+                      <span class="no-print">Wet Ink Required</span>
+                    </td>
                   </tr>
                   <tr>
                     <td colspan="5">
@@ -1120,51 +1139,79 @@
                       :-
                       <div class="form-checks-container">
                         <div class="form-check">
+                          <i
+                            class="fa-regular"
+                            :class="
+                              controller.isOnlineBankingSignatoryType('any-one') ? 'fa-square-check' : 'fa-square'
+                            "
+                            v-if="!controller.isDocumentEditable()"
+                          />
                           <input
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isOnlineBankingSignatoryType('any-one')"
-                            :disabled="!controller.isDocumentEditable()"
+                            v-if="controller.isDocumentEditable()"
                             @click="controller.onOnlineBankingSignatoryTypeClicked('any-one')"
                           />
                           <span>Any One to Authorise</span>
                         </div>
                         <div class="form-check">
+                          <i
+                            class="fa-regular"
+                            :class="
+                              controller.isOnlineBankingSignatoryType('any-two') ? 'fa-square-check' : 'fa-square'
+                            "
+                            v-if="!controller.isDocumentEditable()"
+                          />
                           <input
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isOnlineBankingSignatoryType('any-twp')"
-                            :disabled="!controller.isDocumentEditable()"
+                            v-if="controller.isDocumentEditable()"
                             @click="controller.onOnlineBankingSignatoryTypeClicked('any-twp')"
                           />
                           <span>Any Two to Authorise</span>
                         </div>
                         <div class="form-check">
+                          <i
+                            class="fa-regular"
+                            :class="controller.isOnlineBankingSignatoryType('all') ? 'fa-square-check' : 'fa-square'"
+                            v-if="!controller.isDocumentEditable()"
+                          />
                           <input
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isOnlineBankingSignatoryType('all')"
-                            :disabled="!controller.isDocumentEditable()"
+                            v-if="controller.isDocumentEditable()"
                             @click="controller.onOnlineBankingSignatoryTypeClicked('all')"
                           />
                           <span>All to Authorise</span>
                         </div>
                         <div class="form-check">
+                          <i
+                            class="fa-regular"
+                            :class="controller.isOnlineBankingSignatoryType('others') ? 'fa-square-check' : 'fa-square'"
+                            v-if="!controller.isDocumentEditable()"
+                          />
                           <input
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isOnlineBankingSignatoryType('others')"
-                            :disabled="!controller.isDocumentEditable()"
+                            v-if="controller.isDocumentEditable()"
                             @click="controller.onOnlineBankingSignatoryTypeClicked('others')"
                           />
                           <span>Others:</span>
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="text"
                             class="form-control in-resolution"
                             :disabled="!controller.isOnlineBankingSignatoryType('others')"
                             v-model="controller.affinBankApplicationDetails.value.onlineBankingSignatoryTypeOther"
                             @change="emit('updated')"
                           />
+                          <span v-if="!controller.isDocumentEditable()">
+                            {{ controller.affinBankApplicationDetails.value.onlineBankingSignatoryTypeOther }}
+                          </span>
                         </div>
                       </div>
                     </td>
@@ -1174,7 +1221,7 @@
             </div>
           </div>
         </template>
-      </Paper> -->
+      </Paper>
     </template>
   </div>
 </template>
