@@ -17,6 +17,10 @@ import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import type { CompanyShareIssuanceResponse } from "~/scripts/models/CompanyShareIssuanceResponse"
 import { Toast } from "~/scripts/library/Toast"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class IssueAndAllotSharesServiceController extends CompanyServiceController<CompanyShareholderAllotment> {
   companyShareholderAllotment = ref<CompanyShareholderAllotment>(new CompanyShareholderAllotment())
@@ -341,6 +345,40 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
       this.doNotLieAlertRef.show()
       return
     }
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    let pages: HTMLElement[] = []
+    let dcrPages: HTMLElement[] = []
+    let mcrPages: HTMLElement[] = []
+    let prnPages: HTMLElement[] = []
+
+    if (this.dcrRef) {
+      dcrPages = await this.dcrRef.getPdfPages()
+      pages = pages.concat(dcrPages)
+    }
+
+    if (this.mcrRef) {
+      mcrPages = await this.mcrRef.getPdfPages()
+      pages = pages.concat(mcrPages)
+    }
+
+    if (pages.length <= 0) {
+      return
+    }
+
+    let dcrFilename = `Directors' Resolution - Propose Allotment of Shares.pdf`
+    let mcrFilename = `Members' Resolution - Authority to Allot Shares.pdf`
+
+    let dcrBlob = await PdfPaperUtil.getPdfBlob(dcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
+    let mcrBlob = await PdfPaperUtil.getPdfBlob(mcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
+
+    let files = [
+      new DownloadFileData(URL.createObjectURL(dcrBlob), dcrFilename),
+      new DownloadFileData(URL.createObjectURL(mcrBlob), mcrFilename),
+    ]
+
+    await FileZipper.zipAndDownload(files, `Resolutions and Documents for Allotment of Shares.zip`)
   }
 
   // getters
