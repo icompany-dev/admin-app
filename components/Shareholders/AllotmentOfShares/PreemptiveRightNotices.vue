@@ -7,17 +7,7 @@
       <TransitionGroup
         name="fade"
         tag="div"
-        class="documents"
       >
-        <div
-          class="submission-overlay"
-          v-if="controller.isSubmitting.value"
-        >
-          <LoaderPrepare
-            :label="controller.submittingDocumentLabel"
-            :sublabel="controller.submittingDocumentSublabel"
-          />
-        </div>
         <Paper
           v-if="controller.isLoading.value"
           :is-loader="true"

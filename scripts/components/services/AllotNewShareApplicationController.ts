@@ -85,6 +85,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   async onDownloadClicked(): Promise<void> {
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
     await nextTick()
     this.emitEvents("download")
   }
