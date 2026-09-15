@@ -65,6 +65,7 @@
   import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
+  import { LodgeAnnualReturnsController } from "~/scripts/components/secretarial-services/LodgeAnnualReturnsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
   import { CompanyConstants } from "~/scripts/constants/Company"
@@ -83,6 +84,9 @@
       break
     case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
       controller = new AppointDirectorsController(props, emit)
+      break
+    case CompanyConstants.TARGET_LODGE_ANNUAL_RETURN:
+      controller = new LodgeAnnualReturnsController(props, emit)
       break
     case CompanyConstants.TARGET_OPEN_BANK_ACCOUNT:
       controller = new BankAccountOpeningsController(props, emit)
