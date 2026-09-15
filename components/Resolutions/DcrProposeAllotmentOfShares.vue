@@ -1,109 +1,93 @@
 <template>
-  <div id="dcr-proposed-allotment-of-shares">
+  <div
+    id="dcr-proposed-allotment-of-shares"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
     >
-      <!-- <template
-        #paperMargins1
-        v-if="controller.isDocumentEditable()"
-      >
-        <TransitionGroup name="fade">
-          <div
-            class="paper-tag point-right unsubscribed-shares-tag"
-            v-if="controller.isShowExternalAllotToOptions"
-          >
-            Complete This
-          </div>
-        </TransitionGroup>
-      </template> -->
-      <!-- <template
-        v-for="m in controller.additionalPageRanges"
-        #[`paperMargins${m}`]
-        :key="`margin${m}`"
-      >
-        <ClientOnly>
-          <Teleport
-            defer
-            :to="`#tag-for-payment-status-${m}`"
-          >
-            <TransitionGroup name="fade">
-              <div
-                class="paper-tag point-left due-payable-tag"
-                v-if="controller.isShowDueAndPayableTag"
-              >
-                <span>Complete This</span>
-              </div>
-            </TransitionGroup>
-          </Teleport>
-        </ClientOnly>
-      </template> -->
       <template #page1>
         <p>
           <b>WHEREAS:</b>
           <br />
-          THAT the Directors acknowledge that the members of the Company have approved and authorised the Directors
-          pursuant to Section 75 of the Companies Act 2016 (“Act”) to allot and issue new shares in the Company.
+          <br />
+          The Directors have considered the proposed increase in the issued share capital of the Company by way of an
+          allotment of new ordinary shares in the Company.
         </p>
         <p>
-          <b>AND WHEREAS:</b>
-          <br />
-          Section 76 of the Act authorises the Directors to determine and approve the terms, conditions, consideration,
-          issue price, manner, timing, and persons to whom such shares are to be allotted in accordance with the
-          authority granted by the members and the applicable laws.
-        </p>
-        <p><b>IT IS HEREBY RESOLVE:</b></p>
-        <p>
-          <b>1. PROPOSED ALLOTMENT OF SHARES</b>
-          <br />
-          THAT the Company be and is hereby authorised to allot and issue the following new shares:
+          The Directors noted that pursuant to
+          <b>Section 75(1) of the Companies Act 2016</b>
+          , the Directors shall not exercise the power to allot shares unless prior approval by way of resolution of the
+          Company has been obtained, except where otherwise permitted under the Act.
         </p>
         <p>
-          Number of Shares : {{ controller.companyShareholderAllotment.value.details.numberOfShares }}
-          <br />
-          Class of Shares : {{ controller.classOfShares }} Shares
-          <br />
-          Issue Price per Share : RM {{ controller.pricePerShare }}
-          <br />
-          Total Subscription Amount : RM {{ controller.totalSubscriptionAmount }}
-          <br />
+          The Directors further noted that such approval may, pursuant to
+          <b>Section 76(1) of the Companies Act 2016</b>
+          , be confined to a particular exercise of the power to allot shares and may be subject to such conditions as
+          may be approved by the Members.
+        </p>
+        <p><b>IT IS HEREBY RESOLVED:</b></p>
+        <p>
+          <b><u>1.&nbsp;&nbsp;PROPOSED ALLOTMENT OF SHARES</u></b>
         </p>
         <p>
-          <b>2. PURPOSE OF ALLOTMENT</b>
-          <br />
-          THAT the proposed allotment of shares is made for purposes including but not limited to
-          <select
+          The proposed allotment of up to
+          <b>{{ NumberUtil.thousandSeparator(controller.companyShareholderAllotment.value.details.numberOfShares) }}</b>
+          new {{ controller.classOfShares }} shares in the Company at an issue price of
+          <b>RM{{ controller.pricePerShare }} per share</b>
+          , for an aggregate consideration of up to
+          <b>RM{{ controller.totalSubscriptionAmount }}</b>
+          , be and is hereby proposed.
+        </p>
+        <p>
+          The proposed allotment is intended to be made for the purpose of
+          <input
             v-if="controller.isDocumentEditable()"
             class="form-control in-resolution"
             v-model="controller.companyShareholderAllotment.value.details.purposeOfAllotment"
-          >
-            <option
-              v-for="option in controller.purposeOfAllotmentOptions"
-              :key="option.id"
-              :value="option.value"
-            >
-              {{ option.label }}
-            </option>
-          </select>
-          <span
-            v-if="!controller.isDocumentEditable()"
-            :class="{ 'value-placeholder': controller.isInPreviewMode.value }"
-          >
-            {{ controller.purposeOfAllotment }}
+            list="purposeOfAllotmentList"
+          />
+          <datalist id="purposeOfAllotmentList">
+            <option value="working capital" />
+            <option value="business expansion" />
+            <option value="capital injection" />
+            <option value="investment" />
+            <option value="other purpose" />
+          </datalist>
+          <span v-if="!controller.isDocumentEditable()">
+            {{ controller.companyShareholderAllotment.value.details.purposeOfAllotment }}.
           </span>
-          and for such other purposes as determined by the Directors is in the best interest of the Company.
         </p>
         <p>
-          <b>3. PRE-EMPTIVE RIGHTS</b>
-          <br />
-          THAT the Directors confirm that the existing shareholders were first offered the proposed shares in accordance
-          with the applicable pre-emptive rights requirements under Section 85 of the Companies Act 2016{{
-            controller.withConstitutionLine
-          }}
+          <b><u>2.&nbsp;&nbsp;MEMBERS' APPROVAL</u></b>
         </p>
         <p>
-          <b>4. UNSUBSCRIBED SHARES</b>
-          <br />
+          The proposed allotment be submitted to the Members of the Company for their prior approval pursuant to
+          <b>Sections 75(1) and 76(1) of the Companies Act 2016</b>
+          .
+        </p>
+        <p>
+          The approval shall be proposed as a
+          <b>Written Ordinary Resolution</b>
+          of the Members pursuant to
+          <b>Sections 290, 291 and 297 of the Companies Act 2016</b>
+          .
+        </p>
+        <p>
+          <b><u>3.&nbsp;&nbsp;PRE-EMPTIVE RIGHTS</u></b>
+        </p>
+        <p>
+          Upon obtaining the Members’ approval, and where applicable, the new
+          {{ controller.classOfShares }} shares shall first be offered to the existing shareholders of the Company in
+          accordance with
+          <b>Section 85 of the Companies Act 2016{{ controller.withConstitutionLine }}</b>
+          .
+        </p>
+        <p>
+          <b><u>4.&nbsp;&nbsp;UNSUBSCRIBED SHARES</u></b>
+        </p>
+        <p>
           THAT where any existing shareholder declines, fails, or refuses to subscribe for the proposed shares within
           the stipulated period, the remaining unsubscribed shares shall remain unissued and shall have no further
           effect.
@@ -245,8 +229,9 @@
         </ol>
         <TransitionGroup name="fade">
           <p v-if="controller.isOnlyOneAllottee">
-            <b>5. BASIS OF ISSUE PRICE</b>
-            <br />
+            <b><u>5.&nbsp;&nbsp;BASIS OF ISSUE PRICE</u></b>
+          </p>
+          <p>
             THAT the Directors confirm that the issue price of the shares was determined based on the commercial and
             financial considerations of the Company including but not limited to:
           </p>
@@ -398,8 +383,9 @@
           </ol>
           <template v-if="controller.isShowBasisIssuePriceOnPage(page)">
             <p v-if="!controller.isOnlyOneAllottee">
-              <b>5. BASIS OF ISSUE PRICE</b>
-              <br />
+              <b><u>5.&nbsp;&nbsp;BASIS OF ISSUE PRICE</u></b>
+            </p>
+            <p>
               THAT the Directors confirm that the issue price of the shares was determined based on the commercial and
               financial considerations of the Company including but not limited to:
             </p>
@@ -414,10 +400,9 @@
           </template>
           <template v-if="controller.isShowPaymentStatusOnPage(page)">
             <p>
-              <b>6. PAYMENT STATUS</b>
-              <br />
-              THAT the allotted shares shall be issued on the following basis:
+              <b><u>6.&nbsp;&nbsp;PAYMENT STATUS</u></b>
             </p>
+            <p>THAT the allotted shares shall be issued on the following basis:</p>
             <table class="border-less">
               <tbody>
                 <tr>
@@ -515,6 +500,7 @@
   import { CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
   import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import { DcrProposedAllotmentOfSharesController } from "~/scripts/components/resolutions/DcrProposeAllotmentOfSharesController"
+  import { NumberUtil } from "~/scripts/utils/Number"
 
   const props = defineProps<IPropsResolutionDocument<CompanyShareholderAllotment>>()
 

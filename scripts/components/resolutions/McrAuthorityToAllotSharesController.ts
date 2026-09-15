@@ -7,6 +7,7 @@ import { Error } from "~/scripts/library/Error"
 import { TemplateProcessor } from "~/scripts/library/TemplateProcessor"
 import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { AuthorizationEffectiveType, PurposeOfAllotment } from "~/scripts/constants/AllotmentOfShares"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class McrAuthorityToAllotSharesController extends ResolutionController<CompanyShareAuthorization> {
   companyShareAuthorizationRepository = useCompanyShareAuthorizationStore()
@@ -39,8 +40,8 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
       emitEvents
     )
 
-    this.signatureStartOnPage.value = 2
-    this.maxSignatureOnFirstPage.value = 2
+    this.signatureStartOnPage.value = 3
+    this.maxSignatureOnFirstPage.value = 6
     this.maxSignatureOnOtherPages.value = 6
     this.isUsingTemplate.value = true
   }
@@ -297,7 +298,7 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
       effectiveType = `until ${effectiveDate}`
     }
 
-    return ""
+    return effectiveType
   }
 
   getEffectiveType(effectiveType: AuthorizationEffectiveType): string {
@@ -510,4 +511,32 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
   get effectiveTypes(): string[] {
     return Object.values(AuthorizationEffectiveType)
   }
+
+  // override async getPdfPages(): Promise<HTMLElement[]> {
+  //   if (!this.documentRef) {
+  //     return []
+  //   }
+
+  //   this.isGettingPdfPages.value = true
+
+  //   let originalResolutionContent = this.resolutionContent.value
+  //   let originalAccompanyingDocumentContent = this.accompanyingDocumentContent.value
+  //   if (!StringUtil.isNullOrEmpty(this.resolutionContent.value)) {
+  //     let templateProcessor = new TemplateProcessor(null)
+  //     this.resolutionContent.value = templateProcessor.replaceInputsWithValues(this.resolutionContent.value)
+  //     this.accompanyingDocumentContent.value = templateProcessor.replaceInputsWithValues(
+  //       this.accompanyingDocumentContent.value
+  //     )
+  //   }
+
+  //   await nextTick()
+  //   let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+  //   this.resolutionContent.value = originalResolutionContent
+  //   this.accompanyingDocumentContent.value = originalAccompanyingDocumentContent
+
+  //   this.isGettingPdfPages.value = false
+
+  //   return pdfPages
+  // }
 }

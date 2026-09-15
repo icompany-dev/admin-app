@@ -34,13 +34,6 @@
           tag="div"
           class="documents"
         >
-          <!-- <AllotmentOfShares
-                :company-id="controller.companyId"
-                :application-id="controller.companyShareholderAllotment.value.id"
-                :is-in-preview-mode="controller.isInPreviewMode.value"
-                @back="controller.onUpdatingDocument()"
-                @applicationUpdated="controller.onDocumentUpdated()"
-              /> -->
           <DcrProposeAllotmentOfShares
             ref="dcrRef"
             v-bind="controller.resolutionDocumentProps"
@@ -58,19 +51,11 @@
 </template>
 
 <script lang="ts" setup>
-  import ActionTray from "../ActionTrays/ActionTray.vue"
-  // import AllotmentOfShares from "../Services/AllotmentOfShares.vue"
-  // import AllotNewSharesService from "@/components/CompanyServices/AllotNewSharesService.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import DcrProposeAllotmentOfShares from "../Resolutions/DcrProposeAllotmentOfShares.vue"
-  // import DoNotLieAlert from "../Popups/DoNotLieAlert.vue"
-  import FileUploaderLink from "@/components/FileUploaders/Link.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import McrAuthorityToAllotShares from "@/components/Resolutions/McrAuthorityToAllotShares.vue"
-  // import NoticePRNExpiry from "@/components/Popups/NoticePRNExpiry.vue"
   import PreemptiveRightNoticeService from "./PreemptiveRightNoticeService.vue"
-  // import PrepaymentAllotShares from "../Popups/PrepaymentAllotShares.vue"
-  // import SourceOfFundDeclarationService from "./SourceOfFundDeclarationService.vue"
   import { IssueAndAllotSharesServiceController } from "~/scripts/components/company-services/IssueAndAllotShareServiceController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import { File } from "~/scripts/models/File"

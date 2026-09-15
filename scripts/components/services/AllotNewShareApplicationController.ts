@@ -229,7 +229,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
             : "Tidak Berbayar / Belum Dibayar"
 
       return `
-        <b>Jumlah Saham:</b> ${this.allotmentDetails.numberOfShares}<br>
+        <b>Jumlah Saham:</b> ${NumberUtil.thousandSeparator(this.allotmentDetails.numberOfShares)}<br>
         <b>Kelas Saham:</b> ${this.allotmentDetails.typeOfShares === ShareType.Ordinary ? "Ordinary Shares" : "Preference Shares"}<br>
         <b>Harga Sesaham:</b> RM${NumberUtil.currency(this.allotmentDetails.considerationPerShare)}<br>
         <b>Jumlah Keseluruhan:</b> RM${NumberUtil.currency(this.allotmentDetails.proposedTotalSubscriptionAmount)}<br>
@@ -246,7 +246,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
           : "Unpaid"
 
     return `
-      <b>Number of Shares:</b> ${this.allotmentDetails.numberOfShares}<br>
+      <b>Number of Shares:</b> ${NumberUtil.thousandSeparator(this.allotmentDetails.numberOfShares)}<br>
       <b>Class of Shares:</b> ${this.allotmentDetails.typeOfShares === ShareType.Ordinary ? "Ordinary Shares" : "Preference Shares"}<br>
       <b>Issue Price per Share:</b> RM${NumberUtil.currency(this.allotmentDetails.considerationPerShare)}<br>
       <b>Total Subscription Amount:</b> RM${NumberUtil.currency(this.allotmentDetails.proposedTotalSubscriptionAmount)}<br>
