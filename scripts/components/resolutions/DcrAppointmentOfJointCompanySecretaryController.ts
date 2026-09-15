@@ -137,11 +137,16 @@ export class DcrAppointmentOfJointCompanySecretaryController {
   }
 
   get resolutionTitle(): string {
+    let dayjs = useDayjs()
+    let datePassedOnString = dayjs().subtract(1, "month").format("YYYY-MM-DD")
+    let time = useLocalTime()
+    let datePassedOn = time.formatDateOnlyFull(datePassedOnString).toUpperCase()
+
     if (this.company.value.hasConstitution) {
-      return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO COMPANY'S CONSTITUTION`
+      return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO COMPANY'S CONSTITUTION PASSED ON ${datePassedOn}`
     }
 
-    return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016 PASSED ON 10 AUGUST 2026`
+    return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016 PASSED ON ${datePassedOn}`
   }
 
   get signatureTitle(): string {
@@ -218,6 +223,9 @@ export class DcrAppointmentOfJointCompanySecretaryController {
   }
 
   get resolutionProps(): PropsResolution {
+    let dayjs = useDayjs()
+    let datePassedOnString = dayjs().subtract(1, "month").format("YYYY-MM-DD")
+
     return new PropsResolution(
       this.companyName,
       this.registrationNumberOld,
@@ -226,7 +234,7 @@ export class DcrAppointmentOfJointCompanySecretaryController {
       "",
       this.signatureTitle,
       this.signatureItems,
-      "2026-08-10",
+      datePassedOnString,
       1,
       1,
       2,
