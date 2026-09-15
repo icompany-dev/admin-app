@@ -13,6 +13,27 @@ export class LodgeAnnualReturnsController extends SecretarialServicesController<
     super(props, CompanyAnnualReturnRequest, useCompanyAnnualReturnRequestStore(), emitEvents)
   }
 
+  override async init(): Promise<void> {
+    if (!this.tableDataFetcher.value) {
+      return
+    }
+
+    this.tableDataFetcher.value.filter = this.filter
+    await this.tableDataFetcher.value.fetchData()
+
+    let promises = this.tableDataFetcher.value.data.map((d: any) => {
+      let data = new CompanyAnnualReturnRequest(d)
+
+      let repository = useCompanyStore()
+
+      return repository.fetch(data.companyId).then((c) => {
+        d.company = new Company(c)
+      })
+    })
+
+    await Promise.allSettled(promises)
+  }
+
   onApplicationClicked(data: any): void {
     let application = new CompanyAnnualReturnRequest(data)
     this.router.push({ path: `/services/allotment-of-shares/${application.id}` })
@@ -25,7 +46,28 @@ export class LodgeAnnualReturnsController extends SecretarialServicesController<
 
   applicationDetails(data: any): string {
     let application = new CompanyAnnualReturnRequest(data)
-    return ``
+
+    let time = useLocalTime()
+    let dayjs = useDayjs()
+
+    let company = new Company(application.company)
+
+    let incorporatedAt = time.formatDateOnlyFull(company.incorporatedAt ?? "")
+
+    let annualReturnDateString = dayjs(incorporatedAt).year(parseInt(application.year)).format("YYYY-MM-DD")
+    let annualReturnDate = time.formatDateOnlyFull(annualReturnDateString)
+
+    let finalDateToLodgeString = dayjs(incorporatedAt)
+      .year(parseInt(application.year))
+      .add(1, "month")
+      .format("YYYY-MM-DD")
+    let finalDateToLodge = time.formatDateOnlyFull(finalDateToLodgeString)
+
+    return `
+      <b>${this.language.isMalay() ? "Tarikh Diperbadankan" : "Incorporated On"}:</b> ${incorporatedAt}<br>
+      <b>${this.language.isMalay() ? "Tarikh Penyata Tahun" : "Annual Return Date"}:</b> ${annualReturnDate}<br>
+      <b>${this.language.isMalay() ? "Tarikh Akhir Serah Simpan" : "Lodgement Due Date"}:</b> ${finalDateToLodge}<br>
+    `
   }
 
   applicationDate(data: any): string {
