@@ -1,3 +1,5 @@
+import { ApiRecord } from "../library/ApiRecord"
+import type { Filter } from "../library/Filter"
 import { Shareholder } from "../models/Shareholder"
 import { Repository } from "./Repository"
 
@@ -9,6 +11,16 @@ export class ShareholderRepository extends Repository<Shareholder> {
     getAuthToken: () => string | null | undefined
   ) {
     super(resourceUrl, singleResourceUrl, baseUrl, getAuthToken, Shareholder)
+  }
+
+  override async fetchAll<Shareholder>(filter: Filter): Promise<ApiRecord<Shareholder>> {
+    try {
+      const rawResponse = await this.get<Shareholder>(`${this.singleResourceUrl}/all?${filter.getSlug()}`)
+      const apiRecord = new ApiRecord<Shareholder>(rawResponse, this.itemClassType as any)
+      return apiRecord
+    } catch (error) {
+      throw error
+    }
   }
 
   async fetchForUserByCompanyId(companyId: string): Promise<Shareholder> {
