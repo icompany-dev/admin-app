@@ -36,7 +36,7 @@ export class LodgeAnnualReturnsController extends SecretarialServicesController<
 
   onApplicationClicked(data: any): void {
     let application = new CompanyAnnualReturnRequest(data)
-    this.router.push({ path: `/services/allotment-of-shares/${application.id}` })
+    this.router.push({ path: `/services/annual-returns/${application.id}` })
   }
 
   companyName(data: any): string {
