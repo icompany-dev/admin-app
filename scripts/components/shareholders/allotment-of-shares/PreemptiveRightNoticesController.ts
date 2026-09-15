@@ -193,6 +193,7 @@ export class PreemptiveRightNoticesController {
   }
 
   setResponseSignatureItems(): void {
+    console.log("setting signature", this.application.value)
     if (StringUtil.isNullOrEmpty(this.application.value.initiator.id)) {
       let roles = []
       if (this.isADirector.value) {
@@ -306,25 +307,23 @@ export class PreemptiveRightNoticesController {
         this.noticeResponses.value.push(noticeResponse)
       })
     }
+  }
 
-    if (this.isAShareholder.value) {
-      let signatureItem = this.signatureItems.value.find((si: SignatureItem) => {
-        return si.email === this.user.value.email
-      })
+  getSignatureForResponse(noticeResponse: CompanyShareIssuanceResponse): SignatureItem {
+    let shareholder = noticeResponse.shareholder
 
-      this.signatureItemInFocus.value = signatureItem ?? new SignatureItem(null, false, false, false, "", "", "", true)
+    let signatureItem = new SignatureItem(
+      noticeResponse.responseFile?.url ?? null,
+      noticeResponse.responseFile !== null,
+      false,
+      shareholder.user?.email !== this.user.value.email,
+      shareholder.user?.name ?? "",
+      shareholder.user?.email ?? "",
+      "Member",
+      false
+    )
 
-      let noticeResponse = this.noticeResponses.value.find((nr: CompanyShareIssuanceResponse) => {
-        let email = nr.shareholder.user?.email ?? nr.shareholder.email
-        return email === this.user.value.email
-      })
-
-      this.noticeResponseInFocus.value = noticeResponse ?? new CompanyShareIssuanceResponse()
-    } else {
-      this.signatureItemInFocus.value =
-        this.signatureItems.value[0] ?? new SignatureItem(null, false, false, false, "", "", "", true)
-      this.noticeResponseInFocus.value = this.noticeResponses.value[0] ?? new CompanyShareIssuanceResponse()
-    }
+    return signatureItem
   }
 
   hasNoticeExpired(): boolean {

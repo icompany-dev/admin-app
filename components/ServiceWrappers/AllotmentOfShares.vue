@@ -39,6 +39,21 @@
             v-bind="controller.mcrResolutionDocumentProps"
             @signed="controller.onSignedMcr($event)"
           />
+          <PreemptiveRightNotices
+            ref="notice"
+            :company-id="controller.companyId"
+            :application-id="controller.issuanceId"
+            :application="null"
+            :is-in-preview-mode="controller.isInPreviewMode.value"
+            :is-by-shareholder="false"
+            :financial-period-id="null"
+            :bank-id="null"
+            :name-reservations="[]"
+            :year-to-lodge="null"
+            :type="null"
+            :show-watermark="controller.isShowWatermark"
+            :watermark-text="controller.watermarkText"
+          />
         </template>
       </TransitionGroup>
     </div>
@@ -52,6 +67,7 @@
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import McrAuthorityToAllotShares from "@/components/Resolutions/McrAuthorityToAllotShares.vue"
   import Paper from "@/components/Papers/Paper.vue"
+  import PreemptiveRightNotices from "../Shareholders/AllotmentOfShares/PreemptiveRightNotices.vue"
   import { AllotmentOfSharesController } from "~/scripts/components/service-wrappers/AllotmentOfSharesController"
 
   const props = defineProps({

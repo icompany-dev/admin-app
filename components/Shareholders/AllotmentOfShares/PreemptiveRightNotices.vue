@@ -26,21 +26,20 @@
             />
           </template>
         </Paper>
-        <Section85PreemptiveRightNotice
-          v-if="!controller.isLoading.value"
-          :company-id="controller.companyId.value"
-          :initiator-signature-item="controller.initiatorSignatureItem.value"
-          :notice-response="controller.noticeResponseInFocus.value"
-          :response-signature-item="controller.signatureItemInFocus.value"
-          :notification-date="controller.notificationDate()"
-          :expiry-date="controller.expiryDate()"
-          :show-watermark="props.showWatermark"
-          :watermark-text="props.watermarkText"
-          :is-in-preview-mode="props.isInPreviewMode"
-          @initiatorSigned="controller.onInitiatorSigned($event)"
-          @responded="controller.onResponded($event)"
-          @responseSigned="controller.onResponseSigned($event)"
-        />
+        <template v-if="!controller.isLoading.value">
+          <Section85PreemptiveRightNotice
+            v-for="(response, index) in controller.noticeResponses.value"
+            :company-id="controller.companyId.value"
+            :initiator-signature-item="controller.initiatorSignatureItem.value"
+            :notice-response="response"
+            :response-signature-item="controller.getSignatureForResponse(response)"
+            :notification-date="controller.notificationDate()"
+            :expiry-date="controller.expiryDate()"
+            :show-watermark="props.showWatermark"
+            :watermark-text="props.watermarkText"
+            :is-in-preview-mode="props.isInPreviewMode"
+          />
+        </template>
       </TransitionGroup>
     </div>
   </div>

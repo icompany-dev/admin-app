@@ -304,4 +304,8 @@ export class AllotmentOfSharesController
       return sg.group?.target === "shareholder" && sg.group?.id === this.shareholderId.value
     })
   }
+
+  get issuanceId(): string {
+    return this.allotShares.value.existingIssuance.id
+  }
 }
