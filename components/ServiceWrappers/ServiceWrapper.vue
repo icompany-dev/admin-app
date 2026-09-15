@@ -101,6 +101,7 @@
   import SetFinancialYearEnd from "./SetFinancialYearEnd.vue"
   import ShareIssuance from "./ShareIssuance.vue"
   import Section201 from "./Section201.vue"
+  import Section201ForDirector from "./Section201ForDirector.vue"
   import Section236Three from "./Section236Three.vue"
   import Section27ForCompany from "./Section27ForCompany.vue"
   import Section27OneFour from "./Section27OneFour.vue"
@@ -152,6 +153,7 @@
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointmentOfDirector,
     [CompanyConstants.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST]: Section219And221,
     [CompanyConstants.TARGET_DIRECTOR_INVITATION]: Section201,
+    [CompanyConstants.TARGET_DIRECTOR]: Section201ForDirector,
     [CompanyConstants.TARGET_DIRECTOR_LOAN]: LoanToDirector,
     [CompanyConstants.TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT]: AppointChairman,
     [CompanyConstants.TARGET_DIRECTOR_MANAGER_APPOINTMENT]: AppointManager,
@@ -169,10 +171,11 @@
     [CompanyConstants.TARGET_PRACTICE_DIRECTIVE_2]: PracticeDirective2,
     [CompanyConstants.TARGET_PREFERENCE_SHARE_RIGHT]: PreferenceShareRight,
     [CompanyConstants.TARGET_PURCHASE_ASSET]: PurchaseAsset,
+    [CompanyConstants.TARGET_PREEMPTIVE_RIGHT_NOTICE]: ShareIssuance,
     [CompanyConstants.TARGET_RECEIPT]: ReceiptInvoice,
     [CompanyConstants.TARGET_REMOVAL_OF_DIRECTOR]: RemoveDirector,
     [CompanyConstants.TARGET_SET_FINANCIAL_YEAR_END]: SetFinancialYearEnd,
-    [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT]: ShareIssuance,
+    [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT]: AllotmentOfShares,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotmentOfShares,
     [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_TRANSFER]: NoticeTransferOfShares,
     [CompanyConstants.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER]: RegisterTransferOfShares,

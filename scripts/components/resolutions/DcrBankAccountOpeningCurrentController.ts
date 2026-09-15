@@ -27,8 +27,6 @@ export class DcrBankAccountOpeningCurrentController extends ResolutionController
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
-  resolutionContent = ref<string>("")
-
   originalTemplateContent: string = ""
 
   bankBranchSearchText = ref<string>("")
@@ -220,7 +218,7 @@ export class DcrBankAccountOpeningCurrentController extends ResolutionController
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }

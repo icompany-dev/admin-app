@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-bank-account-opening-bank-islam">
+  <div
+    id="dcr-bank-account-opening-bank-islam"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionPropsForBank"
       @signed="emit('signed', $event)"
@@ -25,6 +28,8 @@
   const props = defineProps<IPropsResolutionDocument<CompanyBankAccountOpening>>()
 
   const resolutionContent = ref(null)
+
+  const documentRef = ref(null)
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "updated"])
 
@@ -93,6 +98,14 @@
     { deep: true }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
@@ -102,6 +115,7 @@
     getSignatoryType: controller.getSignatoryType.bind(controller),
     getSignatories: controller.getSignatories.bind(controller),
     getBranchId: controller.getBranchId.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

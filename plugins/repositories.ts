@@ -98,6 +98,7 @@ import { CompanyDocumentRequestRepository } from "~/scripts/repositories/Company
 import { CompanyFinancialPeriodRepository } from "~/scripts/repositories/CompanyFinancialPeriodRepository"
 import { CompanyFinancialStatementAuthorisedPersonRepository } from "~/scripts/repositories/CompanyFinancialStatementAuthorisedPersonRepository"
 import { CompanyFinancialStatementSetupRepository } from "~/scripts/repositories/CompanyFinancialStatementSetupRepository"
+import { CompanyFundSourceDeclarationRepository } from "~/scripts/repositories/CompanyFundSourceDeclarationRepository"
 import { CompanyLoanApplicationRepository } from "~/scripts/repositories/CompanyLoanApplicationRepository"
 import { CompanyMailroomServiceRepository } from "~/scripts/repositories/CompanyMailroomServiceRepository"
 import { CompanyManagementAccountRepository } from "~/scripts/repositories/CompanyManagementAccountRepository"
@@ -120,6 +121,7 @@ import { CompanyPreferenceShareTermRepository } from "~/scripts/repositories/Com
 import { CompanySecretaryRepository } from "~/scripts/repositories/CompanySecretaryRepository"
 import { CompanySection47Repository } from "~/scripts/repositories/CompanySection47Repository"
 import { CompanySetFinancialYearEndRepository } from "~/scripts/repositories/CompanySetFinancialYearEndRepository"
+import { CompanyShareAuthorizationRepository } from "~/scripts/repositories/CompanyShareAuthorizationRepository"
 import { CompanyShareholderAllotmentRepository } from "~/scripts/repositories/CompanyShareholderAllotmentRepository"
 import { CompanyShareholderTransferNoticeRepository } from "~/scripts/repositories/CompanyShareholderTransferNoticeRepository"
 import { CompanyShareholderTransferRepository } from "~/scripts/repositories/CompanyShareholderTransferRepository"
@@ -279,6 +281,7 @@ interface Repositories {
   companyFinancialPeriods: CompanyFinancialPeriodRepository
   companyFinancialStatementAuthorisedPersons: CompanyFinancialStatementAuthorisedPersonRepository
   companyFinancialStatementSetups: CompanyFinancialStatementSetupRepository
+  companyFundSourceDeclarations: CompanyFundSourceDeclarationRepository
   companyLoanApplications: CompanyLoanApplicationRepository
   companyMailroomServices: CompanyMailroomServiceRepository
   companyManagementAccounts: CompanyManagementAccountRepository
@@ -301,6 +304,7 @@ interface Repositories {
   companySecretaries: CompanySecretaryRepository
   companySection47s: CompanySection47Repository
   companySetFinancialYearEnds: CompanySetFinancialYearEndRepository
+  companyShareAuthorizations: CompanyShareAuthorizationRepository
   companyShareholderAllotments: CompanyShareholderAllotmentRepository
   companyShareholderTransferNotices: CompanyShareholderTransferNoticeRepository
   companyShareholderTransfers: CompanyShareholderTransferRepository
@@ -770,6 +774,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/financial-statements/setup",
       config.public.apiBaseUrl,
       getAuthToken),
+    companyFundSourceDeclarations: new CompanyFundSourceDeclarationRepository(
+      "company/funds-source-declarations",
+      "company/funds-source-declaration",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     companyLoanApplications: new CompanyLoanApplicationRepository("company/loans",
       "company/loan",
       config.public.apiBaseUrl,
@@ -856,6 +866,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       getAuthToken),
     companySetFinancialYearEnds: new CompanySetFinancialYearEndRepository("company/set-financial-year-ends",
       "company/set-financial-year-end",
+      config.public.apiBaseUrl,
+      getAuthToken),
+    companyShareAuthorizations: new CompanyShareAuthorizationRepository("company/shares/authorizations",
+      "company/shares/authorization",
       config.public.apiBaseUrl,
       getAuthToken),
     companyShareholderAllotments: new CompanyShareholderAllotmentRepository("company/shareholder/allotments",
@@ -1192,6 +1206,7 @@ declare module "#app" {
       companyFinancialPeriods: import("~/scripts/repositories/CompanyFinancialPeriodRepository").CompanyFinancialPeriodRepository
       companyFinancialStatementAuthorisedPersons: import("~/scripts/repositories/CompanyFinancialStatementAuthorisedPersonRepository").CompanyFinancialStatementAuthorisedPersonRepository
       companyFinancialStatementSetups: import("~/scripts/repositories/CompanyFinancialStatementSetupRepository").CompanyFinancialStatementSetupRepository
+      companyFundSourceDeclarations: import("~/scripts/repositories/CompanyFundSourceDeclarationRepository").CompanyFundSourceDeclarationRepository
       companyLoanApplications: import("~/scripts/repositories/CompanyLoanApplicationRepository").CompanyLoanApplicationRepository
       companyMailroomServices: import("~/scripts/repositories/CompanyMailroomServiceRepository").CompanyMailroomServiceRepository
       companyManagementAccounts: import("~/scripts/repositories/CompanyManagementAccountRepository").CompanyManagementAccountRepository
@@ -1214,6 +1229,7 @@ declare module "#app" {
       companySecretaries: import("~/scripts/repositories/CompanySecretaryRepository").CompanySecretaryRepository
       companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
+      companyShareAuthorizations: import("~/scripts/repositories/CompanyShareAuthorizationRepository").CompanyShareAuthorizationRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository
       companyShareholderTransfers: import("~/scripts/repositories/CompanyShareholderTransferRepository").CompanyShareholderTransferRepository
@@ -1377,6 +1393,7 @@ declare module "pinia" {
       companyFinancialPeriods: import("~/scripts/repositories/CompanyFinancialPeriodRepository").CompanyFinancialPeriodRepository
       companyFinancialStatementAuthorisedPersons: import("~/scripts/repositories/CompanyFinancialStatementAuthorisedPersonRepository").CompanyFinancialStatementAuthorisedPersonRepository
       companyFinancialStatementSetups: import("~/scripts/repositories/CompanyFinancialStatementSetupRepository").CompanyFinancialStatementSetupRepository
+      companyFundSourceDeclarations: import("~/scripts/repositories/CompanyFundSourceDeclarationRepository").CompanyFundSourceDeclarationRepository
       companyLoanApplications: import("~/scripts/repositories/CompanyLoanApplicationRepository").CompanyLoanApplicationRepository
       companyMailroomServices: import("~/scripts/repositories/CompanyMailroomServiceRepository").CompanyMailroomServiceRepository
       companyManagementAccounts: import("~/scripts/repositories/CompanyManagementAccountRepository").CompanyManagementAccountRepository
@@ -1399,6 +1416,7 @@ declare module "pinia" {
       companySecretaries: import("~/scripts/repositories/CompanySecretaryRepository").CompanySecretaryRepository
       companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
+      companyShareAuthorizations: import("~/scripts/repositories/CompanyShareAuthorizationRepository").CompanyShareAuthorizationRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository
       companyShareholderTransfers: import("~/scripts/repositories/CompanyShareholderTransferRepository").CompanyShareholderTransferRepository

@@ -242,7 +242,7 @@
                           :disabled="!controller.canSelectForNameReservation(name)"
                           @click="controller.onProposedNamesSelected(name)"
                         >
-                          {{ name }}
+                          <span v-html="name" />
                         </button>
                       </div>
                     </div>

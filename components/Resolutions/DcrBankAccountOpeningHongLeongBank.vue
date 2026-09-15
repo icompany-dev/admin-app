@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-bank-account-opening-hong-leong-bank">
+  <div
+    id="dcr-bank-account-opening-hong-leong-bank"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="PaperOrientation.Portrait"
       :is-loader="true"
@@ -640,6 +643,7 @@
 
   const resolutionContent = ref(null)
   const nonDirectorBankSignatoryRef = ref(null)
+  const documentRef = ref(null)
 
   const controller = new DcrBankAccountOpeningHongLeongBankController(props, emit)
 
@@ -701,6 +705,14 @@
     controller.setNonDirectorBankSignatoryRef(newVal)
   })
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
@@ -710,6 +722,7 @@
     getSignatoryType: controller.getSignatoryType.bind(controller),
     getSignatories: controller.getSignatories.bind(controller),
     getBranchId: controller.getBranchId.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -62,6 +62,7 @@
     transform-origin: top;
     transition: all 0.7s ease;
     scrollbar-width: thin;
+    overflow-y: hidden;
 
     &.drop-up {
       top: -100%;
@@ -106,12 +107,17 @@
     .search-field,
     .dropdown-item {
       height: fit-content;
-      min-height: 20px;
+      min-height: 30px;
       padding: 5px;
+      width: calc(100% - 10px);
     }
 
     .search-field {
       width: calc(100% - 10px);
+
+      .form-control {
+        width: 100%;
+      }
     }
   }
 }

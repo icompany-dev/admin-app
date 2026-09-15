@@ -19,6 +19,29 @@ export class PdfPaperUtil {
         watermarks[0].parentNode?.removeChild(watermarks[0])
       }
 
+      const dateInputs = paper.querySelectorAll<HTMLInputElement>('input[type="date"]')
+      dateInputs.forEach((input) => {
+        let dateObj: Date
+
+        if (input.value) {
+          const [year, month, day] = input.value.split("-").map(Number)
+          dateObj = new Date(year, month - 1, day)
+        } else {
+          dateObj = new Date()
+        }
+
+        const formattedDate = dateObj.toLocaleDateString("en-GB", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+
+        const textNode = document.createElement("span")
+        textNode.className = input.className
+        textNode.textContent = formattedDate
+        input.parentNode?.replaceChild(textNode, input)
+      })
+
       const imgElements = paper.getElementsByTagName("img")
       for (let j = 0; j < imgElements.length; j++) {
         if (imgElements[j].id !== "signatureBackground") {

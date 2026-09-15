@@ -9,6 +9,8 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import type { ChartData, ChartOptions } from "chart.js"
 import { Filter } from "~/scripts/library/Filter"
 import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
+import { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
+import { PropsAddCompanyAuditor } from "~/scripts/props/PropsAddCompanyAuditor"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -16,6 +18,7 @@ export class OverviewController {
 
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+  auditors = ref<CompanyAuditor[]>([])
 
   companyBanks: Ref<CompanyBank[]> = ref<CompanyBank[]>([])
 
@@ -25,6 +28,8 @@ export class OverviewController {
   compliance = ref<Compliance>(new Compliance(""))
 
   emitEvents: any | null = null
+
+  addCompanyAuditorRef: any | null = null
 
   language = useLanguage()
   time = useLocalTime()
@@ -39,6 +44,10 @@ export class OverviewController {
     this.companyId.value = companyId
 
     await this.init()
+  }
+
+  setAddCompanyAuditorRef(addCompanyAuditorRef: any): void {
+    this.addCompanyAuditorRef = addCompanyAuditorRef
   }
 
   async init(): Promise<void> {
@@ -64,6 +73,7 @@ export class OverviewController {
         this.fetchDirectors(),
         this.fetchShareholders(),
         this.fetchCompanyBanks(),
+        this.fetchCompanyAuditors(),
       ])
     } catch (e) {
       if (e instanceof Error) {
@@ -127,8 +137,26 @@ export class OverviewController {
     })
   }
 
+  async fetchCompanyAuditors(): Promise<void> {
+    let repository = useCompanyAuditorStore()
+    let filter = new Filter()
+    filter.takeAll = true
+    filter.companyId = this.companyId.value
+    let response = await repository.fetchAll(filter)
+
+    this.auditors.value = response.data.map((d: any) => {
+      return new CompanyAuditor(d)
+    })
+  }
+
   onShowSharePercentageClicked(): void {
     this.isShowShareDistribution.value = !this.isShowShareDistribution.value
+  }
+
+  onAddCompanyAuditorClicked(): void {
+    if (this.addCompanyAuditorRef) {
+      this.addCompanyAuditorRef.show()
+    }
   }
 
   // getters
@@ -290,5 +318,17 @@ export class OverviewController {
     }
 
     return this.language.isMalay() ? "Tunjuk Percentage" : "Show Percentage"
+  }
+
+  get auditorLabel(): string {
+    return this.language.isMalay() ? "Juruaudit" : "Auditor"
+  }
+
+  get addAuditorLabel(): string {
+    return this.language.isMalay() ? "Tambah Juruaudit" : "Add Auditor"
+  }
+
+  get addCompanyAuditorProps(): PropsAddCompanyAuditor {
+    return new PropsAddCompanyAuditor(this.companyId.value)
   }
 }

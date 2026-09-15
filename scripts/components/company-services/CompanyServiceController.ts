@@ -19,6 +19,8 @@ import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export abstract class CompanyServiceController<T> {
   companyId: string = ""
@@ -83,6 +85,8 @@ export abstract class CompanyServiceController<T> {
   isShowInfo: Ref<boolean> = ref<boolean>(false)
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  documentName: Ref<string> = ref<string>("Resolutions.pdf")
 
   constructor(
     companyId: string,
@@ -640,14 +644,16 @@ export abstract class CompanyServiceController<T> {
 
   async onDownloadClicked(): Promise<void> {
     let pages: HTMLElement[] = []
+    let dcrPages: HTMLElement[] = []
+    let mcrPages: HTMLElement[] = []
 
     if (this.dcrRef) {
-      let dcrPages = await this.dcrRef.getPdfPages()
+      dcrPages = await this.dcrRef.getPdfPages()
       pages = pages.concat(dcrPages)
     }
 
     if (this.mcrRef) {
-      let mcrPages = await this.mcrRef.getPdfPages()
+      mcrPages = await this.mcrRef.getPdfPages()
       pages = pages.concat(mcrPages)
     }
 
@@ -655,7 +661,22 @@ export abstract class CompanyServiceController<T> {
       return
     }
 
-    await PdfPaperUtil.generatePdfFile(pages, 20, "Resolutions.pdf", PaperSize.A4, PaperOrientation.Portrait)
+    if (dcrPages.length <= 0 || mcrPages.length <= 0) {
+      await PdfPaperUtil.generatePdfFile(pages, 20, this.documentName.value, PaperSize.A4, PaperOrientation.Portrait)
+    } else {
+      let dcrFilename = `Directors' Resolution.pdf`
+      let mcrFilename = `Members' Resolution.pdf`
+
+      let dcrBlob = await PdfPaperUtil.getPdfBlob(dcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
+      let mcrBlob = await PdfPaperUtil.getPdfBlob(mcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
+
+      let files = [
+        new DownloadFileData(URL.createObjectURL(dcrBlob), dcrFilename),
+        new DownloadFileData(URL.createObjectURL(mcrBlob), mcrFilename),
+      ]
+
+      await FileZipper.zipAndDownload(files, this.documentName.value)
+    }
   }
 
   async onGenerateBlob(filename: string): Promise<Blob | null> {

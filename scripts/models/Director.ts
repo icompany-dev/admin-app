@@ -3,6 +3,7 @@ import { Location } from "./Location"
 import { StringUtil } from "../utils/String"
 import { Error } from "../library/Error"
 import { User } from "./User"
+import { Company } from "./Company"
 
 export class Director {
   id: string = ""
@@ -28,6 +29,8 @@ export class Director {
   companyId: string | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
+
+  company: Company | null = null
 
   constructor(data: any = null) {
     if (data !== null) {
@@ -116,7 +119,7 @@ export class Director {
   async getRegisteredUser(repository: ReturnType<typeof useUserStore>): Promise<User | null> {
     const response = await repository.fetchByEmail(this.email)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForFetch()
       throw error
     }
@@ -131,11 +134,28 @@ export class Director {
 
     const response = await repository.fetch(this.userId)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForFetch()
       throw error
     }
 
     this.user = new User(response)
+  }
+
+  async setCompany(repository: ReturnType<typeof useCompanyStore>): Promise<void> {
+    if (this.companyId === null) {
+      this.company = null
+      return
+    }
+
+    const response = await repository.fetch(this.companyId)
+    if (repository.error !== null) {
+      this.company = null
+      let error: Error = new Error()
+      error.setForFetch()
+      throw error
+    }
+
+    this.company = new Company(response)
   }
 }
