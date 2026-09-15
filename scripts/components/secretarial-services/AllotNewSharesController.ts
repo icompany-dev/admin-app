@@ -3,6 +3,8 @@ import { SecretarialServicesController } from "./SecretarialServicesController"
 import { CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
 import { Company } from "~/scripts/models/Company"
 import { StatusConstants } from "~/scripts/constants/Status"
+import { ShareType } from "~/scripts/constants/Shareholder"
+import { NumberUtil } from "~/scripts/utils/Number"
 
 export class AllotNewSharesController extends SecretarialServicesController<CompanyShareholderAllotment> {
   constructor(props: PropsSecretarialServices, emitEvents: any | null) {
@@ -21,11 +23,24 @@ export class AllotNewSharesController extends SecretarialServicesController<Comp
 
   applicationDetails(data: any): string {
     let application = new CompanyShareholderAllotment(data)
-    // return `
-    //   <b>Bank:</b> ${application.bank.nickname}<br>
-    //   <b>${this.language.isMalay() ? "Cawangan" : "Branch"}:</b> ${application.bankBranch.name}
-    // `
-    return ""
+
+    let allotmentDetails = application.details
+
+    let shareType =
+      allotmentDetails.typeOfShares === ShareType.Ordinary
+        ? this.language.isMalay()
+          ? "Biasa"
+          : "Ordinary"
+        : this.language.isMalay()
+          ? "Keutamaan"
+          : "Preference"
+
+    let details = `
+      <b>${this.language.isMalay() ? "Bil. Saham Diperuntukkan" : "No. of Shares to Issue"}:</b> ${NumberUtil.thousandSeparator(allotmentDetails.numberOfShares)}<br>
+      <b>${this.language.isMalay() ? "Jenis Saham" : "Type of Shares"}:</b> ${shareType}<br>
+      <b>${this.language.isMalay() ? "Cadangan Jumlah Amaun Langganan" : "Proposed Total Subscription Amount"}:</b> RM${NumberUtil.currency(allotmentDetails.proposedTotalSubscriptionAmount)}
+    `
+    return details
   }
 
   applicationDate(data: any): string {
