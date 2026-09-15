@@ -13,6 +13,8 @@ import { AllotShares } from "~/scripts/library/AllotShares"
 import { CompanyShareAuthorization } from "~/scripts/models/CompanyShareAuthorization"
 import { SignatureGroup, SignatureGroupGroup, SignatureGroupTarget } from "~/scripts/models/SignatureGroup"
 import { ActivityLogger } from "~/scripts/library/ActivityLogger"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class AllotmentOfSharesController
   extends ServiceController
@@ -28,6 +30,8 @@ export class AllotmentOfSharesController
   showMcrFirst = ref<boolean>(false)
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  noticeRef: any | null = null
 
   constructor(companyId: string, emitEvents: any | null, applicationId: string | null = null) {
     super(CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES, companyId, emitEvents)
@@ -53,6 +57,10 @@ export class AllotmentOfSharesController
       this.targetId = ""
     }
     this.isLoading.value = false
+  }
+
+  setNoticeRef(noticeRef: any): void {
+    this.noticeRef = noticeRef
   }
 
   onShowMcrFirstClicked(): void {
@@ -220,6 +228,68 @@ export class AllotmentOfSharesController
           </ul>
           You can Purchase & Download SSM Corporate Profile as confirmation of the change (optional).
         `
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let promises = []
+
+      if (this.dcrRef) {
+        let dcrPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            20,
+            "Directors' Resolution - Propose Allotment of Shares.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.mcrRef) {
+        let mcrPages = await this.mcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            mcrPages,
+            20,
+            "Members' Resolution - Authority to Allot Shares.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.noticeRef) {
+        let noticePages = await this.noticeRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            noticePages,
+            20,
+            "Section 85 - Preemptive Rights Notices.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   get isShowWatermark(): boolean {

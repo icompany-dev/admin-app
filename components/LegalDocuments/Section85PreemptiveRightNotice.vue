@@ -273,6 +273,7 @@
     getInitiatorSignature: controller.getInitiatorSignature.bind(controller),
     getResponseSignature: controller.getResponseSignature.bind(controller),
     getNoticeResponse: controller.getNoticeResponse.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

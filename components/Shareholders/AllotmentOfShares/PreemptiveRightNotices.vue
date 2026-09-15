@@ -1,5 +1,8 @@
 <template>
-  <div id="preemptive-right-notices">
+  <div
+    id="preemptive-right-notices"
+    ref="documentRef"
+  >
     <div class="preemptive-right-notice-container">
       <TransitionGroup
         name="fade"
@@ -76,6 +79,8 @@
 
   const emit = defineEmits(["responded", "signed"])
 
+  const documentRef = ref(null)
+
   const controller = new PreemptiveRightNoticesController(
     props.companyId,
     props.applicationId,
@@ -104,9 +109,18 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     refreshData: controller.refreshData.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

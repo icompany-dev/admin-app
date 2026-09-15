@@ -10,6 +10,7 @@ import { CompanyShareIssuanceResponse } from "~/scripts/models/CompanyShareIssua
 import { Director } from "~/scripts/models/Director"
 import { File } from "~/scripts/models/File"
 import { Toast } from "~/scripts/library/Toast"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class PreemptiveRightNoticesController {
   companyId: Ref<string> = ref<string>("")
@@ -40,6 +41,8 @@ export class PreemptiveRightNoticesController {
   noticeResponses = ref<CompanyShareIssuanceResponse[]>([])
 
   emitEvents: any | null = null
+
+  documentRef: any | null = null
 
   currentPage: Ref<number> = ref<number>(1)
 
@@ -105,6 +108,10 @@ export class PreemptiveRightNoticesController {
     this.isInPreviewMode.value = isInPreviewMode
 
     this.setResponseSignatureItems()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   async fetchApplication(): Promise<void> {
@@ -193,7 +200,6 @@ export class PreemptiveRightNoticesController {
   }
 
   setResponseSignatureItems(): void {
-    console.log("setting signature", this.application.value)
     if (StringUtil.isNullOrEmpty(this.application.value.initiator.id)) {
       let roles = []
       if (this.isADirector.value) {
@@ -412,6 +418,17 @@ export class PreemptiveRightNoticesController {
     } finally {
       this.isSubmitting.value = false
     }
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    return pdfPages
   }
 
   get loaderLabel(): string {

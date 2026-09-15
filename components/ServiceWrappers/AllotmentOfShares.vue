@@ -40,7 +40,7 @@
             @signed="controller.onSignedMcr($event)"
           />
           <PreemptiveRightNotices
-            ref="notice"
+            ref="noticeRef"
             :company-id="controller.companyId"
             :application-id="controller.issuanceId"
             :application="null"
@@ -91,6 +91,7 @@
 
   const dcrRef = ref(null)
   const mcrRef = ref(null)
+  const noticeRef = ref(null)
 
   const emit = defineEmits(["zoomOut", "zoomIn", "back", "applicationUpdated"])
 
@@ -108,6 +109,14 @@
     mcrRef,
     (newVal) => {
       controller.setMcrRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    noticeRef,
+    (newVal) => {
+      controller.setNoticeRef(newVal)
     },
     { immediate: true }
   )
