@@ -104,5 +104,4 @@
 
 <style lang="scss">
   @use "~/assets/scss/components/Banks/Documents/BankDocuments" as *;
-  @use "~/assets/scss/components/Banks/Documents/AllianceBankDocuments" as *;
 </style>

@@ -17,6 +17,7 @@ import type { SignatureItem } from "~/scripts/types/SignatureItem"
 import { BankConstants } from "~/scripts/constants/Banks"
 import { AffinBankApplicationDetails } from "~/scripts/types/banks/AffinBankApplicationDetails"
 import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class DcrBankAccountOpeningAffinBankController extends ResolutionController<CompanyBankAccountOpening> {
   companyBankAccountOpeningRepository = useCompanyBankAccountOpeningStore()
@@ -29,7 +30,6 @@ export class DcrBankAccountOpeningAffinBankController extends ResolutionControll
   signatories = ref<CompanyBankSignatory[]>([])
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
-  resolutionContent = ref<string>("")
   originalContent = ref<string>("")
 
   bankId: string = BankConstants.AFFIN_BANK_DETAIL.id
@@ -115,10 +115,8 @@ export class DcrBankAccountOpeningAffinBankController extends ResolutionControll
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error: Error = new Error(
-          Error.ERROR_TYPE_API,
-          "Unable to fetch details of company. Please refresh the page and try again."
-        )
+        let error: Error = new Error()
+        error.setForFetch()
         error.handle()
       }
     }
@@ -244,7 +242,7 @@ export class DcrBankAccountOpeningAffinBankController extends ResolutionControll
     this.signaturePlaceholders.value = this.directors.value.map((d: Director) => {
       return d.name
     })
-    this.signaturePlaceholders.value.splice(1, 0, SecretaryInformation.SECRETARY_NAME)
+    this.signaturePlaceholders.value.splice(1, 0, SecretaryInformation.SECRETARY_NAME_LIST[0].name)
     this.signaturePlaceholders.value.splice(2, 0, "Company Stamp")
   }
 
@@ -572,6 +570,43 @@ export class DcrBankAccountOpeningAffinBankController extends ResolutionControll
     }
 
     return this.affinBankApplicationDetails.value
+  }
+
+  // override isDocumentEditable(): boolean {
+  //   return false
+  // }
+
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    this.isGettingPdfPages.value = true
+
+    await nextTick()
+
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    this.isGettingPdfPages.value = false
+
+    return pdfPages
+  }
+
+  get showSignatoriesOnFirstPage(): boolean {
+    return (
+      !this.isDocumentEditable() &&
+      this.signatories.value.length <= 2 &&
+      !this.affinBankApplicationDetails.value.isAllowLinkAndTransactSubsidiary
+    )
+  }
+
+  get showOtherConditionsOnPage2(): boolean {
+    return (
+      this.showSignatoriesOnFirstPage &&
+      this.onlineAccessPersons.value.length +
+        this.affinBankApplicationDetails.value.systemAdministratorApprovers.length <=
+        4
+    )
   }
 
   get loaderLabel(): string {
