@@ -97,7 +97,7 @@ export class Section85PreemptiveRightNoticeController extends SdnBhdLegalDocumen
       return shareholder.company?.getFullName().toUpperCase() ?? ""
     }
 
-    return shareholder.name
+    return shareholder.user?.name ?? ""
   }
 
   pronoun(): string {

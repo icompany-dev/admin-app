@@ -14,7 +14,7 @@
         tag="div"
         class="document-transition-wrapper"
       >
-        <DcrProposeAllotmentOfShares
+        <!-- <DcrProposeAllotmentOfShares
           ref="dcr"
           :company-id="props.companyId"
           :application-id="props.applicationId"
@@ -30,7 +30,7 @@
           :watermark-text="controller.watermarkText()"
           @signed="controller.onSigned($event)"
           @preferenceShareSelected="controller.onPreferenceShareSelected()"
-        />
+        /> -->
         <!-- <PreemptiveRightNotices
           ref="notice"
           :company-id="props.companyId"

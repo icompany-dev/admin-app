@@ -1,12 +1,13 @@
 <template>
   <div
-    id="appointment-of-director"
+    id="allotment-of-shares"
     class="cosec-service-documents"
     :class="{ 'full-size': props.isDocumentEnlarged }"
   >
     <div
       class="documents-section"
-      :class="{ invert: controller.showMcrFirst.value }"
+      :class="{ invert: controller.isShowMcrFirst }"
+      v-keyboard-click
       @click="emit('zoomIn')"
       :style="controller.getZoomStyle()"
     >
@@ -15,25 +16,58 @@
         tag="div"
         class="document-transition-wrapper"
       >
-        <DcrAllotmentOfShares
-          ref="dcrRef"
-          v-bind="controller.resolutionDocumentProps"
-          @signed="controller.onSigned($event)"
-          @changed="controller.onDcrChanged()"
-        />
-        <McrAllotmentOfShares
-          ref="mcrRef"
-          v-bind="controller.resolutionDocumentProps"
-          @signed="controller.onSigned($event)"
-        />
+        <Paper
+          v-if="controller.isLoading.value"
+          :is-loader="true"
+          :show-page-number="false"
+        >
+          <template #paperContent>
+            <LoaderPrepare
+              :label="'Preparing Your'"
+              :sublabel="'Resolutions'"
+            />
+          </template>
+        </Paper>
+        <template v-if="!controller.isLoading.value">
+          <DcrProposeAllotmentOfShares
+            ref="dcrRef"
+            v-bind="controller.resolutionDocumentProps"
+            @signed="controller.onSigned($event)"
+          />
+          <McrAuthorityToAllotShares
+            ref="mcrRef"
+            v-bind="controller.mcrResolutionDocumentProps"
+            @signed="controller.onSignedMcr($event)"
+          />
+          <!-- <PreemptiveRightNotices
+            ref="noticeRef"
+            :company-id="controller.companyId"
+            :application-id="controller.issuanceId"
+            :application="null"
+            :is-in-preview-mode="controller.isInPreviewMode.value"
+            :is-by-shareholder="false"
+            :financial-period-id="null"
+            :bank-id="null"
+            :name-reservations="[]"
+            :year-to-lodge="null"
+            :type="null"
+            :show-watermark="controller.isShowWatermark"
+            :watermark-text="controller.watermarkText"
+          /> -->
+        </template>
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
-  import DcrAllotmentOfShares from "../Resolutions/DcrAllotmentOfShares.vue"
-  import McrAllotmentOfShares from "../Resolutions/McrAllotmentOfShares.vue"
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
+  import DcrProposeAllotmentOfShares from "@/components/Resolutions/DcrProposeAllotmentOfShares.vue"
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import McrAuthorityToAllotShares from "@/components/Resolutions/McrAuthorityToAllotShares.vue"
+  import Paper from "@/components/Papers/Paper.vue"
+  import PreemptiveRightNotices from "../Shareholders/AllotmentOfShares/PreemptiveRightNotices.vue"
   import { AllotmentOfSharesController } from "~/scripts/components/service-wrappers/AllotmentOfSharesController"
 
   const props = defineProps({
@@ -57,6 +91,7 @@
 
   const dcrRef = ref(null)
   const mcrRef = ref(null)
+  const noticeRef = ref(null)
 
   const emit = defineEmits(["zoomOut", "zoomIn", "back", "applicationUpdated"])
 
@@ -79,12 +114,11 @@
   )
 
   watch(
-    () => props.applicationId,
+    noticeRef,
     (newVal) => {
-      if (newVal) {
-        controller.fetchApplication(newVal)
-      }
-    }
+      controller.setNoticeRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

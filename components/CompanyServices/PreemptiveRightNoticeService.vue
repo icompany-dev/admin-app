@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
-  import PreemptiveRightNotices from "../Shareholders/AllotmentOfShares/PreemptiveRightNotices.vue"
+  // import PreemptiveRightNotices from "../Shareholders/AllotmentOfShares/PreemptiveRightNotices.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import { PreemptiveRightNoticeServiceController } from "~/scripts/components/company-services/PreemptiveRightNoticeServiceController"
 
