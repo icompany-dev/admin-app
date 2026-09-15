@@ -9,6 +9,8 @@ import { Director } from "~/scripts/models/Director"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { Form } from "~/scripts/models/Form"
 import { Filter } from "~/scripts/library/Filter"
+import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
+import { User } from "~/scripts/models/User"
 
 export class LodgeAnnualReturnController extends SecretarialServiceController<
   CompanyAnnualReturnRequest,
@@ -32,7 +34,18 @@ export class LodgeAnnualReturnController extends SecretarialServiceController<
     // 4. Any allotment of shares for the year? Any Transfer of Shares for the year
     // 5. Documents uploaded for the company
 
-    await Promise.allSettled([this.fetchCompany(), this.fetchDirectors(), this.fetchShareholders(), this.fetchForms()])
+    try {
+      await Promise.allSettled([
+        this.fetchCompany(),
+        this.fetchDirectors(),
+        this.fetchShareholders(),
+        this.fetchForms(),
+      ])
+
+      this.emitEvents("company", this.company.value)
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   async fetchCompany(): Promise<void> {
@@ -85,6 +98,12 @@ export class LodgeAnnualReturnController extends SecretarialServiceController<
 
     this.application.value = new CompanyAnnualReturnRequest(response)
 
+    this.companyId.value = this.application.value.companyId
+
     await this.fetchData()
+  }
+
+  getUserDetailsProps(role: Director | Shareholder): PropsUserDetail {
+    return new PropsUserDetail(role.id, role.user ?? new User(), role)
   }
 }
