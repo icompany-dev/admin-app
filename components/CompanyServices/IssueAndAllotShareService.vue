@@ -44,7 +44,7 @@
             v-bind="controller.mcrResolutionDocumentProps"
             @doneLoading="controller.handleDisplayedPage()"
           />
-          <PreemptiveRightNotices
+          <!-- <PreemptiveRightNotices
             ref="noticeRef"
             :company-id="controller.companyId"
             :application-id="controller.issuanceId"
@@ -58,7 +58,7 @@
             :type="null"
             :show-watermark="controller.showWatermark()"
             :watermark-text="controller.watermarkText()"
-          />
+          /> -->
         </TransitionGroup>
       </template>
     </CompanyServiceWrapper>

@@ -39,7 +39,7 @@
             v-bind="controller.mcrResolutionDocumentProps"
             @signed="controller.onSignedMcr($event)"
           />
-          <PreemptiveRightNotices
+          <!-- <PreemptiveRightNotices
             ref="noticeRef"
             :company-id="controller.companyId"
             :application-id="controller.issuanceId"
@@ -53,7 +53,7 @@
             :type="null"
             :show-watermark="controller.isShowWatermark"
             :watermark-text="controller.watermarkText"
-          />
+          /> -->
         </template>
       </TransitionGroup>
     </div>
