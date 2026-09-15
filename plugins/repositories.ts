@@ -29,6 +29,7 @@ import { CompanyAmendmentNameRepository } from "~/scripts/repositories/CompanyAm
 import { CompanyAmendmentRegisteredAddressRepository } from "~/scripts/repositories/CompanyAmendmentRegisteredAddressRepository"
 import { CompanyAnnualReturnRequestRepository } from "~/scripts/repositories/CompanyAnnualReturnRequestRepository"
 import { CompanyAnnualReturnRepository } from "~/scripts/repositories/CompanyAnnualReturnRepository"
+import { CompanyAssetPurchaseRepository } from "~/scripts/repositories/CompanyAssetPurchaseRepository"
 import { CompanyAuditCirculationRepository } from "~/scripts/repositories/CompanyAuditCirculationRepository"
 import { CompanyAuditCycleRepository } from "~/scripts/repositories/CompanyAuditCycleRepository"
 import { CompanyAuditExtensionOfTimeRepository } from "~/scripts/repositories/CompanyAuditExtensionOfTimeRepository"
@@ -211,6 +212,7 @@ interface Repositories {
   companyAmendmentRegisteredAddresses: CompanyAmendmentRegisteredAddressRepository
   companyAnnualReturnRequests: CompanyAnnualReturnRequestRepository
   companyAnnualReturns: CompanyAnnualReturnRepository
+  companyAssetPurchases: CompanyAssetPurchaseRepository
   companyAuditCirculations: CompanyAuditCirculationRepository
   companyAuditCycles: CompanyAuditCycleRepository
   companyAuditExtensionOfTimes: CompanyAuditExtensionOfTimeRepository
@@ -494,6 +496,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/annual-return",
       config.public.apiBaseUrl,
       getAuthToken),
+    companyAssetPurchases: new CompanyAssetPurchaseRepository(
+      "company/asset-purchases",
+      "company/asset-purchase",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     companyAuditCirculations: new CompanyAuditCirculationRepository("company/audit/circulations",
       "company/audit/circulation",
       config.public.apiBaseUrl,
@@ -1129,6 +1137,7 @@ declare module "#app" {
       companyAmendmentRegisteredAddresses: import("~/scripts/repositories/CompanyAmendmentRegisteredAddressRepository").CompanyAmendmentRegisteredAddressRepository
       companyAnnualReturnRequests: import("~/scripts/repositories/CompanyAnnualReturnRequestRepository").CompanyAnnualReturnRequestRepository
       companyAnnualReturns: import("~/scripts/repositories/CompanyAnnualReturnRepository").CompanyAnnualReturnRepository
+      companyAssetPurchases: import("~/scripts/repositories/CompanyAssetPurchaseRepository").CompanyAssetPurchaseRepository
       companyAuditCirculations: import("~/scripts/repositories/CompanyAuditCirculationRepository").CompanyAuditCirculationRepository
       companyAuditCycles: import("~/scripts/repositories/CompanyAuditCycleRepository").CompanyAuditCycleRepository
       companyAuditExtensionOfTimes: import("~/scripts/repositories/CompanyAuditExtensionOfTimeRepository").CompanyAuditExtensionOfTimeRepository
@@ -1315,6 +1324,7 @@ declare module "pinia" {
       companyAmendmentRegisteredAddresses: import("~/scripts/repositories/CompanyAmendmentRegisteredAddressRepository").CompanyAmendmentRegisteredAddressRepository
       companyAnnualReturnRequests: import("~/scripts/repositories/CompanyAnnualReturnRequestRepository").CompanyAnnualReturnRequestRepository
       companyAnnualReturns: import("~/scripts/repositories/CompanyAnnualReturnRepository").CompanyAnnualReturnRepository
+      companyAssetPurchases: import("~/scripts/repositories/CompanyAssetPurchaseRepository").CompanyAssetPurchaseRepository
       companyAuditCirculations: import("~/scripts/repositories/CompanyAuditCirculationRepository").CompanyAuditCirculationRepository
       companyAuditCycles: import("~/scripts/repositories/CompanyAuditCycleRepository").CompanyAuditCycleRepository
       companyAuditExtensionOfTimes: import("~/scripts/repositories/CompanyAuditExtensionOfTimeRepository").CompanyAuditExtensionOfTimeRepository

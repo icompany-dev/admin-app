@@ -60,6 +60,7 @@ export class CompanyConstants {
   static TARGET_OPEN_BANK_ACCOUNT: string = "company_bank_resolution"
   static TARGET_PRACTICE_DIRECTIVE_2: string = "practice_directive_2"
   static TARGET_PREFERENCE_SHARE_RIGHT: string = "company_preference_share_right"
+  static TARGET_PURCHASE_ASSET: string = "company_asset_purchase"
   static TARGET_PREEMPTIVE_RIGHT_NOTICE: string = "company_preemptive_right_notice"
   static TARGET_RECEIPT: string = "receipt"
   static TARGET_REMOVAL_OF_DIRECTOR: string = "company_director_removal_notice"
@@ -141,6 +142,7 @@ export class CompanyConstants {
     this.TARGET_PRACTICE_DIRECTIVE_2,
     this.TARGET_PREFERENCE_SHARE_RIGHT,
     this.TARGET_PREPARE_FINANCIAL_STATEMENTS,
+    this.TARGET_PURCHASE_ASSET,
     this.TARGET_RECEIPT,
     this.TARGET_REMOVAL_OF_DIRECTOR,
     this.TARGET_SET_FINANCIAL_YEAR_END,

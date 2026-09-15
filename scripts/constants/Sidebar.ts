@@ -112,6 +112,7 @@ export class PageSidebar {
     "services/open-bank-account",
     false
   )
+  static purchaseAssets: Sidebar = new Sidebar("Purchase Asset", "Beli Aset", "services/asset-purchase", false)
   static appointDirector: Sidebar = new Sidebar(
     "Appoint New Director",
     "Lantik Pengarah",
@@ -129,6 +130,7 @@ export class PageSidebar {
     this.openBankAccount,
     this.appointDirector,
     this.allotNewShares,
+    this.purchaseAssets,
   ])
 
   static personsDraft: Sidebar = new Sidebar(

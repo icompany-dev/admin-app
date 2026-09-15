@@ -1,34 +1,33 @@
 import type { PropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
 import { SecretarialServicesController } from "./SecretarialServicesController"
-import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"
+import { CompanyAssetPurchase } from "~/scripts/models/CompanyAssetPurchase"
 import { Company } from "~/scripts/models/Company"
 import { StatusConstants } from "~/scripts/constants/Status"
 
-export class BankAccountOpeningsController extends SecretarialServicesController<CompanyBankAccountOpening> {
+export class PurchaseAssetsController extends SecretarialServicesController<CompanyAssetPurchase> {
   constructor(props: PropsSecretarialServices, emitEvents: any | null) {
-    super(props, CompanyBankAccountOpening, useCompanyBankAccountOpeningStore(), emitEvents)
+    super(props, CompanyAssetPurchase, useCompanyAssetPurchaseStore(), emitEvents)
   }
 
   onApplicationClicked(data: any): void {
-    let application = new CompanyBankAccountOpening(data)
-    this.router.push({ path: `/services/open-bank-account/${application.id}` })
+    let application = new CompanyAssetPurchase(data)
+    this.router.push({ path: `/services/asset-purchase/${application.id}` })
   }
 
   companyName(data: any): string {
-    let application = new CompanyBankAccountOpening(data)
+    let application = new CompanyAssetPurchase(data)
     return this.company(application).getFullName()
   }
 
   applicationDetails(data: any): string {
-    let application = new CompanyBankAccountOpening(data)
+    let application = new CompanyAssetPurchase(data)
     return `
-      <b>Bank:</b> ${application.bank.nickname}<br>
-      <b>${this.language.isMalay() ? "Cawangan" : "Branch"}:</b> ${application.bankBranch.name}
+      ???
     `
   }
 
   applicationDate(data: any): string {
-    let application = new CompanyBankAccountOpening(data)
+    let application = new CompanyAssetPurchase(data)
     if (!application.paidAt) {
       return this.language.isMalay() ? "Belum Dibayar" : "(Unpaid)"
     }
@@ -37,7 +36,7 @@ export class BankAccountOpeningsController extends SecretarialServicesController
   }
 
   applicationStatusClass(data: any): string {
-    let application = new CompanyBankAccountOpening(data)
+    let application = new CompanyAssetPurchase(data)
     switch (application.status) {
       case StatusConstants.DRAFT:
         return "draft"
@@ -53,7 +52,7 @@ export class BankAccountOpeningsController extends SecretarialServicesController
   }
 
   applicationStatus(data: any): string {
-    let application = new CompanyBankAccountOpening(data)
+    let application = new CompanyAssetPurchase(data)
     switch (application.status) {
       case StatusConstants.DRAFT:
         return this.language.isMalay() ? "Belum Dibayar" : "Pending Payment"
@@ -69,7 +68,7 @@ export class BankAccountOpeningsController extends SecretarialServicesController
   }
 
   company(data: any): Company {
-    let application = new CompanyBankAccountOpening(data)
+    let application = new CompanyAssetPurchase(data)
     return new Company(application.company)
   }
 }

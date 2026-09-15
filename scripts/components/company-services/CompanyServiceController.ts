@@ -700,4 +700,33 @@ export abstract class CompanyServiceController<T> {
 
     return blob
   }
+
+  onUpdatingDocument(): void {
+    // if (this.wrapperRef) {
+    //   this.wrapperRef.minimize()
+    // }
+    // this.isUpdatingDocument.value = true
+    // setTimeout(() => {
+    //   if (this.isUpdatingDocument.value) {
+    //     this.onDocumentUpdated()
+    //   }
+    // }, 3000)
+  }
+
+  async onDocumentUpdated(): Promise<void> {
+    // try {
+    //   await this.fetchOngoingApplication()
+    //   this.isUpdatingDocument.value = false
+    // } catch (e) {
+    //   console.error(e)
+    // }
+  }
+
+  get isShowTags(): boolean {
+    if (!this.application.value) {
+      return false
+    }
+
+    return this.application.value.signatureGroups.length <= 0 && this.hasPaid()
+  }
 }

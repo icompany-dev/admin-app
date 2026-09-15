@@ -31,6 +31,7 @@
 </template>
 
 <script lang="ts" setup>
+  import AssetPurchase from "./AssetPurchase.vue"
   import AllotNewShare from "./AllotNewShare.vue"
   import AppointDirector from "./AppointDirector.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
@@ -50,6 +51,7 @@
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
     [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
+    [CompanyConstants.TARGET_PURCHASE_ASSET]: AssetPurchase,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotNewShare,
   }
 
