@@ -39,6 +39,7 @@ export class CompanyConstants {
   static TARGET_DIRECTOR_APPOINTMENT: string = "company_director_appointment"
   static TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST: string = "director_declaration_conflict_of_interest"
   static TARGET_DIRECTOR_INVITATION: string = "director_invitation"
+  static TARGET_DIRECTOR: string = "director"
   static TARGET_DIRECTOR_LOAN: string = "company_director_loan"
   static TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT: string = "company_director_chairman_appointment"
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT: string = "company_director_manager_appointment"
@@ -59,6 +60,8 @@ export class CompanyConstants {
   static TARGET_OPEN_BANK_ACCOUNT: string = "company_bank_resolution"
   static TARGET_PRACTICE_DIRECTIVE_2: string = "practice_directive_2"
   static TARGET_PREFERENCE_SHARE_RIGHT: string = "company_preference_share_right"
+  static TARGET_PURCHASE_ASSET: string = "company_asset_purchase"
+  static TARGET_PREEMPTIVE_RIGHT_NOTICE: string = "company_preemptive_right_notice"
   static TARGET_RECEIPT: string = "receipt"
   static TARGET_REMOVAL_OF_DIRECTOR: string = "company_director_removal_notice"
   static TARGET_SET_FINANCIAL_YEAR_END: string = "company_set_financial_year_end"
@@ -67,6 +70,8 @@ export class CompanyConstants {
   static TARGET_SHAREHOLDER_TRANSFER_OF_SHARES: string = "company_shareholder_transfer"
   static TARGET_SHAREHOLDER_PROPOSE_TRANSFER: string = "company_shareholder_transfer_proposal"
   static TARGET_SHAREHOLDER_POST_SHARE_TRANSFER: string = "company_post_share_transfer"
+  static TARGET_SHAREHOLDER_SHARE_AUTHORIZATION: string = "company_share_authorization"
+  static TARGET_SOURCE_OF_FUND_DECLARATION: string = "company_fund_source_declaration"
   static TARGET_STRIKING_OFF_RESOLUTION: string = "company_striking_off_resolution"
   static TARGET_SWITCH_OUT: string = "company_switch_out"
   static TARGET_SUBSCRIPTION: string = "company_subscription"
@@ -119,6 +124,7 @@ export class CompanyConstants {
     this.TARGET_DIRECTOR_APPOINTMENT,
     this.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST,
     this.TARGET_DIRECTOR_INVITATION,
+    this.TARGET_DIRECTOR,
     this.TARGET_DIRECTOR_LOAN,
     this.TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT,
     this.TARGET_DIRECTOR_MANAGER_APPOINTMENT,
@@ -136,6 +142,7 @@ export class CompanyConstants {
     this.TARGET_PRACTICE_DIRECTIVE_2,
     this.TARGET_PREFERENCE_SHARE_RIGHT,
     this.TARGET_PREPARE_FINANCIAL_STATEMENTS,
+    this.TARGET_PURCHASE_ASSET,
     this.TARGET_RECEIPT,
     this.TARGET_REMOVAL_OF_DIRECTOR,
     this.TARGET_SET_FINANCIAL_YEAR_END,

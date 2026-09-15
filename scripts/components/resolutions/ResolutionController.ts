@@ -493,4 +493,8 @@ export abstract class ResolutionController<T> {
 
     return pdfPages
   }
+
+  get hasConstitution(): boolean {
+    return this.application.value?.company && this.application.value.company.hasConstitution
+  }
 }

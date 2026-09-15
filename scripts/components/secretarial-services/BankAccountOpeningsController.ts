@@ -59,6 +59,8 @@ export class BankAccountOpeningsController extends SecretarialServicesController
         return this.language.isMalay() ? "Belum Dibayar" : "Pending Payment"
       case StatusConstants.PAID:
         return this.language.isMalay() ? "Bayaran Diterima" : "Payment Received"
+      case StatusConstants.READY:
+        return this.language.isMalay() ? "Permohonan Sedia" : "Application Ready"
       case StatusConstants.NAME_REJECTED:
         return this.language.isMalay() ? "Cadangan Nama Ditolak" : "Proposed Name Rejected"
     }

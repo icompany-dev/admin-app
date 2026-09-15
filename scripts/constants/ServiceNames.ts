@@ -235,6 +235,13 @@ export class ServiceNames {
     "managers",
     "director"
   )
+  static assetPurchase: ServiceName = new ServiceName(
+    "Purchase Asset",
+    "Beli Aset",
+    "company_asset_purchase",
+    "asset-purchase",
+    "director"
+  )
 
   static names: ServiceName[] = [
     this.applicationIncorporation,
@@ -269,5 +276,6 @@ export class ServiceNames {
     this.replaceCommonSeal,
     this.enteringContract,
     this.appointManager,
+    this.assetPurchase,
   ]
 }
