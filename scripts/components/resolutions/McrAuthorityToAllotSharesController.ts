@@ -325,17 +325,40 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
       this.getInstructionsForTickbox()
     )
 
-    const purposeOfAllotmentRegex = /\[purpose-checkbox-options\]([\s\S]*?)\[\/purpose-checkbox-options\]/
-    this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
-      purposeOfAllotmentRegex,
-      this.getPurposeOfProposedAllotment()
-    )
+    if (this.isDocumentEditable()) {
+      const purposeOfAllotmentRegex = /\[purpose-checkbox-options\]([\s\S]*?)\[\/purpose-checkbox-options\]/
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        purposeOfAllotmentRegex,
+        this.getPurposeOfProposedAllotment()
+      )
+    } else {
+      const purposeOfAllotmentSearchString =
+        "the proposed allotment of shares is intended for purposes including but not limited to:"
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        purposeOfAllotmentSearchString,
+        `the proposed allotment of shares is intended for purposes including but not limited to ${this.getPurposeOfProposedAllotment()}`
+      )
 
-    const directorsPowerRegex = /\[power-checkbox-option\]([\s\S]*?)\[\/power-checkbox-option\]/
-    this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
-      directorsPowerRegex,
-      this.getDirectorsPowers()
-    )
+      const purposeOfAllotmentRegex = /\[purpose-checkbox-options\]([\s\S]*?)\[\/purpose-checkbox-options\]/
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(purposeOfAllotmentRegex, "")
+    }
+
+    if (this.isDocumentEditable()) {
+      const directorsPowerRegex = /\[power-checkbox-option\]([\s\S]*?)\[\/power-checkbox-option\]/
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        directorsPowerRegex,
+        this.getDirectorsPowers()
+      )
+    } else {
+      const directorsPowerSearchString = "the Directors be and are hereby authorised to:"
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        directorsPowerSearchString,
+        `the Directors be and are hereby authorised to ${this.getDirectorsPowers()}`
+      )
+
+      const directorsPowerRegex = /\[power-checkbox-option\]([\s\S]*?)\[\/power-checkbox-option\]/
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(directorsPowerRegex, "")
+    }
 
     const effectiveDateSearchString = "$text.&lt;name=effectiveDateType&gt;$"
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
