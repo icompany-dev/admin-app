@@ -40,6 +40,7 @@ import { CompanyBankAccountOpeningRepository } from "~/scripts/repositories/Comp
 import { CompanyBankRepository } from "~/scripts/repositories/CompanyBankRepository"
 import { CompanyBODeclarationRepository } from "~/scripts/repositories/CompanyBODeclarationRepository"
 import { CompanyBranchRepository } from "~/scripts/repositories/CompanyBranchRepository"
+import { CompanyChangeBankSignatoryRepository } from "~/scripts/repositories/CompanyChangeBankSignatoryRepository"
 import { CompanyCommonSealRegisterRepository } from "~/scripts/repositories/CompanyCommonSealRegisterRepository"
 import { CompanyCommonSealReplacementRepository } from "~/scripts/repositories/CompanyCommonSealReplacementRepository"
 import { CompanyCommonSealRepository } from "~/scripts/repositories/CompanyCommonSealRepository"
@@ -223,6 +224,7 @@ interface Repositories {
   companyBanks: CompanyBankRepository
   companyBODeclarations: CompanyBODeclarationRepository
   companyBranches: CompanyBranchRepository
+  companyChangeBankSignatories: CompanyChangeBankSignatoryRepository
   companyCommonSealRegisters: CompanyCommonSealRegisterRepository
   companyCommonSealReplacements: CompanyCommonSealReplacementRepository
   companyCommonSeals: CompanyCommonSealRepository
@@ -496,12 +498,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/annual-return",
       config.public.apiBaseUrl,
       getAuthToken),
-    companyAssetPurchases: new CompanyAssetPurchaseRepository(
-      "company/asset-purchases",
+    companyAssetPurchases: new CompanyAssetPurchaseRepository("company/asset-purchases",
       "company/asset-purchase",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyAuditCirculations: new CompanyAuditCirculationRepository("company/audit/circulations",
       "company/audit/circulation",
       config.public.apiBaseUrl,
@@ -542,6 +542,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/branch",
       config.public.apiBaseUrl,
       getAuthToken),
+    companyChangeBankSignatories: new CompanyChangeBankSignatoryRepository(
+      "company/bank/account/change-signatories",
+      "company/bank/account/change-signatory",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     companyCommonSealRegisters: new CompanyCommonSealRegisterRepository("company/common-seals/registers",
       "company/common-seals/register",
       config.public.apiBaseUrl,
@@ -774,12 +780,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/financial-statements/setup",
       config.public.apiBaseUrl,
       getAuthToken),
-    companyFundSourceDeclarations: new CompanyFundSourceDeclarationRepository(
-      "company/funds-source-declarations",
+    companyFundSourceDeclarations: new CompanyFundSourceDeclarationRepository("company/funds-source-declarations",
       "company/funds-source-declaration",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyLoanApplications: new CompanyLoanApplicationRepository("company/loans",
       "company/loan",
       config.public.apiBaseUrl,
@@ -1148,6 +1152,7 @@ declare module "#app" {
       companyBanks: import("~/scripts/repositories/CompanyBankRepository").CompanyBankRepository
       companyBODeclarations: import("~/scripts/repositories/CompanyBODeclarationRepository").CompanyBODeclarationRepository
       companyBranches: import("~/scripts/repositories/CompanyBranchRepository").CompanyBranchRepository
+      companyChangeBankSignatories: import("~/scripts/repositories/CompanyChangeBankSignatoryRepository").CompanyChangeBankSignatoryRepository
       companyCommonSealRegisters: import("~/scripts/repositories/CompanyCommonSealRegisterRepository").CompanyCommonSealRegisterRepository
       companyCommonSealReplacements: import("~/scripts/repositories/CompanyCommonSealReplacementRepository").CompanyCommonSealReplacementRepository
       companyCommonSeals: import("~/scripts/repositories/CompanyCommonSealRepository").CompanyCommonSealRepository
@@ -1335,6 +1340,7 @@ declare module "pinia" {
       companyBanks: import("~/scripts/repositories/CompanyBankRepository").CompanyBankRepository
       companyBODeclarations: import("~/scripts/repositories/CompanyBODeclarationRepository").CompanyBODeclarationRepository
       companyBranches: import("~/scripts/repositories/CompanyBranchRepository").CompanyBranchRepository
+      companyChangeBankSignatories: import("~/scripts/repositories/CompanyChangeBankSignatoryRepository").CompanyChangeBankSignatoryRepository
       companyCommonSealRegisters: import("~/scripts/repositories/CompanyCommonSealRegisterRepository").CompanyCommonSealRegisterRepository
       companyCommonSealReplacements: import("~/scripts/repositories/CompanyCommonSealReplacementRepository").CompanyCommonSealReplacementRepository
       companyCommonSeals: import("~/scripts/repositories/CompanyCommonSealRepository").CompanyCommonSealRepository
