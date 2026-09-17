@@ -206,7 +206,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       resolutionDate = `<input type="date" class='form-control in-resolution title-resolution-date' value='${this.application.value?.resolutionDate}'>`
     } else {
       let time = useLocalTime()
-      let resolutionDate = this.application.value?.resolutionDate ?? this.dayjs().format("YYYY-MM-DD")
+      resolutionDate = this.application.value?.resolutionDate ?? this.dayjs().format("YYYY-MM-DD")
       resolutionDate = time.formatDateOnlyFull(resolutionDate).toUpperCase()
     }
     this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
@@ -349,5 +349,21 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       e.removeEventListener("change", this.handleResolutionDate.bind(this))
       e.addEventListener("change", this.handleResolutionDate.bind(this))
     })
+  }
+
+  get otherPageTitle(): string {
+    if (!this.application.value) {
+      return ""
+    }
+
+    const resolutionDate = this.application.value?.resolutionDate
+      ? this.time.formatDateOnlyFull(this.application.value?.resolutionDate)
+      : "DATE TO BE DETERMINED"
+
+    const inAccordance = this.application.value?.company?.hasConstitution
+      ? `Company's Constitution`
+      : `Paragraph 15 of the Third Schedule of the Companies Act 2016.`
+
+    return `Directors' Resolutions in writing passed on ${resolutionDate} in accordance with the ${inAccordance}`
   }
 }
