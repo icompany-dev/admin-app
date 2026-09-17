@@ -282,15 +282,15 @@ export class DcrChangeBankSignatoriesController extends ResolutionController<Com
   }
 
   get bankName(): string {
-    return this.companyBank.value.bank.name
+    return this.companyBank.value.bank.name.toUpperCase()
   }
 
   get branchDetails(): string {
-    return this.companyBank.value.bankBranch.name
+    return this.companyBank.value.bankBranch.name.toUpperCase()
   }
 
   get bankAddress(): string {
-    return this.companyBank.value.bankBranch.address
+    return StringUtil.nl2br(this.companyBank.value.bankBranch.address).toUpperCase()
   }
 
   get bankAccountNumber(): string {
