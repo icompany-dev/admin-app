@@ -316,7 +316,7 @@ export class AllotmentOfSharesController
     }
 
     if (this.application.value.status === StatusConstants.READY) {
-      return "READY FOR DELIVERY"
+      return "READY TO SHIP"
     }
 
     return "DRAFT"

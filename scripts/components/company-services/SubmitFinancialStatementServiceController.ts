@@ -416,7 +416,7 @@ export class SubmitFinancialStatementServiceController {
     }
 
     if (application.status === StatusConstants.READY) {
-      return "READY FOR DELIVERY"
+      return "READY TO SHIP"
     }
 
     if (application.signatureGroups.length <= 0) {
