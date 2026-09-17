@@ -1,0 +1,55 @@
+#resolutions-dcr-asset-purchase {
+  .point-right {
+    left: -20mm;
+  }
+
+  .tag-details {
+    top: 255px;
+  }
+
+  .tag-finance {
+    top: 700px;
+  }
+
+  .tag-director-advance {
+    top: 715px;
+  }
+
+  .tag-authorised-person {
+    top: 305px;
+  }
+}
+
+.purchase-details {
+  margin-top: 10px;
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5px;
+
+  .text-justify {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+
+    strong {
+      width: 150px;
+      font-weight: 600;
+    }
+
+    .form-control {
+      width: calc(100% - 190px);
+    }
+
+    &:nth-child(6) {
+      .form-control {
+        width: calc(100% - 215px);
+      }
+    }
+  }
+}

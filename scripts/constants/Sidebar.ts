@@ -93,7 +93,12 @@ export class PageSidebar {
     "sdnbhds/assign-cosec",
     false
   )
-  static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [this.sdnbhdAll, this.sdnbhdAssign])
+  static sdnbhdDirectors: Sidebar = new Sidebar("Directors", "Pengarah", "sdnbhds/directors", false)
+  static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [
+    this.sdnbhdAll,
+    this.sdnbhdAssign,
+    this.sdnbhdDirectors,
+  ])
 
   static changeBusinessName: Sidebar = new Sidebar(
     "Change of Name",
@@ -107,16 +112,25 @@ export class PageSidebar {
     "services/open-bank-account",
     false
   )
+  static purchaseAssets: Sidebar = new Sidebar("Purchase Asset", "Beli Aset", "services/asset-purchase", false)
   static appointDirector: Sidebar = new Sidebar(
     "Appoint New Director",
     "Lantik Pengarah",
     "services/appoint-director-new",
     false
   )
+  static allotNewShares: Sidebar = new Sidebar(
+    "Allot New Shares",
+    "Peruntuk Saham Baharu",
+    "services/allotment-of-shares",
+    false
+  )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
     this.openBankAccount,
     this.appointDirector,
+    this.allotNewShares,
+    this.purchaseAssets,
   ])
 
   static personsDraft: Sidebar = new Sidebar(

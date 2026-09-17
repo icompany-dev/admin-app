@@ -32,10 +32,13 @@ export class MapController {
   selectedCompany?: CompanyLocation | null = null
   mapTarget?: { lat: number; lng: number; zoom: number } | null = null
 
+  config = useRuntimeConfig()
+  cartoApiKey = this.config.public.cartoApiKey
+
   // Better way to handle this?
   TILE_URLS = {
-    light: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
-    dark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+    light: `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${this.cartoApiKey}`,
+    dark: `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?key=${this.cartoApiKey}`,
   }
   ATTRIBUTION =
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'

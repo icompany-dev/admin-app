@@ -119,6 +119,9 @@ export class DocumentTargets {
   static TARGET_PREFERENCE_SHARE_RIGHT: string = "company_preference_share_right"
   static TARGET_PREFERENCE_SHARE_RIGHT_RESOLUTIONS: string = "company_preference_share_right_resolutions"
 
+  static TARGET_PURCHASE_ASSET: string = "company_asset_purchase"
+  static TARGET_PURCHASE_ASSET_RESOLUTIONS: string = "company_asset_purchase_resolutions"
+
   static TARGET_REMOVAL_OF_DIRECTOR: string = "company_director_removal_notice"
   static TARGET_REMOVAL_OF_DIRECTOR_RESOLUTIONS: string = "company_director_removal_notice_resolutions"
 

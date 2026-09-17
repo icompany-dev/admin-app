@@ -123,7 +123,7 @@ export abstract class ApplicationController<Application> {
       this.uploadedDocumentChecker.value.fetchDocuments(),
     ])
 
-    await this.fetchPaymentOrder()
+    await Promise.allSettled([this.fetchPaymentOrder(), this.initializeData()])
 
     this.emitEvents("applicationId", this.application.value.id)
     this.emitEvents("paymentOrderId", this.paymentOrderId.value)
@@ -139,6 +139,10 @@ export abstract class ApplicationController<Application> {
 
   setServiceApplicationRef(serviceApplicationRef: any): void {
     this.serviceApplicationRef = serviceApplicationRef
+  }
+
+  async initializeData(): Promise<void> {
+    // do nothing
   }
 
   async fetchApplication(): Promise<void> {
