@@ -1,33 +1,43 @@
 import type { PropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
 import { SecretarialServicesController } from "./SecretarialServicesController"
-import { CompanyBankAccountClosure } from "~/scripts/models/CompanyBankAccountClosure"
+import { CompanyChangeBankSignatory } from "~/scripts/models/CompanyChangeBankSignatory"
 import { Company } from "~/scripts/models/Company"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { StringUtil } from "~/scripts/utils/String"
+import type { CompanyBankSignatory } from "~/scripts/models/CompanyBankSignatory"
 
-export class ChangeBankSignatoriesController extends SecretarialServicesController<CompanyBankAccountClosure> {
+export class ChangeBankSignatoriesController extends SecretarialServicesController<CompanyChangeBankSignatory> {
   constructor(props: PropsSecretarialServices, emitEvents: any | null) {
-    super(props, CompanyBankAccountClosure, useCompanyBankAccountClosureStore(), emitEvents)
+    super(props, CompanyChangeBankSignatory, useCompanyChangeBankSignatoryStore(), emitEvents)
   }
 
   onApplicationClicked(data: any): void {
-    let application = new CompanyBankAccountClosure(data)
-    this.router.push({ path: `/services/change-business-name/${application.id}` })
+    let application = new CompanyChangeBankSignatory(data)
+    this.router.push({ path: `/services/change-signtories/${application.id}` })
   }
 
   companyName(data: any): string {
-    let application = new CompanyBankAccountClosure(data)
+    let application = new CompanyChangeBankSignatory(data)
     return this.company(application).getFullName()
   }
 
   applicationDetails(data: any): string {
-    let application = new CompanyBankAccountClosure(data)
+    let application = new CompanyChangeBankSignatory(data)
+
+    let newSignatories = application.signatories.map((s: CompanyBankSignatory) => {
+      return `${s.name?.toUpperCase()} ${s.identification}`
+    })
+
+    let distinctSignatories = [...new Set(newSignatories)]
+
     return `
+      <b>Bank:</b> ${application.companyBank.bank.name}<br>
+      <b>New Signatories:</b> <br>${distinctSignatories.join("<br>")}
     `
   }
 
   applicationDate(data: any): string {
-    let application = new CompanyBankAccountClosure(data)
+    let application = new CompanyChangeBankSignatory(data)
     if (!application.paidAt) {
       return this.language.isMalay() ? "Belum Dibayar" : "(Unpaid)"
     }
@@ -36,7 +46,7 @@ export class ChangeBankSignatoriesController extends SecretarialServicesControll
   }
 
   applicationStatusClass(data: any): string {
-    let application = new CompanyBankAccountClosure(data)
+    let application = new CompanyChangeBankSignatory(data)
     switch (application.status) {
       case StatusConstants.DRAFT:
         return "draft"
@@ -52,7 +62,7 @@ export class ChangeBankSignatoriesController extends SecretarialServicesControll
   }
 
   applicationStatus(data: any): string {
-    let application = new CompanyBankAccountClosure(data)
+    let application = new CompanyChangeBankSignatory(data)
     switch (application.status) {
       case StatusConstants.DRAFT:
         return this.language.isMalay() ? "Belum Dibayar" : "Pending Payment"
@@ -66,7 +76,7 @@ export class ChangeBankSignatoriesController extends SecretarialServicesControll
   }
 
   company(data: any): Company {
-    let application = new CompanyBankAccountClosure(data)
+    let application = new CompanyChangeBankSignatory(data)
     return new Company(application.company)
   }
 }

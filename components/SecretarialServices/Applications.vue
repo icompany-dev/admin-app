@@ -64,6 +64,7 @@
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
   import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
+  import { ChangeBankSignatoriesController } from "~/scripts/components/secretarial-services/ChangeBankSignatoriesController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { DividendDeclarationsController } from "~/scripts/components/secretarial-services/DividendDeclarationsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
@@ -81,6 +82,9 @@
   switch (props.target) {
     case CompanyConstants.TARGET_AMENDMENT_NAME:
       controller = new ChangeOfNamesController(props, emit)
+      break
+    case CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY:
+      controller = new ChangeBankSignatoriesController(props, emit)
       break
     case CompanyConstants.TARGET_DIVIDEND_DECLARATION:
       controller = new DividendDeclarationsController(props, emit)

@@ -31,6 +31,7 @@ export class CompanyConstants {
   static TARGET_AUDIT_EXTENSION_OF_TIME: string = "company_audit_extension_of_time"
   static TARGET_AUDITOR_APPOINTMENT: string = "company_auditor_appointment"
   static TARGET_BO_DECLARATION: string = "company_bo_declaration"
+  static TARGET_CHANGE_BANK_SIGNATORY: string = "company_change_bank_signatory"
   static TARGET_CLOSE_BANK_ACCOUNT: string = "company_bank_account_closure"
   static TARGET_COMMON_SEAL: string = "company_common_seal"
   static TARGET_COMMON_SEAL_REPLACEMENT: string = "company_common_seal_replacement"
