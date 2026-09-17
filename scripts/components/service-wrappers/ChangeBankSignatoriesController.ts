@@ -8,6 +8,11 @@ import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { StatusConstants } from "~/scripts/constants/Status"
+import { Director } from "~/scripts/models/Director"
+import { User } from "~/scripts/models/User"
+import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class ChangeBankSignatoriesController
   extends ServiceController
@@ -22,13 +27,18 @@ export class ChangeBankSignatoriesController
 
   showMcrFirst = ref<boolean>(false)
 
+  directors: Ref<Director[]> = ref<Director[]>([])
+
   isUpdating: Ref<boolean> = ref<boolean>(false)
   isUpdated: Ref<boolean> = ref<boolean>(false)
+
+  identificationRefs = ref<any[]>([])
 
   constructor(companyId: string, companyBankId: string, emitEvents: any | null, applicationId: string | null = null) {
     super(CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY, companyId, emitEvents)
 
     this.setCompanyBankId(companyBankId)
+    this.fetchDirectors()
 
     if (!StringUtil.isNullOrEmpty(applicationId)) {
       this.fetchApplication(applicationId ?? "")
@@ -37,6 +47,10 @@ export class ChangeBankSignatoriesController
 
   setCompanyBankId(companyBankId: string): void {
     this.companyBankId.value = companyBankId
+  }
+
+  setIdentificationRefs(ref: any, index: number): void {
+    this.identificationRefs.value[index] = ref
   }
 
   async fetchApplication(id: string): Promise<void> {
@@ -59,6 +73,40 @@ export class ChangeBankSignatoriesController
       this.application.value.company = new Company(response)
       this.application.value.companyBankId = this.companyBankId.value
     }
+  }
+
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId)) {
+      return
+    }
+
+    let directorRepository = useDirectorStore()
+    let response = await directorRepository.fetchAllForCompany(this.companyId)
+
+    this.directors.value = response.map((d: any) => {
+      return new Director(d)
+    })
+
+    let promises = this.directors.value.map((d: Director) => {
+      return d.getRegisteredUser(useUserStore()).then((response) => {
+        d.user = new User(response)
+      })
+    })
+
+    await Promise.allSettled(promises)
+  }
+
+  getIdentificationDocumentWatermarkProps(director: Director): PropsIdentificationDocumentWatermark {
+    let userDetail = director.user?.detail
+    return new PropsIdentificationDocumentWatermark(
+      this.company.value.getFullName(),
+      `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`,
+      userDetail?.verificationFile?.url ?? "",
+      userDetail?.verificationFileAlt?.url ?? "",
+      "FOR CHANGE OF SIGNATORIES ONLY",
+      PaperOrientation.Portrait,
+      PaperSize.A4
+    )
   }
 
   onShowMcrFirstClicked(): void {
@@ -155,6 +203,54 @@ export class ChangeBankSignatoriesController
     // Must ask for confirmation before it proceeds to delete
     // await this.application.remove(this.repository)
     this.emitEvents("back")
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let pages = await this.getPdfPages()
+
+      if (pages.length > 0) {
+        await PdfPaperUtil.generatePdfFile(
+          pages,
+          20,
+          "Resolution and Documents for Change of Bank Signatories.pdf",
+          PaperSize.A4,
+          PaperOrientation.Portrait
+        )
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    let pages: HTMLElement[] = []
+
+    if (this.dcrRef) {
+      let docPages = await this.dcrRef.getPdfPages()
+      pages = pages.concat(docPages)
+    }
+
+    for (let i = 0; i <= this.identificationRefs.value.length; i++) {
+      let identificationRef = this.identificationRefs.value[i]
+      if (!identificationRef) {
+        continue
+      }
+
+      let identificationPage = await identificationRef.getPdfPages()
+      pages = pages.concat(identificationPage)
+    }
+
+    return pages
   }
 
   get isShowWatermark(): boolean {

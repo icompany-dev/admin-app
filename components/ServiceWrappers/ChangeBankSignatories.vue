@@ -22,6 +22,15 @@
           @signed="controller.onSigned($event)"
           @dataUpdated="controller.onDataUpdated($event)"
         />
+        <IdentificationDocumentWatermark
+          v-for="(director, i) in controller.directors.value"
+          v-bind="controller.getIdentificationDocumentWatermarkProps(director)"
+          :ref="
+            (el) => {
+              controller.setIdentificationRefs(el, i)
+            }
+          "
+        />
       </TransitionGroup>
     </div>
     <Teleport to="body">
@@ -48,6 +57,7 @@
 <script setup lang="ts">
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrChangeBankSignatories from "../Resolutions/DcrChangeBankSignatories.vue"
+  import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import { ChangeBankSignatoriesController } from "~/scripts/components/service-wrappers/ChangeBankSignatoriesController"
 
   const props = defineProps({
