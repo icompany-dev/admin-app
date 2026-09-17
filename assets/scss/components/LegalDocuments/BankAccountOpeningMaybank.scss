@@ -23,8 +23,6 @@
 
         &.director-details {
           td {
-            font-weight: 600;
-
             &:first-child {
               width: 20px;
             }
@@ -110,6 +108,15 @@
             }
           }
         }
+      }
+
+      .inline-checkbox {
+        vertical-align: middle;
+        border: 1px solid rgb(150, 150, 150);
+        width: 8px;
+        height: 8px;
+        display: inline-block;
+        border-radius: 2px;
       }
 
       .text-center {

@@ -366,4 +366,14 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
 
     return `Directors' Resolutions in writing passed on ${resolutionDate} in accordance with the ${inAccordance}`
   }
+
+  get documentDate(): string {
+    if (!this.application.value) {
+      return "DATE TO BE DETERMINED"
+    }
+
+    return this.application.value?.resolutionDate
+      ? this.time.formatDateOnlyFull(this.application.value?.resolutionDate)
+      : "DATE TO BE DETERMINED"
+  }
 }

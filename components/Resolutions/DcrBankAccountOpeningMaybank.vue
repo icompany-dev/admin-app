@@ -68,6 +68,17 @@
             />
           </div>
         </div>
+
+        <div
+          class="resolution-date"
+          v-if="index + 1 === controller.totalPages()"
+        >
+          Date:
+          <br />
+          <span class="date">
+            {{ controller.documentDate }}
+          </span>
+        </div>
       </template>
     </Paper>
     <Paper
@@ -108,6 +119,17 @@
               @signed="emit('signed', $event)"
             />
           </div>
+        </div>
+
+        <div
+          class="resolution-date"
+          v-if="page === controller.totalPages()"
+        >
+          Date:
+          <br />
+          <span class="date">
+            {{ controller.documentDate }}
+          </span>
         </div>
       </template>
     </Paper>

@@ -30,6 +30,8 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
   documentContent = ref<string>("")
   originalDocumentContent = ref<string>("")
 
+  documentDate: Ref<string> = ref<string>("")
+
   signatureStartOnPage = ref<number>(1)
   maxSignatureOnFirstPage = ref<number>(4)
   maxSignatureOnOtherPages = ref<number>(6)
@@ -340,5 +342,9 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
     }, 1000)
 
     return pages
+  }
+
+  get formattedDocumentDate(): string {
+    return this.time.formatDateOnlyFull(this.documentDate.value)
   }
 }

@@ -46,7 +46,12 @@
             Company No. {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
           </div>
           <div class="company-incorporated-in">(Incorporated in Malaysia)</div>
-          <div>(the "Company")</div>
+          <br />
+          <div>
+            ( also referred to as the
+            <b>“Company”</b>
+            )
+          </div>
         </div>
         <div class="document-content">
           <div

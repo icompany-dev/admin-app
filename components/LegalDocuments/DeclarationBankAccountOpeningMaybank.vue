@@ -70,6 +70,19 @@
               />
             </div>
           </div>
+
+          <div class="resolution-date">
+            <b>Date:</b>
+            <br />
+            <input
+              class="form-control in-resolution no-print"
+              type="date"
+              v-model="controller.documentDate.value"
+            />
+            <span class="date print-only">
+              {{ controller.formattedDocumentDate }}
+            </span>
+          </div>
         </div>
       </template>
     </Paper>
