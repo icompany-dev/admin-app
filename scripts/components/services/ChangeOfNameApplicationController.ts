@@ -57,7 +57,8 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
       useCompanyAmendmentNameStore(),
       CompanyAmendmentName,
       CompanyConstants.TARGET_AMENDMENT_NAME,
-      emitEvents
+      emitEvents,
+      props.applicationId
     )
     this.target.value = CompanyConstants.TARGET_AMENDMENT_NAME
     this.minimumMajorityRequired.value = 0.5 // special resolution
@@ -745,14 +746,14 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
   }
 
-  get uploadDocumentProps(): PropsUploadDocument {
-    let props = new PropsUploadDocument(this.companyId.value)
+  // get uploadDocumentProps(): PropsUploadDocument {
+  //   let props = new PropsUploadDocument(this.companyId.value)
 
-    props.canUploadImage = false
-    props.canUploadPdf = true
+  //   props.canUploadImage = false
+  //   props.canUploadPdf = true
 
-    return props
-  }
+  //   return props
+  // }
 
   get certifcateOfNameChangeLabel(): string {
     return this.language.isMalay() ? "Sijil Pertukaran Nama" : "Certificate of Name Change"
