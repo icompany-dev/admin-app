@@ -44,6 +44,7 @@
             :registration-number-new="props.registrationNumberNew"
             :registration-number-old="props.registrationNumberOld"
             :payment-order-id="props.paymentOrderId"
+            :company-bank-id="props.companyBankId"
             @back="controller.onMinimizeDocument($event)"
             @make-payment="controller.onMakePayment()"
             @applicationUpdated="controller.onApplicationUpdated($event)"

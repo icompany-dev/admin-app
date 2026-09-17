@@ -1,10 +1,13 @@
 <template>
-  <div id="dcr-change-bank-signatories">
+  <div
+    id="dcr-change-bank-signatories"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
     >
-      <template
+      <!-- <template
         #paperMargins1
         v-if="controller.isDocumentEditable()"
       >
@@ -16,7 +19,7 @@
             Complete This
           </div>
         </Transition>
-      </template>
+      </template> -->
       <template #page1>
         <p>
           <b>RESOLVED:</b>
@@ -174,6 +177,8 @@
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "dataUpdated"])
 
+  const documentRef = ref(null)
+
   const controller = new DcrChangeBankSignatoriesController(props, emit)
 
   watch(
@@ -213,11 +218,20 @@
     { deep: true }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     isLoading: controller.isLoading.value,
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

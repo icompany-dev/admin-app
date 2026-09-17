@@ -41,10 +41,12 @@
         </div>
       </Transition>
     </Teleport>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrChangeBankSignatories from "../Resolutions/DcrChangeBankSignatories.vue"
   import { ChangeBankSignatoriesController } from "~/scripts/components/service-wrappers/ChangeBankSignatoriesController"
 
