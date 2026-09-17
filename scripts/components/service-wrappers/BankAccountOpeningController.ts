@@ -261,7 +261,7 @@ export class BankAccountOpeningController
         return
       }
 
-      await Promise.allSettled(promises)
+      await Promise.all(promises)
     } catch (e) {
       console.error(e)
     } finally {
