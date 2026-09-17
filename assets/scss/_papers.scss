@@ -454,7 +454,22 @@
 
   .watermark-text {
     font-size: 18rem;
+    line-height: 18rem !important;
+    text-align: center !important;
     font-weight: 900;
+    text-wrap: pretty;
+  }
+
+  .document-text {
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    font-size: 4rem;
+    line-height: 2.2rem;
+    transform: rotate(-45deg);
+    text-align: center;
+    text-wrap: wrap;
+    width: fit-content;
+    padding-bottom: 6rem;
   }
 
   &.preview {
