@@ -170,6 +170,7 @@ import { ShareholderInvitationRepository } from "~/scripts/repositories/Sharehol
 import { ShareholderRepository } from "~/scripts/repositories/ShareholderRepository"
 import { SignatureRepository } from "~/scripts/repositories/SignatureRepository"
 import { StateRepository } from "~/scripts/repositories/StateRepository"
+import { TagRepository } from "~/scripts/repositories/TagRepository"
 import { ToDoRepository } from "~/scripts/repositories/ToDoRepository"
 import { TransactionRepository } from "~/scripts/repositories/TransactionRepository"
 import { UserAccessRoleRepository } from "~/scripts/repositories/UserAccessRoleRepository"
@@ -353,6 +354,7 @@ interface Repositories {
   shareholders: ShareholderRepository
   signatures: SignatureRepository
   states: StateRepository
+  tags: TagRepository
   toDos: ToDoRepository
   transactions: TransactionRepository
   userAccessRoles: UserAccessRoleRepository
@@ -496,12 +498,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/annual-return",
       config.public.apiBaseUrl,
       getAuthToken),
-    companyAssetPurchases: new CompanyAssetPurchaseRepository(
-      "company/asset-purchases",
+    companyAssetPurchases: new CompanyAssetPurchaseRepository("company/asset-purchases",
       "company/asset-purchase",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyAuditCirculations: new CompanyAuditCirculationRepository("company/audit/circulations",
       "company/audit/circulation",
       config.public.apiBaseUrl,
@@ -774,12 +774,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/financial-statements/setup",
       config.public.apiBaseUrl,
       getAuthToken),
-    companyFundSourceDeclarations: new CompanyFundSourceDeclarationRepository(
-      "company/funds-source-declarations",
+    companyFundSourceDeclarations: new CompanyFundSourceDeclarationRepository("company/funds-source-declarations",
       "company/funds-source-declaration",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyLoanApplications: new CompanyLoanApplicationRepository("company/loans",
       "company/loan",
       config.public.apiBaseUrl,
@@ -1066,6 +1064,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "state",
       config.public.apiBaseUrl,
       getAuthToken),
+    tags: new TagRepository(
+      "tags",
+      "tag",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     toDos: new ToDoRepository("services",
       "service",
       config.public.apiBaseUrl,
@@ -1278,6 +1282,7 @@ declare module "#app" {
       shareholders: import("~/scripts/repositories/ShareholderRepository").ShareholderRepository
       signatures: import("~/scripts/repositories/SignatureRepository").SignatureRepository
       states: import("~/scripts/repositories/StateRepository").StateRepository
+      tags: import("~/scripts/repositories/TagRepository").TagRepository
       toDos: import("~/scripts/repositories/ToDoRepository").ToDoRepository
       transactions: import("~/scripts/repositories/TransactionRepository").TransactionRepository
       userAccessRoles: import("~/scripts/repositories/UserAccessRoleRepository").UserAccessRoleRepository
@@ -1465,6 +1470,7 @@ declare module "pinia" {
       shareholders: import("~/scripts/repositories/ShareholderRepository").ShareholderRepository
       signatures: import("~/scripts/repositories/SignatureRepository").SignatureRepository
       states: import("~/scripts/repositories/StateRepository").StateRepository
+      tags: import("~/scripts/repositories/TagRepository").TagRepository
       toDos: import("~/scripts/repositories/ToDoRepository").ToDoRepository
       transactions: import("~/scripts/repositories/TransactionRepository").TransactionRepository
       userAccessRoles: import("~/scripts/repositories/UserAccessRoleRepository").UserAccessRoleRepository
