@@ -1,0 +1,81 @@
+#dcr-change-bank-signatories {
+  .change-signatory-tag {
+    right: -20mm;
+    top: 480px;
+  }
+}
+
+.signatories-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    tr {
+      th {
+        text-align: center;
+        padding: 5px;
+        border: 1px solid var(--bs-black);
+
+        &.remove-column {
+          border: none;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        padding: 5px;
+        text-align: center;
+        border: 1px solid var(--bs-black);
+
+        .action-link {
+          font-size: 12px;
+        }
+
+        .form-control {
+          width: calc(100% - 30px);
+          text-align: center;
+          text-transform: uppercase;
+          font-weight: normal;
+        }
+
+        &:first-child {
+          width: 20px;
+          text-align: center;
+        }
+
+        &:nth-child(2) {
+          width: 45%;
+        }
+
+        &:last-child {
+          width: 20%;
+        }
+
+        &.remove-column {
+          border: none;
+        }
+
+        .index-remove-column {
+          position: relative;
+          text-align: center;
+
+          .action-link {
+            position: absolute;
+            left: -30px;
+          }
+        }
+      }
+
+      &.add-more-row {
+        td {
+          border: none;
+          text-align: right;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}

@@ -28,6 +28,7 @@
 
 <script lang="ts" setup>
   import ChangeBankSignatoryApplication from "../Services/ChangeBankSignatoryApplication.vue"
+  import ChangeBankSignatoriesService from "../CompanyServices/ChangeBankSignatoriesService.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
   import { ChangeBankSignatoryController } from "~/scripts/components/secretarial-services/ChangeBankSignatoryController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
@@ -42,7 +43,7 @@
   const controller = new ChangeBankSignatoryController(props, emit)
 
   const componentMap: Record<string, any> = {
-    // [DocumentTargets.TARGET_OPEN_BANK_ACCOUNT_RESOLUTIONS]: BankAccountOpeningService,
+    [DocumentTargets.TARGET_CHANGE_BANK_SIGNATORY_RESOLUTIONS]: ChangeBankSignatoriesService,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 

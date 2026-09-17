@@ -18,6 +18,7 @@ export interface IPropsResolutionDocument<T> {
   companyBankId: string | null
 
   isShowTag: boolean
+  isReadOnly: boolean
 }
 
 export class PropsResolutionDocument<T> {
@@ -34,6 +35,7 @@ export class PropsResolutionDocument<T> {
   yearToLodge: string | null
   type: string | null
   isShowTag: boolean = true
+  isReadOnly: boolean = false
   companyBankId: string | null = null
 
   constructor(

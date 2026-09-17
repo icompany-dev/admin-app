@@ -20,6 +20,7 @@ export interface IPropsCompanyServiceWrapper {
   viewType: string
   hasOngoingApplication: boolean
   hasPastApplications: boolean
+  isSubmittingDocument: boolean
   paperOrientation: PaperOrientation
   serviceStepProps: IPropsServiceStep
   deleteApplicationProps: IPropsDeleteApplication
@@ -39,6 +40,7 @@ export class PropsCompanyServiceWrapper implements IPropsCompanyServiceWrapper {
   viewType: string = ViewMode.New
   hasOngoingApplication: boolean = false
   hasPastApplications: boolean = false
+  isSubmittingDocument: boolean = false
   paperOrientation: PaperOrientation = PaperOrientation.Portrait
   serviceStepProps: PropsServiceStep
   deleteApplicationProps: PropsDeleteApplication
