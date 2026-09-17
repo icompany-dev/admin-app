@@ -364,7 +364,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
       ? `Company's Constitution`
       : `Paragraph 15 of the Third Schedule of the Companies Act 2016.`
 
-    return `Directors' Resolutions in writing passed on ${resolutionDate} in accordance with the ${inAccordance}`
+    return `(Directors' Resolutions in writing passed on ${resolutionDate} in accordance with ${inAccordance} – cont’d)`
   }
 
   get documentDate(): string {

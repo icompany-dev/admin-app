@@ -162,8 +162,10 @@
     ol {
       margin: 0;
       padding-left: 15px;
+      list-style-type: decimal;
 
-      li {
+      > li {
+        list-style-type: decimal;
         line-height: 18px;
         padding-left: 15px;
         padding-bottom: 15px;
@@ -176,9 +178,10 @@
         padding-left: 25px;
         margin-top: 15px;
 
-        li {
+        > li {
           position: relative;
           counter-increment: list-counter;
+          list-style: none;
           margin: 0px;
           padding: 0px;
 

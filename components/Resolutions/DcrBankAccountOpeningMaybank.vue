@@ -42,7 +42,7 @@
             v-if="index === 0"
             v-html="controller.resolutionTitleRef.value"
           />
-          <span v-if="index > 0">({{ controller.otherPageTitle }} – cont’d)</span>
+          <span v-if="index > 0">{{ controller.otherPageTitle }}</span>
         </div>
         <div class="resolution-content">
           <div v-html="page" />
@@ -73,7 +73,7 @@
           class="resolution-date"
           v-if="index + 1 === controller.totalPages()"
         >
-          Date:
+          Dated:
           <br />
           <span class="date">
             {{ controller.documentDate }}
@@ -125,7 +125,7 @@
           class="resolution-date"
           v-if="page === controller.totalPages()"
         >
-          Date:
+          Dated:
           <br />
           <span class="date">
             {{ controller.documentDate }}

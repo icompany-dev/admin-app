@@ -72,7 +72,7 @@
           </div>
 
           <div class="resolution-date">
-            <b>Date:</b>
+            <b>Dated:</b>
             <br />
             <input
               class="form-control in-resolution no-print"
