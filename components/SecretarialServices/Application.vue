@@ -18,10 +18,10 @@
           {{ controller.companyName }}
         </div>
         <div class="company-registration-number">
-          {{ controller.company.value.registrationNumberOld }}
-          <CopyValue :value="controller.company.value.registrationNumberOld" />
-          ({{ controller.company.value.registrationNumberNew }})
+          {{ controller.company.value.registrationNumberNew }}
           <CopyValue :value="controller.company.value.registrationNumberNew" />
+          ({{ controller.company.value.registrationNumberOld }})
+          <CopyValue :value="controller.company.value.registrationNumberOld" />
         </div>
       </div>
       <component
