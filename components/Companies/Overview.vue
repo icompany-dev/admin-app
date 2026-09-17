@@ -138,6 +138,12 @@
               </div>
             </li>
           </ol>
+          <button
+            class="btn btn-submit"
+            @click="controller.onGenerateBOAnnexureTxtClicked()"
+          >
+            Generate BO Annexure
+          </button>
           <div
             class="chart-wrapper"
             v-if="controller.isShowShareDistribution.value"
