@@ -18,7 +18,10 @@
           {{ controller.companyName }}
         </div>
         <div class="company-registration-number">
-          {{ controller.registrationNumber }}
+          {{ controller.company.value.registrationNumberOld }}
+          <CopyValue :value="controller.company.value.registrationNumberOld" />
+          ({{ controller.company.value.registrationNumberNew }})
+          <CopyValue :value="controller.company.value.registrationNumberNew" />
         </div>
       </div>
       <component
@@ -37,6 +40,7 @@
   import BankAccountOpening from "./BankAccountOpening.vue"
   import ChangeBankSignatory from "./ChangeBankSignatory.vue"
   import ChangeOfName from "./ChangeOfName.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
