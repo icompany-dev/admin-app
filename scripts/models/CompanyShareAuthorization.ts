@@ -8,6 +8,9 @@ export class CompanyShareAuthorization
   implements IModelApplication<CompanyShareAuthorization, ReturnType<typeof useCompanyShareAuthorizationStore>>
 {
   maxPercentageAllowed: number | null = 100
+  maxConsiderationAmountAllowed: number | null = 100
+  maxUnitsOfSharesAllowed: number | null = 100
+  pricePerShareAllowed: number | null = 100
   isPrnWaivable: boolean = false
   purposeOfProposedAllotment: string[] = []
   canSetNumberClassShares: boolean = false
@@ -39,6 +42,9 @@ export class CompanyShareAuthorization
   convertFromResponseDetails(data: any): void {
     super.convertFromResponse(data)
     this.maxPercentageAllowed = data.max_percentage_allowed ?? null
+    this.maxConsiderationAmountAllowed = data.max_consideration_amount_allowed ?? 1
+    this.maxUnitsOfSharesAllowed = data.max_units_of_shares_allowed ?? 1
+    this.pricePerShareAllowed = data.price_per_share_allowed ?? 1
     this.isPrnWaivable = data.is_prn_waivable ?? false
     this.purposeOfProposedAllotment = data.purpose_of_proposed_allotment
       ? data.purpose_of_proposed_allotment.split(",")
@@ -58,6 +64,9 @@ export class CompanyShareAuthorization
   cloneDetails(data: CompanyShareAuthorization): void {
     super.clone(data)
     this.maxPercentageAllowed = data.maxPercentageAllowed
+    this.maxConsiderationAmountAllowed = data.maxConsiderationAmountAllowed
+    this.maxUnitsOfSharesAllowed = data.maxUnitsOfSharesAllowed
+    this.pricePerShareAllowed = data.pricePerShareAllowed
     this.isPrnWaivable = data.isPrnWaivable
     this.purposeOfProposedAllotment = data.purposeOfProposedAllotment
     // this.isShareholdingChangeable = data.isShareholdingChangeable
@@ -76,6 +85,9 @@ export class CompanyShareAuthorization
     return {
       company_id: this.companyId,
       max_percentage_allowed: this.maxPercentageAllowed,
+      max_consideration_amount_allowed: this.maxConsiderationAmountAllowed,
+      max_units_of_shares_allowed: this.maxUnitsOfSharesAllowed,
+      price_per_share_allowed: this.pricePerShareAllowed,
       is_prn_waivable: this.isPrnWaivable,
       purpose_of_proposed_allotment: this.purposeOfProposedAllotment.join(","),
       // is_shareholding_changeable: this.isShareholdingChangeable,
