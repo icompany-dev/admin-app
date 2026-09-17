@@ -13,6 +13,7 @@ import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 
 export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalDocumentController {
   companyBankAccountOpeningRepository = useCompanyBankAccountOpeningStore()
@@ -201,6 +202,7 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
     )
 
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace("&lt;br&gt;", "<br>")
+    this.documentTemplate.value.content = this.processMsicCode(this.documentTemplate.value.content)
 
     let templateProcessor = new TemplateProcessor(this.documentTemplate.value)
 
@@ -215,6 +217,32 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
     template = this.processCustomPlaceholders(template)
 
     return template
+  }
+
+  processMsicCode(content: string): string {
+    const businessDescriptionRegex = /%company\.businessDescription%/g
+
+    return content.replace(businessDescriptionRegex, () => {
+      const company = new Company(this.application.value?.company)
+      const lastIndex = company.msicCodeAssigns.length - 1
+      const secondLastIndex = lastIndex - 1
+
+      const msicCodeHtml = company.msicCodeAssigns
+        .map((val: MsicCodeAssign, index: number) => {
+          let suffix = ";"
+
+          if (index === lastIndex) {
+            suffix = "."
+          } else if (index === secondLastIndex) {
+            suffix = "; and"
+          }
+
+          return `<li>${val.msicCode.descriptionEn}${suffix}</li>`
+        })
+        .join("")
+
+      return `<ol class="msic-list">${msicCodeHtml}</ol>`
+    })
   }
 
   processCustomPlaceholders(content: string): string {

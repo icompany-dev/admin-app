@@ -162,6 +162,26 @@
         padding-bottom: 15px;
         text-align: justify;
       }
+
+      &.msic-list {
+        list-style: none;
+        counter-reset: list-counter;
+        padding-left: 25px;
+        margin-top: 15px;
+
+        li {
+          position: relative;
+          counter-increment: list-counter;
+          margin: 0px;
+          padding: 0px;
+
+          &::before {
+            content: "(" counter(list-counter, lower-alpha) ")";
+            position: absolute;
+            left: -25px;
+          }
+        }
+      }
     }
 
     .declaration-signature-section {
