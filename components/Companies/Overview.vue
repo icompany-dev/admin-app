@@ -109,7 +109,9 @@
           </ol>
         </div>
         <div class="split-section-item">
-          <div class="overview-title">{{ controller.shareholdersLabel }}</div>
+          <div class="overview-title">
+            {{ controller.shareholdersLabel }}
+          </div>
           <ol v-if="!controller.isShowShareDistribution.value">
             <li
               v-for="(shareholder, i) in controller.shareholdersDetails"
@@ -139,7 +141,7 @@
             </li>
           </ol>
           <button
-            class="btn btn-submit"
+            class="btn btn-pill btn-submit"
             @click="controller.onGenerateBOAnnexureTxtClicked()"
           >
             Generate BO Annexure
