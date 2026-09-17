@@ -13,7 +13,7 @@ export class ChangeBankSignatoriesController extends SecretarialServicesControll
 
   onApplicationClicked(data: any): void {
     let application = new CompanyChangeBankSignatory(data)
-    this.router.push({ path: `/services/change-signtories/${application.id}` })
+    this.router.push({ path: `/services/change-signatories/${application.id}` })
   }
 
   companyName(data: any): string {

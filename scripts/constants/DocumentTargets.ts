@@ -36,6 +36,9 @@ export class DocumentTargets {
   static TARGET_BO_DECLARATION: string = "company_bo_declaration"
   static TARGET_BO_DECLARATION_RESOLUTIONS: string = "company_bo_declaration_resolutions"
 
+  static TARGET_CHANGE_BANK_SIGNATORY: string = "company_change_bank_signatory"
+  static TARGET_CHANGE_BANK_SIGNATORY_RESOLUTIONS: string = "company_change_bank_signatory_resolutions"
+
   static TARGET_CLOSE_BANK_ACCOUNT: string = "company_bank_account_closure"
   static TARGET_CLOSE_BANK_ACCOUNT_RESOLUTIONS: string = "company_bank_account_closure_resolutions"
 
