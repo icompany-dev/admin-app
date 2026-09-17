@@ -14,11 +14,20 @@
       th {
         text-align: center;
         padding: 5px;
-        border: 1px solid var(--bs-black);
+        border-bottom: 1px solid var(--bs-black);
+        border-right: 1px solid var(--bs-black);
+
+        &:first-child {
+          border-left: 1px solid var(--bs-black);
+        }
 
         &.remove-column {
           border: none;
         }
+      }
+
+      &:first-child {
+        border-top: 1px solid var(--bs-black);
       }
     }
   }
@@ -28,7 +37,12 @@
       td {
         padding: 5px;
         text-align: center;
-        border: 1px solid var(--bs-black);
+        border-right: 1px solid var(--bs-black);
+        border-bottom: 1px solid var(--bs-black);
+
+        &:first-child {
+          border-left: 1px solid var(--bs-black);
+        }
 
         .action-link {
           font-size: 12px;
