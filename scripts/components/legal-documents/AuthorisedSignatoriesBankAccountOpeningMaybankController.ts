@@ -279,27 +279,40 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
     `
   }
 
+  getAuthorisedSignatoryTitle(): string {
+    if (this.application.value.signatories.length <= 0) {
+      return this.directors.value.length <= 1
+        ? `AUTHORISED SIGNATORY FOR ACCOUNT`
+        : "AUTHORISED SIGNATORIES FOR ACCOUNT"
+    } else {
+      return this.application.value.signatories.length <= 1
+        ? `AUTHORISED SIGNATORY FOR ACCOUNT`
+        : "AUTHORISED SIGNATORIES FOR ACCOUNT"
+    }
+  }
+
   getSignatoryList(): string {
     let signatoryRows = []
     if (!this.isDocumentEditable() || this.isInPreviewMode.value) {
       if (this.application.value.signatories.length <= 0) {
         signatoryRows = this.directors.value.map((d: Director, index: number) => {
-          let idType = d.identificationType === "passport" ? "Passport" : "MyKad"
+          let idType = d.identificationType === "passport" ? "Passport" : "NRIC"
           return `
             <tr>
               <td>${index + 1}</td>
               <td>${d.name}</td>
-              <td>(${idType}) No: ${d.identification}</td>
+              <td>${idType} No: ${d.identification}</td>
             </tr>
           `
         })
       } else {
         signatoryRows = this.application.value.signatories.map((d: CompanyBankSignatory, index: number) => {
+          let type = d.type === "passport" ? "Passport" : "NRIC"
           return `
             <tr>
               <td>${index + 1}</td>
               <td>${d.name}</td>
-              <td>(${d.type}) No: ${d.identification}</td>
+              <td>${type} No: ${d.identification}</td>
             </tr>
           `
         })
@@ -327,7 +340,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
           <tr>
             <td>${inputField}</td>
             <td>${director.name}</td>
-            <td>(${idType}) No.: ${director.identification}</td>
+            <td>${idType} No: ${director.identification}</td>
           </tr>
         `
       })
@@ -370,6 +383,13 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
       actOrConstitution
     )
 
+    //replace title based on signatory count
+    let authorisedSignatoryTitle = this.getAuthorisedSignatoryTitle()
+    this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+      "AUTHORISED SIGNATORIES FOR ACCOUNT",
+      authorisedSignatoryTitle
+    )
+
     let dayjs = useDayjs()
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
       "$date.&lt;name=documentDate&gt;$",
@@ -393,16 +413,6 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
           stringReplacement
         )
       })
-
-      let accountTypes = ["currentAccount", "masterForeignCurrency", "fixedDeposit"]
-      accountTypes.forEach((value: string) => {
-        let stringToReplace = `$inlineCheckbox.&lt;name=${value}&gt;$`
-        let stringReplacement = `□`
-        this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
-          stringToReplace,
-          stringReplacement
-        )
-      })
     } else {
       let signatoryType = this.application.value?.signatoryType ?? "anyone"
       let signatoryTypeString = values
@@ -415,6 +425,17 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
         `<strong>${signatoryType.toUpperCase()}</strong>`
       )
     }
+
+    // checkbox list
+    let accountTypes = ["currentAccount", "masterForeignCurrency", "fixedDeposit"]
+    accountTypes.forEach((value: string) => {
+      let stringToReplace = `$inlineCheckbox.&lt;name=${value}&gt;$`
+      let stringReplacement = `<div class="inline-checkbox"></div>`
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        stringToReplace,
+        stringReplacement
+      )
+    })
 
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
       "$text.&lt;name=bankBranchId&gt;$",

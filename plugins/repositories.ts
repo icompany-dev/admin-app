@@ -40,6 +40,7 @@ import { CompanyBankAccountOpeningRepository } from "~/scripts/repositories/Comp
 import { CompanyBankRepository } from "~/scripts/repositories/CompanyBankRepository"
 import { CompanyBODeclarationRepository } from "~/scripts/repositories/CompanyBODeclarationRepository"
 import { CompanyBranchRepository } from "~/scripts/repositories/CompanyBranchRepository"
+import { CompanyChangeBankSignatoryRepository } from "~/scripts/repositories/CompanyChangeBankSignatoryRepository"
 import { CompanyCommonSealRegisterRepository } from "~/scripts/repositories/CompanyCommonSealRegisterRepository"
 import { CompanyCommonSealReplacementRepository } from "~/scripts/repositories/CompanyCommonSealReplacementRepository"
 import { CompanyCommonSealRepository } from "~/scripts/repositories/CompanyCommonSealRepository"
@@ -224,6 +225,7 @@ interface Repositories {
   companyBanks: CompanyBankRepository
   companyBODeclarations: CompanyBODeclarationRepository
   companyBranches: CompanyBranchRepository
+  companyChangeBankSignatories: CompanyChangeBankSignatoryRepository
   companyCommonSealRegisters: CompanyCommonSealRegisterRepository
   companyCommonSealReplacements: CompanyCommonSealReplacementRepository
   companyCommonSeals: CompanyCommonSealRepository
@@ -542,6 +544,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/branch",
       config.public.apiBaseUrl,
       getAuthToken),
+    companyChangeBankSignatories: new CompanyChangeBankSignatoryRepository(
+      "company/bank/account/change-signatories",
+      "company/bank/account/change-signatory",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     companyCommonSealRegisters: new CompanyCommonSealRegisterRepository("company/common-seals/registers",
       "company/common-seals/register",
       config.public.apiBaseUrl,
@@ -1152,6 +1160,7 @@ declare module "#app" {
       companyBanks: import("~/scripts/repositories/CompanyBankRepository").CompanyBankRepository
       companyBODeclarations: import("~/scripts/repositories/CompanyBODeclarationRepository").CompanyBODeclarationRepository
       companyBranches: import("~/scripts/repositories/CompanyBranchRepository").CompanyBranchRepository
+      companyChangeBankSignatories: import("~/scripts/repositories/CompanyChangeBankSignatoryRepository").CompanyChangeBankSignatoryRepository
       companyCommonSealRegisters: import("~/scripts/repositories/CompanyCommonSealRegisterRepository").CompanyCommonSealRegisterRepository
       companyCommonSealReplacements: import("~/scripts/repositories/CompanyCommonSealReplacementRepository").CompanyCommonSealReplacementRepository
       companyCommonSeals: import("~/scripts/repositories/CompanyCommonSealRepository").CompanyCommonSealRepository
@@ -1340,6 +1349,7 @@ declare module "pinia" {
       companyBanks: import("~/scripts/repositories/CompanyBankRepository").CompanyBankRepository
       companyBODeclarations: import("~/scripts/repositories/CompanyBODeclarationRepository").CompanyBODeclarationRepository
       companyBranches: import("~/scripts/repositories/CompanyBranchRepository").CompanyBranchRepository
+      companyChangeBankSignatories: import("~/scripts/repositories/CompanyChangeBankSignatoryRepository").CompanyChangeBankSignatoryRepository
       companyCommonSealRegisters: import("~/scripts/repositories/CompanyCommonSealRegisterRepository").CompanyCommonSealRegisterRepository
       companyCommonSealReplacements: import("~/scripts/repositories/CompanyCommonSealReplacementRepository").CompanyCommonSealReplacementRepository
       companyCommonSeals: import("~/scripts/repositories/CompanyCommonSealRepository").CompanyCommonSealRepository

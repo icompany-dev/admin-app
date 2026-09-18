@@ -79,6 +79,7 @@ export class MaybankDocumentsController extends BankDocumentsController {
 
     if (this.declarationRef) {
       let docPages = await this.declarationRef.getPdfPages()
+      console.log(docPages, "check me")
       pages = pages.concat(docPages)
     }
 

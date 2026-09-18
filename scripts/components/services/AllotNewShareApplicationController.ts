@@ -138,12 +138,12 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   async onCompleteClicked(): Promise<void> {
-    this.isCompleting.value = true
-    if (this.uploadDocumentRef) {
-      this.uploadDocumentRef.show()
+    // this.isCompleting.value = true
+    // if (this.uploadDocumentRef) {
+    //   this.uploadDocumentRef.show()
 
-      return
-    }
+    //   return
+    // }
 
     await this.proceedCompleteService()
   }

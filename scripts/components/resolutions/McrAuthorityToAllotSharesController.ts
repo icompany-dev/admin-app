@@ -162,15 +162,11 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
       let andOr = index === this.application.value.purposeOfProposedAllotment.length - 2 ? " and/or" : ""
 
       return `
-            <li>${this.getPurposeOfAllotmentValue(s as PurposeOfAllotment)}${semiColon}${andOr}</li>
+            ${this.getPurposeOfAllotmentValue(s as PurposeOfAllotment)}${semiColon}${andOr}
         `
     })
 
-    return `
-      <ul>
-        ${listItems.join("")}
-      </ul>
-    `
+    return listItems.join(" ")
   }
 
   isPurposeOfAllotmentSelected(purposeOfAllotment: PurposeOfAllotment): boolean {
@@ -232,26 +228,24 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
 
     let items = []
     if (this.application.value.canSetNumberClassShares) {
-      items.push("<li>determine the number and class of shares to be allotted</li>")
+      items.push("determine the number and class of shares to be allotted")
     }
 
     if (this.application.value.canSetIssuePrice) {
-      items.push("<li>determine the issue price and basis of valuation</li>")
+      items.push("determine the issue price and basis of valuation")
     }
 
     if (this.application.value.canAcceptRejectSubscription) {
-      items.push("<li>accept or reject any subscription application</li>")
+      items.push("accept or reject any subscription application")
     }
 
     return `
-      <ul>
-        ${items.join("")}
-        <li>execute and deliver all agreements, resolutions, notices, forms, and documents;</li>
-        <li>update the Register of Members;</li>
-        <li>issue share certificates if deem required;</li>
-        <li>lodge the relevant returns and documents with the Companies Commission of Malaysia; and</li>
-        <li>do all acts, matters, and things necessary or expedient to give effect to this Resolution.</li>
-      </ul>
+        ${items.join("; ")}
+        execute and deliver all agreements, resolutions, notices, forms, and documents; 
+        update the Register of Members; 
+        issue share certificates if deem required; 
+        lodge the relevant returns and documents with the Companies Commission of Malaysia; and 
+        do all acts, matters, and things necessary or expedient to give effect to this Resolution.
     `
   }
 
@@ -331,17 +325,40 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
       this.getInstructionsForTickbox()
     )
 
-    const purposeOfAllotmentRegex = /\[purpose-checkbox-options\]([\s\S]*?)\[\/purpose-checkbox-options\]/
-    this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
-      purposeOfAllotmentRegex,
-      this.getPurposeOfProposedAllotment()
-    )
+    if (this.isDocumentEditable()) {
+      const purposeOfAllotmentRegex = /\[purpose-checkbox-options\]([\s\S]*?)\[\/purpose-checkbox-options\]/
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        purposeOfAllotmentRegex,
+        this.getPurposeOfProposedAllotment()
+      )
+    } else {
+      const purposeOfAllotmentSearchString =
+        "the proposed allotment of shares is intended for purposes including but not limited to:"
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        purposeOfAllotmentSearchString,
+        `the proposed allotment of shares is intended for purposes including but not limited to ${this.getPurposeOfProposedAllotment()}`
+      )
 
-    const directorsPowerRegex = /\[power-checkbox-option\]([\s\S]*?)\[\/power-checkbox-option\]/
-    this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
-      directorsPowerRegex,
-      this.getDirectorsPowers()
-    )
+      const purposeOfAllotmentRegex = /\[purpose-checkbox-options\]([\s\S]*?)\[\/purpose-checkbox-options\]/
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(purposeOfAllotmentRegex, "")
+    }
+
+    if (this.isDocumentEditable()) {
+      const directorsPowerRegex = /\[power-checkbox-option\]([\s\S]*?)\[\/power-checkbox-option\]/
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        directorsPowerRegex,
+        this.getDirectorsPowers()
+      )
+    } else {
+      const directorsPowerSearchString = "the Directors be and are hereby authorised to:"
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
+        directorsPowerSearchString,
+        `the Directors be and are hereby authorised to ${this.getDirectorsPowers()}`
+      )
+
+      const directorsPowerRegex = /\[power-checkbox-option\]([\s\S]*?)\[\/power-checkbox-option\]/
+      this.documentTemplate.value.content = this.documentTemplate.value.content.replace(directorsPowerRegex, "")
+    }
 
     const effectiveDateSearchString = "$text.&lt;name=effectiveDateType&gt;$"
     this.documentTemplate.value.content = this.documentTemplate.value.content.replace(

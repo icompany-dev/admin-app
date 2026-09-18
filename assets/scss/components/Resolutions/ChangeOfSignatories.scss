@@ -1,0 +1,100 @@
+#dcr-change-bank-signatories {
+  .change-signatory-tag {
+    right: -20mm;
+    top: 480px;
+  }
+}
+
+.bank-details {
+  margin-bottom: 10px;
+}
+
+.signatories-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+
+  thead {
+    tr {
+      th {
+        text-align: center;
+        padding: 5px;
+        border-bottom: 1px solid var(--bs-black);
+        border-right: 1px solid var(--bs-black);
+
+        &:first-child {
+          border-left: 1px solid var(--bs-black);
+        }
+
+        &.remove-column {
+          border: none;
+        }
+      }
+
+      &:first-child {
+        border-top: 1px solid var(--bs-black);
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        padding: 5px;
+        text-align: center;
+        border-right: 1px solid var(--bs-black);
+        border-bottom: 1px solid var(--bs-black);
+
+        &:first-child {
+          border-left: 1px solid var(--bs-black);
+        }
+
+        .action-link {
+          font-size: 12px;
+        }
+
+        .form-control {
+          width: calc(100% - 30px);
+          text-align: center;
+          text-transform: uppercase;
+          font-weight: normal;
+        }
+
+        &:first-child {
+          width: 20px;
+          text-align: center;
+        }
+
+        &:nth-child(2) {
+          width: 45%;
+        }
+
+        &:last-child {
+          width: 20%;
+        }
+
+        &.remove-column {
+          border: none;
+        }
+
+        .index-remove-column {
+          position: relative;
+          text-align: center;
+
+          .action-link {
+            position: absolute;
+            left: -30px;
+          }
+        }
+      }
+
+      &.add-more-row {
+        td {
+          border: none;
+          text-align: right;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
