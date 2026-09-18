@@ -41,6 +41,7 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
   noticePrnExpiryRef: any | null = null
 
   noticeRef: any | null = null
+  allotRef: any | null = null
 
   wrapperRef: any | null = null
 
@@ -72,6 +73,10 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
       this.noticePrnExpiryRef.show()
       this.isPendingShowPrnExpiryNotice.value = false
     }
+  }
+
+  setAllotRef(allotRef: any): void {
+    this.allotRef = allotRef
   }
 
   async initializeData(): Promise<void> {
@@ -358,6 +363,7 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
     let dcrPages: HTMLElement[] = []
     let mcrPages: HTMLElement[] = []
     let prnPages: HTMLElement[] = []
+    let allotPages: HTMLElement[] = []
 
     if (this.dcrRef) {
       dcrPages = await this.dcrRef.getPdfPages()
@@ -374,6 +380,11 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
       pages = pages.concat(prnPages)
     }
 
+    if (this.allotRef) {
+      allotPages = await this.allotRef.getPdfPages()
+      pages = pages.concat(allotPages)
+    }
+
     if (pages.length <= 0) {
       return
     }
@@ -381,15 +392,24 @@ export class IssueAndAllotSharesServiceController extends CompanyServiceControll
     let dcrFilename = `Directors' Resolution - Propose Allotment of Shares.pdf`
     let mcrFilename = `Members' Resolution - Authority to Allot Shares.pdf`
     let prnFilename = `Section 85 - Preemptive Rights Notices.pdf`
+    let allotFilename = `Directors' Resolution - Allotment of Shares.pdf`
 
     let dcrBlob = await PdfPaperUtil.getPdfBlob(dcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
     let mcrBlob = await PdfPaperUtil.getPdfBlob(mcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
     let prnBlob = await PdfPaperUtil.getPdfBlob(prnPages, 20, prnFilename, PaperSize.A4, PaperOrientation.Portrait)
+    let allotBlob = await PdfPaperUtil.getPdfBlob(
+      allotPages,
+      20,
+      allotFilename,
+      PaperSize.A4,
+      PaperOrientation.Portrait
+    )
 
     let files = [
       new DownloadFileData(URL.createObjectURL(dcrBlob), dcrFilename),
       new DownloadFileData(URL.createObjectURL(mcrBlob), mcrFilename),
       new DownloadFileData(URL.createObjectURL(prnBlob), prnFilename),
+      new DownloadFileData(URL.createObjectURL(allotBlob), allotFilename),
     ]
 
     await FileZipper.zipAndDownload(files, `Resolutions and Documents for Allotment of Shares.zip`)

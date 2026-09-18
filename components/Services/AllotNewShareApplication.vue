@@ -33,6 +33,54 @@
                 class="details"
                 v-html="controller.section75Details"
               />
+              <span
+                class="action-link download"
+                v-if="!controller.isSection76Uploaded"
+                @click="controller.onUploadDocumentClicked()"
+              >
+                <i class="fa-regular fa-cloud-arrow-up"></i>
+                {{ controller.uploadSection76Label }}
+              </span>
+              <span
+                class="action-link download"
+                v-if="controller.isSection76Uploaded"
+                @click="controller.onDownloadSection76Clicked()"
+              >
+                <i class="fa-regular fa-cloud-arrow-down"></i>
+                {{ controller.downloadDocumentSection76Label }}
+              </span>
+              <br />
+              <b>{{ controller.allotTosLabel }}</b>
+              <table class="allotee-details">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(allotee, index) in controller.allotees">
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ controller.getShareholderName(allotee) }}</td>
+                    <td>{{ NumberUtil.thousandSeparator(allotee.sharesAllotted) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <br />
+              <b>{{ controller.proofOfPaymentLabel }}</b>
+              <br />
+              <span
+                class="action-link"
+                :class="{ download: controller.proofOfPaymentUrl !== '' }"
+                @click="controller.onDownloadProofOfPaymentClicked()"
+              >
+                <i
+                  class="fa-regular fa-cloud-arrow-down"
+                  v-if="controller.proofOfPaymentUrl !== ''"
+                ></i>
+                {{ controller.proofOfPayment }}
+              </span>
               <template v-if="controller.itemsToPrepare.length > 0">
                 <b>{{ controller.itemsToPrepareLabel }}</b>
                 <ol>
@@ -116,7 +164,22 @@
               </div>
             </div>
           </template>
-          <template #nodeOptions></template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onUploadDocumentClicked()"
+            >
+              {{ controller.uploadLabel }}
+            </button>
+            <span
+              class="action-link download"
+              v-if="controller.isRoaUploaded"
+              @click="controller.onDownloadRoaClicked()"
+            >
+              <i class="fa-regular fa-cloud-arrow-down"></i>
+              {{ controller.returnOfAllotmentLabel }}
+            </span>
+          </template>
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
@@ -135,7 +198,7 @@
     />
     <PopupUploadDocument
       v-bind="controller.uploadDocumentProps"
-      ref="uploadDocumenRef"
+      ref="uploadDocumentRef"
       @proceed="controller.onProceedPostUpload()"
     />
   </div>
@@ -150,13 +213,14 @@
   import { AllotNewShareApplicationController } from "~/scripts/components/services/AllotNewShareApplicationController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
+  import { NumberUtil } from "~/scripts/utils/Number"
 
   const props = defineProps<IPropsApplication>()
 
   const resolutionsRef = ref(null)
   const shipApplicationRef = ref(null)
   const serviceApplicationRef = ref(null)
-  const uploadDocumenRef = ref(null)
+  const uploadDocumentRef = ref(null)
 
   const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
 
@@ -194,7 +258,7 @@
   )
 
   watch(
-    uploadDocumenRef,
+    uploadDocumentRef,
     (newVal) => {
       controller.setUploadDocumentRef(newVal)
     },

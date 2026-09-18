@@ -44,6 +44,11 @@
             v-bind="controller.mcrResolutionDocumentProps"
             @doneLoading="controller.handleDisplayedPage()"
           />
+          <DcrAllotmentOfShares
+            ref="allotRef"
+            v-bind="controller.resolutionDocumentProps"
+            @doneLoading="controller.handleDisplayedPage()"
+          />
           <!-- <PreemptiveRightNotices
             ref="noticeRef"
             :company-id="controller.companyId"
@@ -67,6 +72,7 @@
 
 <script lang="ts" setup>
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
+  import DcrAllotmentOfShares from "../Resolutions/DcrAllotmentOfShares.vue"
   import DcrProposeAllotmentOfShares from "../Resolutions/DcrProposeAllotmentOfShares.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import McrAuthorityToAllotShares from "@/components/Resolutions/McrAuthorityToAllotShares.vue"
@@ -95,6 +101,7 @@
   const fileUploaderLinkRef = ref(null)
   const noticePrnExpiryRef = ref(null)
   const noticeRef = ref(null)
+  const allotRef = ref(null)
 
   const prepaymentRef = ref(null)
 
@@ -178,6 +185,14 @@
     noticeRef,
     (newVal) => {
       controller.setNoticeRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    allotRef,
+    (newVal) => {
+      controller.setAllotRef(newVal)
     },
     { immediate: true }
   )

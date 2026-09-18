@@ -32,6 +32,7 @@ export class AllotmentOfSharesController
   isLoading: Ref<boolean> = ref<boolean>(false)
 
   noticeRef: any | null = null
+  allotRef: any | null = null
 
   constructor(companyId: string, emitEvents: any | null, applicationId: string | null = null) {
     super(CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES, companyId, emitEvents)
@@ -61,6 +62,10 @@ export class AllotmentOfSharesController
 
   setNoticeRef(noticeRef: any): void {
     this.noticeRef = noticeRef
+  }
+
+  setAllotRef(allotRef: any): void {
+    this.allotRef = allotRef
   }
 
   onShowMcrFirstClicked(): void {
@@ -273,6 +278,19 @@ export class AllotmentOfSharesController
             noticePages,
             20,
             "Section 85 - Preemptive Rights Notices.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.allotRef) {
+        let allotPages = await this.allotRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            allotPages,
+            20,
+            "Directors' Resolution - Allotment of Shares.pdf",
             PaperSize.A4,
             PaperOrientation.Portrait
           )

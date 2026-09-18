@@ -237,6 +237,10 @@ export class UploadedDocumentChecker {
         return ""
       case DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS:
         return ""
+      case DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76:
+        return "section 76"
+      case DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA:
+        return "return of allotment"
       case DocumentTargets.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES:
         return ""
       case DocumentTargets.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES_RESOLUTIONS:

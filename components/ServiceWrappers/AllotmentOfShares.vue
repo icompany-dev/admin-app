@@ -39,6 +39,10 @@
             v-bind="controller.mcrResolutionDocumentProps"
             @signed="controller.onSignedMcr($event)"
           />
+          <DcrAllotmentOfShares
+            ref="allotRef"
+            v-bind="controller.resolutionDocumentProps"
+          />
           <!-- <PreemptiveRightNotices
             ref="noticeRef"
             :company-id="controller.companyId"
@@ -63,6 +67,7 @@
 
 <script setup lang="ts">
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
+  import DcrAllotmentOfShares from "../Resolutions/DcrAllotmentOfShares.vue"
   import DcrProposeAllotmentOfShares from "@/components/Resolutions/DcrProposeAllotmentOfShares.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import McrAuthorityToAllotShares from "@/components/Resolutions/McrAuthorityToAllotShares.vue"
@@ -92,6 +97,7 @@
   const dcrRef = ref(null)
   const mcrRef = ref(null)
   const noticeRef = ref(null)
+  const allotRef = ref(null)
 
   const emit = defineEmits(["zoomOut", "zoomIn", "back", "applicationUpdated"])
 
@@ -117,6 +123,14 @@
     noticeRef,
     (newVal) => {
       controller.setNoticeRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    allotRef,
+    (newVal) => {
+      controller.setAllotRef(newVal)
     },
     { immediate: true }
   )
