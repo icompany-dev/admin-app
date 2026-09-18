@@ -27,7 +27,7 @@
             class="fit-content"
             :class="{ placeholder: controller.isInPreviewMode.value }"
           >
-            {{ controller.totalShares() }}
+            {{ NumberUtil.thousandSeparator(controller.totalShares()) }}
           </span>
           shares in the capital of the Company for cash be and are hereby accepted and that the shares applied for be
           and are hereby issued and allotted, as follows -
@@ -172,7 +172,7 @@
                 </span>
               </td>
               <td :class="{ editing: controller.isDocumentEditable() }">
-                {{ controller.totalShares() }}
+                {{ NumberUtil.thousandSeparator(controller.totalShares()) }}
               </td>
             </tr>
           </tfoot>
@@ -192,6 +192,7 @@
   import { ShareholdingType } from "~/scripts/constants/Shareholder"
   import { CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
   import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+  import { NumberUtil } from "~/scripts/utils/Number"
 
   const props = defineProps<IPropsResolutionDocument<CompanyShareholderAllotment>>()
 

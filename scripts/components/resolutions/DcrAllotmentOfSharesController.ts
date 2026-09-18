@@ -15,6 +15,7 @@ import { CompanyShareAuthorization } from "~/scripts/models/CompanyShareAuthoriz
 import { Filter } from "~/scripts/library/Filter"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import { NumberUtil } from "~/scripts/utils/Number"
 
 export class DcrAllotmentOfSharesController extends ResolutionController<CompanyShareholderAllotment> {
   companyShareholderAllotmentRepository = useCompanyShareholderAllotmentStore()
@@ -356,7 +357,7 @@ export class DcrAllotmentOfSharesController extends ResolutionController<Company
       return "NO. OF SHARES"
     }
 
-    return `${allotTo.allotee.sharesAllotted}`
+    return NumberUtil.thousandSeparator(allotTo.allotee.sharesAllotted)
   }
 
   override async updateApplicationContent(updatedApplicationData: CompanyShareholderAllotment): Promise<void> {
