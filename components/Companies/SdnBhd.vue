@@ -137,7 +137,7 @@
           </ul>
         </div>
       </div>
-      <div class="action-buttons">
+      <!-- <div class="action-buttons">
         <button
           class="btn btn-pill btn-submit"
           @click="controller.onEditClicked()"
@@ -156,13 +156,15 @@
         >
           {{ controller.switchOut }}
         </button>
-      </div>
+      </div> -->
+      <Tags v-bind="controller.tagsProps" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
   import CopyValue from "../Buttons/CopyValue.vue"
+  import Tags from "../Tags/Tags.vue"
   import { SdnBhdController } from "~/scripts/components/companies/SdnBhdController"
   import { Company } from "~/scripts/models/Company"
 

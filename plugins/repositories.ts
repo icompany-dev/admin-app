@@ -171,6 +171,7 @@ import { ShareholderInvitationRepository } from "~/scripts/repositories/Sharehol
 import { ShareholderRepository } from "~/scripts/repositories/ShareholderRepository"
 import { SignatureRepository } from "~/scripts/repositories/SignatureRepository"
 import { StateRepository } from "~/scripts/repositories/StateRepository"
+import { TagRepository } from "~/scripts/repositories/TagRepository"
 import { ToDoRepository } from "~/scripts/repositories/ToDoRepository"
 import { TransactionRepository } from "~/scripts/repositories/TransactionRepository"
 import { UserAccessRoleRepository } from "~/scripts/repositories/UserAccessRoleRepository"
@@ -355,6 +356,7 @@ interface Repositories {
   shareholders: ShareholderRepository
   signatures: SignatureRepository
   states: StateRepository
+  tags: TagRepository
   toDos: ToDoRepository
   transactions: TransactionRepository
   userAccessRoles: UserAccessRoleRepository
@@ -1070,6 +1072,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "state",
       config.public.apiBaseUrl,
       getAuthToken),
+    tags: new TagRepository(
+      "tags",
+      "tag",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     toDos: new ToDoRepository("services",
       "service",
       config.public.apiBaseUrl,
@@ -1283,6 +1291,7 @@ declare module "#app" {
       shareholders: import("~/scripts/repositories/ShareholderRepository").ShareholderRepository
       signatures: import("~/scripts/repositories/SignatureRepository").SignatureRepository
       states: import("~/scripts/repositories/StateRepository").StateRepository
+      tags: import("~/scripts/repositories/TagRepository").TagRepository
       toDos: import("~/scripts/repositories/ToDoRepository").ToDoRepository
       transactions: import("~/scripts/repositories/TransactionRepository").TransactionRepository
       userAccessRoles: import("~/scripts/repositories/UserAccessRoleRepository").UserAccessRoleRepository
@@ -1471,6 +1480,7 @@ declare module "pinia" {
       shareholders: import("~/scripts/repositories/ShareholderRepository").ShareholderRepository
       signatures: import("~/scripts/repositories/SignatureRepository").SignatureRepository
       states: import("~/scripts/repositories/StateRepository").StateRepository
+      tags: import("~/scripts/repositories/TagRepository").TagRepository
       toDos: import("~/scripts/repositories/ToDoRepository").ToDoRepository
       transactions: import("~/scripts/repositories/TransactionRepository").TransactionRepository
       userAccessRoles: import("~/scripts/repositories/UserAccessRoleRepository").UserAccessRoleRepository
