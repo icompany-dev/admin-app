@@ -522,7 +522,7 @@ export abstract class CompanyServiceController<T> {
     }
 
     if (this.application.value.status === StatusConstants.READY) {
-      return "READY FOR DELIVERY"
+      return "READY TO SHIP"
     }
 
     if (this.application.value.signatureGroups.length <= 0) {
@@ -699,6 +699,10 @@ export abstract class CompanyServiceController<T> {
     let blob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
 
     return blob
+  }
+
+  async onMoveToForms(): Promise<void> {
+    //
   }
 
   onUpdatingDocument(): void {

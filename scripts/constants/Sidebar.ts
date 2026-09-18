@@ -125,12 +125,26 @@ export class PageSidebar {
     "services/allotment-of-shares",
     false
   )
+  static declareDividends: Sidebar = new Sidebar(
+    "Declare Dividends",
+    "Isytihar Dividen",
+    "services/declare-dividends",
+    false
+  )
+  static changeBankSignatories: Sidebar = new Sidebar(
+    "Change Bank Signatories",
+    "Tukar Penandatangan",
+    "services/change-signatories",
+    false
+  )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
     this.openBankAccount,
     this.appointDirector,
     this.allotNewShares,
     this.purchaseAssets,
+    this.declareDividends,
+    this.changeBankSignatories,
   ])
 
   static personsDraft: Sidebar = new Sidebar(

@@ -10,6 +10,7 @@
         @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
         @documentSelected="controller.onDocumentTargetSelected($event)"
         @download="controller.onDownloadClicked()"
+        @convertToForms="controller.onConvertToForms()"
       />
     </div>
     <div class="document-container">
