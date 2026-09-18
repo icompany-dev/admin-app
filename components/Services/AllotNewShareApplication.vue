@@ -67,6 +67,20 @@
                   </tr>
                 </tbody>
               </table>
+              <br />
+              <b>{{ controller.proofOfPaymentLabel }}</b>
+              <br />
+              <span
+                class="action-link"
+                :class="{ download: controller.proofOfPaymentUrl !== '' }"
+                @click="controller.onDownloadProofOfPaymentClicked()"
+              >
+                <i
+                  class="fa-regular fa-cloud-arrow-down"
+                  v-if="controller.proofOfPaymentUrl !== ''"
+                ></i>
+                {{ controller.proofOfPayment }}
+              </span>
               <template v-if="controller.itemsToPrepare.length > 0">
                 <b>{{ controller.itemsToPrepareLabel }}</b>
                 <ol>

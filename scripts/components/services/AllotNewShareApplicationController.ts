@@ -40,6 +40,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingProof: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection76: Ref<boolean> = ref<boolean>(false)
   isDownloadingRoa: Ref<boolean> = ref<boolean>(false)
 
@@ -127,6 +128,36 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       const link = document.createElement("a")
       link.href = blobUrl
       link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingSection76.value = false
+    }
+  }
+
+  async onDownloadProofOfPaymentClicked(): Promise<void> {
+    if (this.proofOfPaymentUrl !== "" || this.isDownloadingProof.value) {
+      return
+    }
+
+    try {
+      this.isDownloadingSection76.value = true
+      const response = await fetch(this.proofOfPaymentUrl)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", this.proofOfPayment)
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -401,6 +432,28 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     return this.application.value.shareAllotTos.filter((allotee: CompanyShareAllotTo) => {
       return allotee.sharesAllotted > 0
     })
+  }
+
+  get proofOfPaymentLabel(): string {
+    return this.language.isMalay() ? "Bukti Bayaran" : "Proof of Payment"
+  }
+
+  get proofOfPayment(): string {
+    if (!this.application.value || StringUtil.isNullOrEmpty(this.application.value.cashInjectionId)) {
+      return this.language.isMalay() ? "Tidak Dimuat Naik" : "Not Uploaded"
+    }
+
+    return (
+      this.application.value.cashInjection?.name ?? (this.language.isMalay() ? "Tidak Dimuat Naik" : "Not Uploaded")
+    )
+  }
+
+  get proofOfPaymentUrl(): string {
+    if (!this.application.value || StringUtil.isNullOrEmpty(this.application.value.cashInjectionId)) {
+      return ""
+    }
+
+    return this.application.value.cashInjection?.url ?? ""
   }
 
   get itemsToPrepareLabel(): string {
