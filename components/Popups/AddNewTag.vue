@@ -10,10 +10,9 @@
           v-html="controller.content"
         />
         <div class="action">
-          <div class="form-group">
-            <label>Tag:</label>
+          <div class="tag-form-group">
             <select
-              v-if="controller.isAddNewType.value"
+              v-if="!controller.isAddNewType.value"
               class="form-control"
               v-model="controller.name.value"
               @change="controller.onSelectedValue()"

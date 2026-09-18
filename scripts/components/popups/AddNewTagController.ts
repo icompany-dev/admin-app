@@ -69,6 +69,7 @@ export class AddNewTagController extends BasePopupController {
 
       await tag.create(useTagStore())
 
+      this.hide()
       this.emitEvents(EmitMessages.PROCEED, tag)
     } catch (e) {
       if (e instanceof Error) {
@@ -88,7 +89,7 @@ export class AddNewTagController extends BasePopupController {
   }
 
   get heading(): string {
-    return this.language.isMalay() ? `Aksi dalam Progres` : `Action in Progress`
+    return this.language.isMalay() ? `Tambah Tag` : `Add New Tag`
   }
 
   get cta(): string {
@@ -98,12 +99,12 @@ export class AddNewTagController extends BasePopupController {
   get content(): string {
     if (this.language.isMalay()) {
       return `
-       Sila lengkapkan butiran dibawah.
+        Pilih dari tag sedia ada atau tambah baru.
       `
     }
 
     return `
-      Please complete the detail below.
+      Select an existing Tag or Add New.
     `
   }
 

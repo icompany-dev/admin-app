@@ -1,3 +1,23 @@
-#popups-add-new-tag {
-  // Styles go here
+#popups-add-new-tag {}
+
+.popup {
+
+  .action {
+    .tag-form-group {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+
+      .form-control {
+        width: 50%;
+        background-color: var(--bs-white);
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid var(--form-control-border-color);
+        text-transform: none;
+      }
+    }
+  }
 }

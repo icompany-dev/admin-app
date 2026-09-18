@@ -4,9 +4,14 @@
       class="tag"
       v-for="tag in controller.tags.value"
     >
-      {{ tag }}
+      {{ tag.name }}
     </div>
-    <div class="tag add-new">+ Add</div>
+    <div
+      class="tag add-new"
+      @click="controller.onAddNewTagClicked()"
+    >
+      + Add
+    </div>
     <AddNewTag
       ref="addNewTagRef"
       v-bind="controller.addNewTagProps"

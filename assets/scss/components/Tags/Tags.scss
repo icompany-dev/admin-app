@@ -8,5 +8,18 @@
   .tag {
     padding: 4px 8px;
     border-radius: 10px;
+    border: solid 2px var(--bs-icompany-green);
+    cursor: pointer;
+
+    &.add-new {
+      border-style: dashed;
+      transition: all 1s ease;
+
+      &:hover {
+        border-style: solid;
+        color: var(--bs-white);
+        background-color: var(--bs-icompany-green);
+      }
+    }
   }
 }
