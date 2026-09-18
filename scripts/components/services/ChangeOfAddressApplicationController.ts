@@ -53,7 +53,8 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
       useCompanyAmendmentAddressStore(),
       CompanyAmendmentAddress,
       CompanyConstants.TARGET_AMENDMENT_ADDRESS,
-      emitEvents
+      emitEvents,
+      props.applicationId
     )
     this.target.value = CompanyConstants.TARGET_AMENDMENT_ADDRESS
     this.minimumMajorityRequired.value = 0.5
@@ -648,15 +649,6 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
 
   get section28ActionLabel(): string {
     return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
-  }
-
-  get uploadDocumentProps(): PropsUploadDocument {
-    let props = new PropsUploadDocument(this.companyId.value)
-
-    props.canUploadImage = false
-    props.canUploadPdf = true
-
-    return props
   }
 
   get certifcateOfAddressChangeLabel(): string {

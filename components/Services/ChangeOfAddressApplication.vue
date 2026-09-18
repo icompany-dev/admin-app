@@ -157,10 +157,11 @@
   import ServiceApplication from "./ServiceApplication.vue"
   import { ChangeOfAddressApplicationController } from "~/scripts/components/services/ChangeOfAddressApplicationController"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
+  import { EmitMessages } from "~/scripts/constants/EmitMessages"
 
   const props = defineProps<IPropsApplication>()
 
-  const emit = defineEmits(["applicationId", "paymentOrderId", "pa", "documentSelected", "download", "show", "hide"])
+  const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
 
   const resolutionsRef = ref(null)
   const addressReservationRejectedPopup = ref(null)

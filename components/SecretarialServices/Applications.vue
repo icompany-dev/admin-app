@@ -65,6 +65,7 @@
   import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
   import { ChangeBankSignatoriesController } from "~/scripts/components/secretarial-services/ChangeBankSignatoriesController"
+  import { ChangeOfAddressesController } from "~/scripts/components/secretarial-services/ChangeOfAddressesController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { DividendDeclarationsController } from "~/scripts/components/secretarial-services/DividendDeclarationsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
@@ -80,6 +81,9 @@
   let controller: SecretarialServicesController<Application> = new ApplicationsController(props, emit)
 
   switch (props.target) {
+    case CompanyConstants.TARGET_AMENDMENT_ADDRESS:
+      controller = new ChangeOfAddressesController(props, emit)
+      break
     case CompanyConstants.TARGET_AMENDMENT_NAME:
       controller = new ChangeOfNamesController(props, emit)
       break
