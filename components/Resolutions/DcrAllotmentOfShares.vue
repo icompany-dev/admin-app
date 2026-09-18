@@ -2,6 +2,7 @@
   <div
     id="dcr-allotment-of-shares"
     class="allotment-of-shares"
+    ref="documentRef"
   >
     <Resolution
       v-bind="controller.resolutionProps"
@@ -16,7 +17,11 @@
           <br />
           <br />
           THAT pursuant to the authority given by the Members of the Company on
-          <span class="placeholder">to be determined by iCompany</span>
+          <input
+            type="date"
+            class="form-control in-resolution"
+            v-model="controller.dateOfAuthority.value"
+          />
           , applications for a total of
           <span
             class="fit-content"
@@ -199,6 +204,8 @@
     "signed",
   ])
 
+  const documentRef = ref(null)
+
   const controller = new DcrAllotmentOfSharesController(props, emit)
 
   watch(
@@ -257,12 +264,21 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller), //Has to plus one always, because there is accompanying document
     getApplication: controller.getApplication.bind(controller),
     getApplicationData: controller.getApplicationData.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     setIsChangeHandlingRequired: controller.setIsChangeHandlingRequired.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 
