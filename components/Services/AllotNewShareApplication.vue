@@ -53,6 +53,14 @@
             >
               {{ controller.downloadLabel }}
             </button>
+            <span
+              class="action-link download"
+              v-if="controller.isSection76Uploaded"
+              @click="controller.onDownloadSection76Clicked()"
+            >
+              <i class="fa-regular fa-cloud-arrow-down"></i>
+              {{ controller.downloadDocumentSection76Label }}
+            </span>
           </template>
           <template #nodeActions>
             <button

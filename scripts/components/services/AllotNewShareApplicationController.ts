@@ -40,6 +40,8 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingSection76: Ref<boolean> = ref<boolean>(false)
+
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
       props.companyId,
@@ -88,6 +90,47 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
     await nextTick()
     this.emitEvents("download")
+  }
+
+  async onDownloadSection76Clicked(): Promise<void> {
+    if (!this.isSection76Uploaded || this.isDownloadingSection76.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+        DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76,
+        this.application.value?.createdAt ?? ""
+      )
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingSection76.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingSection76.value = false
+    }
   }
 
   async onPrintClicked(): Promise<void> {
@@ -311,6 +354,10 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     return this.language.isMalay() ? "Muat Turun" : "Download"
   }
 
+  get downloadDocumentSection76Label(): string {
+    return this.language.isMalay() ? "Seksyen 76" : "Section 76"
+  }
+
   get isApproved(): boolean {
     if (!this.application.value) {
       return false
@@ -400,5 +447,12 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
 
   get markCompletedLabel(): string {
     return this.language.isMalay() ? "Tanda Lengkap" : "Mark Completed"
+  }
+
+  get isSection76Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76,
+      this.application.value?.createdAt ?? ""
+    )
   }
 }
