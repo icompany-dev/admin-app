@@ -49,6 +49,24 @@
                 <i class="fa-regular fa-cloud-arrow-down"></i>
                 {{ controller.downloadDocumentSection76Label }}
               </span>
+              <br />
+              <b>{{ controller.allotTosLabel }}</b>
+              <table class="allotee-details">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(allotee, index) in controller.allotees">
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ controller.getShareholderName(allotee) }}</td>
+                    <td>{{ NumberUtil.thousandSeparator(allotee.sharesAllotted) }}</td>
+                  </tr>
+                </tbody>
+              </table>
               <template v-if="controller.itemsToPrepare.length > 0">
                 <b>{{ controller.itemsToPrepareLabel }}</b>
                 <ol>
@@ -173,6 +191,7 @@
   import { AllotNewShareApplicationController } from "~/scripts/components/services/AllotNewShareApplicationController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
+  import { NumberUtil } from "~/scripts/utils/Number"
 
   const props = defineProps<IPropsApplication>()
 

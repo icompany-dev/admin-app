@@ -10,7 +10,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
-import { CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
+import { CompanyShareAllotTo, CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
 import { Bank } from "~/scripts/models/Bank"
 import { Filter } from "~/scripts/library/Filter"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
@@ -240,6 +240,14 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     return props
   }
 
+  getShareholderName(allotee: CompanyShareAllotTo): string {
+    if (!StringUtil.isNullOrEmpty(allotee.shareholderId) && allotee.shareholder !== null) {
+      return allotee.shareholder.fullName().toUpperCase()
+    }
+
+    return allotee.shareholderName
+  }
+
   //getters
   get serviceName(): string {
     return this.language.isMalay() ? "Peruntukkan Saham Baharu" : "Allotment of Shares"
@@ -337,6 +345,20 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     return `
       Awaiting Response from: ${StringUtil.oxfordJoin("&", pendingSignaturesFrom)}
     `
+  }
+
+  get allotTosLabel(): string {
+    return this.language.isMalay() ? "Butiran Penerima" : "Allotee Details"
+  }
+
+  get allotees(): CompanyShareAllotTo[] {
+    if (!this.application.value) {
+      return []
+    }
+
+    return this.application.value.shareAllotTos.filter((allotee: CompanyShareAllotTo) => {
+      return allotee.sharesAllotted > 0
+    })
   }
 
   get itemsToPrepareLabel(): string {
