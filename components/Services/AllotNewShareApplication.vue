@@ -33,6 +33,22 @@
                 class="details"
                 v-html="controller.section75Details"
               />
+              <span
+                class="action-link download"
+                v-if="!controller.isSection76Uploaded"
+                @click="controller.onUploadDocumentClicked()"
+              >
+                <i class="fa-regular fa-cloud-arrow-up"></i>
+                {{ controller.uploadSection76Label }}
+              </span>
+              <span
+                class="action-link download"
+                v-if="controller.isSection76Uploaded"
+                @click="controller.onDownloadSection76Clicked()"
+              >
+                <i class="fa-regular fa-cloud-arrow-down"></i>
+                {{ controller.downloadDocumentSection76Label }}
+              </span>
               <template v-if="controller.itemsToPrepare.length > 0">
                 <b>{{ controller.itemsToPrepareLabel }}</b>
                 <ol>
@@ -53,14 +69,6 @@
             >
               {{ controller.downloadLabel }}
             </button>
-            <span
-              class="action-link download"
-              v-if="controller.isSection76Uploaded"
-              @click="controller.onDownloadSection76Clicked()"
-            >
-              <i class="fa-regular fa-cloud-arrow-down"></i>
-              {{ controller.downloadDocumentSection76Label }}
-            </span>
           </template>
           <template #nodeActions>
             <button
@@ -143,7 +151,7 @@
     />
     <PopupUploadDocument
       v-bind="controller.uploadDocumentProps"
-      ref="uploadDocumenRef"
+      ref="uploadDocumentRef"
       @proceed="controller.onProceedPostUpload()"
     />
   </div>
@@ -164,7 +172,7 @@
   const resolutionsRef = ref(null)
   const shipApplicationRef = ref(null)
   const serviceApplicationRef = ref(null)
-  const uploadDocumenRef = ref(null)
+  const uploadDocumentRef = ref(null)
 
   const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
 
@@ -202,7 +210,7 @@
   )
 
   watch(
-    uploadDocumenRef,
+    uploadDocumentRef,
     (newVal) => {
       controller.setUploadDocumentRef(newVal)
     },

@@ -92,6 +92,12 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     this.emitEvents("download")
   }
 
+  async onUploadDocumentClicked(): Promise<void> {
+    if (this.uploadDocumentRef) {
+      this.uploadDocumentRef.show()
+    }
+  }
+
   async onDownloadSection76Clicked(): Promise<void> {
     if (!this.isSection76Uploaded || this.isDownloadingSection76.value) {
       return
@@ -172,6 +178,8 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     if (this.isCompleting.value) {
       await this.proceedCompleteService()
     }
+
+    await this.uploadedDocumentChecker.value.fetchDocuments()
   }
 
   async onShippedClicked(): Promise<void> {
@@ -348,6 +356,10 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     })
 
     return items
+  }
+
+  get uploadSection76Label(): string {
+    return this.language.isMalay() ? "Muat Naik Seksyen 76" : "Upload Section 76"
   }
 
   get downloadLabel(): string {
