@@ -322,7 +322,7 @@
               <div
                 class="btn btn-pill btn-submit selected single"
                 :class="{ disabled: !controller.isCONUploaded }"
-                @click="controller.onCompleteNameChangeClicked()"
+                @click="controller.completeServiceClicked()"
               >
                 <span class="label">{{ controller.completeActionLabel }}</span>
               </div>

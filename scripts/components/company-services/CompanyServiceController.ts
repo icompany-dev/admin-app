@@ -701,6 +701,10 @@ export abstract class CompanyServiceController<T> {
     return blob
   }
 
+  async onMoveToForms(): Promise<void> {
+    //
+  }
+
   onUpdatingDocument(): void {
     // if (this.wrapperRef) {
     //   this.wrapperRef.minimize()
