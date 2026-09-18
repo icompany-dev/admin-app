@@ -285,8 +285,8 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       }
 
       let toastTitle = this.language.isMalay()
-        ? "Permohonan telah Selesai. Pengarah Baharu telah ditambah ke Syarikat."
-        : "Application is Completed. The new Director has been added to the Company."
+        ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
+        : "Application is Completed. The Company Shares has been updated."
       let toastMessage = this.language.isMalay()
         ? "Anda akan dibawa ke muka Sdn Bhd."
         : "You will be redirected to the Sdn Bhd page."
