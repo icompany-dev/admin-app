@@ -21,10 +21,12 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import DcrAppointmentOfJointCompanySecretary from "../Resolutions/DcrAppointmentOfJointCompanySecretary.vue"
   import { AppointJointCompanySecretaryController } from "~/scripts/components/service-wrappers/AppointJointCompanySecretaryController"
 
