@@ -11,6 +11,7 @@ export class EmitMessages {
   static NO_EXISTING_APPLICATION: string = "noExistingApplication"
   static PAY: string = "pay"
   static PROCEED: string = "proceed"
+  static REFRESH: string = "refresh"
   static RESIGN_AS_DIRECTOR: string = "resignAsDirector"
   static RESERVE_NAME_FIRST: string = "reserveNameFirst"
   static SSM_CORPORATE_PROFILE: string = "ssmCorporateProfile"
@@ -48,6 +49,7 @@ export class EmitMessages {
     "company",
     "show",
     "hide",
+    "convertToForms",
   ]
   static POPUPS: string[] = [this.BACK, this.PROCEED, this.UPLOADED, this.SUCCESS]
 }

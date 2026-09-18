@@ -23,10 +23,17 @@ export class DcrAppointmentOfJointCompanySecretaryController {
 
   companySecretaryId: string = "d76d3a2f-a5e9-11f1-a76b-42010a8c0003" //hard code for now
 
+  resolutionDate: Ref<string> = ref<string>("")
+
+  dayjs = useDayjs()
+  time = useLocalTime()
+
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.setCompanyId(companyId)
+
+    this.resolutionDate.value = this.dayjs().subtract(1, "month").format("YYYY-MM-DD")
   }
 
   async setCompanyId(companyId: string): Promise<void> {
@@ -124,6 +131,11 @@ export class DcrAppointmentOfJointCompanySecretaryController {
     return pdfPages
   }
 
+  onResolutionDateChanged(event: Event): void {
+    let target = event.target as HTMLInputElement
+    this.resolutionDate.value = target.value
+  }
+
   get companyName(): string {
     return this.company.value.getFullName()
   }
@@ -137,11 +149,13 @@ export class DcrAppointmentOfJointCompanySecretaryController {
   }
 
   get resolutionTitle(): string {
+    let resolutionDate = this.time.formatDateOnlyFull(this.resolutionDate.value).toUpperCase()
+
     if (this.company.value.hasConstitution) {
-      return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO COMPANY'S CONSTITUTION`
+      return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO COMPANY'S CONSTITUTION PASSED ON ${resolutionDate}`
     }
 
-    return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016 PASSED ON 10 AUGUST 2026`
+    return `EXTRACT OF THE DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016 PASSED ON ${resolutionDate}`
   }
 
   get signatureTitle(): string {
@@ -226,7 +240,7 @@ export class DcrAppointmentOfJointCompanySecretaryController {
       "",
       this.signatureTitle,
       this.signatureItems,
-      "2026-08-10",
+      this.resolutionDate.value,
       1,
       1,
       2,

@@ -11,6 +11,8 @@ import { Filter } from "~/scripts/library/Filter"
 import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 import { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
 import { PropsAddCompanyAuditor } from "~/scripts/props/PropsAddCompanyAuditor"
+import { UserDetail } from "~/scripts/models/UserDetail"
+import { Toast } from "~/scripts/library/Toast"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -24,6 +26,7 @@ export class OverviewController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isShowShareDistribution: Ref<boolean> = ref<boolean>(false)
+  isGeneratingBO: Ref<boolean> = ref<boolean>(false)
 
   compliance = ref<Compliance>(new Compliance(""))
 
@@ -120,6 +123,12 @@ export class OverviewController {
     this.shareholders.value = response.map((d: any) => {
       return new Shareholder(d)
     })
+
+    let promises = this.shareholders.value.map((s: Shareholder) => {
+      return s.setRegisteredUser(useUserStore())
+    })
+
+    await Promise.all(promises)
   }
 
   async fetchCompanyBanks(): Promise<void> {
@@ -156,6 +165,73 @@ export class OverviewController {
   onAddCompanyAuditorClicked(): void {
     if (this.addCompanyAuditorRef) {
       this.addCompanyAuditorRef.show()
+    }
+  }
+
+  async onGenerateBOAnnexureTxtClicked(): Promise<void> {
+    try {
+      this.isGeneratingBO.value = true
+      let detailsOfBO = this.shareholders.value.map((s: Shareholder, index: number) => {
+        let type = s.isCorporateRepresentative() ? "Corporate" : "Individual"
+        let details = s.user?.detail ?? new UserDetail()
+
+        let isDirector = this.directors.value.some((d: Director) => {
+          return d.email === s.email
+        })
+
+        let dayjs = useDayjs()
+        let dateAppointed = dayjs(s.dateAppointed).format("DD/MM/YYYY")
+
+        let citizenship = type === "Corporate" ? "" : details.citizenship.toUpperCase()
+        let dateOfBirth = ""
+
+        if (type === "Individual" && details.identificationType === "ic") {
+          let currentYear = this.dayjs().year()
+          let firstTwoNumber = currentYear.toString().substring(0, 2)
+          let yearOfBirthString = `${firstTwoNumber}${details.identification.substring(0, 2)}`
+          let yearOfBirth = parseInt(yearOfBirthString)
+          if (yearOfBirth > currentYear) {
+            yearOfBirth = yearOfBirth - 100
+          }
+
+          let birthMonth = details.identification.substring(2, 4)
+          let birthDate = details.identification.substring(4, 2)
+          dateOfBirth = `${birthDate}/${birthMonth}/${yearOfBirth}`
+        }
+
+        let identification = type === "Corporate" ? "" : details.identification
+        let gender = type === "Corporate" ? "" : details.gender.toUpperCase()
+        let race = type === "Corporate" ? "" : details.race.toUpperCase()
+
+        return `${index + 1}    ${type}    ${s.fullName()}    ${s.location?.addressLine1.toUpperCase()}    ${s.location?.addressLine2?.toUpperCase() ?? ""}        ${s.location?.postcode} ${s.location?.city?.name.toUpperCase() ?? ""}    ${s.location?.country?.name.toUpperCase() ?? ""}     ${s.location?.state?.name.toUpperCase() ?? ""}                                   ${s.email}    ${citizenship}    ${dateOfBirth}    ${race}    ${gender}    ${identification}    ${isDirector ? "COMPANY DIRECTOR" : ""}    Direct - Criteria A    ${s.percentageShares}            ${dateAppointed}`
+      })
+
+      let txt = `Beneficial Owner Count [Axis]   *Type Of Bo *Full Name  Address Of  Usual Place Of  Residence  Address Line 1   Address Of  Usual Place Of  Residence Address Line 2    Address Of  Usual Place Of  Residence Address Line 3    Address Of  Usual Place Of  Residence Postcode  Address Of  Usual Place Of  Residence Town  Address Of  Usual Place Of  Residence Country   Address Of  Usual Place Of  Residence State Office Address Address Line 1   Office Address Address Line 2   Office Address Address Line 3   Office Address Postcode Office Address Town Office Address Country  Office Address State    Business/ Address If Any Address Line 1 Business/ Address If Any Address Line 2 Business/ Address If Any Address Line 3 Business/ Address If Any Postcode   Business/ Address If Any Town   Business/ Address If Any Country    Business/ Address If Any State  Email Address (If Any)  Nationality Date of Birth   Race    Gender  NRIC/Passport No    To State Position In The Company ,If Applicable Criteria(Ownership) Percentage of Shares/Voting Shares(%)   Criteria(Control)   Percentage of Voting Rights/Shares/Voting Shares (%)    *Date A Person Becomes Beneficial Owner
+${detailsOfBO.join("\n")}
+      `
+
+      let filename = `${this.company.value.getFullName()} BO ANNEXURE.txt`
+      const blob = new Blob([txt], { type: "text/plain;charset=utf-8" })
+      const url = URL.createObjectURL(blob)
+
+      const link = document.createElement("a")
+      link.href = url
+      link.download = filename
+      link.style.display = "none"
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      let toastTitle = this.language.isMalay() ? "Fail telah dijana." : "The Annexure is successfully generated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+    } finally {
+      this.isGeneratingBO.value = false
     }
   }
 

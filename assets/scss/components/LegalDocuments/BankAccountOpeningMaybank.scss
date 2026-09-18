@@ -23,8 +23,6 @@
 
         &.director-details {
           td {
-            font-weight: 600;
-
             &:first-child {
               width: 20px;
             }
@@ -112,6 +110,15 @@
         }
       }
 
+      .inline-checkbox {
+        vertical-align: middle;
+        border: 1px solid rgb(150, 150, 150);
+        width: 8px;
+        height: 8px;
+        display: inline-block;
+        border-radius: 2px;
+      }
+
       .text-center {
         text-align: center;
       }
@@ -155,12 +162,35 @@
     ol {
       margin: 0;
       padding-left: 15px;
+      list-style-type: decimal;
 
-      li {
+      > li {
+        list-style-type: decimal;
         line-height: 18px;
         padding-left: 15px;
         padding-bottom: 15px;
         text-align: justify;
+      }
+
+      &.msic-list {
+        list-style: none;
+        counter-reset: list-counter;
+        padding-left: 25px;
+        margin-top: 15px;
+
+        > li {
+          position: relative;
+          counter-increment: list-counter;
+          list-style: none;
+          margin: 0px;
+          padding: 0px;
+
+          &::before {
+            content: "(" counter(list-counter, lower-alpha) ")";
+            position: absolute;
+            left: -25px;
+          }
+        }
       }
     }
 

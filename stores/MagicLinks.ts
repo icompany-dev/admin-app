@@ -11,6 +11,13 @@ export const useMagicLinkStore = defineStore("magicLink", () => {
   const isLoading = ref(false)
   const error = ref<string | null>(null)
 
+  const crudActions = useStoreActions($repositories.magicLinks, {
+    items: magicLinks,
+    item: magicLink,
+    isLoading: isLoading,
+    error: error,
+  })
+
   async function fetch(id: string): Promise<any> {
     isLoading.value = true
     error.value = null
@@ -34,6 +41,7 @@ export const useMagicLinkStore = defineStore("magicLink", () => {
     isLoading,
     error,
     totalMagicLinks,
+    ...crudActions,
     fetch,
   }
 })

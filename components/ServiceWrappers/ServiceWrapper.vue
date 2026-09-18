@@ -44,6 +44,7 @@
             :registration-number-new="props.registrationNumberNew"
             :registration-number-old="props.registrationNumberOld"
             :payment-order-id="props.paymentOrderId"
+            :company-bank-id="props.companyBankId"
             @back="controller.onMinimizeDocument($event)"
             @make-payment="controller.onMakePayment()"
             @applicationUpdated="controller.onApplicationUpdated($event)"
@@ -70,6 +71,7 @@
   import AuditExtensionOfTime from "./AuditExtensionOfTime.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
   import BODeclaration from "./BODeclaration.vue"
+  import ChangeBankSignatories from "./ChangeBankSignatories.vue"
   import ChangeOfName from "./ChangeOfName.vue"
   import ChangeOfAddress from "./ChangeOfAddress.vue"
   import ChangeOfBranch from "./ChangeOfBranch.vue"
@@ -145,6 +147,7 @@
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,
     [CompanyConstants.TARGET_AUDIT_EXTENSION_OF_TIME]: AuditExtensionOfTime,
     [CompanyConstants.TARGET_BO_DECLARATION]: BODeclaration,
+    [CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY]: ChangeBankSignatories,
     [CompanyConstants.TARGET_CLOSE_BANK_ACCOUNT]: CloseBankAccount,
     [CompanyConstants.TARGET_COMMON_SEAL]: AdoptCommonSeal,
     [CompanyConstants.TARGET_COMMON_SEAL_REPLACEMENT]: ReplaceCommonSeal,

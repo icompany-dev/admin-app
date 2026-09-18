@@ -156,6 +156,11 @@ export abstract class ApplicationController<Application> {
     }
 
     this.application.value = new this.applicationClassType(response)
+
+    if (StringUtil.isNullOrEmpty(this.uploadedDocumentChecker.value.companyId)) {
+      this.uploadedDocumentChecker.value.companyId = this.application.value.companyId
+      await this.uploadedDocumentChecker.value.fetchDocuments()
+    }
   }
 
   async fetchOngoing(): Promise<void> {

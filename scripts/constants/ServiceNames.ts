@@ -242,6 +242,20 @@ export class ServiceNames {
     "asset-purchase",
     "director"
   )
+  static dividendDeclaration: ServiceName = new ServiceName(
+    "Declare Dividend",
+    "Isytihar Dividend",
+    "company_dividend_declaration",
+    "declare-dividends",
+    "director"
+  )
+  static changeSignatories: ServiceName = new ServiceName(
+    "Change Bank Signatories",
+    "Tukar Penandatangan Bank",
+    "company_change_bank_signatory",
+    "change-signatories",
+    "director"
+  )
 
   static names: ServiceName[] = [
     this.applicationIncorporation,
@@ -277,5 +291,7 @@ export class ServiceNames {
     this.enteringContract,
     this.appointManager,
     this.assetPurchase,
+    this.dividendDeclaration,
+    this.changeSignatories,
   ]
 }

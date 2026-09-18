@@ -10,7 +10,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
-import { CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
+import { CompanyShareAllotTo, CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
 import { Bank } from "~/scripts/models/Bank"
 import { Filter } from "~/scripts/library/Filter"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
@@ -39,6 +39,10 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   isGenerating: Ref<boolean> = ref<boolean>(false)
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
+
+  isDownloadingProof: Ref<boolean> = ref<boolean>(false)
+  isDownloadingSection76: Ref<boolean> = ref<boolean>(false)
+  isDownloadingRoa: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -90,6 +94,124 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     this.emitEvents("download")
   }
 
+  async onUploadDocumentClicked(): Promise<void> {
+    if (this.uploadDocumentRef) {
+      this.uploadDocumentRef.show()
+    }
+  }
+
+  async onDownloadSection76Clicked(): Promise<void> {
+    if (!this.isSection76Uploaded || this.isDownloadingSection76.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+        DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76,
+        this.application.value?.createdAt ?? ""
+      )
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingSection76.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingSection76.value = false
+    }
+  }
+
+  async onDownloadProofOfPaymentClicked(): Promise<void> {
+    if (this.proofOfPaymentUrl !== "" || this.isDownloadingProof.value) {
+      return
+    }
+
+    try {
+      this.isDownloadingSection76.value = true
+      const response = await fetch(this.proofOfPaymentUrl)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", this.proofOfPayment)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingSection76.value = false
+    }
+  }
+
+  async onDownloadRoaClicked(): Promise<void> {
+    if (!this.isRoaUploaded || this.isDownloadingRoa.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+        DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA,
+        this.application.value?.createdAt ?? ""
+      )
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingRoa.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingRoa.value = false
+    }
+  }
+
   async onPrintClicked(): Promise<void> {
     //
   }
@@ -129,6 +251,8 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     if (this.isCompleting.value) {
       await this.proceedCompleteService()
     }
+
+    await this.uploadedDocumentChecker.value.fetchDocuments()
   }
 
   async onShippedClicked(): Promise<void> {
@@ -138,12 +262,12 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   async onCompleteClicked(): Promise<void> {
-    this.isCompleting.value = true
-    if (this.uploadDocumentRef) {
-      this.uploadDocumentRef.show()
+    // this.isCompleting.value = true
+    // if (this.uploadDocumentRef) {
+    //   this.uploadDocumentRef.show()
 
-      return
-    }
+    //   return
+    // }
 
     await this.proceedCompleteService()
   }
@@ -161,8 +285,8 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       }
 
       let toastTitle = this.language.isMalay()
-        ? "Permohonan telah Selesai. Pengarah Baharu telah ditambah ke Syarikat."
-        : "Application is Completed. The new Director has been added to the Company."
+        ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
+        : "Application is Completed. The Company Shares has been updated."
       let toastMessage = this.language.isMalay()
         ? "Anda akan dibawa ke muka Sdn Bhd."
         : "You will be redirected to the Sdn Bhd page."
@@ -187,6 +311,14 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     props.hasSection201 = true
 
     return props
+  }
+
+  getShareholderName(allotee: CompanyShareAllotTo): string {
+    if (!StringUtil.isNullOrEmpty(allotee.shareholderId) && allotee.shareholder !== null) {
+      return allotee.shareholder.fullName().toUpperCase()
+    }
+
+    return allotee.shareholderName
   }
 
   //getters
@@ -288,6 +420,42 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     `
   }
 
+  get allotTosLabel(): string {
+    return this.language.isMalay() ? "Butiran Penerima" : "Allotee Details"
+  }
+
+  get allotees(): CompanyShareAllotTo[] {
+    if (!this.application.value) {
+      return []
+    }
+
+    return this.application.value.shareAllotTos.filter((allotee: CompanyShareAllotTo) => {
+      return allotee.sharesAllotted > 0
+    })
+  }
+
+  get proofOfPaymentLabel(): string {
+    return this.language.isMalay() ? "Bukti Bayaran" : "Proof of Payment"
+  }
+
+  get proofOfPayment(): string {
+    if (!this.application.value || StringUtil.isNullOrEmpty(this.application.value.cashInjectionId)) {
+      return this.language.isMalay() ? "Tidak Dimuat Naik" : "Not Uploaded"
+    }
+
+    return (
+      this.application.value.cashInjection?.name ?? (this.language.isMalay() ? "Tidak Dimuat Naik" : "Not Uploaded")
+    )
+  }
+
+  get proofOfPaymentUrl(): string {
+    if (!this.application.value || StringUtil.isNullOrEmpty(this.application.value.cashInjectionId)) {
+      return ""
+    }
+
+    return this.application.value.cashInjection?.url ?? ""
+  }
+
   get itemsToPrepareLabel(): string {
     return this.language.isMalay() ? "Perkara Tambahan perlu disediakan" : "Additional Items to Prepare"
   }
@@ -307,8 +475,16 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     return items
   }
 
+  get uploadSection76Label(): string {
+    return this.language.isMalay() ? "Muat Naik Seksyen 76" : "Upload Section 76"
+  }
+
   get downloadLabel(): string {
     return this.language.isMalay() ? "Muat Turun" : "Download"
+  }
+
+  get downloadDocumentSection76Label(): string {
+    return this.language.isMalay() ? "Seksyen 76" : "Section 76"
   }
 
   get isApproved(): boolean {
@@ -395,10 +571,32 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get uploadLabel(): string {
-    return this.language.isMalay() ? "Muat Naik Seksyen 58" : "Upload Section 58"
+    if (this.isRoaUploaded) {
+      return this.language.isMalay() ? "Muat Naik Lagi" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik ROA" : "Upload ROA"
+  }
+
+  get returnOfAllotmentLabel(): string {
+    return "Return of Allotment"
   }
 
   get markCompletedLabel(): string {
     return this.language.isMalay() ? "Tanda Lengkap" : "Mark Completed"
+  }
+
+  get isSection76Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
+  get isRoaUploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA,
+      this.application.value?.createdAt ?? ""
+    )
   }
 }

@@ -345,8 +345,6 @@ export class BankDocumentsController {
       pages = pages.concat(identificationPage)
     }
 
-    console.log("pages", pages)
-
     return pages
   }
 }

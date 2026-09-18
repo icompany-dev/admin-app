@@ -2,6 +2,7 @@
   <div
     id="dcr-allotment-of-shares"
     class="allotment-of-shares"
+    ref="documentRef"
   >
     <Resolution
       v-bind="controller.resolutionProps"
@@ -16,13 +17,17 @@
           <br />
           <br />
           THAT pursuant to the authority given by the Members of the Company on
-          <span class="placeholder">to be determined by iCompany</span>
+          <input
+            type="date"
+            class="form-control in-resolution"
+            v-model="controller.dateOfAuthority.value"
+          />
           , applications for a total of
           <span
             class="fit-content"
             :class="{ placeholder: controller.isInPreviewMode.value }"
           >
-            {{ controller.totalShares() }}
+            {{ NumberUtil.thousandSeparator(controller.totalShares()) }}
           </span>
           shares in the capital of the Company for cash be and are hereby accepted and that the shares applied for be
           and are hereby issued and allotted, as follows -
@@ -167,7 +172,7 @@
                 </span>
               </td>
               <td :class="{ editing: controller.isDocumentEditable() }">
-                {{ controller.totalShares() }}
+                {{ NumberUtil.thousandSeparator(controller.totalShares()) }}
               </td>
             </tr>
           </tfoot>
@@ -187,6 +192,7 @@
   import { ShareholdingType } from "~/scripts/constants/Shareholder"
   import { CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
   import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+  import { NumberUtil } from "~/scripts/utils/Number"
 
   const props = defineProps<IPropsResolutionDocument<CompanyShareholderAllotment>>()
 
@@ -198,6 +204,8 @@
     "applicationUpdated",
     "signed",
   ])
+
+  const documentRef = ref(null)
 
   const controller = new DcrAllotmentOfSharesController(props, emit)
 
@@ -257,12 +265,21 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller), //Has to plus one always, because there is accompanying document
     getApplication: controller.getApplication.bind(controller),
     getApplicationData: controller.getApplicationData.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     setIsChangeHandlingRequired: controller.setIsChangeHandlingRequired.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -1,0 +1,38 @@
+#tags-tags {
+  display: flex;
+  flex-direction: row;
+  justify-self: flex-start;
+  align-items: center;
+  gap: 5px;
+
+  .tag {
+    padding: 4px 8px;
+    border-radius: 10px;
+    color: var(--bs-white);
+    background-color: var(--bs-icompany-green);
+    border: solid 2px var(--bs-icompany-green);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    &.add-new {
+      cursor: pointer;
+      background-color: transparent;
+      color: var(--bs-icompany-green);
+      border-style: dashed;
+      transition: all 1s ease;
+
+      &:hover {
+        border-style: solid;
+        color: var(--bs-white);
+        background-color: var(--bs-icompany-green);
+      }
+    }
+
+    .clickable {
+      cursor: pointer;
+    }
+  }
+}
