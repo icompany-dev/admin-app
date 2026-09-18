@@ -157,6 +157,14 @@
             >
               {{ controller.uploadLabel }}
             </button>
+            <span
+              class="action-link download"
+              v-if="controller.isRoaUploaded"
+              @click="controller.onDownloadRoaClicked()"
+            >
+              <i class="fa-regular fa-cloud-arrow-down"></i>
+              {{ controller.returnOfAllotmentLabel }}
+            </span>
           </template>
           <template #nodeActions>
             <button

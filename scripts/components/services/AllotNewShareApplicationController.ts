@@ -41,6 +41,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
   isDownloadingSection76: Ref<boolean> = ref<boolean>(false)
+  isDownloadingRoa: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -136,6 +137,47 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       error.handle()
     } finally {
       this.isDownloadingSection76.value = false
+    }
+  }
+
+  async onDownloadRoaClicked(): Promise<void> {
+    if (!this.isRoaUploaded || this.isDownloadingRoa.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+        DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA,
+        this.application.value?.createdAt ?? ""
+      )
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingRoa.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingRoa.value = false
     }
   }
 
@@ -476,7 +518,15 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get uploadLabel(): string {
+    if (this.isRoaUploaded) {
+      return this.language.isMalay() ? "Muat Naik Lagi" : "Upload Again"
+    }
+
     return this.language.isMalay() ? "Muat Naik ROA" : "Upload ROA"
+  }
+
+  get returnOfAllotmentLabel(): string {
+    return "Return of Allotment"
   }
 
   get markCompletedLabel(): string {
@@ -486,6 +536,13 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   get isSection76Uploaded(): boolean {
     return this.uploadedDocumentChecker.value.isDocumentUploaded(
       DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
+  get isRoaUploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA,
       this.application.value?.createdAt ?? ""
     )
   }
