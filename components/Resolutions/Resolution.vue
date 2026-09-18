@@ -44,10 +44,14 @@
             <div class="company-registration-number">
               [Company No: {{ props.registrationNumberNew }} ({{ props.registrationNumberOld }})]
             </div>
-            ("Company")
-            <br />
-            <br />
             (Incorporated in Malaysia)
+            <br />
+            <br />
+            <div>
+              ( also referred to as the
+              <b>“Company”</b>
+              )
+            </div>
           </div>
           <div class="resolution-title">
             {{ props.resolutionTitle }}
@@ -89,7 +93,7 @@
             class="resolution-date"
             v-if="page === props.totalPages"
           >
-            Date:
+            Dated:
             <br />
             <input
               class="form-control in-resolution no-print"
@@ -140,10 +144,14 @@
               <div class="company-registration-number">
                 [Company No: {{ props.registrationNumberNew }} ({{ props.registrationNumberOld }})]
               </div>
-              ("Company")
-              <br />
-              <br />
               (Incorporated in Malaysia)
+              <br />
+              <br />
+              <div>
+                ( also referred to as the
+                <b>“Company”</b>
+                )
+              </div>
             </div>
             <div class="resolution-content accompanying-document">
               <slot name="accompanying-document" />

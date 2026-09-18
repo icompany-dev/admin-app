@@ -5,7 +5,7 @@
   color: var(--bs-black);
   position: relative;
   overflow: hidden;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -24,7 +24,7 @@
   li {
     font-size: 13px;
     line-height: 16px;
-    font-family: 'Roboto', sans-serif;
+    font-family: "Roboto", sans-serif;
   }
 
   &.landscape {
@@ -56,7 +56,7 @@
     margin-bottom: 20px;
 
     .logo {
-      content: ' ';
+      content: " ";
       height: 15.33mm;
       width: 62mm;
       background-image: var(--logo-url);
@@ -221,7 +221,6 @@
 }
 
 .resolution {
-
   .company-detail-head {
     width: 100%;
     text-align: center;
@@ -416,7 +415,7 @@
   background-color: var(--bs-icompany-purple);
 
   .document-text {
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
     font-weight: 800;
     font-size: 3cqw;
     position: absolute;
@@ -575,7 +574,7 @@
 }
 
 .icompany-logo {
-  content: ' ';
+  content: " ";
   height: 40px;
   width: 150px;
   background-image: var(--logo-url);
@@ -609,6 +608,9 @@
 }
 
 .is-printing {
+  // Notes: This is required to make sure document content does not shift upward and cropped when there is more than 5 documents.
+  margin-bottom: 1px;
+
   .document-ear-mark {
     display: none;
   }
