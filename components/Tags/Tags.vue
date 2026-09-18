@@ -5,6 +5,10 @@
       v-for="tag in controller.tags.value"
     >
       {{ tag.name }}
+      <i
+        class="fa-solid fa-xmark clickable"
+        @click="controller.onRemoveTagClicked(tag)"
+      />
     </div>
     <div
       class="tag add-new"
