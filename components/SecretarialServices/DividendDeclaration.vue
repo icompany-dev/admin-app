@@ -4,13 +4,13 @@
     class="secretarial-service-application"
   >
     <div class="service-application">
-      <!-- <ChangeOfNameApplication
+      <DividendDeclarationApplication
         v-bind="controller.applicationProps"
         @company="controller.onCompanyUpdated($event)"
         @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
         @documentSelected="controller.onDocumentTargetSelected($event)"
         @download="controller.onDownloadClicked()"
-      /> -->
+      />
     </div>
     <div class="document-container">
       <component
@@ -27,6 +27,8 @@
 </template>
 
 <script lang="ts" setup>
+  import DividendDeclarationApplication from "../Services/DividendDeclarationApplication.vue"
+  import DividendDeclarationService from "../CompanyServices/DividendDeclarationService.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
   import { DividendDeclarationController } from "~/scripts/components/secretarial-services/DividendDeclarationController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
@@ -41,9 +43,7 @@
   const controller = new DividendDeclarationController(props, emit)
 
   const componentMap: Record<string, any> = {
-    // [DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS]: ChangeOfNameService,
-    // [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27]: Section27Service,
-    // [DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28]: Section28Service,
+    [DocumentTargets.TARGET_DIVIDEND_DECLARATION_RESOLUTIONS]: DividendDeclarationService,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 

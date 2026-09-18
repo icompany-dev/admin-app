@@ -12,7 +12,7 @@ export class DividendDeclarationsController extends SecretarialServicesControlle
 
   onApplicationClicked(data: any): void {
     let application = new CompanyDividendDeclaration(data)
-    this.router.push({ path: `/services/change-business-name/${application.id}` })
+    this.router.push({ path: `/services/declare-dividends/${application.id}` })
   }
 
   companyName(data: any): string {

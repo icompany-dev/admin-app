@@ -41,6 +41,7 @@
   import ChangeBankSignatory from "./ChangeBankSignatory.vue"
   import ChangeOfName from "./ChangeOfName.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
+  import DividendDeclaration from "./DividendDeclaration.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
@@ -56,6 +57,7 @@
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
     [CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY]: ChangeBankSignatory,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
+    [CompanyConstants.TARGET_DIVIDEND_DECLARATION]: DividendDeclaration,
     [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
     [CompanyConstants.TARGET_PURCHASE_ASSET]: AssetPurchase,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotNewShare,
