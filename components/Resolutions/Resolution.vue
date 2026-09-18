@@ -208,6 +208,13 @@
   )
 
   watch(
+    () => props.resolutionDate,
+    (newVal) => {
+      controller.documentDate.value = newVal
+    }
+  )
+
+  watch(
     () => props.totalPages,
     (newVal) => {
       emit("totalPageChanged")
