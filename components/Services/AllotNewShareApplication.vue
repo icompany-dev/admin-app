@@ -132,7 +132,14 @@
               </div>
             </div>
           </template>
-          <template #nodeOptions></template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onUploadDocumentClicked()"
+            >
+              {{ controller.uploadLabel }}
+            </button>
+          </template>
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"

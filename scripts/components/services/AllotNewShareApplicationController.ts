@@ -454,7 +454,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get uploadLabel(): string {
-    return this.language.isMalay() ? "Muat Naik Seksyen 58" : "Upload Section 58"
+    return this.language.isMalay() ? "Muat Naik ROA" : "Upload ROA"
   }
 
   get markCompletedLabel(): string {
