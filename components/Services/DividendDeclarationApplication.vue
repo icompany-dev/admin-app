@@ -24,17 +24,18 @@
             </div>
             <div class="application-details">
               <span v-html="controller.applicationDetails" />
-              <br />
-
-              <b>{{ controller.itemsToPrepareLabel }}</b>
-              <ol>
-                <li
-                  v-for="(item, i) in controller.itemsToPrepare"
-                  :key="i"
-                >
-                  {{ item }}
-                </li>
-              </ol>
+              <template v-if="controller.hasOtherRequirements">
+                <br />
+                <b>{{ controller.itemsToPrepareLabel }}</b>
+                <ol>
+                  <li
+                    v-for="(item, i) in controller.itemsToPrepare"
+                    :key="i"
+                  >
+                    {{ item }}
+                  </li>
+                </ol>
+              </template>
             </div>
           </template>
           <template #nodeOptions>
