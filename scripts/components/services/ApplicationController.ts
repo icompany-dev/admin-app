@@ -98,8 +98,6 @@ export abstract class ApplicationController<Application> {
       this.emitEvents("applicationId", this.application.value.id)
       this.emitEvents("paymentOrderId", this.paymentOrderId.value)
       this.emitEvents("company", this.application.value.company)
-
-      console.log("emit??", this.application.value.company)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -149,6 +147,7 @@ export abstract class ApplicationController<Application> {
 
   async fetchApplication(): Promise<void> {
     if (!this.applicationId.value || StringUtil.isNullOrEmpty(this.applicationId.value)) {
+      console.log("skip??")
       return
     }
 
