@@ -13,6 +13,10 @@ import { PropsCompanyServiceWrapper } from "~/scripts/props/PropsCompanyServiceW
 import { ViewMode } from "~/scripts/constants/ViewMode"
 import { MakePayment } from "~/scripts/library/MakePayment"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class Section105ServiceController extends CompanyServiceController<CompanyShareholderTransfer> {
   companyShareholderTransfer = ref<CompanyShareholderTransfer>(new CompanyShareholderTransfer())
@@ -22,6 +26,8 @@ export class Section105ServiceController extends CompanyServiceController<Compan
   shareholderId: Ref<string> = ref<string>("")
 
   wrapperRef: any | null = null
+
+  section105Refs: any[] = []
 
   constructor(companyId: string, viewType: string, emitEvents: any | null) {
     super(companyId, true, false, CompanyShareholderTransfer, useCompanyShareholderTransferStore(), emitEvents)
@@ -87,8 +93,8 @@ export class Section105ServiceController extends CompanyServiceController<Compan
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -113,8 +119,8 @@ export class Section105ServiceController extends CompanyServiceController<Compan
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -130,6 +136,10 @@ export class Section105ServiceController extends CompanyServiceController<Compan
     if (this.transferDetails.value.length === 0) {
       this.transferDetails.value.push(new CompanyShareTransferDetail())
     }
+  }
+
+  async setSection105(ref: any | null, index: number): Promise<void> {
+    this.section105Refs[index] = ref
   }
 
   getShareTransfer(): CompanyShareholderTransfer {
@@ -175,8 +185,8 @@ export class Section105ServiceController extends CompanyServiceController<Compan
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForCUD()
         errorMessage.handle()
       }
     } finally {
@@ -307,6 +317,22 @@ export class Section105ServiceController extends CompanyServiceController<Compan
         paperElement.style.display = "none"
       }
     })
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    let blobs = []
+    let files: DownloadFileData[] = []
+    for (let i = 0; i < this.section105Refs.length; i++) {
+      let ref = this.section105Refs[i]
+
+      let pages = await ref.getPdfPages()
+      let filename = `${i + 1}. Section 105.pdf`
+      let blob = await PdfPaperUtil.getPdfBlob(pages, 10, filename, PaperSize.A4, PaperOrientation.Portrait)
+      blobs.push(blob)
+      files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
+    }
+
+    await FileZipper.zipAndDownload(files, `Section 105.zip`)
   }
 
   get serviceWrapperProps() {
