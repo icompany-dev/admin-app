@@ -21,6 +21,9 @@ export class CompanyAmendmentName
 
   nameReservations: CompanyNameReservation[] = []
 
+  twentyEightDaysFromcirculationDate: string = ""
+  circulationDate: string = ""
+
   constructor(data: any | null = null) {
     super()
 
@@ -94,6 +97,9 @@ export class CompanyAmendmentName
     this.nameReservations = data.nameReservations.map((item: any) => {
       return new CompanyNameReservation(item)
     })
+
+    this.twentyEightDaysFromcirculationDate = data.twentyEightDaysFromcirculationDate
+    this.circulationDate = data.circulationDate
   }
 
   getRequestBody(): object {

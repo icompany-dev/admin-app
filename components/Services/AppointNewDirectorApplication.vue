@@ -143,7 +143,6 @@
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"
   import { AppointNewDirectorApplicationController } from "~/scripts/components/services/AppointNewDirectorApplicationController"
-
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
 

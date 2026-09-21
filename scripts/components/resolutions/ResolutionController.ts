@@ -318,7 +318,7 @@ export abstract class ResolutionController<T> {
         return this.dayjs(current).isAfter(this.dayjs(latest)) ? current : latest
       }, null)
 
-    return latestDate ? this.dayjs(latestDate).format("D MMMM YYYY") : "To be determined"
+    return latestDate ? this.dayjs(latestDate).format("YYYY-MM-DD") : "To be determined"
   }
 
   getSignatureOnPage(
@@ -492,5 +492,9 @@ export abstract class ResolutionController<T> {
     this.isGettingPdfPages.value = false
 
     return pdfPages
+  }
+
+  get hasConstitution(): boolean {
+    return this.application.value?.company && this.application.value.company.hasConstitution
   }
 }

@@ -99,6 +99,7 @@ export default defineNuxtConfig({
       awsSecretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
       awsRegion: process.env.AWS_REGION || "",
       askSairaWorkflowId: process.env.ASK_SAIRA_WORKFLOW_ID || "",
+      cartoApiKey: process.env.CARTO_API_KEY || "",
     },
   },
 

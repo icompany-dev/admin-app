@@ -83,6 +83,7 @@ export abstract class SecretarialServicesController<T> {
       StatusConstants.NAME_REJECTED,
       StatusConstants.APPROVED,
       StatusConstants.REJECTED,
+      StatusConstants.SUBMITTED,
     ]
 
     if (!StringUtil.isNullOrEmpty(this.searchText.value)) {

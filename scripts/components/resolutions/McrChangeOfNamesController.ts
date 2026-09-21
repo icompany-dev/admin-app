@@ -137,6 +137,14 @@ export class McrChangeOfNamesController extends ResolutionController<CompanyAmen
   getAccompanyingDocument(): string {
     let templateProcessor = new TemplateProcessor(this.documentTemplate.value)
 
+    if (this.application.value) {
+      let dayjs = useDayjs()
+      this.application.value.circulationDate = dayjs(this.application.value.paidAt).format("YYYY-MM-DD")
+      this.application.value.twentyEightDaysFromcirculationDate = dayjs(this.application.value.paidAt)
+        .add(28, "days")
+        .format("YYYY-MM-DD")
+    }
+
     return templateProcessor.getPostSignatureContent(this.application.value)
   }
 

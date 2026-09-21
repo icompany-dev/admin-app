@@ -5,14 +5,14 @@ import { File } from "./File"
 export class NameReservationVariant {
   name: string = ""
   nameType: string = "sdnbhd"
-  nameDescription: string | null = null
+  nameDescription: string | null = "-"
   supportingDocument: File | null = null
   supportingDocumentId: string | null = null
 
   constructor(name: string, nameType: string, nameDescription: string | null, supportingDocument: any | null) {
     this.name = name
     this.nameType = nameType
-    this.nameDescription = nameDescription
+    this.nameDescription = nameDescription ?? "-"
     this.supportingDocument = supportingDocument ? new File(supportingDocument) : null
     this.supportingDocumentId = supportingDocument ? supportingDocument.id : null
   }
@@ -24,7 +24,7 @@ export class NameReservationVariant {
 
     this.name = data.name
     this.nameType = data.nameType
-    this.nameDescription = data.nameDescription
+    this.nameDescription = data.nameDescription ?? "-"
     this.supportingDocument = data.supportingDocument ? new File(data.supportingDocument) : null
     this.supportingDocumentId = data.supportingDocumentId
   }

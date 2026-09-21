@@ -111,4 +111,8 @@ export abstract class Application implements IApplication {
       throw error
     }
   }
+
+  get isPaid(): boolean {
+    return this.status !== StatusConstants.DRAFT && this.status !== StatusConstants.PENDING
+  }
 }

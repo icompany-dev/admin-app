@@ -14,6 +14,7 @@ export interface IPropsServiceWrapper {
   financialYearEndDate: string
   showWatermarkText: boolean
   watermarkText: string
+  companyBankId: string
   yearToLodge: string
   paperOrientation: string
   applicationTarget: string
@@ -39,6 +40,7 @@ export class PropsServiceWrapper implements IPropsServiceWrapper {
   showWatermarkText: boolean = false
   watermarkText: string = ""
   yearToLodge: string = ""
+  companyBankId: string = ""
   paperOrientation: string = PaperOrientation.Portrait
   applicationTarget: string = ""
 

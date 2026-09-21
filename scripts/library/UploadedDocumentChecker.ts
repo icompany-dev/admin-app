@@ -73,6 +73,8 @@ export class UploadedDocumentChecker {
         return StatutoryFormKeywords.ChangeOfAddress
       case DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS:
         return StatutoryFormKeywords.ChangeOfAddress
+      case DocumentTargets.TARGET_PD2:
+        return StatutoryFormKeywords.PD2
       case DocumentTargets.TARGET_AMENDMENT_REGISTERED_ADDRESS:
         return StatutoryFormKeywords.ChangeOfRegisteredAddress
       case DocumentTargets.TARGET_AMENDMENT_REGISTERED_ADDRESS_RESOLUTIONS:
@@ -237,6 +239,10 @@ export class UploadedDocumentChecker {
         return ""
       case DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS:
         return ""
+      case DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76:
+        return "section 76"
+      case DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA:
+        return "return of allotment"
       case DocumentTargets.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES:
         return ""
       case DocumentTargets.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES_RESOLUTIONS:

@@ -134,6 +134,8 @@
 
   defineExpose({
     onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onGenerateBlob: controller.onGenerateBlob.bind(controller),
+    onMoveToForms: controller.onMoveToForms.bind(controller),
   })
 </script>
 

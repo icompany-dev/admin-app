@@ -1,8 +1,8 @@
-import _ from 'lodash'
+import _ from "lodash"
 import type { IModel } from "./IModel"
 
 export class CompanySetting implements IModel<CompanySetting> {
-  id: string = ''
+  id: string = ""
   annualReturnDay: number | null = null
   annualReturnMonth: number | null = null
   auditDay: number | null = null
@@ -11,8 +11,10 @@ export class CompanySetting implements IModel<CompanySetting> {
   taxCodeNumber: string | null = null
   epf: object | null = null
   socso: object | null = null
-  tax: object | null = null
+  tax: CompanySettingTaxDetails | null = null
   trademark: object | null = null
+  isPrnRequired: boolean = true
+
   createdAt: string | null = null
   updatedAt: string | null = null
 
@@ -38,12 +40,14 @@ export class CompanySetting implements IModel<CompanySetting> {
     this.taxCodeNumber = data.tax_code_number ?? null
     this.epf = data.epf ? _.cloneDeep(data.epf) : null
     this.socso = data.socso ? _.cloneDeep(data.socso) : null
-    this.tax = data.tax ? _.cloneDeep(data.tax) : null
+    this.tax = data.tax ? new CompanySettingTaxDetails(data.tax) : null
     this.trademark = data.trademark
+    this.isPrnRequired = data.is_prn_required ?? false
+
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
   }
-  
+
   clone(data: CompanySetting): void {
     this.id = data.id
     this.annualReturnDay = data.annualReturnDay
@@ -54,14 +58,49 @@ export class CompanySetting implements IModel<CompanySetting> {
     this.taxCodeNumber = data.taxCodeNumber
     this.epf = data.epf ? _.cloneDeep(data.epf) : null
     this.socso = data.socso ? _.cloneDeep(data.socso) : null
-    this.tax = data.tax ? _.cloneDeep(data.tax) : null
+    this.tax = data.tax ? new CompanySettingTaxDetails(data.tax) : null
     this.trademark = data.trademark
+    this.isPrnRequired = data.isPrnRequired
+
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
   }
-  
+
   getRequestBody(): object {
     // At the moment, we don't allow the users to change the values here
     return {}
+  }
+}
+
+export class CompanySettingTaxDetails {
+  incomeTaxNo: string = ""
+  employerTaxNo: string = ""
+  branch: string = ""
+  address: string = ""
+
+  constructor(data: any | null = null) {
+    if (!data) {
+      return
+    }
+
+    if (data instanceof CompanySettingTaxDetails) {
+      this.clone(data)
+    } else {
+      this.convertFromResponse(data)
+    }
+  }
+
+  convertFromResponse(data: any): void {
+    this.incomeTaxNo = data.income_tax_no ?? ""
+    this.employerTaxNo = data.employer_tax_no ?? ""
+    this.branch = data.branch ?? ""
+    this.address = data.address ?? ""
+  }
+
+  clone(data: CompanySettingTaxDetails): void {
+    this.incomeTaxNo = data.incomeTaxNo
+    this.employerTaxNo = data.employerTaxNo
+    this.branch = data.branch
+    this.address = data.address
   }
 }

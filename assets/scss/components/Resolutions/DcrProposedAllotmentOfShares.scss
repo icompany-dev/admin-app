@@ -1,0 +1,105 @@
+#dcr-proposed-allotment-of-shares {
+  .paper-tag {
+    left: -20mm;
+  }
+
+  .purpose-tag {
+    top: 540px;
+  }
+
+  .unsubscribed-shares-tag {
+    top: 765px;
+  }
+
+  .due-payable-tag-container {
+    position: relative;
+  }
+
+  .due-payable-tag {
+    left: unset;
+    right: -50mm;
+    top: 0px;
+  }
+
+  #forms-searchable-dropdown {
+    width: fit-content;
+    min-width: 46%;
+    max-width: 100% !important;
+
+    &.menu-showing {
+      width: 100%;
+    }
+
+    .dropdown {
+      width: 100%;
+
+      &.selected {
+        padding: 5px;
+        width: calc(100% - 12px);
+
+        .label {
+          width: calc(100% - 10px);
+        }
+      }
+    }
+  }
+
+  .allottee-type-select {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+
+    #forms-searchable-dropdown {
+      &.menu-showing {
+        width: fit-content;
+      }
+    }
+  }
+
+  .due-and-payable-select {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+
+    #forms-searchable-dropdown {
+      min-width: 200px;
+
+      &.menu-showing {
+        width: fit-content;
+      }
+    }
+
+
+  }
+}
+
+.resolution {
+  .action-link {
+    cursor: pointer;
+
+    &.add-more {
+      color: var(--bs-icompany-blue);
+    }
+
+    &.remove {
+      color: var(--bs-danger);
+    }
+  }
+
+  ol {
+    &.lower-alpha {
+      list-style-type: lower-alpha;
+    }
+
+    li {
+      &.no-number {
+        list-style: none;
+      }
+    }
+  }
+}

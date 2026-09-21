@@ -3,7 +3,10 @@
     id="resolutions-dcr-appointment-of-joint-company-secretary"
     ref="documentRef"
   >
-    <Resolution v-bind="controller.resolutionProps">
+    <Resolution
+      v-bind="controller.resolutionProps"
+      @resolutionDate="controller.onResolutionDateChanged($event)"
+    >
       <template #page1>
         <p>
           <b>RESOLVED:</b>

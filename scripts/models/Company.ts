@@ -10,6 +10,7 @@ import { MsicCodeAssign } from "./MsicCodeAssign"
 import { CompanyBranch } from "./CompanyBranch"
 import { Error } from "~/scripts/library/Error"
 import { StringUtil } from "../utils/String"
+import { Tag } from "./Tag"
 
 export class Company implements IModel<Company> {
   id: string = ""
@@ -42,6 +43,9 @@ export class Company implements IModel<Company> {
   companySecretaryId: string | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
+  isDemo: boolean = false
+
+  tags: Tag[] = []
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -93,6 +97,13 @@ export class Company implements IModel<Company> {
           })
         : []
     this.companySecretaryId = data.company_secretary_id ?? null
+    this.isDemo = data.is_demo ?? false
+    this.tags =
+      data.tags && Array.isArray(data.tags)
+        ? data.tags.map((t: any) => {
+            return new Tag(t)
+          })
+        : []
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
   }
@@ -130,6 +141,10 @@ export class Company implements IModel<Company> {
       return new CompanyBranch(d)
     })
     this.companySecretaryId = data.companySecretaryId
+    this.isDemo = data.isDemo
+    this.tags = data.tags.map((t: any) => {
+      return new Tag(t)
+    })
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
   }

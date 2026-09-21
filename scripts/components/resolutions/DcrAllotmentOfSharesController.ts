@@ -11,10 +11,17 @@ import { AllotTo } from "~/scripts/types/AllotTo"
 import { AlloteeType } from "~/scripts/constants/AllotmentOfShares"
 import { ShareholderInvitation } from "~/scripts/models/ShareholderInvitation"
 import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { CompanyShareAuthorization } from "~/scripts/models/CompanyShareAuthorization"
+import { Filter } from "~/scripts/library/Filter"
+import { ObjectUtil } from "~/scripts/utils/Object"
+import { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import { NumberUtil } from "~/scripts/utils/Number"
 
 export class DcrAllotmentOfSharesController extends ResolutionController<CompanyShareholderAllotment> {
   companyShareholderAllotmentRepository = useCompanyShareholderAllotmentStore()
   companyRepository = useCompanyStore()
+
+  shareAuthorization = ref<CompanyShareAuthorization>(new CompanyShareAuthorization())
 
   allotTos = ref<AllotTo[]>([])
 
@@ -22,6 +29,8 @@ export class DcrAllotmentOfSharesController extends ResolutionController<Company
   shareholderOptions = ref<SelectOption[]>([])
 
   isChangeHandlingRequired: Ref<boolean> = ref<boolean>(false)
+
+  dateOfAuthority: Ref<string> = ref<string>("")
 
   constructor(props: IPropsResolutionDocument<CompanyShareholderAllotment>, emitEvents: any | null) {
     super(
@@ -85,12 +94,27 @@ export class DcrAllotmentOfSharesController extends ResolutionController<Company
         return new Shareholder(s)
       })
       this.setShareholderOptions()
+
+      let shareAuthorizationRepository = useCompanyShareAuthorizationStore()
+      let filter = new Filter()
+      filter.companyId = this.companyId.value
+      filter.statuses = ["paid", "in-effect", "approved"]
+      let authorizationResponse = await shareAuthorizationRepository.fetchAll(filter)
+      if (authorizationResponse.data.length > 0) {
+        let data = authorizationResponse.data.map((d: any) => {
+          return new CompanyShareAuthorization(d)
+        })
+        let orderedData = ObjectUtil.sort<CompanyShareAuthorization>(data, "paidAt", "desc")
+        this.shareAuthorization.value = new CompanyShareAuthorization(orderedData[0])
+      }
+
+      this.dateOfAuthority.value = this.mandateDate
     } catch (e: any) {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchCustom("list of your shareholders", "senarai pemegang saham anda")
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -126,24 +150,28 @@ export class DcrAllotmentOfSharesController extends ResolutionController<Company
       return
     }
 
-    this.allotTos.value = this.application.value.shareAllotTos.map((allotee: CompanyShareAllotTo) => {
-      let type = allotee.shareholderInvitation !== null ? AlloteeType.New : AlloteeType.Existing
-      let isDisabled = allotee.shareholderId !== null
+    this.allotTos.value = this.application.value.shareAllotTos
+      .filter((allotee: CompanyShareAllotTo) => {
+        return allotee.sharesAllotted > 0
+      })
+      .map((allotee: CompanyShareAllotTo) => {
+        let type = allotee.shareholderInvitation !== null ? AlloteeType.New : AlloteeType.Existing
+        let isDisabled = allotee.shareholderId !== null
 
-      let allotTo = new AllotTo(type, allotee, isDisabled)
-      if (type === AlloteeType.New && allotee.shareholderInvitation !== null) {
-        allotTo.email = allotee.shareholderInvitation.email
-        allotTo.shareholdingType =
-          allotee.shareholderInvitation.company !== null &&
-          !StringUtil.isNullOrEmpty(allotee.shareholderInvitation.company.name)
-            ? ShareholdingType.Representative
-            : ShareholdingType.Individual
-        allotTo.companyName = allotee.shareholderInvitation.company.name ?? ""
-        allotTo.companyType = allotee.shareholderInvitation.company.type ?? ""
-      }
+        let allotTo = new AllotTo(type, allotee, isDisabled)
+        if (type === AlloteeType.New && allotee.shareholderInvitation !== null) {
+          allotTo.email = allotee.shareholderInvitation.email
+          allotTo.shareholdingType =
+            allotee.shareholderInvitation.company !== null &&
+            !StringUtil.isNullOrEmpty(allotee.shareholderInvitation.company.name)
+              ? ShareholdingType.Representative
+              : ShareholdingType.Individual
+          allotTo.companyName = allotee.shareholderInvitation.company.name ?? ""
+          allotTo.companyType = allotee.shareholderInvitation.company.type ?? ""
+        }
 
-      return allotTo
-    })
+        return allotTo
+      })
   }
 
   getShareholderOptionsForIndex(allotee: CompanyShareAllotTo): SelectOption[] {
@@ -329,7 +357,7 @@ export class DcrAllotmentOfSharesController extends ResolutionController<Company
       return "NO. OF SHARES"
     }
 
-    return `${allotTo.allotee.sharesAllotted}`
+    return NumberUtil.thousandSeparator(allotTo.allotee.sharesAllotted)
   }
 
   override async updateApplicationContent(updatedApplicationData: CompanyShareholderAllotment): Promise<void> {
@@ -352,5 +380,20 @@ export class DcrAllotmentOfSharesController extends ResolutionController<Company
 
   setIsChangeHandlingRequired(isChangeHandlingRequired: boolean): void {
     this.isChangeHandlingRequired.value = isChangeHandlingRequired
+  }
+
+  get mandateDate(): string {
+    if (this.shareAuthorization.value.signatureGroups.length <= 0) {
+      return ""
+    }
+
+    let dayjs = useDayjs()
+    let orderedData = ObjectUtil.sort<SignatureGroup>(
+      this.shareAuthorization.value.signatureGroups,
+      "createdAt",
+      "desc"
+    )
+
+    return dayjs(orderedData[0].createdAt ?? "").format("YYYY-MM-DD")
   }
 }

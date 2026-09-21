@@ -40,8 +40,8 @@ export class CompanyDividendDeclaration
     this.pricePerShare = data.price_per_share ?? 0
     this.amountInWords = data.amount_in_words ?? ""
     this.amount = data.amount ?? 0
-    this.financialYearEndDate = data.financial_year_end_date ?? ""
-    this.dateOfRegisterOfMembers = data.date_of_register_of_members ?? ""
+    this.financialYearEndDate = data.financial_year_end ?? ""
+    this.dateOfRegisterOfMembers = data.date_of_registered_members ?? ""
     this.dividendPaymentDate = data.dividend_payment_date ?? ""
     this.dividendPaymentMethod = data.dividend_payment_method ?? "Bank Transfer"
   }
@@ -81,7 +81,7 @@ export class CompanyDividendDeclaration
 
   async create(repository: ReturnType<typeof useCompanyDividendDeclarationStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -89,7 +89,7 @@ export class CompanyDividendDeclaration
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -99,7 +99,7 @@ export class CompanyDividendDeclaration
 
   async update(repository: ReturnType<typeof useCompanyDividendDeclarationStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -107,7 +107,7 @@ export class CompanyDividendDeclaration
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -117,14 +117,14 @@ export class CompanyDividendDeclaration
 
   async remove(repository: ReturnType<typeof useCompanyDividendDeclarationStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

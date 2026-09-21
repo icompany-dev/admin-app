@@ -131,7 +131,8 @@ export class DividendDeclarationServiceController extends CompanyServiceControll
         e.handle()
       } else {
         console.error(e)
-        let error: Error = new Error(Error.ERROR_TYPE_API, "Unable to proceed with payment. Please try again")
+        let error: Error = new Error()
+        error.setForFetch()
         error.handle()
       }
     } finally {

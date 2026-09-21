@@ -57,7 +57,8 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
       useCompanyAmendmentNameStore(),
       CompanyAmendmentName,
       CompanyConstants.TARGET_AMENDMENT_NAME,
-      emitEvents
+      emitEvents,
+      props.applicationId
     )
     this.target.value = CompanyConstants.TARGET_AMENDMENT_NAME
     this.minimumMajorityRequired.value = 0.5 // special resolution
@@ -360,15 +361,32 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
   }
 
   async completeServiceClicked(): Promise<void> {
-    if (this.isCompleting.value) {
+    if (this.isCompleting.value || !this.application.value) {
       return
     }
 
     try {
       this.isCompleting.value = true
+      let companyId = this.application.value?.companyId
 
-      await this.application.value?.complete(useCompanyAmendmentNameStore())
-      await this.fetchOngoing()
+      // Generate documents
+      this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
+      await nextTick()
+      this.emitEvents("convertToForms")
+
+      setTimeout(async () => {
+        if (!this.application.value) {
+          return
+        }
+
+        this.application.value.confirmedName = this.application.value.name1
+        await this.application.value.update(useCompanyAmendmentNameStore())
+
+        await this.application.value?.complete(useCompanyAmendmentNameStore())
+
+        let router = useRouter()
+        router.push({ path: `/sdnbhds/${companyId}` })
+      }, 3000)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -745,14 +763,14 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
   }
 
-  get uploadDocumentProps(): PropsUploadDocument {
-    let props = new PropsUploadDocument(this.companyId.value)
+  // get uploadDocumentProps(): PropsUploadDocument {
+  //   let props = new PropsUploadDocument(this.companyId.value)
 
-    props.canUploadImage = false
-    props.canUploadPdf = true
+  //   props.canUploadImage = false
+  //   props.canUploadPdf = true
 
-    return props
-  }
+  //   return props
+  // }
 
   get certifcateOfNameChangeLabel(): string {
     return this.language.isMalay() ? "Sijil Pertukaran Nama" : "Certificate of Name Change"

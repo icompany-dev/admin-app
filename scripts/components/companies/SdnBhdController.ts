@@ -1,6 +1,7 @@
 import { Compliance } from "~/scripts/library/Compliance"
 import { Company } from "~/scripts/models/Company"
 import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
+import { PropsTags } from "~/scripts/props/PropsTags"
 import { AnnualReturnRecord } from "~/scripts/types/AnnualReturnRecord"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -213,5 +214,9 @@ export class SdnBhdController {
     return this.annualReturns.filter((record: AnnualReturnRecord) => {
       return record.year > currentYear
     })
+  }
+
+  get tagsProps(): PropsTags {
+    return new PropsTags("company", this.company.value.id, this.company.value.tags)
   }
 }

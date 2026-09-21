@@ -17,6 +17,7 @@ export class CompanyShareIssuance
   pricePerShare: number = 0.0
   distributionMethod: ShareDistributionMethod = ShareDistributionMethod.ByPercentage
   startDate: string = ""
+  expiryDate: string = ""
   noticePeriod: number = 7
   initiator: User = new User()
   responses: CompanyShareIssuanceResponse[] = []
@@ -44,6 +45,7 @@ export class CompanyShareIssuance
     this.pricePerShare = data.price_per_share
     this.distributionMethod = data.distribution_method
     this.startDate = data.start_date
+    this.expiryDate = data.expiry_date
     this.noticePeriod = data.notice_period
     this.initiator = new User(data.initiator)
     this.responses =
@@ -66,6 +68,7 @@ export class CompanyShareIssuance
     this.pricePerShare = data.pricePerShare
     this.distributionMethod = data.distributionMethod
     this.startDate = data.startDate
+    this.expiryDate = data.expiryDate
     this.noticePeriod = data.noticePeriod
     this.initiator = new User(data.initiator)
     this.responses = data.responses.map((d: any) => {
@@ -94,25 +97,25 @@ export class CompanyShareIssuance
 
   async create(repository: ReturnType<typeof useCompanyShareIssuanceStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let data = this.getRequestBody()
     const response = await repository.initiate(data)
-    if (repository.error) {
-      let error: Error = new Error("", "")
+    if (repository.error || !response) {
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
 
-    this.convertFromResponseDetails(response)
+    this.cloneDetails(response)
   }
 
   async update(repository: ReturnType<typeof useCompanyShareIssuanceStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -120,7 +123,7 @@ export class CompanyShareIssuance
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -130,14 +133,14 @@ export class CompanyShareIssuance
 
   async remove(repository: ReturnType<typeof useCompanyShareIssuanceStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

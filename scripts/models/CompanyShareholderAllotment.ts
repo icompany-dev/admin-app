@@ -11,6 +11,8 @@ import { ShareholderInvitation } from "./ShareholderInvitation"
 import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
 import type { CompanyShareIssuanceResponse } from "./CompanyShareIssuanceResponse"
+import { CompanyShareholderAllotmentDetail } from "./CompanyShareholderAllotmentDetail"
+import { CompanyFundSourceDeclaration } from "./CompanyFundSourceDeclaration"
 
 export class CompanyShareholderAllotment
   extends Application
@@ -22,10 +24,14 @@ export class CompanyShareholderAllotment
   pricePerShare: number = 0.0
   shareType: ShareType = ShareType.Ordinary
   allotmentCashType: AllotmentCashType = AllotmentCashType.Cash
+  preferenceAgreementId: string | null = null
   preferenceAgreement: File | null = null
-  declarations: ClientDueDiligenceDeclaration[] = []
+  cashInjectionId: string | null = null
+  cashInjection: File | null = null
+  declarations: CompanyFundSourceDeclaration[] = []
   isInitiatedByDirector: boolean = false
   issuances: CompanyShareIssuance[] = []
+  details: CompanyShareholderAllotmentDetail = new CompanyShareholderAllotmentDetail()
 
   constructor(data: any | null = null) {
     super()
@@ -54,11 +60,14 @@ export class CompanyShareholderAllotment
     this.pricePerShare = data.price_per_share
     this.shareType = data.share_type
     this.allotmentCashType = data.allotment_cash_type
+    this.preferenceAgreementId = data.preference_agreement ? data.preference_agreement.id : null
     this.preferenceAgreement = data.preference_agreement ? new File(data.preference_agreement) : null
+    this.cashInjectionId = data.cash_injection ? data.cash_injection.id : null
+    this.cashInjection = data.cash_injection ? new File(data.cash_injection) : null
     this.declarations =
-      data.declarations && Array.isArray(data.declarations)
-        ? data.declarations.map((d: any) => {
-            return new ClientDueDiligenceDeclaration(d)
+      data.source_declarations && Array.isArray(data.source_declarations)
+        ? data.source_declarations.map((d: any) => {
+            return new CompanyFundSourceDeclaration(d)
           })
         : []
     this.isInitiatedByDirector = data.is_initiated_by_director
@@ -68,6 +77,8 @@ export class CompanyShareholderAllotment
             return new CompanyShareIssuance(d)
           })
         : []
+
+    this.details = new CompanyShareholderAllotmentDetail(data.details)
   }
 
   cloneDetails(data: CompanyShareholderAllotment): void {
@@ -80,14 +91,18 @@ export class CompanyShareholderAllotment
     this.pricePerShare = data.pricePerShare
     this.shareType = data.shareType
     this.allotmentCashType = data.allotmentCashType
+    this.preferenceAgreementId = data.preferenceAgreementId
     this.preferenceAgreement = data.preferenceAgreement ? new File(data.preferenceAgreement) : null
+    this.cashInjectionId = data.cashInjectionId
+    this.cashInjection = data.cashInjection ? new File(data.cashInjection) : null
     this.declarations = data.declarations.map((d: any) => {
-      return new ClientDueDiligenceDeclaration(d)
+      return new CompanyFundSourceDeclaration(d)
     })
     this.isInitiatedByDirector = data.isInitiatedByDirector
     this.issuances = data.issuances.map((d: any) => {
       return new CompanyShareIssuance(d)
     })
+    this.details = new CompanyShareholderAllotmentDetail(data.details)
   }
 
   getRequestBody(): object {
@@ -98,6 +113,19 @@ export class CompanyShareholderAllotment
       allot_shares_to: this.shareAllotTos.map((allotTo: CompanyShareAllotTo) => {
         return allotTo.getRequestBody()
       }),
+      details: this.details.getRequestBody(),
+    }
+  }
+
+  getRequestBodyForCashInjection(): object {
+    return {
+      cash_injection_id: this.cashInjectionId,
+    }
+  }
+
+  getRequestBodyForPreferenceAgreement(): object {
+    return {
+      preference_agreement_id: this.preferenceAgreementId,
     }
   }
 
@@ -107,7 +135,7 @@ export class CompanyShareholderAllotment
 
   async create(repository: ReturnType<typeof useCompanyShareholderAllotmentStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -115,7 +143,7 @@ export class CompanyShareholderAllotment
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -125,7 +153,7 @@ export class CompanyShareholderAllotment
 
   async update(repository: ReturnType<typeof useCompanyShareholderAllotmentStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -133,7 +161,7 @@ export class CompanyShareholderAllotment
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -143,19 +171,37 @@ export class CompanyShareholderAllotment
 
   async remove(repository: ReturnType<typeof useCompanyShareholderAllotmentStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
 
     return response
+  }
+
+  async updateCashInjection(repository: ReturnType<typeof useCompanyShareholderAllotmentStore>): Promise<void> {
+    if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBodyForCashInjection()
+    const response = await repository.update(this.id, data)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponseDetails(response)
   }
 
   setDataFromIssuance(shareIssuance: CompanyShareIssuance): void {

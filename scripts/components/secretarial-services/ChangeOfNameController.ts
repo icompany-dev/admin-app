@@ -25,4 +25,12 @@ export class ChangeOfNameController extends SecretarialServiceController<
 
     this.application.value = new CompanyAmendmentName(response)
   }
+
+  async onConvertToForms(): Promise<void> {
+    if (!this.documentRef) {
+      return
+    }
+
+    await this.documentRef.onMoveToForms()
+  }
 }

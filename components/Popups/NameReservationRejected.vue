@@ -16,6 +16,13 @@
             v-model="controller.reason.value"
           />
         </div>
+        <div class="form-group">
+          <span class="label">{{ controller.actionToBeTakenLabel }}</span>
+          <textarea
+            class="form-control"
+            v-model="controller.actionToBeTaken.value"
+          />
+        </div>
       </template>
       <template #actionButtons>
         <button

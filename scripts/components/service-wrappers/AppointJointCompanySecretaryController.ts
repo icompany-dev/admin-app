@@ -8,6 +8,8 @@ import { useCompanyStore } from "~/stores/Companies"
 import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class AppointJointCompanySecretaryController
   extends ServiceController
@@ -104,6 +106,27 @@ export class AppointJointCompanySecretaryController
     // Must ask for confirmation before it proceeds to delete
     // await this.application.remove(this.repository)
     this.emitEvents("back")
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value || !this.dcrRef) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let dcrPages = await this.dcrRef.getPdfPages()
+
+      let filename = `${this.company.value.getFullName()} DCR Appointment of Joint Company Secretary.pdf`
+
+      await PdfPaperUtil.generatePdfFile(dcrPages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   helpTitle(): string {

@@ -78,12 +78,20 @@ export const useApplicationNameReservationStore = defineStore("applicationNameRe
     }
   }
 
-  async function reject(incorporationId: string, reason: string): Promise<ApplicationNameReservation | null> {
+  async function reject(
+    incorporationId: string,
+    reason: string,
+    actionToBeTaken: string
+  ): Promise<ApplicationNameReservation | null> {
     isLoading.value = true
     error.value = null
 
     try {
-      const response = await $repositories.applicationNameReservations.rejected(incorporationId, reason)
+      const response = await $repositories.applicationNameReservations.rejected(
+        incorporationId,
+        reason,
+        actionToBeTaken
+      )
       return response.data ? new ApplicationNameReservation(response.data) : null
     } catch (e) {
       error.value = `Failed to update data: ${e}`

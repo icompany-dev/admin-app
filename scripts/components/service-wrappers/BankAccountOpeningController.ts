@@ -261,7 +261,7 @@ export class BankAccountOpeningController
         return
       }
 
-      await Promise.allSettled(promises)
+      await Promise.all(promises)
     } catch (e) {
       console.error(e)
     } finally {
@@ -280,7 +280,7 @@ export class BankAccountOpeningController
 
   get watermarkText(): string {
     if (this.applicationRef.value.status === StatusConstants.READY) {
-      return "READY FOR DELIVERY"
+      return "READY TO SHIP"
     }
 
     return "DRAFT"

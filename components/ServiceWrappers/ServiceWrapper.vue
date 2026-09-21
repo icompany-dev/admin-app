@@ -44,6 +44,7 @@
             :registration-number-new="props.registrationNumberNew"
             :registration-number-old="props.registrationNumberOld"
             :payment-order-id="props.paymentOrderId"
+            :company-bank-id="props.companyBankId"
             @back="controller.onMinimizeDocument($event)"
             @make-payment="controller.onMakePayment()"
             @applicationUpdated="controller.onApplicationUpdated($event)"
@@ -70,6 +71,7 @@
   import AuditExtensionOfTime from "./AuditExtensionOfTime.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
   import BODeclaration from "./BODeclaration.vue"
+  import ChangeBankSignatories from "./ChangeBankSignatories.vue"
   import ChangeOfName from "./ChangeOfName.vue"
   import ChangeOfAddress from "./ChangeOfAddress.vue"
   import ChangeOfBranch from "./ChangeOfBranch.vue"
@@ -79,6 +81,7 @@
   import CloseBankAccount from "./CloseBankAccount.vue"
   import DelegationOfAuthority from "./DelegationOfAuthority.vue"
   import DividendDeclaration from "./DividendDeclaration.vue"
+  import DividendVouchers from "./DividendVouchers.vue"
   import EnterContract from "./EnterContract.vue"
   import LetterToExistingCosec from "./LetterToExistingCosec.vue"
   import LoanToDirector from "./LoanToDirector.vue"
@@ -91,6 +94,7 @@
   import NotifyBankChangeOfCompanyName from "./NotifyBankChangeOfCompanyName.vue"
   import PracticeDirective2 from "./PracticeDirective2.vue"
   import PreferenceShareRight from "./PreferenceShareRight.vue"
+  import PurchaseAsset from "./PurchaseAsset.vue"
   import ReceiptInvoice from "./ReceiptInvoice.vue"
   import RegisterTransferOfShares from "./RegisterTransferOfShares.vue"
   import RemoveDirector from "./RemoveDirector.vue"
@@ -100,6 +104,7 @@
   import SetFinancialYearEnd from "./SetFinancialYearEnd.vue"
   import ShareIssuance from "./ShareIssuance.vue"
   import Section201 from "./Section201.vue"
+  import Section201ForDirector from "./Section201ForDirector.vue"
   import Section236Three from "./Section236Three.vue"
   import Section27ForCompany from "./Section27ForCompany.vue"
   import Section27OneFour from "./Section27OneFour.vue"
@@ -143,6 +148,7 @@
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,
     [CompanyConstants.TARGET_AUDIT_EXTENSION_OF_TIME]: AuditExtensionOfTime,
     [CompanyConstants.TARGET_BO_DECLARATION]: BODeclaration,
+    [CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY]: ChangeBankSignatories,
     [CompanyConstants.TARGET_CLOSE_BANK_ACCOUNT]: CloseBankAccount,
     [CompanyConstants.TARGET_COMMON_SEAL]: AdoptCommonSeal,
     [CompanyConstants.TARGET_COMMON_SEAL_REPLACEMENT]: ReplaceCommonSeal,
@@ -151,11 +157,13 @@
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointmentOfDirector,
     [CompanyConstants.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST]: Section219And221,
     [CompanyConstants.TARGET_DIRECTOR_INVITATION]: Section201,
+    [CompanyConstants.TARGET_DIRECTOR]: Section201ForDirector,
     [CompanyConstants.TARGET_DIRECTOR_LOAN]: LoanToDirector,
     [CompanyConstants.TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT]: AppointChairman,
     [CompanyConstants.TARGET_DIRECTOR_MANAGER_APPOINTMENT]: AppointManager,
     [CompanyConstants.TARGET_DIRECTOR_RESIGNATION]: ResignationOfDirector,
     [CompanyConstants.TARGET_DIVIDEND_DECLARATION]: DividendDeclaration,
+    [CompanyConstants.TARGET_DIVIDEND_VOUCHER]: DividendVouchers,
     [CompanyConstants.TARGET_FINANCIAL_STATEMENT_AUTHORISED_PERSON]: AppointResponsiblePersonForFinancialStatement,
     [CompanyConstants.TARGET_LOAN_APPLICATION]: TekunApplication,
     [CompanyConstants.TARGET_LODGE_ANNUAL_RETURN]: LodgeAnnualReturn,
@@ -167,10 +175,12 @@
     [CompanyConstants.TARGET_NOTIFY_CHANGE_OF_NAME]: NotifyBankChangeOfCompanyName,
     [CompanyConstants.TARGET_PRACTICE_DIRECTIVE_2]: PracticeDirective2,
     [CompanyConstants.TARGET_PREFERENCE_SHARE_RIGHT]: PreferenceShareRight,
+    [CompanyConstants.TARGET_PURCHASE_ASSET]: PurchaseAsset,
+    [CompanyConstants.TARGET_PREEMPTIVE_RIGHT_NOTICE]: ShareIssuance,
     [CompanyConstants.TARGET_RECEIPT]: ReceiptInvoice,
     [CompanyConstants.TARGET_REMOVAL_OF_DIRECTOR]: RemoveDirector,
     [CompanyConstants.TARGET_SET_FINANCIAL_YEAR_END]: SetFinancialYearEnd,
-    [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT]: ShareIssuance,
+    [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT]: AllotmentOfShares,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotmentOfShares,
     [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_TRANSFER]: NoticeTransferOfShares,
     [CompanyConstants.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER]: RegisterTransferOfShares,

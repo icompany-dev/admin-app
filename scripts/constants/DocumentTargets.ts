@@ -36,6 +36,9 @@ export class DocumentTargets {
   static TARGET_BO_DECLARATION: string = "company_bo_declaration"
   static TARGET_BO_DECLARATION_RESOLUTIONS: string = "company_bo_declaration_resolutions"
 
+  static TARGET_CHANGE_BANK_SIGNATORY: string = "company_change_bank_signatory"
+  static TARGET_CHANGE_BANK_SIGNATORY_RESOLUTIONS: string = "company_change_bank_signatory_resolutions"
+
   static TARGET_CLOSE_BANK_ACCOUNT: string = "company_bank_account_closure"
   static TARGET_CLOSE_BANK_ACCOUNT_RESOLUTIONS: string = "company_bank_account_closure_resolutions"
 
@@ -75,6 +78,7 @@ export class DocumentTargets {
 
   static TARGET_DIVIDEND_DECLARATION: string = "company_dividend_declaration"
   static TARGET_DIVIDEND_DECLARATION_RESOLUTIONS: string = "company_dividend_declaration_resolutions"
+  static TARGET_DIVIDEND_DECLARATION_VOUCHERS: string = "company_dividend_declaration_vouchers"
 
   static TARGET_DOCUMENT_NOT_KEPT: string = "company_record_storage"
   static TARGET_DOCUMENT_NOT_KEPT_RESOLUTIONS: string = "company_record_storage_resolutions"
@@ -119,6 +123,9 @@ export class DocumentTargets {
   static TARGET_PREFERENCE_SHARE_RIGHT: string = "company_preference_share_right"
   static TARGET_PREFERENCE_SHARE_RIGHT_RESOLUTIONS: string = "company_preference_share_right_resolutions"
 
+  static TARGET_PURCHASE_ASSET: string = "company_asset_purchase"
+  static TARGET_PURCHASE_ASSET_RESOLUTIONS: string = "company_asset_purchase_resolutions"
+
   static TARGET_REMOVAL_OF_DIRECTOR: string = "company_director_removal_notice"
   static TARGET_REMOVAL_OF_DIRECTOR_RESOLUTIONS: string = "company_director_removal_notice_resolutions"
 
@@ -130,6 +137,8 @@ export class DocumentTargets {
 
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES: string = "company_shareholder_allotment"
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS: string = "company_shareholder_allotment_resolutions"
+  static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76: string = "company_shareholder_allotment_section76"
+  static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA: string = "company_shareholder_allotment_roa"
 
   static TARGET_SHAREHOLDER_TRANSFER_OF_SHARES: string = "company_shareholder_transfer"
   static TARGET_SHAREHOLDER_TRANSFER_OF_SHARES_RESOLUTIONS: string = "company_shareholder_transfer_resolutions"

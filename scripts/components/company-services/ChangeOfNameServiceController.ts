@@ -15,6 +15,11 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { CompanyNameReservation } from "~/scripts/models/CompanyNameReservation"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { File as UploadedFile } from "~/scripts/models/File"
+import { Form } from "~/scripts/models/Form"
+import { Toast } from "~/scripts/library/Toast"
 
 export class ChangeOfNameServiceController extends CompanyServiceController<CompanyAmendmentName> {
   companyAmendmentName = ref<CompanyAmendmentName>(new CompanyAmendmentName())
@@ -320,6 +325,83 @@ export class ChangeOfNameServiceController extends CompanyServiceController<Comp
     `
   }
 
+  override async onMoveToForms(): Promise<void> {
+    try {
+      let promises = []
+
+      if (this.dcrRef) {
+        promises.push(
+          this.dcrRef.getPdfPages(async (pages: HTMLDivElement[]) => {
+            if (!this.application.value) {
+              console.log("Yo?? NO DCR")
+              return
+            }
+
+            let filename = `DCR - Change of Company's Name.pdf`
+            let blob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+
+            let pdfFile = new File([blob], filename, {
+              type: "application/pdf",
+            })
+
+            let uploadedFile = new UploadedFile()
+            await uploadedFile.uploadFile(pdfFile, useFileStore())
+
+            let form = new Form()
+            form.companyId = this.application.value.companyId
+            form.status = "active"
+            form.type = "business_detail"
+            form.documentDate = this.documentDate
+            form.fileId = uploadedFile.id
+
+            form.create(useFormStore())
+          })
+        )
+      }
+
+      if (this.mcrRef) {
+        promises.push(
+          this.mcrRef.getPdfPages(async (pages: HTMLDivElement[]) => {
+            if (!this.application.value) {
+              console.log("Yo?? NO MCR")
+              return
+            }
+
+            let filename = `MCR - Change of Company's Name.pdf`
+            let blob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+
+            let pdfFile = new File([blob], filename, {
+              type: "application/pdf",
+            })
+
+            let uploadedFile = new UploadedFile()
+            await uploadedFile.uploadFile(pdfFile, useFileStore())
+
+            let form = new Form()
+            form.companyId = this.application.value.companyId
+            form.status = "active"
+            form.type = "business_detail"
+            form.documentDate = this.documentDate
+            form.fileId = uploadedFile.id
+
+            form.create(useFormStore())
+          })
+        )
+      }
+
+      await Promise.all(promises)
+
+      let toastTitle = this.language.isMalay()
+        ? "Resolusi telah dijana dan ditambah ke Dokumen Syarikat"
+        : "Resolutions have been generated and added to Company Documents"
+
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   // PASCA functions
   isMajorityReached(): boolean {
     if (!this.application.value) {
@@ -553,5 +635,24 @@ export class ChangeOfNameServiceController extends CompanyServiceController<Comp
       this.isInPreviewMode.value,
       false
     )
+  }
+
+  get documentDate(): string {
+    if (!this.application.value || this.application.value.signatureGroups.length <= 0 || !this.haveAllSigned()) {
+      return ""
+    }
+
+    const latestDate = this.application.value.signatureGroups
+      .map((sg: SignatureGroup) => {
+        return sg.createdAt
+      })
+      .reduce((latest: string | null, current: string | null) => {
+        if (!latest) {
+          return current
+        }
+        return this.dayjs(current).isAfter(this.dayjs(latest)) ? current : latest
+      }, null)
+
+    return latestDate ? this.dayjs(latestDate).format("YYYY-MM-DD") : ""
   }
 }

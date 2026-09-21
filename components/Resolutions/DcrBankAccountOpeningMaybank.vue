@@ -23,13 +23,15 @@
             {{ controller.companyName() }}
           </div>
           <div class="company-registration-number">
-            [Company No: {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})]
+            Company No: {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
           </div>
           <div v-if="index === 0">
-            ("Company")
-            <br />
-            <br />
             (Incorporated in Malaysia)
+            <br />
+            <br />
+            (also refered to as the
+            <b>“Company”</b>
+            )
           </div>
         </div>
         <div
@@ -40,10 +42,7 @@
             v-if="index === 0"
             v-html="controller.resolutionTitleRef.value"
           />
-          <span v-if="index > 0">
-            (Directors’ Resolution in Writing Re: Opening of bank Account with Malayan Banking Berhad/ Maybank Islamic
-            Berhad – cont’d)
-          </span>
+          <span v-if="index > 0">{{ controller.otherPageTitle }}</span>
         </div>
         <div class="resolution-content">
           <div v-html="page" />
@@ -68,6 +67,17 @@
               @signed="emit('signed', $event)"
             />
           </div>
+        </div>
+
+        <div
+          class="resolution-date"
+          v-if="index + 1 === controller.totalPages()"
+        >
+          Dated:
+          <br />
+          <span class="date">
+            {{ controller.documentDate }}
+          </span>
         </div>
       </template>
     </Paper>
@@ -109,6 +119,17 @@
               @signed="emit('signed', $event)"
             />
           </div>
+        </div>
+
+        <div
+          class="resolution-date"
+          v-if="page === controller.totalPages()"
+        >
+          Dated:
+          <br />
+          <span class="date">
+            {{ controller.documentDate }}
+          </span>
         </div>
       </template>
     </Paper>

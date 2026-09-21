@@ -64,6 +64,7 @@ export class StringUtil {
       egm: "EGM",
       dcr: "DCR",
       mcr: "MCR",
+      lhdn: "LHDN",
     }
 
     return text.toLowerCase().replace(/\b\w+\b/g, (word, index) => {

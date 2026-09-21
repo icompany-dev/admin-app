@@ -1,0 +1,27 @@
+#preemptive-right-notices {
+  .preemptive-right-notice-container {
+    .documents {
+      position: relative;
+      width: fit-content;
+      margin: auto;
+
+      .submission-overlay {
+        position: absolute;
+        z-index: 5;
+        background-color: rgba(0, 0, 0, 0.8);
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        color: rgba(255, 255, 255, 0.4);
+        text-shadow: 0px 0px 8px rgba(255, 255, 255, 0);
+
+        i,
+        .loader-label,
+        .loader-sublabel {
+          color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+}

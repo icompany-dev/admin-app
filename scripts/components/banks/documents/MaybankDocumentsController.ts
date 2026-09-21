@@ -59,7 +59,7 @@ export class MaybankDocumentsController extends BankDocumentsController {
     return this.onlineBankingRef.getAuthorisedPersonsForOnlineBanking()
   }
 
-  async getPdfPages(): Promise<HTMLElement[]> {
+  override async getPdfPages(): Promise<HTMLElement[]> {
     let pages: HTMLElement[] = []
 
     if (this.authorisedSignatoryRef) {
@@ -79,6 +79,7 @@ export class MaybankDocumentsController extends BankDocumentsController {
 
     if (this.declarationRef) {
       let docPages = await this.declarationRef.getPdfPages()
+      console.log(docPages, "check me")
       pages = pages.concat(docPages)
     }
 

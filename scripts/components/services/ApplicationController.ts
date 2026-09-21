@@ -123,7 +123,7 @@ export abstract class ApplicationController<Application> {
       this.uploadedDocumentChecker.value.fetchDocuments(),
     ])
 
-    await this.fetchPaymentOrder()
+    await Promise.allSettled([this.fetchPaymentOrder(), this.initializeData()])
 
     this.emitEvents("applicationId", this.application.value.id)
     this.emitEvents("paymentOrderId", this.paymentOrderId.value)
@@ -141,8 +141,13 @@ export abstract class ApplicationController<Application> {
     this.serviceApplicationRef = serviceApplicationRef
   }
 
+  async initializeData(): Promise<void> {
+    // do nothing
+  }
+
   async fetchApplication(): Promise<void> {
     if (!this.applicationId.value || StringUtil.isNullOrEmpty(this.applicationId.value)) {
+      console.log("skip??")
       return
     }
 
@@ -152,6 +157,11 @@ export abstract class ApplicationController<Application> {
     }
 
     this.application.value = new this.applicationClassType(response)
+
+    if (StringUtil.isNullOrEmpty(this.uploadedDocumentChecker.value.companyId)) {
+      this.uploadedDocumentChecker.value.companyId = this.application.value.companyId
+      await this.uploadedDocumentChecker.value.fetchDocuments()
+    }
   }
 
   async fetchOngoing(): Promise<void> {

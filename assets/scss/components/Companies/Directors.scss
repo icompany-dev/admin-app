@@ -1,0 +1,74 @@
+#companies-directors {
+  margin-top: 30px;
+
+  .companies-documents {
+    position: relative;
+    height: 70dvh;
+
+    .sdn-bhd-container {
+      max-height: 70dvh;
+
+      .directors {
+        overflow-y: auto;
+        max-height: calc(70dvh - 50px);
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        align-items: flex-start;
+        gap: 10px;
+
+        .director-details {
+          display: flex;
+          flex-direction: column;
+          justify-content: stretch;
+          align-items: flex-start;
+          gap: 10px;
+          transition: all 0.7s ease;
+          cursor: pointer;
+          border-radius: 10px;
+          width: calc(100% - 20px);
+          padding: 10px;
+
+          .form-check {
+            justify-content: flex-start;
+            gap: 20px;
+
+            input[type=checkbox] {
+              border-color: var(--bs-white);
+            }
+
+            .director-name {
+              font-weight: 600;
+            }
+          }
+
+          &:hover {
+            width: calc(100% - 40px);
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+          }
+        }
+      }
+
+      #pagination-table-pagination {
+        margin-top: 20px;
+        justify-content: flex-start;
+      }
+    }
+
+    .document-in-view {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+
+    .documents-to-generate {
+      position: fixed;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      z-index: -999;
+    }
+  }
+}
