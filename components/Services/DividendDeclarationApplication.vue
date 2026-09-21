@@ -56,6 +56,38 @@
           </template>
         </ApplicationNode>
         <ApplicationNode
+          v-bind="controller.voucherNodeProps"
+          @click="controller.onVouchersDetailsClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.voucherLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.voucherSublabel }}
+              </div>
+            </div>
+            <div class="application-details"></div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onDownloadClicked()"
+            >
+              {{ controller.downloadLabel }}
+            </button>
+          </template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              @click="controller.onShippedClicked()"
+            >
+              {{ controller.shipLabel }}
+            </button>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode
           v-if="controller.isDeliveryRequired"
           v-bind="controller.deliveryNodeProps"
           @click="controller.onApplicationDetailsClicked()"

@@ -28,7 +28,7 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
   time = useLocalTime()
 
   constructor(props: PropsDividendVoucher, emitEvents: any) {
-    super("Dividend Voucher", props.companyId, PaperOrientation.Landscape)
+    super("Dividend Voucher", "", PaperOrientation.Landscape)
 
     this.setDataFromProps(props)
 
@@ -118,6 +118,10 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
     let userDetail = shareholder.user?.detail ?? new UserDetail()
 
     return userDetail.location?.getMultilineAddress() ?? ""
+  }
+
+  totalPages(): number {
+    return this.shareholders.value.length
   }
 
   get loaderLabel(): string {

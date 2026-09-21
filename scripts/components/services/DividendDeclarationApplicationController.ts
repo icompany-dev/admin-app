@@ -24,6 +24,7 @@ export class DividendDeclarationApplicationController extends ApplicationControl
   banks: Ref<Bank[]> = ref<Bank[]>([])
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
+  isShowVouchers: Ref<boolean> = ref<boolean>(false)
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
@@ -65,6 +66,7 @@ export class DividendDeclarationApplicationController extends ApplicationControl
   onPaymentStepClicked(): void {
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false
+    this.isShowVouchers.value = false
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
@@ -73,9 +75,19 @@ export class DividendDeclarationApplicationController extends ApplicationControl
   onApplicationDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
+    this.isShowVouchers.value = false
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_DIVIDEND_DECLARATION_RESOLUTIONS)
+  }
+
+  onVouchersDetailsClicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowVouchers.value = true
+    this.isShowCompleted.value = false
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_DIVIDEND_DECLARATION_VOUCHERS)
   }
 
   async onDownloadClicked(): Promise<void> {
@@ -101,7 +113,7 @@ export class DividendDeclarationApplicationController extends ApplicationControl
 
   //getters
   get serviceName(): string {
-    return this.language.isMalay() ? "Buka Akaun Bank" : "Open Bank Account"
+    return this.language.isMalay() ? "Pengisytiharan" : "Dividend Declaration"
   }
 
   get paymentApplicationNodeProps(): PropsServiceApplicationNode {
@@ -180,6 +192,20 @@ export class DividendDeclarationApplicationController extends ApplicationControl
     })
 
     return items
+  }
+
+  get voucherNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.hasPaid, this.isShipped, this.isShowVouchers.value)
+  }
+
+  get voucherLabel(): string {
+    return this.language.isMalay() ? "Baucar Dividen" : "Dividend Vouchers"
+  }
+
+  get voucherSublabel(): string {
+    return this.language.isMalay()
+      ? "Jana Baucar bagi Dividen yang Diisytihar"
+      : "Generate Vouchers for the Dividend Declared"
   }
 
   override get deliveryAddress(): string {

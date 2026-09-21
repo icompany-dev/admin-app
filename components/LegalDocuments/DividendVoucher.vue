@@ -175,6 +175,7 @@
 
   defineExpose({
     getPdfPages: controller.getPdfPages.bind(controller),
+    totalPages: controller.totalPages.bind(controller),
   })
 </script>
 

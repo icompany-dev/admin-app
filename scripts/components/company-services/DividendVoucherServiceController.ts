@@ -15,6 +15,7 @@ import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { PropsDividendVoucher } from "~/scripts/props/PropsDividendVoucher"
+import { PaperOrientation } from "~/scripts/constants/Paper"
 
 export class DividendVoucherServiceController extends CompanyServiceController<CompanyDividendDeclaration> {
   companyDividendDeclaration = ref<CompanyDividendDeclaration>(new CompanyDividendDeclaration())
@@ -282,7 +283,7 @@ export class DividendVoucherServiceController extends CompanyServiceController<C
     let isInPreviewMode = this.viewType.value === ViewMode.New ? true : false
     let showPasca = this.viewType.value === ViewMode.Existing
 
-    return new PropsCompanyServiceWrapper(
+    let props = new PropsCompanyServiceWrapper(
       application,
       this.companyId,
       this.target,
@@ -316,6 +317,11 @@ export class DividendVoucherServiceController extends CompanyServiceController<C
       false,
       true
     )
+
+    props.paperOrientation = PaperOrientation.Landscape
+    props.serviceWrapperProps.paperOrientation = PaperOrientation.Landscape
+
+    return props
   }
 
   get resolutionDocumentProps() {
