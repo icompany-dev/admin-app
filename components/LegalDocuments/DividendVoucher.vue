@@ -84,25 +84,13 @@
                 <tbody>
                   <tr>
                     <td>
-                      <input
-                        type="text"
-                        class="form-control in-resolution"
-                        placeholder="Category"
-                      />
+                      {{ controller.dividendCategory.value }}
                     </td>
                     <td>
-                      <input
-                        type="text"
-                        class="form-control in-resolution"
-                        placeholder="Rate"
-                      />
+                      {{ controller.getDividendRate(shareholder) }}
                     </td>
                     <td>
-                      <input
-                        type="text"
-                        class="form-control in-resolution"
-                        placeholder="Amount"
-                      />
+                      {{ controller.getGrossAmount(shareholder) }}
                     </td>
                   </tr>
                 </tbody>
@@ -126,7 +114,14 @@
               <ol>
                 <li>
                   We hereby certify that the exempt dividend is paid out of dividend income in respect of which Income
-                  Tax has been exempted under [legal provisions for exemption].
+                  Tax has been exempted under
+                  <input
+                    type="text"
+                    class="form-control in-resolution"
+                    v-model="controller.legalProvisionForExemption.value"
+                    placeholder="Legal Provision for Exemption"
+                  />
+                  .
                 </li>
                 <li>
                   We hereby certify that no tax is deductible from the single tier dividend under subsection 108(1) of

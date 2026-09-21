@@ -24,6 +24,9 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
 
   additionalCssClass: string = "dividend-voucher"
 
+  dividendCategory: Ref<string> = ref<string>("EXEMPT DIVIDEND")
+  legalProvisionForExemption: Ref<string> = ref<string>("")
+
   dayjs = useDayjs()
   time = useLocalTime()
 
@@ -122,6 +125,32 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
 
   totalPages(): number {
     return this.shareholders.value.length
+  }
+
+  getDividendRate(shareholder: Shareholder): number {
+    let totalShares =
+      this.application.value.shareType === ShareType.Ordinary
+        ? shareholder.ordinaryShares
+        : shareholder.preferenceShares
+    let totalCompanyShares = this.shareholders.value
+      .map((s: Shareholder) => {
+        return this.application.value.shareType === ShareType.Ordinary ? s.ordinaryShares : s.preferenceShares
+      })
+      .reduce((a: number, b: number) => {
+        return a + b
+      }, 0)
+
+    return (totalShares / totalCompanyShares) * 100
+  }
+
+  getGrossAmount(shareholder: Shareholder): string {
+    let totalShares =
+      this.application.value.shareType === ShareType.Ordinary
+        ? shareholder.ordinaryShares
+        : shareholder.preferenceShares
+    let totalAmount = (this.application.value.amount * this.getDividendRate(shareholder)) / 100
+
+    return NumberUtil.currency(totalAmount)
   }
 
   get loaderLabel(): string {
