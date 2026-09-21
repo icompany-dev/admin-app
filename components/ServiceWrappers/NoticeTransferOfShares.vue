@@ -29,6 +29,7 @@
       >
         <Section105
           v-for="(transferDetail, index) in controller.transferDetails.value"
+          :ref="(el) => controller.setSection105(el, index)"
           :key="index"
           :company-shareholder-transfer="controller.application"
           :shareholder-id="controller.shareholderId.value ?? ''"

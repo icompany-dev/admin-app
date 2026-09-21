@@ -1,5 +1,8 @@
 <template>
-  <div id="legal-document-section-105">
+  <div
+    id="legal-document-section-105"
+    ref="documentRef"
+  >
     <Paper
       v-if="controller.isLoading.value"
       :paper-orientation="controller.paperOrientation"
@@ -575,6 +578,8 @@
     },
   })
 
+  const documentRef = ref(null)
+
   const emit = defineEmits(["transferorSigned", "transferorRepSigned", "transfereeSigned", "transfereeRepSigned"])
 
   const controller = new Section105Controller(
@@ -604,6 +609,18 @@
       controller.setShareholderId(newVal)
     }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">
