@@ -15,6 +15,18 @@ export class ServicePricingConfig {
   isHfRoundUpToNearest: boolean = false
   handlingFees: number = 0.0
   isHfSstApplicable: boolean = false
+  hasPaperPrintingPackaging: boolean | null = null
+  nonColouredPrintingFee: number | null = null
+  printedDocumentFee: number | null = null
+  standardCarePackageDetails: string | null = null
+  standardCarePackagePaperLimit: number | null = null
+  standardCarePackageFee: number | null = null
+  premiumCarePackageDetails: string | null = null
+  premiumCarePackagePaperLimit: number | null = null
+  premiumCarePackageFee: number | null = null
+  bulkCarePackageDetails: string | null = null
+  bulkCarePackagePaperLimit: number | null = null
+  bulkCarePackageFee: number | null = null
   createdAt: string = ""
   updatedAt: string = ""
 
@@ -47,6 +59,18 @@ export class ServicePricingConfig {
     this.isHfRoundUpToNearest = data.is_hf_round_up_to_nearest
     this.handlingFees = data.handling_fees
     this.isHfSstApplicable = data.is_hf_sst_applicable
+    this.hasPaperPrintingPackaging = data.has_paper_printing_packaging ?? null
+    this.nonColouredPrintingFee = data.non_coloured_printing_fee ?? null
+    this.printedDocumentFee = data.printed_document_fee ?? null
+    this.standardCarePackageDetails = data.standard_care_package_details ?? null
+    this.standardCarePackagePaperLimit = data.standard_care_package_paper_limit ?? null
+    this.standardCarePackageFee = data.standard_care_package_fee ?? null
+    this.premiumCarePackageDetails = data.premium_care_package_details ?? null
+    this.premiumCarePackagePaperLimit = data.premium_care_package_paper_limit ?? null
+    this.premiumCarePackageFee = data.premium_care_package_fee ?? null
+    this.bulkCarePackageDetails = data.bulk_care_package_details ?? null
+    this.bulkCarePackagePaperLimit = data.bulk_care_package_paper_limit ?? null
+    this.bulkCarePackageFee = data.bulk_care_package_fee ?? null
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
   }
@@ -68,6 +92,18 @@ export class ServicePricingConfig {
     this.isHfRoundUpToNearest = data.isHfRoundUpToNearest
     this.handlingFees = data.handlingFees
     this.isHfSstApplicable = data.isHfSstApplicable
+    this.hasPaperPrintingPackaging = data.hasPaperPrintingPackaging
+    this.nonColouredPrintingFee = data.nonColouredPrintingFee
+    this.printedDocumentFee = data.printedDocumentFee
+    this.standardCarePackageDetails = data.standardCarePackageDetails
+    this.standardCarePackagePaperLimit = data.standardCarePackagePaperLimit
+    this.standardCarePackageFee = data.standardCarePackageFee
+    this.premiumCarePackageDetails = data.premiumCarePackageDetails
+    this.premiumCarePackagePaperLimit = data.premiumCarePackagePaperLimit
+    this.premiumCarePackageFee = data.premiumCarePackageFee
+    this.bulkCarePackageDetails = data.bulkCarePackageDetails
+    this.bulkCarePackagePaperLimit = data.bulkCarePackagePaperLimit
+    this.bulkCarePackageFee = data.bulkCarePackageFee
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
   }

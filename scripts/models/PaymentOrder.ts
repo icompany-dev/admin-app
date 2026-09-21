@@ -22,6 +22,7 @@ export class PaymentOrder implements IModel<PaymentOrder> {
   status: string = ""
   paidAt: string | null = null
   paidBy: string | null = null
+  payeeName: string | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
 
@@ -60,6 +61,7 @@ export class PaymentOrder implements IModel<PaymentOrder> {
     this.status = data.status
     this.paidAt = data.paid_at
     this.paidBy = data.paid_by
+    this.payeeName = data.payee ? data.payee.name : "PAYEE"
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
   }
@@ -82,6 +84,7 @@ export class PaymentOrder implements IModel<PaymentOrder> {
     this.status = data.status
     this.paidAt = data.paidAt
     this.paidBy = data.paidBy
+    this.payeeName = data.payeeName
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
   }
@@ -112,7 +115,7 @@ export class PaymentOrder implements IModel<PaymentOrder> {
 
   async makePayment(repository: ReturnType<typeof usePaymentOrderStore>): Promise<PaymentBill | null> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -120,7 +123,7 @@ export class PaymentOrder implements IModel<PaymentOrder> {
     let data = this.getRequestBody()
     const response = await repository.makePayment(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -130,7 +133,7 @@ export class PaymentOrder implements IModel<PaymentOrder> {
 
   async create(repository: ReturnType<typeof usePaymentOrderStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.paymentCartId)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -138,12 +141,29 @@ export class PaymentOrder implements IModel<PaymentOrder> {
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
 
     this.convertFromResponse(response)
+  }
+
+  async markPaid(repository: ReturnType<typeof usePaymentOrderStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    // const response = await repository.markPaid(this.id)
+    // if (repository.error) {
+    //   let error: Error = new Error()
+    //   error.setForCUD()
+    //   throw error
+    // }
+
+    // this.convertFromResponse(response)
   }
 
   totalDiscount(): number {
