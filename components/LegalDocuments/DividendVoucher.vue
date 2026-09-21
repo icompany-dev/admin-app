@@ -86,9 +86,7 @@
                     <td>
                       {{ controller.dividendCategory.value }}
                     </td>
-                    <td>
-                      {{ controller.getDividendRate(shareholder) }}
-                    </td>
+                    <td>{{ controller.getDividendRate(shareholder) }}%</td>
                     <td>
                       {{ controller.getGrossAmount(shareholder) }}
                     </td>
@@ -99,15 +97,15 @@
             <div class="shareholder-cosec-details">
               <div class="shareholder-details">
                 <b>{{ shareholder.fullName() }}</b>
-                <br />
                 <span v-html="controller.getShareholderAddress(shareholder)" />
               </div>
               <div class="cosec-details">
-                FOR {{ controller.companyName() }}
-                <br />
+                <span>FOR {{ controller.companyName() }}</span>
+                <img :src="controller.cosecSignature" />
                 <b>{{ controller.cosecName }}</b>
-                <br />
-                Company Secretary
+                <span>Company Secretary</span>
+                <span>{{ controller.cosecLicenseNumber }}</span>
+                <span>SSM PC No.: {{ controller.cosecSsmPcm }}</span>
               </div>
             </div>
             <div class="disclaimer">

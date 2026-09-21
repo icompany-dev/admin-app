@@ -11,6 +11,7 @@ import { NumberUtil } from "~/scripts/utils/Number"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
 import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
+import type { Secretary } from "~/scripts/types/Secretary"
 
 export class DividendVoucherController extends SdnBhdLegalDocumentController {
   applicationId: Ref<string> = ref<string>("")
@@ -127,7 +128,7 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
     return this.shareholders.value.length
   }
 
-  getDividendRate(shareholder: Shareholder): number {
+  getPercentage(shareholder: Shareholder): number {
     let totalShares =
       this.application.value.shareType === ShareType.Ordinary
         ? shareholder.ordinaryShares
@@ -143,14 +144,27 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
     return (totalShares / totalCompanyShares) * 100
   }
 
-  getGrossAmount(shareholder: Shareholder): string {
+  getDividendRate(shareholder: Shareholder): string {
     let totalShares =
       this.application.value.shareType === ShareType.Ordinary
         ? shareholder.ordinaryShares
         : shareholder.preferenceShares
-    let totalAmount = (this.application.value.amount * this.getDividendRate(shareholder)) / 100
+    let totalAmount = (this.application.value.amount * this.getPercentage(shareholder)) / 100
+    let rate = (totalAmount / totalShares) * 100
+
+    return NumberUtil.thousandSeparator(Math.round(rate))
+  }
+
+  getGrossAmount(shareholder: Shareholder): string {
+    let totalAmount = (this.application.value.amount * this.getPercentage(shareholder)) / 100
 
     return NumberUtil.currency(totalAmount)
+  }
+
+  override companyName(): string {
+    let name = this.company.value.getFullName().toUpperCase()
+
+    return name.replace("SDN BHD", "SDN. BHD.")
   }
 
   get loaderLabel(): string {
@@ -196,7 +210,23 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
     return this.time.formatDateOnlyShort(this.application.value.dividendPaymentDate)
   }
 
+  get cosec(): Secretary {
+    return SecretaryInformation.SECRETARY_NAME_LIST[0]
+  }
+
   get cosecName(): string {
-    return SecretaryInformation.SECRETARY_NAME_LIST[0].name
+    return this.cosec.name
+  }
+
+  get cosecSignature(): string {
+    return this.cosec.signatureUrl
+  }
+
+  get cosecLicenseNumber(): string {
+    return this.cosec.license
+  }
+
+  get cosecSsmPcm(): string {
+    return this.cosec.certificate
   }
 }
