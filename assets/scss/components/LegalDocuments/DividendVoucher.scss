@@ -105,12 +105,19 @@
     }
 
     .disclaimer {
+      margin-top: 20px;
+
       ol {
         padding-left: 15px;
 
         li {
           padding-left: 15px;
           text-align: justify;
+          padding-bottom: 5px;
+
+          &::marker {
+            content: "(" counter(list-item, round) ") ";
+          }
         }
       }
     }

@@ -51,8 +51,20 @@
                     <td>DATE OF PAYMENT</td>
                   </tr>
                   <tr>
-                    <td></td>
-                    <td></td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control in-resolution"
+                        placeholder="Warrant No."
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control in-resolution"
+                        placeholder="Dividend No."
+                      />
+                    </td>
                     <td>{{ controller.typeOfDividend }}</td>
                     <td>{{ controller.fye }}</td>
                     <td>{{ controller.dateRegisterOfMembers }}</td>
@@ -71,9 +83,27 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control in-resolution"
+                        placeholder="Category"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control in-resolution"
+                        placeholder="Rate"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        class="form-control in-resolution"
+                        placeholder="Amount"
+                      />
+                    </td>
                   </tr>
                 </tbody>
               </table>
