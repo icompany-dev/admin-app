@@ -20,6 +20,7 @@
         v-for="(shareholder, index) in controller.shareholders.value"
         :paper-orientation="controller.paperOrientation"
         :additional-css-class="controller.additionalCssClass"
+        :show-page-number="false"
       >
         <template #paperContent>
           <div class="voucher-content">
@@ -40,7 +41,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <tr class="header">
                     <td>WARRANT NO.</td>
                     <td>DIVIDEND NO.</td>
                     <td>TYPE OF DIVIDEND</td>
@@ -70,9 +71,9 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>SINGLE TIER DIVIDEND</td>
                     <td></td>
-                    <td>{{ controller.typeOfDividend }}</td>
+                    <td></td>
+                    <td></td>
                   </tr>
                 </tbody>
               </table>

@@ -78,14 +78,7 @@
               {{ controller.downloadLabel }}
             </button>
           </template>
-          <template #nodeActions>
-            <button
-              class="btn btn-pill btn-submit"
-              @click="controller.onShippedClicked()"
-            >
-              {{ controller.shipLabel }}
-            </button>
-          </template>
+          <template #nodeActions></template>
         </ApplicationNode>
         <ApplicationNode
           v-if="controller.isDeliveryRequired"
