@@ -14,8 +14,9 @@ import { PropsCompanyServiceWrapper } from "~/scripts/props/PropsCompanyServiceW
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { PropsDividendVoucher } from "~/scripts/props/PropsDividendVoucher"
 
-export class DividendDeclarationServiceController extends CompanyServiceController<CompanyDividendDeclaration> {
+export class DividendVoucherServiceController extends CompanyServiceController<CompanyDividendDeclaration> {
   companyDividendDeclaration = ref<CompanyDividendDeclaration>(new CompanyDividendDeclaration())
 
   wrapperRef: any | null = null
@@ -23,7 +24,7 @@ export class DividendDeclarationServiceController extends CompanyServiceControll
 
   constructor(companyId: string, emitEvents: any | null) {
     super(companyId, true, false, CompanyDividendDeclaration, useCompanyDividendDeclarationStore(), emitEvents)
-    this.target = CompanyConstants.TARGET_DIVIDEND_DECLARATION
+    this.target = CompanyConstants.TARGET_DIVIDEND_VOUCHER
     this.initializeData()
   }
 
@@ -327,5 +328,9 @@ export class DividendDeclarationServiceController extends CompanyServiceControll
       this.isInPreviewMode.value,
       false
     )
+  }
+
+  get dividendVoucherProps(): PropsDividendVoucher {
+    return new PropsDividendVoucher(this.companyId, this.companyDividendDeclaration.value.id)
   }
 }

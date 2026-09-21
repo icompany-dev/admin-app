@@ -172,6 +172,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">
