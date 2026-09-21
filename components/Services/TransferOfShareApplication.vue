@@ -22,7 +22,155 @@
                 {{ controller.applicationDetailsSublabel }}
               </div>
             </div>
-            <div class="application-details"></div>
+            <div class="application-details">
+              <div
+                class="transfer"
+                v-for="(transferDetail, index) in controller.application.value?.transferDetails"
+              >
+                <div class="transfer-detail">
+                  <div class="human-details">
+                    <div class="human-detail">
+                      <b>{{ controller.getTransferorDetail(transferDetail).name.toUpperCase() }}</b>
+                      <CopyValue :value="controller.getTransferorDetail(transferDetail).name.toUpperCase()" />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular fa-id-card" />
+                      {{ controller.getTransferorDetail(transferDetail).detail?.identification }}
+                      <CopyValue :value="controller.getTransferorDetail(transferDetail).detail?.identification ?? ''" />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular fa-location-dot" />
+                      {{ controller.getTransferorDetail(transferDetail).detail?.location?.addressLine1.toUpperCase() }}
+                      <CopyValue
+                        :value="
+                          controller.getTransferorDetail(transferDetail).detail?.location?.addressLine1.toUpperCase() ??
+                          ''
+                        "
+                      />
+                    </div>
+                    <div
+                      class="human-detail"
+                      v-if="controller.getTransferorDetail(transferDetail).detail?.location?.addressLine2"
+                    >
+                      <i class="fa-regular" />
+                      {{ controller.getTransferorDetail(transferDetail).detail?.location?.addressLine2?.toUpperCase() }}
+                      <CopyValue
+                        :value="
+                          controller
+                            .getTransferorDetail(transferDetail)
+                            .detail?.location?.addressLine2?.toUpperCase() ?? ''
+                        "
+                      />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular" />
+                      {{ controller.getTransferorDetail(transferDetail).detail?.location?.postcode }}
+                      <CopyValue
+                        :value="controller.getTransferorDetail(transferDetail).detail?.location?.postcode ?? ''"
+                      />
+                      {{ controller.getTransferorDetail(transferDetail).detail?.location?.city?.name.toUpperCase() }}
+                      <CopyValue
+                        :value="controller.getTransferorDetail(transferDetail).detail?.location?.city?.name ?? ''"
+                      />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular" />
+                      {{ controller.getTransferorDetail(transferDetail).detail?.location?.state?.name.toUpperCase() }}
+                      <CopyValue
+                        :value="controller.getTransferorDetail(transferDetail).detail?.location?.state?.name ?? ''"
+                      />
+                      {{ controller.getTransferorDetail(transferDetail).detail?.location?.country?.name.toUpperCase() }}
+                      <CopyValue
+                        :value="controller.getTransferorDetail(transferDetail).detail?.location?.country?.name ?? ''"
+                      />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular fa-envelope" />
+                      {{ controller.getTransferorDetail(transferDetail).email }}
+                      <CopyValue :value="controller.getTransferorDetail(transferDetail).email" />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-brands fa-whatsapp" />
+                      {{ controller.getTransferorDetail(transferDetail).phone.toUpperCase() }}
+                      <CopyValue :value="controller.getTransferorDetail(transferDetail).phone.toUpperCase()" />
+                    </div>
+                  </div>
+                  <i class="fa-solid fa-arrow-right"></i>
+                  <div class="human-details">
+                    <div class="human-detail">
+                      <b>{{ controller.getTransfereeDetail(transferDetail).name.toUpperCase() }}</b>
+                      <CopyValue :value="controller.getTransfereeDetail(transferDetail).name.toUpperCase()" />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular fa-id-card" />
+                      {{ controller.getTransfereeDetail(transferDetail).detail?.identification }}
+                      <CopyValue :value="controller.getTransfereeDetail(transferDetail).detail?.identification ?? ''" />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular fa-location-dot" />
+                      {{ controller.getTransfereeDetail(transferDetail).detail?.location?.addressLine1.toUpperCase() }}
+                      <CopyValue
+                        :value="
+                          controller.getTransfereeDetail(transferDetail).detail?.location?.addressLine1.toUpperCase() ??
+                          ''
+                        "
+                      />
+                    </div>
+                    <div
+                      class="human-detail"
+                      v-if="controller.getTransfereeDetail(transferDetail).detail?.location?.addressLine2"
+                    >
+                      <i class="fa-regular" />
+                      {{ controller.getTransfereeDetail(transferDetail).detail?.location?.addressLine2?.toUpperCase() }}
+                      <CopyValue
+                        :value="
+                          controller
+                            .getTransfereeDetail(transferDetail)
+                            .detail?.location?.addressLine2?.toUpperCase() ?? ''
+                        "
+                      />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular" />
+                      {{ controller.getTransfereeDetail(transferDetail).detail?.location?.postcode }}
+                      <CopyValue
+                        :value="controller.getTransfereeDetail(transferDetail).detail?.location?.postcode ?? ''"
+                      />
+                      {{ controller.getTransfereeDetail(transferDetail).detail?.location?.city?.name.toUpperCase() }}
+                      <CopyValue
+                        :value="controller.getTransfereeDetail(transferDetail).detail?.location?.city?.name ?? ''"
+                      />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular" />
+                      {{ controller.getTransfereeDetail(transferDetail).detail?.location?.state?.name.toUpperCase() }}
+                      <CopyValue
+                        :value="controller.getTransfereeDetail(transferDetail).detail?.location?.state?.name ?? ''"
+                      />
+                      {{ controller.getTransfereeDetail(transferDetail).detail?.location?.country?.name.toUpperCase() }}
+                      <CopyValue
+                        :value="controller.getTransfereeDetail(transferDetail).detail?.location?.country?.name ?? ''"
+                      />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-regular fa-envelope" />
+                      {{ controller.getTransfereeDetail(transferDetail).email }}
+                      <CopyValue :value="controller.getTransfereeDetail(transferDetail).email" />
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-brands fa-whatsapp" />
+                      {{ controller.getTransfereeDetail(transferDetail).phone.toUpperCase() }}
+                      <CopyValue :value="controller.getTransfereeDetail(transferDetail).phone.toUpperCase()" />
+                    </div>
+                  </div>
+                </div>
+                <div class="amount">
+                  <b>{{ controller.amountToTransferLabel }}</b>
+                  : {{ NumberUtil.thousandSeparator(transferDetail.unitsOfShare) }}
+                  <CopyValue :value="transferDetail.unitsOfShare.toString()" />
+                </div>
+              </div>
+            </div>
           </template>
           <template #nodeOptions>
             <button
@@ -136,12 +284,14 @@
 
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"
   import { TransferOfShareApplicationController } from "~/scripts/components/services/TransferOfShareApplicationController"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
+  import { NumberUtil } from "~/scripts/utils/Number"
 
   const props = defineProps<IPropsApplication>()
 

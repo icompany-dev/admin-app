@@ -1,3 +1,46 @@
 #services-transfer-of-share-application {
-  // Styles go here
+  .application-details {
+    width: 100%;
+
+    .transfer {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+      margin-bottom: 10px;
+
+      .transfer-detail {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: stretch;
+        gap: 10px;
+        width: 100%;
+
+        .human-details {
+          margin-bottom: 0;
+          width: 45%;
+          margin-top: 0;
+          border: 1px dashed var(--bs-gray-700);
+          border-radius: 5px;
+          padding: 10px;
+
+          .human-detail {
+            align-items: flex-start;
+            padding-bottom: 3px;
+            width: 100%;
+
+            .fa-regular {
+              width: 20px;
+            }
+          }
+
+          #buttons-copy-value {
+            padding-left: 0;
+          }
+        }
+      }
+    }
+  }
 }

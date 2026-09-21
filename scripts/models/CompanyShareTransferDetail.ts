@@ -194,13 +194,13 @@ export class CompanyShareTransferDetail {
 
   async addToTransfer(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.transferId)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -208,7 +208,7 @@ export class CompanyShareTransferDetail {
     let data = this.getRequestBody()
     let response = await repository.addShareTransferDetails(this.transferId, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -218,13 +218,13 @@ export class CompanyShareTransferDetail {
 
   async update(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -232,7 +232,7 @@ export class CompanyShareTransferDetail {
     let data = this.getRequestBody()
     let response = await repository.updateShareTransferDetails(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -242,14 +242,14 @@ export class CompanyShareTransferDetail {
 
   async remove(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<any> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.removeShareTransferDetails(this.id)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -259,20 +259,20 @@ export class CompanyShareTransferDetail {
 
   async submitTransferorConsent(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (this.isTransferFromConsented === null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     await repository.transferorConsented(this.id, this.isTransferFromConsented)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -283,14 +283,14 @@ export class CompanyShareTransferDetail {
     repository: ReturnType<typeof useCompanyShareholderTransferStore>
   ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.transferorSigned(this.id, signatureFileId)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -303,7 +303,7 @@ export class CompanyShareTransferDetail {
     repository: ReturnType<typeof useCompanyShareholderTransferStore>
   ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -312,7 +312,7 @@ export class CompanyShareTransferDetail {
       StringUtil.isNullOrEmpty(this.transferFromRepName) ||
       StringUtil.isNullOrEmpty(this.transferFromRepIdentification)
     ) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -324,7 +324,7 @@ export class CompanyShareTransferDetail {
       this.transferFromRepIdentification ?? ""
     )
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -334,20 +334,20 @@ export class CompanyShareTransferDetail {
 
   async submitTransfereeConsent(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (this.isTransferFromConsented === null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     await repository.transfereeConsented(this.id, this.isTransferFromConsented)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -358,14 +358,14 @@ export class CompanyShareTransferDetail {
     repository: ReturnType<typeof useCompanyShareholderTransferStore>
   ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.transfereeSigned(this.id, signatureFileId)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -378,7 +378,7 @@ export class CompanyShareTransferDetail {
     repository: ReturnType<typeof useCompanyShareholderTransferStore>
   ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -387,7 +387,7 @@ export class CompanyShareTransferDetail {
       StringUtil.isNullOrEmpty(this.transferToRepName) ||
       StringUtil.isNullOrEmpty(this.transferToRepIdentification)
     ) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -399,7 +399,7 @@ export class CompanyShareTransferDetail {
       this.transferToRepIdentification ?? ""
     )
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

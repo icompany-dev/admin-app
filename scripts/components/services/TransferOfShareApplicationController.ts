@@ -17,6 +17,8 @@ import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderItemMandatory"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import { NumberUtil } from "~/scripts/utils/Number"
+import type { CompanyShareTransferDetail } from "~/scripts/models/CompanyShareTransferDetail"
+import { User } from "~/scripts/models/User"
 
 export class TransferOfShareApplicationController extends ApplicationController<CompanyShareholderTransfer> {
   resolutionsRef: any | null = null
@@ -48,6 +50,34 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   setResolutionsRef(resolutionsRef: any): void {
     this.resolutionsRef = resolutionsRef
+  }
+
+  override async fetchApplication(): Promise<void> {
+    if (!this.applicationId.value || StringUtil.isNullOrEmpty(this.applicationId.value)) {
+      return
+    }
+
+    let response = await this.repository.fetch(this.applicationId.value)
+    if (this.repository.error !== null) {
+      throw this.repository.error
+    }
+
+    this.application.value = new this.applicationClassType(response)
+
+    let promises = this.application.value.transferDetails
+      .filter((td: CompanyShareTransferDetail) => {
+        return this.isTransferToNew(td)
+      })
+      .map((td: CompanyShareTransferDetail) => {
+        return td.transferToInvitation?.setUser(useUserStore())
+      })
+
+    await Promise.allSettled(promises)
+
+    if (StringUtil.isNullOrEmpty(this.uploadedDocumentChecker.value.companyId)) {
+      this.uploadedDocumentChecker.value.companyId = this.application.value.companyId
+      await this.uploadedDocumentChecker.value.fetchDocuments()
+    }
   }
 
   async fetchBanks(): Promise<void> {
@@ -121,6 +151,22 @@ export class TransferOfShareApplicationController extends ApplicationController<
     await this.uploadedDocumentChecker.value.fetchDocuments()
   }
 
+  getTransferorDetail(transferDetail: CompanyShareTransferDetail): User {
+    return new User(transferDetail.transferFrom.user)
+  }
+
+  isTransferToNew(transferDetail: CompanyShareTransferDetail): boolean {
+    return StringUtil.isNullOrEmpty(transferDetail.transferToId)
+  }
+
+  getTransfereeDetail(transferDetail: CompanyShareTransferDetail): User {
+    if (this.isTransferToNew(transferDetail)) {
+      return new User(transferDetail.transferToInvitation?.user)
+    }
+
+    return new User(transferDetail.transferTo?.user)
+  }
+
   //getters
   get serviceName(): string {
     return this.language.isMalay() ? "Pengisytiharan" : "Dividend Declaration"
@@ -147,15 +193,34 @@ export class TransferOfShareApplicationController extends ApplicationController<
       return this.language.isMalay() ? "Permohonan Tidak Lengkap" : "Application Incomplete"
     }
 
-    if (this.language.isMalay()) {
+    let transferDetails: string[] = this.application.value.transferDetails.map((td: CompanyShareTransferDetail) => {
       return `
-        
+        <div>
+          <b>${td.transferFromName.toUpperCase() ?? "Transferor"}</b>
+          <i class='fa-solid fa-arrow-right'></i>
+          <b>${td.transferToName?.toUpperCase() ?? "Transferee"}</b>
+          <br>
+          ${this.language.isMalay() ? "Saham untuk Dipindah" : "Shares to Transfer"}: ${NumberUtil.thousandSeparator(td.unitsOfShare)}
+          <br><br>
+          <b>${this.language.isMalay() ? "Pemindah" : "Transferor"}:</b>
+          ${td.transferFromName.toUpperCase()}
+        </div>
       `
-    }
+    })
 
-    return `
-      
-    `
+    return transferDetails.join("<br>")
+  }
+
+  get amountToTransferLabel(): string {
+    return this.language.isMalay() ? "Saham untuk Dipindah" : "Shares to Transfer"
+  }
+
+  get transferorLabel(): string {
+    return this.language.isMalay() ? "Pemindah Saham" : "Transferor"
+  }
+
+  get transfereeLabel(): string {
+    return this.language.isMalay() ? "Penerima Saham" : "Transferee"
   }
 
   get itemsToPrepareLabel(): string {
