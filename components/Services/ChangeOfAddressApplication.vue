@@ -83,9 +83,9 @@
             <button
               class="btn btn-pill btn-primary"
               :class="{ 'is-loading': controller.isDownloadingPd2.value }"
-              @click="controller.onDownloadClicked()"
+              @click="controller.onUploadDocumentClicked()"
             >
-              Download
+              {{ controller.uploadPD2Label }}
             </button>
           </template>
           <template #nodeActions>
@@ -129,7 +129,7 @@
             <div class="actions-button-options">
               <div
                 class="btn btn-pill btn-submit selected single"
-                @click="controller.onCompleteAddressChangeClicked()"
+                @click="controller.completeServiceClicked()"
               >
                 <span class="label">{{ controller.completeActionLabel }}</span>
               </div>
@@ -141,6 +141,7 @@
     <PopupUploadDocument
       v-bind="controller.uploadDocumentProps"
       ref="uploadDocumentPopup"
+      @proceed="controller.onUploadedDocument()"
     />
     <PopupShipApplication
       v-bind="controller.shipApplicationProps"

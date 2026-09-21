@@ -137,6 +137,10 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.uploadDocumentPopup.show()
   }
 
+  async onUploadedDocument(): Promise<void> {
+    await this.uploadedDocumentChecker.value.fetchDocuments()
+  }
+
   async onDownloadSection28Clicked(): Promise<void> {
     ///
   }
@@ -158,7 +162,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowPD2.value = true
     this.isShowCON.value = false
     this.isShowComplete.value = false
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_PD2)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS)
   }
 
   onCompleteAddressChangeClicked(): void {
@@ -219,15 +223,18 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   async completeServiceClicked(): Promise<void> {
-    if (this.isCompleting.value) {
+    if (this.isCompleting.value || !this.application.value) {
       return
     }
 
     try {
       this.isCompleting.value = true
+      let companyId = this.application.value?.companyId
 
       await this.application.value?.complete(useCompanyAmendmentAddressStore())
-      await this.fetchOngoing()
+
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${companyId}` })
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -446,8 +453,16 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   //   return this.language.isMalay() ? "Muat Naik" : "Upload"
   // }
 
-  get downloadDocumentCONLabel(): string {
-    return this.language.isMalay() ? "Sijil" : "Certificate"
+  get uploadPD2Label(): string {
+    if (this.isPD2Uploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
+  get downloadPD2Label(): string {
+    return "PD2"
   }
 
   get conActionLabel(): string {
@@ -471,12 +486,12 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   // document checkers
-  // get isSection27Uploaded(): boolean {
-  //   return this.uploadedDocumentChecker.value.isDocumentUploaded(
-  //     DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION27,
-  //     this.application.value?.createdAt ?? ""
-  //   )
-  // }
+  get isPD2Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_PD2,
+      this.application.value?.createdAt ?? ""
+    )
+  }
 
   // get isCONUploaded(): boolean {
   //   return this.uploadedDocumentChecker.value.isDocumentUploaded(
