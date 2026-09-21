@@ -94,7 +94,6 @@ export abstract class SecretarialServiceController<T, R> {
 
   onCompanyUpdated(company: Company): void {
     this.companyId.value = company.id
-    console.log("yo?", company)
     this.emitEvents("company", company)
   }
 

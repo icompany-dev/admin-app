@@ -29,6 +29,7 @@
 <script lang="ts" setup>
   import DividendDeclarationApplication from "../Services/DividendDeclarationApplication.vue"
   import DividendDeclarationService from "../CompanyServices/DividendDeclarationService.vue"
+  import DividendVoucherService from "../CompanyServices/DividendVoucherService.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
   import { DividendDeclarationController } from "~/scripts/components/secretarial-services/DividendDeclarationController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
@@ -44,6 +45,7 @@
 
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_DIVIDEND_DECLARATION_RESOLUTIONS]: DividendDeclarationService,
+    [DocumentTargets.TARGET_DIVIDEND_DECLARATION_VOUCHERS]: DividendVoucherService,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 

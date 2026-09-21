@@ -46,6 +46,7 @@ export class CompanyConstants {
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT: string = "company_director_manager_appointment"
   static TARGET_DIRECTOR_RESIGNATION: string = "company_director_resignation"
   static TARGET_DIVIDEND_DECLARATION: string = "company_dividend_declaration"
+  static TARGET_DIVIDEND_VOUCHER: string = "company_dividend_declaration_voucher"
   static TARGET_DOCUMENT_NOT_KEPT: string = "company_record_storage"
   static TARGET_DOCUMENT_REQUEST: string = "company_document_request"
   static TARGET_FINANCIAL_STATEMENT_AUTHORISED_PERSON: string = "company_financial_statement_authorised_person"
@@ -132,6 +133,7 @@ export class CompanyConstants {
     this.TARGET_DIRECTOR_MANAGER_APPOINTMENT,
     this.TARGET_DIRECTOR_RESIGNATION,
     this.TARGET_DIVIDEND_DECLARATION,
+    this.TARGET_DIVIDEND_VOUCHER,
     this.TARGET_FINANCIAL_STATEMENT_AUTHORISED_PERSON,
     this.TARGET_LOAN_APPLICATION,
     this.TARGET_LODGE_ANNUAL_RETURN,

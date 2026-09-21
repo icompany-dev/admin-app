@@ -78,6 +78,7 @@ export class DocumentTargets {
 
   static TARGET_DIVIDEND_DECLARATION: string = "company_dividend_declaration"
   static TARGET_DIVIDEND_DECLARATION_RESOLUTIONS: string = "company_dividend_declaration_resolutions"
+  static TARGET_DIVIDEND_DECLARATION_VOUCHERS: string = "company_dividend_declaration_vouchers"
 
   static TARGET_DOCUMENT_NOT_KEPT: string = "company_record_storage"
   static TARGET_DOCUMENT_NOT_KEPT_RESOLUTIONS: string = "company_record_storage_resolutions"
