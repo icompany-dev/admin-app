@@ -27,6 +27,7 @@
           padding: 2px;
           vertical-align: top;
           font-size: 10px;
+          color: #000000;
 
           div,
           span {
@@ -56,6 +57,15 @@
           &.signature-column {
             width: calc(50% - 4px);
             max-width: 350px;
+          }
+
+          &.witness-column {
+            position: relative;
+          }
+
+          &.input-data {
+            text-align: center;
+            font-weight: 600;
           }
 
           .sign-off {
@@ -148,6 +158,41 @@
           }
         }
       }
+    }
+  }
+
+  .cosec-signature {
+    position: absolute;
+    top: 15px;
+    left: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0px;
+
+    img {
+      width: 160px;
+      mix-blend-mode: multiply;
+      margin-bottom: -10px;
+    }
+
+    .cosec-name {
+      font-weight: 600;
+      color: #0d6efd;
+      font-size: 10px;
+    }
+
+    .cosec-role,
+    .cosec-license,
+    .cosec-address {
+      color: #0d6efd;
+      font-size: 10px;
+      text-align: center;
+    }
+
+    .cosec-address {
+      font-size: 9px;
     }
   }
 }
