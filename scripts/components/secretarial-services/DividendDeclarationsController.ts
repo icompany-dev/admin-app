@@ -4,6 +4,7 @@ import { CompanyDividendDeclaration } from "~/scripts/models/CompanyDividendDecl
 import { Company } from "~/scripts/models/Company"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { StringUtil } from "~/scripts/utils/String"
+import { NumberUtil } from "~/scripts/utils/Number"
 
 export class DividendDeclarationsController extends SecretarialServicesController<CompanyDividendDeclaration> {
   constructor(props: PropsSecretarialServices, emitEvents: any | null) {
@@ -22,7 +23,37 @@ export class DividendDeclarationsController extends SecretarialServicesControlle
 
   applicationDetails(data: any): string {
     let application = new CompanyDividendDeclaration(data)
+
+    let fyeDate = StringUtil.isNullOrEmpty(application.financialYearEndDate)
+      ? "(Unknown Date)"
+      : this.time.formatDateOnlyFull(application.financialYearEndDate)
+
+    let dateOfRegisterOfMembers = StringUtil.isNullOrEmpty(application.dateOfRegisterOfMembers)
+      ? "(Unknown Date)"
+      : this.time.formatDateOnlyFull(application.dateOfRegisterOfMembers)
+
+    if (this.language.isMalay()) {
+      return `
+        <b>Jenis:</b> ${application.dividendType === "interim" ? "Interim" : "Final"}<br>
+        <b>Jenis Saham:</b> ${application.shareType === "ordinary" ? "Ordinary" : "Preference"}<br>
+        <b>Nilai Sesaham:</b> RM${NumberUtil.currency(application.pricePerShare)}<br>
+        <b>Jumlah Dividen:</b> RM${NumberUtil.currency(application.amount)}<br>
+        <b>Tarikh Akhir Tahun Kewangan:</b> ${fyeDate}<br>
+        <b>Bagi Pemegang Saham pada:</b> ${dateOfRegisterOfMembers}<br>
+        <b>Tarikh Bayaran:</b> ${this.time.formatDateOnlyFull(application.dividendPaymentDate)}<br>
+        <b>Cara Bayaran:</b> ${application.dividendPaymentMethod}<br>
+      `
+    }
+
     return `
+      <b>Type:</b> ${application.dividendType === "interim" ? "Interim" : "Final"}<br>
+      <b>Type of Share:</b> ${application.shareType === "ordinary" ? "Ordinary" : "Preference"}<br>
+      <b>Value per Share:</b> RM${NumberUtil.currency(application.pricePerShare)}<br>
+      <b>Total Dividend:</b> RM${NumberUtil.currency(application.amount)}<br>
+      <b>Financial Year End:</b> ${fyeDate}<br>
+      <b>For Members as of:</b> ${dateOfRegisterOfMembers}<br>
+      <b>Payment Date:</b> ${this.time.formatDateOnlyFull(application.dividendPaymentDate)}<br>
+      <b>Payment Method:</b> ${application.dividendPaymentMethod}<br>
     `
   }
 

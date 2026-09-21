@@ -1,15 +1,16 @@
 <template>
   <div
-    id="secretarial-services-dividend-declaration"
+    id="secretarial-services-change-of-address"
     class="secretarial-service-application"
   >
     <div class="service-application">
-      <DividendDeclarationApplication
+      <ChangeOfAddressApplication
         v-bind="controller.applicationProps"
         @company="controller.onCompanyUpdated($event)"
         @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
         @documentSelected="controller.onDocumentTargetSelected($event)"
         @download="controller.onDownloadClicked()"
+        @convertToForms="controller.onConvertToForms()"
       />
     </div>
     <div class="document-container">
@@ -27,11 +28,10 @@
 </template>
 
 <script lang="ts" setup>
-  import DividendDeclarationApplication from "../Services/DividendDeclarationApplication.vue"
-  import DividendDeclarationService from "../CompanyServices/DividendDeclarationService.vue"
-  import DividendVoucherService from "../CompanyServices/DividendVoucherService.vue"
+  import ChangeOfAddressApplication from "../Services/ChangeOfAddressApplication.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
-  import { DividendDeclarationController } from "~/scripts/components/secretarial-services/DividendDeclarationController"
+  import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
+  import { ChangeOfAddressController } from "~/scripts/components/secretarial-services/ChangeOfAddressController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
@@ -41,11 +41,10 @@
 
   const documentRef = ref(null)
 
-  const controller = new DividendDeclarationController(props, emit)
+  const controller = new ChangeOfAddressController(props, emit)
 
   const componentMap: Record<string, any> = {
-    [DocumentTargets.TARGET_DIVIDEND_DECLARATION_RESOLUTIONS]: DividendDeclarationService,
-    [DocumentTargets.TARGET_DIVIDEND_DECLARATION_VOUCHERS]: DividendVoucherService,
+    [DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS]: ChangeOfAddressService,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 
@@ -53,17 +52,9 @@
     const target = controller.selectedDocumentTarget.value
     return target && componentMap[target] ? componentMap[target] : null
   })
-
-  watch(
-    documentRef,
-    (newVal) => {
-      controller.setDocumentRef(newVal)
-    },
-    { immediate: true }
-  )
 </script>
 
 <style lang="scss">
   @use "~/assets/scss/components/SecretarialServices/SecretarialService" as *;
-  @use "~/assets/scss/components/SecretarialServices/DividendDeclaration" as *;
+  @use "~/assets/scss/components/SecretarialServices/ChangeOfAddress" as *;
 </style>

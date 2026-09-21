@@ -81,6 +81,7 @@
   import CloseBankAccount from "./CloseBankAccount.vue"
   import DelegationOfAuthority from "./DelegationOfAuthority.vue"
   import DividendDeclaration from "./DividendDeclaration.vue"
+  import DividendVouchers from "./DividendVouchers.vue"
   import EnterContract from "./EnterContract.vue"
   import LetterToExistingCosec from "./LetterToExistingCosec.vue"
   import LoanToDirector from "./LoanToDirector.vue"
@@ -162,6 +163,7 @@
     [CompanyConstants.TARGET_DIRECTOR_MANAGER_APPOINTMENT]: AppointManager,
     [CompanyConstants.TARGET_DIRECTOR_RESIGNATION]: ResignationOfDirector,
     [CompanyConstants.TARGET_DIVIDEND_DECLARATION]: DividendDeclaration,
+    [CompanyConstants.TARGET_DIVIDEND_VOUCHER]: DividendVouchers,
     [CompanyConstants.TARGET_FINANCIAL_STATEMENT_AUTHORISED_PERSON]: AppointResponsiblePersonForFinancialStatement,
     [CompanyConstants.TARGET_LOAN_APPLICATION]: TekunApplication,
     [CompanyConstants.TARGET_LODGE_ANNUAL_RETURN]: LodgeAnnualReturn,

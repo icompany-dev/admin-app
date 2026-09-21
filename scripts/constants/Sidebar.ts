@@ -137,8 +137,15 @@ export class PageSidebar {
     "services/change-signatories",
     false
   )
+  static changeAddress: Sidebar = new Sidebar(
+    "Change of Address",
+    "Penukaran Alamat",
+    "services/change-business-address",
+    false
+  )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
+    this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
     this.allotNewShares,

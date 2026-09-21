@@ -42,6 +42,14 @@ export class PdfPaperUtil {
         input.parentNode?.replaceChild(textNode, input)
       })
 
+      const textInputs = paper.querySelectorAll<HTMLInputElement>('input[type="text"]')
+      textInputs.forEach((input) => {
+        const textNode = document.createElement("span")
+        textNode.className = input.className
+        textNode.textContent = input.value
+        input.parentNode?.replaceChild(textNode, input)
+      })
+
       const imgElements = paper.getElementsByTagName("img")
       for (let j = 0; j < imgElements.length; j++) {
         if (imgElements[j].id !== "signatureBackground") {

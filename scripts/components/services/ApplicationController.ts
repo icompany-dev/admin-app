@@ -147,6 +147,7 @@ export abstract class ApplicationController<Application> {
 
   async fetchApplication(): Promise<void> {
     if (!this.applicationId.value || StringUtil.isNullOrEmpty(this.applicationId.value)) {
+      console.log("skip??")
       return
     }
 

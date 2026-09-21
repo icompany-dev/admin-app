@@ -40,8 +40,8 @@ export class CompanyDividendDeclaration
     this.pricePerShare = data.price_per_share ?? 0
     this.amountInWords = data.amount_in_words ?? ""
     this.amount = data.amount ?? 0
-    this.financialYearEndDate = data.financial_year_end_date ?? ""
-    this.dateOfRegisterOfMembers = data.date_of_register_of_members ?? ""
+    this.financialYearEndDate = data.financial_year_end ?? ""
+    this.dateOfRegisterOfMembers = data.date_of_registered_members ?? ""
     this.dividendPaymentDate = data.dividend_payment_date ?? ""
     this.dividendPaymentMethod = data.dividend_payment_method ?? "Bank Transfer"
   }

@@ -53,7 +53,8 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
       useCompanyAmendmentAddressStore(),
       CompanyAmendmentAddress,
       CompanyConstants.TARGET_AMENDMENT_ADDRESS,
-      emitEvents
+      emitEvents,
+      props.applicationId
     )
     this.target.value = CompanyConstants.TARGET_AMENDMENT_ADDRESS
     this.minimumMajorityRequired.value = 0.5
@@ -136,6 +137,10 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.uploadDocumentPopup.show()
   }
 
+  async onUploadedDocument(): Promise<void> {
+    await this.uploadedDocumentChecker.value.fetchDocuments()
+  }
+
   async onDownloadSection28Clicked(): Promise<void> {
     ///
   }
@@ -150,16 +155,6 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS)
   }
 
-  onApplicationOfAddressReservationClicked(): void {
-    this.isShowReceipt.value = false
-    this.isShowResolutions.value = false
-    this.isShowSection27.value = true
-    this.isShowPD2.value = false
-    this.isShowCON.value = false
-    this.isShowComplete.value = false
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION27)
-  }
-
   onRegistrationOfAddressChangedClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = false
@@ -167,17 +162,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowPD2.value = true
     this.isShowCON.value = false
     this.isShowComplete.value = false
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_PD2)
-  }
-
-  onCertficationOfAddressChangeClicked(): void {
-    this.isShowReceipt.value = false
-    this.isShowResolutions.value = false
-    this.isShowSection27.value = false
-    this.isShowPD2.value = false
-    this.isShowCON.value = true
-    this.isShowComplete.value = false
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION28)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS)
   }
 
   onCompleteAddressChangeClicked(): void {
@@ -187,127 +172,8 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowPD2.value = false
     this.isShowCON.value = false
     this.isShowComplete.value = true
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION28)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS)
   }
-
-  // onProposedAddresssClicked(): void {
-  //   this.isShowProposedAddresss.value = !this.isShowProposedAddresss.value
-  // }
-
-  // onProposedAddresssSelected(Address: string): void {
-  //   this.isShowProposedAddresss.value = false
-  //   this.selectedProposedAddress.value = Address
-  // }
-
-  // async onSubmitAddressReservation(): Promise<void> {
-  //   this.isShowSection27Actions.value = false
-
-  //   if (this.isUpdatingSection27.value || !this.application.value) {
-  //     return
-  //   }
-
-  //   if (StringUtil.isNullOrEmpty(this.selectedProposedAddress.value)) {
-  //     this.selectedProposedAddress.value = this.AddressOptions[0]
-  //   }
-
-  //   try {
-  //     this.isUpdatingSection27.value = true
-
-  //     let newAddressReservationApplication = new CompanyAddressReservation()
-  //     newAddressReservationApplication.amendmentId = this.application.value.id
-  //     newAddressReservationApplication.proposedAddress = this.selectedProposedAddress.value
-  //       .replace("SDN BHD", "")
-  //       .replace("sdn bhd", "")
-  //       .replace("SDN. BHD.", "")
-  //       .replace("sdn. bhd.", "")
-  //     newAddressReservationApplication.AddressType = "sdnbhd"
-  //     newAddressReservationApplication.status = "paid"
-
-  //     await newAddressReservationApplication.create(useCompanyAddressReservationStore())
-  //     await this.fetchOngoing()
-  //   } catch (e) {
-  //     if (e instanceof Error) {
-  //       e.handle()
-  //     } else {
-  //       let error = new Error()
-  //       error.setForCUD()
-  //       error.handle()
-  //     }
-  //   } finally {
-  //     this.isUpdatingSection27.value = false
-  //   }
-  // }
-
-  // onAddressReservationRejectedClicked(): void {
-  //   this.isShowSection27Actions.value = false
-
-  //   if (this.AddressReservationRejectedPopup) {
-  //     this.AddressReservationRejectedPopup.show()
-  //   }
-  // }
-
-  // async onProceedAddressReservationRejected(details: AddressReservationRejected): Promise<void> {
-  //   let application = this.latestSection27Application
-  //   if (!application || this.isUpdatingSection27.value) {
-  //     return
-  //   }
-
-  //   application.rejectedAt = details.dateRejected
-  //   application.rejectionReason = details.reason
-
-  //   try {
-  //     this.isUpdatingSection27.value = true
-  //     await application.reject(useCompanyAddressReservationStore())
-  //     await this.fetchOngoing()
-  //   } catch (e) {
-  //     if (e instanceof Error) {
-  //       e.handle()
-  //     } else {
-  //       let error = new Error()
-  //       error.setForCUD()
-  //       error.handle()
-  //     }
-  //   } finally {
-  //     this.isUpdatingSection27.value = false
-  //   }
-  // }
-
-  // async onApproveAddressReservation(): Promise<void> {
-  //   this.isShowSection27Actions.value = false
-
-  //   if (!this.latestSection27Application || this.isUpdatingSection27.value) {
-  //     return
-  //   }
-
-  //   let application = this.latestSection27Application
-  //   try {
-  //     this.isUpdatingSection27.value = true
-  //     await application.approve(useCompanyAddressReservationStore())
-
-  //     if (this.application.value) {
-  //       this.application.value.confirmedAddress = new AddressReservationVariant(
-  //         application.proposedAddress,
-  //         application.AddressType,
-  //         application.description,
-  //         application.supportingDocumentId
-  //       )
-
-  //       await this.application.value.update(useCompanyAmendmentAddressStore())
-  //     }
-
-  //     await this.fetchOngoing()
-  //   } catch (e) {
-  //     if (e instanceof Error) {
-  //       e.handle()
-  //     } else {
-  //       let error = new Error()
-  //       error.setForCUD()
-  //       error.handle()
-  //     }
-  //   } finally {
-  //     this.isUpdatingSection27.value = false
-  //   }
-  // }
 
   onShowRegistrationActions(): void {
     this.isShowPd2Actions.value = !this.isShowPd2Actions.value
@@ -357,15 +223,18 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   async completeServiceClicked(): Promise<void> {
-    if (this.isCompleting.value) {
+    if (this.isCompleting.value || !this.application.value) {
       return
     }
 
     try {
       this.isCompleting.value = true
+      let companyId = this.application.value?.companyId
 
       await this.application.value?.complete(useCompanyAmendmentAddressStore())
-      await this.fetchOngoing()
+
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${companyId}` })
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -378,88 +247,6 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
       this.isCompleting.value = false
     }
   }
-
-  // async onDownloadSection27Clicked(): Promise<void> {
-  //   if (!this.isSection27Uploaded || this.isDownloadingSection27.value) {
-  //     return
-  //   }
-
-  //   try {
-  //     let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
-  //       DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION27,
-  //       this.application.value?.createdAt ?? ""
-  //     )
-
-  //     if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
-  //       throw "new file"
-  //     }
-
-  //     this.isDownloadingSection27.value = true
-  //     let url = companyDocument.fileUrl
-
-  //     const response = await fetch(url)
-  //     if (!response.ok) {
-  //       throw "Unable to fetch PDF document from source."
-  //     }
-
-  //     const blob = await response.blob()
-  //     const blobUrl = window.URL.createObjectURL(blob)
-  //     const link = document.createElement("a")
-  //     link.href = blobUrl
-  //     link.setAttribute("download", companyDocument.documentAddress)
-  //     document.body.appendChild(link)
-  //     link.click()
-  //     document.body.removeChild(link)
-  //     window.URL.revokeObjectURL(blobUrl)
-  //   } catch {
-  //     let error = new Error()
-  //     error.setForFetch()
-  //     error.handle()
-  //   } finally {
-  //     this.isDownloadingSection27.value = false
-  //   }
-  // }
-
-  // async onDownloadCONClicked(): Promise<void> {
-  //   if (!this.isCONUploaded || this.isDownloadingCON.value) {
-  //     return
-  //   }
-
-  //   try {
-  //     let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
-  //       DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION28,
-  //       this.application.value?.createdAt ?? ""
-  //     )
-
-  //     if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
-  //       throw "new file"
-  //     }
-
-  //     this.isDownloadingCON.value = true
-  //     let url = companyDocument.fileUrl
-
-  //     const response = await fetch(url)
-  //     if (!response.ok) {
-  //       throw "Unable to fetch PDF document from source."
-  //     }
-
-  //     const blob = await response.blob()
-  //     const blobUrl = window.URL.createObjectURL(blob)
-  //     const link = document.createElement("a")
-  //     link.href = blobUrl
-  //     link.setAttribute("download", companyDocument.documentAddress)
-  //     document.body.appendChild(link)
-  //     link.click()
-  //     document.body.removeChild(link)
-  //     window.URL.revokeObjectURL(blobUrl)
-  //   } catch {
-  //     let error = new Error()
-  //     error.setForFetch()
-  //     error.handle()
-  //   } finally {
-  //     this.isDownloadingCON.value = false
-  //   }
-  // }
 
   // getters
   get serviceName(): string {
@@ -650,15 +437,6 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
   }
 
-  get uploadDocumentProps(): PropsUploadDocument {
-    let props = new PropsUploadDocument(this.companyId.value)
-
-    props.canUploadImage = false
-    props.canUploadPdf = true
-
-    return props
-  }
-
   get certifcateOfAddressChangeLabel(): string {
     return this.language.isMalay() ? "Sijil Pertukaran Nama" : "Certificate of Address Change"
   }
@@ -675,8 +453,16 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   //   return this.language.isMalay() ? "Muat Naik" : "Upload"
   // }
 
-  get downloadDocumentCONLabel(): string {
-    return this.language.isMalay() ? "Sijil" : "Certificate"
+  get uploadPD2Label(): string {
+    if (this.isPD2Uploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
+  get downloadPD2Label(): string {
+    return "PD2"
   }
 
   get conActionLabel(): string {
@@ -700,12 +486,12 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   // document checkers
-  // get isSection27Uploaded(): boolean {
-  //   return this.uploadedDocumentChecker.value.isDocumentUploaded(
-  //     DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION27,
-  //     this.application.value?.createdAt ?? ""
-  //   )
-  // }
+  get isPD2Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_PD2,
+      this.application.value?.createdAt ?? ""
+    )
+  }
 
   // get isCONUploaded(): boolean {
   //   return this.uploadedDocumentChecker.value.isDocumentUploaded(
