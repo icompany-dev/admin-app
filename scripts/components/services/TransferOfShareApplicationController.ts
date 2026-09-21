@@ -123,7 +123,34 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   async onStampingClicked(): Promise<void> {
-    this.isStamping.value = true
+    if (!this.application.value || this.isStamping.value) {
+      return
+    }
+
+    try {
+      this.isStamping.value = true
+
+      let repository = useCompanyShareholderTransferStore()
+      let response = await repository.notifyStamping(this.application.value.id)
+
+      if (repository.error !== null || !response) {
+        let error = new Error()
+        error.setForCUD()
+        throw error
+      }
+
+      await this.fetchApplication()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isStamping.value = false
+    }
   }
 
   async onDownloadClicked(): Promise<void> {
@@ -177,7 +204,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get applicationDetailsNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isShipped, this.isShowResolutions.value)
+    return new PropsServiceApplicationNode(this.hasPaid, this.isStamped, this.isShowResolutions.value)
   }
 
   get applicationDetailsLabel(): string {
@@ -188,39 +215,8 @@ export class TransferOfShareApplicationController extends ApplicationController<
     return this.language.isMalay() ? "Butiran Pengisytiharan" : "Declaration Details"
   }
 
-  get applicationDetails(): string {
-    if (!this.application.value) {
-      return this.language.isMalay() ? "Permohonan Tidak Lengkap" : "Application Incomplete"
-    }
-
-    let transferDetails: string[] = this.application.value.transferDetails.map((td: CompanyShareTransferDetail) => {
-      return `
-        <div>
-          <b>${td.transferFromName.toUpperCase() ?? "Transferor"}</b>
-          <i class='fa-solid fa-arrow-right'></i>
-          <b>${td.transferToName?.toUpperCase() ?? "Transferee"}</b>
-          <br>
-          ${this.language.isMalay() ? "Saham untuk Dipindah" : "Shares to Transfer"}: ${NumberUtil.thousandSeparator(td.unitsOfShare)}
-          <br><br>
-          <b>${this.language.isMalay() ? "Pemindah" : "Transferor"}:</b>
-          ${td.transferFromName.toUpperCase()}
-        </div>
-      `
-    })
-
-    return transferDetails.join("<br>")
-  }
-
   get amountToTransferLabel(): string {
     return this.language.isMalay() ? "Saham untuk Dipindah" : "Shares to Transfer"
-  }
-
-  get transferorLabel(): string {
-    return this.language.isMalay() ? "Pemindah Saham" : "Transferor"
-  }
-
-  get transfereeLabel(): string {
-    return this.language.isMalay() ? "Penerima Saham" : "Transferee"
   }
 
   get itemsToPrepareLabel(): string {
@@ -248,7 +244,23 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get submittedStampingLabel(): string {
+    if (this.isStamped) {
+      return this.language.isMalay() ? "Disetem" : "Stamped"
+    }
+
     return this.language.isMalay() ? "Penyeteman" : "Stamping"
+  }
+
+  get isStamped(): boolean {
+    if (!this.application.value) {
+      return false
+    }
+
+    return (
+      this.application.value.status !== StatusConstants.DRAFT &&
+      this.application.value.status !== StatusConstants.PENDING &&
+      this.application.value.status !== StatusConstants.PAID
+    )
   }
 
   get voucherNodeProps(): PropsServiceApplicationNode {
