@@ -133,7 +133,6 @@
 
 <script setup lang="ts">
   import ActionTray from "../ActionTrays/ActionTray.vue"
-  import Alert from "../Alerts/Alert.vue"
   import DcrRegisterTransferOfShares from "../Resolutions/DcrRegisterTransferOfShares.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"

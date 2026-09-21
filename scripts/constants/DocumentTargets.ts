@@ -142,6 +142,7 @@ export class DocumentTargets {
 
   static TARGET_SHAREHOLDER_TRANSFER_OF_SHARES: string = "company_shareholder_transfer"
   static TARGET_SHAREHOLDER_TRANSFER_OF_SHARES_RESOLUTIONS: string = "company_shareholder_transfer_resolutions"
+  static TARGET_SECTION105: string = "company_shareholder_transfer_section105"
 
   static TARGET_SHAREHOLDER_PROPOSE_TRANSFER: string = "company_shareholder_transfer_proposal"
   static TARGET_SHAREHOLDER_PROPOSE_TRANSFER_RESOLUTIONS: string = "company_shareholder_transfer_proposal_resolutions"

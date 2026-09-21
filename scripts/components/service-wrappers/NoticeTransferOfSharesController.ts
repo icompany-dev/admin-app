@@ -158,7 +158,7 @@ export class NoticeTransferOfSharesController
         }
       }
     } catch (e: any) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForFetchAll()
       errorMessage.handle()
     }
@@ -259,7 +259,7 @@ export class NoticeTransferOfSharesController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -393,11 +393,11 @@ export class NoticeTransferOfSharesController
   }
 
   loaderLabel(): string {
-    return this.language.isMalay() ? "Sedang Menyediakan" : "Preparing Your"
+    return this.language.isMalay() ? "Sedang Menyediakan" : "Preparing the"
   }
 
   loaderSublabel(): string {
-    return this.language.isMalay() ? "Notis Pemindahan" : "Notice of Transfer"
+    return this.language.isMalay() ? "Seksyen 105" : "Section 105"
   }
 
   get hasInitiatorSigned(): boolean {
