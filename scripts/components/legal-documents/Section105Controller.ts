@@ -30,6 +30,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
 
   signatureFile: Ref<string> = ref<string>("")
 
+  isLoading: Ref<boolean> = ref<boolean>(false)
+
+  additionalCssClass: string = "legal-document narrow-margin section-105"
+
   constructor(companyId: string, detail: CompanyShareTransferDetail, shareholderId: string, emitEvents: any | null) {
     super("Section 105", companyId, PaperOrientation.Portrait)
 
@@ -39,9 +43,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
   }
 
   async init(detail: CompanyShareTransferDetail, shareholderId: string): Promise<void> {
-    this.currentUser.value = await CurrentUser.get()
+    this.isLoading.value = true
     await this.setShareholderId(shareholderId)
     await this.setCompanyShareTransferDetail(detail)
+    this.isLoading.value = false
   }
 
   async setCompanyShareTransferDetail(detail: CompanyShareTransferDetail): Promise<void> {
@@ -268,5 +273,13 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
     }
 
     return time.formatDateOnlyFull(dateOfTransfereeSignature.format("YYYY-MM-DD"))
+  }
+
+  get loaderLabel(): string {
+    return "Preparing the"
+  }
+
+  get loaderSublabel(): string {
+    return "Section 105"
   }
 }

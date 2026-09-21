@@ -1,7 +1,24 @@
 <template>
   <div id="legal-document-section-105">
-    <div class="paper-wrapper">
-      <div class="paper legal-document narrow-margin section-105 portrait">
+    <Paper
+      v-if="controller.isLoading.value"
+      :paper-orientation="controller.paperOrientation"
+      :is-loader="true"
+    >
+      <template #paperContent>
+        <LoaderPrepare
+          :label="controller.loaderLabel"
+          :sublabel="controller.loaderSublabel"
+        />
+      </template>
+    </Paper>
+    <Paper
+      v-if="!controller.isLoading.value"
+      :paper-orientation="controller.paperOrientation"
+      :additional-css-class="controller.additionalCssClass"
+      :show-page-number="false"
+    >
+      <template #paperContent>
         <div class="registration-number">
           Company No: {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
         </div>
@@ -531,12 +548,14 @@
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </template>
+    </Paper>
   </div>
 </template>
 
 <script setup lang="ts">
+  import LoaderPrepare from "../Loaders/Prepare.vue"
+  import Paper from "../Papers/Paper.vue"
   import Signature from "../Signatures/Signature.vue"
   import { Section105Controller } from "~/scripts/components/legal-documents/Section105Controller"
   import { CompanyShareTransferDetail } from "~/scripts/models/CompanyShareTransferDetail"
