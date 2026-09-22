@@ -256,6 +256,13 @@ export class ServiceNames {
     "change-signatories",
     "director"
   )
+  static documentRequests: ServiceName = new ServiceName(
+    "Document Requests",
+    "Permintaan Dokumen",
+    "company_document_request",
+    "document-requests",
+    "documents"
+  )
 
   static names: ServiceName[] = [
     this.applicationIncorporation,
@@ -293,5 +300,6 @@ export class ServiceNames {
     this.assetPurchase,
     this.dividendDeclaration,
     this.changeSignatories,
+    this.documentRequests,
   ]
 }

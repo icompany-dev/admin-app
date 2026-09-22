@@ -154,6 +154,16 @@ export class PageSidebar {
     this.changeBankSignatories,
   ])
 
+  static documentRequests: Sidebar = new Sidebar(
+    "Document Requests",
+    "Permintaan Dokumen",
+    "services/document-requests",
+    false
+  )
+  static otherServiceGroup: SidebarGroup = new SidebarGroup("Others Services", "Servis Lain Lain", [
+    this.documentRequests,
+  ])
+
   static personsDraft: Sidebar = new Sidebar(
     "Registrations in Draft",
     "Pendaftaran Masih Draf",
@@ -212,6 +222,7 @@ export class PageSidebar {
     this.switchGroup,
     this.sdnbhdGroup,
     this.servicesGroup,
+    this.otherServiceGroup,
     this.personsGroup,
     this.controlPanelGroup,
   ]
