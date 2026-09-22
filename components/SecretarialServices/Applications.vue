@@ -68,6 +68,7 @@
   import { ChangeOfAddressesController } from "~/scripts/components/secretarial-services/ChangeOfAddressesController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { DividendDeclarationsController } from "~/scripts/components/secretarial-services/DividendDeclarationsController"
+  import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
   import { CompanyConstants } from "~/scripts/constants/Company"
@@ -96,6 +97,9 @@
     case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
       controller = new AppointDirectorsController(props, emit)
       break
+    case CompanyConstants.TARGET_DOCUMENT_REQUEST:
+      controller = new DocumentRequestsController(props, emit)
+      break
     case CompanyConstants.TARGET_OPEN_BANK_ACCOUNT:
       controller = new BankAccountOpeningsController(props, emit)
       break
@@ -104,6 +108,7 @@
       break
     case CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES:
       controller = new AllotNewSharesController(props, emit)
+      break
   }
 
   watch(
