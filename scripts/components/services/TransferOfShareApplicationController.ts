@@ -156,8 +156,6 @@ export class TransferOfShareApplicationController extends ApplicationController<
   async onDownloadClicked(): Promise<void> {
     await nextTick()
     this.emitEvents("download")
-
-    // we need to also download other documents
   }
 
   async onPrintClicked(): Promise<void> {
@@ -196,7 +194,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   //getters
   get serviceName(): string {
-    return this.language.isMalay() ? "Pengisytiharan" : "Dividend Declaration"
+    return this.language.isMalay() ? "Pemindahan Saham" : "Transfer of Shares"
   }
 
   get paymentApplicationNodeProps(): PropsServiceApplicationNode {
