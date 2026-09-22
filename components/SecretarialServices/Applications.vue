@@ -19,6 +19,7 @@
         :subtitle="controller.noRecordSubtitle"
       />
       <button
+        v-if="props.target === CompanyConstants.TARGET_DOCUMENT_REQUEST"
         class="btn btn-submit"
         @click="controller.onCreateClicked()"
       >
