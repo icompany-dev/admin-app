@@ -11,6 +11,8 @@ export class DocumentRequestController extends SecretarialServiceController<
 > {
   application = ref<CompanyDocumentRequest>(new CompanyDocumentRequest())
 
+  pdfUrl: Ref<string> = ref<string>("")
+
   constructor(props: PropsSecretarialService, emitEvents: any) {
     super(props, CompanyConstants.TARGET_DOCUMENT_REQUEST, emitEvents)
   }
@@ -32,5 +34,13 @@ export class DocumentRequestController extends SecretarialServiceController<
     }
 
     await this.documentRef.onMoveToForms()
+  }
+
+  onShowPdf(url: string): void {
+    this.pdfUrl.value = url
+  }
+
+  get showPdfViewer(): boolean {
+    return !StringUtil.isNullOrEmpty(this.pdfUrl.value)
   }
 }

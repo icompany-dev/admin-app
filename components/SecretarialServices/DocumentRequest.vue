@@ -3,12 +3,32 @@
     id="secretarial-services-document-request"
     class="secretarial-service-application"
   >
-    <div class="service-application">//</div>
-    <div class="document-container">//</div>
+    <div class="service-application">
+      <DocumentRequestApplication
+        v-bind="controller.applicationProps"
+        @company="controller.onCompanyUpdated($event)"
+        @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
+        @documentSelected="controller.onDocumentTargetSelected($event)"
+        @download="controller.onDownloadClicked()"
+        @convertToForms="controller.onConvertToForms()"
+      />
+    </div>
+    <div class="document-container">
+      <Transition name="slide-left">
+        <PdfViewer
+          v-if="controller.showPdfViewer"
+          :company-id="controller.application.value.companyId"
+          :pdf-url="controller.pdfUrl.value"
+          :filename="'filename.pdf'"
+        />
+      </Transition>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import DocumentRequestApplication from "../Services/DocumentRequestApplication.vue"
+  import PdfViewer from "@/components/DocumentViewers/PdfViewer.vue"
   import { DocumentRequestController } from "~/scripts/components/secretarial-services/DocumentRequestController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
 

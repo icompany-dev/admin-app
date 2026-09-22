@@ -33,7 +33,7 @@
               {{ controller.branchAddress }}
               <br /> -->
               <br />
-              <b>{{ controller.itemsToPrepareLabel }}</b>
+              <!-- <b>{{ controller.itemsToPrepareLabel }}</b>
               <ol>
                 <li
                   v-for="(item, i) in controller.itemsToPrepare"
@@ -41,7 +41,7 @@
                 >
                   {{ item }}
                 </li>
-              </ol>
+              </ol> -->
               <b>{{ controller.deliverToLabel }}</b>
               <br />
               <span v-html="controller.deliveryAddress" />
