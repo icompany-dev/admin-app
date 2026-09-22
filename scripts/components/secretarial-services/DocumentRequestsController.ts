@@ -12,7 +12,7 @@ export class DocumentRequestsController extends SecretarialServicesController<Co
 
   onApplicationClicked(data: any): void {
     let application = new CompanyDocumentRequest(data)
-    this.router.push({ path: `/services/appoint-director-new/${application.id}` })
+    this.router.push({ path: `/services/document-requests/${application.id}` })
   }
 
   companyName(data: any): string {

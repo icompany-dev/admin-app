@@ -4,9 +4,13 @@ import { StringUtil } from "../utils/String"
 import { Application } from "./Application"
 import { Company } from "./Company"
 import { CompanyDocumentRequestItem } from "./CompanyDocumentRequestItem"
+import type { IModelApplication } from "./IModelApplication"
 import { User } from "./User"
 
-export class CompanyDocumentRequest extends Application {
+export class CompanyDocumentRequest
+  extends Application
+  implements IModelApplication<CompanyDocumentRequest, ReturnType<typeof useCompanyDocumentRequestStore>>
+{
   // id: string = ""
   // companyId: string = ""
   // company: Company = new Company()
@@ -34,13 +38,14 @@ export class CompanyDocumentRequest extends Application {
     }
 
     if (data instanceof CompanyDocumentRequest) {
-      this.clone(data)
+      this.cloneDetails(data)
     } else {
-      this.convertFromResponse(data)
+      this.convertFromResponseDetails(data)
     }
   }
 
-  override convertFromResponse(data: any): void {
+  convertFromResponseDetails(data: any): void {
+    super.convertFromResponse(data)
     this.id = data.id
     this.companyId = data.company_id
     this.company = new Company(data.company)
@@ -67,7 +72,8 @@ export class CompanyDocumentRequest extends Application {
     this.deletedAt = data.deleted_at
   }
 
-  override clone(data: CompanyDocumentRequest): void {
+  cloneDetails(data: CompanyDocumentRequest): void {
+    super.clone(data)
     this.id = data.id
     this.companyId = data.companyId
     this.company = data.company

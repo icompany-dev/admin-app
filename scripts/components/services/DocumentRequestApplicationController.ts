@@ -10,7 +10,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
-import { CompanyAssetPurchase } from "~/scripts/models/CompanyAssetPurchase"
+import { CompanyDocumentRequest } from "~/scripts/models/CompanyDocumentRequest"
 import { Bank } from "~/scripts/models/Bank"
 import { Filter } from "~/scripts/library/Filter"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
@@ -19,7 +19,7 @@ import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItem
 import type { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { DeliveryConstants } from "~/scripts/constants/Payment"
 
-export class PurchaseAssetApplicationController extends ApplicationController<CompanyAssetPurchase> {
+export class DocumentRequestApplicationController extends ApplicationController<CompanyDocumentRequest> {
   resolutionsRef: any | null = null
 
   banks: Ref<Bank[]> = ref<Bank[]>([])
@@ -30,9 +30,9 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
       props.companyId,
-      useCompanyAssetPurchaseStore(),
-      CompanyAssetPurchase,
-      CompanyConstants.TARGET_PURCHASE_ASSET,
+      useCompanyDocumentRequestStore(),
+      CompanyDocumentRequest,
+      CompanyConstants.TARGET_DOCUMENT_REQUEST,
       emitEvents,
       props.applicationId
     )
@@ -99,7 +99,7 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
 
   //getters
   get serviceName(): string {
-    return this.language.isMalay() ? "Pembelian Asset" : "Purchase of Asset"
+    return this.language.isMalay() ? "Permintaan Dokumen" : "Document Requests"
   }
 
   get paymentApplicationNodeProps(): PropsServiceApplicationNode {
@@ -115,15 +115,9 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
   }
 
   get applicationDetailsSublabel(): string {
-    return this.language.isMalay() ? "Kategori Aset & Butiran" : "Asset Category & Description"
-  }
-
-  get assetCategoryLabel(): string {
-    return "Asset Category"
-  }
-
-  get assetCategory(): string {
-    return this.application.value?.assetCategory ?? "-"
+    return this.language.isMalay()
+      ? "Butiran Dokumen yang Diminta dan Keperluan"
+      : "Documents Requested and Requirements"
   }
 
   get deliveryViaLabel(): string {
