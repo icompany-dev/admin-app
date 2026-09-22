@@ -11,6 +11,7 @@
         @documentSelected="controller.onDocumentTargetSelected($event)"
         @download="controller.onDownloadClicked()"
         @convertToForms="controller.onConvertToForms()"
+        @show="controller.onShowPdf($event)"
       />
     </div>
     <div class="document-container">

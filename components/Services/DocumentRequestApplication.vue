@@ -23,25 +23,17 @@
               </div>
             </div>
             <div class="application-details">
-              <!-- <b>{{ controller.bankLabel }}</b>
-              : {{ controller.bankName }}
-              <br />
-              <b>{{ controller.branchLabel }}</b>
-              :
-              {{ controller.branchName }}
-              <br />
-              {{ controller.branchAddress }}
-              <br /> -->
-              <br />
-              <!-- <b>{{ controller.itemsToPrepareLabel }}</b>
+              <b>{{ controller.documentsRequestLabel }}</b>
               <ol>
-                <li
-                  v-for="(item, i) in controller.itemsToPrepare"
-                  :key="i"
-                >
-                  {{ item }}
+                <li v-for="(item, index) in controller.documents">
+                  <span
+                    :class="{ clickable: controller.canShowDocument(item) }"
+                    @click="controller.onDocumentClicked(item)"
+                  >
+                    {{ item.documentName }}
+                  </span>
                 </li>
-              </ol> -->
+              </ol>
               <b>{{ controller.deliverToLabel }}</b>
               <br />
               <span v-html="controller.deliveryAddress" />

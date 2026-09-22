@@ -18,6 +18,7 @@ import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderIte
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import type { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { DeliveryConstants } from "~/scripts/constants/Payment"
+import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
 
 export class DocumentRequestApplicationController extends ApplicationController<CompanyDocumentRequest> {
   resolutionsRef: any | null = null
@@ -97,6 +98,18 @@ export class DocumentRequestApplicationController extends ApplicationController<
     //
   }
 
+  onDocumentClicked(item: CompanyDocumentRequestItem): void {
+    if (!this.canShowDocument(item)) {
+      return
+    }
+
+    this.emitEvents("show", item.iCompanyFile?.url)
+  }
+
+  canShowDocument(item: CompanyDocumentRequestItem): boolean {
+    return item.iCompanyFile?.url !== null
+  }
+
   //getters
   get serviceName(): string {
     return this.language.isMalay() ? "Permintaan Dokumen" : "Document Requests"
@@ -118,6 +131,10 @@ export class DocumentRequestApplicationController extends ApplicationController<
     return this.language.isMalay()
       ? "Butiran Dokumen yang Diminta dan Keperluan"
       : "Documents Requested and Requirements"
+  }
+
+  get documentsRequestLabel(): string {
+    return this.language.isMalay() ? "Senarai Dokumen" : "Documents List"
   }
 
   get deliveryViaLabel(): string {
@@ -232,5 +249,9 @@ export class DocumentRequestApplicationController extends ApplicationController<
 
   get markCompletedLabel(): string {
     return this.language.isMalay() ? "Tanda Lengkap" : "Mark Completed"
+  }
+
+  get documents(): CompanyDocumentRequestItem[] {
+    return this.application.value?.items ?? []
   }
 }
