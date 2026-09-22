@@ -380,7 +380,7 @@ export class BankDocumentsController {
   get shareholdersForIdentification(): Shareholder[] {
     return this.shareholders.value.filter((s: Shareholder) => {
       return !this.directors.value.some((d: Director) => {
-        return d.userId === s.userId
+        return d.user?.id === s.user?.id
       })
     })
   }
