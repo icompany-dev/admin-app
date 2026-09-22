@@ -18,6 +18,12 @@
         :title="controller.noRecordTitle"
         :subtitle="controller.noRecordSubtitle"
       />
+      <button
+        class="btn btn-submit"
+        @click="controller.onCreateClicked()"
+      >
+        {{ controller.createLabel }}
+      </button>
       <div
         class="application"
         v-for="(application, i) in controller.tableDataFetcher.value?.data"
@@ -54,12 +60,17 @@
         </div>
       </div>
     </div>
+    <CreateDocumentRequest
+      ref="createDocumentRequestRef"
+      v-bind="controller.uploadDocumentsProps"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
+  import CreateDocumentRequest from "../Popups/CreateDocumentRequest.vue"
   import { AllotNewSharesController } from "~/scripts/components/secretarial-services/AllotNewSharesController"
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
   import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
@@ -78,6 +89,8 @@
   const props = defineProps<IPropsSecretarialServices>()
 
   const emit = defineEmits([])
+
+  const createDocumentRequestRef = ref(null)
 
   let controller: SecretarialServicesController<Application> = new ApplicationsController(props, emit)
 
@@ -117,6 +130,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    createDocumentRequestRef,
+    (newVal) => {
+      controller.setCreateDocumentRequestRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

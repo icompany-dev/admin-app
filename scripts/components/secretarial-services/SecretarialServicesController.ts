@@ -7,6 +7,7 @@ import { StringUtil } from "~/scripts/utils/String"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
 import { PropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
 import type { Company } from "~/scripts/models/Company"
+import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 
 export abstract class SecretarialServicesController<T> {
   tableDataFetcher = ref<TableDataFetcher<T> | null>(null)
@@ -15,6 +16,8 @@ export abstract class SecretarialServicesController<T> {
 
   searchText: Ref<string | null> = ref<string | null>(null)
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
+
+  createDocumentRequestRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
@@ -61,10 +64,18 @@ export abstract class SecretarialServicesController<T> {
   abstract applicationStatus(application: any): string
   abstract company(application: any): Company
 
+  setCreateDocumentRequestRef(createDocumentRequestRef: any): void {
+    this.createDocumentRequestRef = createDocumentRequestRef
+  }
+
   onCompanyNameClicked(companyId: string): void {
     this.router.push({
       path: `/sdnbhds/${companyId}`,
     })
+  }
+
+  onCreateClicked(): void {
+    //
   }
 
   //getters
@@ -119,5 +130,13 @@ export abstract class SecretarialServicesController<T> {
 
   get viewApplicationLabel(): string {
     return this.language.isMalay() ? "Lihat" : "View"
+  }
+
+  get createLabel(): string {
+    return this.language.isMalay() ? "+ Tambah" : "+ Create"
+  }
+
+  get uploadDocumentsProps(): PropsUploadDocument {
+    return new PropsUploadDocument("")
   }
 }

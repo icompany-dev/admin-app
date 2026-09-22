@@ -82,4 +82,10 @@ export class DocumentRequestsController extends SecretarialServicesController<Co
     let application = new CompanyDocumentRequest(data)
     return new Company(application.company)
   }
+
+  override onCreateClicked(): void {
+    if (this.createDocumentRequestRef) {
+      this.createDocumentRequestRef.show()
+    }
+  }
 }

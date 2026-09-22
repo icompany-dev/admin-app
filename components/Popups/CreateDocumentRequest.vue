@@ -1,0 +1,205 @@
+<template>
+  <div id="popups-create-document-request">
+    <Popup
+      ref="popupRef"
+      v-bind="controller.popupProps"
+    >
+      <template #content>
+        <div>
+          <SearchableDropdown
+            :options="controller.companyOptions"
+            :labelKey="'label'"
+            :valueKey="'value'"
+          />
+        </div>
+        <div
+          ref="dropZoneRef"
+          class="drop-zone"
+          :class="{ collapsed: controller.anyFileAdded, 'drag-enter': controller.isDragEnter.value }"
+          @click="controller.onUploadClicked()"
+        >
+          <i class="fa-regular fa-cloud-arrow-up icon"></i>
+          <span v-html="controller.instructions" />
+        </div>
+        <input
+          type="file"
+          ref="fileInputRef"
+          class="hidden"
+          :accept="controller.fileToAccept"
+          multiple="true"
+          @change="controller.handleFileSelected($event)"
+        />
+        <Transition name="fade">
+          <div
+            class="selected-values"
+            v-if="controller.anyFileAdded"
+          >
+            <table class="files-to-upload">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Document Name</th>
+                  <th>Document Date</th>
+                  <th>Type</th>
+                  <th>No. of Pages</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(form, i) in controller.forms.value"
+                  :key="`form-${i}`"
+                >
+                  <td>{{ i + 1 }}.</td>
+                  <td>
+                    <div class="uploaded-file-details">
+                      <input
+                        type="text"
+                        class="form-control"
+                        :value="controller.documentNameFor(i)"
+                        @change="controller.onDocumentNameInput(i, $event)"
+                      />
+                      <span class="uploaded-file-name">
+                        <b>{{ controller.uploadedFilenameLabel }}:</b>
+                        <span
+                          class="original-name"
+                          :title="controller.filenameFor(i)"
+                        >
+                          {{ controller.filenameFor(i) }}
+                        </span>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <input
+                      type="date"
+                      class="form-control"
+                      v-model="form.documentDate"
+                    />
+                  </td>
+                  <td>
+                    <select
+                      class="form-control"
+                      v-model="form.formTypeId"
+                    >
+                      <option></option>
+                      <option
+                        v-for="(type, j) in controller.documentTypes"
+                        :key="type.id"
+                        :value="type.value"
+                      >
+                        {{ type.label }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      class="form-control"
+                      v-model="form.noOfPages"
+                    />
+                  </td>
+                  <td>
+                    <i
+                      class="fa-solid fa-xmark action-link remove"
+                      @click="controller.onRemove(i)"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </Transition>
+        <div class="form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            v-model="controller.isRequestForPayment.value"
+          />
+          <span>{{ controller.requestPaymentLabel }}</span>
+        </div>
+      </template>
+      <template #actionButtons>
+        <button
+          class="btn btn-danger"
+          @click="controller.onCancelClicked()"
+        >
+          {{ controller.cancelLabel }}
+        </button>
+        <button
+          class="btn btn-submit"
+          :disabled="!controller.anyFileAdded"
+          :class="{ 'is-loading': controller.isUploading.value }"
+          @click="controller.onProceedClicked()"
+        >
+          {{ controller.proceedLabel }}
+        </button>
+      </template>
+    </Popup>
+  </div>
+</template>
+
+<script lang="ts" setup>
+  import Popup from "./Popup.vue"
+  import SearchableDropdown from "../Forms/SearchableDropdown.vue"
+  import { CreateDocumentRequestController } from "~/scripts/components/popups/CreateDocumentRequestController"
+  import type { IPropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+
+  const props = defineProps<IPropsUploadDocument>()
+
+  const emit = defineEmits(["proceed"])
+
+  const popupRef = ref(null)
+  const fileInputRef = ref(null)
+  const dropZoneRef = ref(null)
+
+  const controller = new CreateDocumentRequestController(props, emit)
+
+  watch(
+    () => props,
+    (newVal) => {
+      controller.onPropsChange(newVal)
+    },
+    { deep: true }
+  )
+
+  watch(
+    popupRef,
+    (newVal) => {
+      controller.setPopupRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    fileInputRef,
+    (newVal) => {
+      controller.setFileInputRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    dropZoneRef,
+    (newVal) => {
+      controller.setDropZoneRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  onMounted(() => {
+    controller.addEventListeners()
+  })
+
+  onUnmounted(() => {
+    controller.removeEventListeners()
+  })
+
+  defineExpose({
+    show: controller.show.bind(controller),
+  })
+</script>
+
+<style lang="scss">
+  @use "~/assets/scss/components/Popups/CreateDocumentRequest" as *;
+</style>
