@@ -36,6 +36,7 @@
                   >
                     {{ item.documentName }}
                   </span>
+                  <span v-if="item.isSsmPurchase">MyData</span>
                 </li>
               </ol>
               <br />

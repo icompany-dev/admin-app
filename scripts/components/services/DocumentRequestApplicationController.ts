@@ -157,6 +157,10 @@ export class DocumentRequestApplicationController extends ApplicationController<
     return this.language.isMalay() ? "oleh Setiausaha Syarikat" : "By Cosec"
   }
 
+  get purchaseFrom(): string {
+    return this.language.isMalay() ? "" : ""
+  }
+
   get deliveryViaLabel(): string {
     return this.language.isMalay() ? "Penghantaran melalui" : "Delivery via"
   }
