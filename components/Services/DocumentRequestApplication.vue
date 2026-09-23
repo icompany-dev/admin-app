@@ -34,10 +34,6 @@
                   </span>
                 </li>
               </ol>
-              <b>{{ controller.deliverToLabel }}</b>
-              <br />
-              <span v-html="controller.deliveryAddress" />
-              <CopyValue :value="controller.deliveryAddressToCopy" />
             </div>
           </template>
           <template #nodeOptions>

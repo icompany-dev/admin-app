@@ -18,13 +18,13 @@
         :title="controller.noRecordTitle"
         :subtitle="controller.noRecordSubtitle"
       />
-      <button
+      <!-- <button
         v-if="props.target === CompanyConstants.TARGET_DOCUMENT_REQUEST"
         class="btn btn-submit"
         @click="controller.onCreateClicked()"
       >
         {{ controller.createLabel }}
-      </button>
+      </button> -->
       <div
         class="application"
         v-for="(application, i) in controller.tableDataFetcher.value?.data"

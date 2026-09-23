@@ -50,49 +50,11 @@
         </div>
       </div>
     </div>
-    <!-- <div
-      class="pagination-container"
-      v-if="controller.numberOfPages.value > 1 && controller.zoomLevel.value === 0 && !props.isShowFirstPageOnly"
-    >
-      <PaginationBubble
-        :total-pages="controller.numberOfPages.value"
-        :is-wrap-around="false"
-        @go-to-page="controller.onGoToPage($event)"
-      />
-    </div>
-    <div
-      class="document-filter-container"
-      v-if="props.showActionTray"
-    >
-      <PdfDocumentFilter
-        :company-id="props.companyId"
-        :pdf-url="controller.pdfUrl.value"
-        :filename="props.filename"
-        :can-email="props.canEmail"
-        :can-download="props.canDownload"
-        :can-certify="props.canCertify"
-        :can-certify-ssm="props.canCertifySsm"
-        :can-get-latest="props.canGetLatest"
-        :i-company-file-id="props.iCompanyFileId"
-        :my-data-file-id="props.myDataFileId"
-        :total-pages="controller.numberOfPages.value"
-        :show-learn-more="props.showLearnMore"
-        :learn-more-title="props.learnMoreTitle"
-        :learn-more-content="props.learnMoreContent"
-        @pay="emit('pay', $event)"
-        @certifySsmClicked="emit('certifySsmClicked', $event)"
-        @certifyCosecCourierClicked="emit('certifyCosecCourierClicked', $event)"
-        @certifyCosecEmailClicked="emit('certifyCosecEmailClicked', $event)"
-        @purchaseLatestClicked="emit('purchaseLatestClicked', $event)"
-      />
-    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
   import NoRecord from "../Placeholders/NoRecord.vue"
-  // import PdfDocumentFilter from "../DocumentFilters/PdfDocumentFilter.vue"
-  // import PaginationBubble from "@/components/Paginations/Bubbles.vue"
   import { ref, onMounted } from "vue"
   import { PdfViewerController } from "~/scripts/components/document-viewers/PdfViewerController"
 
@@ -173,6 +135,14 @@
       type: Boolean,
       default: false,
     },
+    canZoom: {
+      type: Boolean,
+      default: true,
+    },
+    zoomLevel: {
+      type: Number,
+      default: 0,
+    },
   })
 
   const emit = defineEmits([
@@ -190,7 +160,9 @@
     props.hasToShowOverlay,
     props.overlayText,
     props.overlaySubtext,
-    emit
+    emit,
+    props.canZoom,
+    props.zoomLevel
   )
 
   onMounted(async () => {

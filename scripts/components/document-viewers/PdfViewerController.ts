@@ -28,18 +28,24 @@ export class PdfViewerController {
 
   emitEvents: any | null = null
 
+  canZoom: Ref<boolean> = ref<boolean>(true)
+
   constructor(
     pdfUrl: string,
     hasToShowOverlay: boolean,
     overlayText: string,
     overlaySubtext: string,
-    emitEvents: any | null
+    emitEvents: any | null,
+    canZoom: boolean,
+    zoomLevel: number
   ) {
     this.pdfUrl.value = pdfUrl
     this.emitEvents = emitEvents
     this.hasToShowOverlay.value = hasToShowOverlay
     this.overlayText.value = overlayText
     this.overlaySubtext.value = overlaySubtext
+    this.canZoom.value = canZoom
+    this.zoomLevel.value = zoomLevel
   }
 
   setHasToShowOverlay(hasToShowOverlay: boolean): void {
@@ -144,6 +150,10 @@ export class PdfViewerController {
     }
 
     this.emitEvents("zoom", this.zoomLevel.value)
+
+    if (!this.canZoom.value) {
+      this.zoomLevel.value = 0
+    }
   }
 
   getDocumentWrapperStyle(): string {

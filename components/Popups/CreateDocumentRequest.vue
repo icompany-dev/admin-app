@@ -5,7 +5,8 @@
       v-bind="controller.popupProps"
     >
       <template #content>
-        <div>
+        <div class="form-group">
+          <label>{{ controller.companyLabel }}</label>
           <SearchableDropdown
             :options="controller.companyOptions"
             :labelKey="'label'"

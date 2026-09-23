@@ -455,4 +455,8 @@ export class CreateDocumentRequestController extends BasePopupController {
       return new SelectOption(c.id, c.id, c.getFullName())
     })
   }
+
+  get companyLabel(): string {
+    return this.language.isMalay() ? "Syarikat" : "Company"
+  }
 }
