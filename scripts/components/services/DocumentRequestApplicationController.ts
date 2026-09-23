@@ -137,6 +137,26 @@ export class DocumentRequestApplicationController extends ApplicationController<
     return this.language.isMalay() ? "Senarai Dokumen" : "Documents List"
   }
 
+  get ctcRequiredLabel(): string {
+    return this.language.isMalay() ? "Pengesahan Salinan Sah" : "Certify True Copy"
+  }
+
+  get ctcType(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    if (!this.application.value.isCtcRequired && this.application.value.isSsmCtcRequired) {
+      return this.language.isMalay() ? "Tidak Diperlukan" : "Not Required"
+    }
+
+    if (this.application.value.isSsmCtcRequired) {
+      return this.language.isMalay() ? "oleh SSM" : "By SSM"
+    }
+
+    return this.language.isMalay() ? "oleh Setiausaha Syarikat" : "By Cosec"
+  }
+
   get deliveryViaLabel(): string {
     return this.language.isMalay() ? "Penghantaran melalui" : "Delivery via"
   }

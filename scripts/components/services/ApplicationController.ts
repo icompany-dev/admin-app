@@ -539,7 +539,7 @@ export abstract class ApplicationController<Application> {
 
   get deliveryAddress(): string {
     if (!this.application.value || !this.isDeliveryRequired) {
-      return "-"
+      return this.language.isMalay() ? "Penghantaran Tidak Diperlukan" : "No Delivery Required"
     }
 
     if (!this.application.value.company?.hasBusinessAddress) {

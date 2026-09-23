@@ -23,6 +23,10 @@
               </div>
             </div>
             <div class="application-details">
+              <b>{{ controller.ctcRequiredLabel }}:</b>
+              {{ controller.ctcType }}
+              <br />
+              <br />
               <b>{{ controller.documentsRequestLabel }}</b>
               <ol>
                 <li v-for="(item, index) in controller.documents">
@@ -34,6 +38,11 @@
                   </span>
                 </li>
               </ol>
+              <br />
+              <b>{{ controller.deliverToLabel }}</b>
+              <br />
+              <span v-html="controller.deliveryAddress" />
+              <CopyValue :value="controller.deliveryAddressToCopy" />
             </div>
           </template>
           <template #nodeOptions>
