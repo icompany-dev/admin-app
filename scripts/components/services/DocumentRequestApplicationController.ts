@@ -285,16 +285,8 @@ export class DocumentRequestApplicationController extends ApplicationController<
     )
   }
 
-  get uploadDocumentsNodeProps(): PropsServiceApplicationNode {
+  get deliveryNodeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(this.hasPaid, this.isShipped, this.isShowResolutions.value)
-  }
-
-  get uploadDocumentsLabel(): string {
-    return this.language.isMalay() ? "Muat Naik Dokumen" : "Upload Documents"
-  }
-
-  get uploadDocumentsSublabel(): string {
-    return this.language.isMalay() ? "Hanya jika Berkenaan" : "Only if Applicable"
   }
 
   get uploadLabel(): string {

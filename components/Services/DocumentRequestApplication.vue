@@ -36,14 +36,9 @@
                   >
                     {{ item.documentName }}
                   </span>
-                  <span v-if="item.isSsmPurchase">MyData</span>
+                  <span v-if="item.isSsmPurchase">{{ controller.purchaseFrom }} MyData</span>
                 </li>
               </ol>
-              <br />
-              <b>{{ controller.deliverToLabel }}</b>
-              <br />
-              <span v-html="controller.deliveryAddress" />
-              <CopyValue :value="controller.deliveryAddressToCopy" />
             </div>
           </template>
           <template #nodeOptions>
@@ -57,33 +52,46 @@
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
-              @click="controller.onShippedClicked()"
+              @click="controller.onUploadClicked()"
             >
-              {{ controller.shipLabel }}
+              {{ controller.uploadLabel }}
             </button>
           </template>
         </ApplicationNode>
         <ApplicationNode
-          v-bind="controller.uploadDocumentsNodeProps"
+          v-if="controller.isDeliveryRequired"
+          v-bind="controller.deliveryNodeProps"
           @click="controller.onApplicationDetailsClicked()"
         >
           <template #nodeContent>
             <div class="application-container">
               <div class="node-title">
-                {{ controller.uploadDocumentsLabel }}
+                {{ controller.deliveryLabel }}
               </div>
               <div class="node-subtitle">
-                {{ controller.uploadDocumentsSublabel }}
+                {{ controller.deliverySublabel }}
               </div>
             </div>
+            <div class="application-details">
+              <b>{{ controller.deliverMethodLabel }}</b>
+              <br />
+              {{ controller.deliveryMethod }}
+              <br />
+              <br />
+              <b>{{ controller.deliverToLabel }}</b>
+              <br />
+              <span v-html="controller.deliveryAddress" />
+              <CopyValue :value="controller.deliveryAddressToCopy" />
+            </div>
           </template>
+          <!--This will be where the print slips be-->
           <template #nodeOptions></template>
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
-              @click="controller.onUploadClicked()"
+              @click="controller.onShippedClicked()"
             >
-              {{ controller.uploadLabel }}
+              {{ controller.shipLabel }}
             </button>
           </template>
         </ApplicationNode>
