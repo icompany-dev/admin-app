@@ -64,6 +64,30 @@
           </template>
         </ApplicationNode>
         <ApplicationNode
+          v-bind="controller.uploadDocumentsNodeProps"
+          @click="controller.onApplicationDetailsClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.uploadDocumentsLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.uploadDocumentsSublabel }}
+              </div>
+            </div>
+          </template>
+          <template #nodeOptions></template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              @click="controller.onUploadClicked()"
+            >
+              {{ controller.uploadLabel }}
+            </button>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode
           v-bind="controller.completedNodeProps"
           @click="controller.onApplicationDetailsClicked()"
         >
@@ -97,6 +121,11 @@
       ref="shipApplicationRef"
       @proceed="controller.onProceedShipped()"
     />
+    <PopupUploadDocument
+      v-bind="controller.uploadDocumentProps"
+      ref="uploadeDocumentRef"
+      @proceed="controller.onPostUploadDocuments()"
+    />
   </div>
 </template>
 
@@ -115,6 +144,7 @@
   const resolutionsRef = ref(null)
   const shipApplicationRef = ref(null)
   const serviceApplicationRef = ref(null)
+  const uploadeDocumentRef = ref(null)
 
   const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
   const controller = new DocumentRequestApplicationController(props, emit)
@@ -146,6 +176,14 @@
     serviceApplicationRef,
     (newVal) => {
       controller.setServiceApplicationRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    uploadeDocumentRef,
+    (newVal) => {
+      controller.setUploadDocumentRef(newVal)
     },
     { immediate: true }
   )

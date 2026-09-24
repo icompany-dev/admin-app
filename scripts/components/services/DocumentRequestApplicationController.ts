@@ -135,6 +135,18 @@ export class DocumentRequestApplicationController extends ApplicationController<
     }
   }
 
+  onUploadClicked(): void {
+    if (this.uploadDocumentRef) {
+      this.uploadDocumentRef.show()
+
+      return
+    }
+  }
+
+  async onPostUploadDocuments(): Promise<void> {
+    // Trigger document ready??
+  }
+
   async onCompleteClicked(): Promise<void> {
     //
   }
@@ -199,7 +211,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
   }
 
   get purchaseFrom(): string {
-    return this.language.isMalay() ? "" : ""
+    return this.language.isMalay() ? "Beli Dari" : "Purchase From"
   }
 
   get deliveryViaLabel(): string {
@@ -271,6 +283,22 @@ export class DocumentRequestApplicationController extends ApplicationController<
       this.application.value.status === StatusConstants.CONVERTED ||
       this.application.value.status === StatusConstants.COMPLETED
     )
+  }
+
+  get uploadDocumentsNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.hasPaid, this.isShipped, this.isShowResolutions.value)
+  }
+
+  get uploadDocumentsLabel(): string {
+    return this.language.isMalay() ? "Muat Naik Dokumen" : "Upload Documents"
+  }
+
+  get uploadDocumentsSublabel(): string {
+    return this.language.isMalay() ? "Hanya jika Berkenaan" : "Only if Applicable"
+  }
+
+  get uploadLabel(): string {
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
   get completedNodeProps(): PropsServiceApplicationNode {
