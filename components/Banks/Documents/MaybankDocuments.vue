@@ -68,6 +68,15 @@
             }
           "
         />
+        <IdentificationDocumentWatermark
+          v-for="(shareholder, i) in controller.shareholdersForIdentification"
+          v-bind="controller.getIdentificationDocumentWatermarkProps(shareholder)"
+          :ref="
+            (el) => {
+              controller.setIdentificationRefs(el, i)
+            }
+          "
+        />
       </template>
     </div>
   </div>

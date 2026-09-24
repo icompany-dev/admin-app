@@ -10,7 +10,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
-import { CompanyAssetPurchase } from "~/scripts/models/CompanyAssetPurchase"
+import { CompanyDocumentRequest } from "~/scripts/models/CompanyDocumentRequest"
 import { Bank } from "~/scripts/models/Bank"
 import { Filter } from "~/scripts/library/Filter"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
@@ -18,11 +18,16 @@ import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderIte
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import type { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { DeliveryConstants } from "~/scripts/constants/Payment"
+import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
-export class PurchaseAssetApplicationController extends ApplicationController<CompanyAssetPurchase> {
+export class DocumentRequestApplicationController extends ApplicationController<CompanyDocumentRequest> {
   resolutionsRef: any | null = null
 
   banks: Ref<Bank[]> = ref<Bank[]>([])
+
+  isDownloading: Ref<boolean> = ref<boolean>(false)
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
@@ -30,9 +35,9 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
       props.companyId,
-      useCompanyAssetPurchaseStore(),
-      CompanyAssetPurchase,
-      CompanyConstants.TARGET_PURCHASE_ASSET,
+      useCompanyDocumentRequestStore(),
+      CompanyDocumentRequest,
+      CompanyConstants.TARGET_DOCUMENT_REQUEST,
       emitEvents,
       props.applicationId
     )
@@ -79,8 +84,45 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
   }
 
   async onDownloadClicked(): Promise<void> {
-    await nextTick()
-    this.emitEvents("download")
+    if (this.isDownloading.value || !this.application.value) {
+      return
+    }
+    // download all
+
+    this.isDownloading.value = true
+
+    try {
+      let promises: any[] = []
+      let files: DownloadFileData[] = []
+      let documentsToDownload = this.application.value.items.filter((d: CompanyDocumentRequestItem) => {
+        return !StringUtil.isNullOrEmpty(d.iCompanyFile?.url ?? "")
+      })
+
+      documentsToDownload.forEach((item: CompanyDocumentRequestItem) => {
+        if (!item.iCompanyFile) {
+          return
+        }
+
+        promises.push(
+          fetch(item.iCompanyFile.url).then(async (response: any) => {
+            if (!response.ok) {
+              return
+            }
+
+            let blob = await response.blob()
+            files.push(new DownloadFileData(URL.createObjectURL(blob), item.documentName))
+          })
+        )
+      })
+
+      await Promise.allSettled(promises)
+
+      await FileZipper.zipAndDownload(files, "Documents Requested.zip")
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+    }
   }
 
   async onPrintClicked(): Promise<void> {
@@ -93,13 +135,37 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
     }
   }
 
+  onUploadClicked(): void {
+    if (this.uploadDocumentRef) {
+      this.uploadDocumentRef.show()
+
+      return
+    }
+  }
+
+  async onPostUploadDocuments(): Promise<void> {
+    // Trigger document ready??
+  }
+
   async onCompleteClicked(): Promise<void> {
     //
   }
 
+  onDocumentClicked(item: CompanyDocumentRequestItem): void {
+    if (!this.canShowDocument(item)) {
+      return
+    }
+
+    this.emitEvents("show", item.iCompanyFile?.url)
+  }
+
+  canShowDocument(item: CompanyDocumentRequestItem): boolean {
+    return item.iCompanyFile?.url !== null
+  }
+
   //getters
   get serviceName(): string {
-    return this.language.isMalay() ? "Pembelian Asset" : "Purchase of Asset"
+    return this.language.isMalay() ? "Permintaan Dokumen" : "Document Requests"
   }
 
   get paymentApplicationNodeProps(): PropsServiceApplicationNode {
@@ -115,15 +181,37 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
   }
 
   get applicationDetailsSublabel(): string {
-    return this.language.isMalay() ? "Kategori Aset & Butiran" : "Asset Category & Description"
+    return this.language.isMalay()
+      ? "Butiran Dokumen yang Diminta dan Keperluan"
+      : "Documents Requested and Requirements"
   }
 
-  get assetCategoryLabel(): string {
-    return "Asset Category"
+  get documentsRequestLabel(): string {
+    return this.language.isMalay() ? "Senarai Dokumen" : "Documents List"
   }
 
-  get assetCategory(): string {
-    return this.application.value?.assetCategory ?? "-"
+  get ctcRequiredLabel(): string {
+    return this.language.isMalay() ? "Pengesahan Salinan Sah" : "Certify True Copy"
+  }
+
+  get ctcType(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    if (!this.application.value.isCtcRequired && this.application.value.isSsmCtcRequired) {
+      return this.language.isMalay() ? "Tidak Diperlukan" : "Not Required"
+    }
+
+    if (this.application.value.isSsmCtcRequired) {
+      return this.language.isMalay() ? "oleh SSM" : "By SSM"
+    }
+
+    return this.language.isMalay() ? "oleh Setiausaha Syarikat" : "By Cosec"
+  }
+
+  get purchaseFrom(): string {
+    return this.language.isMalay() ? "Beli Dari" : "Purchase From"
   }
 
   get deliveryViaLabel(): string {
@@ -197,6 +285,14 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
     )
   }
 
+  get deliveryNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.hasPaid, this.isShipped, this.isShowResolutions.value)
+  }
+
+  get uploadLabel(): string {
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
   get completedNodeProps(): PropsServiceApplicationNode {
     let props = new PropsServiceApplicationNode(this.isShipped, this.isCompleted, this.isShowCompleted.value)
 
@@ -238,5 +334,9 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
 
   get markCompletedLabel(): string {
     return this.language.isMalay() ? "Tanda Lengkap" : "Mark Completed"
+  }
+
+  get documents(): CompanyDocumentRequestItem[] {
+    return this.application.value?.items ?? []
   }
 }

@@ -1,44 +1,51 @@
 import { StatusConstants } from "../constants/Status"
 import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
+import { Application } from "./Application"
 import { Company } from "./Company"
 import { CompanyDocumentRequestItem } from "./CompanyDocumentRequestItem"
+import type { IModelApplication } from "./IModelApplication"
 import { User } from "./User"
 
-export class CompanyDocumentRequest {
-  id: string = ""
-  companyId: string = ""
-  company: Company = new Company()
+export class CompanyDocumentRequest
+  extends Application
+  implements IModelApplication<CompanyDocumentRequest, ReturnType<typeof useCompanyDocumentRequestStore>>
+{
+  // id: string = ""
+  // companyId: string = ""
+  // company: Company = new Company()
   isCtcRequired: boolean = false
   isSsmCtcRequired: boolean = false
   isPriority: boolean = false
   items: CompanyDocumentRequestItem[] = []
   deliveryMethod: string = ""
-  trackingUrl: string = ""
-  trackingNumber: string = ""
-  status: string = StatusConstants.DRAFT
-  paidAt: string | null = null
+  // trackingUrl: string = ""
+  // trackingNumber: string = ""
+  // status: string = StatusConstants.DRAFT
+  // paidAt: string | null = null
   paidById: string | null = null
   paidBy: User | null = null
   shippedAt: string | null = null
-  completedAt: string | null = null
-  createdAt: string | null = null
-  updatedAt: string | null = null
-  deletedAt: string | null = null
+  // completedAt: string | null = null
+  // createdAt: string | null = null
+  // updatedAt: string | null = null
+  // deletedAt: string | null = null
 
   constructor(data: any | null = null) {
+    super()
     if (!data) {
       return
     }
 
     if (data instanceof CompanyDocumentRequest) {
-      this.clone(data)
+      this.cloneDetails(data)
     } else {
-      this.convertFromResponse(data)
+      this.convertFromResponseDetails(data)
     }
   }
 
-  convertFromResponse(data: any): void {
+  convertFromResponseDetails(data: any): void {
+    super.convertFromResponse(data)
     this.id = data.id
     this.companyId = data.company_id
     this.company = new Company(data.company)
@@ -65,7 +72,8 @@ export class CompanyDocumentRequest {
     this.deletedAt = data.deleted_at
   }
 
-  clone(data: CompanyDocumentRequest): void {
+  cloneDetails(data: CompanyDocumentRequest): void {
+    super.clone(data)
     this.id = data.id
     this.companyId = data.companyId
     this.company = data.company
@@ -108,7 +116,7 @@ export class CompanyDocumentRequest {
 
   async create(repository: ReturnType<typeof useCompanyDocumentRequestStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -116,7 +124,7 @@ export class CompanyDocumentRequest {
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -126,7 +134,7 @@ export class CompanyDocumentRequest {
 
   async update(repository: ReturnType<typeof useCompanyDocumentRequestStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -134,7 +142,7 @@ export class CompanyDocumentRequest {
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -144,14 +152,14 @@ export class CompanyDocumentRequest {
 
   async remove(repository: ReturnType<typeof useCompanyDocumentRequestStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

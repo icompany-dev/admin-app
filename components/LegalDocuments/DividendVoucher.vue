@@ -22,6 +22,12 @@
         :additional-css-class="controller.additionalCssClass"
         :show-page-number="false"
       >
+        <template #paperMargins>
+          <TransitionGroup name="fade">
+            <div class="paper-tag point-left date-details">Review This</div>
+            <div class="paper-tag point-right tag-payment-details">Complete This</div>
+          </TransitionGroup>
+        </template>
         <template #paperContent>
           <div class="voucher-content">
             <div class="company-details">
@@ -56,6 +62,7 @@
                         type="text"
                         class="form-control in-resolution"
                         placeholder="Warrant No."
+                        :value="controller.warrantNo"
                       />
                     </td>
                     <td>
@@ -63,13 +70,32 @@
                         type="text"
                         class="form-control in-resolution"
                         placeholder="Dividend No."
+                        :value="`${index + 1} / ${controller.voucherYear}`"
                       />
                     </td>
                     <td>{{ controller.typeOfDividend }}</td>
-                    <td>{{ controller.fye }}</td>
-                    <td>{{ controller.dateRegisterOfMembers }}</td>
+                    <td>
+                      <input
+                        type="date"
+                        class="form-control in-resolution"
+                        v-model="controller.application.value.financialYearEndDate"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="date"
+                        class="form-control in-resolution"
+                        v-model="controller.application.value.dateOfRegisterOfMembers"
+                      />
+                    </td>
                     <td>{{ controller.getShareholding(shareholder) }}</td>
-                    <td>{{ controller.dateOfPayment }}</td>
+                    <td>
+                      <input
+                        type="date"
+                        class="form-control in-resolution"
+                        v-model="controller.application.value.dividendPaymentDate"
+                      />
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -84,9 +110,13 @@
                 <tbody>
                   <tr>
                     <td>
-                      {{ controller.dividendCategory.value }}
+                      <input
+                        type="text"
+                        class="form-control in-resolution"
+                        v-model="controller.dividendCategory.value"
+                      />
                     </td>
-                    <td>{{ controller.getDividendRate(shareholder) }}%</td>
+                    <td>RM{{ controller.getDividendRate() }} PER SHARE</td>
                     <td>
                       {{ controller.getGrossAmount(shareholder) }}
                     </td>
@@ -96,8 +126,35 @@
             </div>
             <div class="shareholder-cosec-details">
               <div class="shareholder-details">
-                <b>{{ shareholder.fullName() }}</b>
-                <span v-html="controller.getShareholderAddress(shareholder)" />
+                <table class="shareholder-detail-table">
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="shareholder">
+                          <b>{{ shareholder.fullName() }}</b>
+                          <b>{{ controller.getShareholderIdentification(shareholder) }}</b>
+                          <span v-html="controller.getShareholderAddress(shareholder)" />
+                        </div>
+                      </td>
+                      <td>
+                        <div class="payment-detail">
+                          <b>{{ controller.paymentLabel }}:</b>
+                          <input
+                            type="text"
+                            class="form-control in-resolution"
+                            v-if="controller.isByBankTransfer"
+                            placeholder="Name of Bank"
+                          />
+                          <input
+                            type="text"
+                            class="form-control in-resolution"
+                            :placeholder="controller.paymentLabel"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
               <div class="cosec-details">
                 <span>FOR {{ controller.companyName() }}</span>
@@ -111,20 +168,9 @@
             <div class="disclaimer">
               <ol>
                 <li>
-                  We hereby certify that the exempt dividend is paid out of dividend income in respect of which Income
-                  Tax has been exempted under
-                  <input
-                    type="text"
-                    class="form-control in-resolution"
-                    v-model="controller.legalProvisionForExemption.value"
-                    placeholder="Legal Provision for Exemption"
-                  />
-                  .
-                </li>
-                <li>
                   We hereby certify that no tax is deductible from the single tier dividend under subsection 108(1) of
                   the Income Tax Act 1967. The single tier dividend is not taxable in the hands of the shareholders
-                  other than an individual pursuant to paragraph 12B of Schedule 6 of Income Tax Act 1967.
+                  other than an individual pursuant to paragraph 12B of Schedule 6 of the Income Tax Act 1967.
                 </li>
               </ol>
               <small>
@@ -136,31 +182,6 @@
               </small>
             </div>
           </div>
-          <!-- <div class="voucher-note">
-            <b>NOTE:</b>
-            <ol>
-              <li>
-                Where the date of payment for each category of dividend is different, separate dividend vouchers should
-                be prepared.
-              </li>
-              <li>
-                Where the dividend consists of property other than money, the gross dividend shall include the amount of
-                the market value of that property at the time of the distribution of the dividend.
-              </li>
-              <li>
-                The date of payment refers to the date on which the dividend is paid, distributed or credited by the
-                company to the shareholders.
-              </li>
-              <li>
-                The above example is just for illustration and only the relevant category/categories of dividend paid
-                should be shown in the actual dividend voucher.
-              </li>
-              <li>
-                The legal provisions relevant to the category of exempt income from which the exempt dividend is paid
-                should be stated accurately in Paragraph 1 above whenever applicable.
-              </li>
-            </ol>
-          </div> -->
         </template>
       </Paper>
     </template>
