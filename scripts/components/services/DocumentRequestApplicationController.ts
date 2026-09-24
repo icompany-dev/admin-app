@@ -19,11 +19,15 @@ import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItem
 import type { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { DeliveryConstants } from "~/scripts/constants/Payment"
 import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class DocumentRequestApplicationController extends ApplicationController<CompanyDocumentRequest> {
   resolutionsRef: any | null = null
 
   banks: Ref<Bank[]> = ref<Bank[]>([])
+
+  isDownloading: Ref<boolean> = ref<boolean>(false)
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
@@ -80,8 +84,45 @@ export class DocumentRequestApplicationController extends ApplicationController<
   }
 
   async onDownloadClicked(): Promise<void> {
-    await nextTick()
-    this.emitEvents("download")
+    if (this.isDownloading.value || !this.application.value) {
+      return
+    }
+    // download all
+
+    this.isDownloading.value = true
+
+    try {
+      let promises: any[] = []
+      let files: DownloadFileData[] = []
+      let documentsToDownload = this.application.value.items.filter((d: CompanyDocumentRequestItem) => {
+        return !StringUtil.isNullOrEmpty(d.iCompanyFile?.url ?? "")
+      })
+
+      documentsToDownload.forEach((item: CompanyDocumentRequestItem) => {
+        if (!item.iCompanyFile) {
+          return
+        }
+
+        promises.push(
+          fetch(item.iCompanyFile.url).then(async (response: any) => {
+            if (!response.ok) {
+              return
+            }
+
+            let blob = await response.blob()
+            files.push(new DownloadFileData(URL.createObjectURL(blob), item.documentName))
+          })
+        )
+      })
+
+      await Promise.allSettled(promises)
+
+      await FileZipper.zipAndDownload(files, "Documents Requested.zip")
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+    }
   }
 
   async onPrintClicked(): Promise<void> {
