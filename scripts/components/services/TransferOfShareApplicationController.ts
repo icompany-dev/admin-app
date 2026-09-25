@@ -470,6 +470,10 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get registerButtonLabel(): string {
+    if (this.isApproved) {
+      return this.language.isMalay() ? "Telah dihantar" : "Submitted"
+    }
+
     return this.language.isMalay() ? "Hantar ke SSM" : "Submit to SSM"
   }
 
