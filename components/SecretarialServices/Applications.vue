@@ -86,6 +86,7 @@
   import { CompanyConstants } from "~/scripts/constants/Company"
   import type { Application } from "~/scripts/models/Application"
   import type { IPropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
+  import { TekunApplicationsController } from "~/scripts/components/secretarial-services/TekunApplicationsController"
 
   const props = defineProps<IPropsSecretarialServices>()
 
@@ -122,6 +123,9 @@
       break
     case CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES:
       controller = new AllotNewSharesController(props, emit)
+      break
+    case CompanyConstants.TARGET_LOAN_APPLICATION:
+      controller = new TekunApplicationsController(props, emit)
       break
   }
 

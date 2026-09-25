@@ -1,5 +1,8 @@
 <template>
-  <div id="mcr-tekun-application">
+  <div
+    id="mcr-tekun-application"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="controller.paperOrientation"
       :show-page-number="false"
@@ -26,11 +29,14 @@
         </div>
         <div class="resolution-content">
           <p>
-            <b>
+            <span class="first-paragraph">
               Ketetapan Syarikat melalui Mesyuarat Pemilik Syarikat / Pemegang Saham atau Resolusi Pekeliling bertarikh
-              <span class="value-placeholder">Tarikh Resolusi</span>
+              <input
+                type="date"
+                class="form-control in-resolution"
+              />
               bertujuan untuk Pembiayaan Perniagaan dengan pihak TEKUN Nasional
-            </b>
+            </span>
           </p>
           <table class="application-details">
             <tbody>
@@ -55,13 +61,13 @@
                     ({{ controller.registrationNumberOld() }})
                   </b>
                   sebuah syarikat yang ditubuhkan di bawah Akta Syarikat 2016 beralamat di
-                  <b>{{ controller.companyAddress }}</b>
-                  .
+                  <span v-html="controller.companyAddress" />
                 </td>
               </tr>
             </tbody>
           </table>
           <p>
+            <br />
             <b>Ahli-Ahli Pemegang Saham Syarikat bersetuju seperti berikut;</b>
           </p>
           <ol class="agreement-details">
@@ -69,7 +75,7 @@
               Syarikat ini membuat permohonan pembiayaan dan menerima pembiayaan perniagaan daripada TEKUN Nasional.
             </li>
             <li>
-              Kuasa diberikan kepada orang yang diberi kuasa sebagai wakil Pemilik Syarikat / Pemegang saham seperti
+              Kuasa diberikan kepada orang yang diberi kuasa sebagai wakil Pemilik Syarikat / Pemegang Saham seperti
               nama yang dinyatakan berikut di bawah;
               <br />
               <br />
@@ -114,7 +120,7 @@
               yang dipersetujui.
             </li>
             <li>
-              Syarikat memasitkan Pemohon pembiayaan atau wakil Pemilik Syarikat / Pemegang Saham Syarikat yang diberi
+              Syarikat memastikan Pemohon pembiayaan atau wakil Pemilik Syarikat / Pemegang Saham Syarikat yang diberi
               kuasa mestilah menjadi salah seorang penandatangan akaun Syarikat yang berkaitan dengan pembiayaan ini.
             </li>
           </ol>
@@ -141,22 +147,32 @@
             v-for="(signatureItem, index) in controller.signatures.value"
             :key="index"
           >
-            <Signature
+            <div class="signature-placeholder"></div>
+            <div class="signee">
+              Nama Pemilik Syarikat / Pemegang Saham:
+              <br />
+              {{ signatureItem.name }}
+              <br />
+              {{ signatureItem.role }}
+            </div>
+            <!-- <Signature
               :signature-item="signatureItem"
               :is-tinted="true"
               :tint-label="'Sign in Wet Ink'"
               @is-enlarged="controller.handleEnlargedSignaturePad($event)"
               @signed="emit('signed', $event)"
-            />
+            /> -->
           </div>
         </div>
         <div class="signature-section cosec-ctc">
           <div class="signature-item">
-            <Signature
+            <div class="signature-placeholder"></div>
+            <div class="signee">Pengesahan Setiausaha Syarikat</div>
+            <!-- <Signature
               :signature-item="controller.cosecCertification"
               :is-tinted="true"
               :tint-label="'CTC will be later'"
-            />
+            /> -->
           </div>
         </div>
       </template>
@@ -180,6 +196,8 @@
     "signed",
     "completeApplication",
   ])
+
+  const documentRef = ref(null)
 
   const controller = new McrTekunApplicationController(props, emit)
 
@@ -208,9 +226,22 @@
     { deep: true }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
+
+<style lang="scss">
+  @use "~/assets/scss/components/Resolutions/McrTekunApplication" as *;
+</style>

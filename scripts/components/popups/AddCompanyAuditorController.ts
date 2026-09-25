@@ -16,6 +16,7 @@ export class AddCompanyAuditorController extends BasePopupController {
   auditorPartners: Ref<AuditorPartner[]> = ref<AuditorPartner[]>([])
   companyAuditor = ref<CompanyAuditor>(new CompanyAuditor())
   companyId: Ref<string> = ref<string>("")
+  email: Ref<string> = ref<string>("")
 
   isGrantAccess: Ref<boolean> = ref<boolean>(false)
   isSubmitting: Ref<boolean> = ref<boolean>(false)
@@ -38,6 +39,7 @@ export class AddCompanyAuditorController extends BasePopupController {
   async setDataProps(props: PropsAddCompanyAuditor): Promise<void> {
     this.companyId.value = props.companyId
 
+    this.companyAuditor.value = new CompanyAuditor(props.auditor)
     this.companyAuditor.value.companyId = this.companyId.value
 
     await this.fetchAuditorAccessRole()
@@ -109,7 +111,13 @@ export class AddCompanyAuditorController extends BasePopupController {
     try {
       this.isSubmitting.value = true
 
-      let promises = [this.companyAuditor.value.create(useCompanyAuditorStore())]
+      let promises: any[] = []
+
+      if (StringUtil.isNullOrEmpty(this.companyAuditor.value.id)) {
+        promises.push(this.companyAuditor.value.create(useCompanyAuditorStore()))
+      } else {
+        promises.push(this.companyAuditor.value.update(useCompanyAuditorStore()))
+      }
 
       if (this.isGrantAccess.value) {
         promises.push(this.grantAccess())
@@ -147,12 +155,12 @@ export class AddCompanyAuditorController extends BasePopupController {
     try {
       // create user account with some random password
       let userRepository = useUserStore()
-      let user = await userRepository.fetchByEmail(this.companyAuditor.value.auditorEmail)
+      let user = await userRepository.fetchByEmail(this.email.value)
 
       if (!user) {
         let auth = useAuthStore()
         let success = await auth.register({
-          email: this.companyAuditor.value.auditorEmail,
+          email: this.email.value,
           password: "iCompany2026!!",
           passwordConfirmation: "iCompany2026!!",
         })
@@ -161,7 +169,7 @@ export class AddCompanyAuditorController extends BasePopupController {
           return //
         }
 
-        user = await userRepository.fetchByEmail(this.companyAuditor.value.auditorEmail)
+        user = await userRepository.fetchByEmail(this.email.value)
 
         if (!user) {
           return
@@ -183,7 +191,7 @@ export class AddCompanyAuditorController extends BasePopupController {
       let userInvitation = new UserInvitation()
       userInvitation.companyId = this.companyId.value
       userInvitation.name = this.companyAuditor.value.auditorContactPerson
-      userInvitation.email = this.companyAuditor.value.auditorEmail
+      userInvitation.email = this.email.value
       userInvitation.accessRoleId = this.auditorAccessRole.value.id
 
       await userInvitation.create(useUserInvitationStore())

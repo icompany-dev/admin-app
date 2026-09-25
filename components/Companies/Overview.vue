@@ -186,6 +186,12 @@
                   <span class="phone">{{ auditor.auditorPhone }}</span>
                 </div>
               </div>
+              <button
+                class="btn btn-pill btn-primary"
+                @click="controller.onEditCompanyAuditor(auditor)"
+              >
+                Edit
+              </button>
             </li>
             <li>
               <button
