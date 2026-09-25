@@ -94,10 +94,12 @@
         </div>
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import McrTekunApplication from "../Resolutions/McrTekunApplication.vue"
   import { TekunApplicationController } from "~/scripts/components/service-wrappers/TekunApplicationController"
 
