@@ -21,6 +21,7 @@ import type { CompanyShareTransferDetail } from "~/scripts/models/CompanyShareTr
 import { User } from "~/scripts/models/User"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import { UserDetail } from "~/scripts/models/UserDetail"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 
 export class TransferOfShareApplicationController extends ApplicationController<CompanyShareholderTransfer> {
   resolutionsRef: any | null = null
@@ -29,8 +30,12 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowStamping: Ref<boolean> = ref<boolean>(false)
+  isShowRegister: Ref<boolean> = ref<boolean>(false)
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
+
+  isDownloadingSection51: Ref<boolean> = ref<boolean>(false)
+  isCompleting: Ref<boolean> = ref<boolean>(false)
 
   isStamping: Ref<boolean> = ref<boolean>(false)
 
@@ -110,18 +115,30 @@ export class TransferOfShareApplicationController extends ApplicationController<
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
     this.isShowStamping.value = false
+    this.isShowRegister.value = false
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_SECTION105)
   }
 
-  onVouchersDetailsClicked(): void {
+  onStampingDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = false
     this.isShowStamping.value = true
+    this.isShowRegister.value = false
     this.isShowCompleted.value = false
 
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_DIVIDEND_DECLARATION_VOUCHERS)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SECTION105)
+  }
+
+  onRegisterDetailsClicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowStamping.value = false
+    this.isShowRegister.value = true
+    this.isShowCompleted.value = false
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER)
   }
 
   async onStampingClicked(): Promise<void> {
@@ -168,10 +185,6 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
   }
 
-  async onPostUploadDocument(): Promise<void> {
-    await this.uploadedDocumentChecker.value.fetchDocuments()
-  }
-
   async onPrintClicked(): Promise<void> {
     //
   }
@@ -182,8 +195,75 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
   }
 
+  async onDownloadSection51Clicked(): Promise<void> {
+    if (!this.isSection51Uploaded || this.isDownloadingSection51.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uplaodedSection51
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingSection51.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (e) {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingSection51.value = false
+    }
+  }
+
   async onCompleteClicked(): Promise<void> {
-    //
+    if (!this.application.value) {
+      return
+    }
+    try {
+      let repository = useCompanyStore()
+      await repository.postService(this.target.value, this.application.value.id)
+
+      if (repository.error !== null) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
+        : "Application is Completed. The Company Shares has been updated."
+      let toastMessage = this.language.isMalay()
+        ? "Anda akan dibawa ke muka Sdn Bhd."
+        : "You will be redirected to the Sdn Bhd page."
+
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+    } finally {
+      this.isCompleting.value = false
+    }
   }
 
   async onProceedPostUpload(): Promise<void> {
@@ -229,7 +309,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get applicationDetailsNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isStamped, this.isShowResolutions.value)
+    return new PropsServiceApplicationNode(this.hasPaid, this.isStampingInProgress, this.isShowResolutions.value)
   }
 
   get applicationDetailsLabel(): string {
@@ -270,13 +350,17 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   get submittedStampingLabel(): string {
     if (this.isStamped) {
+      return this.language.isMalay() ? "Telah Disetem" : "Stamped"
+    }
+
+    if (this.isStampingInProgress) {
       return this.language.isMalay() ? "Sedang disetem" : "Stamping in Progress"
     }
 
     return this.language.isMalay() ? "Penyeteman" : "Stamping"
   }
 
-  get isStamped(): boolean {
+  get isStampingInProgress(): boolean {
     if (!this.application.value) {
       return false
     }
@@ -288,8 +372,12 @@ export class TransferOfShareApplicationController extends ApplicationController<
     )
   }
 
+  get isStamped(): boolean {
+    return this.isStampingInProgress && this.isSijilSetemUploaded
+  }
+
   get stampingProgressNode(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.isStamped, this.isShipped, this.isShowStamping.value)
+    return new PropsServiceApplicationNode(this.isStampingInProgress, this.isStamped, this.isShowStamping.value)
   }
 
   get stampingLabel(): string {
@@ -298,18 +386,6 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   get stampingSublabel(): string {
     return this.language.isMalay() ? "Kemaskini Status Penyetemen LHDN" : "Update Status of Stamping from LHDN"
-  }
-
-  get registerNode(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.isStamped, this.isShipped, this.isShowStamping.value)
-  }
-
-  get registerLabel(): string {
-    return this.language.isMalay() ? "Section 51 - Register of Members" : "Section 51 - Register of Members"
-  }
-
-  get registerSublabel(): string {
-    return this.language.isMalay() ? "Kemaskini Maklumat di SSM" : "Register the Transfer to SSM"
   }
 
   override get deliveryAddress(): string {
@@ -403,15 +479,16 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get deliveryNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.isApproved, this.isShipped, this.isShowShipped.value)
+    let props = new PropsServiceApplicationNode(this.isApproved, this.isShipped, this.isShowShipped.value)
+    props.isLastNode = true
+
+    return props
   }
 
   get completedNodeProps(): PropsServiceApplicationNode {
-    let isPreviousStepCompleted = this.isDeliveryRequired ? this.isShipped : this.isApproved
+    let props = new PropsServiceApplicationNode(this.isStamped, this.isCompleted, this.isShowCompleted.value)
 
-    let props = new PropsServiceApplicationNode(isPreviousStepCompleted, this.isCompleted, this.isShowCompleted.value)
-
-    props.isLastNode = true
+    props.isLastNode = this.isDeliveryRequired
 
     return props
   }
@@ -428,11 +505,13 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get applicationCompletedLabel(): string {
-    return this.language.isMalay() ? "Dokumen Dihantar" : "Documents Delivered"
+    return this.language.isMalay() ? "Section 51 - Register of Members" : "Section 51 - Register of Members"
   }
 
   get completedSublabel(): string {
-    return this.language.isMalay() ? "(Status Penghantaran Dokumen)" : "(Document Delivery Status)"
+    return this.language.isMalay()
+      ? "(Muat naik Seksyen 51 terkini dan lengkapkan permohonan ini.)"
+      : "(Upload latest Section 51 and complete this application.)"
   }
 
   get completedStatus(): string {
@@ -456,15 +535,15 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   // Documents
-  get isSection105Uploaded(): boolean {
+  get isSijilSetemUploaded(): boolean {
     return this.uploadedDocumentChecker.value.isDocumentUploaded(
       DocumentTargets.TARGET_SHAREHOLDER_PROPOSE_TRANSFER,
       this.application.value?.paidAt ?? ""
     )
   }
 
-  get uplaodedSection105(): string {
-    if (!this.isSection105Uploaded) {
+  get uplaodedSijilSetem(): string {
+    if (!this.isSijilSetemUploaded) {
       return ""
     }
 
@@ -476,8 +555,8 @@ export class TransferOfShareApplicationController extends ApplicationController<
     return companyDocument?.fileUrl ?? ""
   }
 
-  get section105Label(): string {
-    return this.language.isMalay() ? "Seksyen 105" : "Section 105"
+  get sijilSetemLabel(): string {
+    return this.language.isMalay() ? "Sijil Setem" : "Sijil Setem"
   }
 
   get isSection51Uploaded(): boolean {
@@ -487,9 +566,9 @@ export class TransferOfShareApplicationController extends ApplicationController<
     )
   }
 
-  get uplaodedSection51(): string {
-    if (!this.isSection105Uploaded) {
-      return ""
+  get uplaodedSection51(): CompanyDocument | null {
+    if (!this.isSijilSetemUploaded) {
+      return null
     }
 
     let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
@@ -497,7 +576,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
       this.application.value?.paidAt ?? ""
     )
 
-    return companyDocument?.fileUrl ?? ""
+    return companyDocument ?? null
   }
 
   get section51Label(): string {

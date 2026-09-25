@@ -94,40 +94,6 @@
           </template>
         </ApplicationNode>
         <ApplicationNode
-          v-bind="controller.registerNode"
-          @click="controller.onApplicationDetailsClicked()"
-        >
-          <template #nodeContent>
-            <div class="application-container">
-              <div class="node-title">
-                {{ controller.registerLabel }}
-              </div>
-              <div class="node-subtitle">
-                {{ controller.registerSublabel }}
-              </div>
-            </div>
-            <div class="application-details">//</div>
-          </template>
-          <template #nodeOptions>
-            <button
-              class="btn btn-pill btn-primary"
-              @click="controller.onUploadClicked()"
-            >
-              {{ controller.uploadLabel }}
-            </button>
-          </template>
-          <template #nodeActions>
-            <button
-              class="btn btn-pill btn-submit"
-              :class="{ 'is-loading': controller.isStamping.value }"
-              :disabled="controller.isStamping.value"
-              @click="controller.onStampingClicked()"
-            >
-              {{ controller.submittedStampingLabel }}
-            </button>
-          </template>
-        </ApplicationNode>
-        <ApplicationNode
           v-if="controller.isDeliveryRequired"
           v-bind="controller.deliveryNodeProps"
           @click="controller.onApplicationDetailsClicked()"
@@ -164,7 +130,7 @@
             </button>
           </template>
         </ApplicationNode>
-        <!-- <ApplicationNode
+        <ApplicationNode
           v-bind="controller.completedNodeProps"
           @click="controller.onApplicationDetailsClicked()"
         >
@@ -181,17 +147,17 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
-              @click="controller.onUploadDocumentClicked()"
+              @click="controller.onUploadClicked()"
             >
               {{ controller.uploadLabel }}
             </button>
             <span
               class="action-link download"
-              v-if="controller.isRoaUploaded"
-              @click="controller.onDownloadRoaClicked()"
+              v-if="controller.isSection51Uploaded"
+              @click="controller.onDownloadSection51Clicked()"
             >
               <i class="fa-regular fa-cloud-arrow-down"></i>
-              {{ controller.returnOfAllotmentLabel }}
+              {{ controller.section51Label }}
             </span>
           </template>
           <template #nodeActions>
@@ -202,7 +168,7 @@
               {{ controller.markCompletedLabel }}
             </button>
           </template>
-        </ApplicationNode> -->
+        </ApplicationNode>
       </template>
     </ServiceApplication>
     <PopupShipApplication
