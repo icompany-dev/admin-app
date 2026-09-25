@@ -13,7 +13,7 @@ export class TransferOfSharesController extends SecretarialServicesController<Co
 
   onApplicationClicked(data: any): void {
     let application = new CompanyShareholderTransfer(data)
-    this.router.push({ path: `/services/transfer-of-share/${application.id}` })
+    this.router.push({ path: `/services/transfer-of-shares/${application.id}` })
   }
 
   companyName(data: any): string {

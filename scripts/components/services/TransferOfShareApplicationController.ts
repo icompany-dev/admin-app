@@ -19,6 +19,8 @@ import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItem
 import { NumberUtil } from "~/scripts/utils/Number"
 import type { CompanyShareTransferDetail } from "~/scripts/models/CompanyShareTransferDetail"
 import { User } from "~/scripts/models/User"
+import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
+import { UserDetail } from "~/scripts/models/UserDetail"
 
 export class TransferOfShareApplicationController extends ApplicationController<CompanyShareholderTransfer> {
   resolutionsRef: any | null = null
@@ -190,6 +192,19 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
 
     return new User(transferDetail.transferTo?.user)
+  }
+
+  getTransferorPropsUserDetail(transferDetail: CompanyShareTransferDetail): PropsUserDetail {
+    return new PropsUserDetail(
+      new User(transferDetail.transferFrom.user),
+      new UserDetail(transferDetail.transferFrom.user?.detail)
+    )
+  }
+
+  getTransfereePropsUserDetail(transferDetail: CompanyShareTransferDetail): PropsUserDetail {
+    let user = this.getTransfereeDetail(transferDetail)
+
+    return new PropsUserDetail(new User(user), new UserDetail(user.detail))
   }
 
   //getters
