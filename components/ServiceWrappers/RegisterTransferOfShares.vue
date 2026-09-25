@@ -17,26 +17,17 @@
       >
         <DcrRegisterTransferOfShares
           ref="dcrRef"
-          :company-id="props.companyId"
-          :application-id="props.applicationId"
-          :application="null"
-          :show-watermark="props.showWatermarkText"
-          :watermark-text="props.watermarkText"
-          :is-in-preview-mode="props.isInPreviewMode"
-          :is-by-shareholder="false"
-          :financial-period-id="null"
-          :bank-id="null"
-          :name-reservations="[]"
-          :year-to-lodge="null"
-          :type="null"
+          v-bind="controller.resolutionDocumentProps"
           @signed="controller.onSigned($event)"
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import DcrRegisterTransferOfShares from "../Resolutions/DcrRegisterTransferOfShares.vue"
   import { RegisterTransferOfSharesController } from "~/scripts/components/service-wrappers/RegisterTransferOfSharesController"
 
