@@ -61,7 +61,7 @@
         </ApplicationNode>
         <ApplicationNode
           v-bind="controller.stampingProgressNode"
-          @click="controller.onApplicationDetailsClicked()"
+          @click="controller.onStampingDetailsClicked()"
         >
           <template #nodeContent>
             <div class="application-container">
@@ -72,24 +72,53 @@
                 {{ controller.stampingSublabel }}
               </div>
             </div>
-            <div class="application-details">//</div>
+            <div class="application-details"></div>
           </template>
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isFetchingDocuments }"
               @click="controller.onUploadClicked()"
             >
-              {{ controller.uploadLabel }}
+              {{ controller.uploadSijilLabel }}
+            </button>
+          </template>
+          <template #nodeActions></template>
+        </ApplicationNode>
+        <ApplicationNode
+          v-bind="controller.registerNode"
+          @click="controller.onRegisterDetailsClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.registerLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.registerSublabel }}
+              </div>
+            </div>
+            <div
+              class="application-details"
+              v-html="controller.registerDetails"
+            />
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onDownloadClicked()"
+            >
+              {{ controller.downloadLabel }}
             </button>
           </template>
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
-              :class="{ 'is-loading': controller.isStamping.value }"
-              :disabled="controller.isStamping.value"
-              @click="controller.onStampingClicked()"
+              :class="{ 'is-loading': controller.isSubmitting.value }"
+              :disabled="controller.isSubmitting.value"
+              @click="controller.onSubmitClicked()"
             >
-              {{ controller.submittedStampingLabel }}
+              {{ controller.registerButtonLabel }}
             </button>
           </template>
         </ApplicationNode>
@@ -132,7 +161,7 @@
         </ApplicationNode>
         <ApplicationNode
           v-bind="controller.completedNodeProps"
-          @click="controller.onApplicationDetailsClicked()"
+          @click="controller.onCompletedDetailsClicked()"
         >
           <template #nodeContent>
             <div class="application-container">

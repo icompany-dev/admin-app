@@ -599,4 +599,8 @@ export abstract class ApplicationController<Application> {
 
     return props
   }
+
+  get isFetchingDocuments(): boolean {
+    return this.uploadedDocumentChecker.value.isFetching
+  }
 }

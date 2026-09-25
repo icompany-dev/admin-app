@@ -22,11 +22,13 @@ import { User } from "~/scripts/models/User"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import { UserDetail } from "~/scripts/models/UserDetail"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
+import { CompanyPostShareTransfer } from "~/scripts/models/CompanyPostShareTransfer"
+import { RegisterOfTransferType } from "~/scripts/constants/Shareholder"
 
 export class TransferOfShareApplicationController extends ApplicationController<CompanyShareholderTransfer> {
   resolutionsRef: any | null = null
 
-  banks: Ref<Bank[]> = ref<Bank[]>([])
+  postShareTransferApplication = ref<CompanyPostShareTransfer>(new CompanyPostShareTransfer())
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowStamping: Ref<boolean> = ref<boolean>(false)
@@ -35,6 +37,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
   isDownloadingSection51: Ref<boolean> = ref<boolean>(false)
+  isSubmitting: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
   isStamping: Ref<boolean> = ref<boolean>(false)
@@ -51,8 +54,6 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
     this.minimumMajorityRequired.value = 0
     this.selectedApprovalType.value = "director" // this is fixed for this service
-
-    this.fetchBanks()
   }
 
   setResolutionsRef(resolutionsRef: any): void {
@@ -79,26 +80,17 @@ export class TransferOfShareApplicationController extends ApplicationController<
         return td.transferToInvitation?.setUser(useUserStore())
       })
 
+    let postShareTransferRepository = useCompanyPostShareTransferStore()
+    let postShareTransferResponse = await postShareTransferRepository.fetchForTransfer(this.applicationId.value)
+    if (postShareTransferResponse) {
+      this.postShareTransferApplication.value = new CompanyPostShareTransfer(postShareTransferResponse)
+    }
+
     await Promise.allSettled(promises)
 
     if (StringUtil.isNullOrEmpty(this.uploadedDocumentChecker.value.companyId)) {
       this.uploadedDocumentChecker.value.companyId = this.application.value.companyId
       await this.uploadedDocumentChecker.value.fetchDocuments()
-    }
-  }
-
-  async fetchBanks(): Promise<void> {
-    try {
-      let repository = useBankStore()
-      let filter = new Filter()
-      filter.takeAll = true
-      let response = await repository.fetchAll(filter)
-
-      this.banks.value = response.data.map((d: any) => {
-        return new Bank(d)
-      })
-    } catch (e) {
-      console.error(e)
     }
   }
 
@@ -139,6 +131,16 @@ export class TransferOfShareApplicationController extends ApplicationController<
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER)
+  }
+
+  onCompletedDetailsClicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowStamping.value = false
+    this.isShowRegister.value = false
+    this.isShowCompleted.value = true
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SECTION105)
   }
 
   async onStampingClicked(): Promise<void> {
@@ -185,8 +187,30 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
   }
 
-  async onPrintClicked(): Promise<void> {
-    //
+  async onSubmitClicked(): Promise<void> {
+    if (this.isSubmitting.value || !this.application.value) {
+      return
+    }
+
+    try {
+      this.isSubmitting.value = true
+
+      let repository = useCompanyShareholderTransferStore()
+      await repository.submit(this.application.value.id)
+
+      this.application.value.status = StatusConstants.SUBMITTED
+      await this.fetchApplication()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isSubmitting.value = false
+    }
   }
 
   async onShippedClicked(): Promise<void> {
@@ -385,7 +409,62 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get stampingSublabel(): string {
-    return this.language.isMalay() ? "Kemaskini Status Penyetemen LHDN" : "Update Status of Stamping from LHDN"
+    return this.language.isMalay()
+      ? "(Muat naik Sijil Setem dari LHDN untuk kemaskini status)"
+      : "(Upload Sijil Setem from LHDN to update status)"
+  }
+
+  get registerNode(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isStamped, this.isApproved, this.isShowRegister.value)
+  }
+
+  get registerLabel(): string {
+    return this.language.isMalay()
+      ? "Seksyen 106 - Daftar Pemindahan Saham"
+      : "Section 106 - Register Transfer of Shares"
+  }
+
+  get registerSublabel(): string {
+    return this.language.isMalay()
+      ? "(Pilihan Pengarah bawah Seksyen 106 Akta Syarikat 2016)"
+      : "(Directors' Options Under Section 106 of Companies Act 2016)"
+  }
+
+  get registerButtonLabel(): string {
+    return this.language.isMalay() ? "Hantar ke SSM" : "Submit to SSM"
+  }
+
+  get registerDetails(): string {
+    let decision = ""
+    switch (this.postShareTransferApplication.value.delayType) {
+      case RegisterOfTransferType.Approval:
+        decision = this.language.isMalay() ? "Diluluskan" : "Approved"
+        break
+      case RegisterOfTransferType.Delay:
+        decision = this.language.isMalay() ? "Lewatkan" : "Delay"
+        break
+      case RegisterOfTransferType.Refusal:
+        decision = this.language.isMalay() ? "Ditolak" : "Refused"
+        break
+    }
+
+    let isNotApproved = this.postShareTransferApplication.value.delayType !== RegisterOfTransferType.Approval
+
+    if (this.language.isMalay()) {
+      let details = `<b>Keputusan:</b> ${decision}`
+      if (isNotApproved) {
+        details = `${details}<br><b>Sebab-sebab:</b> ${this.postShareTransferApplication.value.reason}`
+      }
+
+      return details
+    }
+
+    let details = `<b>Decision:</b> ${decision}`
+    if (isNotApproved) {
+      details = `${details}<br><b>Reason:</b> ${this.postShareTransferApplication.value.reason}`
+    }
+
+    return details
   }
 
   override get deliveryAddress(): string {
@@ -453,6 +532,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
 
     return (
+      this.application.value.status === StatusConstants.SUBMITTED ||
       this.application.value.status === StatusConstants.APPROVED ||
       this.application.value.status === StatusConstants.SHIPPED ||
       this.application.value.status === StatusConstants.DELIVERED ||
@@ -530,7 +610,19 @@ export class TransferOfShareApplicationController extends ApplicationController<
     return this.language.isMalay() ? "Tanda Lengkap" : "Mark Completed"
   }
 
+  get uploadSijilLabel(): string {
+    if (this.isSijilSetemUploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
   get uploadLabel(): string {
+    if (this.isSection51Uploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
     return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
