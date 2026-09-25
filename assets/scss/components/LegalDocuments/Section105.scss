@@ -1,9 +1,10 @@
 .section-105 {
 
   div,
-  span {
+  span,
+  p {
     font-size: 11px;
-    line-height: 13px;
+    line-height: 13px !important;
   }
 
   .document-header {
@@ -15,6 +16,7 @@
     gap: 5px;
     margin-bottom: 10px;
     font-weight: 600;
+    border: none !important;
   }
 
   .section-105-table {
@@ -28,6 +30,7 @@
           padding: 2px;
           vertical-align: top;
           font-size: 10px;
+          line-height: 11px;
           color: #000000;
 
           div,
