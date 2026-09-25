@@ -5,13 +5,14 @@ import { CompanyDividendDeclaration } from "~/scripts/models/CompanyDividendDecl
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
-import { DividendType } from "~/scripts/constants/DividendAndSolvency"
+import { DividendPaymentMethod, DividendType } from "~/scripts/constants/DividendAndSolvency"
 import { ShareType } from "~/scripts/constants/Shareholder"
 import { NumberUtil } from "~/scripts/utils/Number"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
 import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 import type { Secretary } from "~/scripts/types/Secretary"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class DividendVoucherController extends SdnBhdLegalDocumentController {
   applicationId: Ref<string> = ref<string>("")
@@ -25,8 +26,12 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
 
   additionalCssClass: string = "dividend-voucher"
 
-  dividendCategory: Ref<string> = ref<string>("EXEMPT DIVIDEND")
+  dividendCategory: Ref<string> = ref<string>("SINGLE TIER DIVIDEND")
   legalProvisionForExemption: Ref<string> = ref<string>("")
+  bankName: Ref<string> = ref<string>("")
+  bankAccountNumber: Ref<string> = ref<string>("")
+
+  warrantNumber: Ref<number> = ref<number>(1)
 
   dayjs = useDayjs()
   time = useLocalTime()
@@ -114,6 +119,23 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
     return NumberUtil.thousandSeparator(shareholder.preferenceShares)
   }
 
+  getShareholderIdentification(shareholder: Shareholder): string {
+    if (shareholder.isCorporateRepresentative()) {
+      let identification = shareholder.company?.registrationNumberNew ?? ""
+
+      if (!StringUtil.isNullOrEmpty(shareholder.company?.registrationNumberOld ?? "")) {
+        identification = `${identification} (${shareholder.company?.registrationNumberOld})`
+      }
+
+      return identification
+    }
+
+    let userDetail = shareholder.user?.detail ?? new UserDetail()
+    let type = userDetail.identificationType === "passport" ? "Passport" : "IC"
+
+    return `${type} NO: ${userDetail.identification}`
+  }
+
   getShareholderAddress(shareholder: Shareholder): string {
     if (shareholder.isCorporateRepresentative()) {
       return ""
@@ -144,19 +166,16 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
     return (totalShares / totalCompanyShares) * 100
   }
 
-  getDividendRate(shareholder: Shareholder): string {
+  getDividendRate(): string {
+    return NumberUtil.currency(this.application.value.pricePerShare)
+  }
+
+  getGrossAmount(shareholder: Shareholder): string {
     let totalShares =
       this.application.value.shareType === ShareType.Ordinary
         ? shareholder.ordinaryShares
         : shareholder.preferenceShares
-    let totalAmount = (this.application.value.amount * this.getPercentage(shareholder)) / 100
-    let rate = (totalAmount / totalShares) * 100
-
-    return NumberUtil.thousandSeparator(Math.round(rate))
-  }
-
-  getGrossAmount(shareholder: Shareholder): string {
-    let totalAmount = (this.application.value.amount * this.getPercentage(shareholder)) / 100
+    let totalAmount = totalShares * this.application.value.pricePerShare
 
     return NumberUtil.currency(totalAmount)
   }
@@ -228,5 +247,31 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
 
   get cosecSsmPcm(): string {
     return this.cosec.certificate
+  }
+
+  get paymentMethod(): string {
+    return this.application.value.dividendPaymentMethod.toUpperCase()
+  }
+
+  get paymentLabel(): string {
+    if (this.isByBankTransfer) {
+      return "Bank Account No"
+    }
+
+    return "Cheque No"
+  }
+
+  get isByBankTransfer(): boolean {
+    return this.application.value.dividendPaymentMethod.toLowerCase() === DividendPaymentMethod.BankTransfer
+  }
+
+  get voucherYear(): string {
+    let dayjs = useDayjs()
+
+    return dayjs(this.application.value.financialYearEndDate).format("YYYY")
+  }
+
+  get warrantNo(): string {
+    return `000${this.warrantNumber.value}`
   }
 }

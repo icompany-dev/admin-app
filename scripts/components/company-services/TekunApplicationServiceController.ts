@@ -1,4 +1,4 @@
-import { CompanySection47 } from "~/scripts/models/CompanySection47"
+import { CompanyTekunApplication } from "~/scripts/models/CompanyTekunApplication"
 import { CompanyServiceController } from "./CompanyServiceController"
 import { Error } from "~/scripts/library/Error"
 import { StringUtil } from "~/scripts/utils/String"
@@ -10,15 +10,16 @@ import { PaymentUtil } from "~/scripts/utils/Payment"
 import { PropsCompanyServiceWrapper } from "~/scripts/props/PropsCompanyServiceWrapper"
 import { ViewMode } from "~/scripts/constants/ViewMode"
 import { EmitMessages } from "~/scripts/constants/EmitMessages"
+import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 
-export class Section47ServiceController extends CompanyServiceController<CompanySection47> {
-  companySection47 = ref<CompanySection47>(new CompanySection47())
+export class TekunApplicationServiceController extends CompanyServiceController<CompanyTekunApplication> {
+  companyTekunApplication = ref<CompanyTekunApplication>(new CompanyTekunApplication())
 
   wrapperRef: any | null = null
 
   constructor(companyId: string, viewType: string, emitEvents: any | null) {
-    super(companyId, true, false, CompanySection47, useCompanySection47Store(), emitEvents)
-    this.target = CompanyConstants.TARGET_SECTION_47
+    super(companyId, true, false, CompanyTekunApplication, useCompanyLoanApplicationStore(), emitEvents)
+    this.target = CompanyConstants.TARGET_LOAN_APPLICATION
     this.setViewType(viewType)
     this.initializeData()
   }
@@ -27,7 +28,7 @@ export class Section47ServiceController extends CompanyServiceController<Company
     switch (this.viewType.value) {
       case ViewMode.New:
         this.isInPreviewMode.value = true
-        this.companySection47.value = new CompanySection47(this.companyServiceInitializer.newApplication)
+        this.companyTekunApplication.value = new CompanyTekunApplication(this.companyServiceInitializer.newApplication)
         await Promise.all([this.fetchPrice(), this.companyServiceInitializer.setExistingApplication()])
         if (this.companyServiceInitializer.existingApplication) {
           this.hasOngoingApplication.value = true //We need to warn users
@@ -41,7 +42,9 @@ export class Section47ServiceController extends CompanyServiceController<Company
         } else {
           this.hasOngoingApplication.value = false
         }
-        this.companySection47.value = new CompanySection47(this.companyServiceInitializer.existingApplication)
+        this.companyTekunApplication.value = new CompanyTekunApplication(
+          this.companyServiceInitializer.existingApplication
+        )
         break
       case ViewMode.Past:
         this.isInPreviewMode.value = true
@@ -51,7 +54,7 @@ export class Section47ServiceController extends CompanyServiceController<Company
         break
     }
 
-    this.init(this.companySection47.value as CompanySection47)
+    this.init(this.companyTekunApplication.value as CompanyTekunApplication)
   }
 
   async fetchOngoingApplication(): Promise<void> {
@@ -62,13 +65,13 @@ export class Section47ServiceController extends CompanyServiceController<Company
       }
 
       if (apiRecord.totalRecords <= 0) {
-        this.companySection47.value = new CompanySection47()
-        this.companySection47.value.companyId = this.companyId
+        this.companyTekunApplication.value = new CompanyTekunApplication()
+        this.companyTekunApplication.value.companyId = this.companyId
         this.hasOngoingApplication.value = false
         return
       }
 
-      this.companySection47.value = new CompanySection47(apiRecord.data[0])
+      this.companyTekunApplication.value = new CompanyTekunApplication(apiRecord.data[0])
       this.isInPreviewMode.value = false
       this.hasOngoingApplication.value = true
     } catch (error) {
@@ -97,7 +100,7 @@ export class Section47ServiceController extends CompanyServiceController<Company
         return
       }
 
-      let lastApplication = new CompanySection47(apiRecord.data[0])
+      let lastApplication = new CompanyTekunApplication(apiRecord.data[0])
       this.lastApplicationDate.value = this.time.formatDateOnlyFull(lastApplication.updatedAt)
       this.hasPastApplications.value = true
       this.emitEvents(EmitMessages.HAS_PAST_APPLICATIONS, true)
@@ -116,12 +119,12 @@ export class Section47ServiceController extends CompanyServiceController<Company
     return this.isInPreviewMode.value
   }
 
-  async onApplicationUpdated(application: CompanySection47): Promise<void> {
+  async onApplicationUpdated(application: CompanyTekunApplication): Promise<void> {
     if (this.viewType.value === ViewMode.New) {
       return
     }
 
-    this.companySection47.value = new CompanySection47(application)
+    this.companyTekunApplication.value = new CompanyTekunApplication(application)
     await this.fetchOngoingApplication()
 
     if (this.dcrRef) {
@@ -129,7 +132,7 @@ export class Section47ServiceController extends CompanyServiceController<Company
     }
   }
 
-  setApplicationData(applicationData: CompanySection47): void {
+  setApplicationData(applicationData: CompanyTekunApplication): void {
     if (!applicationData) {
       return
     }
@@ -168,7 +171,7 @@ export class Section47ServiceController extends CompanyServiceController<Company
         PaymentConstants.PAYMENT_CART_ENTITY_TYPE_COMPANY,
         billingInfo,
         this.target,
-        this.companySection47.value.id
+        this.companyTekunApplication.value.id
       )
 
       this.emitEvents("pay", paymentCart)
@@ -186,15 +189,15 @@ export class Section47ServiceController extends CompanyServiceController<Company
   }
 
   async submitApplication(): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.companySection47.value.id)) {
-      await this.companySection47.value.create(useCompanySection47Store())
+    if (StringUtil.isNullOrEmpty(this.companyTekunApplication.value.id)) {
+      await this.companyTekunApplication.value.create(useCompanyLoanApplicationStore())
     } else {
-      await this.companySection47.value.update(useCompanySection47Store())
+      await this.companyTekunApplication.value.update(useCompanyLoanApplicationStore())
     }
   }
 
   async onProceedClicked(): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.companySection47.value.id) || !this.hasPaid()) {
+    if (StringUtil.isNullOrEmpty(this.companyTekunApplication.value.id) || !this.hasPaid()) {
       this.makePayment()
       return
     }
@@ -237,7 +240,8 @@ export class Section47ServiceController extends CompanyServiceController<Company
   }
 
   get serviceWrapperProps() {
-    let application = this.viewType.value === ViewMode.New ? new CompanySection47() : this.companySection47.value
+    let application =
+      this.viewType.value === ViewMode.New ? new CompanyTekunApplication() : this.companyTekunApplication.value
 
     if (this.viewType.value === ViewMode.New) {
       application.companyId = this.companyId
@@ -246,14 +250,14 @@ export class Section47ServiceController extends CompanyServiceController<Company
     let showPasca = this.viewType.value === ViewMode.Existing
 
     return new PropsCompanyServiceWrapper(
-      this.companySection47.value,
+      this.companyTekunApplication.value,
       this.companyId,
       this.target,
       this.slipCaseTitle(),
       this.viewType.value,
       this.hasOngoingApplication.value,
       this.hasPastApplications.value,
-      this.companySection47.value.id,
+      this.companyTekunApplication.value.id,
       this.currentPage.value,
       this.totalPages.value,
       "DCR",
@@ -274,8 +278,20 @@ export class Section47ServiceController extends CompanyServiceController<Company
       this.hoveredButtonLabel(),
       isInPreviewMode,
       this.isSubmitting.value,
-      CompanySection47,
-      useCompanySection47Store()
+      CompanyTekunApplication,
+      useCompanyLoanApplicationStore()
+    )
+  }
+
+  get resolutionDocumentProps() {
+    return new PropsResolutionDocument<CompanyTekunApplication>(
+      this.companyId,
+      this.companyTekunApplication.value.id,
+      null,
+      this.showWatermark(),
+      this.watermarkText(),
+      this.isInPreviewMode.value,
+      false
     )
   }
 }

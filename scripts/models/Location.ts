@@ -56,7 +56,7 @@ export class Location {
       return "-"
     }
 
-    return `${this.addressLine1.toUpperCase()}, ${this.addressLine2 ? this.addressLine2.toUpperCase() + ", " : ""}${this.postcode} ${this.city?.name.toUpperCase()}, ${this.state?.name.toUpperCase()} ${this.country?.name.toUpperCase()}`
+    return `${this.addressLine1.toUpperCase()}, ${!StringUtil.isNullOrEmpty(this.addressLine2) ? this.addressLine2?.toUpperCase() + ", " : ""}${this.postcode} ${this.city?.name.toUpperCase()}, ${this.state?.name.toUpperCase()} ${this.country?.name.toUpperCase()}`
   }
 
   getMultilineAddress(): string {

@@ -171,7 +171,7 @@ export class TekunApplicationController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }

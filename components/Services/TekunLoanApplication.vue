@@ -1,5 +1,5 @@
 <template>
-  <div id="services-purchase-asset-application">
+  <div id="services-tekun-loan-application">
     <ServiceApplication
       ref="serviceApplicationRef"
       v-bind="controller.serviceApplicationProps"
@@ -23,17 +23,10 @@
               </div>
             </div>
             <div class="application-details">
-              <!-- <b>{{ controller.bankLabel }}</b>
-              : {{ controller.bankName }}
+              // details
               <br />
-              <b>{{ controller.branchLabel }}</b>
-              :
-              {{ controller.branchName }}
               <br />
-              {{ controller.branchAddress }}
-              <br /> -->
-              <br />
-              <!-- <b>{{ controller.itemsToPrepareLabel }}</b>
+              <b>{{ controller.itemsToPrepareLabel }}</b>
               <ol>
                 <li
                   v-for="(item, i) in controller.itemsToPrepare"
@@ -41,7 +34,7 @@
                 >
                   {{ item }}
                 </li>
-              </ol> -->
+              </ol>
               <b>{{ controller.deliverToLabel }}</b>
               <br />
               <span v-html="controller.deliveryAddress" />
@@ -108,9 +101,9 @@
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"
+  import { TekunLoanApplicationController } from "~/scripts/components/services/TekunLoanApplicationController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import type { IPropsApplication } from "~/scripts/props/PropsApplication"
-  import { PurchaseAssetApplicationController } from "~/scripts/components/services/PurchaseAssetApplicationController"
 
   const props = defineProps<IPropsApplication>()
 
@@ -120,7 +113,7 @@
 
   const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
 
-  const controller = new PurchaseAssetApplicationController(props, emit)
+  const controller = new TekunLoanApplicationController(props, emit)
 
   watch(
     () => props.companyId,
@@ -160,5 +153,5 @@
 </script>
 
 <style lang="scss">
-  @use "~/assets/scss/components/Services/PurchaseAssetApplication" as *;
+  @use "~/assets/scss/components/Services/TekunLoanApplication" as *;
 </style>

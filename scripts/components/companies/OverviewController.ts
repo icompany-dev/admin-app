@@ -34,6 +34,8 @@ export class OverviewController {
 
   addCompanyAuditorRef: any | null = null
 
+  companyAuditor = ref<CompanyAuditor>(new CompanyAuditor())
+
   language = useLanguage()
   time = useLocalTime()
   dayjs = useDayjs()
@@ -163,6 +165,16 @@ export class OverviewController {
   }
 
   onAddCompanyAuditorClicked(): void {
+    this.companyAuditor.value = new CompanyAuditor()
+
+    if (this.addCompanyAuditorRef) {
+      this.addCompanyAuditorRef.show()
+    }
+  }
+
+  onEditCompanyAuditor(companyAuditor: any): void {
+    this.companyAuditor.value = new CompanyAuditor(companyAuditor)
+
     if (this.addCompanyAuditorRef) {
       this.addCompanyAuditorRef.show()
     }
@@ -405,6 +417,6 @@ ${detailsOfBO.join("\n")}
   }
 
   get addCompanyAuditorProps(): PropsAddCompanyAuditor {
-    return new PropsAddCompanyAuditor(this.companyId.value)
+    return new PropsAddCompanyAuditor(this.companyId.value, this.companyAuditor.value as CompanyAuditor)
   }
 }

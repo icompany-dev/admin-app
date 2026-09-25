@@ -97,8 +97,8 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
     await Promise.all(promises)
 
     this.signatures.value = this.shareholders.value.map((s: Shareholder) => {
-      let idType = s.user?.detail?.identificationType === "passport" ? "Passport" : "K.P."
-      let role = `<b>No. ${idType}: ${s.user?.detail?.identification ?? ""}</b>`
+      let idType = s.user?.detail?.identificationType === "passport" ? "Passport" : "K.P"
+      let role = `No ${idType}: ${s.user?.detail?.identification ?? ""}`
 
       if (s.type === "representative" && s.company !== null) {
         let shareholderCompany = new Company(s.company)
@@ -110,15 +110,7 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
         role = `Wakil Korporat<br><b>${companyDetails.toUpperCase()}</b><br>${role}`
       }
 
-      return new SignatureItem(
-        this.signatureFile(s.email),
-        this.hasSigned(s.email),
-        false,
-        s.email !== this.currentUser.email,
-        s.name,
-        s.email,
-        role
-      )
+      return new SignatureItem(null, false, false, s.email !== this.currentUser.email, s.name, s.email, role)
     })
   }
 
@@ -178,7 +170,11 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
       return ""
     }
 
-    return this.application.value.company.getOnelineAddress()
+    let address = this.application.value.company.getOnelineAddress()
+    address = address.replaceAll("MALAYSIA", "")
+    address = address.replaceAll(",,", ",")
+
+    return `<b>${StringUtil.capitalize(address).trim()}</b>.`
   }
 
   get authorisedPersonName(): string {

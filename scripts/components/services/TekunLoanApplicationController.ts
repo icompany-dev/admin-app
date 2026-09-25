@@ -10,16 +10,14 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
-import { CompanyAssetPurchase } from "~/scripts/models/CompanyAssetPurchase"
+import { CompanyTekunApplication } from "~/scripts/models/CompanyTekunApplication"
 import { Bank } from "~/scripts/models/Bank"
 import { Filter } from "~/scripts/library/Filter"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderItemMandatory"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
-import type { PaymentOrder } from "~/scripts/models/PaymentOrder"
-import { DeliveryConstants } from "~/scripts/constants/Payment"
 
-export class PurchaseAssetApplicationController extends ApplicationController<CompanyAssetPurchase> {
+export class TekunLoanApplicationController extends ApplicationController<CompanyTekunApplication> {
   resolutionsRef: any | null = null
 
   banks: Ref<Bank[]> = ref<Bank[]>([])
@@ -30,9 +28,9 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
       props.companyId,
-      useCompanyAssetPurchaseStore(),
-      CompanyAssetPurchase,
-      CompanyConstants.TARGET_PURCHASE_ASSET,
+      useCompanyLoanApplicationStore(),
+      CompanyTekunApplication,
+      CompanyConstants.TARGET_LOAN_APPLICATION,
       emitEvents,
       props.applicationId
     )
@@ -75,12 +73,14 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
     this.isShowResolutions.value = true
     this.isShowCompleted.value = false
 
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_LOAN_APPLICATION_RESOLUTIONS)
   }
 
   async onDownloadClicked(): Promise<void> {
     await nextTick()
     this.emitEvents("download")
+
+    // we need to also download other documents
   }
 
   async onPrintClicked(): Promise<void> {
@@ -99,7 +99,7 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
 
   //getters
   get serviceName(): string {
-    return this.language.isMalay() ? "Pembelian Asset" : "Purchase of Asset"
+    return this.language.isMalay() ? "Buka Akaun Bank" : "Open Bank Account"
   }
 
   get paymentApplicationNodeProps(): PropsServiceApplicationNode {
@@ -115,39 +115,90 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
   }
 
   get applicationDetailsSublabel(): string {
-    return this.language.isMalay() ? "Kategori Aset & Butiran" : "Asset Category & Description"
+    return this.language.isMalay() ? "Bank, Cawangan & Penandatangan" : "Bank, Branch & Authorised Signatories"
   }
 
-  get assetCategoryLabel(): string {
-    return "Asset Category"
+  // get bankLabel(): string {
+  //   return "Bank"
+  // }
+
+  // get bankName(): string {
+  //   return this.application.value?.bank.name ?? "-"
+  // }
+
+  // get branchLabel(): string {
+  //   return this.language.isMalay() ? "Cawangan" : "Branch"
+  // }
+
+  // get branchName(): string {
+  //   return this.application.value?.bankBranch.name ?? "-"
+  // }
+
+  // get branchAddress(): string {
+  //   return this.application.value?.bankBranch.address ?? "-"
+  // }
+
+  get itemsToPrepareLabel(): string {
+    return this.language.isMalay() ? "Perkara perlu disediakan" : "Items to Prepare"
   }
 
-  get assetCategory(): string {
-    return this.application.value?.assetCategory ?? "-"
-  }
-
-  get deliveryViaLabel(): string {
-    return this.language.isMalay() ? "Penghantaran melalui" : "Delivery via"
-  }
-
-  get isPhysicalDeliveryRequired(): boolean {
-    if (!this.application.value) {
-      return false
-    }
-
-    let orderItem = this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
-      return poi.targetType === CompanyConstants.TARGET_PURCHASE_ASSET && poi.targetId === this.application.value?.id
+  get itemsToPrepare(): string[] {
+    let paymentOrderItem = this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
+      return poi.targetType === this.target.value && poi.targetId === this.applicationId.value
     })
 
-    if (!orderItem) {
-      return false
+    if (!paymentOrderItem) {
+      return []
     }
 
-    return (
-      orderItem.deliveryType !== null &&
-      orderItem.deliveryType !== DeliveryConstants.DELIVERY_EMAIL &&
-      orderItem.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
-    )
+    let items: string[] = []
+    paymentOrderItem.mandatories.forEach((poim: PaymentOrderItemMandatory) => {
+      if (StringUtil.contains(poim.serviceName, "bundle of documents")) {
+        items.push("Section 14 - Superform")
+        items.push("Section 15 - Notification of Incorporation")
+        items.push("Section 51 - Register of Members")
+        items.push("Section 58 - Register of Directors")
+      } else {
+        items.push(StringUtil.capitalize(poim.serviceName))
+      }
+    })
+
+    paymentOrderItem.optionals.forEach((poio: PaymentOrderItemOptional) => {
+      if (!StringUtil.contains(poio.serviceName, "printed")) {
+        items.push(StringUtil.capitalize(poio.serviceName))
+      }
+    })
+
+    return items
+  }
+
+  override get deliveryAddress(): string {
+    if (!this.application.value) {
+      return "-"
+    }
+
+    if (!this.application.value.company?.hasBusinessAddress) {
+      let addressFragments: string[] = [`<b>${this.paymentOrder.value.billingInfo.name}</b>`]
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
+      )
+      addressFragments.push(
+        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
+      )
+
+      return addressFragments
+        .filter((s: string) => {
+          return !StringUtil.isNullOrEmpty(s)
+        })
+        .join("<br>")
+    }
+
+    return `
+      <b>${this.paymentOrder.value.billingInfo.name}</b><br>
+      ${this.application.value.company?.businessAddressLocation?.getMultilineAddress()}
+    `
   }
 
   override get deliveryAddressToCopy(): string {

@@ -257,11 +257,18 @@ export class ServiceNames {
     "director"
   )
   static documentRequests: ServiceName = new ServiceName(
-    "Document Requests for CTC",
-    "Permintaan Dokumen bagi Pengesahan",
+    "Document Requests",
+    "Permintaan Dokumen",
     "company_document_request",
-    "requests",
-    "document"
+    "document-requests",
+    "documents"
+  )
+  static tekunApplications: ServiceName = new ServiceName(
+    "TEKUN Applications",
+    "Permohonan TEKUN",
+    "company_loan_application",
+    "tekun-applications",
+    "documents"
   )
 
   static names: ServiceName[] = [
@@ -301,5 +308,6 @@ export class ServiceNames {
     this.dividendDeclaration,
     this.changeSignatories,
     this.documentRequests,
+    this.tekunApplications,
   ]
 }
