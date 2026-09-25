@@ -605,9 +605,9 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get completedNodeProps(): PropsServiceApplicationNode {
-    let props = new PropsServiceApplicationNode(this.isStamped, this.isCompleted, this.isShowCompleted.value)
+    let props = new PropsServiceApplicationNode(this.isApproved, this.isCompleted, this.isShowCompleted.value)
 
-    props.isLastNode = this.isDeliveryRequired
+    props.isLastNode = !this.isDeliveryRequired
 
     return props
   }
