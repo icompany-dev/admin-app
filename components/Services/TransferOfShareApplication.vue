@@ -82,6 +82,14 @@
             >
               {{ controller.uploadSijilLabel }}
             </button>
+            <span
+              class="action-link download"
+              v-if="controller.isSijilSetemUploaded"
+              @click="controller.onDownloadSijilSetemClicked()"
+            >
+              <i class="fa-regular fa-cloud-arrow-down"></i>
+              {{ controller.sijilSetemLabel }}
+            </span>
           </template>
           <template #nodeActions></template>
         </ApplicationNode>

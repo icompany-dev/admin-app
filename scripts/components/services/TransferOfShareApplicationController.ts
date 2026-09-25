@@ -36,6 +36,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingSijilSetem: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection51: Ref<boolean> = ref<boolean>(false)
   isSubmitting: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
@@ -216,6 +217,44 @@ export class TransferOfShareApplicationController extends ApplicationController<
   async onShippedClicked(): Promise<void> {
     if (this.shipApplicationRef) {
       this.shipApplicationRef.show()
+    }
+  }
+
+  async onDownloadSijilSetemClicked(): Promise<void> {
+    if (!this.isSijilSetemUploaded || this.isDownloadingSijilSetem.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uplaodedSijilSetem
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingSection51.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (e) {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingSijilSetem.value = false
     }
   }
 
@@ -634,9 +673,9 @@ export class TransferOfShareApplicationController extends ApplicationController<
     )
   }
 
-  get uplaodedSijilSetem(): string {
+  get uplaodedSijilSetem(): CompanyDocument | null {
     if (!this.isSijilSetemUploaded) {
-      return ""
+      return null
     }
 
     let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
@@ -644,7 +683,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
       this.application.value?.paidAt ?? ""
     )
 
-    return companyDocument?.fileUrl ?? ""
+    return companyDocument ?? null
   }
 
   get sijilSetemLabel(): string {
