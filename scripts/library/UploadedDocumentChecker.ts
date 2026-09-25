@@ -248,11 +248,11 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_SHAREHOLDER_PROPOSE_TRANSFER:
-        return ""
+        return "section 105"
       case DocumentTargets.TARGET_SHAREHOLDER_PROPOSE_TRANSFER_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER:
-        return ""
+        return "section 51"
       case DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_STRIKING_OFF_RESOLUTION:

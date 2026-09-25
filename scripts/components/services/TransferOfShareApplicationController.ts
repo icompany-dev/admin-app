@@ -28,7 +28,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
   banks: Ref<Bank[]> = ref<Bank[]>([])
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
-  isShowVouchers: Ref<boolean> = ref<boolean>(false)
+  isShowStamping: Ref<boolean> = ref<boolean>(false)
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
@@ -100,7 +100,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
   onPaymentStepClicked(): void {
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false
-    this.isShowVouchers.value = false
+    this.isShowStamping.value = false
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
@@ -109,7 +109,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
   onApplicationDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
-    this.isShowVouchers.value = false
+    this.isShowStamping.value = false
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_SECTION105)
@@ -118,7 +118,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
   onVouchersDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = false
-    this.isShowVouchers.value = true
+    this.isShowStamping.value = true
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_DIVIDEND_DECLARATION_VOUCHERS)
@@ -141,6 +141,8 @@ export class TransferOfShareApplicationController extends ApplicationController<
         throw error
       }
 
+      this.application.value.status = "stamping" //
+
       await this.fetchApplication()
     } catch (e) {
       if (e instanceof Error) {
@@ -158,6 +160,16 @@ export class TransferOfShareApplicationController extends ApplicationController<
   async onDownloadClicked(): Promise<void> {
     await nextTick()
     this.emitEvents("download")
+  }
+
+  async onUploadClicked(): Promise<void> {
+    if (this.uploadDocumentRef) {
+      this.uploadDocumentRef.show()
+    }
+  }
+
+  async onPostUploadDocument(): Promise<void> {
+    await this.uploadedDocumentChecker.value.fetchDocuments()
   }
 
   async onPrintClicked(): Promise<void> {
@@ -258,7 +270,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   get submittedStampingLabel(): string {
     if (this.isStamped) {
-      return this.language.isMalay() ? "Disetem" : "Stamped"
+      return this.language.isMalay() ? "Sedang disetem" : "Stamping in Progress"
     }
 
     return this.language.isMalay() ? "Penyeteman" : "Stamping"
@@ -276,18 +288,28 @@ export class TransferOfShareApplicationController extends ApplicationController<
     )
   }
 
-  get voucherNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isShipped, this.isShowVouchers.value)
+  get stampingProgressNode(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isStamped, this.isShipped, this.isShowStamping.value)
   }
 
-  get voucherLabel(): string {
-    return this.language.isMalay() ? "Baucar Dividen" : "Dividend Vouchers"
+  get stampingLabel(): string {
+    return this.language.isMalay() ? "Progress Penyetemen" : "Stamping Progress"
   }
 
-  get voucherSublabel(): string {
-    return this.language.isMalay()
-      ? "Jana Baucar bagi Dividen yang Diisytihar"
-      : "Generate Vouchers for the Dividend Declared"
+  get stampingSublabel(): string {
+    return this.language.isMalay() ? "Kemaskini Status Penyetemen LHDN" : "Update Status of Stamping from LHDN"
+  }
+
+  get registerNode(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isStamped, this.isShipped, this.isShowStamping.value)
+  }
+
+  get registerLabel(): string {
+    return this.language.isMalay() ? "Section 51 - Register of Members" : "Section 51 - Register of Members"
+  }
+
+  get registerSublabel(): string {
+    return this.language.isMalay() ? "Kemaskini Maklumat di SSM" : "Register the Transfer to SSM"
   }
 
   override get deliveryAddress(): string {
@@ -427,5 +449,58 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   get markCompletedLabel(): string {
     return this.language.isMalay() ? "Tanda Lengkap" : "Mark Completed"
+  }
+
+  get uploadLabel(): string {
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
+  }
+
+  // Documents
+  get isSection105Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_SHAREHOLDER_PROPOSE_TRANSFER,
+      this.application.value?.paidAt ?? ""
+    )
+  }
+
+  get uplaodedSection105(): string {
+    if (!this.isSection105Uploaded) {
+      return ""
+    }
+
+    let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_SHAREHOLDER_PROPOSE_TRANSFER,
+      this.application.value?.paidAt ?? ""
+    )
+
+    return companyDocument?.fileUrl ?? ""
+  }
+
+  get section105Label(): string {
+    return this.language.isMalay() ? "Seksyen 105" : "Section 105"
+  }
+
+  get isSection51Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER,
+      this.application.value?.paidAt ?? ""
+    )
+  }
+
+  get uplaodedSection51(): string {
+    if (!this.isSection105Uploaded) {
+      return ""
+    }
+
+    let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER,
+      this.application.value?.paidAt ?? ""
+    )
+
+    return companyDocument?.fileUrl ?? ""
+  }
+
+  get section51Label(): string {
+    return this.language.isMalay() ? "Seksyen 51" : "Section 51"
   }
 }
