@@ -160,8 +160,15 @@ export class PageSidebar {
     "services/document-requests",
     false
   )
+  static tekunApplications: Sidebar = new Sidebar(
+    "TEKUN Applications",
+    "Permohonan TEKUN",
+    "services/tekun-applications",
+    false
+  )
   static otherServiceGroup: SidebarGroup = new SidebarGroup("Others Services", "Servis Lain Lain", [
     this.documentRequests,
+    this.tekunApplications,
   ])
 
   static personsDraft: Sidebar = new Sidebar(

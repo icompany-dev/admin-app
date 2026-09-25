@@ -52,7 +52,7 @@
             <input
               type="text"
               class="form-control email"
-              v-model="controller.companyAuditor.value.auditorEmail"
+              v-model="controller.email.value"
             />
           </div>
           <div class="form-group">
