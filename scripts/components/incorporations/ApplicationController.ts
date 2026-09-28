@@ -66,14 +66,19 @@ export class ApplicationController {
   nameReservationRejectedPopup: any | null = null
   completionOfIncorporationPopup: any | null = null
 
+  selectedNameReservationForApproval: Ref<NameReservationVariant> = ref<NameReservationVariant>(
+    new NameReservationVariant("", "", null, null)
+  )
+
   language = useLanguage()
 
   documentRef: any | null = null
+  nameApprovedRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
-  isShowAdminView: Ref<boolean> = ref<boolean>(true)
-  isShowCrsView: Ref<boolean> = ref<boolean>(false)
+  isShowAdminView: Ref<boolean> = ref<boolean>(false)
+  isShowCrsView: Ref<boolean> = ref<boolean>(true)
 
   businessNameDescriptionAI = ref<BusinessNameDescriptionAI>(new BusinessNameDescriptionAI())
 
@@ -81,7 +86,10 @@ export class ApplicationController {
   selectedDirectorInvitationFor201: Ref<DirectorInvitation | null> = ref<DirectorInvitation | null>(null)
 
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
+
   isShowSection27: Ref<boolean> = ref<boolean>(false)
+  selectedNameReservationApplication: Ref<string> = ref<string>("")
+
   isShowRegistration: Ref<boolean> = ref<boolean>(false)
   isShowCompletion: Ref<boolean> = ref<boolean>(false)
 
@@ -151,6 +159,10 @@ export class ApplicationController {
 
   setDocumentRef(documentRef: any): void {
     this.documentRef = documentRef
+  }
+
+  setNameApprovedRef(nameApprovedRef: any): void {
+    this.nameApprovedRef = nameApprovedRef
   }
 
   async init(): Promise<void> {
@@ -409,10 +421,11 @@ export class ApplicationController {
   }
 
   // Name Reservation Step
-  onNameReservationStepClicked(): void {
+  onNameReservationStepClicked(name: string): void {
     this.resetAllDocumentValues()
     this.isShowSection27.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
+    this.selectedNameReservationApplication.value = name
   }
 
   onProposedNamesClicked(): void {
@@ -442,20 +455,17 @@ export class ApplicationController {
     this.selectedProposedName.value = name
   }
 
-  async onRunAskSairaForNameDescription(): Promise<void> {
+  async onRunAskSairaForNameDescription(name: string): Promise<void> {
     if (
       this.businessNameDescriptionAI.value.isProcessing ||
-      StringUtil.isNullOrEmpty(this.selectedProposedName.value) ||
+      StringUtil.isNullOrEmpty(name) ||
       !this.application.value
     ) {
       return
     }
 
     this.businessNameDescriptionAI.value.resetValues()
-    this.businessNameDescriptionAI.value.askGemini(
-      this.selectedProposedName.value,
-      this.application.value.businessDescription
-    )
+    this.businessNameDescriptionAI.value.askGemini(name, this.application.value.businessDescription)
 
     this.checkAIStatus()
   }
@@ -684,8 +694,42 @@ export class ApplicationController {
     }
 
     let application = this.latestSection27Application
+
+    this.isUpdatingSection27.value = true
+
+    this.selectedNameReservationForApproval.value = new NameReservationVariant(
+      application.name,
+      application.nameType,
+      application.nameDescription,
+      application.supportingDocumentId
+    )
+
+    await nextTick()
+
+    if (this.nameApprovedRef) {
+      this.nameApprovedRef.show()
+      return
+    }
+  }
+
+  async onProceedApproveReservation(nameReservation: NameReservationVariant): Promise<void> {
+    console.log("name", nameReservation)
+    if (!this.latestSection27Application) {
+      console.log("here??")
+      return
+    }
+
+    let application = this.latestSection27Application
+
+    application.name = nameReservation.name
+
     try {
-      this.isUpdatingSection27.value = true
+      let data = {
+        name: application.name,
+      }
+      let repository = useApplicationNameReservationStore()
+      await repository.update(application.id, data)
+
       await application.approve(useApplicationNameReservationStore())
 
       await this.fetchApplication()
@@ -699,6 +743,8 @@ export class ApplicationController {
       }
     } finally {
       this.isUpdatingSection27.value = false
+
+      this.selectedNameReservationForApproval.value = new NameReservationVariant("", "", null, null)
     }
   }
 
@@ -1166,7 +1212,24 @@ export class ApplicationController {
   }
 
   get serviceName(): string {
-    return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
+    let name = ""
+    if (!StringUtil.isNullOrEmpty(this.application.value.nameSelected?.name ?? "")) {
+      name = this.application.value.nameSelected?.name ?? "-"
+      name = name.toUpperCase()
+
+      name = `${name.toUpperCase()} <i class='fa-solid fa-circle-check check-icon' title='Name Approved'></i>`
+    } else {
+      let application = this.latestSection27Application
+      if (application) {
+        name = application.name
+      } else {
+        name = this.application.value.name1?.name ?? ""
+      }
+
+      name = `${name.toUpperCase()} <small>(${this.language.isMalay() ? "Dicadang" : "Proposed"})</small>`
+    }
+
+    return this.language.isMalay() ? `Pemerbadanan Sdn Bhd Baharu: ${name}` : `Incorporation of New Sdn Bhd: ${name}`
   }
 
   get adminViewLabel(): string {
@@ -1389,6 +1452,36 @@ export class ApplicationController {
   }
 
   // region for names
+  isNameReservationApplicationCompleted(name: string): boolean {
+    if (!StringUtil.isNullOrEmpty(this.application.value.nameSelected?.name ?? "")) {
+      return true
+    }
+
+    let nameReservationApplication = this.application.value.nameReservationApplications.find(
+      (v: ApplicationNameReservation) => {
+        return v.name === name
+      }
+    )
+
+    if (!nameReservationApplication) {
+      return false
+    }
+
+    return nameReservationApplication.status === "outcome"
+  }
+
+  isShowNameReservationApplication(name: string): boolean {
+    return this.selectedNameReservationApplication.value === name
+  }
+
+  nameReservationApplicationNodeProps(name: string): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.hasPaid,
+      this.isNameReservationApplicationCompleted(name),
+      this.isShowNameReservationApplication(name)
+    )
+  }
+
   get nameReservationNodeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(this.hasPaid, this.isNameReservationCompleted, this.isShowSection27.value)
   }
@@ -1406,7 +1499,7 @@ export class ApplicationController {
   }
 
   get proposedNamesLabel(): string {
-    return this.language.isMalay() ? "Nama yang Dicadangkan" : "Proposed Names"
+    return this.language.isMalay() ? "Nama yang Dicadangkan" : "Proposed Name"
   }
 
   get canReservedName(): boolean {

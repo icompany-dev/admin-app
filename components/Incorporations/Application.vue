@@ -10,7 +10,7 @@
       />
     </div>
     <template v-if="!controller.isLoading.value">
-      <div class="incorp-application-summary">
+      <!-- <div class="incorp-application-summary">
         <div class="proposed-name">
           {{ controller.application.value.getName() }}
           <span
@@ -180,13 +180,13 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="incorp-application-details">
         <ServiceApplication
           v-bind="controller.serviceApplicationProps"
           @paymentNodeSelected="controller.onPaymentStepClicked()"
         >
-          <template #titleOptions>
+          <!-- <template #titleOptions>
             <div class="display-toggles">
               <button
                 class="btn btn-view btn-pill"
@@ -195,19 +195,19 @@
               >
                 {{ controller.adminViewLabel }}
               </button>
-              <button
-                class="btn btn-view btn-pill"
+              <buttons
                 :class="{ active: controller.isShowCrsView.value }"
                 @click="controller.onShowCrsViewClicked()"
               >
                 {{ controller.crsViewLabel }}
               </button>
             </div>
-          </template>
+          </template> -->
           <template #application>
             <ApplicationNode
-              v-bind="controller.nameReservationNodeProps"
-              @click="controller.onNameReservationStepClicked()"
+              v-for="(nameOption, index) in controller.nameOptions"
+              v-bind="controller.nameReservationApplicationNodeProps(nameOption)"
+              @click="controller.onNameReservationStepClicked(nameOption)"
             >
               <template #nodeContent>
                 <div class="application-container">
@@ -217,7 +217,12 @@
                     <span class="application-label">
                       {{ controller.proposedNamesLabel }}
                     </span>
-                    <div class="actions-button-options">
+                    &nbsp;
+                    <span
+                      class="propose-name"
+                      v-html="nameOption"
+                    />
+                    <!-- <div class="actions-button-options">
                       <div
                         class="btn btn-primary selected"
                         @click="controller.onProposedNamesClicked()"
@@ -245,8 +250,8 @@
                           <span v-html="name" />
                         </button>
                       </div>
-                    </div>
-                    <CopyValue :value="controller.selectedProposedName.value" />
+                    </div> -->
+                    <CopyValue :value="nameOption" />
                   </div>
                   <Transition name="fade">
                     <div
@@ -267,7 +272,7 @@
                         </div>
                         <button
                           class="btn btn-primary"
-                          @click="controller.onRunAskSairaForNameDescription()"
+                          @click="controller.onRunAskSairaForNameDescription(nameOption)"
                         >
                           <i
                             class="fa-solid"
@@ -623,6 +628,11 @@
       ref="nameReservationRejectedPopup"
       @proceed="controller.onProceedNameReservationRejected($event)"
     />
+    <NameReservationApproved
+      ref="nameApprovedRef"
+      :name-reservation="controller.selectedNameReservationForApproval.value"
+      @proceed="controller.onProceedApproveReservation($event)"
+    />
   </div>
 </template>
 
@@ -633,6 +643,7 @@
   import Director from "@/components/Invitations/Director.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NameReservationRejected from "@/components/Popups/NameReservationRejected.vue"
+  import NameReservationApproved from "../Popups/NameReservationApproved.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
@@ -665,6 +676,7 @@
   const nameReservationRejectedPopup = ref(null)
   const completionOfIncorporationPopup = ref(null)
   const uploadFilePopup = ref(null)
+  const nameApprovedRef = ref(null)
 
   const controller = new ApplicationController(props, emit)
 
@@ -725,6 +737,14 @@
     nameReservationRejectedPopup,
     (newVal) => {
       controller.setNameReservationRejectedPopup(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    nameApprovedRef,
+    (newVal) => {
+      controller.setNameApprovedRef(newVal)
     },
     { immediate: true }
   )
