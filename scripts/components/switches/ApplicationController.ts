@@ -29,6 +29,8 @@ import { City, Country, Location, State } from "~/scripts/models/Location"
 import type { Invitation } from "~/scripts/models/Invitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { PropsInvitationPopup } from "~/scripts/props/PropsInvitationPopup"
+import { File } from "~/scripts/models/File"
+import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -44,18 +46,21 @@ export class ApplicationController {
   documentRef: any | null = null
   inviteDirectorRef: any | null = null
   inviteShareholderRef: any | null = null
+  uploadDocumentRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
   isEditingDescription: Ref<boolean> = ref<boolean>(false)
   isUpdatingDescription: Ref<boolean> = ref<boolean>(false)
   isEditingAddress: Ref<boolean> = ref<boolean>(false)
+  isDownloadingSection58: Ref<boolean> = ref<boolean>(false)
 
   selectedMsicCodeIds: Ref<string[]> = ref<string[]>([])
   searchTextsForMsicCodes: Ref<string[]> = ref<string[]>([])
   msicCodes: Ref<MsicCode[]> = ref<MsicCode[]>([])
 
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
+  targetForDocumentUpload: Ref<string> = ref<string>("")
 
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
   isShowNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
@@ -93,6 +98,10 @@ export class ApplicationController {
 
   setInviteShareholderRef(inviteShareholderRef: any): void {
     this.inviteShareholderRef = inviteShareholderRef
+  }
+
+  setUploadDocumentRef(uploadDocumentRef: any): void {
+    this.uploadDocumentRef = uploadDocumentRef
   }
 
   // Data initialization
@@ -429,7 +438,82 @@ export class ApplicationController {
   }
 
   async onUploadSection58Clicked(): Promise<void> {
-    //
+    if (this.uploadDocumentRef) {
+      this.uploadDocumentRef.show()
+    }
+  }
+
+  async onProceedUploadSection58(files: File[]): Promise<void> {
+    try {
+      if (!this.application.value.metadata) {
+        this.application.value.metadata = {}
+      }
+
+      switch (this.targetForDocumentUpload.value) {
+        case "superform":
+          this.application.value.metadata.superform = files[0].id
+          break
+        case "coi":
+          this.application.value.metadata.certificate_of_incorporation = files[0].id
+          break
+        case "notification_of_name_reservation":
+          this.application.value.metadata.notification_of_name_reservation = files[0].id
+          break
+        case "section_58":
+          this.application.value.metadata.section_58 = files[0].id
+          break
+      }
+
+      await this.application.value.updateMetadata(useApplicationSwitchStore())
+    } catch (e) {
+      console.error(e)
+    } finally {
+      // do something after upload
+    }
+  }
+
+  async onDownloadSection58Clicked(): Promise<void> {
+    if (!this.isSection58Uploaded || this.isDownloadingSection58.value) {
+      return
+    }
+
+    try {
+      this.isDownloadingSection58.value = true
+      let repository = useFileStore()
+      let fileId = this.application.value.metadata?.section_58 ?? ""
+      let fileResponse = await repository.fetch(fileId)
+      let file = new File(fileResponse)
+
+      if (StringUtil.isNullOrEmpty(file.url)) {
+        let error = new Error()
+        error.title = this.language.isMalay() ? "Tiada fail untuk dimuat turun." : "There is no file to download."
+        error.message = this.language.isMalay()
+          ? "Sila muat naik dokumen untuk disimpan."
+          : "Please upload the document first."
+        throw error
+      }
+
+      let url = file.url
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", file.name)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingSection58.value = false
+    }
   }
 
   // Show completed
@@ -1059,6 +1143,10 @@ export class ApplicationController {
   }
 
   get uploadSection58Label(): string {
+    if (this.isSection58Uploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
     return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
@@ -1147,5 +1235,22 @@ export class ApplicationController {
 
   get invitationPopupProps(): PropsInvitationPopup {
     return new PropsInvitationPopup("application_switch", this.application.value.id)
+  }
+
+  get isSection58Uploaded(): boolean {
+    return this.application.value.metadata.section58 !== null ?? false
+  }
+
+  get downloadDocumentSection58Label(): string {
+    return this.language.isMalay() ? "Seksyen 58" : "Section 58"
+  }
+
+  get uploadDocumentProps(): PropsUploadDocument {
+    let props = new PropsUploadDocument("")
+
+    props.canUploadImage = false
+    props.canUploadPdf = true
+
+    return props
   }
 }
