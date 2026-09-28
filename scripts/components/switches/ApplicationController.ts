@@ -543,6 +543,7 @@ export class ApplicationController {
       await repository.update(this.application.value.id, data)
 
       let companyToConvert = new Company(this.companyToConvert)
+
       await companyToConvert.create(useCompanyStore())
 
       if (this.application.value.metadata.section_58) {
@@ -1216,7 +1217,9 @@ export class ApplicationController {
     company.nameDescription = "-"
     company.registrationNumberNew = this.application.value.registrationNumberNew
     company.registrationNumberOld = this.application.value.registrationNumberOld
-    company.businessDescription = this.application.value.businessDescription
+    company.businessDescription = StringUtil.isNullOrEmpty(this.application.value.businessDescription)
+      ? "-"
+      : this.application.value.businessDescription
     company.hasBusinessAddress = this.application.value.businessAddressLocation !== null
     company.businessAddressLocation =
       this.application.value.businessAddressLocation !== null
