@@ -24,6 +24,7 @@ import { UserDetail } from "~/scripts/models/UserDetail"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { CompanyPostShareTransfer } from "~/scripts/models/CompanyPostShareTransfer"
 import { RegisterOfTransferType } from "~/scripts/constants/Shareholder"
+import { EmitMessages } from "~/scripts/constants/EmitMessages"
 
 export class TransferOfShareApplicationController extends ApplicationController<CompanyShareholderTransfer> {
   resolutionsRef: any | null = null
@@ -297,29 +298,44 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   async onCompleteClicked(): Promise<void> {
-    if (!this.application.value) {
+    if (!this.application.value || this.isCompleting.value) {
       return
     }
+
     try {
-      let repository = useCompanyStore()
-      await repository.postService(this.target.value, this.application.value.id)
+      this.isCompleting.value = true
+      // Generate all documents and put in Company Documents
+      this.emitEvents("convertToForms")
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+      this.isCompleting.value = false
+    }
+  }
 
-      if (repository.error !== null) {
-        throw repository.error
-      }
+  async onProceedPostCompleted(): Promise<void> {
+    if (!this.isCompleting.value || !this.application.value) {
+      console.log("You what????")
+      return
+    }
 
-      let toastTitle = this.language.isMalay()
-        ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
-        : "Application is Completed. The Company Shares has been updated."
-      let toastMessage = this.language.isMalay()
-        ? "Anda akan dibawa ke muka Sdn Bhd."
-        : "You will be redirected to the Sdn Bhd page."
-
-      let toast = new Toast(toastTitle, toastMessage)
-      toast.success()
-
-      let router = useRouter()
-      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+    try {
+      // let repository = useCompanyStore()
+      // await repository.postService(this.target.value, this.application.value.id)
+      // if (repository.error !== null) {
+      //   throw repository.error
+      // }
+      // let toastTitle = this.language.isMalay()
+      //   ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
+      //   : "Application is Completed. The Company Shares has been updated."
+      // let toastMessage = this.language.isMalay()
+      //   ? "Anda akan dibawa ke muka Sdn Bhd."
+      //   : "You will be redirected to the Sdn Bhd page."
+      // let toast = new Toast(toastTitle, toastMessage)
+      // toast.success()
+      // let router = useRouter()
+      // router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()

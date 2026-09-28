@@ -40,6 +40,8 @@ export class TransferOfShareController extends SecretarialServiceController<
 
     try {
       this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION105
+
+      this.canCompleteService.value = true
     } catch (e) {
     } finally {
       this.isMovingToDocuments.value = false

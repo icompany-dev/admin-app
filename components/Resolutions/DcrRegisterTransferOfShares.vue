@@ -8,8 +8,8 @@
         </p>
         <ol class="resolution-list">
           <li>
-            The registered shareholder(s) (“Transferor (s)”) more particularly described below with their respective
-            shareholdings is/are desirous to transfer his/her/their shares to the following Transferee(s):
+            The registered shareholder{{ controller.shareTransferDetails.length > 1 ?'s' :'' }} (“Transferor{{ controller.shareTransferDetails.length > 1 ?'s' :'' }}”) more particularly described below with their respective
+            shareholdings {{ controller.shareTransferDetails.length > 1 ? 'are' :'is' }} desirous to transfer his/her/their shares to the following Transferee{{ controller.shareTransferDetails.length > 1 ?'s' :'' }}:
             <table class="table-with-border">
               <thead>
                 <tr>
@@ -20,7 +20,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(transferDetail, index) in controller.transferDetails.value" :key="index">
+                <tr v-for="(transferDetail, index) in controller.shareTransferDetails" :key="index">
                   <td>
                     {{ transferDetail.transferFromName }}
                   </td>

@@ -349,6 +349,8 @@ export class Section105ServiceController extends CompanyServiceController<Compan
     return blobs
   }
 
+  override async onMoveToForms(): Promise<void> {}
+
   get serviceWrapperProps() {
     let application =
       this.viewType.value === ViewMode.New ? new CompanyShareholderTransfer() : this.companyShareholderTransfer.value

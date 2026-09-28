@@ -116,7 +116,7 @@ export class RegisterTransferOfSharesController
   get resolutionDocumentProps() {
     return new PropsResolutionDocument<CompanyPostShareTransfer>(
       this.companyId,
-      this.applicationRef.value.id,
+      this.applicationId,
       this.applicationRef.value as CompanyPostShareTransfer,
       this.isDraft,
       "DRAFT",

@@ -200,6 +200,8 @@
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
+              :disabled="controller.isCompleting.value"
+              :class="{ 'is-loading': controller.isCompleting.value }"
               @click="controller.onCompleteClicked()"
             >
               {{ controller.markCompletedLabel }}
@@ -248,6 +250,16 @@
     () => props.companyId,
     (newVal) => {
       controller.setCompanyId(newVal)
+    }
+  )
+
+  watch(
+    () => props.canCompleteService,
+    (newVal, oldVal) => {
+      console.log("here", newVal, oldVal)
+      if (!oldVal && newVal) {
+        controller.onProceedPostCompleted()
+      }
     }
   )
 

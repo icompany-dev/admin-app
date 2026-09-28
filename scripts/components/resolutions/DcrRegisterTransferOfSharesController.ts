@@ -82,7 +82,7 @@ export class DcrRegisterTransferOfSharesController extends ResolutionController<
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -138,7 +138,7 @@ export class DcrRegisterTransferOfSharesController extends ResolutionController<
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetchAll()
         errorMessage.handle()
       }
@@ -237,5 +237,11 @@ export class DcrRegisterTransferOfSharesController extends ResolutionController<
 
   section105Date(transferDetail: CompanyShareTransferDetail): string {
     return this.time.formatDateOnlyShort(this.dayjs().format("YYYY-MM-DD"))
+  }
+
+  get shareTransferDetails(): CompanyShareTransferDetail[] {
+    return this.shareTransferApplication.value.transferDetails.map((d: any) => {
+      return new CompanyShareTransferDetail(d)
+    })
   }
 }

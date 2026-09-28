@@ -92,9 +92,11 @@ export abstract class SecretarialServicesController<T> {
       StatusConstants.PENDING,
       StatusConstants.PAID,
       StatusConstants.NAME_REJECTED,
+      StatusConstants.STAMPING,
       StatusConstants.APPROVED,
       StatusConstants.REJECTED,
       StatusConstants.SUBMITTED,
+      StatusConstants.COMPLETED,
     ]
 
     if (!StringUtil.isNullOrEmpty(this.searchText.value)) {

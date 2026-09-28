@@ -80,6 +80,15 @@
     },
     { immediate: true }
   )
+
+  watch(
+    () => props.applicationId,
+    (newVal) => {
+      if (newVal !== null && newVal !== "") {
+        controller.fetchApplication(newVal)
+      }
+    }
+  )
 </script>
 
 <style lang="scss">

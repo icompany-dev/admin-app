@@ -348,14 +348,13 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
-    gap: 40px;
+    gap: 20px 40px;
 
     .signature-title {
       width: 100%;
       font-weight: 600;
       text-align: center;
       text-transform: uppercase;
-      padding-bottom: 20px;
     }
 
     .signature-item {
