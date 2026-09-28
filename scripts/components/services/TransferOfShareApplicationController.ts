@@ -305,7 +305,22 @@ export class TransferOfShareApplicationController extends ApplicationController<
     try {
       this.isCompleting.value = true
       // Generate all documents and put in Company Documents
-      this.emitEvents("convertToForms")
+      // this.emitEvents("convertToForms")
+      let repository = useCompanyStore()
+      await repository.postService(this.target.value, this.application.value.id)
+      if (repository.error !== null) {
+        throw repository.error
+      }
+      let toastTitle = this.language.isMalay()
+        ? "Pemindahan Saham Syarikat telah selesai dan dikemaskinikan."
+        : "Your Transfer of Shares is completed and updated."
+      let toastMessage = this.language.isMalay()
+        ? "Anda akan dibawa ke halaman Sdn Bhd."
+        : "You will be redirected to the Sdn Bhd page."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()
@@ -316,7 +331,6 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   async onProceedPostCompleted(): Promise<void> {
     if (!this.isCompleting.value || !this.application.value) {
-      console.log("You what????")
       return
     }
 
@@ -401,6 +415,10 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   get amountToTransferLabel(): string {
     return this.language.isMalay() ? "Saham untuk Dipindah" : "Shares to Transfer"
+  }
+
+  get considerationAmountLabel(): string {
+    return this.language.isMalay() ? "Jumlah Pindah Saham" : "Total Consideration"
   }
 
   get itemsToPrepareLabel(): string {

@@ -37,6 +37,11 @@
                   : {{ NumberUtil.thousandSeparator(transferDetail.unitsOfShare) }}
                   <CopyValue :value="transferDetail.unitsOfShare.toString()" />
                 </div>
+                <!-- <div class="amount">
+                  <b>{{ controller.considerationAmountLabel }}</b>
+                  : {{ NumberUtil.thousandSeparator(controller.application.value?.sharesAlloted) }}
+                  <CopyValue :value="transferDetail.unitsOfShare.toString()" />
+                </div> -->
               </div>
             </div>
           </template>
