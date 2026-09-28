@@ -50,4 +50,13 @@ export class ApplicationSwitchRepository extends Repository<ApplicationSwitch> {
       throw error
     }
   }
+
+  async sendCompleted(id: string): Promise<any> {
+    try {
+      const response = this.post(`api/switches/send-completed/${id}`, {})
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

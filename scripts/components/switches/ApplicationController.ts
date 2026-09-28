@@ -541,6 +541,7 @@ export class ApplicationController {
         status: StatusConstants.APPROVED,
       }
       await repository.update(this.application.value.id, data)
+      repository.sendCompleted(this.application.value.id)
 
       let companyToConvert = new Company(this.companyToConvert)
 
