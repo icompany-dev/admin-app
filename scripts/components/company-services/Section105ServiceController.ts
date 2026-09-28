@@ -335,6 +335,20 @@ export class Section105ServiceController extends CompanyServiceController<Compan
     await FileZipper.zipAndDownload(files, `Section 105.zip`)
   }
 
+  async onGenerateBlobs(filename: string): Promise<Blob[]> {
+    let blobs = []
+    for (let i = 0; i < this.section105Refs.length; i++) {
+      let ref = this.section105Refs[i]
+
+      let pages = await ref.getPdfPages()
+      let filename = `Section 105 - Form of Transfer of Securities.pdf`
+      let blob = await PdfPaperUtil.getPdfBlob(pages, 10, filename, PaperSize.A4, PaperOrientation.Portrait)
+      blobs.push(blob)
+    }
+
+    return blobs
+  }
+
   get serviceWrapperProps() {
     let application =
       this.viewType.value === ViewMode.New ? new CompanyShareholderTransfer() : this.companyShareholderTransfer.value
