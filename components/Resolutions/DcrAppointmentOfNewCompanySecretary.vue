@@ -45,7 +45,7 @@
             <b>{{ controller.resolutionName().toUpperCase() }}</b>
           </p>
           <!--NOTE: We get all these details automatically from the purchase of corporate profile. Users cannot change them.-->
-          <p v-if="!controller.isAppointNew()">
+          <!-- <p v-if="!controller.isAppointNew()">
             THAT the resignation of
             <span
               class="prev-cosec-details"
@@ -57,7 +57,7 @@
               </b>
             </span>
             as the Secretary of the Company be and is hereby accepted.
-          </p>
+          </p> -->
           <p>
             THAT the appointment of
             <select
@@ -76,8 +76,9 @@
               <b>{{ controller.getSecretaryName() }}</b>
             </span>
             <b>
-              (NRIC No: {{ controller.getSecretaryIC() }}) ({{ controller.getSecretaryLicense() }} / SSM PC NO.
-              {{ controller.getSecretarySsmPcNo() }})
+              (NRIC No: {{ controller.getSecretaryIC() }}) ({{ controller.getSecretaryLicense() }} /
+              <br />
+              SSM PC NO. {{ controller.getSecretarySsmPcNo() }})
             </b>
             as the Secretary of the Company be and is hereby be accepted with immediate effect.
           </p>
@@ -166,7 +167,8 @@
     controller.signatureItems.value,
     controller.maxSignatureOnFirstPage.value,
     controller.maxSignatureOnOtherPages.value,
-    1
+    1,
+    ""
   )
 
   const pageRange = computed(() => {
