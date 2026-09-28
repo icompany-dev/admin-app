@@ -31,6 +31,7 @@ import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { PropsInvitationPopup } from "~/scripts/props/PropsInvitationPopup"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import { Form } from "~/scripts/models/Form"
 
 export class ApplicationController {
   applicationId: Ref<string> = ref<string>("")
@@ -541,12 +542,21 @@ export class ApplicationController {
       }
       await repository.update(this.application.value.id, data)
 
-      //TODO: Notification need to go out here, backend is not ready
-
       let companyToConvert = new Company(this.companyToConvert)
       await companyToConvert.create(useCompanyStore())
 
-      // No documents to upload here. Everything will need to scan AFTER this process.
+      if (this.application.value.metadata.section_58) {
+        let dayjs = useDayjs()
+        let form = new Form()
+        form.companyId = companyToConvert.id
+        form.type = "business_detail"
+        form.fileId = this.application.value.metadata.section_58
+        form.documentDate = dayjs().format("YYYY-MM-DD")
+        form.status = "active"
+        form.noOfPages = 3
+
+        await form.create(useFormStore())
+      }
 
       let toastTitle = this.language.isMalay() ? "Sdn Bhd telah ditambah." : "Sdn Bhd successfully added."
       let toastMessage = this.language.isMalay()
