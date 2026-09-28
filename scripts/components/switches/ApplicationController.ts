@@ -615,10 +615,8 @@ export class ApplicationController {
     if (directorsToInvite.length > 0) {
       directorsToInvite.forEach((director: DirectorInvitation) => {
         let existingInvitation = this.application.value.directorInvitations.find((invitation: DirectorInvitation) => {
-          return (
-            invitation.user?.detail?.identification === director.user?.detail?.identification &&
-            invitation.user?.detail?.identificationType === director.user?.detail?.identificationType
-          )
+          let idType = director.user?.detail?.identificationType === "MK" ? "ic" : "passport"
+          return invitation.user?.detail?.identification === director.user?.detail?.identification
         })
 
         if (existingInvitation) {
@@ -670,10 +668,7 @@ export class ApplicationController {
       shareholdersToInvite.forEach((shareholder: ShareholderInvitation) => {
         let existingInvitation = this.application.value.shareholderInvitations.find(
           (invitation: ShareholderInvitation) => {
-            return (
-              invitation.user?.detail?.identification === shareholder.user?.detail?.identification &&
-              invitation.user?.detail?.identificationType === shareholder.user?.detail?.identificationType
-            )
+            return invitation.user?.detail?.identification === shareholder.user?.detail?.identification
           }
         )
 

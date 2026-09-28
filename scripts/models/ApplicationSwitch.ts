@@ -16,6 +16,7 @@ import {
   type CorporateProfileJsonData,
   CorporateProfileJsonOfficerInfo,
 } from "./SsmCorporateProfileJsonData"
+import _ from "lodash"
 
 export class ApplicationSwitch implements IApplication {
   id: string = ""
@@ -112,7 +113,7 @@ export class ApplicationSwitch implements IApplication {
         : []
     this.signatureGroupStatus = data.signature_group_status ?? ""
     this.applicantId = data.applicant_id ?? ""
-    this.metadata = data.meta_data
+    this.metadata = _.cloneDeep(data.meta_data)
     this.incorporatedAt = data.incorporated_at ?? null
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
@@ -155,7 +156,7 @@ export class ApplicationSwitch implements IApplication {
     })
     this.signatureGroupStatus = data.signatureGroupStatus
     this.applicantId = data.applicantId
-    this.metadata = data.metadata
+    this.metadata = _.cloneDeep(data.metadata)
     this.incorporatedAt = data.incorporatedAt
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
