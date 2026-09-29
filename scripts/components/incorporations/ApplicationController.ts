@@ -1482,6 +1482,12 @@ export class ApplicationController {
     )
   }
 
+  isNameReserved(name: string): boolean {
+    return this.nameReservations.some((nr: ApplicationNameReservation) => {
+      return nr.name === name
+    })
+  }
+
   get nameReservationNodeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(this.hasPaid, this.isNameReservationCompleted, this.isShowSection27.value)
   }
@@ -1527,43 +1533,42 @@ export class ApplicationController {
       return []
     }
 
-    let names: string[] = []
-
-    names.push(this.application.value.name1?.name ?? "")
-
-    if (this.application.value.name2) {
-      names.push(this.application.value.name2.name)
-    }
-
-    if (this.application.value.name3) {
-      names.push(this.application.value.name3.name)
-    }
-
-    let formattednames = names.map((s: string) => {
-      let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
-        return nr.name === s
-      })
-
-      if (!ongoingApplication) {
-        return s
-      }
-
-      if (ongoingApplication.status === StatusConstants.OUTCOME) {
-        if (ongoingApplication.status === StatusConstants.APPROVED) {
-          s = `${s} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
+    let names: string[] = this.nameReservations.map((nr: ApplicationNameReservation) => {
+      if (nr.status === StatusConstants.OUTCOME) {
+        if (nr.ssmResult === StatusConstants.APPROVED) {
+          return `${nr.name} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
         }
 
-        if (ongoingApplication.status === StatusConstants.REJECTED) {
-          s = `${s} <small><i>${this.language.isMalay() ? "(Ditolak)" : "(Rejected)"}</i></small>`
+        if (nr.ssmResult === StatusConstants.REJECTED) {
+          return `${nr.name} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
         }
-      } else {
-        s = `${s} <small><i>${this.language.isMalay() ? "(Sedang berjalan)" : "(Ongoing)"}</i></small>`
       }
 
-      return s
+      return `${nr.name} <small><i>${this.language.isMalay() ? "(Sedang berjalan)" : "(Ongoing)"}</i></small>`
     })
 
-    return formattednames
+    if (
+      !StringUtil.isNullOrEmpty(this.application.value.name1?.name) &&
+      !this.isNameReserved(this.application.value.name1?.name)
+    ) {
+      names.push(this.application.value.name1?.name ?? "")
+    }
+
+    if (
+      !StringUtil.isNullOrEmpty(this.application.value.name2?.name ?? "") &&
+      !this.isNameReserved(this.application.value.name2?.name ?? "")
+    ) {
+      names.push(this.application.value.name2?.name ?? "")
+    }
+
+    if (
+      !StringUtil.isNullOrEmpty(this.application.value.name3?.name ?? "") &&
+      !this.isNameReserved(this.application.value.name3?.name ?? "")
+    ) {
+      names.push(this.application.value.name3?.name ?? "")
+    }
+
+    return names
   }
 
   get selectedProposedNameForDisplay(): string {
