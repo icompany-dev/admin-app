@@ -70,6 +70,11 @@ export class DocumentsAndForms {
   }
 
   async fetchForms(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId)) {
+      console.log("emot??")
+      return
+    }
+
     let filter = new Filter()
     filter.companyId = this.companyId
     filter.takeAll = true

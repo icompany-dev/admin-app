@@ -15,6 +15,10 @@ export class TransferOfShareController extends SecretarialServiceController<
   isMovingToDocuments: Ref<boolean> = ref<boolean>(false)
   isDocumentsMoved: Ref<boolean> = ref<boolean>(false)
 
+  pdfUrl: Ref<string> = ref<string>("")
+
+  zoomLevel: Ref<number> = ref<number>(0)
+
   constructor(props: PropsSecretarialService, emitEvents: any) {
     super(props, CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES, emitEvents)
   }
@@ -46,5 +50,23 @@ export class TransferOfShareController extends SecretarialServiceController<
     } finally {
       this.isMovingToDocuments.value = false
     }
+  }
+
+  onShowPdf(url: string): void {
+    this.zoomLevel.value = 0
+    this.selectedDocumentTarget.value === "pdf"
+    this.pdfUrl.value = url
+  }
+
+  onZoomPdf(zoomLevel: number): void {
+    this.zoomLevel.value = zoomLevel
+  }
+
+  onMinimizePdf(): void {
+    this.zoomLevel.value = 0
+  }
+
+  get showPdfViewer(): boolean {
+    return !StringUtil.isNullOrEmpty(this.pdfUrl.value)
   }
 }

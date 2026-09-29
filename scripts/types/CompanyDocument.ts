@@ -9,6 +9,7 @@ export class CompanyDocument {
   fileId: string = ""
   totalPages: number = 0
   isPriority: boolean = false
+  isDownloading: boolean = false
 
   constructor(
     id: string,

@@ -87,17 +87,13 @@ export abstract class ApplicationController<Application> {
       this.isLoading.value = true
 
       this.uploadedDocumentChecker.value.companyId = this.companyId.value
-      this.documentsAndForms.value.companyId = this.companyId.value
 
       await Promise.all([
         this.fetchOngoing(),
         this.fetchDirectors(),
         this.fetchShareholders(),
         this.uploadedDocumentChecker.value.fetchDocuments(),
-        this.documentsAndForms.value.fetchForms(),
       ])
-
-      this.documentsAndForms.value.setDocuments()
 
       await this.fetchPaymentOrder()
 
@@ -121,7 +117,6 @@ export abstract class ApplicationController<Application> {
     this.companyId.value = companyId
 
     this.uploadedDocumentChecker.value.companyId = this.companyId.value
-    this.documentsAndForms.value.companyId = this.companyId.value
 
     await Promise.all([
       this.fetchOngoing(),
@@ -130,8 +125,6 @@ export abstract class ApplicationController<Application> {
       this.uploadedDocumentChecker.value.fetchDocuments(),
       this.documentsAndForms.value.fetchForms(),
     ])
-
-    this.documentsAndForms.value.setDocuments()
 
     await Promise.allSettled([this.fetchPaymentOrder(), this.initializeData()])
 

@@ -11,10 +11,12 @@
         @documentSelected="controller.onDocumentTargetSelected($event)"
         @download="controller.onDownloadClicked()"
         @convertToForms="controller.onMoveToDocuments()"
+        @show="controller.onShowPdf($event)"
       />
     </div>
     <div class="document-container">
       <component
+        v-if="!controller.showPdfViewer"
         ref="documentRef"
         :is="activeDocumentComponent"
         :company-id="controller.companyId.value"
@@ -23,11 +25,39 @@
         :target-id="controller.paymentOrderId.value"
         :target-type="controller.target"
       />
+
+      <PdfViewer
+        v-if="controller.showPdfViewer"
+        :company-id="controller.application.value.companyId"
+        :pdf-url="controller.pdfUrl.value"
+        :filename="'filename.pdf'"
+        :can-zoom="false"
+        @zoom="controller.onZoomPdf($event)"
+      />
     </div>
+    <Teleport to="body">
+      <Transition name="fade">
+        <div
+          class="document-view show"
+          v-if="controller.zoomLevel.value > 0"
+          @click.self="controller.onMinimizePdf()"
+        >
+          <PdfViewer
+            :company-id="controller.application.value.companyId"
+            :pdf-url="controller.pdfUrl.value"
+            :filename="'filename.pdf'"
+            :can-zoom="false"
+            :zoom-level="1"
+            @zoom="controller.onMinimizePdf()"
+          />
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import PdfViewer from "@/components/DocumentViewers/PdfViewer.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
   import RegisterTransferOfSharesService from "../CompanyServices/RegisterTransferOfSharesService.vue"
   import Section105Service from "../CompanyServices/Section105Service.vue"

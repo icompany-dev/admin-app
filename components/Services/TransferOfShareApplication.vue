@@ -53,8 +53,10 @@
                   >
                     <Transition name="fade">
                       <i
-                        class="fa-solid fa-spin fa-spinner"
-                        v-if="controller.isDownloadingDocument.value"
+                        class="fa-solid"
+                        :class="controller.section17?.isDownloading ? 'fa-spin fa-spinner' : 'fa-download'"
+                        v-if="controller.canDownload(controller.section17)"
+                        @click.self="controller.onDownloadCompanyDocumentClicked(controller.section17)"
                       />
                     </Transition>
                     {{ controller.section17Label }}
@@ -67,8 +69,10 @@
                   >
                     <Transition name="fade">
                       <i
-                        class="fa-solid fa-spin fa-spinner"
-                        v-if="controller.isDownloadingDocument.value"
+                        class="fa-solid"
+                        :class="controller.section14?.isDownloading ? 'fa-spin fa-spinner' : 'fa-download'"
+                        v-if="controller.canDownload(controller.section14)"
+                        @click.self="controller.onDownloadCompanyDocumentClicked(controller.section14)"
                       />
                     </Transition>
                     {{ controller.section14Label }}
@@ -81,8 +85,12 @@
                   >
                     <Transition name="fade">
                       <i
-                        class="fa-solid fa-spin fa-spinner"
-                        v-if="controller.isDownloadingDocument.value"
+                        class="fa-solid"
+                        :class="
+                          controller.auditedFinancialStatement?.isDownloading ? 'fa-spin fa-spinner' : 'fa-download'
+                        "
+                        v-if="controller.canDownload(controller.auditedFinancialStatement)"
+                        @click.self="controller.onDownloadCompanyDocumentClicked(controller.auditedFinancialStatement)"
                       />
                     </Transition>
                     {{ controller.auditedFinancialStatementLabel }}
@@ -95,8 +103,10 @@
                   >
                     <Transition name="fade">
                       <i
-                        class="fa-solid fa-spin fa-spinner"
-                        v-if="controller.isDownloadingDocument.value"
+                        class="fa-solid"
+                        :class="controller.section51?.isDownloading ? 'fa-spin fa-spinner' : 'fa-download'"
+                        v-if="controller.canDownload(controller.section51)"
+                        @click.self="controller.onDownloadCompanyDocumentClicked(controller.section51)"
                       />
                     </Transition>
                     {{ controller.section51DocumentLabel }}

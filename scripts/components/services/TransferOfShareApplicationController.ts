@@ -96,6 +96,12 @@ export class TransferOfShareApplicationController extends ApplicationController<
       this.uploadedDocumentChecker.value.companyId = this.application.value.companyId
       await this.uploadedDocumentChecker.value.fetchDocuments()
     }
+
+    if (StringUtil.isNullOrEmpty(this.documentsAndForms.value.companyId)) {
+      this.documentsAndForms.value.companyId = this.application.value.companyId
+      await this.documentsAndForms.value.fetchForms()
+      this.documentsAndForms.value.setDocuments()
+    }
   }
 
   onPaymentStepClicked(): void {
@@ -416,8 +422,32 @@ export class TransferOfShareApplicationController extends ApplicationController<
       return
     }
 
+    this.emitEvents("show", companyDocument.fileUrl)
+  }
+
+  async onDownloadCompanyDocumentClicked(companyDocument: CompanyDocument | null): Promise<void> {
+    if (this.isDownloadingDocument.value || companyDocument?.isDownloading) {
+      return
+    }
+
+    if (!this.canDownload(companyDocument) || !companyDocument || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+      let error = new Error()
+      error.type = Error.ERROR_TYPE_DATA
+      error.title = this.language.isMalay()
+        ? "Tiada dokumen untuk dimuat turun."
+        : "The document is not available for download."
+      error.message = this.language.isMalay()
+        ? "Sila beli dokumen ini dari Sistem Pengantara SSM."
+        : "Please purchase this document from SSM Middleware System."
+      error.handle()
+      return
+    }
+
+    this.emitEvents("show", companyDocument.fileUrl)
+
     try {
       this.isDownloadingDocument.value = true
+      companyDocument.isDownloading = true
       let response = await fetch(companyDocument.fileUrl ?? "")
       if (!response.ok) {
         let error = new Error()
@@ -457,6 +487,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
       }
     } finally {
       this.isDownloadingDocument.value = false
+      companyDocument.isDownloading = false
     }
   }
 
