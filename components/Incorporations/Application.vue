@@ -429,7 +429,7 @@
                           @click="controller.onGenerate236Clicked()"
                         />
                       </li>
-                      <li>
+                      <!-- <li>
                         <span class="document-label">
                           {{ controller.corporateProfileLabel }}
                         </span>
@@ -443,7 +443,7 @@
                           v-if="!controller.hasPurchasedCorporateProfile"
                           @click="controller.onPurchaseCorporateProfile()"
                         />
-                      </li>
+                      </li> -->
                     </ol>
                   </div>
                 </div>
