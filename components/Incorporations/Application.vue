@@ -134,18 +134,18 @@
                       'is-loading': controller.isUpdatingSection27.value,
                       single: !controller.hasNextStepsForSection27,
                     }"
-                    @click="controller.onShowSection27ActionClicked()"
+                    @click="controller.onShowSection27ActionClicked(nameOption)"
                   >
                     <span class="label">{{ controller.section27ActionLabel }}</span>
                     <i
                       v-if="controller.hasNextStepsForSection27"
                       class="fa-solid fa-caret-down"
-                      :class="{ rotate: controller.isShowSection27Actions.value }"
+                      :class="{ rotate: controller.isShowingNameReservationsOptionFor(nameOption) }"
                     ></i>
                   </div>
                   <div
                     class="options"
-                    :class="{ show: controller.isShowSection27Actions.value }"
+                    :class="{ show: controller.isShowingNameReservationsOptionFor(nameOption) }"
                   >
                     <button
                       class="btn btn-pill btn-submit"

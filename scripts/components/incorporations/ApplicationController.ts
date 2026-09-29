@@ -428,6 +428,10 @@ export class ApplicationController {
     this.selectedNameReservationApplication.value = name
   }
 
+  isShowingNameReservationsOptionFor(name: string): boolean {
+    return this.isShowSection27Actions.value && this.selectedNameReservationApplication.value === name
+  }
+
   onProposedNamesClicked(): void {
     this.isShowProposedNames.value = !this.isShowProposedNames.value
   }
@@ -479,8 +483,9 @@ export class ApplicationController {
     }
   }
 
-  onShowSection27ActionClicked(): void {
+  onShowSection27ActionClicked(name: string): void {
     this.isShowSection27Actions.value = !this.isShowSection27Actions.value
+    this.selectedNameReservationApplication.value = name
   }
 
   async onDownloadSection27Clicked(): Promise<void> {
