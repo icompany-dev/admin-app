@@ -192,22 +192,26 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
     return this.companyShareTransferDetail.value.transferToType === ShareholdingType.Representative
   }
 
+  transferToRace(): string {
+    return this.transferToUser.value.detail?.race?.toLowerCase() ?? ""
+  }
+
   isTransferToMalay(): boolean {
-    return this.transferToUser.value.detail?.race.toLowerCase() === "malay"
+    return this.transferToRace() === "malay"
   }
 
   isTransferToChinese(): boolean {
-    return this.transferToUser.value.detail?.race.toLowerCase() === "chinese"
+    return this.transferToRace() === "chinese"
   }
 
   isTransferToIndian(): boolean {
-    return this.transferToUser.value.detail?.race.toLowerCase() === "indian"
+    return this.transferToRace() === "indian"
   }
 
   isTransferToRaceOthers(): boolean {
     return (
-      this.transferToUser.value.detail?.race.toLowerCase() === "others" &&
-      StringUtil.contains(this.transferToUser.value.detail?.citizenship, "malaysia")
+      this.transferToRace() === "others" &&
+      StringUtil.contains(this.transferToUser.value.detail?.citizenship ?? "", "malaysia")
     )
   }
 
@@ -220,7 +224,7 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
   }
 
   transferToCitizenship(): string {
-    return this.transferToUser.value?.detail?.citizenship.toUpperCase() ?? "N/A"
+    return this.transferToUser.value?.detail?.citizenship?.toUpperCase() ?? "N/A"
   }
 
   isSection105Completed(): boolean {
