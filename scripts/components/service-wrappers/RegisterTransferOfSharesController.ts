@@ -7,12 +7,14 @@ import { useCompanyPostShareTransferStore } from "~/stores/CompanyPostShareTrans
 import { useCompanyStore } from "~/stores/Companies"
 import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 
 export class RegisterTransferOfSharesController
   extends ServiceController
   implements IServiceController<CompanyPostShareTransfer, ReturnType<typeof useCompanyPostShareTransferStore>>
 {
   application: CompanyPostShareTransfer = new CompanyPostShareTransfer()
+  applicationRef = ref<CompanyPostShareTransfer>(new CompanyPostShareTransfer())
   applicationId: string | null = null
   repository = useCompanyPostShareTransferStore()
   companyRepository = useCompanyStore()
@@ -28,11 +30,12 @@ export class RegisterTransferOfSharesController
   }
 
   async fetchApplication(id: string): Promise<void> {
+    this.applicationId = id
+    this.targetId = id
     let response = await this.repository.fetch(id)
     if (!this.repository.error) {
       this.application = new CompanyPostShareTransfer(response)
-      this.applicationId = this.application.id
-      this.targetId = this.application.id
+      this.applicationRef.value = new CompanyPostShareTransfer(response)
     }
   }
 
@@ -42,6 +45,8 @@ export class RegisterTransferOfSharesController
       this.application = new CompanyPostShareTransfer()
       this.application.companyId = companyId
       this.application.company = new Company(response)
+
+      this.applicationRef.value = new CompanyPostShareTransfer(this.application)
     }
   }
 
@@ -77,7 +82,7 @@ export class RegisterTransferOfSharesController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -104,40 +109,24 @@ export class RegisterTransferOfSharesController
     this.emitEvents("back")
   }
 
-  helpTitle(): string {
-    return this.language.isMalay()
-      ? `Resolusi Pengarah untuk Meluluskan/Menangguhkan/Menolak Pendaftaran Pemindahan Saham`
-      : "DCR to Approve/Delay/Refuse Registration of Transfer of Shares"
+  get isDraft(): boolean {
+    return this.application.signatureGroups.length <= 0
   }
 
-  helpDescription(): string {
-    if (this.language.isMalay()) {
-      return `
-        Resolusi ini adalah dokumen bertulis rasmi yang digunakan oleh Lembaga Pengarah untuk merekodkan 
-        keputusan mereka secara formal bagi meluluskan, menangguhkan, atau menolak pindah milik saham. 
-        Bagi meluluskan pindah milik, Pengarah menandatangani dokumen ini sebagai kebenaran kepada Setiausaha 
-        Syarikat untuk mengemas kini Daftar Ahli dan mengeluarkan sijil saham baharu kepada pemilik baharu.
-        <br><br>
-        Sekiranya Pengarah memutuskan untuk menangguhkan atau menolak pendaftaran tersebut (biasanya kerana 
-        pemegang saham masih berhutang ke atas saham tersebut atau Perlembagaan Syarikat melarang pindah 
-        milik berkenaan), Resolusi ini mestilah diluluskan dalam tempoh <b>30 hari</b> selepas menerima 
-        permohonan pindah milik. Apa yang penting, dokumen ini mestilah menyatakan dengan jelas sebab-sebab 
-        khusus penolakan tersebut, dan syarikat kemudiannya mesti memaklumkan sebab-sebab ini kepada pembeli 
-        dan penjual dalam tempoh <b>7 hari</b> selepas resolusi diluluskan.
-      `
-    }
-
-    return `
-      This Resolution is the official written document used by the Board of Directors to formally 
-      record their decision to approve, delay, or refuse a share transfer. To say "yes" to a transfer, 
-      the Directors sign this document to authorize the company secretary to update the Register 
-      of Members and issue a new share certificate to the new owner.
-      <br><br>
-      If the Directors decide to delay or refuse the registration (usually because the shareholder 
-      owes money on the shares or the Company Constitution forbids the transfer), this DCR must be 
-      passed within <b>30 days</b> of receiving the transfer application. Crucially, this document must 
-      clearly state the specific reasons for the refusal, and the company must then notify the buyer 
-      and seller of these reasons within <b>7 days</b> of the resolution being passed.
-    `
+  get resolutionDocumentProps() {
+    return new PropsResolutionDocument<CompanyPostShareTransfer>(
+      this.companyId,
+      this.applicationId,
+      this.applicationRef.value as CompanyPostShareTransfer,
+      this.isDraft,
+      "DRAFT",
+      false,
+      false,
+      null,
+      null,
+      [],
+      null,
+      null
+    )
   }
 }

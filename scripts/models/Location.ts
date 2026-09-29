@@ -4,6 +4,7 @@ export class Location {
   id: string = ""
   addressLine1: string = ""
   addressLine2: string | null = ""
+  addressLine3: string | null = ""
   postcode: string = ""
   city: City | null = null
   state: State | null = null
@@ -27,6 +28,7 @@ export class Location {
     this.id = data.id || ""
     this.addressLine1 = data.address_line_1 || ""
     this.addressLine2 = data.address_line_2 || ""
+    this.addressLine3 = data.address_line_3 || ""
     this.postcode = data.postcode || ""
     this.city = new City(data.city || null)
     this.state = new State(data.state || null)
@@ -41,6 +43,7 @@ export class Location {
     this.id = data.id || ""
     this.addressLine1 = data.addressLine1 || ""
     this.addressLine2 = data.addressLine2 || ""
+    this.addressLine3 = data.addressLine3 || ""
     this.postcode = data.postcode || ""
     this.city = new City(data.city || null)
     this.state = new State(data.state || null)
@@ -56,7 +59,11 @@ export class Location {
       return "-"
     }
 
-    return `${this.addressLine1.toUpperCase()}, ${!StringUtil.isNullOrEmpty(this.addressLine2) ? this.addressLine2?.toUpperCase() + ", " : ""}${this.postcode} ${this.city?.name.toUpperCase()}, ${this.state?.name.toUpperCase()} ${this.country?.name.toUpperCase()}`
+    return `${this.addressLine1.toUpperCase()}, 
+      ${!StringUtil.isNullOrEmpty(this.addressLine2) ? this.addressLine2?.toUpperCase() + ", " : ""}
+      ${!StringUtil.isNullOrEmpty(this.addressLine3) ? this.addressLine3?.toUpperCase() + ", " : ""}
+      ${this.postcode} ${this.city?.name.toUpperCase()}, 
+      ${this.state?.name.toUpperCase()} ${this.country?.name.toUpperCase()}`
   }
 
   getMultilineAddress(): string {
@@ -64,13 +71,18 @@ export class Location {
       return "-"
     }
 
-    return `${this.addressLine1.toUpperCase()}<br>${this.addressLine2 ? this.addressLine2.toUpperCase() + "<br>" : ""}${this.postcode} ${this.city?.name.toUpperCase()},<br>${this.state?.name.toUpperCase()} ${this.country?.name.toUpperCase()}`
+    return `${this.addressLine1.toUpperCase()}<br>
+      ${this.addressLine2 ? this.addressLine2.toUpperCase() + "<br>" : ""}
+      ${this.addressLine3 ? this.addressLine3.toUpperCase() + "<br>" : ""}
+      ${this.postcode} ${this.city?.name.toUpperCase()},<br>
+      ${this.state?.name.toUpperCase()} ${this.country?.name.toUpperCase()}`
   }
 
   getRequestBody() {
     return {
       address_line_1: this.addressLine1,
       address_line_2: this.addressLine2,
+      address_line_3: this.addressLine3,
       postcode: this.postcode,
       city_id: this.city?.id,
       state_id: this.state?.id,

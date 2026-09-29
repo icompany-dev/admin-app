@@ -25,9 +25,11 @@
           class="documents"
         >
           <Section105
+            v-for="(transferDetail, index) in controller.companyShareholderTransfer.value.transferDetails"
+            :ref="(el) => controller.setSection105(el, index)"
             :company-shareholder-transfer="controller.getShareTransfer()"
             :shareholder-id="controller.shareholderId.value"
-            :company-share-transfer-detail="controller.getFirstTransferDetail()"
+            :company-share-transfer-detail="transferDetail"
             :company-id="controller.companyId"
             :show-watermark="controller.showWatermark()"
             :watermark-text="controller.watermarkText()"
@@ -36,56 +38,7 @@
           />
         </TransitionGroup>
       </template>
-      <template #pasca-custom-affirmation>
-        <div
-          v-for="(transferDetail, index) in controller.companyShareholderTransfer.value.transferDetails"
-          :key="index"
-          class="step-content"
-        >
-          <b>From:</b>
-          <br />
-          {{ transferDetail.transferFromName.toUpperCase() }}
-          <i
-            class="fa-solid fa-circle-check"
-            v-if="transferDetail.fromSignatureId"
-          />
-          <br />
-          <b>To:</b>
-          <br />
-          {{ transferDetail.transferToName?.toUpperCase() }}
-          <i
-            class="fa-solid fa-circle-check"
-            v-if="transferDetail.toSignatureId"
-          />
-        </div>
-      </template>
-      <template #step-status>
-        <div v-if="controller.isProcessingTransfer">
-          {{ controller.processingLabel() }}
-          <i class="fa-solid fa-loader fa-spin"></i>
-        </div>
-        <div v-if="controller.isSubmittedToSSM()">
-          <b>{{ controller.submittedToSsmLabel() }}:</b>
-          <div class="step-date">
-            {{ controller.getSubmissionDate() }}
-            <i class="check-icon fa-solid fa-circle-check"></i>
-          </div>
-        </div>
-      </template>
-      <template #cornerButton>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-pay"
-          @click="controller.onProceedClicked()"
-        >
-          {{ controller.payLabel() }}
-        </button>
-      </template>
     </CompanyServiceWrapper>
-    <ActionTray
-      v-if="!controller.isLoading.value"
-      :actions="controller.actionTrayElements.value"
-    />
   </div>
 </template>
 
@@ -170,6 +123,8 @@
 
   defineExpose({
     isDoneLoading: controller.isDoneLoading.bind(controller),
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onGenerateBlobs: controller.onGenerateBlobs.bind(controller),
   })
 </script>
 

@@ -200,7 +200,6 @@
 
 <script setup lang="ts">
   import ActionTray from "../ActionTrays/ActionTray.vue"
-  import Alert from "../Alerts/Alert.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import NoticeTransferOfShareProposal from "../LegalDocuments/NoticeTransferOfShareProposal.vue"
@@ -288,5 +287,5 @@
 
 <style lang="scss">
   @use "~/assets/scss/components/CompanyServices/Service" as *;
-  @use "~/assets/scss/components/CompanyServices/TransferSharesService" as *;
+  // @use "~/assets/scss/components/CompanyServices/TransferSharesService" as *;
 </style>

@@ -119,6 +119,12 @@ export class PageSidebar {
     "services/appoint-director-new",
     false
   )
+  static transferOfShares: Sidebar = new Sidebar(
+    "Transfer of Shares",
+    "Pindah Saham",
+    "services/transfer-of-shares",
+    false
+  )
   static allotNewShares: Sidebar = new Sidebar(
     "Allot New Shares",
     "Peruntuk Saham Baharu",
@@ -148,6 +154,7 @@ export class PageSidebar {
     this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
+    this.transferOfShares,
     this.allotNewShares,
     this.purchaseAssets,
     this.declareDividends,

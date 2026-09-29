@@ -46,6 +46,7 @@
   import DocumentRequest from "./DocumentRequest.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import TekunApplication from "./TekunApplication.vue"
+  import TransferOfShare from "./TransferOfShare.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
   import { CompanyConstants } from "~/scripts/constants/Company"
@@ -67,6 +68,7 @@
     [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
     [CompanyConstants.TARGET_PURCHASE_ASSET]: AssetPurchase,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotNewShare,
+    [CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES]: TransferOfShare,
   }
 
   const activeDocumentComponent = computed(() => {

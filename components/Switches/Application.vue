@@ -314,6 +314,18 @@
                 >
                   {{ controller.uploadSection58Label }}
                 </button>
+                <span
+                  class="action-link download"
+                  v-if="controller.isSection58Uploaded"
+                  @click="controller.onDownloadSection58Clicked()"
+                >
+                  <i
+                    class="fa-regular"
+                    :class="controller.isDownloadingSection58.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-down'"
+                  ></i>
+                  {{ controller.downloadDocumentSection58Label }}
+                </span>
+                <template v-if="controller.isSection58Uploaded"></template>
               </template>
               <template #nodeActions>
                 <div
@@ -371,6 +383,11 @@
       v-bind="controller.invitationPopupProps"
       @success="controller.onAddedShareholder($event)"
     />
+    <UploadFile
+      ref="uploadDocumentRef"
+      v-bind="controller.uploadDocumentProps"
+      @uploaded="controller.onProceedUploadSection58($event)"
+    />
   </div>
 </template>
 
@@ -408,6 +425,7 @@
   const documentRef = ref(null)
   const inviteDirectorRef = ref(null)
   const inviteShareholderRef = ref(null)
+  const uploadDocumentRef = ref(null)
 
   const activeDocumentComponent = computed(() => {
     const target = controller.selectedDocumentTarget.value
@@ -437,6 +455,14 @@
     inviteShareholderRef,
     (newVal) => {
       controller.setInviteShareholderRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    uploadDocumentRef,
+    (newVal) => {
+      controller.setUploadDocumentRef(newVal)
     },
     { immediate: true }
   )

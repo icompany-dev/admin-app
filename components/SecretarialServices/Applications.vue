@@ -83,6 +83,7 @@
   import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
+  import { TransferOfSharesController } from "~/scripts/components/secretarial-services/TransferOfSharesController"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import type { Application } from "~/scripts/models/Application"
   import type { IPropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
@@ -103,14 +104,17 @@
     case CompanyConstants.TARGET_AMENDMENT_NAME:
       controller = new ChangeOfNamesController(props, emit)
       break
+    case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
+      controller = new AppointDirectorsController(props, emit)
+      break
     case CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY:
       controller = new ChangeBankSignatoriesController(props, emit)
       break
     case CompanyConstants.TARGET_DIVIDEND_DECLARATION:
       controller = new DividendDeclarationsController(props, emit)
       break
-    case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
-      controller = new AppointDirectorsController(props, emit)
+    case CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES:
+      controller = new TransferOfSharesController(props, emit)
       break
     case CompanyConstants.TARGET_DOCUMENT_REQUEST:
       controller = new DocumentRequestsController(props, emit)

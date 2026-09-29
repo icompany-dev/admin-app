@@ -27,49 +27,31 @@
         tag="div"
         class="document-transition-wrapper"
       >
-        <NoticeTransferOfShareProposal
-          v-for="(shareholder, index) in controller.shareholders.value"
-          :ref="
-            (el) => {
-              return controller.setProposalRef(el, index)
-            }
-          "
+        <Section105
+          v-for="(transferDetail, index) in controller.transferDetails.value"
+          :ref="(el) => controller.setSection105(el, index)"
           :key="index"
-          :transfer-id="controller.application.id"
-          :shareholder-id="shareholder.id"
+          :company-shareholder-transfer="controller.application"
+          :shareholder-id="controller.shareholderId.value ?? ''"
+          :company-share-transfer-detail="transferDetail"
           :company-id="controller.companyId"
           :show-watermark="controller.showWatermark()"
           :watermark-text="controller.watermarkText()"
           :is-in-preview-mode="controller.isInPreviewMode.value"
-          :is-read-only="controller.isDocumentReadOnly(index)"
-          @transfer-details-updated="controller.onDataUpdated($event, index)"
-          @signed="controller.onApplicationUpdated($event)"
+          @transferorSigned="controller.onTransferorSigned($event)"
+          @transferorRepSigned="controller.onTransferorRepSigned($event)"
+          @transfereeSigned="controller.onTransfereeSigned($event)"
+          @transfereeRepSigned="controller.onTransfereeRepSigned($event)"
         />
-        <template v-if="controller.hasInitiatorSigned">
-          <Section105
-            v-for="(transferDetail, index) in controller.transferDetails.value"
-            :key="index"
-            :company-shareholder-transfer="controller.application"
-            :shareholder-id="controller.shareholderId.value ?? ''"
-            :company-share-transfer-detail="transferDetail"
-            :company-id="controller.companyId"
-            :show-watermark="controller.showWatermark()"
-            :watermark-text="controller.watermarkText()"
-            :is-in-preview-mode="controller.isInPreviewMode.value"
-            @transferorSigned="controller.onTransferorSigned($event)"
-            @transferorRepSigned="controller.onTransferorRepSigned($event)"
-            @transfereeSigned="controller.onTransfereeSigned($event)"
-            @transfereeRepSigned="controller.onTransfereeRepSigned($event)"
-          />
-        </template>
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
-  import NoticeTransferOfShareProposal from "../LegalDocuments/NoticeTransferOfShareProposal.vue"
   import Section105 from "../LegalDocuments/Section105.vue"
   import { NoticeTransferOfSharesController } from "~/scripts/components/service-wrappers/NoticeTransferOfSharesController"
 

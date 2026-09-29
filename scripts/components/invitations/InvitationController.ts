@@ -209,6 +209,19 @@ export abstract class InvitationController {
     return detail.race?.toUpperCase() ?? "(Unknown)"
   }
 
+  get gender(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.gender?.toUpperCase() ?? "(Unknown)"
+  }
+
   get addressLabel(): string {
     return this.language.isMalay() ? "Alamat" : "Address"
   }

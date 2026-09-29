@@ -68,6 +68,22 @@ export const useApplicationSwitchStore = defineStore("applicationSwitch", () => 
     }
   }
 
+  async function sendCompleted(id: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.applicationSwitches.sendCompleted(id)
+      return response
+    } catch (e: any) {
+      error.value = e.message || `Failed to fetch applicationSwitches for user`
+      console.error(`Error to fetch applicationSwitches for user`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalApplicationSwitchs = computed(() => applicationSwitches.value.length)
 
   return {
@@ -80,5 +96,6 @@ export const useApplicationSwitchStore = defineStore("applicationSwitch", () => 
     fetchAllOld,
     sendEmailToPreviousCosec,
     ongoingApplication,
+    sendCompleted,
   }
 })

@@ -286,7 +286,7 @@ export class ServiceNames {
     this.allotmentOfShares,
     this.proposedAllotmentOfShares,
     this.transferOfShares,
-    this.proposedTransferOfShares,
+    // this.proposedTransferOfShares,
     this.postTransferOfShares,
     this.openingOfBankAccount,
     this.closureOfBankAccount,

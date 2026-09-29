@@ -139,7 +139,7 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   resolutionName(): string {
-    return this.isAppointNew() ? "Appointment of New Company Secretary" : "Change of Company Secretary"
+    return "Add New Secretary" //this.isAppointNew() ? "Appointment of New Company Secretary" : "Add New Secretary"
   }
 
   signatureTitle(): string {

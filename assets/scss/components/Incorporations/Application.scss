@@ -64,16 +64,22 @@
       }
     }
 
+
+  }
+
+  .application-details {
+    width: 100%;
+
     .application-items {
       width: 100%;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
-      gap: 30px;
+      gap: 10px;
 
       .application-item {
-        width: calc((100% / 2) - 15px);
+        width: 100%;
 
         .application-item-title {
           width: 100%;
@@ -150,9 +156,6 @@
         }
       }
     }
-  }
-
-  .application-details {
 
     ol,
     ul {

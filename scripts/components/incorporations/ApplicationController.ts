@@ -33,6 +33,9 @@ import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import type { Invitation } from "~/scripts/models/Invitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { BusinessNameDescriptionAI } from "~/scripts/library/BusinessNameDescriptionAI"
+import type { PaymentCartItem } from "~/scripts/models/PaymentCartItem"
+import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
+import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -66,14 +69,19 @@ export class ApplicationController {
   nameReservationRejectedPopup: any | null = null
   completionOfIncorporationPopup: any | null = null
 
+  selectedNameReservationForApproval: Ref<NameReservationVariant> = ref<NameReservationVariant>(
+    new NameReservationVariant("", "", null, null)
+  )
+
   language = useLanguage()
 
   documentRef: any | null = null
+  nameApprovedRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
-  isShowAdminView: Ref<boolean> = ref<boolean>(true)
-  isShowCrsView: Ref<boolean> = ref<boolean>(false)
+  isShowAdminView: Ref<boolean> = ref<boolean>(false)
+  isShowCrsView: Ref<boolean> = ref<boolean>(true)
 
   businessNameDescriptionAI = ref<BusinessNameDescriptionAI>(new BusinessNameDescriptionAI())
 
@@ -81,7 +89,10 @@ export class ApplicationController {
   selectedDirectorInvitationFor201: Ref<DirectorInvitation | null> = ref<DirectorInvitation | null>(null)
 
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
+
   isShowSection27: Ref<boolean> = ref<boolean>(false)
+  selectedNameReservationApplication: Ref<string> = ref<string>("")
+
   isShowRegistration: Ref<boolean> = ref<boolean>(false)
   isShowCompletion: Ref<boolean> = ref<boolean>(false)
 
@@ -151,6 +162,10 @@ export class ApplicationController {
 
   setDocumentRef(documentRef: any): void {
     this.documentRef = documentRef
+  }
+
+  setNameApprovedRef(nameApprovedRef: any): void {
+    this.nameApprovedRef = nameApprovedRef
   }
 
   async init(): Promise<void> {
@@ -409,10 +424,15 @@ export class ApplicationController {
   }
 
   // Name Reservation Step
-  onNameReservationStepClicked(): void {
+  onNameReservationStepClicked(name: string): void {
     this.resetAllDocumentValues()
     this.isShowSection27.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
+    this.selectedNameReservationApplication.value = name
+  }
+
+  isShowingNameReservationsOptionFor(name: string): boolean {
+    return this.isShowSection27Actions.value && this.selectedNameReservationApplication.value === name
   }
 
   onProposedNamesClicked(): void {
@@ -442,20 +462,17 @@ export class ApplicationController {
     this.selectedProposedName.value = name
   }
 
-  async onRunAskSairaForNameDescription(): Promise<void> {
+  async onRunAskSairaForNameDescription(name: string): Promise<void> {
     if (
       this.businessNameDescriptionAI.value.isProcessing ||
-      StringUtil.isNullOrEmpty(this.selectedProposedName.value) ||
+      StringUtil.isNullOrEmpty(name) ||
       !this.application.value
     ) {
       return
     }
 
     this.businessNameDescriptionAI.value.resetValues()
-    this.businessNameDescriptionAI.value.askGemini(
-      this.selectedProposedName.value,
-      this.application.value.businessDescription
-    )
+    this.businessNameDescriptionAI.value.askGemini(name, this.application.value.businessDescription)
 
     this.checkAIStatus()
   }
@@ -469,8 +486,9 @@ export class ApplicationController {
     }
   }
 
-  onShowSection27ActionClicked(): void {
+  onShowSection27ActionClicked(name: string): void {
     this.isShowSection27Actions.value = !this.isShowSection27Actions.value
+    this.selectedNameReservationApplication.value = name
   }
 
   async onDownloadSection27Clicked(): Promise<void> {
@@ -684,8 +702,42 @@ export class ApplicationController {
     }
 
     let application = this.latestSection27Application
+
+    this.isUpdatingSection27.value = true
+
+    this.selectedNameReservationForApproval.value = new NameReservationVariant(
+      application.name,
+      application.nameType,
+      application.nameDescription,
+      application.supportingDocumentId
+    )
+
+    await nextTick()
+
+    if (this.nameApprovedRef) {
+      this.nameApprovedRef.show()
+      return
+    }
+  }
+
+  async onProceedApproveReservation(nameReservation: NameReservationVariant): Promise<void> {
+    console.log("name", nameReservation)
+    if (!this.latestSection27Application) {
+      console.log("here??")
+      return
+    }
+
+    let application = this.latestSection27Application
+
+    application.name = nameReservation.name
+
     try {
-      this.isUpdatingSection27.value = true
+      let data = {
+        name: application.name,
+      }
+      let repository = useApplicationNameReservationStore()
+      await repository.update(application.id, data)
+
       await application.approve(useApplicationNameReservationStore())
 
       await this.fetchApplication()
@@ -699,6 +751,8 @@ export class ApplicationController {
       }
     } finally {
       this.isUpdatingSection27.value = false
+
+      this.selectedNameReservationForApproval.value = new NameReservationVariant("", "", null, null)
     }
   }
 
@@ -1166,7 +1220,24 @@ export class ApplicationController {
   }
 
   get serviceName(): string {
-    return this.language.isMalay() ? "Pemerbadanan Sdn Bhd Baharu" : "Incorporation of New Sdn Bhd"
+    let name = ""
+    if (!StringUtil.isNullOrEmpty(this.application.value.nameSelected?.name ?? "")) {
+      name = this.application.value.nameSelected?.name ?? "-"
+      name = name.toUpperCase()
+
+      name = `${name.toUpperCase()} <i class='fa-solid fa-circle-check check-icon' title='Name Approved'></i>`
+    } else {
+      let application = this.latestSection27Application
+      if (application) {
+        name = application.name
+      } else {
+        name = this.application.value.name1?.name ?? ""
+      }
+
+      name = `${name.toUpperCase()} <small>(${this.language.isMalay() ? "Dicadang" : "Proposed"})</small>`
+    }
+
+    return this.language.isMalay() ? `Pemerbadanan Sdn Bhd Baharu: ${name}` : `Incorporation of New Sdn Bhd: ${name}`
   }
 
   get adminViewLabel(): string {
@@ -1389,6 +1460,42 @@ export class ApplicationController {
   }
 
   // region for names
+  isNameReservationApplicationCompleted(name: string): boolean {
+    if (!StringUtil.isNullOrEmpty(this.application.value.nameSelected?.name ?? "")) {
+      return true
+    }
+
+    let nameReservationApplication = this.application.value.nameReservationApplications.find(
+      (v: ApplicationNameReservation) => {
+        return v.name === name
+      }
+    )
+
+    if (!nameReservationApplication) {
+      return false
+    }
+
+    return nameReservationApplication.status === "outcome"
+  }
+
+  isShowNameReservationApplication(name: string): boolean {
+    return this.selectedNameReservationApplication.value === name
+  }
+
+  nameReservationApplicationNodeProps(name: string): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.hasPaid,
+      this.isNameReservationApplicationCompleted(name),
+      this.isShowNameReservationApplication(name)
+    )
+  }
+
+  isNameReserved(name: string): boolean {
+    return this.nameReservations.some((nr: ApplicationNameReservation) => {
+      return nr.name === name
+    })
+  }
+
   get nameReservationNodeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(this.hasPaid, this.isNameReservationCompleted, this.isShowSection27.value)
   }
@@ -1406,7 +1513,7 @@ export class ApplicationController {
   }
 
   get proposedNamesLabel(): string {
-    return this.language.isMalay() ? "Nama yang Dicadangkan" : "Proposed Names"
+    return this.language.isMalay() ? "Nama yang Dicadangkan" : "Proposed Name"
   }
 
   get canReservedName(): boolean {
@@ -1434,43 +1541,42 @@ export class ApplicationController {
       return []
     }
 
-    let names: string[] = []
-
-    names.push(this.application.value.name1?.name ?? "")
-
-    if (this.application.value.name2) {
-      names.push(this.application.value.name2.name)
-    }
-
-    if (this.application.value.name3) {
-      names.push(this.application.value.name3.name)
-    }
-
-    let formattednames = names.map((s: string) => {
-      let ongoingApplication = this.nameReservations.find((nr: ApplicationNameReservation) => {
-        return nr.name === s
-      })
-
-      if (!ongoingApplication) {
-        return s
-      }
-
-      if (ongoingApplication.status === StatusConstants.OUTCOME) {
-        if (ongoingApplication.status === StatusConstants.APPROVED) {
-          s = `${s} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
+    let names: string[] = this.nameReservations.map((nr: ApplicationNameReservation) => {
+      if (nr.status === StatusConstants.OUTCOME) {
+        if (nr.ssmResult === StatusConstants.APPROVED) {
+          return `${nr.name} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
         }
 
-        if (ongoingApplication.status === StatusConstants.REJECTED) {
-          s = `${s} <small><i>${this.language.isMalay() ? "(Ditolak)" : "(Rejected)"}</i></small>`
+        if (nr.ssmResult === StatusConstants.REJECTED) {
+          return `${nr.name} <small><i>${this.language.isMalay() ? "(Dilluluskan)" : "(Approved)"}</i></small>`
         }
-      } else {
-        s = `${s} <small><i>${this.language.isMalay() ? "(Sedang berjalan)" : "(Ongoing)"}</i></small>`
       }
 
-      return s
+      return `${nr.name} <small><i>${this.language.isMalay() ? "(Sedang berjalan)" : "(Ongoing)"}</i></small>`
     })
 
-    return formattednames
+    if (
+      !StringUtil.isNullOrEmpty(this.application.value.name1?.name) &&
+      !this.isNameReserved(this.application.value.name1?.name)
+    ) {
+      names.push(this.application.value.name1?.name ?? "")
+    }
+
+    if (
+      !StringUtil.isNullOrEmpty(this.application.value.name2?.name ?? "") &&
+      !this.isNameReserved(this.application.value.name2?.name ?? "")
+    ) {
+      names.push(this.application.value.name2?.name ?? "")
+    }
+
+    if (
+      !StringUtil.isNullOrEmpty(this.application.value.name3?.name ?? "") &&
+      !this.isNameReserved(this.application.value.name3?.name ?? "")
+    ) {
+      names.push(this.application.value.name3?.name ?? "")
+    }
+
+    return names
   }
 
   get selectedProposedNameForDisplay(): string {
@@ -1971,5 +2077,67 @@ export class ApplicationController {
     props.canUploadPdf = true
 
     return props
+  }
+
+  // other items to prepare
+  get otherRequirementNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.isRegistrationCompleted,
+      this.isIncorporationCompleted,
+      this.isShowCompletion.value
+    )
+  }
+
+  get otherRequirementsLabel(): string {
+    return this.language.isMalay() ? "Item Lain-Lain Dibeli" : "Additional Items Purchased"
+  }
+
+  get otherRequirementsSublabel(): string {
+    return this.language.isMalay()
+      ? "Item tambahan yang telah dibayar sekali bersama permohonan"
+      : "Add-on Items paid for during application"
+  }
+
+  get otherItemsToPrepareLabel(): string {
+    return this.language.isMalay() ? "Keperluan Lain-Lain" : "Other Requirements"
+  }
+
+  get paymentOrderItem(): PaymentOrderItem {
+    return (
+      this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
+        return (
+          poi.targetType === CompanyConstants.TARGET_APPLICATION_INCORPORATE &&
+          poi.targetId === this.application.value?.id
+        )
+      }) ?? new PaymentOrderItem()
+    )
+  }
+
+  get otherRequirements(): PaymentOrderItemOptional[] {
+    return this.paymentOrderItem.optionals
+  }
+
+  get hasOtherRequirements(): boolean {
+    return this.otherRequirements.length > 0
+  }
+
+  get isRoundedChopRequired(): boolean {
+    return this.otherRequirements.some((poio: PaymentOrderItemOptional) => {
+      return StringUtil.contains(poio.serviceName, "company chop")
+    })
+  }
+
+  get roundedChopLabel(): string {
+    return "Rounded Company Chop (R24 Colop)"
+  }
+
+  get isSuperformRequired(): boolean {
+    return this.otherRequirements.some((poio: PaymentOrderItemOptional) => {
+      return StringUtil.contains(poio.serviceName, "superform")
+    })
+  }
+
+  get superformLabel(): string {
+    return "Superform"
   }
 }

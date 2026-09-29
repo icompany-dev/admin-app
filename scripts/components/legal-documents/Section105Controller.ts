@@ -8,6 +8,8 @@ import { StringUtil } from "~/scripts/utils/String"
 import { User } from "~/scripts/models/User"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import { Shareholder } from "~/scripts/models/Shareholder"
+import type { Secretary } from "~/scripts/types/Secretary"
+import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 
 export class Section105Controller extends SdnBhdLegalDocumentController {
   companyShareTransferDetail: Ref<CompanyShareTransferDetail> = ref<CompanyShareTransferDetail>(
@@ -28,6 +30,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
 
   signatureFile: Ref<string> = ref<string>("")
 
+  isLoading: Ref<boolean> = ref<boolean>(false)
+
+  additionalCssClass: string = "legal-document narrow-margin section-105"
+
   constructor(companyId: string, detail: CompanyShareTransferDetail, shareholderId: string, emitEvents: any | null) {
     super("Section 105", companyId, PaperOrientation.Portrait)
 
@@ -37,14 +43,19 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
   }
 
   async init(detail: CompanyShareTransferDetail, shareholderId: string): Promise<void> {
-    this.currentUser.value = await CurrentUser.get()
+    this.isLoading.value = true
     await this.setShareholderId(shareholderId)
     await this.setCompanyShareTransferDetail(detail)
+    this.isLoading.value = false
   }
 
   async setCompanyShareTransferDetail(detail: CompanyShareTransferDetail): Promise<void> {
     this.companyShareTransferDetail.value = new CompanyShareTransferDetail(detail)
-    this.transferToUser.value = new User(this.companyShareTransferDetail.value.getTransferToRegisteredUser())
+    this.transferToUser.value = await this.companyShareTransferDetail.value.getTransferToRegisteredUser()
+
+    this.companyShareTransferDetail.value.transferToAddress =
+      this.transferToUser.value.detail?.location?.getMultilineAddress() ?? ""
+
     this.setSignatureItems()
   }
 
@@ -235,5 +246,40 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
 
   hasUserSigned(): boolean {
     return (this.isTransferor() || this.isTransferee()) && !StringUtil.isNullOrEmpty(this.signatureFile.value)
+  }
+
+  get secretaryInfo(): Secretary {
+    return SecretaryInformation.SECRETARY_NAME_LIST[0]
+  }
+
+  get section105Date(): string {
+    if (
+      StringUtil.isNullOrEmpty(this.companyShareTransferDetail.value.fromSignatureId) ||
+      !this.companyShareTransferDetail.value.fromSignature ||
+      StringUtil.isNullOrEmpty(this.companyShareTransferDetail.value.toSignatureId) ||
+      !this.companyShareTransferDetail.value.toSignature
+    ) {
+      return "To be Determined"
+    }
+
+    let dayjs = useDayjs()
+    let time = useLocalTime()
+
+    let dateOfTransferorSignature = dayjs(this.companyShareTransferDetail.value.fromSignature.createdAt)
+    let dateOfTransfereeSignature = dayjs(this.companyShareTransferDetail.value.toSignature.createdAt)
+
+    if (dateOfTransferorSignature.isAfter(dateOfTransfereeSignature)) {
+      return time.formatDateOnlyFull(dateOfTransferorSignature.format("YYYY-MM-DD"))
+    }
+
+    return time.formatDateOnlyFull(dateOfTransfereeSignature.format("YYYY-MM-DD"))
+  }
+
+  get loaderLabel(): string {
+    return "Preparing the"
+  }
+
+  get loaderSublabel(): string {
+    return "Section 105"
   }
 }

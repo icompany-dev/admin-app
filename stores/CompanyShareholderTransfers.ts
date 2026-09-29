@@ -314,6 +314,22 @@ export const useCompanyShareholderTransferStore = defineStore("companyShareholde
     }
   }
 
+  async function notifyStamping(id: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response: any = await $repositories.companyShareholderTransfers.notifyStamping(id)
+      return response
+    } catch (e: any) {
+      console.error(`Failed to notify stamping status for transfer id ${id}`, e)
+      error.value = `Failed to notify stamping status`
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanyShareholderTransfers = computed(() => companyShareholderTransfers.value.length)
 
   return {
@@ -338,5 +354,6 @@ export const useCompanyShareholderTransferStore = defineStore("companyShareholde
     transfereeConsented,
     transfereeSigned,
     transfereeRepSigned,
+    notifyStamping,
   }
 })

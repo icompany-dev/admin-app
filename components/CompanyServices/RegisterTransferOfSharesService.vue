@@ -92,48 +92,11 @@
         </div>
       </template>
     </CompanyServiceWrapper>
-    <ActionTray
-      v-if="controller.showActionTray()"
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
-    <Teleport to="body">
-      <div
-        class="alert-tray"
-        :class="{ show: controller.isShowInfo.value }"
-      >
-        <Transition name="alert-appear">
-          <Alert
-            :is-dismissible="true"
-            :type="'default'"
-            :is-show="controller.isShowInfo.value"
-            @hide="controller.onMoreInfoClicked()"
-          >
-            <template #alertContent>
-              <div class="title">
-                {{ controller.slipCaseTitle() }}
-              </div>
-              <div class="content">
-                <ol>
-                  <li
-                    v-for="(point, i) in controller.slipCaseContentPoints()"
-                    :key="i"
-                  >
-                    <span v-html="point" />
-                  </li>
-                </ol>
-              </div>
-            </template>
-          </Alert>
-        </Transition>
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
   import ActionTray from "../ActionTrays/ActionTray.vue"
-  import Alert from "../Alerts/Alert.vue"
   import DcrRegisterTransferOfShares from "../Resolutions/DcrRegisterTransferOfShares.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
@@ -211,6 +174,10 @@
       controller.handlePostDelete()
     }
   )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+  })
 </script>
 
 <style lang="scss">

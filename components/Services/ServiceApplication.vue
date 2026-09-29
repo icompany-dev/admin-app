@@ -8,7 +8,10 @@
       @click.self="controller.onPanelClicked()"
     >
       <div class="application-name">
-        <span class="name">{{ controller.serviceName.value }}</span>
+        <span
+          class="name"
+          v-html="controller.serviceName.value"
+        />
         <slot name="titleOptions" />
       </div>
       <Transition name="fade">

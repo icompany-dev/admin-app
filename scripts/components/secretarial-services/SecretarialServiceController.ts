@@ -32,6 +32,7 @@ export abstract class SecretarialServiceController<T, R> {
   isDownloading: Ref<boolean> = ref<boolean>(false)
   isGenerating: Ref<boolean> = ref<boolean>(false)
   selectedDocumentTarget: Ref<string> = ref<string>(DocumentTargets.TARGET_RECEIPT)
+  canCompleteService: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: PropsSecretarialService, target: string, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -150,6 +151,10 @@ export abstract class SecretarialServiceController<T, R> {
   }
 
   get applicationProps(): PropsApplication {
-    return new PropsApplication("", this.applicationId.value)
+    let props = new PropsApplication("", this.applicationId.value)
+
+    props.canCompleteService = this.canCompleteService.value
+
+    return props
   }
 }

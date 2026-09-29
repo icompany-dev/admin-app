@@ -1,5 +1,5 @@
 <template>
-  <div id="dcr-register-transfer-of-shares" class="register-transfer-of-shares">
+  <div id="dcr-register-transfer-of-shares" class="register-transfer-of-shares" ref="documentRef">
     <Resolution v-bind="controller.resolutionProps"
       @total-page-changed="emit('totalPageChanged')" @signed="emit('signed', $event)">
       <template #page1>
@@ -8,8 +8,8 @@
         </p>
         <ol class="resolution-list">
           <li>
-            The registered shareholder(s) (“Transferor (s)”) more particularly described below with their respective
-            shareholdings is/are desirous to transfer his/her/their shares to the following Transferee(s):
+            The registered shareholder{{ controller.shareTransferDetails.length > 1 ?'s' :'' }} (“Transferor{{ controller.shareTransferDetails.length > 1 ?'s' :'' }}”) more particularly described below with their respective
+            shareholdings {{ controller.shareTransferDetails.length > 1 ? 'are' :'is' }} desirous to transfer his/her/their shares to the following Transferee{{ controller.shareTransferDetails.length > 1 ?'s' :'' }}:
             <table class="table-with-border">
               <thead>
                 <tr>
@@ -20,7 +20,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(transferDetail, index) in controller.transferDetails.value" :key="index">
+                <tr v-for="(transferDetail, index) in controller.shareTransferDetails" :key="index">
                   <td>
                     {{ transferDetail.transferFromName }}
                   </td>
@@ -107,14 +107,14 @@
 import FurtherResolved from './FurtherResolved.vue'
 import Resolution from './Resolution.vue'
 import { DcrRegisterTransferOfSharesController } from '~/scripts/components/resolutions/DcrRegisterTransferOfSharesController'
-import { StringUtil } from '~/scripts/utils/String'
-import { CompanyShareholderAllotment } from '~/scripts/models/CompanyShareholderAllotment'
 import type { CompanyPostShareTransfer } from '~/scripts/models/CompanyPostShareTransfer'
 import type { IPropsResolutionDocument } from '~/scripts/props/PropsResolutionDocument'
 
 const props = defineProps<IPropsResolutionDocument<CompanyPostShareTransfer>>()
 
 const emit = defineEmits(['startLoading', 'doneLoading', 'totalPageChanged', 'applicationUpdated', 'signed'])
+
+const documentRef = ref(null)
 
 const controller = new DcrRegisterTransferOfSharesController(
   props,
@@ -124,10 +124,6 @@ const controller = new DcrRegisterTransferOfSharesController(
 watch(() => props.applicationId, (newVal) => {
   controller.setApplicationId(newVal)
 })
-
-// watch(() => props.application, (newVal) => {
-//   controller.onApplicationChanged(newVal)
-// }, { deep: true })
 
 
 watch(() => props.isInPreviewMode, (newVal) => {
@@ -148,10 +144,15 @@ watch(
   }
 )
 
+watch(documentRef, (newVal) => {
+  controller.setDocumentRef(newVal)
+}, {immediate: true})
+
 defineExpose({
   totalPages: controller.totalPages.bind(controller), //Has to plus one always, because there is accompanying document
   getApplication: controller.getApplication.bind(controller),
-  updateApplicationContent: controller.updateApplicationContent.bind(controller)
+  updateApplicationContent: controller.updateApplicationContent.bind(controller),
+  getPdfPages: controller.getPdfPages.bind(controller)
 })
 </script>
 
