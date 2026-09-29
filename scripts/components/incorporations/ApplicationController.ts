@@ -33,6 +33,9 @@ import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import type { Invitation } from "~/scripts/models/Invitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { BusinessNameDescriptionAI } from "~/scripts/library/BusinessNameDescriptionAI"
+import type { PaymentCartItem } from "~/scripts/models/PaymentCartItem"
+import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
+import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -2074,5 +2077,67 @@ export class ApplicationController {
     props.canUploadPdf = true
 
     return props
+  }
+
+  // other items to prepare
+  get otherRequirementNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.isRegistrationCompleted,
+      this.isIncorporationCompleted,
+      this.isShowCompletion.value
+    )
+  }
+
+  get otherRequirementsLabel(): string {
+    return this.language.isMalay() ? "Item Lain-Lain Dibeli" : "Additional Items Purchased"
+  }
+
+  get otherRequirementsSublabel(): string {
+    return this.language.isMalay()
+      ? "Item tambahan yang telah dibayar sekali bersama permohonan"
+      : "Add-on Items paid for during application"
+  }
+
+  get otherItemsToPrepareLabel(): string {
+    return this.language.isMalay() ? "Keperluan Lain-Lain" : "Other Requirements"
+  }
+
+  get paymentOrderItem(): PaymentOrderItem {
+    return (
+      this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
+        return (
+          poi.targetType === CompanyConstants.TARGET_APPLICATION_INCORPORATE &&
+          poi.targetId === this.application.value?.id
+        )
+      }) ?? new PaymentOrderItem()
+    )
+  }
+
+  get otherRequirements(): PaymentOrderItemOptional[] {
+    return this.paymentOrderItem.optionals
+  }
+
+  get hasOtherRequirements(): boolean {
+    return this.otherRequirements.length > 0
+  }
+
+  get isRoundedChopRequired(): boolean {
+    return this.otherRequirements.some((poio: PaymentOrderItemOptional) => {
+      return StringUtil.contains(poio.serviceName, "company chop")
+    })
+  }
+
+  get roundedChopLabel(): string {
+    return "Rounded Company Chop (R24 Colop)"
+  }
+
+  get isSuperformRequired(): boolean {
+    return this.otherRequirements.some((poio: PaymentOrderItemOptional) => {
+      return StringUtil.contains(poio.serviceName, "superform")
+    })
+  }
+
+  get superformLabel(): string {
+    return "Superform"
   }
 }

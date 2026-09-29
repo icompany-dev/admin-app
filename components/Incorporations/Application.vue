@@ -445,6 +445,16 @@
                         />
                       </li> -->
                     </ol>
+                    <template v-if="controller.hasOtherRequirements">
+                      <br />
+                      <br />
+                      <b>{{ controller.otherItemsToPrepareLabel }}</b>
+                      <ol>
+                        <li v-for="(oth, i) in controller.otherRequirements">
+                          {{ StringUtil.capitalize(oth.serviceName) }}
+                        </li>
+                      </ol>
+                    </template>
                   </div>
                 </div>
               </template>
@@ -567,6 +577,7 @@
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
+  import { StringUtil } from "~/scripts/utils/String"
 
   const props = defineProps<IPropsIncorporationApplication>()
 
