@@ -257,9 +257,9 @@
                   <div class="input-label">Nationality</div>
                   <div
                     class="input"
-                    :class="{ 'fw-bold': controller.companyShareTransferDetail.value.transferToNationality !== 'N/A' }"
+                    :class="{ 'fw-bold': controller.transferToCitizenship() !== 'N/A' }"
                   >
-                    {{ controller.companyShareTransferDetail.value.transferToNationality || "N/A" }}
+                    {{ controller.transferToCitizenship() }}
                   </div>
                 </td>
                 <td
@@ -512,10 +512,14 @@
               <tr>
                 <td colspan="4">
                   8. Dated this day of
-                  <span
+                  <input
+                    type="date"
+                    class="form-control in-resolution"
+                  />
+                  <!-- <span
                     class="input-label text-muted"
                     v-html="controller.section105Date"
-                  />
+                  /> -->
                 </td>
               </tr>
               <tr v-if="controller.hasUserSigned() || controller.isSection105Completed()">

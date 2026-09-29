@@ -205,7 +205,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
   }
 
   isTransferToRaceOthers(): boolean {
-    return this.transferToUser.value.detail?.race.toLowerCase() === "others"
+    return (
+      this.transferToUser.value.detail?.race.toLowerCase() === "others" &&
+      StringUtil.contains(this.transferToUser.value.detail?.citizenship, "malaysia")
+    )
   }
 
   transferToOtherRaces(): string {
@@ -214,6 +217,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
     }
 
     return this.transferToUser.value.detail?.customRace ?? "..................."
+  }
+
+  transferToCitizenship(): string {
+    return this.transferToUser.value?.detail?.citizenship.toUpperCase() ?? "N/A"
   }
 
   isSection105Completed(): boolean {
