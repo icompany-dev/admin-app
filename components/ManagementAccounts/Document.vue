@@ -191,49 +191,9 @@
   import ActionTray from "../ActionTrays/ActionTray.vue"
   // import PostOcrManagementAccount from "../Popups/PostOcrManagementAccount.vue"
   import { DocumentController } from "~/scripts/components/management-accounts/DocumentController"
+  import type { IPropsManagementAccountDocument } from "~/scripts/props/PropsManagementAccountDocument"
 
-  const props = defineProps({
-    companyId: {
-      type: String,
-      required: true,
-    },
-    financialYearStartDate: {
-      type: String,
-      required: true,
-    },
-    financialYearEndDate: {
-      type: String,
-      required: true,
-    },
-    companyManagementAccountId: {
-      type: String,
-      default: null,
-    },
-    isDocumentEditable: {
-      type: Boolean,
-      default: true,
-    },
-    canEnlargeDocument: {
-      type: Boolean,
-      default: true,
-    },
-    isEnlarged: {
-      type: Boolean,
-      default: false,
-    },
-    isShowEarMark: {
-      type: Boolean,
-      default: true,
-    },
-    isForPrinting: {
-      type: Boolean,
-      default: false,
-    },
-    isShowAlert: {
-      type: Boolean,
-      default: true,
-    },
-  })
+  const props = defineProps<IPropsManagementAccountDocument>()
 
   const emit = defineEmits(["back"])
 
