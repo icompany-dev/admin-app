@@ -515,6 +515,7 @@
                   <input
                     type="date"
                     class="form-control in-resolution"
+                    v-model="controller.dateSignature.value"
                   />
                   <!-- <span
                     class="input-label text-muted"

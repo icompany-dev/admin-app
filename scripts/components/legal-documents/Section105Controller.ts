@@ -32,6 +32,8 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
+  dateSignature: Ref<string> = ref<string>("")
+
   additionalCssClass: string = "legal-document narrow-margin section-105"
 
   constructor(companyId: string, detail: CompanyShareTransferDetail, shareholderId: string, emitEvents: any | null) {
@@ -80,6 +82,8 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
   }
 
   setSignatureItems(): void {
+    let signatureDates = []
+
     this.transferorSignatureItem.value = new SignatureItem(
       this.companyShareTransferDetail.value.fromSignature?.url ?? null,
       this.companyShareTransferDetail.value.fromSignatureId ? true : false,
@@ -90,6 +94,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
       "",
       false
     )
+
+    if (this.companyShareTransferDetail.value.fromSignature) {
+      signatureDates.push(this.companyShareTransferDetail.value.fromSignature.createdAt ?? "")
+    }
 
     if (this.isTransferFromCompany()) {
       this.transferorRepSignatureItem.value = new SignatureItem(
@@ -102,6 +110,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
         "",
         false
       )
+
+      if (this.companyShareTransferDetail.value.fromRepSignature) {
+        signatureDates.push(this.companyShareTransferDetail.value.fromRepSignature.createdAt ?? "")
+      }
     }
 
     this.transfereeSignatureItem.value = new SignatureItem(
@@ -115,6 +127,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
       false
     )
 
+    if (this.companyShareTransferDetail.value.toSignature) {
+      signatureDates.push(this.companyShareTransferDetail.value.toSignature.createdAt ?? "")
+    }
+
     if (this.isTransferToCompany()) {
       this.transfereeRepSignatureItem.value = new SignatureItem(
         this.companyShareTransferDetail.value.toRepSignature?.url ?? null,
@@ -126,6 +142,21 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
         "",
         false
       )
+
+      if (this.companyShareTransferDetail.value.toRepSignature) {
+        signatureDates.push(this.companyShareTransferDetail.value.toRepSignature.createdAt ?? "")
+      }
+    }
+
+    let dayjs = useDayjs()
+    let sortedDates = signatureDates.sort((dateA, dateB) => {
+      let diff = dayjs(dateA).diff(dayjs(dateB))
+
+      return -diff
+    })
+
+    if (sortedDates.length > 0) {
+      this.dateSignature.value = dayjs(sortedDates[0]).format("YYYY-MM-DD")
     }
   }
 
