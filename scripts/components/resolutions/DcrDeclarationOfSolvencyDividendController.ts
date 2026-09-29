@@ -270,7 +270,8 @@ export class DcrDeclarationOfSolvencyDividendController extends ResolutionContro
       return "YOUR PAYMENT METHOD"
     }
 
-    return this.application.value.dividendPaymentMethod === DividendPaymentMethod.BankTransfer
+    return this.application.value.dividendPaymentMethod.toLowerCase() ===
+      DividendPaymentMethod.BankTransfer.toLowerCase()
       ? "bank transfer"
       : "cheque"
   }
