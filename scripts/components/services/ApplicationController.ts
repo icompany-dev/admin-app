@@ -1,4 +1,5 @@
 import { StatusConstants } from "~/scripts/constants/Status"
+import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
 import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Application } from "~/scripts/models/Application"
@@ -33,6 +34,7 @@ export abstract class ApplicationController<Application> {
   selectedApprovalType: Ref<string> = ref<string>("director-member")
 
   uploadedDocumentChecker = ref<UploadedDocumentChecker>(new UploadedDocumentChecker(""))
+  documentsAndForms = ref<DocumentsAndForms>(new DocumentsAndForms(""))
 
   minimumMajorityRequired: Ref<number> = ref<number>(0.5)
 
@@ -85,13 +87,17 @@ export abstract class ApplicationController<Application> {
       this.isLoading.value = true
 
       this.uploadedDocumentChecker.value.companyId = this.companyId.value
+      this.documentsAndForms.value.companyId = this.companyId.value
 
       await Promise.all([
         this.fetchOngoing(),
         this.fetchDirectors(),
         this.fetchShareholders(),
         this.uploadedDocumentChecker.value.fetchDocuments(),
+        this.documentsAndForms.value.fetchForms(),
       ])
+
+      this.documentsAndForms.value.setDocuments()
 
       await this.fetchPaymentOrder()
 
@@ -115,13 +121,17 @@ export abstract class ApplicationController<Application> {
     this.companyId.value = companyId
 
     this.uploadedDocumentChecker.value.companyId = this.companyId.value
+    this.documentsAndForms.value.companyId = this.companyId.value
 
     await Promise.all([
       this.fetchOngoing(),
       this.fetchDirectors(),
       this.fetchShareholders(),
       this.uploadedDocumentChecker.value.fetchDocuments(),
+      this.documentsAndForms.value.fetchForms(),
     ])
+
+    this.documentsAndForms.value.setDocuments()
 
     await Promise.allSettled([this.fetchPaymentOrder(), this.initializeData()])
 

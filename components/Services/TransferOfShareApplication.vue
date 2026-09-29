@@ -43,6 +43,66 @@
                   <CopyValue :value="transferDetail.unitsOfShare.toString()" />
                 </div>
               </div>
+              <br />
+              <b>{{ controller.requiredDocumentsLabel }}</b>
+              <ol>
+                <li>
+                  <span
+                    class="clickable"
+                    @click="controller.onCompanyDocumentClicked(controller.section17)"
+                  >
+                    <Transition name="fade">
+                      <i
+                        class="fa-solid fa-spin fa-spinner"
+                        v-if="controller.isDownloadingDocument.value"
+                      />
+                    </Transition>
+                    {{ controller.section17Label }}
+                  </span>
+                </li>
+                <li>
+                  <span
+                    class="clickable"
+                    @click="controller.onCompanyDocumentClicked(controller.section14)"
+                  >
+                    <Transition name="fade">
+                      <i
+                        class="fa-solid fa-spin fa-spinner"
+                        v-if="controller.isDownloadingDocument.value"
+                      />
+                    </Transition>
+                    {{ controller.section14Label }}
+                  </span>
+                </li>
+                <li>
+                  <span
+                    class="clickable"
+                    @click="controller.onCompanyDocumentClicked(controller.auditedFinancialStatement)"
+                  >
+                    <Transition name="fade">
+                      <i
+                        class="fa-solid fa-spin fa-spinner"
+                        v-if="controller.isDownloadingDocument.value"
+                      />
+                    </Transition>
+                    {{ controller.auditedFinancialStatementLabel }}
+                  </span>
+                </li>
+                <li>
+                  <span
+                    class="clickable"
+                    @click="controller.onCompanyDocumentClicked(controller.section51)"
+                  >
+                    <Transition name="fade">
+                      <i
+                        class="fa-solid fa-spin fa-spinner"
+                        v-if="controller.isDownloadingDocument.value"
+                      />
+                    </Transition>
+                    {{ controller.section51DocumentLabel }}
+                  </span>
+                </li>
+              </ol>
             </div>
           </template>
           <template #nodeOptions>

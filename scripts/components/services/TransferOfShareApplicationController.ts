@@ -42,6 +42,8 @@ export class TransferOfShareApplicationController extends ApplicationController<
   isSubmitting: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingDocument: Ref<boolean> = ref<boolean>(false)
+
   isStamping: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
@@ -392,6 +394,72 @@ export class TransferOfShareApplicationController extends ApplicationController<
     return new PropsUserDetail(new User(user), new UserDetail(user.detail))
   }
 
+  canDownload(companyDocument: CompanyDocument | null): boolean {
+    return companyDocument !== null
+  }
+
+  async onCompanyDocumentClicked(companyDocument: CompanyDocument | null): Promise<void> {
+    if (this.isDownloadingDocument.value) {
+      return
+    }
+
+    if (!this.canDownload(companyDocument) || !companyDocument || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+      let error = new Error()
+      error.type = Error.ERROR_TYPE_DATA
+      error.title = this.language.isMalay()
+        ? "Tiada dokumen untuk dimuat turun."
+        : "The document is not available for download."
+      error.message = this.language.isMalay()
+        ? "Sila beli dokumen ini dari Sistem Pengantara SSM."
+        : "Please purchase this document from SSM Middleware System."
+      error.handle()
+      return
+    }
+
+    try {
+      this.isDownloadingDocument.value = true
+      let response = await fetch(companyDocument.fileUrl ?? "")
+      if (!response.ok) {
+        let error = new Error()
+        error.type = Error.ERROR_TYPE_DATA
+        error.title = this.language.isMalay()
+          ? "Tiada dokumen untuk dimuat turun."
+          : "The document is not available for download."
+        error.message = this.language.isMalay()
+          ? "Sila beli dokumen ini dari Sistem Pengantara SSM."
+          : "Please purchase this document from SSM Middleware System."
+        error.handle()
+        throw error
+      }
+
+      let blob = await response.blob()
+      let blobUrl = URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.type = Error.ERROR_TYPE_DATA
+        error.title = this.language.isMalay()
+          ? "Tiada dokumen untuk dimuat turun."
+          : "The document is not available for download."
+        error.message = this.language.isMalay()
+          ? "Sila beli dokumen ini dari Sistem Pengantara SSM."
+          : "Please purchase this document from SSM Middleware System."
+        error.handle()
+      }
+    } finally {
+      this.isDownloadingDocument.value = false
+    }
+  }
+
   //getters
   get serviceName(): string {
     return this.language.isMalay() ? "Pemindahan Saham" : "Transfer of Shares"
@@ -419,6 +487,72 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   get considerationAmountLabel(): string {
     return this.language.isMalay() ? "Jumlah Pindah Saham" : "Total Consideration"
+  }
+
+  get requiredDocumentsLabel(): string {
+    return this.language.isMalay() ? "Dokumen-Dokumen yang Diperlukan" : "Required Documents"
+  }
+
+  get section17Label(): string {
+    let label = this.language.isMalay()
+      ? "Seksyen 17 - Sijil Pemerbadanan"
+      : "Section 17 - Certificate of Incorporation"
+
+    if (!this.section17) {
+      label = `${label} (${this.language.isMalay() ? "Tiada" : "Not Available"})`
+    }
+
+    return label
+  }
+
+  get section17(): CompanyDocument | null {
+    return this.documentsAndForms.value.getCertificateOfIncorporation(
+      "Section 17 - Certificate of Incorporation",
+      false,
+      false
+    )
+  }
+
+  get section14Label(): string {
+    let label = this.language.isMalay() ? "Seksyen 14 - Superform" : "Section 14 - Superform"
+
+    if (!this.section14) {
+      label = `${label} (${this.language.isMalay() ? "Tiada" : "Not Available"})`
+    }
+
+    return label
+  }
+
+  get section14(): CompanyDocument | null {
+    return this.documentsAndForms.value.getSection14("Section 14 - Superform", false, false)
+  }
+
+  get auditedFinancialStatementLabel(): string {
+    let label = this.language.isMalay() ? "Penyata Kewangan Beraudit" : "Audited Financial Statements"
+
+    if (!this.auditedFinancialStatement) {
+      label = `${label} (${this.language.isMalay() ? "Tiada" : "Not Available"})`
+    }
+
+    return label
+  }
+
+  get auditedFinancialStatement(): CompanyDocument | null {
+    return this.documentsAndForms.value.getLatestSubmittedAuditReport("Financial Statement", false, false)
+  }
+
+  get section51DocumentLabel(): string {
+    let label = this.language.isMalay() ? "Seksyen 51 - Register of Members" : "Section 51 - Register of Members"
+
+    if (!this.section51) {
+      label = `${label} (${this.language.isMalay() ? "Tiada" : "Not Available"})`
+    }
+
+    return label
+  }
+
+  get section51(): CompanyDocument | null {
+    return this.documentsAndForms.value.getSection51("Section 51 - Register of Members", false, false)
   }
 
   get itemsToPrepareLabel(): string {
