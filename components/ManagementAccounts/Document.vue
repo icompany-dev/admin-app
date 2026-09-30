@@ -116,11 +116,16 @@
                           More Info
                         </span>
                         <div v-if="col.isEditable && col.hasOptions">
+                          <span v-if="col.hasLabel">
+                            {{ col.labelString }}
+                          </span>
                           <input
-                            type="text"
+                            :type="col.inputType"
                             class="form-control"
+                            :class="{ 'has-label': col.hasLabel }"
                             v-model="col.content"
-                            @input="controller.onValueChanged(col)"
+                            @change="controller.onValueChanged(col)"
+                            :placeholder="col.placeholder"
                             :list="`suggestions-${col.id}`"
                           />
                           <datalist :id="`suggestions-${col.id}`">

@@ -309,7 +309,6 @@ export class DocumentController {
 
   //Document section
   addToBalanceSheet(target: string): void {
-    console.log("called?", target)
     this.companyManagementAccount.value.balanceSheet.add(target)
     this.setupDocument()
   }
@@ -369,9 +368,7 @@ export class DocumentController {
   }
 
   handleOnClickEvent(column: ManagementAccountTableColumn): void {
-    console.log("re")
     if (this.isInPreviewMode) {
-      console.log("this?")
       return
     }
 
@@ -398,6 +395,24 @@ export class DocumentController {
     return [new ManagementAccountTableColumn("", "", "empty-row", 2, () => {})]
   }
 
+  onCompanyNameChanged(name: string): void {
+    this.company.value.name = name.toLowerCase().replace("sdn bhd", "").toUpperCase()
+  }
+
+  onCompanyRegistrationNumberChanged(registrationNumbers: string): void {
+    let fragments = registrationNumbers.split("(")
+    this.company.value.registrationNumberNew = fragments[0]?.trim() ?? ""
+    this.company.value.registrationNumberOld = fragments[1]?.replace("(", "").replace(")", "").trim() ?? ""
+  }
+
+  onFYEStartChanged(fyeStartDate: string): void {
+    this.financialYearStartDate.value = fyeStartDate
+  }
+
+  onFYEEndChanged(fyeEndDate: string): void {
+    this.financialYearEndDate.value = fyeEndDate
+  }
+
   addBalanceSheetHeader(): void {
     let emptyRow = this.getEmptyRow()
 
@@ -407,8 +422,11 @@ export class DocumentController {
       "company-name",
       2,
       () => {},
-      "company"
+      "company",
+      () => {},
+      this.onCompanyNameChanged.bind(this)
     )
+    companyNameHeaderColumn.placeholder = "YOUR SDN BHD"
     companyNameHeaderColumn.isEditable = this.isDocumentEditable.value
     companyNameHeaderColumn.hasOptions = true
     this.addToTableRow([companyNameHeaderColumn], true)
@@ -422,31 +440,42 @@ export class DocumentController {
     )
     this.addToTableRow([companyIncorporatedInColumn], true)
 
-    let registrationNumberNew = this.isDocumentEditable.value
-      ? '<input type="text" class="form-control">'
-      : this.company.value.registrationNumberNew
-    let registrationNumberOld = this.isDocumentEditable.value
-      ? '<input type="text" class="form-control">'
-      : this.company.value.registrationNumberOld
+    let registrationNumbers = this.company.value.registrationNumberNew
+    if (!StringUtil.isNullOrEmpty(this.company.value.registrationNumberOld)) {
+      registrationNumbers = `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`
+    }
     let registrationNumberColumn = new ManagementAccountTableColumn(
-      `Registration No. ${registrationNumberNew} (${registrationNumberOld})`,
+      registrationNumbers,
       "header",
       "header",
       2,
-      () => {}
+      () => {},
+      "registration-numbers",
+      () => {},
+      this.onCompanyRegistrationNumberChanged.bind(this)
     )
+    registrationNumberColumn.hasLabel = true
+    registrationNumberColumn.labelString = "Registration No. "
+    registrationNumberColumn.placeholder = "2XXX010XXXXX (XXXXXX-X)"
+    registrationNumberColumn.isEditable = this.isDocumentEditable.value
+    registrationNumberColumn.hasOptions = true
     this.addToTableRow([registrationNumberColumn], true)
 
-    let fyeEndDate = this.isDocumentEditable.value
-      ? '<input type="date" class="form-control">'
-      : this.time.formatDateOnlyFull(this.financialYearEndDate.value)
     let balanceSheetTitleColumn = new ManagementAccountTableColumn(
-      `Statement of Financial Position for the financial period as at ${fyeEndDate}`,
+      this.financialYearEndDate.value,
       "header",
       "document-title",
       2,
-      () => {}
+      () => {},
+      "fye-end-date",
+      () => {},
+      this.onFYEEndChanged.bind(this)
     )
+    balanceSheetTitleColumn.hasLabel = true
+    balanceSheetTitleColumn.labelString = "Statement of Financial Position for the financial period as at"
+    balanceSheetTitleColumn.isEditable = this.isDocumentEditable.value
+    balanceSheetTitleColumn.hasOptions = true
+    balanceSheetTitleColumn.inputType = "date"
     this.addToTableRow([balanceSheetTitleColumn], true)
 
     this.addToTableRow(emptyRow, true)
@@ -1178,8 +1207,12 @@ export class DocumentController {
       "header",
       "company-name",
       2,
-      () => {}
+      () => {},
+      "company",
+      () => {},
+      this.onCompanyNameChanged.bind(this)
     )
+    companyNameHeaderColumn.placeholder = "YOUR SDN BHD"
     companyNameHeaderColumn.isEditable = this.isDocumentEditable.value
     companyNameHeaderColumn.hasOptions = true
     this.addToTableRow([companyNameHeaderColumn], false)
@@ -1193,35 +1226,60 @@ export class DocumentController {
     )
     this.addToTableRow([companyIncorporatedInColumn], false)
 
-    let registrationNumberNew = this.isDocumentEditable.value
-      ? '<input type="text" class="form-control">'
-      : this.company.value.registrationNumberNew
-    let registrationNumberOld = this.isDocumentEditable.value
-      ? '<input type="text" class="form-control">'
-      : this.company.value.registrationNumberOld
+    let registrationNumbers = this.company.value.registrationNumberNew
+    if (!StringUtil.isNullOrEmpty(this.company.value.registrationNumberOld)) {
+      registrationNumbers = `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`
+    }
     let registrationNumberColumn = new ManagementAccountTableColumn(
-      `Registration No. ${registrationNumberNew} (${registrationNumberOld})`,
+      registrationNumbers,
       "header",
       "header",
       2,
-      () => {}
+      () => {},
+      "registration-numbers",
+      () => {},
+      this.onCompanyRegistrationNumberChanged.bind(this)
     )
-    this.addToTableRow([registrationNumberColumn], false)
+    registrationNumberColumn.hasLabel = true
+    registrationNumberColumn.labelString = "Registration No. "
+    registrationNumberColumn.placeholder = "2XXX010XXXXX (XXXXXX-X)"
+    registrationNumberColumn.isEditable = this.isDocumentEditable.value
+    registrationNumberColumn.hasOptions = true
+    this.addToTableRow([registrationNumberColumn], true)
 
-    let fyeStartDate = this.isDocumentEditable.value
-      ? '<input type="date" class="form-control">'
-      : this.time.formatDateOnlyFull(this.financialYearStartDate.value)
-    let fyeEndDate = this.isDocumentEditable.value
-      ? '<input type="date" class="form-control">'
-      : this.time.formatDateOnlyFull(this.financialYearEndDate.value)
-    let balanceSheetTitleColumn = new ManagementAccountTableColumn(
-      `Detailed Income Statement for the financial period for ${fyeStartDate} to ${fyeEndDate}`,
+    let startBalanceSheetTitleColumn = new ManagementAccountTableColumn(
+      this.financialYearStartDate.value,
       "header",
       "document-title",
       2,
-      () => {}
+      () => {},
+      "fye-end-date",
+      () => {},
+      this.onFYEStartChanged.bind(this)
     )
-    this.addToTableRow([balanceSheetTitleColumn], false)
+    startBalanceSheetTitleColumn.hasLabel = true
+    startBalanceSheetTitleColumn.labelString = "Detailed Income Statement for the financial period for"
+    startBalanceSheetTitleColumn.isEditable = this.isDocumentEditable.value
+    startBalanceSheetTitleColumn.hasOptions = true
+    startBalanceSheetTitleColumn.inputType = "date"
+    this.addToTableRow([startBalanceSheetTitleColumn], false)
+
+    let endBalanceSheetTitleColumn = new ManagementAccountTableColumn(
+      this.financialYearEndDate.value,
+      "header",
+      "document-title",
+      2,
+      () => {},
+      "fye-end-date",
+      () => {},
+      this.onFYEEndChanged.bind(this)
+    )
+    endBalanceSheetTitleColumn.hasLabel = true
+    endBalanceSheetTitleColumn.labelString = "to"
+    endBalanceSheetTitleColumn.isEditable = this.isDocumentEditable.value
+    endBalanceSheetTitleColumn.hasOptions = true
+    endBalanceSheetTitleColumn.inputType = "date"
+    this.addToTableRow([endBalanceSheetTitleColumn], false)
 
     this.addToTableRow(emptyRow, false)
     this.addToTableRow(emptyRow, false)
@@ -1739,6 +1797,10 @@ export class DocumentController {
   }
 
   isValueEditable(column: ManagementAccountTableColumn): boolean {
+    if (column.id === "company" || column.id === "registration-numbers" || column.id === "fye-end-date") {
+      return true
+    }
+
     return column.cssClass === "item" || column.cssClass === "item-amount" || column.cssClass === "company-name"
   }
 
@@ -1751,6 +1813,12 @@ export class DocumentController {
   }
 
   onValueChanged(column: ManagementAccountTableColumn) {
+    if (column.type === "header") {
+      column.onChange(column.content)
+      this.setupDocument()
+      return
+    }
+
     let listValues = []
     switch (column.type) {
       case ManagementAccountConstants.CONTENT_TYPE_BANK_CASH:
