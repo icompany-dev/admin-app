@@ -2334,7 +2334,7 @@ export class DocumentController {
 
   setActionTrayElements(): void {
     this.actionTrayElements.value = [
-      new ActionTrayElement("download", () => {}, {
+      new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
         label: new ActionTrayLabel("Download", "Muat Turun"),
         isDisabled: this.isDownloading.value,
         iconClass: this.isDownloading.value ? "fa-solid fa-spin fa-spinner" : "",
@@ -2425,6 +2425,9 @@ export class DocumentController {
     }
 
     this.isDownloading.value = true
+    let originalEditable = this.isDocumentEditable.value
+    this.isDocumentEditable.value = false
+    await this.setupDocument()
 
     try {
       let pages = await PdfPaperUtil.getPdfElements(this.documentRef)
@@ -2432,6 +2435,8 @@ export class DocumentController {
     } catch (e) {
     } finally {
       this.isDownloading.value = false
+      this.isDocumentEditable.value = originalEditable
+      await this.setupDocument()
     }
   }
 

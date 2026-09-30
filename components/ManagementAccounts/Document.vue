@@ -39,12 +39,12 @@
             >
               <div
                 class="paper print"
-                :class="{ 'is-printing': props.isForPrinting }"
+                :class="{ 'is-printing': props.isForPrinting || controller.isDownloading.value }"
               >
                 <div
                   class="ocr-container"
                   :class="{ show: controller.showOcrContainer() }"
-                  v-if="props.isDocumentEditable"
+                  v-if="props.isDocumentEditable && !controller.isDownloading.value"
                 >
                   <div class="instructions">
                     <div
