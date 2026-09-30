@@ -144,6 +144,13 @@
     },
     { immediate: true }
   )
+
+  watch(
+    () => props.applicationId,
+    (newVal) => {
+      controller.fetchApplication(newVal)
+    }
+  )
 </script>
 
 <style lang="scss">

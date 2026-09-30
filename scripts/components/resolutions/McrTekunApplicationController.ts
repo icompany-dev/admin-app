@@ -12,6 +12,7 @@ import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureItem } from "~/scripts/types/SignatureItem"
 import { StatusConstants } from "~/scripts/constants/Status"
 import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class McrTekunApplicationController extends ResolutionController<CompanyTekunApplication> {
   companyTekunApplicationRepository = useCompanyLoanApplicationStore()
@@ -29,6 +30,7 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
   signatures = ref<SignatureItem[]>([])
 
   address: Ref<string> = ref<string>("")
+  resolutionDocumentDate: Ref<string> = ref<string>("")
 
   constructor(props: IPropsResolutionDocument<CompanyTekunApplication>, emitEvents: any | null) {
     super(
@@ -64,10 +66,14 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
     if (!this.companyTekunApplicationRepository.error && response !== null) {
       this.application.value = new CompanyTekunApplication(response)
       this.isPaid.value = this.application.value.status !== StatusConstants.DRAFT
+      this.address.value = this.application.value.applicationDetails.address
+      this.resolutionDocumentDate.value = this.application.value.applicationDetails.documentDate
       this.authorisedPerson.value = this.application.value.applicationDetails.authorisedPerson
       this.initializeData()
 
-      this.address.value = this.addressOptions.length > 0 ? this.addressOptions[0] : this.companyAddress
+      if (StringUtil.isNullOrEmpty(this.address.value)) {
+        this.address.value = this.addressOptions.length > 0 ? this.addressOptions[0] : this.companyAddress
+      }
     }
   }
 

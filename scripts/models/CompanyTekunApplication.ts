@@ -1,8 +1,6 @@
 import { CompanyLoanApplication } from "./CompanyLoanApplication"
 
 export class CompanyTekunApplication extends CompanyLoanApplication {
-  override applicationDetails: CompanyTekunApplicationDetails = new CompanyTekunApplicationDetails()
-
   constructor(data: any | null = null) {
     super(data)
 
@@ -17,12 +15,14 @@ export class CompanyTekunApplication extends CompanyLoanApplication {
     return {
       company_id: this.companyId,
       loan_provider: this.loanProvider,
-      application_details: this.applicationDetails.getRequestBody(),
+      application_details: this.applicationDetails ? this.applicationDetails.getRequestBody() : null,
+      status: this.status,
     }
   }
 }
 
 export class CompanyTekunApplicationDetails {
+  address: string = ""
   authorisedPerson: string = ""
   documentDate: string = ""
 
@@ -39,17 +39,20 @@ export class CompanyTekunApplicationDetails {
   }
 
   convertFromResponse(data: any): void {
-    this.authorisedPerson = data.authorised_person ?? ""
-    this.documentDate = data.document_date ?? ""
+    this.address = data.address ?? ""
+    this.authorisedPerson = data.authorised_person ? data.authorised_person : (data.authorisedPerson ?? "")
+    this.documentDate = data.document_date ? data.document_date : (data.documentDate ?? "")
   }
 
   clone(data: CompanyTekunApplicationDetails): void {
+    this.address = data.address
     this.authorisedPerson = data.authorisedPerson
     this.documentDate = data.documentDate
   }
 
   getRequestBody(): object {
     return {
+      address: this.address,
       authorised_person: this.authorisedPerson,
       document_date: this.documentDate,
     }

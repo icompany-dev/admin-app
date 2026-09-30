@@ -6,18 +6,19 @@
     <Paper
       :paper-orientation="controller.paperOrientation"
       :show-page-number="false"
+      :is-printable="true"
       :additional-css-class="controller.additionalClass"
       :show-watermark="controller.showWatermark.value"
       :ear-mark-text="controller.watermarkText.value"
     >
       <template #paperMargins>
-        <div
+        <!-- <div
           v-if="controller.isPaid.value"
           class="paper-tag authorised-person-field"
           @click="emit('completeApplication', controller.application.value)"
         >
           <span>Complete This</span>
-        </div>
+        </div> -->
       </template>
       <template #paperContent>
         <div class="document-header">
@@ -34,6 +35,7 @@
               <input
                 type="date"
                 class="form-control in-resolution"
+                v-model="controller.resolutionDocumentDate.value"
               />
               bertujuan untuk Pembiayaan Perniagaan dengan pihak TEKUN Nasional
             </span>
@@ -61,7 +63,6 @@
                     ({{ controller.registrationNumberOld() }})
                   </b>
                   sebuah syarikat yang ditubuhkan di bawah Akta Syarikat 2016 beralamat di
-
                   <input
                     type="text"
                     class="form-control in-resolution"
