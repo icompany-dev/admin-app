@@ -101,57 +101,69 @@
                         :colspan="col.colSpan"
                         :class="col.cssClass"
                       >
-                        <span
-                          v-if="!controller.isValueEditable(col)"
-                          v-keyboard-click
-                          @click="controller.handleOnClickEvent(col)"
-                          v-html="col.content"
-                        />
-                        <span
-                          v-if="col.hasMoreInfo"
-                          class="more-info"
-                          v-keyboard-click
-                          @click="controller.onMoreInfoClicked(col.type, $event)"
-                        >
-                          More Info
-                        </span>
-                        <div v-if="col.isEditable && col.hasOptions">
-                          <span v-if="col.hasLabel">
-                            {{ col.labelString }}
+                        <template v-if="!controller.isDocumentEditable.value">
+                          <span
+                            v-if="col.hasLabel"
+                            v-html="col.labelString"
+                          />
+                          <span :class="col.cssClass">
+                            {{ col.content }}
                           </span>
-                          <input
-                            :type="col.inputType"
-                            class="form-control"
-                            :class="{ 'has-label': col.hasLabel }"
-                            v-model="col.content"
-                            @change="controller.onValueChanged(col)"
-                            :placeholder="col.placeholder"
-                            :list="`suggestions-${col.id}`"
-                          />
-                          <datalist :id="`suggestions-${col.id}`">
-                            <option
-                              v-for="opt in controller.getOptions(col.type)"
-                              :key="opt"
-                              :value="opt"
-                            ></option>
-                          </datalist>
-                        </div>
-                        <div
-                          class="amount-input"
-                          v-if="col.isEditable && !col.hasOptions"
-                        >
-                          <input
-                            type="text"
-                            class="form-control"
-                            v-model="col.content"
-                            @input="controller.onValueChanged(col)"
-                          />
-                          <i
-                            class="fa-regular fa-trash-alt delete-item"
+                        </template>
+                        <template v-if="controller.isDocumentEditable.value">
+                          <span
+                            v-if="!controller.isValueEditable(col)"
                             v-keyboard-click
-                            @click="controller.handleOnDeleteClickEvent(col)"
+                            @click="controller.handleOnClickEvent(col)"
+                            v-html="col.content"
                           />
-                        </div>
+                          <span
+                            v-if="col.hasMoreInfo"
+                            class="more-info"
+                            v-keyboard-click
+                            @click="controller.onMoreInfoClicked(col.type, $event)"
+                          >
+                            More Info
+                          </span>
+                          <div v-if="col.isEditable && col.hasOptions">
+                            <span
+                              v-if="col.hasLabel"
+                              v-html="col.labelString"
+                            />
+                            <input
+                              :type="col.inputType"
+                              class="form-control"
+                              :class="{ 'has-label': col.hasLabel }"
+                              v-model="col.content"
+                              @change="controller.onValueChanged(col)"
+                              :placeholder="col.placeholder"
+                              :list="`suggestions-${col.id}`"
+                            />
+                            <datalist :id="`suggestions-${col.id}`">
+                              <option
+                                v-for="opt in controller.getOptions(col.type)"
+                                :key="opt"
+                                :value="opt"
+                              ></option>
+                            </datalist>
+                          </div>
+                          <div
+                            class="amount-input"
+                            v-if="col.isEditable && !col.hasOptions"
+                          >
+                            <input
+                              type="text"
+                              class="form-control"
+                              v-model="col.content"
+                              @input="controller.onValueChanged(col)"
+                            />
+                            <i
+                              class="fa-regular fa-trash-alt delete-item"
+                              v-keyboard-click
+                              @click="controller.handleOnDeleteClickEvent(col)"
+                            />
+                          </div>
+                        </template>
                       </td>
                     </tr>
                   </tbody>
@@ -198,6 +210,7 @@
   // import PostOcrManagementAccount from "../Popups/PostOcrManagementAccount.vue"
   import { DocumentController } from "~/scripts/components/management-accounts/DocumentController"
   import type { IPropsManagementAccountDocument } from "~/scripts/props/PropsManagementAccountDocument"
+  import { control } from "leaflet"
 
   const props = defineProps<IPropsManagementAccountDocument>()
 

@@ -2499,7 +2499,7 @@ export class DocumentController {
 
     try {
       let pages = await PdfPaperUtil.getPdfElements(this.documentRef)
-      await PdfPaperUtil.generatePdfFile(pages, 19, "Management Account.pdf", PaperSize.A4, PaperOrientation.Portrait)
+      await PdfPaperUtil.generatePdfFile(pages, 20, "Management Account.pdf", PaperSize.A4, PaperOrientation.Portrait)
     } catch (e) {
     } finally {
       this.isDownloading.value = false
