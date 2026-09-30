@@ -61,7 +61,27 @@
                     ({{ controller.registrationNumberOld() }})
                   </b>
                   sebuah syarikat yang ditubuhkan di bawah Akta Syarikat 2016 beralamat di
-                  <span v-html="controller.companyAddress" />
+
+                  <input
+                    type="text"
+                    class="form-control in-resolution"
+                    v-model="controller.address.value"
+                    list="addresses"
+                    v-if="controller.isDocumentEditable()"
+                  />
+                  <datalist id="addresses">
+                    <option
+                      v-for="address in controller.addressOptions"
+                      :value="address"
+                    >
+                      {{ address }}
+                    </option>
+                  </datalist>
+                  <span
+                    v-if="!controller.isDocumentEditable()"
+                    v-html="controller.selectedAddress"
+                  />
+                  <!-- <span v-html="controller.companyAddress" /> -->
                 </td>
               </tr>
             </tbody>

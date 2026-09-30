@@ -37,6 +37,7 @@ export class CompanyServiceInitializer<T> {
       StatusConstants.PAID,
       StatusConstants.SUBMITTED,
       StatusConstants.APPROVED,
+      StatusConstants.SHIPPED,
       StatusConstants.NAME_REJECTED,
       StatusConstants.RESPONDED,
       StatusConstants.ONGOING,

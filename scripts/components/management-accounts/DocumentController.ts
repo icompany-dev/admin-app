@@ -252,6 +252,10 @@ export class DocumentController {
   }
 
   async fetchCompany(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
     try {
       let response = await this.companyRepository.fetch(this.companyId.value)
       if (this.companyRepository.error !== null) {

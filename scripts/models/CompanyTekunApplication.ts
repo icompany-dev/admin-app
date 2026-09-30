@@ -10,7 +10,7 @@ export class CompanyTekunApplication extends CompanyLoanApplication {
   }
 
   override setApplicationDetails(data: any): void {
-    this.applicationDetails = new CompanyTekunApplicationDetails(data.application_details)
+    this.applicationDetails = new CompanyTekunApplicationDetails(data)
   }
 
   override getRequestBody(): object {

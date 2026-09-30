@@ -359,7 +359,8 @@ export abstract class ResolutionController<T> {
       (StringUtil.isNullOrEmpty(this.application.value.id) ||
         this.application.value.status === StatusConstants.DRAFT ||
         this.application.value.status === StatusConstants.PENDING ||
-        this.application.value.status === StatusConstants.PAID)
+        this.application.value.status === StatusConstants.PAID ||
+        this.application.value.status === StatusConstants.SHIPPED)
     )
   }
 

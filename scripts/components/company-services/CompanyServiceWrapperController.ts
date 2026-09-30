@@ -306,7 +306,7 @@ export class CompanyServiceWrapperController {
 
     let scale = this.getDocumentScale()
 
-    return `transform: scale(${scale});`
+    return `transform: scale(${scale}); transform-origin: top left;`
   }
 
   getResolutionContainerStyle(): string {

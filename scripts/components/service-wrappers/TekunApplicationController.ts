@@ -67,6 +67,7 @@ export class TekunApplicationController
   }
 
   async fetchApplication(id: string): Promise<void> {
+    this.applicationId = id
     let response = await this.repository.fetch(id)
     if (!this.repository.error) {
       this.application = new CompanyTekunApplication(response)
