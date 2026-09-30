@@ -25,6 +25,8 @@ export class TekunLoanApplicationController extends ApplicationController<Compan
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
+  isCompleting: Ref<boolean> = ref<boolean>(false)
+
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
       props.companyId,
@@ -94,7 +96,34 @@ export class TekunLoanApplicationController extends ApplicationController<Compan
   }
 
   async onCompleteClicked(): Promise<void> {
-    //
+    if (this.isCompleting.value || !this.application.value) {
+      return
+    }
+
+    this.isCompleting.value = true
+    try {
+      let repository = useCompanyStore()
+      await repository.postService(this.target.value, this.application.value.id)
+      if (repository.error !== null) {
+        throw repository.error
+      }
+      let toastTitle = this.language.isMalay()
+        ? "Permohonan TEKUN telah selesai dan dikemaskinikan."
+        : "Your TEKUN Application is completed and updated."
+      let toastMessage = this.language.isMalay()
+        ? "Anda akan dibawa ke halaman Sdn Bhd."
+        : "You will be redirected to the Sdn Bhd page."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+    } finally {
+      this.isCompleting.value = false
+    }
   }
 
   //getters
