@@ -115,7 +115,21 @@ export class TekunLoanApplicationController extends ApplicationController<Compan
   }
 
   get applicationDetailsSublabel(): string {
-    return this.language.isMalay() ? "Bank, Cawangan & Penandatangan" : "Bank, Branch & Authorised Signatories"
+    return this.language.isMalay() ? "Tarikh, Alamat, Orang Yang Diberi Kuasa" : "Date, Address, Authorised Person"
+  }
+
+  get details(): string {
+    if (!this.application.value) {
+      return ""
+    }
+
+    return `
+      <b>Alamat:</b><br>
+      ${StringUtil.isNullOrEmpty(this.application.value?.applicationDetails?.address ?? "") ? "(Not Complete)" : this.application.value?.applicationDetails?.address}
+      <br><br>
+      <b>Orang yang Diberi Kuasa:</b><br>
+      ${StringUtil.isNullOrEmpty(this.application.value?.applicationDetails?.authorisedPerson) ? "(Not Complete)" : this.application.value?.applicationDetails?.authorisedPerson}
+    `
   }
 
   // get bankLabel(): string {

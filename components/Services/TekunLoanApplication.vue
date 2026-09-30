@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="application-details">
-              // details
+              <span v-html="controller.details" />
               <br />
               <br />
               <b>{{ controller.itemsToPrepareLabel }}</b>
