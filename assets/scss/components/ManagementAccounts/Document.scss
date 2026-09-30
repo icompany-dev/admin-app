@@ -130,6 +130,12 @@
       td {
         padding: 5px 0;
 
+        .form-control {
+          padding: 2px 5px;
+          border-radius: 5px;
+          font-weight: normal;
+        }
+
         &:first-child {
           width: 85%;
           text-align: left;
@@ -153,6 +159,13 @@
           font-weight: bold;
           text-transform: uppercase;
           padding: 0px;
+
+          .form-control {
+            padding: 2px 5px;
+            border-radius: 5px;
+            font-weight: normal;
+            width: 50%;
+          }
         }
 
         &.document-title {

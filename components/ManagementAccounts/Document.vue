@@ -27,6 +27,7 @@
           class="documents"
         >
           <div
+            ref="documentRef"
             id="management-account-document"
             v-keyboard-click
             @click="controller.onPageClick()"
@@ -197,6 +198,7 @@
 
   const emit = defineEmits(["back"])
 
+  const documentRef = ref(null)
   const documentContainerRef = ref(null)
   const documentInstructionRef = ref(null)
   const postOcrProcessPopupRef = ref(null)
@@ -247,6 +249,14 @@
     (newVal) => {
       controller.setIsEnlarged(newVal)
     }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 
   watch(

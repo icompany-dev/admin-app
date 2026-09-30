@@ -20,12 +20,13 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import type { PostOcrManagementAccountData } from "~/scripts/types/management-accounts/PostOcrManagementAccountData"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { DocumentScaler } from "~/scripts/library/DocumentScaler"
-import { PaperOrientation } from "~/scripts/constants/Paper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import type { ProcessedOcrManagementAccountData } from "~/scripts/types/management-accounts/ProcessedOcrManagementAccountData"
 import { ActionTrayDropdown } from "~/scripts/types/action-trays/ActionTrayDropdown"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 import type { CompanyFinancialPeriod } from "~/scripts/models/CompanyFinancialPeriod"
 import { Filter } from "~/scripts/library/Filter"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 //NOTE: This is needed for AutoSave -- workaround eslint and ref issues
 type CompanyManagementAccountRepositoryStore = ReturnType<typeof useCompanyManagementAccountStore>
@@ -96,6 +97,10 @@ export class DocumentController {
 
   financialPeriodForManagementAccountRef: any | null = null
 
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+
+  documentRef: any | null = null
+
   constructor(
     companyId: string,
     financialYearStartDate: string,
@@ -156,6 +161,10 @@ export class DocumentController {
   setDocumentInstructionRef(documentInstructionRef: any): void {
     this.documentInstructionRef = documentInstructionRef
     this.setDocumentContainerScale()
+  }
+
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
   }
 
   setPostOcrProcessPopupRef(postOcrProcessPopupRef: any): void {
@@ -300,6 +309,7 @@ export class DocumentController {
 
   //Document section
   addToBalanceSheet(target: string): void {
+    console.log("called?", target)
     this.companyManagementAccount.value.balanceSheet.add(target)
     this.setupDocument()
   }
@@ -359,7 +369,9 @@ export class DocumentController {
   }
 
   handleOnClickEvent(column: ManagementAccountTableColumn): void {
+    console.log("re")
     if (this.isInPreviewMode) {
+      console.log("this?")
       return
     }
 
@@ -394,8 +406,11 @@ export class DocumentController {
       "header",
       "company-name",
       2,
-      () => {}
+      () => {},
+      "company"
     )
+    companyNameHeaderColumn.isEditable = this.isDocumentEditable.value
+    companyNameHeaderColumn.hasOptions = true
     this.addToTableRow([companyNameHeaderColumn], true)
 
     let companyIncorporatedInColumn = new ManagementAccountTableColumn(
@@ -407,8 +422,14 @@ export class DocumentController {
     )
     this.addToTableRow([companyIncorporatedInColumn], true)
 
+    let registrationNumberNew = this.isDocumentEditable.value
+      ? '<input type="text" class="form-control">'
+      : this.company.value.registrationNumberNew
+    let registrationNumberOld = this.isDocumentEditable.value
+      ? '<input type="text" class="form-control">'
+      : this.company.value.registrationNumberOld
     let registrationNumberColumn = new ManagementAccountTableColumn(
-      `Registration No. ${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`,
+      `Registration No. ${registrationNumberNew} (${registrationNumberOld})`,
       "header",
       "header",
       2,
@@ -416,8 +437,11 @@ export class DocumentController {
     )
     this.addToTableRow([registrationNumberColumn], true)
 
+    let fyeEndDate = this.isDocumentEditable.value
+      ? '<input type="date" class="form-control">'
+      : this.time.formatDateOnlyFull(this.financialYearEndDate.value)
     let balanceSheetTitleColumn = new ManagementAccountTableColumn(
-      `Statement of Financial Position for the financial period as at ${this.time.formatDateOnlyFull(this.financialYearEndDate.value)}`,
+      `Statement of Financial Position for the financial period as at ${fyeEndDate}`,
       "header",
       "document-title",
       2,
@@ -1156,6 +1180,8 @@ export class DocumentController {
       2,
       () => {}
     )
+    companyNameHeaderColumn.isEditable = this.isDocumentEditable.value
+    companyNameHeaderColumn.hasOptions = true
     this.addToTableRow([companyNameHeaderColumn], false)
 
     let companyIncorporatedInColumn = new ManagementAccountTableColumn(
@@ -1167,8 +1193,14 @@ export class DocumentController {
     )
     this.addToTableRow([companyIncorporatedInColumn], false)
 
+    let registrationNumberNew = this.isDocumentEditable.value
+      ? '<input type="text" class="form-control">'
+      : this.company.value.registrationNumberNew
+    let registrationNumberOld = this.isDocumentEditable.value
+      ? '<input type="text" class="form-control">'
+      : this.company.value.registrationNumberOld
     let registrationNumberColumn = new ManagementAccountTableColumn(
-      `Registration No. ${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`,
+      `Registration No. ${registrationNumberNew} (${registrationNumberOld})`,
       "header",
       "header",
       2,
@@ -1176,8 +1208,14 @@ export class DocumentController {
     )
     this.addToTableRow([registrationNumberColumn], false)
 
+    let fyeStartDate = this.isDocumentEditable.value
+      ? '<input type="date" class="form-control">'
+      : this.time.formatDateOnlyFull(this.financialYearStartDate.value)
+    let fyeEndDate = this.isDocumentEditable.value
+      ? '<input type="date" class="form-control">'
+      : this.time.formatDateOnlyFull(this.financialYearEndDate.value)
     let balanceSheetTitleColumn = new ManagementAccountTableColumn(
-      `Detailed Income Statement for the financial period for ${this.time.formatDateOnlyFull(this.financialYearStartDate.value)} to ${this.time.formatDateOnlyFull(this.financialYearEndDate.value)}`,
+      `Detailed Income Statement for the financial period for ${fyeStartDate} to ${fyeEndDate}`,
       "header",
       "document-title",
       2,
@@ -1701,7 +1739,7 @@ export class DocumentController {
   }
 
   isValueEditable(column: ManagementAccountTableColumn): boolean {
-    return column.cssClass === "item" || column.cssClass === "item-amount"
+    return column.cssClass === "item" || column.cssClass === "item-amount" || column.cssClass === "company-name"
   }
 
   isValueHasOptions(column: ManagementAccountTableColumn): boolean {
@@ -2296,54 +2334,60 @@ export class DocumentController {
 
   setActionTrayElements(): void {
     this.actionTrayElements.value = [
-      new ActionTrayElement("back", this.onBackButtonClicked.bind(this), {
-        label: new ActionTrayLabel("Back", "Kembali"),
-        iconClass: "fa-solid fa-arrow-left",
-        isIconStart: true,
+      new ActionTrayElement("download", () => {}, {
+        label: new ActionTrayLabel("Download", "Muat Turun"),
+        isDisabled: this.isDownloading.value,
+        iconClass: this.isDownloading.value ? "fa-solid fa-spin fa-spinner" : "",
+        isIconStart: this.isDownloading.value,
       }),
+      // new ActionTrayElement("back", this.onBackButtonClicked.bind(this), {
+      //   label: new ActionTrayLabel("Back", "Kembali"),
+      //   iconClass: "fa-solid fa-arrow-left",
+      //   isIconStart: true,
+      // }),
 
-      new ActionTrayElement("amend", this.onSaveDocumentClicked.bind(this), {
-        label: new ActionTrayLabel("Save Document", "Simpan"),
-      }),
+      // new ActionTrayElement("amend", this.onSaveDocumentClicked.bind(this), {
+      //   label: new ActionTrayLabel("Save Document", "Simpan"),
+      // }),
 
-      new ActionTrayDropdown(
-        "ocr-feature",
-        {
-          label: new ActionTrayLabel("OCR:", "OCR:"),
-          badge: new ActionTrayLabel("Unlimited", "Unlimited"),
-        },
-        [
-          new ActionTrayElement("add-token", this.onOCRInfoClicked.bind(this), {
-            label: new ActionTrayLabel("Add OCR Token", "Add OCR Token"),
-            subLabel: new ActionTrayLabel("Unlimited Token remaining", "Unlimited Token remaining"),
-          }),
-          new ActionTrayElement("learn-more-ocr", this.onOCRInfoClicked.bind(this), {
-            label: new ActionTrayLabel("About OCR Feature", "About OCR Feature"),
-            subLabel: new ActionTrayLabel("Learn More about OCR feature", "Learn More about OCR feature"),
-          }),
-        ]
-      ),
+      // new ActionTrayDropdown(
+      //   "ocr-feature",
+      //   {
+      //     label: new ActionTrayLabel("OCR:", "OCR:"),
+      //     badge: new ActionTrayLabel("Unlimited", "Unlimited"),
+      //   },
+      //   [
+      //     new ActionTrayElement("add-token", this.onOCRInfoClicked.bind(this), {
+      //       label: new ActionTrayLabel("Add OCR Token", "Add OCR Token"),
+      //       subLabel: new ActionTrayLabel("Unlimited Token remaining", "Unlimited Token remaining"),
+      //     }),
+      //     new ActionTrayElement("learn-more-ocr", this.onOCRInfoClicked.bind(this), {
+      //       label: new ActionTrayLabel("About OCR Feature", "About OCR Feature"),
+      //       subLabel: new ActionTrayLabel("Learn More about OCR feature", "Learn More about OCR feature"),
+      //     }),
+      //   ]
+      // ),
 
-      new ActionTrayDropdown(
-        "more-dropdown",
-        {
-          iconClass: "fa-solid fa-ellipsis",
-          isIconOnly: true,
-        },
-        [
-          new ActionTrayElement("certify", () => {}, {
-            label: new ActionTrayLabel("Certify", "Sahkan"),
-            isDisabled: true,
-          }),
-          new ActionTrayElement("download", () => {}, {
-            label: new ActionTrayLabel("Download", "Muat Turun"),
-            isDisabled: true,
-          }),
-          new ActionTrayElement("learn-more", this.onMoreDetailClicked.bind(this), {
-            label: new ActionTrayLabel("Learn More", "Maklumat Lanjut"),
-          }),
-        ]
-      ),
+      // new ActionTrayDropdown(
+      //   "more-dropdown",
+      //   {
+      //     iconClass: "fa-solid fa-ellipsis",
+      //     isIconOnly: true,
+      //   },
+      //   [
+      //     new ActionTrayElement("certify", () => {}, {
+      //       label: new ActionTrayLabel("Certify", "Sahkan"),
+      //       isDisabled: true,
+      //     }),
+      //     new ActionTrayElement("download", () => {}, {
+      //       label: new ActionTrayLabel("Download", "Muat Turun"),
+      //       isDisabled: true,
+      //     }),
+      //     new ActionTrayElement("learn-more", this.onMoreDetailClicked.bind(this), {
+      //       label: new ActionTrayLabel("Learn More", "Maklumat Lanjut"),
+      //     }),
+      //   ]
+      // ),
     ]
   }
 
@@ -2375,7 +2419,24 @@ export class DocumentController {
     return this.language.isMalay() ? "Akaun Pengurusan Anda" : "Management Account"
   }
 
+  async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value || !this.documentRef) {
+      return
+    }
+
+    this.isDownloading.value = true
+
+    try {
+      let pages = await PdfPaperUtil.getPdfElements(this.documentRef)
+      await PdfPaperUtil.generatePdfFile(pages, 19, "Management Account.pdf", PaperSize.A4, PaperOrientation.Portrait)
+    } catch (e) {
+    } finally {
+      this.isDownloading.value = false
+    }
+  }
+
   get isInPreviewMode(): boolean {
-    return StringUtil.isNullOrEmpty(this.companyManagementAccount.value.id)
+    return false
+    // return StringUtil.isNullOrEmpty(this.companyManagementAccount.value.id)
   }
 }
