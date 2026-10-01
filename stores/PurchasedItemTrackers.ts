@@ -48,6 +48,21 @@ export const usePurchasedItemTrackerStore = defineStore("purchasedItemTracker", 
     }
   }
 
+  async function orderChopUntracked(companyId: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.purchasedItemTrackers.orderChopUntracked(companyId)
+      return response
+    } catch (e) {
+      error.value = `Failed to `
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   async function markReady(id: string): Promise<any> {
     isLoading.value = true
     error.value = null
@@ -89,6 +104,7 @@ export const usePurchasedItemTrackerStore = defineStore("purchasedItemTracker", 
     ...crudActions,
     ongoingForCompany,
     orderChop,
+    orderChopUntracked,
     markReady,
     markDelivered,
   }

@@ -205,6 +205,19 @@
         </div>
       </div>
     </div>
+    <div class="company-overview-section">
+      Order Chop
+      <br />
+      <br />
+      <button
+        class="btn btn-submit"
+        :class="{ 'is-loading': controller.isOrderingChop.value }"
+        :disabled="controller.isOrderingChop.value || !controller.latestPaymentOrderItemForChop"
+        @click="controller.onOrderChopClicked()"
+      >
+        Order Chop
+      </button>
+    </div>
     <AddCompanyAuditor
       ref="addCompanyAuditorRef"
       v-bind="controller.addCompanyAuditorProps"

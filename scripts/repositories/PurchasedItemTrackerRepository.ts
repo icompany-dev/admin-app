@@ -32,6 +32,18 @@ export class PurchasedItemTrackerRepository extends Repository<PurchasedItemTrac
     }
   }
 
+  async orderChopUntracked(companyId: string): Promise<any> {
+    try {
+      const data = {
+        company_id: companyId,
+      }
+      const response = this.post(`${this.singleResourceUrl}/order-chop-untracked`, data)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
   async markReady(id: string): Promise<any> {
     try {
       const response = this.post(`${this.singleResourceUrl}/ready/${id}`, {})
