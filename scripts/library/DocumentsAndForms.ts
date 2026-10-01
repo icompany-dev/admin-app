@@ -6,6 +6,7 @@ import { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { StringUtil } from "../utils/String"
 import { Company } from "../models/Company"
 import { StatutoryFormKeywords } from "~/scripts/constants/StatutoryForms"
+import type { CompanyDocumentRequest } from "../models/CompanyDocumentRequest"
 
 export class DocumentsAndForms {
   companyId: string = ""
@@ -15,6 +16,8 @@ export class DocumentsAndForms {
   documents: CompanyDocument[] = []
   forms: Form[] = []
   myDataDocuments: MyDataDocuments = new MyDataDocuments()
+
+  documentPurchasesInProgress: CompanyDocumentRequest[] = []
 
   isFetchingDocuments: boolean = false
 
@@ -60,7 +63,8 @@ export class DocumentsAndForms {
 
     try {
       this.isFetchingDocuments = true
-      await Promise.all([this.fetchForms(), this.fetchMyDataDocuments()])
+      await this.fetchForms()
+      // await Promise.allSettled([this.fetchForms(), this.fetchMyDataDocuments()])
       this.setDocuments()
     } catch (e: any) {
       throw e // let the controller handle the error
@@ -70,11 +74,6 @@ export class DocumentsAndForms {
   }
 
   async fetchForms(): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.companyId)) {
-      console.log("emot??")
-      return
-    }
-
     let filter = new Filter()
     filter.companyId = this.companyId
     filter.takeAll = true
@@ -102,6 +101,14 @@ export class DocumentsAndForms {
 
     this.myDataDocuments = new MyDataDocuments(myDataDocuments)
   }
+
+  // async fetchDocumnentPurchases(): Promise<void> {
+  //   let repository = useCompanyDocumentRequestStore()
+  //   let filter = new Filter()
+  //   filter.companyId = this.companyId
+
+  //   // let response = await repository.
+  // }
 
   setDocuments(): void {
     this.documents = []
@@ -142,19 +149,64 @@ export class DocumentsAndForms {
     let selectedDocuments: CompanyDocument[] = []
 
     // current list that we have - superform, s15, coi, s32, s51, s78, s58, s105, s352
-    selectedDocuments.push(this.getCertificateOfIncorporation("Certificate of Incorporation", false, false))
+    let section28s = this.getAllSection28s(false, false)
+    if (section28s.length > 0) {
+      selectedDocuments = selectedDocuments.concat(section28s)
+    } else {
+      selectedDocuments.push(
+        this.getCertificateOfIncorporation("Section 17 - Certificate of Incorporation", false, false)
+      )
+    }
     selectedDocuments.push(this.getSection14("Section 14 - Superform", false, false))
-    selectedDocuments.push(this.getSection15("Section 15 - Notification of Incorporation", false, false))
+    selectedDocuments.push(this.getSection15("Section 15 - Notice of Registration", false, false))
     selectedDocuments = selectedDocuments.concat(this.getAllSection58s(false, false))
     selectedDocuments = selectedDocuments.concat(this.getAllSection78s(false, false))
+    selectedDocuments = selectedDocuments.concat(this.getAllSection51s(false, false))
     selectedDocuments = selectedDocuments.concat(this.getAllSubmittedAnnualReturns(false, false))
     selectedDocuments = selectedDocuments.concat(this.getAllSubmittedAuditReports(false, false))
 
-    selectedDocuments.sort((a: CompanyDocument, b: CompanyDocument) => {
-      return new Date(b.documentDate).getTime() - new Date(a.documentDate).getTime()
-    })
+    // selectedDocuments = selectedDocuments.filter((sd: CompanyDocument) => {
+    //   return !sd.isFromMyData
+    // })
 
     return selectedDocuments
+  }
+
+  getResolutions(): CompanyDocument[] {
+    return this.documents.filter((cd: CompanyDocument) => {
+      return (
+        StringUtil.contains(cd.documentName, "resolution") ||
+        StringUtil.contains(cd.documentName, "dcr") ||
+        StringUtil.contains(cd.documentName, "mcr")
+      )
+    })
+  }
+
+  getNonResolutionStatutoryForms(): CompanyDocument[] {
+    let statutoryForms = this.getStatutoryForms()
+
+    return this.documents.filter((cd: CompanyDocument) => {
+      return (
+        !(
+          StringUtil.contains(cd.documentName, "resolution") ||
+          StringUtil.contains(cd.documentName, "dcr") ||
+          StringUtil.contains(cd.documentName, "mcr")
+        ) &&
+        !statutoryForms.some((sf: CompanyDocument) => {
+          return cd.documentName === sf.documentName
+        }) &&
+        !(
+          StringUtil.contains(cd.documentName, "Certificate of Incorporation") ||
+          StringUtil.contains(cd.documentName, "Section 28") ||
+          StringUtil.contains(cd.documentName, "Superform") ||
+          StringUtil.contains(cd.documentName, "Notification of Incorporation") ||
+          StringUtil.contains(cd.documentName, "Section 15") ||
+          StringUtil.contains(cd.documentName, "Section 58") ||
+          StringUtil.contains(cd.documentName, "Section 78") ||
+          StringUtil.contains(cd.documentName, "Section 51")
+        )
+      )
+    })
   }
 
   getCompanyDocuments(): CompanyDocument[] {
@@ -402,7 +454,7 @@ export class DocumentsAndForms {
       .map((document: CompanyDocument) => {
         return new CompanyDocument(
           crypto.randomUUID(),
-          true,
+          false,
           document.documentName,
           document.fileUrl,
           document.isFromMyData,
@@ -455,7 +507,7 @@ export class DocumentsAndForms {
     return this.documents
       .filter((cd: CompanyDocument) => {
         return (
-          StringUtil.contains(cd.documentName, "audit") ||
+          StringUtil.contains(cd.documentName, "audit ") ||
           StringUtil.contains(cd.documentName, "financial statement") ||
           StringUtil.contains(cd.documentName, "annual report")
         )
@@ -463,7 +515,7 @@ export class DocumentsAndForms {
       .map((document: CompanyDocument) => {
         return new CompanyDocument(
           crypto.randomUUID(),
-          true,
+          false,
           document.documentName,
           document.fileUrl,
           document.isFromMyData,
@@ -558,7 +610,7 @@ export class DocumentsAndForms {
       .map((doc: CompanyDocument) => {
         return new CompanyDocument(
           crypto.randomUUID(),
-          true,
+          false,
           doc.documentName,
           doc.fileUrl,
           doc.isFromMyData,
@@ -615,7 +667,57 @@ export class DocumentsAndForms {
       .map((doc: CompanyDocument) => {
         return new CompanyDocument(
           crypto.randomUUID(),
-          true,
+          false,
+          doc.documentName,
+          doc.fileUrl,
+          doc.isFromMyData,
+          doc.documentDate,
+          doc.fileId,
+          doc.totalPages,
+          isDisabled,
+          isPriority
+        )
+      })
+  }
+
+  getAllSection51s(isDisabled: boolean, isPriority: boolean): CompanyDocument[] {
+    return this.documents
+      .filter((cd: CompanyDocument) => {
+        let keyword = StatutoryFormKeywords.S51.split(",")
+
+        return keyword.some((k: string) => {
+          return StringUtil.contains(cd.documentName, k)
+        })
+      })
+      .map((doc: CompanyDocument) => {
+        return new CompanyDocument(
+          crypto.randomUUID(),
+          false,
+          doc.documentName,
+          doc.fileUrl,
+          doc.isFromMyData,
+          doc.documentDate,
+          doc.fileId,
+          doc.totalPages,
+          isDisabled,
+          isPriority
+        )
+      })
+  }
+
+  getAllSection28s(isDisabled: boolean, isPriority: boolean): CompanyDocument[] {
+    return this.documents
+      .filter((cd: CompanyDocument) => {
+        let keyword = StatutoryFormKeywords.S28.split(",")
+
+        return keyword.some((k: string) => {
+          return StringUtil.contains(cd.documentName, k)
+        })
+      })
+      .map((doc: CompanyDocument) => {
+        return new CompanyDocument(
+          crypto.randomUUID(),
+          false,
           doc.documentName,
           doc.fileUrl,
           doc.isFromMyData,
@@ -641,12 +743,14 @@ export class DocumentsAndForms {
       })
     })
 
+    let isPurchaseFromMyData = StringUtil.isNullOrEmpty(s14?.file?.url ?? "")
+
     return new CompanyDocument(
       crypto.randomUUID(),
       false,
-      documentName,
+      s14?.file?.name ?? documentName,
       s14?.file?.url ?? null,
-      false,
+      isPurchaseFromMyData,
       s14?.createdAt ? new Date(s14?.createdAt) : this.defaultDocumentDate,
       s14?.file?.id ?? "",
       s14?.noOfPages ?? 1,
