@@ -164,6 +164,7 @@ import { ProductRepository } from "~/scripts/repositories/ProductRepository"
 import { ProgressRepository } from "~/scripts/repositories/ProgressRepository"
 import { PublicRepository } from "~/scripts/repositories/PublicRepository"
 import { PurchasedDocumentTemplateRepository } from "~/scripts/repositories/PurchasedDocumentTemplateRepository"
+import { PurchasedItemTrackerRepository } from "~/scripts/repositories/PurchasedItemTrackerRepository"
 import { SearchComplianceRepository } from "~/scripts/repositories/SearchComplianceRepository"
 import { ServicePricingRepository } from "~/scripts/repositories/ServicePricingRepository"
 import { ServiceToPayRepository } from "~/scripts/repositories/ServiceToPayRepository"
@@ -349,6 +350,7 @@ interface Repositories {
   progresses: ProgressRepository
   publics: PublicRepository
   purchasedDocumentTemplates: PurchasedDocumentTemplateRepository
+  purchasedItemTrackers: PurchasedItemTrackerRepository
   searchCompliance: SearchComplianceRepository
   servicePricings: ServicePricingRepository
   servicesToPay: ServiceToPayRepository
@@ -544,12 +546,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/branch",
       config.public.apiBaseUrl,
       getAuthToken),
-    companyChangeBankSignatories: new CompanyChangeBankSignatoryRepository(
-      "company/bank/account/change-signatories",
+    companyChangeBankSignatories: new CompanyChangeBankSignatoryRepository("company/bank/account/change-signatories",
       "company/bank/account/change-signatory",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyCommonSealRegisters: new CompanyCommonSealRegisterRepository("company/common-seals/registers",
       "company/common-seals/register",
       config.public.apiBaseUrl,
@@ -1044,6 +1044,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/purchased-document-template",
       config.public.apiBaseUrl,
       getAuthToken),
+    purchasedItemTrackers: new PurchasedItemTrackerRepository(
+      "purchased-items",
+      "purchased-item",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     searchCompliance: new SearchComplianceRepository("search/compliance",
       "search/compliance",
       config.public.apiBaseUrl,
@@ -1072,12 +1078,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "state",
       config.public.apiBaseUrl,
       getAuthToken),
-    tags: new TagRepository(
-      "tags",
+    tags: new TagRepository("tags",
       "tag",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     toDos: new ToDoRepository("services",
       "service",
       config.public.apiBaseUrl,
@@ -1284,6 +1288,7 @@ declare module "#app" {
       progresses: import("~/scripts/repositories/ProgressRepository").ProgressRepository
       publics: import("~/scripts/repositories/PublicRepository").PublicRepository
       purchasedDocumentTemplates: import("~/scripts/repositories/PurchasedDocumentTemplateRepository").PurchasedDocumentTemplateRepository
+      purchasedItemTrackers: import("~/scripts/repositories/PurchasedItemTrackerRepository").PurchasedItemTrackerRepository
       searchCompliance: import("~/scripts/repositories/SearchComplianceRepository").SearchComplianceRepository
       servicePricings: import("~/scripts/repositories/ServicePricingRepository").ServicePricingRepository
       servicesToPay: import("~/scripts/repositories/ServiceToPayRepository").ServiceToPayRepository
@@ -1473,6 +1478,7 @@ declare module "pinia" {
       progresses: import("~/scripts/repositories/ProgressRepository").ProgressRepository
       publics: import("~/scripts/repositories/PublicRepository").PublicRepository
       purchasedDocumentTemplates: import("~/scripts/repositories/PurchasedDocumentTemplateRepository").PurchasedDocumentTemplateRepository
+      purchasedItemTrackers: import("~/scripts/repositories/PurchasedItemTrackerRepository").PurchasedItemTrackerRepository
       searchCompliance: import("~/scripts/repositories/SearchComplianceRepository").SearchComplianceRepository
       servicePricings: import("~/scripts/repositories/ServicePricingRepository").ServicePricingRepository
       servicesToPay: import("~/scripts/repositories/ServiceToPayRepository").ServiceToPayRepository
