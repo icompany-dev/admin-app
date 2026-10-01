@@ -498,7 +498,6 @@
                   >
                     <button
                       class="btn btn-pill btn-submit"
-                      :disabled="!controller.areDocumentsReadyToConvert"
                       @click="controller.onCompleteIncorporation()"
                     >
                       {{ controller.convertLabel }}
