@@ -80,6 +80,8 @@ export class ApplicationController {
   isGeneratingSection236: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection236: Ref<boolean> = ref<boolean>(false)
 
+  isSubmittingToSSM: Ref<boolean> = ref<boolean>(false)
+
   isCompletingProcess: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: PropsSwitchApplication, emitEvents: any) {
@@ -564,7 +566,29 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236
   }
 
-  async onSubmitToSSMClicked(): Promise<void> {}
+  async onSubmitToSSMClicked(): Promise<void> {
+    if (this.isSubmittingToSSM.value) {
+      return
+    }
+
+    try {
+      this.isSubmittingToSSM.value = true
+
+      this.application.value.status = StatusConstants.SUBMITTED
+      await this.application.value.update(useApplicationSwitchStore())
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isSubmittingToSSM.value = false
+    }
+  }
 
   async onUploadSection58Clicked(): Promise<void> {
     if (this.uploadDocumentRef) {

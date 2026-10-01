@@ -364,6 +364,7 @@
               <template #nodeActions>
                 <div
                   class="btn btn-pill btn-submit center"
+                  :class="{ 'is-loading': controller.isSubmittingToSSM.value }"
                   @click="controller.onSubmitToSSMClicked()"
                 >
                   <span class="label">{{ controller.submittedLabel }}</span>

@@ -197,6 +197,7 @@ export class ApplicationSwitch implements IApplication {
       secretary_company_name: this.secretaryCompanyName,
       secretary_company_address: this.secretaryCompanyAddress,
       secretary_name: this.secretaryName,
+      status: this.status,
     }
   }
 
