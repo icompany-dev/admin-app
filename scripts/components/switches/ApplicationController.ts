@@ -78,6 +78,7 @@ export class ApplicationController {
   isDownloadingDCR: Ref<boolean> = ref<boolean>(false)
 
   isGeneratingSection236: Ref<boolean> = ref<boolean>(false)
+  isDownloadingSection236: Ref<boolean> = ref<boolean>(false)
 
   isCompletingProcess: Ref<boolean> = ref<boolean>(false)
 
@@ -471,6 +472,13 @@ export class ApplicationController {
         throw error
       }
 
+      let uploadedFileId = await this.documentRef.onGenerateClicked()
+      if (this.application.value.metadata === null) {
+        this.application.value.metadata = {}
+      }
+      this.application.value.metadata.section236 = uploadedFileId
+      await this.application.value.addFilesToMetadata(useApplicationSwitchStore())
+
       await this.documentRef.onDownloadClicked()
 
       let toastTitle = this.language.isMalay()
@@ -492,6 +500,60 @@ export class ApplicationController {
       }
     } finally {
       this.isGeneratingSection236.value = false
+    }
+  }
+
+  async onDownloadGeneratedSection236Clicked(): Promise<void> {
+    if (this.isDownloadingSection236.value || !this.isSection236Generated) {
+      return
+    }
+
+    this.isDownloadingSection236.value = true
+    try {
+      let section236Id = this.application.value.metadata?.section236 ?? ""
+
+      let repository = useFileStore()
+      let response = await repository.fetch(section236Id)
+      let file = new File(response)
+
+      let fileResponse = await fetch(file.url)
+      if (!fileResponse.ok) {
+        let error = new Error()
+        error.type = Error.ERROR_TYPE_API
+        error.title = this.language.isMalay()
+          ? "Kami tidak berjaya memaut fail dari simpanan."
+          : "We encountered an error to retrieve the file from storage."
+        error.message = this.language.isMalay()
+          ? "Sila muat semula halaman ini."
+          : "Please refresh the page and try again."
+        throw error
+      }
+
+      let blob = await fileResponse.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", file.name)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.type = Error.ERROR_TYPE_API
+        error.title = this.language.isMalay()
+          ? "Kami tidak berjaya memaut fail dari simpanan."
+          : "We encountered an error to retrieve the file from storage."
+        error.message = this.language.isMalay()
+          ? "Sila muat semula halaman ini."
+          : "Please refresh the page and try again."
+        throw error
+      }
+    } finally {
+      this.isDownloadingSection236.value = false
     }
   }
 
@@ -1201,7 +1263,7 @@ export class ApplicationController {
   }
 
   get isDcrGenerated(): boolean {
-    return this.application.value.metadata?.dcr !== null
+    return !!this.application.value.metadata?.dcr
   }
 
   get dcrLabel(): string {
@@ -1227,6 +1289,22 @@ export class ApplicationController {
 
   get section236Sublabel(): string {
     return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 236(3)" : "Declaration under Section 236(3)"
+  }
+
+  get generateSection236Label(): string {
+    if (this.isSection236Generated) {
+      return this.language.isMalay() ? "Jana Semula" : "Generate Again"
+    }
+
+    return this.language.isMalay() ? "Jana" : "Generate"
+  }
+
+  get isSection236Generated(): boolean {
+    return !!this.application.value.metadata?.section236
+  }
+
+  get section236FileLabel(): string {
+    return "Section 236(3) - Consent to Act as Company Secretary"
   }
 
   get generateLabel(): string {
@@ -1363,7 +1441,7 @@ export class ApplicationController {
   }
 
   get isSection58Uploaded(): boolean {
-    return this.application.value.metadata.section58 !== null ?? false
+    return !!this.application.value.metadata.section58
   }
 
   get downloadDocumentSection58Label(): string {

@@ -267,12 +267,12 @@
                   <div class="application-details">
                     <div v-if="controller.isDcrGenerated">
                       <span
-                        class="action-link clickable"
+                        class="action-link download"
                         @click="controller.onDownloadGeneratedDcrClicked()"
                       >
                         <i
                           class="fa-regular"
-                          :class="controller.isDownloadingDCR.value ? 'fa-spinner fa-spin' : 'fa-download'"
+                          :class="controller.isDownloadingDCR.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-down'"
                         />
                         {{ controller.dcrLabel }}
                       </span>
@@ -300,6 +300,22 @@
                 <div class="application-container">
                   <div class="node-title">{{ controller.section236Label }}</div>
                   <div class="node-subtitle">({{ controller.section236Sublabel }})</div>
+                  <div class="application-details">
+                    <div v-if="controller.isSection236Generated">
+                      <span
+                        class="action-link download"
+                        @click="controller.onDownloadGeneratedSection236Clicked()"
+                      >
+                        <i
+                          class="fa-regular"
+                          :class="
+                            controller.isDownloadingSection236.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-down'
+                          "
+                        />
+                        {{ controller.section236FileLabel }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </template>
               <template #nodeOptions>
@@ -309,7 +325,7 @@
                   :disabled="controller.isGeneratingSection236.value"
                   @click="controller.onGenerateSection236Clicked()"
                 >
-                  {{ controller.generateLabel }}
+                  {{ controller.generateSection236Label }}
                 </button>
               </template>
               <template #nodeActions></template>
@@ -322,6 +338,19 @@
                 <div class="application-container">
                   <div class="node-title">{{ controller.submitToSSMLabel }}</div>
                   <div class="node-subtitle">({{ controller.submitToSSMSublabel }})</div>
+                  <div class="application-details">
+                    <span
+                      class="action-link download"
+                      v-if="controller.isSection58Uploaded"
+                      @click="controller.onDownloadSection58Clicked()"
+                    >
+                      <i
+                        class="fa-regular"
+                        :class="controller.isDownloadingSection58.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-down'"
+                      ></i>
+                      {{ controller.downloadDocumentSection58Label }}
+                    </span>
+                  </div>
                 </div>
               </template>
               <template #nodeOptions>
@@ -331,18 +360,6 @@
                 >
                   {{ controller.uploadSection58Label }}
                 </button>
-                <span
-                  class="action-link download"
-                  v-if="controller.isSection58Uploaded"
-                  @click="controller.onDownloadSection58Clicked()"
-                >
-                  <i
-                    class="fa-regular"
-                    :class="controller.isDownloadingSection58.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-down'"
-                  ></i>
-                  {{ controller.downloadDocumentSection58Label }}
-                </span>
-                <template v-if="controller.isSection58Uploaded"></template>
               </template>
               <template #nodeActions>
                 <div
