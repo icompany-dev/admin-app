@@ -717,9 +717,35 @@ export class ApplicationController {
         await form.create(useFormStore())
       }
 
+      if (this.application.value.metadata.section236) {
+        let dayjs = useDayjs()
+        let form = new Form()
+        form.companyId = companyToConvert.id
+        form.type = "business_detail"
+        form.fileId = this.application.value.metadata.section236
+        form.documentDate = dayjs().format("YYYY-MM-DD")
+        form.status = "active"
+        form.noOfPages = 1
+
+        await form.create(useFormStore())
+      }
+
+      if (this.application.value.metadata.dcr) {
+        let dayjs = useDayjs()
+        let form = new Form()
+        form.companyId = companyToConvert.id
+        form.type = "business_detail"
+        form.fileId = this.application.value.metadata.dcr
+        form.documentDate = dayjs().format("YYYY-MM-DD")
+        form.status = "active"
+        form.noOfPages = 1
+
+        await form.create(useFormStore())
+      }
+
       let toastTitle = this.language.isMalay() ? "Sdn Bhd telah ditambah." : "Sdn Bhd successfully added."
       let toastMessage = this.language.isMalay()
-        ? "Anda akan dihantar ke muka Sdn Bhd."
+        ? "Anda akan dihantar ke halaman Sdn Bhd."
         : "You will be redirected to the Sdn Bhd page."
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
