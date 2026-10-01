@@ -38,6 +38,8 @@ export class SelectedSdnBhdController {
   spineRef: any | null = null
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
+  isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
+
   applicationRefs: any[] = []
 
   constructor(companyId: string, emitEvents: any) {
@@ -255,6 +257,22 @@ export class SelectedSdnBhdController {
     }
   }
 
+  async notifyDocumentRegularised(): Promise<void> {
+    if (this.isNotifyingRegularise.value) {
+      return
+    }
+
+    try {
+      this.isNotifyingRegularise.value = true
+      let repository = useCompanyStore()
+      await repository.notifyRegularise(this.companyId.value)
+    } catch (e) {
+      //
+    } finally {
+      this.isNotifyingRegularise.value = false
+    }
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -273,6 +291,10 @@ export class SelectedSdnBhdController {
 
   get printSpine(): string {
     return this.language.isMalay() ? "Folder Spine" : " Folder Spine"
+  }
+
+  get notifyRegularise(): string {
+    return this.language.isMalay() ? "Notify Regularise" : " Notify Regularise"
   }
 
   get edit(): string {

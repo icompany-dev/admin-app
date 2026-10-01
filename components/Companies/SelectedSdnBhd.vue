@@ -57,18 +57,29 @@
                 </button>
                 <button
                   class="btn btn-pill btn-submit"
+                  :class="{ 'is-loading': controller.isNotifyingRegularise.value }"
+                  :disabled="controller.isNotifyingRegularise.value"
+                  @click="controller.notifyDocumentRegularised()"
+                >
+                  {{ controller.notifyRegularise }}
+                </button>
+                <button
+                  class="btn btn-pill btn-submit"
+                  disabled
                   @click="controller.onEditClicked()"
                 >
                   {{ controller.edit }}
                 </button>
                 <button
                   class="btn btn-pill btn-submit"
+                  disabled
                   @click="controller.onStrikeOffClicked()"
                 >
                   {{ controller.strikeOff }}
                 </button>
                 <button
                   class="btn btn-pill btn-submit"
+                  disabled
                   @click="controller.onSwitchOutClicked()"
                 >
                   {{ controller.switchOut }}

@@ -102,4 +102,13 @@ export class CompanyRepository extends Repository<Company> {
       throw error
     }
   }
+
+  async notifyRegularise(companyId: string): Promise<any> {
+    try {
+      const response = this.get<any>(`api/sdnbhds/notify-regularised/${companyId}`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }
