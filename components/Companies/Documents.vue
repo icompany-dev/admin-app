@@ -21,7 +21,10 @@
           v-for="(companyDocument, index) in controller.resolutions"
           class="document is-visible"
         >
-          <CompanyDocument v-bind="controller.getPropsDocument(companyDocument)" />
+          <CompanyDocument
+            v-bind="controller.getPropsDocument(companyDocument)"
+            @is-selected-changed="controller.onSelectionChanged($event, companyDocument)"
+          />
         </div>
         <div
           class="document is-visible empty-to-add"
@@ -38,7 +41,10 @@
           v-for="(companyDocument, index) in controller.statutoryForms"
           class="document is-visible"
         >
-          <CompanyDocument v-bind="controller.getPropsDocument(companyDocument)" />
+          <CompanyDocument
+            v-bind="controller.getPropsDocument(companyDocument)"
+            @is-selected-changed="controller.onSelectionChanged($event, companyDocument)"
+          />
         </div>
         <div
           class="document is-visible empty-to-add"
@@ -55,7 +61,10 @@
           v-for="(companyDocument, index) in controller.others"
           class="document is-visible"
         >
-          <CompanyDocument v-bind="controller.getPropsDocument(companyDocument)" />
+          <CompanyDocument
+            v-bind="controller.getPropsDocument(companyDocument)"
+            @is-selected-changed="controller.onSelectionChanged($event, companyDocument)"
+          />
         </div>
         <div
           class="document is-visible empty-to-add"
@@ -65,6 +74,7 @@
         </div>
       </div>
     </div>
+    <ActionTray :actions="controller.actionTrayElements" />
     <Teleport to="body">
       <UploadDocument
         ref="uploadDocumentRef"
@@ -76,11 +86,11 @@
 </template>
 
 <script lang="ts" setup>
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import LoaderPrepare from "~/components/Loaders/Prepare.vue"
   // import ViewDocument from "./ViewDocument.vue"
   import CompanyDocument from "@/components/Documents/CompanyDocument.vue"
   // import PaginationBubble from "@/components/Paginations/Bubbles.vue"
-  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   // import Tooltip from "../Tooltips/Tooltip.vue"
   import UploadDocument from "../Popups/UploadDocument.vue"

@@ -3,7 +3,11 @@ import { Filter } from "~/scripts/library/Filter"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsDocument } from "~/scripts/props/PropsDocument"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
-import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
+import { CompanyDocument } from "~/scripts/types/CompanyDocument"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { FileZipper } from "~/scripts/utils/FileZipper"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class DocumentsController {
   companyId: Ref<string> = ref<string>("")
@@ -16,6 +20,11 @@ export class DocumentsController {
   emitEvents: any | null = null
 
   uploadDocumentRef: any | null = null
+
+  selectedDocuments: Ref<CompanyDocument[]> = ref<CompanyDocument[]>([])
+
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+  isDeleting: Ref<boolean> = ref<boolean>(false)
 
   language = useLanguage()
 
@@ -76,6 +85,58 @@ export class DocumentsController {
     props.canvasScale = 0.25
 
     return props
+  }
+
+  onSelectionChanged(value: boolean, companyDocument: CompanyDocument): void {
+    companyDocument.isSelected = value
+
+    if (!companyDocument.isSelected) {
+      this.selectedDocuments.value = this.selectedDocuments.value.filter((cd: CompanyDocument) => {
+        return cd.id !== companyDocument.id
+      })
+    } else {
+      this.selectedDocuments.value.push(companyDocument)
+    }
+  }
+
+  async onRemoveDocumentsClicked(): Promise<void> {
+    //
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    try {
+      this.isDownloading.value = true
+
+      let files = []
+      for (let i = 0; i < this.selectedDocuments.value.length; i++) {
+        let companyDocument = this.selectedDocuments.value[i] ?? null
+        if (!companyDocument) {
+          continue
+        }
+
+        if (!companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+          continue
+        }
+
+        let response = await fetch(companyDocument.fileUrl)
+        if (!response.ok) {
+          continue
+        }
+
+        let blob = await response.blob()
+        files.push(new DownloadFileData(URL.createObjectURL(blob), `${i + 1}. ${companyDocument.documentName}`))
+      }
+
+      await FileZipper.zipAndDownload(files, `Company Documents.zip`)
+    } catch (e) {
+      //
+    } finally {
+      this.isDownloading.value = false
+    }
   }
 
   get isLoadingPage(): boolean {
@@ -177,5 +238,30 @@ export class DocumentsController {
         <li>the document may be available through the SSM Middleware System and should be checked separately.</li>
       </ol>
     `
+  }
+
+  get actionTrayElements(): ActionTrayElement[] {
+    return [
+      new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
+        label: new ActionTrayLabel("Download", "Muat Turun"),
+        isDisabled: !this.canCarryOutActions,
+        iconClass: this.isDownloading.value ? "fa-regular fa-spin fa-spinner" : "",
+        isIconStart: this.isDownloading.value,
+      }),
+      new ActionTrayElement("delete", this.onRemoveDocumentsClicked.bind(this), {
+        label: new ActionTrayLabel("Remove", "Padam"),
+        isDisabled: !this.canCarryOutActions,
+        iconClass: this.isDeleting.value ? "fa-regular fa-spin fa-spinner" : "",
+        isIconStart: this.isDeleting.value,
+      }),
+    ]
+  }
+
+  get numberOfSelection(): number {
+    return this.selectedDocuments.value.length
+  }
+
+  get canCarryOutActions(): boolean {
+    return !this.isDownloading.value && !this.isDeleting.value && this.selectedDocuments.value.length > 0
   }
 }
