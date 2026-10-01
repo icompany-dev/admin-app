@@ -687,7 +687,7 @@ export class ApplicationController {
   }
 
   get directorLabel(): string {
-    return this.language.isMalay() ? "Butiran Pengarah yang Dilantik" : "Details of Elected Directors"
+    return this.language.isMalay() ? "Butiran Pengarah" : "Details of Directors"
   }
 
   get directorDetails(): DirectorInvitation[] {
@@ -742,7 +742,7 @@ export class ApplicationController {
   }
 
   get shareholderLabel(): string {
-    return this.language.isMalay() ? "Butiran Pemegang Saham yang Dinama" : "Details of Nominated Shareholders"
+    return this.language.isMalay() ? "Butiran Pemegang Saham" : "Details of Shareholders"
   }
 
   get shareholderDetails(): ShareholderInvitation[] {
