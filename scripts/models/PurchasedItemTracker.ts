@@ -98,7 +98,6 @@ export class PurchasedItemTracker {
     return (
       !StringUtil.isNullOrEmpty(this.targetType) &&
       !StringUtil.isNullOrEmpty(this.targetId) &&
-      !StringUtil.isNullOrEmpty(this.paymentOrderItemId) &&
       !StringUtil.isNullOrEmpty(this.itemName) &&
       !StringUtil.isNullOrEmpty(this.paidAt) &&
       !StringUtil.isNullOrEmpty(this.status)
