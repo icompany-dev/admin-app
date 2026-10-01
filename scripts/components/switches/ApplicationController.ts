@@ -677,10 +677,10 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236
   }
 
-  // async onNotifyCompletedClicked(): Promise<void> {
-  //   let repository = useApplicationSwitchStore()
-  //   await repository.sendCompleted(this.application.value.id)
-  // }
+  async onNotifyCompletedClicked(): Promise<void> {
+    let repository = useApplicationSwitchStore()
+    await repository.sendCompleted(this.application.value.id)
+  }
 
   async onCompleteProcessClicked(): Promise<void> {
     if (this.isCompletingProcess.value) {
@@ -1421,7 +1421,6 @@ export class ApplicationController {
 
   get isApplicationCompleted(): boolean {
     return (
-      this.application.value.status === StatusConstants.APPROVED ||
       this.application.value.status === StatusConstants.COMPLETED ||
       this.application.value.status === StatusConstants.CONVERTED
     )
