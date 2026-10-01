@@ -677,6 +677,11 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236
   }
 
+  // async onNotifyCompletedClicked(): Promise<void> {
+  //   let repository = useApplicationSwitchStore()
+  //   await repository.sendCompleted(this.application.value.id)
+  // }
+
   async onCompleteProcessClicked(): Promise<void> {
     if (this.isCompletingProcess.value) {
       return
@@ -693,7 +698,7 @@ export class ApplicationController {
         status: StatusConstants.APPROVED,
       }
       await repository.update(this.application.value.id, data)
-      repository.sendCompleted(this.application.value.id)
+      // repository.sendCompleted(this.application.value.id)
 
       let companyToConvert = new Company(this.companyToConvert)
 
