@@ -184,6 +184,12 @@
               @show="controller.onPanelShow(3)"
             />
           </div>
+          <div
+            class="application-contents"
+            v-if="controller.isDocuments.value"
+          >
+            <Documents v-bind="controller.companyDocumentProps" />
+          </div>
         </TransitionGroup>
       </div>
       <TransitionGroup name="slide-left-leave-right">
@@ -222,6 +228,7 @@
   import ChangeOfBusinessBranchService from "@/components/CompanyServices/ChangeOfBusinessBranchService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import CopyValue from "@/components/Buttons/CopyValue.vue"
+  import Documents from "./Documents.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Overview from "@/components/Companies/Overview.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
