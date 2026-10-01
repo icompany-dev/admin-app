@@ -64,6 +64,7 @@ export class ApplicationController {
   targetForDocumentUpload: Ref<string> = ref<string>("")
 
   isShowReceipt: Ref<boolean> = ref<boolean>(false)
+  isShowCompanyDetails: Ref<boolean> = ref<boolean>(false)
   isShowNotifyPreviousCosec: Ref<boolean> = ref<boolean>(false)
   isShowDcrFromDirectors: Ref<boolean> = ref<boolean>(false)
   isShowSection236: Ref<boolean> = ref<boolean>(false)
@@ -633,7 +634,13 @@ export class ApplicationController {
   }
 
   get serviceName(): string {
-    return this.language.isMalay() ? "Pertukaran Setiausaha Syarikat" : "Reassignment of Company Secretary"
+    let label = this.language.isMalay() ? "Pertukaran Setiausaha Syarikat" : "Reassignment of Company Secretary"
+
+    if (this.application.value.hasCompletedName()) {
+      label = `${label} - ${this.application.value.companyName}`
+    }
+
+    return label
   }
 
   get dateOfIncorporationLabel(): string {
@@ -1031,6 +1038,29 @@ export class ApplicationController {
       this.application.value.status !== StatusConstants.DRAFT &&
       this.application.value.status !== StatusConstants.PENDING
     )
+  }
+
+  // company details node
+  get companyDetailsNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.hasPaid, this.areDetailsCompleted, this.isShowCompanyDetails.value)
+  }
+
+  get areDetailsCompleted(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.application.value.name) &&
+      !StringUtil.isNullOrEmpty(this.application.value.registrationNumberNew) &&
+      !StringUtil.isNullOrEmpty(this.application.value.registrationNumberOld)
+    )
+  }
+
+  get companyDetailsLabel(): string {
+    return this.language.isMalay() ? "Butiran Syarikan" : "Company Details"
+  }
+
+  get companyDetailsSublabel(): string {
+    return this.language.isMalay()
+      ? "Nama, No. Pendaftaran, Pengarah dan lain-lain"
+      : "Name, Registration Numbers, Directors etc"
   }
 
   // NotifyPreviousCosec
