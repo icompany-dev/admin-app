@@ -137,6 +137,28 @@
               height: 210px;
             }
           }
+
+          &.empty-to-add {
+            border: dashed 3px var(--bs-gray-600);
+            color: var(--bs-gray-600);
+            border-radius: 10px;
+            cursor: pointer;
+            width: 177px;
+            height: 204px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            transition: all 0.7s ease;
+
+            &:hover {
+              border-radius: 15px;
+              border-color: var(--bs-gray-80);
+              color: var(--bs-gray-800);
+              background-color: rgba(255, 255, 255, 0.5);
+            }
+          }
         }
 
         .action-buttons {

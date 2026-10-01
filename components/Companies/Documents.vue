@@ -16,29 +16,6 @@
       <div class="container-header">
         {{ controller.resolutionsLabel }}
       </div>
-      <div
-        class="small-no-record"
-        v-if="controller.resolutions.length <= 0"
-      >
-        <NoRecord
-          :title="controller.getNoRecordTitle('Resolutions')"
-          :is-show-subtitle="false"
-        >
-          <template #cta>
-            <div class="content">
-              {{ controller.getNoRecordSubtitle("Resolutions") }}
-              <Tooltip
-                :title="controller.getNoRecordTitle('Resolutions')"
-                :content="controller.noRecordTooltipDetails"
-              >
-                <template #trigger>
-                  <i class="fa-solid fa-circle-info" />
-                </template>
-              </Tooltip>
-            </div>
-          </template>
-        </NoRecord>
-      </div>
       <div class="documents is-grid-mode">
         <div
           v-for="(companyDocument, index) in controller.resolutions"
@@ -46,32 +23,15 @@
         >
           <CompanyDocument v-bind="controller.getPropsDocument(companyDocument)" />
         </div>
+        <div
+          class="document is-visible empty-to-add"
+          @click="controller.onUploadDocumentClicked()"
+        >
+          <i class="fa-solid fa-plus" />
+        </div>
       </div>
       <div class="container-header">
         {{ controller.statutoryFormsLabel }}
-      </div>
-      <div
-        class="small-no-record"
-        v-if="controller.statutoryForms.length <= 0"
-      >
-        <NoRecord
-          :title="controller.getNoRecordTitle('Statutory Forms')"
-          :is-show-subtitle="false"
-        >
-          <template #cta>
-            <div class="content">
-              {{ controller.getNoRecordSubtitle("Statutory Forms") }}
-              <Tooltip
-                :title="controller.getNoRecordTitle('Statutory Forms')"
-                :content="controller.noRecordTooltipDetails"
-              >
-                <template #trigger>
-                  <i class="fa-solid fa-circle-info" />
-                </template>
-              </Tooltip>
-            </div>
-          </template>
-        </NoRecord>
       </div>
       <div class="documents is-grid-mode">
         <div
@@ -80,42 +40,38 @@
         >
           <CompanyDocument v-bind="controller.getPropsDocument(companyDocument)" />
         </div>
+        <div
+          class="document is-visible empty-to-add"
+          @click="controller.onUploadDocumentClicked()"
+        >
+          <i class="fa-solid fa-plus" />
+        </div>
       </div>
       <div class="container-header">
         {{ controller.otherDocumentsLabel }}
       </div>
-      <div
-        class="small-no-record"
-        v-if="controller.others.length <= 0"
-      >
-        <NoRecord
-          :title="controller.getNoRecordTitle('Documents')"
-          :is-show-subtitle="false"
-        >
-          <template #cta>
-            <div class="content">
-              {{ controller.getNoRecordSubtitle("documents") }}
-              <Tooltip
-                :title="controller.getNoRecordTitle('Documents')"
-                :content="controller.noRecordTooltipDetails"
-              >
-                <template #trigger>
-                  <i class="fa-solid fa-circle-info" />
-                </template>
-              </Tooltip>
-            </div>
-          </template>
-        </NoRecord>
-      </div>
-      <div class="documents">
+      <div class="documents is-grid-mode">
         <div
           v-for="(companyDocument, index) in controller.others"
           class="document is-visible"
         >
           <CompanyDocument v-bind="controller.getPropsDocument(companyDocument)" />
         </div>
+        <div
+          class="document is-visible empty-to-add"
+          @click="controller.onUploadDocumentClicked()"
+        >
+          <i class="fa-solid fa-plus" />
+        </div>
       </div>
     </div>
+    <Teleport to="body">
+      <UploadDocument
+        ref="uploadDocumentRef"
+        v-bind="controller.uploadDocumentProps"
+        @proceed="controller.postUploadDocument()"
+      />
+    </Teleport>
   </div>
 </template>
 
@@ -127,12 +83,15 @@
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   // import Tooltip from "../Tooltips/Tooltip.vue"
+  import UploadDocument from "../Popups/UploadDocument.vue"
   import { DocumentsController } from "~/scripts/components/companies/DocumentsController"
   import type { IPropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 
   const props = defineProps<IPropsCompanyDocument>()
 
   const emit = defineEmits([])
+
+  const uploadDocumentRef = ref(null)
 
   const controller = new DocumentsController(props, emit)
 
@@ -142,6 +101,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    uploadDocumentRef,
+    (newVal) => {
+      controller.setUploadDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 
