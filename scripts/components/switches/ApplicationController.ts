@@ -75,6 +75,7 @@ export class ApplicationController {
   isUploadingDocumentsForPreviousCosec: Ref<boolean> = ref<boolean>(false)
 
   isGeneratingDCR: Ref<boolean> = ref<boolean>(false)
+  isDownloadingDCR: Ref<boolean> = ref<boolean>(false)
 
   isGeneratingSection236: Ref<boolean> = ref<boolean>(false)
 
@@ -337,6 +338,60 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_SWITCH_RESO // need to change to DCR
   }
 
+  async onDownloadGeneratedDcrClicked(): Promise<void> {
+    if (this.isDownloadingDCR.value || !this.isDcrGenerated) {
+      return
+    }
+
+    this.isDownloadingDCR.value = true
+    try {
+      let dcrId = this.application.value.metadata?.dcr ?? ""
+
+      let repository = useFileStore()
+      let response = await repository.fetch(dcrId)
+      let file = new File(response)
+
+      let fileResponse = await fetch(file.url)
+      if (!fileResponse.ok) {
+        let error = new Error()
+        error.type = Error.ERROR_TYPE_API
+        error.title = this.language.isMalay()
+          ? "Kami tidak berjaya memaut fail dari simpanan."
+          : "We encountered an error to retrieve the file from storage."
+        error.message = this.language.isMalay()
+          ? "Sila muat semula halaman ini."
+          : "Please refresh the page and try again."
+        throw error
+      }
+
+      let blob = await fileResponse.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", file.name)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.type = Error.ERROR_TYPE_API
+        error.title = this.language.isMalay()
+          ? "Kami tidak berjaya memaut fail dari simpanan."
+          : "We encountered an error to retrieve the file from storage."
+        error.message = this.language.isMalay()
+          ? "Sila muat semula halaman ini."
+          : "Please refresh the page and try again."
+        throw error
+      }
+    } finally {
+      this.isDownloadingDCR.value = false
+    }
+  }
+
   async onGenerateDcrClicked(): Promise<void> {
     this.onShowDirectorsResolutionClicked()
 
@@ -354,6 +409,18 @@ export class ApplicationController {
         error.setForDocumentDownload()
         throw error
       }
+
+      let uploadedFileId = await this.documentRef.onGenerateClicked()
+      if (!uploadedFileId) {
+        this.isGeneratingDCR.value = false
+        return
+      }
+
+      if (this.application.value.metadata === null) {
+        this.application.value.metadata = {}
+      }
+      this.application.value.metadata.dcr = uploadedFileId
+      await this.application.value.addFilesToMetadata(useApplicationSwitchStore())
 
       await this.documentRef.onDownloadClicked()
 
@@ -435,9 +502,7 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION_236
   }
 
-  async onSubmitToSSMClicked(): Promise<void> {
-    //
-  }
+  async onSubmitToSSMClicked(): Promise<void> {}
 
   async onUploadSection58Clicked(): Promise<void> {
     if (this.uploadDocumentRef) {
@@ -1127,8 +1192,20 @@ export class ApplicationController {
     return this.language.isMalay() ? "Perlantikan Setiausaha Syarikat Baharu" : "Appointment of New Company Secretary"
   }
 
-  get generateLabel(): string {
+  get generateDcrLabel(): string {
+    if (this.isDcrGenerated) {
+      return this.language.isMalay() ? "Jana Semula" : "Generate Again"
+    }
+
     return this.language.isMalay() ? "Jana" : "Generate"
+  }
+
+  get isDcrGenerated(): boolean {
+    return this.application.value.metadata?.dcr !== null
+  }
+
+  get dcrLabel(): string {
+    return "DCR - Add New Secretary.pdf"
   }
 
   // Section 236(3)
@@ -1150,6 +1227,10 @@ export class ApplicationController {
 
   get section236Sublabel(): string {
     return this.language.isMalay() ? "Pengisytiharan bawah Seksyen 236(3)" : "Declaration under Section 236(3)"
+  }
+
+  get generateLabel(): string {
+    return this.language.isMalay() ? "Jana" : "Generate"
   }
 
   // Submit to SSM

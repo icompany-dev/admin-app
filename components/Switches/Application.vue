@@ -264,6 +264,20 @@
                 <div class="application-container">
                   <div class="node-title">{{ controller.directorsResolutionLabel }}</div>
                   <div class="node-subtitle">({{ controller.directorsResolutionSublabel }})</div>
+                  <div class="application-details">
+                    <div v-if="controller.isDcrGenerated">
+                      <span
+                        class="action-link clickable"
+                        @click="controller.onDownloadGeneratedDcrClicked()"
+                      >
+                        <i
+                          class="fa-regular"
+                          :class="controller.isDownloadingDCR.value ? 'fa-spinner fa-spin' : 'fa-download'"
+                        />
+                        {{ controller.dcrLabel }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </template>
               <template #nodeOptions>
@@ -273,7 +287,7 @@
                   :disabled="controller.isGeneratingDCR.value"
                   @click="controller.onGenerateDcrClicked()"
                 >
-                  {{ controller.generateLabel }}
+                  {{ controller.generateDcrLabel }}
                 </button>
               </template>
               <template #nodeActions></template>

@@ -334,7 +334,6 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   async getPdfPages(): Promise<HTMLElement[]> {
-    console.log(this.documentRef, "pdfpage")
     if (!this.documentRef.value) {
       return []
     }

@@ -393,6 +393,30 @@ export class ApplicationSwitch implements IApplication {
     )
   }
 
+  async addFilesToMetadata(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      meta_data: this.metadata,
+    }
+    let response = await repository.update(this.id, data)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    if (response instanceof ApplicationSwitch) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
+  }
+
   get companyName(): string {
     if (this.hasCompletedName()) {
       return this.getFullName()
