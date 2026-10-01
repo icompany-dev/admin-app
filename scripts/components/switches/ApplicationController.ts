@@ -1456,7 +1456,7 @@ export class ApplicationController {
       incorporatedAtDate = time.formatDateOnlySystem(this.application.value.incorporatedAt ?? "")
     }
 
-    company.name = this.application.value.companyName
+    company.name = this.application.value.name
     company.nameType = this.application.value.nameType
     company.nameDescription = "-"
     company.registrationNumberNew = this.application.value.registrationNumberNew
@@ -1464,11 +1464,8 @@ export class ApplicationController {
     company.businessDescription = StringUtil.isNullOrEmpty(this.application.value.businessDescription)
       ? "-"
       : this.application.value.businessDescription
-    company.hasBusinessAddress = this.application.value.businessAddressLocation !== null
-    company.businessAddressLocation =
-      this.application.value.businessAddressLocation !== null
-        ? new Location(this.application.value.businessAddressLocation)
-        : null
+    company.hasBusinessAddress = false // keep this way first
+    company.businessAddressLocation = null
     company.registeredAddressLocation = new Location()
     company.registeredAddressLocation.addressLine1 = "D-1-6, FIRST FLOOR, BLOCK D, SEKITAR26 ENTERPRISE"
     company.registeredAddressLocation.addressLine2 = "PERSIARAN HULU SELANGOR, SEKSYEN 26"
