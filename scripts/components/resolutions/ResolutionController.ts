@@ -350,18 +350,7 @@ export abstract class ResolutionController<T> {
       return false
     }
 
-    if (this.application.value && this.application.value.signatureGroups.length > 0) {
-      return false
-    }
-
-    return (
-      this.application.value &&
-      (StringUtil.isNullOrEmpty(this.application.value.id) ||
-        this.application.value.status === StatusConstants.DRAFT ||
-        this.application.value.status === StatusConstants.PENDING ||
-        this.application.value.status === StatusConstants.PAID ||
-        this.application.value.status === StatusConstants.SHIPPED)
-    )
+    return true
   }
 
   getApplication(): T | null {
