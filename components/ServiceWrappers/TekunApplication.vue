@@ -21,7 +21,7 @@
           v-bind="controller.resolutionDocumentProps"
           @complete-application="controller.onApplicationUpdated($event)"
         />
-        <div class="document pdf-file">
+        <!-- <div class="document pdf-file">
           <div
             class="overlay"
             v-for="(page, index) in controller.numberOfPagesForApplicationForm.value"
@@ -91,7 +91,7 @@
               }
             "
           />
-        </div>
+        </div> -->
         <IdentificationDocumentWatermark
           v-for="(shareholder, i) in controller.shareholders.value"
           v-bind="controller.getIdentificationDocumentWatermarkProps(shareholder)"

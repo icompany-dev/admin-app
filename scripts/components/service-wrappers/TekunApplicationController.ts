@@ -17,6 +17,9 @@ import type { Director } from "~/scripts/models/Director"
 import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { User } from "~/scripts/models/User"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class TekunApplicationController
   extends ServiceController
@@ -243,6 +246,75 @@ export class TekunApplicationController
       PaperOrientation.Portrait,
       PaperSize.A4
     )
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let promises = []
+      let files: DownloadFileData[] = []
+      let blobs: Blob[] = []
+
+      if (this.mcrRef) {
+        let mcrPages = await this.mcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.getPdfBlob(
+            mcrPages,
+            19,
+            "MCR - TEKUN Application.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          ).then((blob: Blob) => {
+            blobs.push(blob)
+            files.push(new DownloadFileData(URL.createObjectURL(blob), "MCR - TEKUN Application.pdf"))
+          })
+        )
+      }
+
+      let identificationPages: HTMLElement[] = []
+      for (let i = 0; i <= this.identificationRefs.value.length; i++) {
+        let identificationRef = this.identificationRefs.value[i]
+        if (!identificationRef) {
+          continue
+        }
+
+        let identificationPage = await identificationRef.getPdfPages()
+        identificationPages = identificationPages.concat(identificationPage)
+      }
+
+      if (identificationPages.length > 0) {
+        promises.push(
+          PdfPaperUtil.getPdfBlob(
+            identificationPages,
+            19,
+            "Identification Documents.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          ).then((blob: Blob) => {
+            blobs.push(blob)
+            files.push(new DownloadFileData(URL.createObjectURL(blob), "Identification Documents.pdf"))
+          })
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+
+      await FileZipper.zipAndDownload(files, "TEKUN Application Documents.zip")
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   helpTitle(): string {
