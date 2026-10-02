@@ -25,7 +25,7 @@ import { PropsServiceApplicationNode } from "~/scripts/props/PropsServiceApplica
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Toast } from "~/scripts/library/Toast"
 import { Company } from "~/scripts/models/Company"
-import { City, Country, Location, State } from "~/scripts/models/Location"
+import { City, Country, Location, PostcodeMapping, State } from "~/scripts/models/Location"
 import type { Invitation } from "~/scripts/models/Invitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { PropsInvitationPopup } from "~/scripts/props/PropsInvitationPopup"
@@ -133,7 +133,7 @@ export class ApplicationController {
 
       await Promise.allSettled([this.fetchApplication(), this.fetchPaymentOrder(), this.fetchMsicCodes()])
 
-      await this.fetchApplicant()
+      await Promise.allSettled([this.fetchApplicant(), this.setBusinessAddress()])
 
       this.application.value.paidAt = this.paymentOrder.value.paidAt
     } catch (e) {
@@ -205,6 +205,80 @@ export class ApplicationController {
     this.msicCodes.value = response.data.map((d: any) => {
       return new MsicCode(d)
     })
+  }
+
+  async setBusinessAddress(): Promise<void> {
+    if (!StringUtil.isNullOrEmpty(this.application.value.businessAddressLocation?.addressLine1 ?? "")) {
+      return
+    }
+
+    let ssmMetaData = this.application.value.getCorporateProfileData()
+    if (!ssmMetaData) {
+      return
+    }
+
+    let addressDetails = ssmMetaData.businessAddress
+    if (!addressDetails) {
+      return
+    }
+
+    let postcodeRepository = usePostcodeStore()
+    let postcodeFilter = new Filter()
+    postcodeFilter.searchText = addressDetails?.postcode ?? ""
+    await postcodeRepository.search(postcodeFilter)
+    if (postcodeRepository.error !== null || postcodeRepository.postcodes.length <= 0) {
+      return
+    }
+
+    let postcodes = postcodeRepository.postcodes.map((d: any) => {
+      return new PostcodeMapping(d)
+    })
+
+    let firstState =
+      postcodes.filter((postcode: PostcodeMapping) => {
+        return postcode.stateId !== null && postcode.stateId > 0
+      })[0] ?? null
+
+    if (!firstState) {
+      return
+    }
+
+    let stateRepository = useStateStore()
+    await stateRepository.byCountryId(87) // Malaysia
+    let states = stateRepository.states.map((d: any) => {
+      return new State(d)
+    })
+
+    let addressState = states.find((state: State) => {
+      return state.id === firstState.stateId
+    })
+    if (!addressState) {
+      return
+    }
+
+    let cityRepository = useCityStore()
+    await cityRepository.byStateId(addressState.id)
+    let cities = cityRepository.cities.map((d: any) => {
+      return new City(d)
+    })
+
+    let addressCity = cities.find((city: City) => {
+      return city.name.toLowerCase() === addressDetails?.town.toLowerCase()
+    })
+    if (!addressCity) {
+      return
+    }
+
+    let location = new Location()
+    location.addressLine1 = addressDetails?.address1 ?? ""
+    location.addressLine2 = addressDetails?.address2
+    location.addressLine3 = addressDetails?.address3
+    location.postcode = addressDetails?.postcode
+    location.city = addressCity ?? null
+    location.state = addressState
+    location.country = new Country({ id: 87, name: "Malaysia" })
+
+    this.application.value.businessAddressLocation = location
   }
 
   getPropsInvitationDetail(invitation: Invitation): PropsInvitationDetail {
