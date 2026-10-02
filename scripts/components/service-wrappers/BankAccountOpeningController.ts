@@ -232,7 +232,7 @@ export class BankAccountOpeningController
   }
 
   override async onDownloadClicked(): Promise<void> {
-    if (this.isDownloading.value) {
+    if (this.isDownloading.value || !this.dcrRef) {
       return
     }
 
@@ -240,30 +240,46 @@ export class BankAccountOpeningController
       this.isDownloading.value = true
       this.setActionTrayElements()
 
-      let promises = []
+      if (typeof this.dcrRef.getPdfDocumentGroups === "function") {
+        const groups: { filename: string; pages: HTMLElement[] }[] = await this.dcrRef.getPdfDocumentGroups()
 
-      if (this.dcrRef) {
-        let dcrPages = await this.dcrRef.getPdfPages()
-        promises.push(
-          PdfPaperUtil.generatePdfFile(
-            dcrPages,
-            20,
-            "Open Bank Account Documents.pdf",
-            PaperSize.A4,
-            PaperOrientation.Portrait
-          )
+        // Download sequentially, with a separate PDF render per document.
+        for (const group of groups) {
+          console.log(`[PDF] Rendering: ${group.filename}`, `Pages: ${group.pages.length}`)
+
+          try {
+            await PdfPaperUtil.generatePdfFile(group.pages, 20, group.filename, PaperSize.A4, PaperOrientation.Portrait)
+
+            console.log(`[PDF] Completed: ${group.filename}`)
+          } catch (error) {
+            console.error(`[PDF] Failed: ${group.filename}`, error)
+
+            // Print the full renderer stack as text.
+            if (error instanceof globalThis.Error) {
+              console.error(error.stack)
+            }
+          }
+        }
+      } else {
+        const pages: HTMLElement[] = await this.dcrRef.getPdfPages()
+
+        if (!pages.length) {
+          throw new Error()
+        }
+
+        await PdfPaperUtil.generatePdfFile(
+          pages,
+          20,
+          "Open Bank Account Documents.pdf",
+          PaperSize.A4,
+          PaperOrientation.Portrait
         )
-
-        promises.push(this.dcrRef.downloadPdfs())
       }
 
-      if (promises.length <= 0) {
-        return
-      }
-
-      await Promise.all(promises)
+      // Preserve downloads of the existing supporting files.
+      await this.dcrRef.downloadPdfs()
     } catch (e) {
-      console.error(e)
+      console.error("Failed to download bank account opening documents:", e)
     } finally {
       this.isDownloading.value = false
       this.setActionTrayElements()
