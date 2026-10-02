@@ -92,6 +92,15 @@
             "
           />
         </div>
+        <IdentificationDocumentWatermark
+          v-for="(shareholder, i) in controller.shareholders.value"
+          v-bind="controller.getIdentificationDocumentWatermarkProps(shareholder)"
+          :ref="
+            (el) => {
+              controller.setIdentificationRefs(el, i)
+            }
+          "
+        />
       </TransitionGroup>
     </div>
     <ActionTray :actions="controller.actionTrayElements.value" />
@@ -101,6 +110,7 @@
 <script setup lang="ts">
   import ActionTray from "../ActionTrays/ActionTray.vue"
   import McrTekunApplication from "../Resolutions/McrTekunApplication.vue"
+  import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import { TekunApplicationController } from "~/scripts/components/service-wrappers/TekunApplicationController"
 
   const props = defineProps({
