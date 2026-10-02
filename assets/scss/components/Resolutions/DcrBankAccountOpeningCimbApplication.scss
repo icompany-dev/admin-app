@@ -107,7 +107,7 @@
     }
 
     .paper {
-      &.cimb-form-paper {
+      &.cimb-application-form-paper {
         box-sizing: border-box;
         width: 190mm;
         height: 277mm;
@@ -116,6 +116,11 @@
         color: #231f20;
       }
     }
+  }
+}
+
+.paper {
+  &.cimb-application-form-paper {
     .document-page {
       position: relative;
       width: 190mm;
@@ -298,7 +303,6 @@
       border: 0.4pt solid #777;
       padding: 2.3pt 6pt;
     }
-
     .underlined {
       border-bottom: 0.4pt solid #777;
     }
@@ -385,7 +389,7 @@
       height: 70pt;
     }
     @media print {
-      .paper.cimb-form-paper {
+      .paper.cimb-application-form-paper {
         margin: 0;
         border: 0;
         box-shadow: none;

@@ -31,3 +31,15 @@
     }
   }
 }
+
+.paper {
+  &.dcr-cimb-bank {
+    ol {
+      list-style-type: decimal;
+
+      > li {
+        list-style-type: decimal;
+      }
+    }
+  }
+}
