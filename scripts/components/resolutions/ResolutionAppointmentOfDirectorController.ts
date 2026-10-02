@@ -169,6 +169,7 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
             class="form-control in-resolution"
             name="effectiveFromTypeDetails"
             id="effect-from-details"
+            value="${this.application.value?.effectiveFromTypeDetails ?? ""}"
           />
         `
       }
