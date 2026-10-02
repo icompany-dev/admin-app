@@ -157,7 +157,8 @@ export class DocumentsAndForms {
         this.getCertificateOfIncorporation("Section 17 - Certificate of Incorporation", false, false)
       )
     }
-    selectedDocuments.push(this.getSection14("Section 14 - Superform", false, false))
+    // selectedDocuments.push(this.getSection14("Section 14 - Superform", false, false))
+    selectedDocuments = selectedDocuments.concat(this.getAllSection14s())
     selectedDocuments.push(this.getSection15("Section 15 - Notice of Registration", false, false))
     selectedDocuments = selectedDocuments.concat(this.getAllSection58s(false, false))
     selectedDocuments = selectedDocuments.concat(this.getAllSection78s(false, false))
@@ -746,7 +747,7 @@ export class DocumentsAndForms {
     let isPurchaseFromMyData = StringUtil.isNullOrEmpty(s14?.file?.url ?? "")
 
     return new CompanyDocument(
-      crypto.randomUUID(),
+      s14?.id ?? crypto.randomUUID(),
       false,
       s14?.file?.name ?? documentName,
       s14?.file?.url ?? null,
@@ -757,6 +758,37 @@ export class DocumentsAndForms {
       isDisabled,
       isPriority
     )
+  }
+
+  getAllSection14s(): CompanyDocument[] {
+    return this.forms
+      .filter((cd: Form) => {
+        let keyword = StatutoryFormKeywords.S14.split(",")
+
+        return keyword.some((k: string) => {
+          if (!cd.file) {
+            return false
+          }
+
+          return StringUtil.contains(cd.file.name, k)
+        })
+      })
+      .map((form: Form) => {
+        let isPurchaseFromMyData = StringUtil.isNullOrEmpty(form?.file?.url ?? "")
+
+        return new CompanyDocument(
+          form.id,
+          false,
+          form?.file?.name ?? "Section 14 - Superform",
+          form?.file?.url ?? null,
+          isPurchaseFromMyData,
+          form?.createdAt ? new Date(form?.createdAt) : this.defaultDocumentDate,
+          form?.file?.id ?? "",
+          form?.noOfPages ?? 1,
+          false,
+          false
+        )
+      })
   }
 
   getSection15(documentName: string, isDisabled: boolean, isPriority: boolean): CompanyDocument {
