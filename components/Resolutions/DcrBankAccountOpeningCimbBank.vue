@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-bank-account-opening-cimb-bank">
+  <div
+    id="dcr-bank-account-opening-cimb-bank"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="PaperOrientation.Portrait"
       :is-loader="true"
@@ -17,7 +20,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        :additional-css-class="'resolution'"
+        :additional-css-class="'resolution dcr-cimb-bank'"
       >
         <template
           #paperMargins
@@ -130,7 +133,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        :additional-css-class="'resolution'"
+        :additional-css-class="'resolution dcr-cimb-bank'"
       >
         <template
           #paperMargins
@@ -191,7 +194,22 @@
           >
             <b>Dated:</b>
             <br />
-            <span class="date unknown">to be determined</span>
+
+            <template v-if="controller.isDocumentEditable()">
+              <input
+                v-model="controller.selectedResolutionDate.value"
+                type="date"
+                class="form-control"
+              />
+            </template>
+
+            <span
+              v-else
+              class="date"
+              :class="{ unknown: !controller.selectedResolutionDate.value }"
+            >
+              {{ controller.formattedResolutionDate }}
+            </span>
           </div>
           <div
             class="signature-section"
@@ -215,10 +233,116 @@
         </template>
       </Paper>
 
+      <Paper
+        :paper-orientation="PaperOrientation.Portrait"
+        :show-page-number="false"
+        :additional-css-class="'resolution dcr-cimb-bank'"
+      >
+        <template
+          #paperMargins
+          v-if="props.isShowTag"
+        >
+          <!-- <div class="paper-tag point-left branch-selection"><span>Insert Information</span></div> -->
+        </template>
+
+        <template #paperContent>
+          <div class="company-detail-head">
+            <div class="company-name">
+              {{ controller.companyName() }}
+            </div>
+            <div class="company-registration-number">
+              Company No: [{{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})]
+            </div>
+            <div>
+              <br />
+              (Incorporated in Malaysia)
+            </div>
+
+            <div>
+              <br />
+              ( also referred to as the
+              <b>“Company”</b>
+              )
+            </div>
+          </div>
+
+          <div class="resolution-content">
+            <br />
+            <div style="text-align: center">
+              <b>ANNEXTURE</b>
+              <br />
+              <b>AUTHORISED PERSONS</b>
+            </div>
+            <br />
+
+            <table style="width: 99%; margin: auto; border-collapse: separate; border-spacing: 0">
+              <thead>
+                <tr>
+                  <th style="border: 0; border-top: 1px solid black; border-left: 1px solid black">
+                    Name of Authorised Persons
+                  </th>
+                  <th style="border: 0; border-top: 1px solid black; border-left: 1px solid black">
+                    NRIC No / Passport No
+                  </th>
+                  <th
+                    style="
+                      border: 0;
+                      border-top: 1px solid black;
+                      border-left: 1px solid black;
+                      border-right: 1px solid black;
+                    "
+                  >
+                    Specimen Signature
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  v-for="(director, i) in controller.getDirectors()"
+                  :key="i"
+                >
+                  <td
+                    style="border: 0; border-top: 1px solid black; border-left: 1px solid black; text-align: center"
+                    :style="{
+                      borderBottom: i === controller.getDirectors().length - 1 ? '1px solid black' : '0',
+                    }"
+                  >
+                    <b>{{ director.name }}</b>
+                  </td>
+
+                  <td
+                    style="border: 0; border-top: 1px solid black; border-left: 1px solid black; text-align: center"
+                    :style="{
+                      borderBottom: i === controller.getDirectors().length - 1 ? '1px solid black' : '0',
+                    }"
+                  >
+                    <b>{{ director.identification }}</b>
+                  </td>
+
+                  <td
+                    style="
+                      border: 0;
+                      border-top: 1px solid black;
+                      border-left: 1px solid black;
+                      border-right: 1px solid black;
+                      height: 100px;
+                    "
+                    :style="{
+                      borderBottom: i === controller.getDirectors().length - 1 ? '1px solid black' : '0',
+                    }"
+                  ></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+      </Paper>
+
       <!-- <Paper
         v-for="(page, index) in controller.pageRangeForSignatures()"
         :paper-orientation="PaperOrientation.Portrait"
-        :additional-css-class="'resolution'"
+        :additional-css-class="'resolution dcr-cimb-bank'"
         :total-pages="controller.totalPages()"
         :page-number="page"
         :show-ear-mark="true"
@@ -291,7 +415,7 @@
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "updated"])
 
   const resolutionContent = ref(null)
-  const nonDirectorBankSignatoryRef = ref(null)
+  const documentRef = ref(null)
 
   const controller = new DcrBankAccountOpeningCimbBankController(props, emit)
 
@@ -349,9 +473,13 @@
     { deep: true }
   )
 
-  watch(nonDirectorBankSignatoryRef, (newVal) => {
-    controller.setNonDirectorBankSignatoryRef(newVal)
-  })
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
 
   defineExpose({
     totalPages: controller.totalPages.bind(controller),

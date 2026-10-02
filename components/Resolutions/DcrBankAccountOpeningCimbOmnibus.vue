@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-bank-account-opening-cimb-omnibus">
+  <div
+    id="dcr-bank-account-opening-cimb-omnibus"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="PaperOrientation.Portrait"
       :is-loader="true"
@@ -17,7 +20,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -265,7 +268,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -520,7 +523,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -846,7 +849,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -1178,6 +1181,7 @@
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "updated"])
 
+  const documentRef = ref(null)
   const resolutionContent = ref(null)
   const nonDirectorBankSignatoryRef = ref(null)
 
@@ -1240,6 +1244,14 @@
   watch(nonDirectorBankSignatoryRef, (newVal) => {
     controller.setNonDirectorBankSignatoryRef(newVal)
   })
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
 
   defineExpose({
     totalPages: controller.totalPages.bind(controller),

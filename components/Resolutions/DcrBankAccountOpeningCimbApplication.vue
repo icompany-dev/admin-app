@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-bank-account-opening-cimb-application">
+  <div
+    id="dcr-bank-account-opening-cimb-application"
+    ref="documentRef"
+  >
     <Paper
       :paper-orientation="PaperOrientation.Portrait"
       :is-loader="true"
@@ -17,7 +20,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -856,7 +859,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -1435,7 +1438,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -1942,7 +1945,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template #paperContent>
           <div class="document-page application-page-4">
@@ -2340,7 +2343,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template #paperContent>
           <div class="document-page application-page-5">
@@ -2701,7 +2704,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template #paperContent>
           <div class="document-page application-page-6">
@@ -2997,7 +3000,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -3241,7 +3244,7 @@
       <Paper
         :paper-orientation="PaperOrientation.Portrait"
         :show-page-number="false"
-        additional-css-class="cimb-form-paper"
+        additional-css-class="cimb-application-form-paper"
       >
         <template
           #paperMargins
@@ -3636,6 +3639,7 @@
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "updated"])
 
+  const documentRef = ref(null)
   const resolutionContent = ref(null)
   const nonDirectorBankSignatoryRef = ref(null)
 
@@ -3693,6 +3697,14 @@
       controller.updateApplicationContent(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 
   defineExpose({
