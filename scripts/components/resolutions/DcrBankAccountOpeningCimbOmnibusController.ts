@@ -47,7 +47,7 @@ export class DcrBankAccountOpeningCimbOmnibusController extends ResolutionContro
   isShowBranchOptions: Ref<boolean> = ref<boolean>(false)
   searchBranch: Ref<string> = ref<string>("")
 
-  additionalCssClass: string = "cimb-form-paper"
+  additionalCssClass: string = "cimb-omnibus-form-paper"
   boardResolutionDateParts = ref({ day: "", month: "", year: "" })
   extractPassedDateParts = ref({ day: "", month: "", year: "" })
   extractCertificationDateParts = ref({ day: "", month: "", year: "" })
@@ -82,13 +82,9 @@ export class DcrBankAccountOpeningCimbOmnibusController extends ResolutionContro
     if (!this.companyBankAccountOpeningRepository.error && response !== null) {
       this.application.value = new CompanyBankAccountOpening(response)
 
-      if (this.application.value.companyId === this.companyDataManager.companyId) {
-        this.application.value.company = new Company(this.companyDataManager.company)
-      } else {
-        let companyRepository = useCompanyStore()
-        let companyResponse = await companyRepository.fetch(this.application.value.companyId)
-        this.application.value.company = new Company(companyResponse)
-      }
+      let companyRepository = useCompanyStore()
+      let companyResponse = await companyRepository.fetch(this.application.value.companyId)
+      this.application.value.company = new Company(companyResponse)
 
       if (this.application.value.paidAt !== this.application.value.updatedAt) {
         this.selectedBranchId.value = this.application.value.bankBranchId
@@ -108,13 +104,9 @@ export class DcrBankAccountOpeningCimbOmnibusController extends ResolutionContro
     this.application.value = new CompanyBankAccountOpening()
     this.application.value.companyId = this.companyId.value
 
-    if (this.companyId.value === this.companyDataManager.companyId) {
-      this.application.value.company = new Company(this.companyDataManager.company)
-    } else {
-      let response = await this.companyRepository.fetch(this.companyId.value)
-      if (!this.companyRepository.error) {
-        this.application.value.company = new Company(response)
-      }
+    let response = await this.companyRepository.fetch(this.companyId.value)
+    if (!this.companyRepository.error) {
+      this.application.value.company = new Company(response)
     }
 
     this.application.value.bankId = this.bankId
@@ -365,16 +357,10 @@ export class DcrBankAccountOpeningCimbOmnibusController extends ResolutionContro
 
   async fetchDirectors(): Promise<void> {
     try {
-      if (this.companyId.value === this.companyDataManager.companyId) {
-        this.directors.value = this.companyDataManager.directors.map((d: Director) => {
-          return new Director(d)
-        })
-      } else {
-        let response = await this.directorRepository.fetchAllForCompany(this.companyId.value)
-        this.directors.value = response.map((d: Director) => {
-          return new Director(d)
-        })
-      }
+      let response = await this.directorRepository.fetchAllForCompany(this.companyId.value)
+      this.directors.value = response.map((d: Director) => {
+        return new Director(d)
+      })
 
       this.directorUsers.value = []
       for (let i = 0; i < this.directors.value.length; i++) {

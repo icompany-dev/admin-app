@@ -37,10 +37,13 @@
           class="documents"
         >
           <component
+            ref="dcrRef"
             :is="activeDocumentComponent"
             :company-id="controller.companyId"
             :resolution-document="controller.resolutionDocumentProps"
+            :is-show-all-documents="controller.bankId.value === BankConstants.CIMB_DETAIL.id"
           />
+          <!-- TODO fixme: is-show-all-documents should be in the cimb documents -->
         </TransitionGroup>
       </template>
     </CompanyServiceWrapper>
@@ -223,6 +226,7 @@
 
   defineExpose({
     isDoneLoading: controller.isDoneLoading.bind(controller),
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
   })
 </script>
 

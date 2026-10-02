@@ -164,6 +164,24 @@
             "
           />
         </div>
+        <IdentificationDocumentWatermark
+          v-for="(director, i) in controller.directors.value"
+          v-bind="controller.getIdentificationDocumentWatermarkProps(director)"
+          :ref="
+            (el) => {
+              controller.setIdentificationRefs(el, i)
+            }
+          "
+        />
+        <IdentificationDocumentWatermark
+          v-for="(shareholder, i) in controller.shareholdersForIdentification"
+          v-bind="controller.getIdentificationDocumentWatermarkProps(shareholder)"
+          :ref="
+            (el) => {
+              controller.setIdentificationRefs(el, i)
+            }
+          "
+        />
       </template>
     </div>
   </div>
@@ -173,6 +191,7 @@
   import DcrBankAccountOpeningCimbBank from "~/components/Resolutions/DcrBankAccountOpeningCimbBank.vue"
   import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"
+  import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import DcrBankAccountOpeningCimbApplication from "~/components/Resolutions/DcrBankAccountOpeningCimbApplication.vue"
   import DcrBankAccountOpeningCimbOmnibus from "~/components/Resolutions/DcrBankAccountOpeningCimbOmnibus.vue"
   import { CimbBankDocumentsController } from "~/scripts/components/banks/documents/CimbBankDocumentsController"
@@ -210,7 +229,8 @@
     () => props.resolutionDocument.application,
     (newVal) => {
       controller.setResolutionDocument(newVal)
-    }
+    },
+    { immediate: true }
   )
 
   watch(
@@ -253,6 +273,7 @@
     getOtherDetails: controller.getOtherDetails.bind(controller),
     getPdfPages: controller.getPdfPages.bind(controller),
     downloadPdfs: controller.downloadPdfs.bind(controller),
+    getPdfDocumentGroups: controller.getPdfDocumentGroups.bind(controller),
   })
 </script>
 

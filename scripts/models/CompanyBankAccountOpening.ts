@@ -81,8 +81,8 @@ export class CompanyBankAccountOpening
         this.affinBankApplicationDetails = new AffinBankApplicationDetails(data.meta_data.affin_bank_details)
       }
 
-      if (data.meta_data.cimb_bank_application_details) {
-        this.cimbBankApplicationDetails = new CimbBankApplicationDetails(data.meta_data.cimb_bank_application_details)
+      if (data.meta_data.cimb_bank_details) {
+        this.cimbBankApplicationDetails = new CimbBankApplicationDetails(data.meta_data.cimb_bank_details)
       }
     }
   }
