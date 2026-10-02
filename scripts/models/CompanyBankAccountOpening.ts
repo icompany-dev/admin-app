@@ -9,6 +9,7 @@ import type { IModelApplication } from "./IModelApplication"
 import { OnlineBanking } from "../types/banks/OnlineBanking"
 import { AllianceBankApplicationDetails } from "../types/banks/AllianceBankApplicationDetails"
 import { AffinBankApplicationDetails } from "../types/banks/AffinBankApplicationDetails"
+import { CimbBankApplicationDetails } from "../types/banks/CimbBankApplicationDetails"
 
 export class CompanyBankAccountOpening
   extends Application
@@ -29,6 +30,7 @@ export class CompanyBankAccountOpening
 
   allianceBankApplicationDetails: AllianceBankApplicationDetails | null = null
   affinBankApplicationDetails: AffinBankApplicationDetails | null = null
+  cimbBankApplicationDetails: CimbBankApplicationDetails | null = null
 
   constructor(data: any | null = null) {
     super()
@@ -78,6 +80,10 @@ export class CompanyBankAccountOpening
       if (data.meta_data.affin_bank_details) {
         this.affinBankApplicationDetails = new AffinBankApplicationDetails(data.meta_data.affin_bank_details)
       }
+
+      if (data.meta_data.cimb_bank_application_details) {
+        this.cimbBankApplicationDetails = new CimbBankApplicationDetails(data.meta_data.cimb_bank_application_details)
+      }
     }
   }
 
@@ -107,6 +113,9 @@ export class CompanyBankAccountOpening
         ? new AffinBankApplicationDetails(data.affinBankApplicationDetails)
         : null
 
+    this.cimbBankApplicationDetails =
+      data.cimbBankApplicationDetails !== null ? new CimbBankApplicationDetails(data.cimbBankApplicationDetails) : null
+
     this.resolutionDate = data.resolutionDate
   }
 
@@ -127,6 +136,9 @@ export class CompanyBankAccountOpening
         }),
         ...(this.affinBankApplicationDetails !== null && {
           affin_bank_details: this.affinBankApplicationDetails,
+        }),
+        ...(this.cimbBankApplicationDetails !== null && {
+          cimb_bank_details: this.cimbBankApplicationDetails,
         }),
       },
       requirements: this.requirements,

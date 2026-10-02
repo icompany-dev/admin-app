@@ -13,6 +13,7 @@ import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { User } from "~/scripts/models/User"
 import { Company } from "~/scripts/models/Company"
 import { Shareholder } from "~/scripts/models/Shareholder"
+import type { CimbBankApplicationDetails } from "~/scripts/types/banks/CimbBankApplicationDetails"
 
 export class BankDocumentsController {
   companyId: Ref<string> = ref<string>("")
@@ -286,7 +287,7 @@ export class BankDocumentsController {
     return this.dcrRef.getAuthorisedPersonsForOnlineBanking()
   }
 
-  getOtherDetails(): AllianceBankApplicationDetails | null {
+  getOtherDetails(): AllianceBankApplicationDetails | CimbBankApplicationDetails | null {
     if (!this.dcrRef) {
       return null
     }
