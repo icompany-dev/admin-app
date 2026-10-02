@@ -172,9 +172,9 @@
             <div class="signee">
               Nama Pemilik Syarikat / Pemegang Saham:
               <br />
-              {{ signatureItem.name }}
+              <span v-html="signatureItem.name" />
               <br />
-              {{ signatureItem.role }}
+              <span v-html="signatureItem.role" />
             </div>
             <!-- <Signature
               :signature-item="signatureItem"
