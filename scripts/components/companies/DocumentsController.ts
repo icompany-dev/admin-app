@@ -22,11 +22,14 @@ export class DocumentsController {
   emitEvents: any | null = null
 
   uploadDocumentRef: any | null = null
+  viewDocumentRef: any | null = null
 
   selectedDocuments: Ref<CompanyDocument[]> = ref<CompanyDocument[]>([])
 
   isDownloading: Ref<boolean> = ref<boolean>(false)
   isDeleting: Ref<boolean> = ref<boolean>(false)
+
+  pdfUrlToView: Ref<string> = ref<string>("")
 
   language = useLanguage()
 
@@ -44,6 +47,10 @@ export class DocumentsController {
       this.documentsAndForms.value.companyId = this.companyId.value
       await this.documentsAndForms.value.init()
     }
+  }
+
+  setViewDocumentRef(viewDocumentRef: any | null): void {
+    this.viewDocumentRef = viewDocumentRef
   }
 
   setUploadDocumentRef(uploadDocumentRef: any): void {
@@ -87,6 +94,22 @@ export class DocumentsController {
     props.canvasScale = 0.25
 
     return props
+  }
+
+  onDocumentClicked(companyDocument: CompanyDocument): void {
+    console.log("called onDocumentClicked")
+    this.pdfUrlToView.value = companyDocument.fileUrl ?? ""
+
+    if (this.viewDocumentRef && !StringUtil.isNullOrEmpty(this.pdfUrlToView.value)) {
+      this.viewDocumentRef.show()
+    } else {
+      console.log(this.pdfUrlToView.value, "url")
+      console.log(this.viewDocumentRef)
+    }
+  }
+
+  onHideViewDocument(): void {
+    this.pdfUrlToView.value = ""
   }
 
   onSelectionChanged(value: boolean, companyDocument: CompanyDocument): void {

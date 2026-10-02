@@ -24,6 +24,7 @@
           <CompanyDocument
             v-bind="controller.getPropsDocument(companyDocument)"
             @is-selected-changed="controller.onSelectionChanged($event, companyDocument)"
+            @is-viewing-document="controller.onDocumentClicked(companyDocument)"
           />
         </div>
         <div
@@ -44,6 +45,7 @@
           <CompanyDocument
             v-bind="controller.getPropsDocument(companyDocument)"
             @is-selected-changed="controller.onSelectionChanged($event, companyDocument)"
+            @is-viewing-document="controller.onDocumentClicked(companyDocument)"
           />
         </div>
         <div
@@ -64,6 +66,7 @@
           <CompanyDocument
             v-bind="controller.getPropsDocument(companyDocument)"
             @is-selected-changed="controller.onSelectionChanged($event, companyDocument)"
+            @is-viewing-document="controller.onDocumentClicked(companyDocument)"
           />
         </div>
         <div
@@ -75,6 +78,11 @@
       </div>
     </div>
     <Teleport to="body">
+      <ViewDocument
+        ref="viewDocumentRef"
+        :pdf-url="controller.pdfUrlToView.value"
+        @hide="controller.onHideViewDocument()"
+      />
       <ActionTray
         :actions="controller.actionTrayElements"
         :is-lock-position="true"
@@ -91,7 +99,7 @@
 <script lang="ts" setup>
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import LoaderPrepare from "~/components/Loaders/Prepare.vue"
-  // import ViewDocument from "./ViewDocument.vue"
+  import ViewDocument from "@/components/Documents/ViewDocument.vue"
   import CompanyDocument from "@/components/Documents/CompanyDocument.vue"
   // import PaginationBubble from "@/components/Paginations/Bubbles.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
@@ -105,6 +113,7 @@
   const emit = defineEmits([])
 
   const uploadDocumentRef = ref(null)
+  const viewDocumentRef = ref(null)
 
   const controller = new DocumentsController(props, emit)
 
@@ -120,6 +129,14 @@
     uploadDocumentRef,
     (newVal) => {
       controller.setUploadDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    viewDocumentRef,
+    (newVal) => {
+      controller.setViewDocumentRef(newVal)
     },
     { immediate: true }
   )
