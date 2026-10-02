@@ -85,13 +85,9 @@ export class DcrBankAccountOpeningCimbApplicationController extends ResolutionCo
       this.application.value = new CompanyBankAccountOpening(response)
       this.loadOtherDetails()
 
-      if (this.application.value.companyId === this.companyDataManager.companyId) {
-        this.application.value.company = new Company(this.companyDataManager.company)
-      } else {
-        let companyRepository = useCompanyStore()
-        let companyResponse = await companyRepository.fetch(this.application.value.companyId)
-        this.application.value.company = new Company(companyResponse)
-      }
+      let companyRepository = useCompanyStore()
+      let companyResponse = await companyRepository.fetch(this.application.value.companyId)
+      this.application.value.company = new Company(companyResponse)
 
       this.application.value.signatories.forEach((s: CompanyBankSignatory, index: number) => {
         this.signatoryPlaceholders.value[index] = s
@@ -113,13 +109,9 @@ export class DcrBankAccountOpeningCimbApplicationController extends ResolutionCo
     this.application.value = new CompanyBankAccountOpening()
     this.application.value.companyId = this.companyId.value
 
-    if (this.companyId.value === this.companyDataManager.companyId) {
-      this.application.value.company = new Company(this.companyDataManager.company)
-    } else {
-      let response = await this.companyRepository.fetch(this.companyId.value)
-      if (!this.companyRepository.error) {
-        this.application.value.company = new Company(response)
-      }
+    let response = await this.companyRepository.fetch(this.companyId.value)
+    if (!this.companyRepository.error) {
+      this.application.value.company = new Company(response)
     }
 
     this.application.value.bankId = this.bankId
@@ -425,16 +417,10 @@ export class DcrBankAccountOpeningCimbApplicationController extends ResolutionCo
 
   async fetchDirectors(): Promise<void> {
     try {
-      if (this.companyId.value === this.companyDataManager.companyId) {
-        this.directors.value = this.companyDataManager.directors.map((d: Director) => {
-          return new Director(d)
-        })
-      } else {
-        let response = await this.directorRepository.fetchAllForCompany(this.companyId.value)
-        this.directors.value = response.map((d: Director) => {
-          return new Director(d)
-        })
-      }
+      let response = await this.directorRepository.fetchAllForCompany(this.companyId.value)
+      this.directors.value = response.map((d: Director) => {
+        return new Director(d)
+      })
 
       for (let i = 0; i < this.directors.value.length; i++) {
         let director = this.directors.value[i]
@@ -451,16 +437,10 @@ export class DcrBankAccountOpeningCimbApplicationController extends ResolutionCo
 
   async fetchShareholders(): Promise<void> {
     try {
-      if (this.companyId.value === this.companyDataManager.companyId) {
-        this.shareholders.value = this.companyDataManager.shareholders.map((s: Shareholder) => {
-          return new Shareholder(s)
-        })
-      } else {
-        let response = await this.shareholderRepository.fetchAllForCompany(this.companyId.value)
-        this.shareholders.value = response.map((s: Shareholder) => {
-          return new Shareholder(s)
-        })
-      }
+      let response = await this.shareholderRepository.fetchAllForCompany(this.companyId.value)
+      this.shareholders.value = response.map((s: Shareholder) => {
+        return new Shareholder(s)
+      })
     } catch (e) {
       console.error("Failed to fetch directors:", e)
     }

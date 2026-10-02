@@ -47,6 +47,8 @@ export class DcrBankAccountOpeningCimbBankController extends OpenBankAccountReso
 
   nonDirectorBankSignatoryRef: any | null = null
 
+  selectedResolutionDate: Ref<string> = ref<string>("")
+
   constructor(props: IPropsResolutionDocument<CompanyBankAccountOpening>, emitEvents: any | null) {
     super(
       props.companyId,
@@ -66,6 +68,7 @@ export class DcrBankAccountOpeningCimbBankController extends OpenBankAccountReso
     this.maxSignatureOnOtherPages.value = 6
 
     this.getPersonsToSign()
+    this.fetchDirectors()
   }
 
   setNonDirectorBankSignatoryRef(nonDirectorBankSignatoryRef: any): void {
@@ -77,13 +80,9 @@ export class DcrBankAccountOpeningCimbBankController extends OpenBankAccountReso
     if (!this.companyBankAccountOpeningRepository.error && response !== null) {
       this.application.value = new CompanyBankAccountOpening(response)
 
-      if (this.application.value.companyId === this.companyDataManager.companyId) {
-        this.application.value.company = new Company(this.companyDataManager.company)
-      } else {
-        let companyRepository = useCompanyStore()
-        let companyResponse = await companyRepository.fetch(this.application.value.companyId)
-        this.application.value.company = new Company(companyResponse)
-      }
+      let companyRepository = useCompanyStore()
+      let companyResponse = await companyRepository.fetch(this.application.value.companyId)
+      this.application.value.company = new Company(companyResponse)
 
       this.application.value.signatories.forEach((s: CompanyBankSignatory, index: number) => {
         this.signatoryPlaceholders.value[index] = s
@@ -105,13 +104,9 @@ export class DcrBankAccountOpeningCimbBankController extends OpenBankAccountReso
     this.application.value = new CompanyBankAccountOpening()
     this.application.value.companyId = this.companyId.value
 
-    if (this.companyId.value === this.companyDataManager.companyId) {
-      this.application.value.company = new Company(this.companyDataManager.company)
-    } else {
-      let response = await this.companyRepository.fetch(this.companyId.value)
-      if (!this.companyRepository.error) {
-        this.application.value.company = new Company(response)
-      }
+    let response = await this.companyRepository.fetch(this.companyId.value)
+    if (!this.companyRepository.error) {
+      this.application.value.company = new Company(response)
     }
 
     this.application.value.bankId = this.bankId
@@ -165,16 +160,10 @@ export class DcrBankAccountOpeningCimbBankController extends OpenBankAccountReso
 
   async fetchDirectors(): Promise<void> {
     try {
-      if (this.companyId.value === this.companyDataManager.companyId) {
-        this.directors.value = this.companyDataManager.directors.map((d: Director) => {
-          return new Director(d)
-        })
-      } else {
-        let response = await this.directorRepository.fetchAllForCompany(this.companyId.value)
-        this.directors.value = response.map((d: Director) => {
-          return new Director(d)
-        })
-      }
+      let response = await this.directorRepository.fetchAllForCompany(this.companyId.value)
+      this.directors.value = response.map((d: Director) => {
+        return new Director(d)
+      })
 
       for (let i = 0; i < this.directors.value.length; i++) {
         let director = this.directors.value[i]
@@ -250,6 +239,10 @@ export class DcrBankAccountOpeningCimbBankController extends OpenBankAccountReso
     let end = start + 7
 
     return this.signatoryPlaceholders.value.slice(start, end)
+  }
+
+  getDirectors(): Director[] {
+    return this.directors.value
   }
 
   getSignatureOnCurrentPage(page: number): SignatureItem[] {
@@ -438,5 +431,13 @@ export class DcrBankAccountOpeningCimbBankController extends OpenBankAccountReso
     ).length
 
     return numberOfSignatoryOnPage <= 5
+  }
+
+  get formattedResolutionDate(): string {
+    if (!this.selectedResolutionDate.value) {
+      return "To be determined"
+    }
+
+    return this.dayjs(this.selectedResolutionDate.value).locale("en").format("D MMMM YYYY")
   }
 }
