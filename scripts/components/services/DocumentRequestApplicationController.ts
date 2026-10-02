@@ -31,6 +31,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
+  isCompleting: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -80,7 +81,15 @@ export class DocumentRequestApplicationController extends ApplicationController<
     this.isShowResolutions.value = true
     this.isShowCompleted.value = false
 
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+    // this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+  }
+
+  onCompleteApplicationClickedClicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowCompleted.value = true
+
+    // this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
   }
 
   async onDownloadClicked(): Promise<void> {
@@ -148,7 +157,38 @@ export class DocumentRequestApplicationController extends ApplicationController<
   }
 
   async onCompleteClicked(): Promise<void> {
-    //
+    if (this.isCompleting.value || !this.application.value) {
+      return
+    }
+
+    try {
+      this.isCompleting.value = true
+
+      let repository = useCompanyDocumentRequestStore()
+      this.application.value.status = StatusConstants.COMPLETED
+
+      await repository.complete(this.application.value.id)
+
+      let toastTitle = this.language.isMalay() ? "Permohonan ini selesai" : "You have completed this application"
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahu melalui emel dan WhatsApp."
+        : "The Directors have been informed via email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push(`/sdnbhds/${this.application.value.companyId}`)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isCompleting.value = false
+    }
   }
 
   onDocumentClicked(item: CompanyDocumentRequestItem): void {
