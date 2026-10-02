@@ -10,7 +10,7 @@
       />
     </div>
     <div
-      v-if="!controller.isLoading.value"
+      v-if="!controller.isLoadingPage"
       class="company-documents-container"
     >
       <div class="container-header">
@@ -74,8 +74,11 @@
         </div>
       </div>
     </div>
-    <ActionTray :actions="controller.actionTrayElements" />
     <Teleport to="body">
+      <ActionTray
+        :actions="controller.actionTrayElements"
+        :is-lock-position="true"
+      />
       <UploadDocument
         ref="uploadDocumentRef"
         v-bind="controller.uploadDocumentProps"

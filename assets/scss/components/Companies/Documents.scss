@@ -3,6 +3,7 @@
   height: 100%;
   margin: auto;
   position: relative;
+  padding-bottom: 50px;
 
   .container-header {
     font-size: 1.4rem;
@@ -143,7 +144,7 @@
             color: var(--bs-gray-600);
             border-radius: 10px;
             cursor: pointer;
-            width: 177px;
+            width: 160px;
             height: 204px;
             display: flex;
             flex-direction: column;
@@ -167,4 +168,8 @@
       }
     }
   }
+}
+
+#action-tray {
+  z-index: 10;
 }

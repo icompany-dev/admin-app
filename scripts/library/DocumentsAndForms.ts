@@ -113,26 +113,26 @@ export class DocumentsAndForms {
   setDocuments(): void {
     this.documents = []
 
-    this.myDataDocuments?.documents.forEach((document: MyDataDocument) => {
-      this.documents.push(
-        new CompanyDocument(
-          crypto.randomUUID(),
-          false,
-          document.formDescription,
-          null,
-          true,
-          new Date(document.documentDate),
-          `${document.myDataFileId}`,
-          document.totalPages
-        )
-      )
-    })
+    // this.myDataDocuments?.documents.forEach((document: MyDataDocument) => {
+    //   this.documents.push(
+    //     new CompanyDocument(
+    //       crypto.randomUUID(),
+    //       false,
+    //       document.formDescription,
+    //       null,
+    //       true,
+    //       new Date(document.documentDate),
+    //       `${document.myDataFileId}`,
+    //       document.totalPages
+    //     )
+    //   )
+    // })
 
     this.forms.forEach((form: Form) => {
-      let documentDate = form.createdAt ? new Date(form.createdAt) : new Date(this.company?.incorporatedAt ?? "")
+      let documentDate = form.documentDate ? new Date(form.documentDate) : new Date(this.company?.createdAt ?? "")
       this.documents.push(
         new CompanyDocument(
-          crypto.randomUUID(),
+          form.id,
           false,
           form.file?.name ?? "",
           form.file?.url ?? null,

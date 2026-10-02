@@ -1,5 +1,7 @@
 import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
+import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
+import { Toast } from "~/scripts/library/Toast"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsDocument } from "~/scripts/props/PropsDocument"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
@@ -100,7 +102,44 @@ export class DocumentsController {
   }
 
   async onRemoveDocumentsClicked(): Promise<void> {
-    //
+    if (this.isDeleting.value) {
+      return
+    }
+
+    try {
+      this.isDeleting.value = true
+
+      let promises = this.selectedDocuments.value.map((cd: CompanyDocument) => {
+        let repository = useFormStore()
+        return repository.remove(cd.id)
+      })
+
+      await Promise.all(promises)
+
+      let toastTitle = this.language.isMalay()
+        ? "Dokumen yang dipilih telah berjaya dipadamkan daripada sistem iCompany."
+        : "The selected documents have been successfully removed from the iCompany system."
+      let toastMessage = this.language.isMalay()
+        ? "Sila tunggu sementara kami memaut semula senarai dokumen."
+        : "Please wait while we refresh the documents list."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      this.selectedDocuments.value = []
+
+      await this.documentsAndForms.value.init()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isDeleting.value = false
+    }
   }
 
   async onDownloadClicked(): Promise<void> {
@@ -133,7 +172,14 @@ export class DocumentsController {
 
       await FileZipper.zipAndDownload(files, `Company Documents.zip`)
     } catch (e) {
-      //
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
     } finally {
       this.isDownloading.value = false
     }
