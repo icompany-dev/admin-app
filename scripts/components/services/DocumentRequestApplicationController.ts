@@ -17,7 +17,7 @@ import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderItemMandatory"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import type { PaymentOrder } from "~/scripts/models/PaymentOrder"
-import { DeliveryConstants } from "~/scripts/constants/Payment"
+import { CtcConstants, DeliveryConstants } from "~/scripts/constants/Payment"
 import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 import { FileZipper } from "~/scripts/utils/FileZipper"
@@ -199,7 +199,15 @@ export class DocumentRequestApplicationController extends ApplicationController<
       return "-"
     }
 
-    if (!this.application.value.isCtcRequired && this.application.value.isSsmCtcRequired) {
+    if (this.paymentOrderItem.isCtcRequired) {
+      if (this.paymentOrderItem.ctcBy === CtcConstants.CTC_TYPE_COSEC) {
+        return this.language.isMalay() ? "oleh Setiausaha Syarikat" : "By Cosec"
+      }
+
+      return this.language.isMalay() ? "oleh SSM" : "By SSM"
+    }
+
+    if (!this.application.value.isCtcRequired && !this.application.value.isSsmCtcRequired) {
       return this.language.isMalay() ? "Tidak Diperlukan" : "Not Required"
     }
 

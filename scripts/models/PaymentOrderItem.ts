@@ -106,7 +106,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.handlingFees = data.handling_fees
     this.isHfSstApplicable = data.is_hf_sst_applicable
     this.subtotal = data.subtotal
-    this.isCtcRequired = data.is_ctc_required
+    this.isCtcRequired = data.is_ctc_required === 1
     this.ctcBy = data.ctc_by
     this.ctcType = data.ctc_type
     this.ctcCopies = data.ctc_copies
