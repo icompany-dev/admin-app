@@ -208,8 +208,8 @@ export abstract class ResolutionController<T> {
   signatureTitle(): string {
     const typeOfSignatures = this.isDcr.value ? "Director" : "Member"
 
-    const title = this.signatureItems.value.length > 0 ? "Board of" : "Sole"
-    return this.signatureItems.value.length > 0 ? `${title} ${typeOfSignatures}s` : `${title} ${typeOfSignatures}`
+    const title = this.signatureItems.value.length > 1 ? "Board of" : "Sole"
+    return this.signatureItems.value.length > 1 ? `${title} ${typeOfSignatures}s` : `${title} ${typeOfSignatures}`
   }
 
   isSignatureEditable(group: string): boolean {
