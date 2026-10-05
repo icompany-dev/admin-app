@@ -115,7 +115,7 @@
               class="btn btn-pill btn-primary"
               @click="controller.onUploadClicked()"
             >
-              {{ controller.downloadLabel }}
+              {{ controller.uploadLabel }}
             </button>
           </template>
           <template #nodeActions>
