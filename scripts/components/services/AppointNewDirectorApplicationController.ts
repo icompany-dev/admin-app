@@ -120,14 +120,17 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     }
   }
 
-  async onCompleteClicked(): Promise<void> {
-    this.isCompleting.value = true
+  onUploadClicked(): void {
     if (this.uploadDocumentRef) {
       this.uploadDocumentRef.show()
-
-      return
     }
+  }
 
+  async onProceedUpload(): Promise<void> {
+    await this.uploadedDocumentChecker.value.fetchDocuments()
+  }
+
+  async onCompleteClicked(): Promise<void> {
     await this.proceedCompleteService()
   }
 
@@ -340,10 +343,26 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   get uploadLabel(): string {
-    return this.language.isMalay() ? "Muat Naik Seksyen 58" : "Upload Section 58"
+    if (this.isSection58Uploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
   get markCompletedLabel(): string {
     return this.language.isMalay() ? "Tanda Lengkap" : "Mark Completed"
+  }
+
+  // get document uploaded
+  get isSection58Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
+  get section58Label(): string {
+    return this.language.isMalay() ? "Seksyen 58" : "Section 58"
   }
 }

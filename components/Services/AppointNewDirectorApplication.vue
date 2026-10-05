@@ -110,7 +110,14 @@
               </div>
             </div>
           </template>
-          <template #nodeOptions></template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onUploadClicked()"
+            >
+              {{ controller.downloadLabel }}
+            </button>
+          </template>
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
