@@ -363,6 +363,6 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   get section58Label(): string {
-    return this.language.isMalay() ? "Seksyen 58" : "Section 58"
+    return this.language.isMalay() ? "Seksyen 58 - Tambah Pengarah Baharu" : "Section 58 - Add New Director"
   }
 }
