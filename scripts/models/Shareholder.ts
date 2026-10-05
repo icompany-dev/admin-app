@@ -166,4 +166,17 @@ export class Shareholder implements IModel<Shareholder> {
 
     this.user = new User(user)
   }
+
+  get identification(): string {
+    if (this.isCorporateRepresentative()) {
+      let registrationNumber = this.company?.registrationNumberNew ?? ""
+      if (!StringUtil.isNullOrEmpty(this.company?.registrationNumberOld ?? "")) {
+        return `${registrationNumber} (${this.company?.registrationNumberOld})`
+      }
+
+      return registrationNumber
+    }
+
+    return this.user?.detail?.identification ?? "-"
+  }
 }
