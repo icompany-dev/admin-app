@@ -32,6 +32,6 @@ export class ShareholderController extends InvitationController {
   }
 
   get removeItemName(): string {
-    return this.language.isMalay() ? "Pemegang Saham" : "Shareholder"
+    return this.language.isMalay() ? "Pemegang Saham ini" : "this Shareholder"
   }
 }
