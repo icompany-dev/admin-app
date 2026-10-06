@@ -27,6 +27,12 @@
   }
 
   .company-documents-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+
     &.show-full {
       .container-header {
         display: none;
@@ -109,10 +115,12 @@
         display: grid;
         grid-template-columns: repeat(7, minmax(0, 1fr));
         grid-template-rows: auto; //repeat(2, minmax(0, 1fr));
-        padding: 15px;
+        justify-items: start;
+        padding: 15px 0;
         max-width: calc(183px * 7);
+        width: fit-content;
         height: auto;
-        // margin: auto;
+        margin: 0;
 
         .document {
           position: relative;
