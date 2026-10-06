@@ -27,6 +27,7 @@ export class DocumentsController {
   uploadDocumentRef: any | null = null
   viewDocumentRef: any | null = null
   editFilenamesRef: any | null = null
+  confirmDeleteRef: any | null = null
 
   selectedDocuments: Ref<CompanyDocument[]> = ref<CompanyDocument[]>([])
 
@@ -64,6 +65,10 @@ export class DocumentsController {
 
   setEditFilenamesRef(editFilenamesRef: any): void {
     this.editFilenamesRef = editFilenamesRef
+  }
+
+  setConfirmDeleteRef(confirmDeleteRef: any): void {
+    this.confirmDeleteRef = confirmDeleteRef
   }
 
   onUploadDocumentClicked(): void {
@@ -133,14 +138,21 @@ export class DocumentsController {
     }
   }
 
-  async onRemoveDocumentsClicked(): Promise<void> {
-    if (this.isDeleting.value) {
+  onRemoveDocumentsClicked(): void {
+    if (!this.confirmDeleteRef) {
       return
     }
 
-    try {
-      this.isDeleting.value = true
+    this.isDeleting.value = true
+    this.confirmDeleteRef.show()
+  }
 
+  onCancelDelete(): void {
+    this.isDeleting.value = false
+  }
+
+  async onProceedDelete(): Promise<void> {
+    try {
       let promises = this.selectedDocuments.value.map((cd: CompanyDocument) => {
         let repository = useFormStore()
         return repository.remove(cd.id)
@@ -394,5 +406,13 @@ export class DocumentsController {
     )
 
     return props
+  }
+
+  get removeItemName(): string {
+    if (this.language.isMalay()) {
+      return this.selectedDocuments.value.length > 1 ? "Dokumen ini" : "Dokumen - Dokumen ini"
+    }
+
+    return this.selectedDocuments.value.length > 1 ? "these Documents" : "this Document"
   }
 }

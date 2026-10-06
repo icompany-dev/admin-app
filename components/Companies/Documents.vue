@@ -98,12 +98,19 @@
         @back="controller.onCancelUpdateFilenameClicked()"
         @proceed="controller.onCompleteUpdateFilename()"
       />
+      <ConfirmToDelete
+        ref="confirmDeleteRef"
+        :remove-item-name="controller.removeItemName"
+        @back="controller.onCancelDelete()"
+        @proceed="controller.onProceedDelete()"
+      />
     </Teleport>
   </div>
 </template>
 
 <script lang="ts" setup>
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import LoaderPrepare from "~/components/Loaders/Prepare.vue"
   import ViewDocument from "@/components/Documents/ViewDocument.vue"
   import CompanyDocument from "@/components/Documents/CompanyDocument.vue"
@@ -122,6 +129,7 @@
   const uploadDocumentRef = ref(null)
   const viewDocumentRef = ref(null)
   const editFilenamesRef = ref(null)
+  const confirmDeleteRef = ref(null)
 
   const controller = new DocumentsController(props, emit)
 
@@ -153,6 +161,14 @@
     editFilenamesRef,
     (newVal) => {
       controller.setEditFilenamesRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    confirmDeleteRef,
+    (newVal) => {
+      controller.setConfirmDeleteRef(newVal)
     },
     { immediate: true }
   )
