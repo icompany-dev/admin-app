@@ -110,7 +110,13 @@ export class DividendVouchersController
       if (this.dcrRef) {
         let dcrPages = await this.dcrRef.getPdfPages()
         promises.push(
-          PdfPaperUtil.generatePdfFile(dcrPages, 20, "Dividend Vouchers.pdf", PaperSize.A4, PaperOrientation.Landscape)
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            20,
+            "Dividend / Payment Voucher.pdf",
+            PaperSize.A4,
+            PaperOrientation.Landscape
+          )
         )
       }
 

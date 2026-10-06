@@ -10,204 +10,16 @@
       />
     </div>
     <template v-if="!controller.isLoading.value">
-      <div class="incorp-application-summary">
-        <div class="proposed-name">
-          {{ controller.application.value.getName() }}
-          <span
-            class="name-approved"
-            v-if="controller.isNameApproved"
-          >
-            <i class="fa-solid fa-circle-check" />
-          </span>
-        </div>
-        <div class="summary-items">
-          <div class="summary-item">
-            <div class="summary-item-title">
-              {{ controller.applicantLabel }}
-            </div>
-            <div class="summary-item-content human-details">
-              <span class="human-detail">
-                <b>{{ controller.applicantName }}</b>
-                <CopyValue :value="controller.applicantName" />
-              </span>
-              <span class="human-detail">
-                <i class="fa-regular fa-envelope" />
-                {{ controller.applicantEmail }}
-                <CopyValue :value="controller.applicantEmail" />
-              </span>
-              <span class="human-detail">
-                <i class="fa-brands fa-whatsapp" />
-                {{ controller.applicantPhone }}
-                <CopyValue :value="controller.applicantPhone" />
-              </span>
-              <span class="human-detail">
-                <span>{{ controller.applicantIdentificationType }}</span>
-                <span>{{ controller.applicantIdentification }}</span>
-                <CopyValue :value="controller.applicantIdentification" />
-              </span>
-            </div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-item-title">
-              {{ controller.directorLabel }}
-            </div>
-            <div
-              class="summary-item-content"
-              v-for="(director, index) in controller.directorDetails"
-              :key="`director-${index}`"
-            >
-              <Director
-                v-bind="controller.getPropsInvitationDetail(director)"
-                @showDocument="controller.onOpenSection201Clicked(director)"
-                @removed="controller.fetchApplication()"
-              />
-            </div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-item-title">
-              {{ controller.shareholderLabel }}
-            </div>
-            <div
-              class="summary-item-content"
-              v-for="(shareholder, index) in controller.shareholderDetails"
-              :key="`shareholder-${index}`"
-            >
-              <Shareholder v-bind="controller.getPropsInvitationDetail(shareholder)" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="incorp-application-summary">
-        <div class="application-items">
-          <div class="application-item">
-            <div class="application-item-title">
-              {{ controller.businessNatureLabel }}
-              <div class="action-icons">
-                <i
-                  v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
-                  class="fa-regular fa-xmark clickable cancel"
-                  @click="controller.onCancelEditBusinessDescriptionClicked()"
-                />
-                <i
-                  v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
-                  class="fa-regular fa-save clickable save"
-                  @click="controller.onSaveBusinessDescriptionClicked()"
-                />
-                <i
-                  v-if="!controller.isEditingDescription.value"
-                  class="fa-regular fa-edit clickable edit"
-                  @click="controller.onEditBusinessDescriptionClicked()"
-                />
-                <i
-                  v-if="controller.isUpdatingDescription.value"
-                  class="fa-regular fa-spin fa-spinner edit"
-                />
-              </div>
-            </div>
-            <div class="application-item-content">
-              <template v-if="controller.isEditingDescription.value">
-                <textarea
-                  class="form-control"
-                  v-model="controller.application.value.businessDescription"
-                />
-              </template>
-              <template v-if="!controller.isEditingDescription.value">
-                {{ controller.application.value.businessDescription }}
-                <CopyValue :value="controller.application.value.businessDescription" />
-              </template>
-            </div>
-            <div class="application-item-title">
-              {{ controller.msicCodeLabel }}
-            </div>
-            <div class="application-item-content">
-              <template v-if="controller.isEditingDescription.value">
-                <SearchableDropdown
-                  :is-searchable="true"
-                  :options="controller.firstMsicCodeOptions"
-                  :selected-item-name="controller.firstSelectedMsicCodeName"
-                  :label-key="'label'"
-                  :value-key="'id'"
-                  @search="controller.onMsicCodeSearched($event, 0)"
-                  @selected="controller.onMsicCodeSelected($event, 0)"
-                />
-                <SearchableDropdown
-                  :is-searchable="true"
-                  :options="controller.secondMsicCodeOptions"
-                  :selected-item-name="controller.secondSelectedMsicCodeName"
-                  :label-key="'label'"
-                  :value-key="'id'"
-                  @search="controller.onMsicCodeSearched($event, 1)"
-                  @selected="controller.onMsicCodeSelected($event, 1)"
-                />
-                <SearchableDropdown
-                  :is-searchable="true"
-                  :options="controller.thirdMsicCodeOptions"
-                  :selected-item-name="controller.thirdSelectedMsicCodeName"
-                  :label-key="'label'"
-                  :value-key="'id'"
-                  @search="controller.onMsicCodeSearched($event, 2)"
-                  @selected="controller.onMsicCodeSelected($event, 2)"
-                />
-              </template>
-              <template v-if="!controller.isEditingDescription.value">
-                <span v-for="msic in controller.msicCodesList">
-                  {{ msic }}
-                  <br />
-                </span>
-              </template>
-            </div>
-          </div>
-          <div class="application-item">
-            <div class="application-item-title">
-              {{ controller.businessAddressLabel }}
-            </div>
-            <div class="application-item-content">
-              <template v-if="controller.hasBusinessAddress">
-                {{ controller.addressLine1 }}
-                <CopyValue :value="controller.addressLine1" />
-                <br />
-                <span v-if="controller.addressLine2.length > 0">
-                  {{ controller.addressLine2 }}
-                  <CopyValue :value="controller.addressLine2" />
-                  <br />
-                </span>
-                {{ controller.addressPostcode }} {{ controller.addressCity }}
-                <CopyValue :value="controller.addressPostcode" />
-                <br />
-                {{ controller.addressState }} {{ controller.addressCountry }}
-              </template>
-              <template v-if="!controller.hasBusinessAddress">(No Business Address)</template>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="incorp-application-details">
         <ServiceApplication
           v-bind="controller.serviceApplicationProps"
           @paymentNodeSelected="controller.onPaymentStepClicked()"
         >
-          <template #titleOptions>
-            <div class="display-toggles">
-              <button
-                class="btn btn-view btn-pill"
-                :class="{ active: controller.isShowAdminView.value }"
-                @click="controller.onShowAdminViewClicked()"
-              >
-                {{ controller.adminViewLabel }}
-              </button>
-              <button
-                class="btn btn-view btn-pill"
-                :class="{ active: controller.isShowCrsView.value }"
-                @click="controller.onShowCrsViewClicked()"
-              >
-                {{ controller.crsViewLabel }}
-              </button>
-            </div>
-          </template>
           <template #application>
             <ApplicationNode
-              v-bind="controller.nameReservationNodeProps"
-              @click="controller.onNameReservationStepClicked()"
+              v-for="(nameOption, index) in controller.nameOptions"
+              v-bind="controller.nameReservationApplicationNodeProps(nameOption)"
+              @click="controller.onNameReservationStepClicked(nameOption)"
             >
               <template #nodeContent>
                 <div class="application-container">
@@ -217,36 +29,12 @@
                     <span class="application-label">
                       {{ controller.proposedNamesLabel }}
                     </span>
-                    <div class="actions-button-options">
-                      <div
-                        class="btn btn-primary selected"
-                        @click="controller.onProposedNamesClicked()"
-                      >
-                        <span
-                          class="label"
-                          v-html="controller.selectedProposedNameForDisplay"
-                        />
-                        <i
-                          class="fa-solid fa-caret-down"
-                          :class="{ rotate: controller.isShowProposedNames.value }"
-                        ></i>
-                      </div>
-                      <div
-                        class="options"
-                        :class="{ show: controller.isShowProposedNames.value }"
-                      >
-                        <button
-                          v-for="(name, index) in controller.nameOptions"
-                          :key="index"
-                          class="btn btn-primary name-option"
-                          :disabled="!controller.canSelectForNameReservation(name)"
-                          @click="controller.onProposedNamesSelected(name)"
-                        >
-                          <span v-html="name" />
-                        </button>
-                      </div>
-                    </div>
-                    <CopyValue :value="controller.selectedProposedName.value" />
+                    &nbsp;
+                    <span
+                      class="propose-name"
+                      v-html="nameOption"
+                    />
+                    <CopyValue :value="nameOption" />
                   </div>
                   <Transition name="fade">
                     <div
@@ -267,7 +55,7 @@
                         </div>
                         <button
                           class="btn btn-primary"
-                          @click="controller.onRunAskSairaForNameDescription()"
+                          @click="controller.onRunAskSairaForNameDescription(nameOption)"
                         >
                           <i
                             class="fa-solid"
@@ -346,18 +134,18 @@
                       'is-loading': controller.isUpdatingSection27.value,
                       single: !controller.hasNextStepsForSection27,
                     }"
-                    @click="controller.onShowSection27ActionClicked()"
+                    @click="controller.onShowSection27ActionClicked(nameOption)"
                   >
                     <span class="label">{{ controller.section27ActionLabel }}</span>
                     <i
                       v-if="controller.hasNextStepsForSection27"
                       class="fa-solid fa-caret-down"
-                      :class="{ rotate: controller.isShowSection27Actions.value }"
+                      :class="{ rotate: controller.isShowingNameReservationsOptionFor(nameOption) }"
                     ></i>
                   </div>
                   <div
                     class="options"
-                    :class="{ show: controller.isShowSection27Actions.value }"
+                    :class="{ show: controller.isShowingNameReservationsOptionFor(nameOption) }"
                   >
                     <button
                       class="btn btn-pill btn-submit"
@@ -406,6 +194,133 @@
                 <div class="application-container">
                   <div class="node-title">{{ controller.registrationLabel }}</div>
                   <div class="node-subtitle">({{ controller.registrationSublabel }})</div>
+                  <div class="application-details">
+                    <div class="application-items">
+                      <div class="application-item">
+                        <div class="application-item-title">
+                          {{ controller.businessNatureLabel }}
+                          <div class="action-icons">
+                            <i
+                              v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                              class="fa-regular fa-xmark clickable cancel"
+                              @click="controller.onCancelEditBusinessDescriptionClicked()"
+                            />
+                            <i
+                              v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                              class="fa-regular fa-save clickable save"
+                              @click="controller.onSaveBusinessDescriptionClicked()"
+                            />
+                            <i
+                              v-if="!controller.isEditingDescription.value"
+                              class="fa-regular fa-edit clickable edit"
+                              @click="controller.onEditBusinessDescriptionClicked()"
+                            />
+                            <i
+                              v-if="controller.isUpdatingDescription.value"
+                              class="fa-regular fa-spin fa-spinner edit"
+                            />
+                          </div>
+                        </div>
+                        <div class="application-item-content">
+                          <template v-if="controller.isEditingDescription.value">
+                            <textarea
+                              class="form-control"
+                              v-model="controller.application.value.businessDescription"
+                            />
+                          </template>
+                          <template v-if="!controller.isEditingDescription.value">
+                            {{ controller.application.value.businessDescription }}
+                            <CopyValue :value="controller.application.value.businessDescription" />
+                          </template>
+                        </div>
+                        <div class="application-item-title">
+                          {{ controller.msicCodeLabel }}
+                        </div>
+                        <div class="application-item-content">
+                          <template v-if="controller.isEditingDescription.value">
+                            <SearchableDropdown
+                              :is-searchable="true"
+                              :options="controller.firstMsicCodeOptions"
+                              :selected-item-name="controller.firstSelectedMsicCodeName"
+                              :label-key="'label'"
+                              :value-key="'id'"
+                              @search="controller.onMsicCodeSearched($event, 0)"
+                              @selected="controller.onMsicCodeSelected($event, 0)"
+                            />
+                            <SearchableDropdown
+                              :is-searchable="true"
+                              :options="controller.secondMsicCodeOptions"
+                              :selected-item-name="controller.secondSelectedMsicCodeName"
+                              :label-key="'label'"
+                              :value-key="'id'"
+                              @search="controller.onMsicCodeSearched($event, 1)"
+                              @selected="controller.onMsicCodeSelected($event, 1)"
+                            />
+                            <SearchableDropdown
+                              :is-searchable="true"
+                              :options="controller.thirdMsicCodeOptions"
+                              :selected-item-name="controller.thirdSelectedMsicCodeName"
+                              :label-key="'label'"
+                              :value-key="'id'"
+                              @search="controller.onMsicCodeSearched($event, 2)"
+                              @selected="controller.onMsicCodeSelected($event, 2)"
+                            />
+                          </template>
+                          <template v-if="!controller.isEditingDescription.value">
+                            <div
+                              v-for="(msicCodeAssign, i) in controller.application.value.msicCodeAssigns"
+                              class="application-details-msic-code"
+                            >
+                              {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
+                              <CopyValue :value="msicCodeAssign.msicCode.code" />
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                      <div class="application-item">
+                        <div class="application-item-title">
+                          {{ controller.businessAddressLabel }}
+                        </div>
+                        <div class="application-item-content">
+                          <template v-if="controller.hasBusinessAddress">
+                            {{ controller.addressLine1 }}
+                            <CopyValue :value="controller.addressLine1" />
+                            <br />
+                            <span v-if="controller.addressLine2.length > 0">
+                              {{ controller.addressLine2 }}
+                              <CopyValue :value="controller.addressLine2" />
+                              <br />
+                            </span>
+                            {{ controller.addressPostcode }} {{ controller.addressCity }}
+                            <CopyValue :value="controller.addressPostcode" />
+                            <br />
+                            {{ controller.addressState }} {{ controller.addressCountry }}
+                          </template>
+                          <template v-if="!controller.hasBusinessAddress">(No Business Address)</template>
+                        </div>
+                      </div>
+                    </div>
+                    <b>{{ controller.directorLabel }}</b>
+                    <br />
+                    <div
+                      v-for="(director, index) in controller.directorDetails"
+                      :key="`director-${index}`"
+                    >
+                      <Director
+                        v-bind="controller.getPropsInvitationDetail(director)"
+                        @showDocument="controller.onOpenSection201Clicked(director)"
+                        @removed="controller.fetchApplication()"
+                      />
+                    </div>
+                    <b>{{ controller.shareholderLabel }}</b>
+                    <br />
+                    <div
+                      v-for="(shareholder, index) in controller.shareholderDetails"
+                      :key="`shareholder-${index}`"
+                    >
+                      <Shareholder v-bind="controller.getPropsInvitationDetail(shareholder)" />
+                    </div>
+                  </div>
                 </div>
               </template>
               <template #nodeOptions>
@@ -514,7 +429,7 @@
                           @click="controller.onGenerate236Clicked()"
                         />
                       </li>
-                      <li>
+                      <!-- <li>
                         <span class="document-label">
                           {{ controller.corporateProfileLabel }}
                         </span>
@@ -528,8 +443,18 @@
                           v-if="!controller.hasPurchasedCorporateProfile"
                           @click="controller.onPurchaseCorporateProfile()"
                         />
-                      </li>
+                      </li> -->
                     </ol>
+                    <template v-if="controller.hasOtherRequirements">
+                      <br />
+                      <br />
+                      <b>{{ controller.otherItemsToPrepareLabel }}</b>
+                      <ol>
+                        <li v-for="(oth, i) in controller.otherRequirements">
+                          {{ StringUtil.capitalize(oth.serviceName) }}
+                        </li>
+                      </ol>
+                    </template>
                   </div>
                 </div>
               </template>
@@ -573,7 +498,6 @@
                   >
                     <button
                       class="btn btn-pill btn-submit"
-                      :disabled="!controller.areDocumentsReadyToConvert"
                       @click="controller.onCompleteIncorporation()"
                     >
                       {{ controller.convertLabel }}
@@ -623,6 +547,11 @@
       ref="nameReservationRejectedPopup"
       @proceed="controller.onProceedNameReservationRejected($event)"
     />
+    <NameReservationApproved
+      ref="nameApprovedRef"
+      :name-reservation="controller.selectedNameReservationForApproval.value"
+      @proceed="controller.onProceedApproveReservation($event)"
+    />
   </div>
 </template>
 
@@ -633,6 +562,7 @@
   import Director from "@/components/Invitations/Director.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NameReservationRejected from "@/components/Popups/NameReservationRejected.vue"
+  import NameReservationApproved from "../Popups/NameReservationApproved.vue"
   import ReservedNameForNewSdnBhd from "@/components/Popups/ReservedNameForNewSdnBhd.vue"
   import ReservedNameForNewSdnBhdQueried from "@/components/Popups/ReservedNameForNewSdnBhdQueried.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
@@ -646,6 +576,7 @@
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
+  import { StringUtil } from "~/scripts/utils/String"
 
   const props = defineProps<IPropsIncorporationApplication>()
 
@@ -665,6 +596,7 @@
   const nameReservationRejectedPopup = ref(null)
   const completionOfIncorporationPopup = ref(null)
   const uploadFilePopup = ref(null)
+  const nameApprovedRef = ref(null)
 
   const controller = new ApplicationController(props, emit)
 
@@ -725,6 +657,14 @@
     nameReservationRejectedPopup,
     (newVal) => {
       controller.setNameReservationRejectedPopup(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    nameApprovedRef,
+    (newVal) => {
+      controller.setNameApprovedRef(newVal)
     },
     { immediate: true }
   )

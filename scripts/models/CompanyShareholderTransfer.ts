@@ -222,7 +222,7 @@ export class CompanyShareholderTransfer
 
   async create(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -230,7 +230,7 @@ export class CompanyShareholderTransfer
     let data = this.getRequestBody()
     let response = await repository.create(data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -240,7 +240,7 @@ export class CompanyShareholderTransfer
 
   async update(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id) || !this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -248,7 +248,7 @@ export class CompanyShareholderTransfer
     let data = this.getRequestBody()
     let response = await repository.update(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -258,14 +258,14 @@ export class CompanyShareholderTransfer
 
   async remove(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<any> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.remove(this.id)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

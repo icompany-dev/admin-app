@@ -18,6 +18,13 @@
         :title="controller.noRecordTitle"
         :subtitle="controller.noRecordSubtitle"
       />
+      <!-- <button
+        v-if="props.target === CompanyConstants.TARGET_DOCUMENT_REQUEST"
+        class="btn btn-submit"
+        @click="controller.onCreateClicked()"
+      >
+        {{ controller.createLabel }}
+      </button> -->
       <div
         class="application"
         v-for="(application, i) in controller.tableDataFetcher.value?.data"
@@ -54,12 +61,17 @@
         </div>
       </div>
     </div>
+    <CreateDocumentRequest
+      ref="createDocumentRequestRef"
+      v-bind="controller.uploadDocumentsProps"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
+  import CreateDocumentRequest from "../Popups/CreateDocumentRequest.vue"
   import { AllotNewSharesController } from "~/scripts/components/secretarial-services/AllotNewSharesController"
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
   import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
@@ -68,15 +80,20 @@
   import { ChangeOfAddressesController } from "~/scripts/components/secretarial-services/ChangeOfAddressesController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { DividendDeclarationsController } from "~/scripts/components/secretarial-services/DividendDeclarationsController"
+  import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
+  import { TransferOfSharesController } from "~/scripts/components/secretarial-services/TransferOfSharesController"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import type { Application } from "~/scripts/models/Application"
   import type { IPropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
+  import { TekunApplicationsController } from "~/scripts/components/secretarial-services/TekunApplicationsController"
 
   const props = defineProps<IPropsSecretarialServices>()
 
   const emit = defineEmits([])
+
+  const createDocumentRequestRef = ref(null)
 
   let controller: SecretarialServicesController<Application> = new ApplicationsController(props, emit)
 
@@ -87,14 +104,20 @@
     case CompanyConstants.TARGET_AMENDMENT_NAME:
       controller = new ChangeOfNamesController(props, emit)
       break
+    case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
+      controller = new AppointDirectorsController(props, emit)
+      break
     case CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY:
       controller = new ChangeBankSignatoriesController(props, emit)
       break
     case CompanyConstants.TARGET_DIVIDEND_DECLARATION:
       controller = new DividendDeclarationsController(props, emit)
       break
-    case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
-      controller = new AppointDirectorsController(props, emit)
+    case CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES:
+      controller = new TransferOfSharesController(props, emit)
+      break
+    case CompanyConstants.TARGET_DOCUMENT_REQUEST:
+      controller = new DocumentRequestsController(props, emit)
       break
     case CompanyConstants.TARGET_OPEN_BANK_ACCOUNT:
       controller = new BankAccountOpeningsController(props, emit)
@@ -104,6 +127,10 @@
       break
     case CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES:
       controller = new AllotNewSharesController(props, emit)
+      break
+    case CompanyConstants.TARGET_LOAN_APPLICATION:
+      controller = new TekunApplicationsController(props, emit)
+      break
   }
 
   watch(
@@ -112,6 +139,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    createDocumentRequestRef,
+    (newVal) => {
+      controller.setCreateDocumentRequestRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

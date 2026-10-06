@@ -11,6 +11,8 @@ import { PaperOrientation } from "~/scripts/constants/Paper"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureItem } from "~/scripts/types/SignatureItem"
 import { StatusConstants } from "~/scripts/constants/Status"
+import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class McrTekunApplicationController extends ResolutionController<CompanyTekunApplication> {
   companyTekunApplicationRepository = useCompanyLoanApplicationStore()
@@ -26,6 +28,9 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
 
   shareholders = ref<Shareholder[]>([])
   signatures = ref<SignatureItem[]>([])
+
+  address: Ref<string> = ref<string>("")
+  resolutionDocumentDate: Ref<string> = ref<string>("")
 
   constructor(props: IPropsResolutionDocument<CompanyTekunApplication>, emitEvents: any | null) {
     super(
@@ -61,8 +66,14 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
     if (!this.companyTekunApplicationRepository.error && response !== null) {
       this.application.value = new CompanyTekunApplication(response)
       this.isPaid.value = this.application.value.status !== StatusConstants.DRAFT
+      this.address.value = this.application.value.applicationDetails.address
+      this.resolutionDocumentDate.value = this.application.value.applicationDetails.documentDate
       this.authorisedPerson.value = this.application.value.applicationDetails.authorisedPerson
       this.initializeData()
+
+      if (StringUtil.isNullOrEmpty(this.address.value)) {
+        this.address.value = this.addressOptions.length > 0 ? this.addressOptions[0] : this.companyAddress
+      }
     }
   }
 
@@ -97,8 +108,8 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
     await Promise.all(promises)
 
     this.signatures.value = this.shareholders.value.map((s: Shareholder) => {
-      let idType = s.user?.detail?.identificationType === "passport" ? "Passport" : "K.P."
-      let role = `<b>No. ${idType}: ${s.user?.detail?.identification ?? ""}</b>`
+      let idType = s.user?.detail?.identificationType === "passport" ? "Passport" : "K.P"
+      let role = `No ${idType}: ${s.user?.detail?.identification ?? ""}`
 
       if (s.type === "representative" && s.company !== null) {
         let shareholderCompany = new Company(s.company)
@@ -110,15 +121,7 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
         role = `Wakil Korporat<br><b>${companyDetails.toUpperCase()}</b><br>${role}`
       }
 
-      return new SignatureItem(
-        this.signatureFile(s.email),
-        this.hasSigned(s.email),
-        false,
-        s.email !== this.currentUser.email,
-        s.name,
-        s.email,
-        role
-      )
+      return new SignatureItem(null, false, false, s.email !== this.currentUser.email, s.name, s.email, role)
     })
   }
 
@@ -178,7 +181,12 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
       return ""
     }
 
-    return this.application.value.company.getOnelineAddress()
+    let address = this.application.value.company.getOnelineAddress()
+    address = address.replaceAll("MALAYSIA", "")
+    address = address.replaceAll(",,", ",")
+    address = address.replace(/\s+/g, " ").trim()
+
+    return `${StringUtil.capitalize(address).trim()}`
   }
 
   get authorisedPersonName(): string {
@@ -191,5 +199,30 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
 
   get cosecCertification(): SignatureItem {
     return new SignatureItem(null, false, false, false, "Pengesahan Setiausaha Syarikat", "", "")
+  }
+
+  get addressOptions(): string[] {
+    if (!this.application.value || !this.application.value.company) {
+      return []
+    }
+
+    let addresses = [this.companyAddress]
+
+    addresses = addresses.concat(
+      this.application.value.company.branches.map((cb: CompanyBranch) => {
+        let address = cb.location?.getOnelineAddress() ?? ""
+        address = address.replaceAll("MALAYSIA", "")
+        address = address.replaceAll(",,", ",")
+        address = address.replace(/\s+/g, " ").trim()
+
+        return address
+      })
+    )
+
+    return addresses
+  }
+
+  get selectedAddress(): string {
+    return `<b>${this.address.value}</b>.`
   }
 }

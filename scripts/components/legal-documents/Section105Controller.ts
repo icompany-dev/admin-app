@@ -8,6 +8,8 @@ import { StringUtil } from "~/scripts/utils/String"
 import { User } from "~/scripts/models/User"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import { Shareholder } from "~/scripts/models/Shareholder"
+import type { Secretary } from "~/scripts/types/Secretary"
+import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 
 export class Section105Controller extends SdnBhdLegalDocumentController {
   companyShareTransferDetail: Ref<CompanyShareTransferDetail> = ref<CompanyShareTransferDetail>(
@@ -28,6 +30,12 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
 
   signatureFile: Ref<string> = ref<string>("")
 
+  isLoading: Ref<boolean> = ref<boolean>(false)
+
+  dateSignature: Ref<string> = ref<string>("")
+
+  additionalCssClass: string = "legal-document narrow-margin section-105"
+
   constructor(companyId: string, detail: CompanyShareTransferDetail, shareholderId: string, emitEvents: any | null) {
     super("Section 105", companyId, PaperOrientation.Portrait)
 
@@ -37,14 +45,19 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
   }
 
   async init(detail: CompanyShareTransferDetail, shareholderId: string): Promise<void> {
-    this.currentUser.value = await CurrentUser.get()
+    this.isLoading.value = true
     await this.setShareholderId(shareholderId)
     await this.setCompanyShareTransferDetail(detail)
+    this.isLoading.value = false
   }
 
   async setCompanyShareTransferDetail(detail: CompanyShareTransferDetail): Promise<void> {
     this.companyShareTransferDetail.value = new CompanyShareTransferDetail(detail)
-    this.transferToUser.value = new User(this.companyShareTransferDetail.value.getTransferToRegisteredUser())
+    this.transferToUser.value = await this.companyShareTransferDetail.value.getTransferToRegisteredUser()
+
+    this.companyShareTransferDetail.value.transferToAddress =
+      this.transferToUser.value.detail?.location?.getMultilineAddress() ?? ""
+
     this.setSignatureItems()
   }
 
@@ -69,6 +82,8 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
   }
 
   setSignatureItems(): void {
+    let signatureDates = []
+
     this.transferorSignatureItem.value = new SignatureItem(
       this.companyShareTransferDetail.value.fromSignature?.url ?? null,
       this.companyShareTransferDetail.value.fromSignatureId ? true : false,
@@ -79,6 +94,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
       "",
       false
     )
+
+    if (this.companyShareTransferDetail.value.fromSignature) {
+      signatureDates.push(this.companyShareTransferDetail.value.fromSignature.createdAt ?? "")
+    }
 
     if (this.isTransferFromCompany()) {
       this.transferorRepSignatureItem.value = new SignatureItem(
@@ -91,6 +110,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
         "",
         false
       )
+
+      if (this.companyShareTransferDetail.value.fromRepSignature) {
+        signatureDates.push(this.companyShareTransferDetail.value.fromRepSignature.createdAt ?? "")
+      }
     }
 
     this.transfereeSignatureItem.value = new SignatureItem(
@@ -104,6 +127,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
       false
     )
 
+    if (this.companyShareTransferDetail.value.toSignature) {
+      signatureDates.push(this.companyShareTransferDetail.value.toSignature.createdAt ?? "")
+    }
+
     if (this.isTransferToCompany()) {
       this.transfereeRepSignatureItem.value = new SignatureItem(
         this.companyShareTransferDetail.value.toRepSignature?.url ?? null,
@@ -115,6 +142,21 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
         "",
         false
       )
+
+      if (this.companyShareTransferDetail.value.toRepSignature) {
+        signatureDates.push(this.companyShareTransferDetail.value.toRepSignature.createdAt ?? "")
+      }
+    }
+
+    let dayjs = useDayjs()
+    let sortedDates = signatureDates.sort((dateA, dateB) => {
+      let diff = dayjs(dateA).diff(dayjs(dateB))
+
+      return -diff
+    })
+
+    if (sortedDates.length > 0) {
+      this.dateSignature.value = dayjs(sortedDates[0]).format("YYYY-MM-DD")
     }
   }
 
@@ -181,20 +223,27 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
     return this.companyShareTransferDetail.value.transferToType === ShareholdingType.Representative
   }
 
+  transferToRace(): string {
+    return this.transferToUser.value.detail?.race?.toLowerCase() ?? ""
+  }
+
   isTransferToMalay(): boolean {
-    return this.transferToUser.value.detail?.race.toLowerCase() === "malay"
+    return this.transferToRace() === "malay"
   }
 
   isTransferToChinese(): boolean {
-    return this.transferToUser.value.detail?.race.toLowerCase() === "chinese"
+    return this.transferToRace() === "chinese"
   }
 
   isTransferToIndian(): boolean {
-    return this.transferToUser.value.detail?.race.toLowerCase() === "indian"
+    return this.transferToRace() === "indian"
   }
 
   isTransferToRaceOthers(): boolean {
-    return this.transferToUser.value.detail?.race.toLowerCase() === "others"
+    return (
+      this.transferToRace() === "others" &&
+      StringUtil.contains(this.transferToUser.value.detail?.citizenship ?? "", "malaysia")
+    )
   }
 
   transferToOtherRaces(): string {
@@ -203,6 +252,10 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
     }
 
     return this.transferToUser.value.detail?.customRace ?? "..................."
+  }
+
+  transferToCitizenship(): string {
+    return this.transferToUser.value?.detail?.citizenship?.toUpperCase() ?? "N/A"
   }
 
   isSection105Completed(): boolean {
@@ -235,5 +288,40 @@ export class Section105Controller extends SdnBhdLegalDocumentController {
 
   hasUserSigned(): boolean {
     return (this.isTransferor() || this.isTransferee()) && !StringUtil.isNullOrEmpty(this.signatureFile.value)
+  }
+
+  get secretaryInfo(): Secretary {
+    return SecretaryInformation.SECRETARY_NAME_LIST[0]
+  }
+
+  get section105Date(): string {
+    if (
+      StringUtil.isNullOrEmpty(this.companyShareTransferDetail.value.fromSignatureId) ||
+      !this.companyShareTransferDetail.value.fromSignature ||
+      StringUtil.isNullOrEmpty(this.companyShareTransferDetail.value.toSignatureId) ||
+      !this.companyShareTransferDetail.value.toSignature
+    ) {
+      return "To be Determined"
+    }
+
+    let dayjs = useDayjs()
+    let time = useLocalTime()
+
+    let dateOfTransferorSignature = dayjs(this.companyShareTransferDetail.value.fromSignature.createdAt)
+    let dateOfTransfereeSignature = dayjs(this.companyShareTransferDetail.value.toSignature.createdAt)
+
+    if (dateOfTransferorSignature.isAfter(dateOfTransfereeSignature)) {
+      return time.formatDateOnlyFull(dateOfTransferorSignature.format("YYYY-MM-DD"))
+    }
+
+    return time.formatDateOnlyFull(dateOfTransfereeSignature.format("YYYY-MM-DD"))
+  }
+
+  get loaderLabel(): string {
+    return "Preparing the"
+  }
+
+  get loaderSublabel(): string {
+    return "Section 105"
   }
 }

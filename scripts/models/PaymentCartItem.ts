@@ -1,3 +1,4 @@
+import { CompanyConstants } from "../constants/Company"
 import { ControlledServicePricingId, CtcConstants, DeliveryConstants } from "../constants/Payment"
 import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
@@ -25,6 +26,9 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
   expressFilingAmount: number = 0.0
   isLateLodgement: boolean = false
   lateLodgementFees: number | null = null
+  hasStampDuty: boolean = false
+  stampDuty: number | null = null
+  discountId: string | null = null
   discountPercent: number = 0.0
   discountAmount: number = 0.0
   subtotal: number = 0.0
@@ -47,6 +51,7 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
   isDisableCtcSelection: boolean = false
   showTotalPagesToCtc: boolean = false
   isDisableDeliverySelection: boolean = false
+  canDelete: boolean = true
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -77,11 +82,14 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     this.quantity = data.quantity ?? 1
     this.targetType = data.target_type
     this.targetId = data.target_id
+    this.discountId = data.discount_id ?? null
     this.target = _.cloneDeep(data.target)
     this.isExpressFilingRequired = data.is_express_filing_required
     this.expressFilingAmount = data.express_filing_amount
     this.isLateLodgement = data.is_late_lodgement
     this.lateLodgementFees = Number(data.late_lodgement_fees ?? 0)
+    this.hasStampDuty = data.has_stamp_duty
+    this.stampDuty = Number(data.stamp_duty ?? 0)
     this.discountPercent = Number(data.discount_percent ?? 0)
     this.discountAmount = Number(data.discount_amount ?? 0)
     this.subtotal = Number(data.subtotal)
@@ -104,6 +112,8 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
           })
         : []
     this.selectedOptionals = []
+
+    this.canDelete = true
   }
 
   clone(data: PaymentCartItem): void {
@@ -119,10 +129,13 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     this.targetType = data.targetType
     this.targetId = data.targetId
     this.target = _.cloneDeep(data.target)
+    this.discountId = data.discountId
     this.isExpressFilingRequired = data.isExpressFilingRequired
     this.expressFilingAmount = data.expressFilingAmount
     this.isLateLodgement = data.isLateLodgement
     this.lateLodgementFees = Number(data.lateLodgementFees)
+    this.hasStampDuty = data.hasStampDuty
+    this.stampDuty = data.stampDuty
     this.discountPercent = Number(data.discountPercent)
     this.discountAmount = Number(data.discountAmount)
     this.subtotal = Number(data.subtotal)
@@ -150,6 +163,8 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     this.isDisableCtcSelection = data.isDisableCtcSelection
     this.showTotalPagesToCtc = data.showTotalPagesToCtc
     this.isDisableDeliverySelection = data.isDisableDeliverySelection
+
+    this.canDelete = data.canDelete
   }
 
   getRequestBody(): object {
@@ -158,12 +173,15 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
       target_type: this.targetType,
       target_id: this.targetId,
       quantity: this.quantity,
+      discount_id: this.discountId,
       discount_percent: this.discountPercent,
       discount_amount: this.discountAmount,
       is_express_filing_required: this.isExpressFilingRequired,
       express_filing_amount: this.expressFilingAmount,
       is_late_lodgement: this.isLateLodgement,
       late_lodgement_fees: this.lateLodgementFees,
+      has_stamp_duty: this.hasStampDuty,
+      stamp_duty: this.stampDuty,
       subtotal: this.subtotal,
       is_ctc_required: this.isCtcRequired,
       ctc_by: this.ctcBy,
@@ -234,10 +252,7 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
 
   totalAdditionalServicePricings(): number {
     if (this.additionalServicePricings.length === 0 && this.additionalServicePricingIds.length !== 0) {
-      throw new Error(
-        Error.ERROR_TYPE_CODE,
-        "Additional service pricing ids are provided but additional service pricings are not set"
-      )
+      throw new Error()
     }
 
     return this.additionalServicePricings
@@ -402,6 +417,10 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
         break
     }
 
+    if (deliveryCost === 0) {
+      deliveryCost = 10 // fallback to courier base price
+    }
+
     deliveryCost = Math.round(deliveryCost * 100) / 100
 
     return deliveryCost
@@ -412,9 +431,24 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
       return 0
     }
 
+    if (this.targetType === CompanyConstants.TARGET_MAILROOM_SERVICE) {
+      return 5
+    }
+
     return this.deliveryType !== DeliveryConstants.DELIVERY_EMAIL &&
       this.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
       ? 10
+      : 0
+  }
+
+  bulkPackageFees(): number {
+    if (!this.isDeliveryRequired || !this.servicePricing.config.bulkCarePackageFee) {
+      return 0
+    }
+
+    return this.deliveryType !== DeliveryConstants.DELIVERY_EMAIL &&
+      this.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
+      ? Number(this.servicePricing.config.bulkCarePackageFee)
       : 0
   }
 
@@ -455,9 +489,9 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
   }
 
   setDiscountAmount(): void {
-    if (this.servicePricingId !== ControlledServicePricingId.YearlySubscription) {
-      return
-    }
+    // if (this.servicePricingId !== ControlledServicePricingId.YearlySubscription) {
+    //   return
+    // }
 
     if (this.quantity < 3) {
       this.discountPercent = 0
@@ -487,24 +521,30 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
       Number(this.ctcAmount ?? 0.0) +
       Number(this.deliveryCost()) +
       Number(this.paperPrintPackageCost()) +
+      Number(this.bulkPackageFees()) +
       Number(this.totalOptionals()) +
       Number(this.totalExpressFiling()) +
+      Number(this.stampDuty ?? 0.0) +
       Number(this.lateLodgementFees ?? 0.0) -
       Number(this.discountAmount ?? 0.0)
 
     this.subtotal = Number(this.subtotal)
+
+    if (this.subtotal < 0) {
+      this.subtotal = 0
+    }
   }
 
   async remove(repository: ReturnType<typeof usePaymentCartStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.removeFromCart(this.paymentCartId, this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

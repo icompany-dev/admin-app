@@ -1,9 +1,15 @@
+import { EmitMessages } from "~/scripts/constants/EmitMessages"
+
 export class PopupController {
   isShowing = ref<boolean>(false)
 
   eventManager = useEventManagerStore()
 
-  constructor() {}
+  emitEvents: any | null = null
+
+  constructor(emitEvents: any | null) {
+    this.emitEvents = emitEvents
+  }
 
   show(): void {
     if (!this.eventManager.isCentreStageLoaded && !this.isShowing.value) {
@@ -20,6 +26,7 @@ export class PopupController {
 
   hide(): void {
     this.isShowing.value = false
+    this.emitEvents(EmitMessages.BACK)
     setTimeout(() => {
       this.eventManager.setIsPopupShowing(false)
     }, 1000)

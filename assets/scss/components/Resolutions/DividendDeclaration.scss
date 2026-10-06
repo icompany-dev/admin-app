@@ -10,3 +10,27 @@
     }
   }
 }
+
+.paper {
+  ol {
+    &.number-list {
+      padding: 5px 0;
+      padding-left: 15px;
+      list-style: decimal;
+
+      li {
+        margin-bottom: 5px;
+      }
+    }
+
+    &.alpha-list {
+      padding: 5px 0;
+      padding-left: 15px;
+      list-style: lower-alpha;
+    }
+
+    li {
+      padding-bottom: 5px !important;
+    }
+  }
+}

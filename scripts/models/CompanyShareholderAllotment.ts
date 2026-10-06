@@ -316,4 +316,40 @@ export class CompanyShareAllotTo {
       shares_type: this.sharesType,
     }
   }
+
+  get isAllotToNew(): boolean {
+    return StringUtil.isNullOrEmpty(this.shareholderId)
+  }
+
+  get isAllotToCompany(): boolean {
+    if (this.isAllotToNew) {
+      return this.shareholderInvitation?.isCorporateRepresentative() ?? false
+    }
+
+    return this.shareholder?.isCorporateRepresentative() ?? false
+  }
+
+  get name(): string {
+    if (this.isAllotToNew) {
+      return this.shareholderInvitation?.fullName()?.toUpperCase() ?? ""
+    }
+
+    return this.shareholder?.fullName()?.toUpperCase() ?? ""
+  }
+
+  get identification(): string {
+    if (this.isAllotToNew) {
+      return this.shareholderInvitation?.identification ?? ""
+    }
+
+    return this.shareholder?.identification ?? ""
+  }
+
+  get address(): string {
+    if (this.isAllotToNew) {
+      return this.shareholderInvitation?.user?.detail?.location?.getOnelineAddress() ?? ""
+    }
+
+    return this.shareholder?.user?.detail?.location?.getOnelineAddress() ?? ""
+  }
 }

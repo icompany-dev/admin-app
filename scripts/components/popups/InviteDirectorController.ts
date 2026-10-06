@@ -104,7 +104,7 @@ export class InviteDirectorController extends BasePopupController {
   get content(): string {
     if (this.language.isMalay()) {
       return `
-        Lengkapkan butiran yang diperlukar untuk tambah Pengarah.
+        Lengkapkan butiran yang diperlukan untuk tambah Pengarah.
       `
     }
 

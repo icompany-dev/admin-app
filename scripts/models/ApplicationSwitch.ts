@@ -16,6 +16,7 @@ import {
   type CorporateProfileJsonData,
   CorporateProfileJsonOfficerInfo,
 } from "./SsmCorporateProfileJsonData"
+import _ from "lodash"
 
 export class ApplicationSwitch implements IApplication {
   id: string = ""
@@ -112,7 +113,7 @@ export class ApplicationSwitch implements IApplication {
         : []
     this.signatureGroupStatus = data.signature_group_status ?? ""
     this.applicantId = data.applicant_id ?? ""
-    this.metadata = data.meta_data
+    this.metadata = _.cloneDeep(data.meta_data)
     this.incorporatedAt = data.incorporated_at ?? null
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
@@ -155,7 +156,7 @@ export class ApplicationSwitch implements IApplication {
     })
     this.signatureGroupStatus = data.signatureGroupStatus
     this.applicantId = data.applicantId
-    this.metadata = data.metadata
+    this.metadata = _.cloneDeep(data.metadata)
     this.incorporatedAt = data.incorporatedAt
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
@@ -196,6 +197,7 @@ export class ApplicationSwitch implements IApplication {
       secretary_company_name: this.secretaryCompanyName,
       secretary_company_address: this.secretaryCompanyAddress,
       secretary_name: this.secretaryName,
+      status: this.status,
     }
   }
 
@@ -390,6 +392,30 @@ export class ApplicationSwitch implements IApplication {
     return (
       !StringUtil.isNullOrEmpty(this.registrationNumberNew) && !StringUtil.isNullOrEmpty(this.registrationNumberOld)
     )
+  }
+
+  async addFilesToMetadata(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      meta_data: this.metadata,
+    }
+    let response = await repository.update(this.id, data)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    if (response instanceof ApplicationSwitch) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
   }
 
   get companyName(): string {

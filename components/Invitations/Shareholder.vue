@@ -20,6 +20,13 @@
       <CopyValue :value="controller.identificationNumber" />
     </div>
     <div class="human-detail">
+      <i class="fa-brands fa-whatsapp" />
+      <span class="human-detail-content">
+        {{ controller.phone }}
+      </span>
+      <CopyValue :value="controller.phone" />
+    </div>
+    <div class="human-detail">
       <i class="fa-regular fa-envelope" />
       <span
         class="action-clickable"
@@ -30,18 +37,18 @@
       <CopyValue :value="controller.email" />
     </div>
     <div class="human-detail">
-      <i class="fa-brands fa-whatsapp" />
-      <span class="human-detail-content">
-        {{ controller.phone }}
-      </span>
-      <CopyValue :value="controller.phone" />
-    </div>
-    <div class="human-detail">
       <i class="fa-regular fa-user" />
       <span class="human-detail-content">
         {{ controller.race }}
       </span>
       <CopyValue :value="controller.race" />
+    </div>
+    <div class="human-detail">
+      <i class="fa-regular fa-user" />
+      <span class="human-detail-content">
+        {{ controller.gender }}
+      </span>
+      <CopyValue :value="controller.gender" />
     </div>
     <div class="human-detail align-start">
       <i class="fa-regular fa-home" />

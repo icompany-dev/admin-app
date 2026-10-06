@@ -186,6 +186,12 @@
                   <span class="phone">{{ auditor.auditorPhone }}</span>
                 </div>
               </div>
+              <button
+                class="btn btn-pill btn-primary"
+                @click="controller.onEditCompanyAuditor(auditor)"
+              >
+                Edit
+              </button>
             </li>
             <li>
               <button
@@ -198,6 +204,19 @@
           </ol>
         </div>
       </div>
+    </div>
+    <div class="company-overview-section">
+      Order Chop
+      <br />
+      <br />
+      <button
+        class="btn btn-submit"
+        :class="{ 'is-loading': controller.isOrderingChop.value }"
+        :disabled="controller.isOrderingChop.value || !controller.latestPaymentOrderItemForChop"
+        @click="controller.onOrderChopClicked()"
+      >
+        Order Chop
+      </button>
     </div>
     <AddCompanyAuditor
       ref="addCompanyAuditorRef"

@@ -174,6 +174,12 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
       case CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY:
         this.pageAlias = "Change Bank Account Signatory"
         break
+      case CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES:
+        this.pageAlias = "Transfer of Shares"
+        break
+      case CompanyConstants.TARGET_DOCUMENT_REQUEST:
+        this.pageAlias = "Document Request"
+        break
     }
   }
 

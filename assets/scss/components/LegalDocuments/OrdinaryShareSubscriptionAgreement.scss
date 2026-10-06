@@ -1,0 +1,293 @@
+// #legal-documents-ordinary-share-subscription-agreement {
+//   // Styles go here
+// }
+
+.ordinary-share-subscription-agreement {
+
+  p,
+  div,
+  span,
+  li {
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  p,
+  li {
+    text-align: justify;
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  .cover-page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .top-part {
+      padding-top: 40px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 30px;
+
+      .top-part-item {
+        font-size: 16px;
+        text-align: right;
+        line-height: 20px;
+      }
+    }
+
+    .bottom-part {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      gap: 15px;
+      padding-bottom: 40px;
+
+      .document-title {
+        font-size: 32px;
+        font-weight: 600;
+        letter-spacing: 0.1pt;
+      }
+
+      .document-subtitle {
+        font-size: 25px;
+        line-height: 30px;
+        text-align: right;
+      }
+    }
+  }
+
+  ol {
+    padding-left: 15px;
+
+    li {
+      padding-left: 20px;
+      padding-bottom: 10px;
+
+      &.no-number {
+        &::marker {
+          display: none !important;
+        }
+      }
+    }
+
+    &.upper-alpha {
+      list-style-type: upper-alpha;
+    }
+
+    &.pointer-decimal {
+      padding-left: 15px;
+      margin: 0;
+      counter-reset: parent-counter 0;
+
+      @for $i from 1 through 50 {
+        &[start="#{$i}"] {
+          counter-reset: parent-counter #{$i - 1};
+        }
+      }
+
+      >li {
+        font-weight: 600;
+        counter-increment: parent-counter;
+        position: relative;
+        padding-left: 20px;
+
+        &::marker {
+          content: counter(parent-counter) ".";
+          font-weight: 600;
+        }
+
+        &.no-number {
+          &::marker {
+            content: " ";
+          }
+        }
+
+
+        .sub-pointer-decimal {
+          counter-reset: sub-counter 0;
+          margin: 0;
+          padding: 0;
+          margin-top: 1rem;
+          margin-left: -15px;
+
+          @for $j from 1 through 50 {
+            &[start="#{$j}"] {
+              counter-reset: sub-counter #{$j - 1};
+            }
+          }
+
+          >li {
+            counter-increment: sub-counter;
+            position: relative;
+            padding-left: 15px;
+            font-weight: normal;
+
+            &::marker {
+              content: counter(parent-counter, round) "." counter(sub-counter, round);
+            }
+
+            &.no-number {
+              &::marker {
+                content: " ";
+              }
+            }
+          }
+        }
+      }
+    }
+
+    &.lower-alpha-bracket {
+      list-style-type: lower-alpha;
+      margin-top: 13px;
+
+      >li {
+        padding-bottom: 5px;
+
+        &::marker {
+          content: "(" counter(list-item, lower-alpha) ") ";
+        }
+      }
+    }
+  }
+
+  .end-of-agreement {
+    width: 100%;
+    text-align: center;
+    margin: 20px 0;
+  }
+
+  .signature-sections {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+
+    .signature-section-wrapper {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 10px;
+      width: 100%;
+
+      .signature-section {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 5px;
+
+        .left-side {
+          width: calc(50% - 5px);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: flex-start;
+          gap: 0px;
+
+          .left-side-item {
+            width: 100%;
+            position: relative;
+
+            &::after {
+              position: absolute;
+              right: 0;
+              content: ")";
+            }
+          }
+        }
+
+        .right-side {
+          width: calc(50% - 5px);
+          border-bottom: dotted 2px var(--bs-black);
+        }
+      }
+
+      .witness-sections {
+        margin-top: 10px;
+
+        .witness-row {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 5px;
+
+          .witness-label {
+            width: 100px;
+          }
+
+          .placeholder {
+            color: var(--bs-gray-500);
+          }
+        }
+      }
+    }
+  }
+
+  .schedule-1,
+  .schedule-2 {
+    .document-header {
+      width: 100%;
+      text-align: center;
+      padding-bottom: 5px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--bs-black);
+    }
+
+    .subscription-details {
+      table {
+        width: 90%;
+        margin: auto;
+        table-layout: fixed;
+
+        thead {
+          tr {
+            th {
+              text-align: left;
+            }
+          }
+        }
+      }
+    }
+
+    .subscriber-details {
+      table {
+        width: 100%;
+
+        thead,
+        tbody {
+          tr {
+
+            th,
+            td {
+              padding: 0 5px;
+
+              &:first-child {
+                width: 30%;
+              }
+
+              &:last-child {
+                width: 33%;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

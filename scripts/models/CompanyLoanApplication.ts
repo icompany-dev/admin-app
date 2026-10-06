@@ -11,8 +11,6 @@ export class CompanyLoanApplication
   applicationDetails: any = null
   initiatedBy: string = ""
   shippedAt: string = ""
-  trackingUrl: string = ""
-  trackingNumber: string = ""
 
   constructor(data: any | null = null) {
     super()
@@ -68,7 +66,7 @@ export class CompanyLoanApplication
 
   async create(repository: ReturnType<typeof useCompanyLoanApplicationStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -76,7 +74,7 @@ export class CompanyLoanApplication
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -86,7 +84,7 @@ export class CompanyLoanApplication
 
   async update(repository: ReturnType<typeof useCompanyLoanApplicationStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -94,7 +92,7 @@ export class CompanyLoanApplication
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -104,14 +102,14 @@ export class CompanyLoanApplication
 
   async remove(repository: ReturnType<typeof useCompanyLoanApplicationStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

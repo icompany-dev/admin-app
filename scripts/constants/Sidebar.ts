@@ -119,6 +119,12 @@ export class PageSidebar {
     "services/appoint-director-new",
     false
   )
+  static transferOfShares: Sidebar = new Sidebar(
+    "Transfer of Shares",
+    "Pindah Saham",
+    "services/transfer-of-shares",
+    false
+  )
   static allotNewShares: Sidebar = new Sidebar(
     "Allot New Shares",
     "Peruntuk Saham Baharu",
@@ -148,10 +154,35 @@ export class PageSidebar {
     this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
+    this.transferOfShares,
     this.allotNewShares,
     this.purchaseAssets,
     this.declareDividends,
     this.changeBankSignatories,
+  ])
+
+  static documentRequests: Sidebar = new Sidebar(
+    "Document Requests",
+    "Permintaan Dokumen",
+    "services/document-requests",
+    false
+  )
+  static tekunApplications: Sidebar = new Sidebar(
+    "TEKUN Applications",
+    "Permohonan TEKUN",
+    "services/tekun-applications",
+    false
+  )
+  static newManagementAccount: Sidebar = new Sidebar(
+    "Create Management Account",
+    "Buat Akaun Pengurusan",
+    "services/management-accounts/new",
+    false
+  )
+  static otherServiceGroup: SidebarGroup = new SidebarGroup("Others Services", "Servis Lain Lain", [
+    this.documentRequests,
+    this.tekunApplications,
+    this.newManagementAccount,
   ])
 
   static personsDraft: Sidebar = new Sidebar(
@@ -212,6 +243,7 @@ export class PageSidebar {
     this.switchGroup,
     this.sdnbhdGroup,
     this.servicesGroup,
+    this.otherServiceGroup,
     this.personsGroup,
     this.controlPanelGroup,
   ]

@@ -110,7 +110,20 @@
               </div>
             </div>
           </template>
-          <template #nodeOptions></template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onUploadClicked()"
+            >
+              {{ controller.uploadLabel }}
+            </button>
+            <div v-if="controller.isSection58Uploaded">
+              <span class="action-link download">
+                <i class="fa-regular fa-cloud-arrow-up" />
+                {{ controller.section58Label }}
+              </span>
+            </div>
+          </template>
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"

@@ -25,6 +25,7 @@ export class StatusConstants {
   static REJECTED: string = "rejected"
   static RESPONDED: string = "responded"
   static SHIPPED: string = "shipped"
+  static STAMPING: string = "stamping"
   static SUBMITTED: string = "submitted"
   static SWITCHED_OUT: string = "switched-out"
   static TO_DISPOSE: string = "to-dispose"

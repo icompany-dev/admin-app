@@ -139,11 +139,11 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   resolutionName(): string {
-    return this.isAppointNew() ? "Appointment of New Company Secretary" : "Change of Company Secretary"
+    return "Add New Secretary" //this.isAppointNew() ? "Appointment of New Company Secretary" : "Add New Secretary"
   }
 
   signatureTitle(): string {
-    return this.signatureItems.value.length > 0 ? `Board of Directors` : `Sole Director`
+    return this.signatureItems.value.length > 1 ? `Board of Directors` : `Sole Director`
   }
 
   isSignatureEditable(): boolean {
@@ -334,7 +334,6 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   async getPdfPages(): Promise<HTMLElement[]> {
-    console.log(this.documentRef, "pdfpage")
     if (!this.documentRef.value) {
       return []
     }

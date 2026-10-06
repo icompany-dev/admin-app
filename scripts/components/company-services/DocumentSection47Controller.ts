@@ -75,8 +75,8 @@ export class Section47ServiceController extends CompanyServiceController<Company
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -105,8 +105,8 @@ export class Section47ServiceController extends CompanyServiceController<Company
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -176,8 +176,8 @@ export class Section47ServiceController extends CompanyServiceController<Company
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForCUD()
         errorMessage.handle()
       }
     } finally {

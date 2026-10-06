@@ -1,5 +1,5 @@
 import { PaperOrientation } from "~/scripts/constants/Paper"
-import { PaymentConstants } from "~/scripts/constants/Payment"
+import { CtcConstants, PaymentConstants } from "~/scripts/constants/Payment"
 import { ActivityLogger } from "~/scripts/library/ActivityLogger"
 import { Error } from "~/scripts/library/Error"
 import { ReceiptInvoiceGenerator } from "~/scripts/library/ReceiptInvoiceGenerator"
@@ -30,12 +30,11 @@ export class ReceiptInvoiceController {
   fileRepository = useFileStore()
   userRepository = useUserStore()
   billplzPaymentGatewayRepository = useBillplzPaymentGatewayStore()
-
   documentRef: any | null = null
 
   isSettingPaymentOrder = ref<boolean>(false)
-  isLoading = ref<boolean>(false)
   isDownloading = ref<boolean>(false)
+  isLoading = ref<boolean>(false)
 
   totalPages = ref<number>(1)
   pageRange = ref<number[]>([])
@@ -48,10 +47,10 @@ export class ReceiptInvoiceController {
 
   logoBase64: Ref<string> = ref<string>("")
 
-  receiptInvoiceGenerator: ReceiptInvoiceGenerator = new ReceiptInvoiceGenerator()
-
   additionalCssClass: string = "receipt-paper"
   paperOrientation: string = PaperOrientation.Portrait
+
+  receiptInvoiceGenerator: ReceiptInvoiceGenerator = new ReceiptInvoiceGenerator()
 
   constructor(paymentOrderId: string, paymentOrder: PaymentOrder | null = null, emitEvents: any | null) {
     this.emitEvents = emitEvents
@@ -125,12 +124,7 @@ export class ReceiptInvoiceController {
 
     this.pageRange.value = Array.from({ length: this.totalPages.value }, (_, i) => i + 1)
 
-    if (!this.isPaid.value) {
-      let user = await CurrentUser.get()
-      this.payeeName.value = user.name
-    } else {
-      await this.fetchPayee()
-    }
+    this.payeeName.value = this.paymentOrder.value.payeeName ?? "PAYEE"
 
     this.isSettingPaymentOrder.value = false
   }
@@ -159,8 +153,8 @@ export class ReceiptInvoiceController {
   }
 
   async fetchPaymentOrder(): Promise<void> {
-    this.isLoading.value = true
     this.paymentOrder.value = new PaymentOrder()
+    this.isLoading.value = true
 
     try {
       let response = await this.paymentOrderRepository.fetch(this.paymentOrderId.value)
@@ -394,6 +388,24 @@ export class ReceiptInvoiceController {
       )
       this.tableRows.value.push(handlingFeesRow)
 
+      if (item.isCtcRequired) {
+        let ctcLabel = "CTC"
+        if (item.ctcBy === CtcConstants.CTC_TYPE_COSEC) {
+          ctcLabel = `${ctcLabel} by Company Secretary`
+        } else if (item.ctcBy === CtcConstants.CTC_TYPE_SSM) {
+          ctcLabel = `${ctcLabel} by SSM`
+        }
+
+        let ctcRow: ReceiptTableRow = new ReceiptTableRow(
+          "configuration-row",
+          new ReceiptTableColumn(ctcLabel, "item", true, 2),
+          new ReceiptTableColumn("", "", false, 1),
+          new ReceiptTableColumn(Number(item.ctcAmount ?? "0.00").toFixed(2), "price", true, 1)
+        )
+
+        this.tableRows.value.push(ctcRow)
+      }
+
       if (item.isDeliveryRequired) {
         let deliveryRow: ReceiptTableRow = new ReceiptTableRow(
           "configuration-row",
@@ -403,6 +415,17 @@ export class ReceiptInvoiceController {
         )
 
         this.tableRows.value.push(deliveryRow)
+      }
+
+      if (item.hasStampDuty) {
+        let stampDutyRow: ReceiptTableRow = new ReceiptTableRow(
+          "configuration-row",
+          new ReceiptTableColumn("Estimated Stamp Duty Cost with LHDN", "item", true, 2),
+          new ReceiptTableColumn("", "", false, 1),
+          new ReceiptTableColumn(Number(item.stampDuty ?? "0.00").toFixed(2), "price", true, 1)
+        )
+
+        this.tableRows.value.push(stampDutyRow)
       }
 
       let subtotal = Number(item.subtotal ?? "0.00") + Number(item.discountAmount ?? "0.00")
@@ -498,7 +521,10 @@ export class ReceiptInvoiceController {
     } finally {
       this.isDownloading.value = false
 
-      await activityLogger.addDownloadLog(companyId, additionalInfo, target, targetId, status)
+      let auth = useAuthStore()
+      if (auth.getUserId !== null) {
+        await activityLogger.addDownloadLog(companyId, additionalInfo, target, targetId, status)
+      }
       this.emitEvents("downloaded")
     }
   }
@@ -548,7 +574,7 @@ export class ReceiptInvoiceController {
   }
 
   get loaderLabel(): string {
-    return "Generating the"
+    return "Preparing Your"
   }
 
   get loaderSublabel(): string {

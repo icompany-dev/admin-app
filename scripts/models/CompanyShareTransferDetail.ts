@@ -11,6 +11,7 @@ export class CompanyShareTransferDetail {
   transferId: string = ""
   unitsOfShare: number = 1
   pricePerShare: number = 1
+  saleConsideration: number = 1
   shareType: string = ShareType.Ordinary
   transferFromId: string = ""
   transferFrom: Shareholder = new Shareholder()
@@ -26,6 +27,7 @@ export class CompanyShareTransferDetail {
   fromRepSignature: File | null = null
   transferToType: string = ShareholdingType.Individual
   transferToName: string | null = null
+  transferToEmail: string | null = null
   transferToIdType: string | null = "ic"
   transferToIdentification: string | null = null // This is the registration number if corporate body
   transferToIdentificationAdditional: string | null = null // This is the registration number if corporate body
@@ -47,11 +49,13 @@ export class CompanyShareTransferDetail {
   toSignature: File | null = null
   toRepSignatureId: string | null = null
   toRepSignature: File | null = null
+  supportingDocument: CompanyShareTransferDetailDocument = new CompanyShareTransferDetailDocument()
   createdAt: string | null = null
   updatedAt: string | null = null
 
   // UI values, not from database
   isNewTransferee: boolean = false
+  isShowDetails: boolean = false
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -70,10 +74,11 @@ export class CompanyShareTransferDetail {
     this.transferId = data.transfer_id
     this.unitsOfShare = data.units_of_shares
     this.pricePerShare = data.price_per_share
+    this.saleConsideration = data.sale_consideration ?? 1
     this.shareType = data.share_type
     this.transferFromId = data.transfer_from_id
     this.transferFrom = new Shareholder(data.transfer_from)
-    this.isTransferFromConsented = data.is_transfer_from_consented
+    this.isTransferFromConsented = data.is_transfer_from_consented === 1
     this.transferFromConsentedAt = data.transfer_from_consented_at
     this.transferFromName = data.transfer_from_name
     this.transferFromIdentification = data.transfer_from_identification
@@ -86,6 +91,7 @@ export class CompanyShareTransferDetail {
     this.fromRepSignature = data.from_rep_signature ? new File(data.from_rep_signature) : null
     this.transferToType = data.transfer_to_type
     this.transferToName = data.transfer_to_name
+    this.transferToEmail = data.transfer_to_email ?? null
     this.transferToIdType = data.transfer_to_id_type
     this.transferToIdentification = data.transfer_to_identification
     this.transferToNationality = data.transfer_to_nationality
@@ -108,6 +114,7 @@ export class CompanyShareTransferDetail {
     this.toSignature = data.to_signature ? new File(data.to_signature) : null
     this.toRepSignatureId = data.to_rep_signature_id
     this.toRepSignature = data.to_rep_signature ? new File(data.to_rep_signature) : null
+    this.supportingDocument = new CompanyShareTransferDetailDocument(data.supporting_documents)
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
   }
@@ -117,6 +124,7 @@ export class CompanyShareTransferDetail {
     this.transferId = data.transferId
     this.unitsOfShare = data.unitsOfShare
     this.pricePerShare = data.pricePerShare
+    this.saleConsideration = data.saleConsideration
     this.shareType = data.shareType
     this.transferFromId = data.transferFromId
     this.transferFrom = new Shareholder(data.transferFrom)
@@ -133,6 +141,7 @@ export class CompanyShareTransferDetail {
     this.fromRepSignature = data.fromRepSignature ? new File(data.fromRepSignature) : null
     this.transferToType = data.transferToType
     this.transferToName = data.transferToName
+    this.transferToEmail = data.transferToEmail
     this.transferToIdType = data.transferToIdType
     this.transferToIdentification = data.transferToIdentification
     this.transferToNationality = data.transferToNationality
@@ -153,8 +162,12 @@ export class CompanyShareTransferDetail {
     this.toSignature = data.toSignature ? new File(data.toSignature) : null
     this.toRepSignatureId = data.toRepSignatureId
     this.toRepSignature = data.toRepSignature ? new File(data.toRepSignature) : null
+    this.supportingDocument = new CompanyShareTransferDetailDocument(data.supportingDocument)
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
+
+    this.isNewTransferee = data.isNewTransferee
+    this.isShowDetails = data.isShowDetails
   }
 
   getRequestBody(): object {
@@ -162,6 +175,7 @@ export class CompanyShareTransferDetail {
       transfer_id: this.transferId,
       units_of_shares: this.unitsOfShare,
       price_per_share: this.pricePerShare,
+      sale_consideration: this.saleConsideration,
       share_type: this.shareType,
       transfer_from_id: this.transferFromId,
       transfer_from_name: this.transferFromName,
@@ -181,6 +195,7 @@ export class CompanyShareTransferDetail {
       transfer_to_alt_rep_identification: this.transferToAltRepIdentification,
       transfer_to_id: this.transferToId,
       transfer_to_invitation_id: this.transferToInvitationId,
+      // supporting_documents: this.supportingDocument.getRequestBody(),
     }
   }
 
@@ -194,13 +209,13 @@ export class CompanyShareTransferDetail {
 
   async addToTransfer(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.transferId)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -208,7 +223,7 @@ export class CompanyShareTransferDetail {
     let data = this.getRequestBody()
     let response = await repository.addShareTransferDetails(this.transferId, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -218,13 +233,13 @@ export class CompanyShareTransferDetail {
 
   async update(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -232,7 +247,7 @@ export class CompanyShareTransferDetail {
     let data = this.getRequestBody()
     let response = await repository.updateShareTransferDetails(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -242,14 +257,14 @@ export class CompanyShareTransferDetail {
 
   async remove(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<any> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.removeShareTransferDetails(this.id)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -259,20 +274,20 @@ export class CompanyShareTransferDetail {
 
   async submitTransferorConsent(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (this.isTransferFromConsented === null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     await repository.transferorConsented(this.id, this.isTransferFromConsented)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -283,19 +298,17 @@ export class CompanyShareTransferDetail {
     repository: ReturnType<typeof useCompanyShareholderTransferStore>
   ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.transferorSigned(this.id, signatureFileId)
-    if (repository.error !== null) {
-      let error: Error = new Error("", "")
+    if (repository.error !== null || !response) {
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
-
-    this.convertFromResponse(response)
   }
 
   async submitTransferorRepSignature(
@@ -303,7 +316,7 @@ export class CompanyShareTransferDetail {
     repository: ReturnType<typeof useCompanyShareholderTransferStore>
   ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -312,7 +325,7 @@ export class CompanyShareTransferDetail {
       StringUtil.isNullOrEmpty(this.transferFromRepName) ||
       StringUtil.isNullOrEmpty(this.transferFromRepIdentification)
     ) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -324,30 +337,28 @@ export class CompanyShareTransferDetail {
       this.transferFromRepIdentification ?? ""
     )
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
-
-    this.convertFromResponse(response)
   }
 
   async submitTransfereeConsent(repository: ReturnType<typeof useCompanyShareholderTransferStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (this.isTransferFromConsented === null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     await repository.transfereeConsented(this.id, this.isTransferFromConsented)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -358,19 +369,17 @@ export class CompanyShareTransferDetail {
     repository: ReturnType<typeof useCompanyShareholderTransferStore>
   ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     let response = await repository.transfereeSigned(this.id, signatureFileId)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
-
-    this.convertFromResponse(response)
   }
 
   async submitTransfereeRepSignature(
@@ -378,7 +387,7 @@ export class CompanyShareTransferDetail {
     repository: ReturnType<typeof useCompanyShareholderTransferStore>
   ): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -387,7 +396,7 @@ export class CompanyShareTransferDetail {
       StringUtil.isNullOrEmpty(this.transferToRepName) ||
       StringUtil.isNullOrEmpty(this.transferToRepIdentification)
     ) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -399,12 +408,10 @@ export class CompanyShareTransferDetail {
       this.transferToRepIdentification ?? ""
     )
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
-
-    this.convertFromResponse(response)
   }
 
   async getTransferToRegisteredUser(): Promise<User> {
@@ -450,5 +457,67 @@ export class CompanyShareTransferDetail {
 
   haveAllSigned(): boolean {
     return this.haveAllTransferorSigned() && this.haveAllTransfereeSigned()
+  }
+
+  get transferorSignatureDate(): string {
+    if (!this.fromSignatureId || !this.fromSignature) {
+      return "Pending"
+    }
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyShort(this.fromSignature.createdAt ?? "")
+  }
+
+  get transfereeSignatureDate(): string {
+    if (!this.toSignatureId || !this.toSignature) {
+      return "Pending"
+    }
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyShort(this.toSignature.createdAt ?? "")
+  }
+}
+
+export class CompanyShareTransferDetailDocument {
+  transferAgreementFileId: string | null = null
+  financialStatementFileId: string | null = null
+  corporateRepAppointmentLetterFileId: string | null = null
+  otherSupportingDocumentFileId: string | null = null
+
+  constructor(data: any | null = null) {
+    if (!data) {
+      return
+    }
+
+    if (data instanceof CompanyShareTransferDetailDocument) {
+      this.clone(data)
+    } else {
+      this.convertFromResponse(data)
+    }
+  }
+
+  convertFromResponse(data: any): void {
+    this.transferAgreementFileId = data.transfer_agreement_file_id ?? null
+    this.financialStatementFileId = data.financial_statement_file_id ?? null
+    this.corporateRepAppointmentLetterFileId = data.corporate_rep_appointment_letter_file_id ?? null
+    this.otherSupportingDocumentFileId = data.other_supporting_document_file_id ?? null
+  }
+
+  clone(data: CompanyShareTransferDetailDocument) {
+    data.transferAgreementFileId = data.transferAgreementFileId
+    data.financialStatementFileId = data.financialStatementFileId
+    data.corporateRepAppointmentLetterFileId = data.corporateRepAppointmentLetterFileId
+    data.otherSupportingDocumentFileId = data.otherSupportingDocumentFileId
+  }
+
+  getRequestBody(): object {
+    return {
+      transfer_agreement_file_id: this.transferAgreementFileId,
+      financial_statement_file_id: this.financialStatementFileId,
+      corporate_rep_appointment_letter_file_id: this.corporateRepAppointmentLetterFileId,
+      other_supporting_document_file_id: this.otherSupportingDocumentFileId,
+    }
   }
 }

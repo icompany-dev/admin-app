@@ -197,8 +197,8 @@ export class DocumentPurchaser {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForCUD()
         errorMessage.handle()
       }
       return null

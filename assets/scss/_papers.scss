@@ -205,6 +205,12 @@
       }
     }
 
+    &.narrow-margin {
+      padding: 10mm;
+      width: 190mm;
+      height: 277mm;
+    }
+
     &.use-letter-head {
       width: 210mm;
       height: 297mm;
@@ -342,14 +348,13 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: flex-start;
-    gap: 40px;
+    gap: 20px 40px;
 
     .signature-title {
       width: 100%;
       font-weight: 600;
       text-align: center;
       text-transform: uppercase;
-      padding-bottom: 20px;
     }
 
     .signature-item {
@@ -628,15 +633,32 @@
   }
 
   ol {
-    list-style-type: none;
+    list-style-type: decimal;
 
     li {
       padding-left: 20px;
       text-align: justify;
+      padding-bottom: 5px !important;
 
       &::marker {
         content: "(" counter(list-item, round) ") ";
       }
+    }
+
+    &.number-list {
+      padding: 5px 0;
+      padding-left: 15px;
+      list-style: decimal;
+
+      li {
+        margin-bottom: 5px;
+      }
+    }
+
+    &.alpha-list {
+      padding: 5px 0;
+      padding-left: 15px;
+      list-style: lower-alpha;
     }
   }
 }

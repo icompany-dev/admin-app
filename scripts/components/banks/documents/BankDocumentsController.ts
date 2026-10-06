@@ -12,6 +12,7 @@ import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdent
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { User } from "~/scripts/models/User"
 import { Company } from "~/scripts/models/Company"
+import { Shareholder } from "~/scripts/models/Shareholder"
 
 export class BankDocumentsController {
   companyId: Ref<string> = ref<string>("")
@@ -20,6 +21,7 @@ export class BankDocumentsController {
   documentFetcher = ref<BankDocumentFetcher>(new BankDocumentFetcher(""))
 
   directors: Ref<Director[]> = ref<Director[]>([])
+  shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
 
   dcrRef: any | null = null
   currentRef: any | null = null
@@ -48,7 +50,12 @@ export class BankDocumentsController {
 
     this.companyId.value = companyId
     this.documentFetcher.value.setCompanyId(this.companyId.value)
-    await Promise.all([this.documentFetcher.value.fetchForms(), this.fetchCompany(), this.fetchDirectors()])
+    await Promise.all([
+      this.documentFetcher.value.fetchForms(),
+      this.fetchCompany(),
+      this.fetchDirectors(),
+      this.fetchShareholders(),
+    ])
 
     this.setupPdfRenderers()
 
@@ -137,8 +144,30 @@ export class BankDocumentsController {
     await Promise.allSettled(promises)
   }
 
-  getIdentificationDocumentWatermarkProps(director: Director): PropsIdentificationDocumentWatermark {
+  async fetchShareholders(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let shareholderRepository = useShareholderStore()
+    let response = await shareholderRepository.fetchAllForCompany(this.companyId.value)
+
+    this.shareholders.value = response.map((d: any) => {
+      return new Shareholder(d)
+    })
+
+    let promises = this.shareholders.value.map((d: Shareholder) => {
+      return d.getRegisteredUser(useUserStore()).then((response) => {
+        d.user = new User(response)
+      })
+    })
+
+    await Promise.allSettled(promises)
+  }
+
+  getIdentificationDocumentWatermarkProps(director: Director | Shareholder): PropsIdentificationDocumentWatermark {
     let userDetail = director.user?.detail
+
     return new PropsIdentificationDocumentWatermark(
       this.company.value.getFullName(),
       `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`,
@@ -346,5 +375,13 @@ export class BankDocumentsController {
     }
 
     return pages
+  }
+
+  get shareholdersForIdentification(): Shareholder[] {
+    return this.shareholders.value.filter((s: Shareholder) => {
+      return !this.directors.value.some((d: Director) => {
+        return d.user?.id === s.user?.id
+      })
+    })
   }
 }

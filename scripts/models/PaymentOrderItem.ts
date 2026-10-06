@@ -23,12 +23,15 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   quantity: number = 1
   targetType: string = ""
   targetId: string = ""
+  discountId: string | null = null
   discountPercent: number = 0
   discountAmount: number = 0
   isExpressFilingRequired: boolean = false
   expressFilingAmount: number = 0.0
   isLateLodgement: boolean = false
   lateLodgementFees: number | null = null
+  hasStampDuty: boolean = false
+  stampDuty: number | null = null
   cosecServiceFee: number = 0
   isCsfSstApplicable: boolean = false
   digitalServiceFee: number = 0
@@ -87,12 +90,15 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.quantity = data.quantity
     this.targetType = data.target_type
     this.targetId = data.target_id
+    this.discountId = data.discount_id ?? null
     this.discountPercent = data.discount_percent
     this.discountAmount = data.discount_amount
     this.isExpressFilingRequired = data.is_express_filing_required
     this.expressFilingAmount = data.express_filing_amount ?? 0.0
     this.isLateLodgement = data.is_late_lodgement
     this.lateLodgementFees = data.late_lodgement_fees
+    this.hasStampDuty = data.has_stamp_duty
+    this.stampDuty = data.stamp_duty
     this.cosecServiceFee = data.cosec_service_fee
     this.isCsfSstApplicable = data.is_csf_sst_applicable
     this.digitalServiceFee = data.digital_service_fee
@@ -100,7 +106,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.handlingFees = data.handling_fees
     this.isHfSstApplicable = data.is_hf_sst_applicable
     this.subtotal = data.subtotal
-    this.isCtcRequired = data.is_ctc_required
+    this.isCtcRequired = data.is_ctc_required === 1
     this.ctcBy = data.ctc_by
     this.ctcType = data.ctc_type
     this.ctcCopies = data.ctc_copies
@@ -147,12 +153,15 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.quantity = data.quantity
     this.targetType = data.targetType
     this.targetId = data.targetId
+    this.discountId = data.discountId
     this.discountPercent = data.discountPercent
     this.discountAmount = data.discountAmount
     this.isExpressFilingRequired = data.isExpressFilingRequired
     this.expressFilingAmount = data.expressFilingAmount
     this.isLateLodgement = data.isLateLodgement
     this.lateLodgementFees = data.lateLodgementFees
+    this.hasStampDuty = data.hasStampDuty
+    this.stampDuty = data.stampDuty
     this.cosecServiceFee = data.cosecServiceFee
     this.isCsfSstApplicable = data.isCsfSstApplicable
     this.digitalServiceFee = data.digitalServiceFee
@@ -215,6 +224,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.quantity = data.quantity
     this.targetType = data.targetType
     this.targetId = data.targetId
+    this.discountId = data.discountId
     this.discountPercent = data.discountPercent
     this.discountAmount = data.discountAmount
     this.isExpressFilingRequired = data.isExpressFilingRequired
@@ -222,6 +232,8 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.cosecServiceFee = data.servicePricing.config.cosecServiceFee
     this.isLateLodgement = data.isLateLodgement
     this.lateLodgementFees = data.lateLodgementFees
+    this.hasStampDuty = data.hasStampDuty
+    this.stampDuty = data.stampDuty
     this.subtotal = data.subtotal
     this.isCtcRequired = data.isCtcRequired
     this.ctcBy = data.ctcBy
@@ -249,7 +261,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
         let newPaymentOrderItemMandatory = new PaymentOrderItemMandatory()
         newPaymentOrderItemMandatory.servicePricingId = spm.mandatoryServiceId ?? ""
         newPaymentOrderItemMandatory.serviceName = spm.mandatoryServicePrice?.serviceName ?? ""
-        newPaymentOrderItemMandatory.basePrice = spm.mandatoryServicePrice.baseGrandTotal
+        newPaymentOrderItemMandatory.basePrice = spm.basePrice ?? 0.0
 
         return newPaymentOrderItemMandatory
       })
@@ -282,6 +294,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       quantity: this.quantity,
       target_type: StringUtil.snakeToPascal(this.targetType),
       target_id: this.targetId,
+      discount_id: this.discountId,
       discount_percent: this.discountPercent,
       discount_amount: this.discountAmount,
       is_express_filing_required: this.isExpressFilingRequired,
@@ -289,6 +302,8 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       cosec_service_fee: this.cosecServiceFee,
       is_late_lodgement: this.isLateLodgement,
       late_lodgement_fees: this.lateLodgementFees,
+      has_stamp_duty: this.hasStampDuty,
+      stamp_duty: this.stampDuty,
       subtotal: this.subtotal,
       is_ctc_required: this.isCtcRequired,
       ctc_by: this.ctcBy,
@@ -319,11 +334,13 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       Number(this.digitalServiceFee) +
       Number(this.handlingFees) +
       Number(this.ctcAmount ?? 0.0) +
-      Number(this.delivery?.deliveryRates ?? 0.0) +
-      Number(this.paperPrintPackageCost()) +
+      // Number(this.delivery?.deliveryRates ?? 0.0) +
+      Number(this.deliveryFees()) +
+      // Number(this.bulkPackageFees()) +
       Number(this.totalOptionals()) +
       Number(this.expressFilingAmount) +
-      Number(this.lateLodgementFees ?? 0.0) -
+      Number(this.lateLodgementFees ?? 0.0) +
+      Number(this.stampDuty ?? 0.0) -
       Number(this.discountAmount ?? 0.0)
 
     this.subtotal = Number(this.subtotal)
@@ -379,6 +396,13 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       }, 0)
   }
 
+  hasPaperPrintPackage(): boolean {
+    return (
+      this.deliveryType !== DeliveryConstants.DELIVERY_EMAIL &&
+      this.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
+    )
+  }
+
   paperPrintPackageCost(): number {
     if (!this.isDeliveryRequired) {
       return 0
@@ -388,18 +412,6 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       this.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
       ? 10
       : 0
-  }
-
-  totalOptionals(): number {
-    let totalOptionals = this.optionals
-      .map((opt: PaymentOrderItemOptional) => {
-        return Number(opt.basePrice)
-      })
-      .reduce((a: number, b: number) => {
-        return a + b
-      }, 0.0)
-
-    return Number(totalOptionals)
   }
 
   bulkPackageFees(): number {
@@ -432,5 +444,17 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     }
 
     return totalDelivery
+  }
+
+  totalOptionals(): number {
+    let totalOptionals = this.optionals
+      .map((opt: PaymentOrderItemOptional) => {
+        return Number(opt.basePrice)
+      })
+      .reduce((a: number, b: number) => {
+        return a + b
+      }, 0.0)
+
+    return Number(totalOptionals)
   }
 }

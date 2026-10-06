@@ -5,13 +5,21 @@ export class ManagementAccountTableColumn {
   colSpan: number = 1
   onClick: Function = (value: any) => {}
   onDeleteClick: Function = (value: any) => {}
+  onChange: Function = (value: any) => {}
 
   isDeletable: boolean = false
   isEditable: boolean = false
   hasMoreInfo: boolean = false
   hasOptions: boolean = false
 
+  hasLabel: boolean = false
+  labelString: string = ""
+
+  placeholder: string = ""
+
   id: string = ""
+
+  inputType: string = "text"
 
   constructor(
     content: string,
@@ -20,7 +28,8 @@ export class ManagementAccountTableColumn {
     colSpan: number,
     onClick: Function,
     id: string = "",
-    onDeleteClick: Function = () => {}
+    onDeleteClick: Function = () => {},
+    onChange: Function = () => {}
   ) {
     this.content = content
     this.type = type
@@ -29,5 +38,6 @@ export class ManagementAccountTableColumn {
     this.onClick = onClick
     this.id = id
     this.onDeleteClick = onDeleteClick
+    this.onChange = onChange
   }
 }

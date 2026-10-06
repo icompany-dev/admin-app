@@ -1,4 +1,5 @@
 import { StatusConstants } from "~/scripts/constants/Status"
+import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
 import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Application } from "~/scripts/models/Application"
@@ -33,6 +34,7 @@ export abstract class ApplicationController<Application> {
   selectedApprovalType: Ref<string> = ref<string>("director-member")
 
   uploadedDocumentChecker = ref<UploadedDocumentChecker>(new UploadedDocumentChecker(""))
+  documentsAndForms = ref<DocumentsAndForms>(new DocumentsAndForms(""))
 
   minimumMajorityRequired: Ref<number> = ref<number>(0.5)
 
@@ -121,6 +123,7 @@ export abstract class ApplicationController<Application> {
       this.fetchDirectors(),
       this.fetchShareholders(),
       this.uploadedDocumentChecker.value.fetchDocuments(),
+      this.documentsAndForms.value.fetchForms(),
     ])
 
     await Promise.allSettled([this.fetchPaymentOrder(), this.initializeData()])
@@ -147,7 +150,6 @@ export abstract class ApplicationController<Application> {
 
   async fetchApplication(): Promise<void> {
     if (!this.applicationId.value || StringUtil.isNullOrEmpty(this.applicationId.value)) {
-      console.log("skip??")
       return
     }
 
@@ -539,7 +541,7 @@ export abstract class ApplicationController<Application> {
 
   get deliveryAddress(): string {
     if (!this.application.value || !this.isDeliveryRequired) {
-      return "-"
+      return this.language.isMalay() ? "Penghantaran Tidak Diperlukan" : "No Delivery Required"
     }
 
     if (!this.application.value.company?.hasBusinessAddress) {
@@ -599,5 +601,9 @@ export abstract class ApplicationController<Application> {
     props.canUploadPdf = true
 
     return props
+  }
+
+  get isFetchingDocuments(): boolean {
+    return this.uploadedDocumentChecker.value.isFetching
   }
 }

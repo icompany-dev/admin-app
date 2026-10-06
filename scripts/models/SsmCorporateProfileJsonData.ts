@@ -9,16 +9,25 @@ export class SsmCorporateProfilePurchaseData {
       return
     }
 
-    if (data instanceof SsmCorporateProfilePurchaseData) {
+    // if (data instanceof SsmCorporateProfilePurchaseData) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
 
   convertFromResponse(data: any): void {
     this.orderNumber = data.orderNumber
-    this.ssm = data.ssm.data ? new CorporateProfileJsonData(data.ssm.data) : null
+    this.ssm = data.ssm.data
+      ? new CorporateProfileJsonData(data.ssm.data)
+      : data.ssm
+        ? new CorporateProfileJsonData(data.ssm)
+        : null
   }
 
   clone(data: SsmCorporateProfilePurchaseData): void {
@@ -46,61 +55,88 @@ export class CorporateProfileJsonData {
       return
     }
 
-    if (data instanceof CorporateProfileJsonData) {
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
 
   convertFromResponse(data: any): void {
-    this.newRegistration = data.rocCompanyInfo?.newFormatRegNo ?? ""
-    this.oldRegistration = `${data.rocCompanyInfo?.companyNo ?? ""}-${data.rocCompanyInfo?.checkDigit ?? ""}`
-    this.businessCodes =
-      data.rocBusinessCodeListInfo &&
-      data.rocBusinessCodeListInfo.rocBusinessCodeInfos &&
-      Array.isArray(data.rocBusinessCodeListInfo.rocBusinessCodeInfos)
-        ? data.rocBusinessCodeListInfo.rocBusinessCodeInfos.map((bc: any) => {
-            return new CorporateProfileJsonBusinessCode(bc)
-          })
-        : []
-    this.businessCharge = data.rocChargesListInfo
-    this.companyInfo = data.rocCompanyInfo ? new CorporateProfileJsonCompanyInfo(data.rocCompanyInfo) : null
-    this.officerInfos =
-      data.rocCompanyOfficerListInfo &&
-      data.rocCompanyOfficerListInfo.rocCompanyOfficerInfos &&
-      Array.isArray(data.rocCompanyOfficerListInfo.rocCompanyOfficerInfos)
-        ? data.rocCompanyOfficerListInfo.rocCompanyOfficerInfos.map((oi: any) => {
-            return new CorporateProfileJsonOfficerInfo(oi)
-          })
-        : []
-    this.documentsLodge =
-      data.rocDocumentLodgeListInfo &&
-      data.rocDocumentLodgeListInfo.rocDocumentLodgeInfos &&
-      Array.isArray(data.rocDocumentLodgeListInfo.rocDocumentLodgeInfos)
-        ? data.rocDocumentLodgeListInfo.rocDocumentLodgeInfos.map((dl: any) => {
-            return new CorporateProfileJsonDocumentLodge(dl)
-          })
-        : []
-    this.profitLoss =
-      data.rocProfitLossListInfo &&
-      data.rocProfitLossListInfo.rocProfitLossInfos &&
-      Array.isArray(data.rocProfitLossListInfo.rocProfitLossInfos)
-        ? data.rocProfitLossListInfo.rocProfitLossInfos.map((pl: any) => {
-            return new CorporateProfileJsonProfitLoss(pl)
-          })
-        : []
-    this.businessAddress = data.rocBusinessAddressInfo
-      ? new CorporateProfileJsonAddress(data.rocBusinessAddressInfo)
-      : null
-    this.registeredAddress = data.rocRegAddressInfo ? new CorporateProfileJsonAddress(data.rocRegAddressInfo) : null
-    this.shareCapital = data.rocShareCapitalInfo ? new CorporateProfileJsonShareCapital(data.rocShareCapitalInfo) : null
-    this.shareholderInfos =
-      data.rocShareholderListInfo &&
-      data.rocShareholderListInfo.rocShareholderInfos &&
-      Array.isArray(data.rocShareholderListInfo.rocShareholderInfos)
-        ? data.rocShareholderListInfo.rocShareholderInfos.map((si: any) => new CorporateProfileJsonShareInfo(si))
-        : []
+    if (data.rocCompanyInfo) {
+      this.newRegistration = data.rocCompanyInfo?.newFormatRegNo ?? ""
+      this.oldRegistration = `${data.rocCompanyInfo?.companyNo ?? ""}-${data.rocCompanyInfo?.checkDigit ?? ""}`
+      this.businessCodes =
+        data.rocBusinessCodeListInfo &&
+        data.rocBusinessCodeListInfo.rocBusinessCodeInfos &&
+        Array.isArray(data.rocBusinessCodeListInfo.rocBusinessCodeInfos)
+          ? data.rocBusinessCodeListInfo.rocBusinessCodeInfos.map((bc: any) => {
+              return new CorporateProfileJsonBusinessCode(bc)
+            })
+          : []
+      this.businessCharge = data.rocChargesListInfo
+      this.companyInfo = data.rocCompanyInfo ? new CorporateProfileJsonCompanyInfo(data.rocCompanyInfo) : null
+      this.officerInfos =
+        data.rocCompanyOfficerListInfo &&
+        data.rocCompanyOfficerListInfo.rocCompanyOfficerInfos &&
+        Array.isArray(data.rocCompanyOfficerListInfo.rocCompanyOfficerInfos)
+          ? data.rocCompanyOfficerListInfo.rocCompanyOfficerInfos.map((oi: any) => {
+              return new CorporateProfileJsonOfficerInfo(oi)
+            })
+          : []
+      this.documentsLodge =
+        data.rocDocumentLodgeListInfo &&
+        data.rocDocumentLodgeListInfo.rocDocumentLodgeInfos &&
+        Array.isArray(data.rocDocumentLodgeListInfo.rocDocumentLodgeInfos)
+          ? data.rocDocumentLodgeListInfo.rocDocumentLodgeInfos.map((dl: any) => {
+              return new CorporateProfileJsonDocumentLodge(dl)
+            })
+          : []
+      this.profitLoss =
+        data.rocProfitLossListInfo &&
+        data.rocProfitLossListInfo.rocProfitLossInfos &&
+        Array.isArray(data.rocProfitLossListInfo.rocProfitLossInfos)
+          ? data.rocProfitLossListInfo.rocProfitLossInfos.map((pl: any) => {
+              return new CorporateProfileJsonProfitLoss(pl)
+            })
+          : []
+      this.businessAddress = data.rocBusinessAddressInfo
+        ? new CorporateProfileJsonAddress(data.rocBusinessAddressInfo)
+        : null
+      this.registeredAddress = data.rocRegAddressInfo ? new CorporateProfileJsonAddress(data.rocRegAddressInfo) : null
+      this.shareCapital = data.rocShareCapitalInfo
+        ? new CorporateProfileJsonShareCapital(data.rocShareCapitalInfo)
+        : null
+      this.shareholderInfos =
+        data.rocShareholderListInfo &&
+        data.rocShareholderListInfo.rocShareholderInfos &&
+        Array.isArray(data.rocShareholderListInfo.rocShareholderInfos)
+          ? data.rocShareholderListInfo.rocShareholderInfos.map((si: any) => new CorporateProfileJsonShareInfo(si))
+          : []
+    } else {
+      this.newRegistration = data.newRegistration
+      this.oldRegistration = data.oldRegistration
+      this.businessCodes = data.businessCode.map((bc: CorporateProfileJsonBusinessCode) => {
+        return new CorporateProfileJsonBusinessCode(bc)
+      })
+      this.businessCharge = data.businessCharge
+      this.companyInfo = data.companyInfo ? new CorporateProfileJsonCompanyInfo(data.companyInfo) : null
+      this.officerInfos = data.officerInfo.map((oi: CorporateProfileJsonOfficerInfo) => {
+        return new CorporateProfileJsonOfficerInfo(oi)
+      })
+      this.documentsLodge = data.documentLodge.map((dl: CorporateProfileJsonDocumentLodge) => {
+        return new CorporateProfileJsonDocumentLodge(dl)
+      })
+      this.profitLoss = data.profitLoss.map((pl: CorporateProfileJsonProfitLoss) => {
+        return new CorporateProfileJsonProfitLoss(pl)
+      })
+      this.businessAddress = data.businessAddress ? new CorporateProfileJsonAddress(data.businessAddress) : null
+      this.registeredAddress = data.registeredAddress ? new CorporateProfileJsonAddress(data.registeredAddress) : null
+      this.shareCapital = data.shareCapital ? new CorporateProfileJsonShareCapital(data.shareCapital) : null
+      this.shareholderInfos = data.shareInfo.map((si: CorporateProfileJsonShareInfo) => {
+        return new CorporateProfileJsonShareInfo(si)
+      })
+    }
   }
 
   clone(data: CorporateProfileJsonData): void {
@@ -139,9 +175,14 @@ export class CorporateProfileJsonBusinessCode {
       return
     }
 
-    if (data instanceof CorporateProfileJsonBusinessCode) {
+    // if (data instanceof CorporateProfileJsonBusinessCode) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
@@ -199,9 +240,14 @@ export class CorporateProfileJsonCompanyInfo {
       return
     }
 
-    if (data instanceof CorporateProfileJsonCompanyInfo) {
+    // if (data instanceof CorporateProfileJsonCompanyInfo) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
@@ -302,9 +348,14 @@ export class CorporateProfileJsonOfficerInfo {
       return
     }
 
-    if (data instanceof CorporateProfileJsonOfficerInfo) {
+    // if (data instanceof CorporateProfileJsonOfficerInfo) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
@@ -359,9 +410,14 @@ export class CorporateProfileJsonDocumentLodge {
       return
     }
 
-    if (data instanceof CorporateProfileJsonDocumentLodge) {
+    // if (data instanceof CorporateProfileJsonDocumentLodge) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
@@ -417,9 +473,14 @@ export class CorporateProfileJsonProfitLoss {
       return
     }
 
-    if (data instanceof CorporateProfileJsonProfitLoss) {
+    // if (data instanceof CorporateProfileJsonProfitLoss) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
@@ -507,9 +568,14 @@ export class CorporateProfileJsonAddress {
       return
     }
 
-    if (data instanceof CorporateProfileJsonAddress) {
+    // if (data instanceof CorporateProfileJsonAddress) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
@@ -605,9 +671,14 @@ export class CorporateProfileJsonShareCapital {
       return
     }
 
-    if (data instanceof CorporateProfileJsonShareCapital) {
+    // if (data instanceof CorporateProfileJsonShareCapital) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }
@@ -744,9 +815,14 @@ export class CorporateProfileJsonShareInfo {
       return
     }
 
-    if (data instanceof CorporateProfileJsonShareInfo) {
+    // if (data instanceof CorporateProfileJsonShareInfo) {
+    //   this.clone(data)
+    // } else {
+    //   this.convertFromResponse(data)
+    // }
+    try {
       this.clone(data)
-    } else {
+    } catch (e) {
       this.convertFromResponse(data)
     }
   }

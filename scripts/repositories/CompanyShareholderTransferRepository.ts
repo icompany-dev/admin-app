@@ -177,4 +177,13 @@ export class CompanyShareholderTransferRepository extends Repository<CompanyShar
       throw e
     }
   }
+
+  async notifyStamping(id: string): Promise<any> {
+    try {
+      const response = this.post(`${this.singleResourceUrl}/stamping/${id}`, {})
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }

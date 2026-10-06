@@ -186,6 +186,10 @@ export class Company implements IModel<Company> {
   }
 
   getFullName(): string {
+    if (StringUtil.isNullOrEmpty(this.name)) {
+      return ""
+    }
+
     return `${this.name} ${this.getType()}`
   }
 

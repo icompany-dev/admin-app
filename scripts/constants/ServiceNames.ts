@@ -256,6 +256,20 @@ export class ServiceNames {
     "change-signatories",
     "director"
   )
+  static documentRequests: ServiceName = new ServiceName(
+    "Document Requests",
+    "Permintaan Dokumen",
+    "company_document_request",
+    "document-requests",
+    "documents"
+  )
+  static tekunApplications: ServiceName = new ServiceName(
+    "TEKUN Applications",
+    "Permohonan TEKUN",
+    "company_loan_application",
+    "tekun-applications",
+    "documents"
+  )
 
   static names: ServiceName[] = [
     this.applicationIncorporation,
@@ -272,7 +286,7 @@ export class ServiceNames {
     this.allotmentOfShares,
     this.proposedAllotmentOfShares,
     this.transferOfShares,
-    this.proposedTransferOfShares,
+    // this.proposedTransferOfShares,
     this.postTransferOfShares,
     this.openingOfBankAccount,
     this.closureOfBankAccount,
@@ -293,5 +307,7 @@ export class ServiceNames {
     this.assetPurchase,
     this.dividendDeclaration,
     this.changeSignatories,
+    this.documentRequests,
+    this.tekunApplications,
   ]
 }

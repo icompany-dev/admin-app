@@ -126,52 +126,8 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
     return this.application.value?.assetCategory ?? "-"
   }
 
-  // get branchLabel(): string {
-  //   return this.language.isMalay() ? "Cawangan" : "Branch"
-  // }
-
-  // get branchName(): string {
-  //   return this.application.value?.bankBranch.name ?? "-"
-  // }
-
-  // get branchAddress(): string {
-  //   return this.application.value?.bankBranch.address ?? "-"
-  // }
-
-  get isDeliveryRequired(): boolean {
-    if (!this.application.value) {
-      return false
-    }
-
-    let orderItem = this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
-      return poi.targetType === CompanyConstants.TARGET_PURCHASE_ASSET && poi.targetId === this.application.value?.id
-    })
-
-    if (!orderItem) {
-      return false
-    }
-
-    return orderItem.isDeliveryRequired
-  }
-
   get deliveryViaLabel(): string {
     return this.language.isMalay() ? "Penghantaran melalui" : "Delivery via"
-  }
-
-  get deliveryMethod(): string {
-    if (!this.application.value) {
-      return "-"
-    }
-
-    let orderItem = this.paymentOrder.value.items.find((poi: PaymentOrderItem) => {
-      return poi.targetType === CompanyConstants.TARGET_PURCHASE_ASSET && poi.targetId === this.application.value?.id
-    })
-
-    if (!orderItem) {
-      return "-"
-    }
-
-    return orderItem.deliveryType ?? "-"
   }
 
   get isPhysicalDeliveryRequired(): boolean {
@@ -194,43 +150,7 @@ export class PurchaseAssetApplicationController extends ApplicationController<Co
     )
   }
 
-  get deliverToLabel(): string {
-    return this.language.isMalay() ? "Hantar ke" : "Deliver to"
-  }
-
-  get deliveryAddress(): string {
-    if (!this.application.value) {
-      return "-"
-    }
-
-    if (!this.isPhysicalDeliveryRequired) {
-    }
-
-    if (!this.application.value.company?.hasBusinessAddress) {
-      let addressFragments: string[] = [`<b>${this.paymentOrder.value.billingInfo.name}</b>`]
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
-      )
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
-      )
-
-      return addressFragments
-        .filter((s: string) => {
-          return !StringUtil.isNullOrEmpty(s)
-        })
-        .join("<br>")
-    }
-
-    return `
-      <b>${this.paymentOrder.value.billingInfo.name}</b><br>
-      ${this.application.value.company?.businessAddressLocation?.getMultilineAddress()}
-    `
-  }
-
-  get deliveryAddressToCopy(): string {
+  override get deliveryAddressToCopy(): string {
     if (!this.application.value) {
       return "-"
     }

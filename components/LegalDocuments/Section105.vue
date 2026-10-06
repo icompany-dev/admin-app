@@ -1,7 +1,27 @@
 <template>
-  <div id="legal-document-section-105">
-    <div class="paper-wrapper">
-      <div class="paper legal-document narrow-margin section-105 portrait">
+  <div
+    id="legal-document-section-105"
+    ref="documentRef"
+  >
+    <Paper
+      v-if="controller.isLoading.value"
+      :paper-orientation="controller.paperOrientation"
+      :is-loader="true"
+    >
+      <template #paperContent>
+        <LoaderPrepare
+          :label="controller.loaderLabel"
+          :sublabel="controller.loaderSublabel"
+        />
+      </template>
+    </Paper>
+    <Paper
+      v-if="!controller.isLoading.value"
+      :paper-orientation="controller.paperOrientation"
+      :additional-css-class="controller.additionalCssClass"
+      :show-page-number="false"
+    >
+      <template #paperContent>
         <div class="registration-number">
           Company No: {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
         </div>
@@ -67,7 +87,7 @@
                 </td>
                 <td
                   rowspan="4"
-                  class="signature-column"
+                  class="signature-column witness-column"
                 >
                   <div
                     v-if="!controller.isSection105Completed()"
@@ -80,6 +100,23 @@
                         src="https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/logo/icompany_long.png"
                         width="175"
                       />
+                    </div>
+                  </div>
+                  <div class="cosec-signature">
+                    <img :src="controller.secretaryInfo.signatureUrl" />
+                    <div class="cosec-name">
+                      {{ controller.secretaryInfo.name }}
+                    </div>
+                    <div class="cosec-role">Company Secretary</div>
+                    <div class="cosec-license">
+                      {{ controller.secretaryInfo.license }} SSM PC No: {{ controller.secretaryInfo.certificate }}
+                    </div>
+                    <div class="cosec-address">
+                      D-1-6, Block D, Sekitar 26 Enterprise
+                      <br />
+                      Persiaran Hulu Selangor, Seksyen 26
+                      <br />
+                      40400 Shah Alam Selangor
                     </div>
                   </div>
                   Signed, sealed and delivered in the presence of :
@@ -116,7 +153,7 @@
                   colspan="2"
                   class="col-25 input-data"
                 >
-                  {{ controller.companyShareTransferDetail.value.transferFromName }}
+                  <b>{{ controller.companyShareTransferDetail.value.transferFromName }}</b>
                 </td>
               </tr>
               <tr>
@@ -146,7 +183,7 @@
                   colspan="2"
                   class="col-25 input-data"
                 >
-                  {{ controller.companyShareTransferDetail.value.transferFromIdentification || "N/A" }}
+                  <b>{{ controller.companyShareTransferDetail.value.transferFromIdentification || "N/A" }}</b>
                 </td>
               </tr>
               <tr>
@@ -161,8 +198,10 @@
                   colspan="2"
                   class="col-25 input-data"
                 >
-                  {{ controller.companyShareTransferDetail.value.transferToName }}
-                  <div v-html="controller.companyShareTransferDetail.value.transferToAddress" />
+                  <b>
+                    {{ controller.companyShareTransferDetail.value.transferToName }}
+                    <div v-html="controller.companyShareTransferDetail.value.transferToAddress" />
+                  </b>
                 </td>
               </tr>
               <tr>
@@ -218,9 +257,9 @@
                   <div class="input-label">Nationality</div>
                   <div
                     class="input"
-                    :class="{ 'fw-bold': controller.companyShareTransferDetail.value.transferToNationality !== 'N/A' }"
+                    :class="{ 'fw-bold': controller.transferToCitizenship() !== 'N/A' }"
                   >
-                    {{ controller.companyShareTransferDetail.value.transferToNationality || "N/A" }}
+                    {{ controller.transferToCitizenship() }}
                   </div>
                 </td>
                 <td
@@ -253,7 +292,7 @@
                 </td>
                 <td
                   colspan="1"
-                  class="col-50"
+                  class="col-50 witness-column"
                 >
                   <div
                     v-if="!controller.isSection105Completed()"
@@ -266,6 +305,23 @@
                         src="https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/logo/icompany_long.png"
                         width="175"
                       />
+                    </div>
+                  </div>
+                  <div class="cosec-signature">
+                    <img :src="controller.secretaryInfo.signatureUrl" />
+                    <div class="cosec-name">
+                      {{ controller.secretaryInfo.name }}
+                    </div>
+                    <div class="cosec-role">Company Secretary</div>
+                    <div class="cosec-license">
+                      {{ controller.secretaryInfo.license }} SSM PC No: {{ controller.secretaryInfo.certificate }}
+                    </div>
+                    <div class="cosec-address">
+                      D-1-6, Block D, Sekitar 26 Enterprise
+                      <br />
+                      Persiaran Hulu Selangor, Seksyen 26
+                      <br />
+                      40400 Shah Alam Selangor
                     </div>
                   </div>
                   Signed, sealed and delivered in the presence of :
@@ -433,8 +489,13 @@
                   colspan="3"
                 >
                   Consideration Sum (in words): Ringgit Malaysia
-                  <div class="input bold">
-                    {{ controller.numberToWords(controller.companyShareTransferDetail.value.unitsOfShare) }} ONLY
+                  <div class="input">
+                    <b>
+                      {{
+                        controller.numberToWords(controller.companyShareTransferDetail.value.unitsOfShare).toUpperCase()
+                      }}
+                      ONLY
+                    </b>
                   </div>
                 </td>
 
@@ -443,15 +504,23 @@
                   colspan="1"
                 >
                   Consideration Sum (In Malaysian Ringgit)
-                  <div class="input bold">
-                    RM{{ controller.companyShareTransferDetail.value.unitsOfShare.toFixed(2) }}
+                  <div class="input">
+                    <b>RM{{ controller.companyShareTransferDetail.value.unitsOfShare.toFixed(2) }}</b>
                   </div>
                 </td>
               </tr>
               <tr>
                 <td colspan="4">
                   8. Dated this day of
-                  <span class="input-label text-muted"><i>(To be determined by iCompany)</i></span>
+                  <input
+                    type="date"
+                    class="form-control in-resolution"
+                    v-model="controller.dateSignature.value"
+                  />
+                  <!-- <span
+                    class="input-label text-muted"
+                    v-html="controller.section105Date"
+                  /> -->
                 </td>
               </tr>
               <tr v-if="controller.hasUserSigned() || controller.isSection105Completed()">
@@ -487,12 +556,14 @@
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </template>
+    </Paper>
   </div>
 </template>
 
 <script setup lang="ts">
+  import LoaderPrepare from "../Loaders/Prepare.vue"
+  import Paper from "../Papers/Paper.vue"
   import Signature from "../Signatures/Signature.vue"
   import { Section105Controller } from "~/scripts/components/legal-documents/Section105Controller"
   import { CompanyShareTransferDetail } from "~/scripts/models/CompanyShareTransferDetail"
@@ -511,6 +582,8 @@
       required: true,
     },
   })
+
+  const documentRef = ref(null)
 
   const emit = defineEmits(["transferorSigned", "transferorRepSigned", "transfereeSigned", "transfereeRepSigned"])
 
@@ -541,6 +614,18 @@
       controller.setShareholderId(newVal)
     }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

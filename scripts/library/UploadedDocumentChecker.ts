@@ -100,17 +100,17 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_AMENDMENT_NAME_SECTION28:
         return "Section 28"
       case DocumentTargets.TARGET_AUDIT_CIRCULATION:
-        return StatutoryFormKeywords.AuditCirculation
+        return "" //StatutoryFormKeywords.AuditCirculation
       case DocumentTargets.TARGET_AUDIT_CIRCULATION_RESOLUTIONS:
-        return StatutoryFormKeywords.AuditCirculation
+        return "" //StatutoryFormKeywords.AuditCirculation
       case DocumentTargets.TARGET_AUDIT_EXTENSION_OF_TIME:
-        return StatutoryFormKeywords.AuditEOT
+        return "" //StatutoryFormKeywords.AuditEOT
       case DocumentTargets.TARGET_AUDIT_EXTENSION_OF_TIME_RESOLUTIONS:
-        return StatutoryFormKeywords.AuditEOT
+        return "" //StatutoryFormKeywords.AuditEOT
       case DocumentTargets.TARGET_AUDITOR_APPOINTMENT:
-        return StatutoryFormKeywords.AuditorAppointment
+        return "" //StatutoryFormKeywords.AuditorAppointment
       case DocumentTargets.TARGET_AUDITOR_APPOINTMENT_RESOLUTIONS:
-        return StatutoryFormKeywords.AuditorAppointment
+        return "" //StatutoryFormKeywords.AuditorAppointment
       case DocumentTargets.TARGET_BO_DECLARATION:
         return ""
       case DocumentTargets.TARGET_BO_DECLARATION_RESOLUTIONS:
@@ -136,7 +136,7 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_DELEGATION_OF_AUTHORITY_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT:
-        return ""
+        return "Section 58"
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST:
@@ -244,15 +244,15 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA:
         return "return of allotment"
       case DocumentTargets.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES:
-        return ""
+        return "section 105"
       case DocumentTargets.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_SHAREHOLDER_PROPOSE_TRANSFER:
-        return ""
+        return "sijil setem"
       case DocumentTargets.TARGET_SHAREHOLDER_PROPOSE_TRANSFER_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER:
-        return ""
+        return "section 51"
       case DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_STRIKING_OFF_RESOLUTION:

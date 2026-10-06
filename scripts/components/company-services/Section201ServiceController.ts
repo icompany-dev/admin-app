@@ -204,6 +204,7 @@ export class Section201ServiceController {
     })
 
     let uploadedFile = new UploadedFile()
+    uploadedFile.name = filename
     await uploadedFile.uploadFile(pdfFile, useFileStore())
 
     return uploadedFile.id

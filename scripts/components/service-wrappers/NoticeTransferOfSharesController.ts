@@ -12,6 +12,10 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import { SignatureUtil } from "~/scripts/utils/Signature"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class NoticeTransferOfSharesController
   extends ServiceController
@@ -31,7 +35,7 @@ export class NoticeTransferOfSharesController
 
   transferDetails = ref<CompanyShareTransferDetail[]>([])
 
-  proposalRefs: any[] | null[] = []
+  section105Refs: any[] | null[] = []
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
@@ -44,14 +48,6 @@ export class NoticeTransferOfSharesController
     super(CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_TRANSFER, companyId, emitEvents)
 
     this.init(applicationId, noticeId)
-    // if (!StringUtil.isNullOrEmpty(applicationId)) {
-    //   this.applicationId = applicationId
-    //   this.fetchApplication(applicationId ?? "")
-    // } else if (!StringUtil.isNullOrEmpty(noticeId)) {
-    //   this.fetchNotice(noticeId ?? "")
-    // }
-
-    // this.fetchShareholders()
   }
 
   async init(applicationId: string | null, noticeId: string | null): Promise<void> {
@@ -129,8 +125,8 @@ export class NoticeTransferOfSharesController
     }
   }
 
-  async setProposalRef(ref: any | null, index: number): Promise<void> {
-    this.proposalRefs[index] = ref
+  async setSection105(ref: any | null, index: number): Promise<void> {
+    this.section105Refs[index] = ref
   }
 
   async fetchShareholders(): Promise<void> {
@@ -158,7 +154,7 @@ export class NoticeTransferOfSharesController
         }
       }
     } catch (e: any) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForFetchAll()
       errorMessage.handle()
     }
@@ -204,25 +200,21 @@ export class NoticeTransferOfSharesController
   }
 
   onDataUpdated(transferDetails: CompanyShareTransferDetail[], index: number): void {
-    if (index > 0) {
-      return
-    }
-
-    this.application.transferDetails = transferDetails.map((d: any) => {
-      return new CompanyShareTransferDetail(d)
-    })
-
-    this.transferDetails.value = transferDetails.map((d: any) => {
-      return new CompanyShareTransferDetail(d)
-    })
-
-    this.proposalRefs.forEach((ref: any, i: number) => {
-      if (i === 0) {
-        return
-      }
-
-      ref.setApplication(this.application)
-    })
+    // if (index > 0) {
+    //   return
+    // }
+    // this.application.transferDetails = transferDetails.map((d: any) => {
+    //   return new CompanyShareTransferDetail(d)
+    // })
+    // this.transferDetails.value = transferDetails.map((d: any) => {
+    //   return new CompanyShareTransferDetail(d)
+    // })
+    // this.section105Refs.forEach((ref: any, i: number) => {
+    //   if (i === 0) {
+    //     return
+    //   }
+    //   ref.setApplication(this.application)
+    // })
   }
 
   async onSubmitClicked(): Promise<void> {
@@ -259,7 +251,7 @@ export class NoticeTransferOfSharesController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -367,37 +359,41 @@ export class NoticeTransferOfSharesController
     this.emitEvents("back")
   }
 
-  helpTitle(): string {
-    return this.language.isMalay()
-      ? `Resolusi Pengarah & Pemegang Saham untuk Memperuntuk Saham Baharu`
-      : "DCR & MCR to Allot New Shares"
-  }
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
 
-  helpDescription(): string {
-    //Get more details for help
-    return this.language.isMalay()
-      ? `Resolusi ini memerlukan:
-        <ul>
-          <li>Sekurang-kurangnya satu (1) <b>Cadangan Nama</b>. Ketersediaan nama adalah tertakluk kepada SSM.</li>
-          <li><b>Resolusi Khas</b> mesti mencapai majoriti sekurang-kurangnya <b>75%</b> daripada Pemegang Saham.</li>
-        </ul>
-        Anda boleh Beli & Muat Turun Profil Korporat SSM sebagai pengesahan perubahan (pilihan).
-        `
-      : `This resolution requires:
-          <ul>
-            <li>At least one (1) <b>Proposed Name</b>. The availability of name is subjected to SSM.</li>
-            <li>The <b>Special Resolution</b> must reach a majority of at least <b>75%</b> of the Shareholders.</li>
-          </ul>
-          You can Purchase & Download SSM Corporate Profile as confirmation of the change (optional).
-        `
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let blobs = []
+      let files: DownloadFileData[] = []
+      for (let i = 0; i < this.section105Refs.length; i++) {
+        let ref = this.section105Refs[i]
+
+        let pages = await ref.getPdfPages()
+        let filename = `${i + 1}. Section 105.pdf`
+        let blob = await PdfPaperUtil.getPdfBlob(pages, 10, filename, PaperSize.A4, PaperOrientation.Portrait)
+        blobs.push(blob)
+        files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
+      }
+
+      await FileZipper.zipAndDownload(files, `Section 105.zip`)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   loaderLabel(): string {
-    return this.language.isMalay() ? "Sedang Menyediakan" : "Preparing Your"
+    return this.language.isMalay() ? "Sedang Menyediakan" : "Preparing the"
   }
 
   loaderSublabel(): string {
-    return this.language.isMalay() ? "Notis Pemindahan" : "Notice of Transfer"
+    return this.language.isMalay() ? "Seksyen 105" : "Section 105"
   }
 
   get hasInitiatorSigned(): boolean {
