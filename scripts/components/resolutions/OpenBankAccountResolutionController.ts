@@ -43,7 +43,7 @@ export abstract class OpenBankAccountResolutionController<T> {
   isGettingPdfPages = ref<boolean>(false)
 
   signatureStartOnPage = ref<number>(1)
-  maxSignatureOnFirstPage = ref<number>(2)
+  maxSignatureOnFirstPage = ref<number>(0)
   maxSignatureOnOtherPages = ref<number>(6)
 
   showWatermark = ref<boolean>(false)
@@ -117,6 +117,14 @@ export abstract class OpenBankAccountResolutionController<T> {
     return this.application.value.company.getFullName()
   }
 
+  companyAddressMultiline(): string {
+    if (!this.application.value?.company) {
+      return ""
+    }
+
+    return this.application.value.company.businessAddressLocation.getMultilineAddress() ?? ""
+  }
+
   registrationNumberOld(): string {
     if (!this.application.value?.company) {
       return ""
@@ -165,8 +173,8 @@ export abstract class OpenBankAccountResolutionController<T> {
   signatureTitle(): string {
     const typeOfSignatures = this.isDcr.value ? "Director" : "Member"
 
-    const title = this.signatureItems.value.length > 0 ? "Board of" : "Sole"
-    return this.signatureItems.value.length > 0 ? `${title} ${typeOfSignatures}s` : `${title} ${typeOfSignatures}`
+    const title = this.signatureItems.value.length > 1 ? "Board of" : "Sole"
+    return this.signatureItems.value.length > 1 ? `${title} ${typeOfSignatures}s` : `${title} ${typeOfSignatures}`
   }
 
   isSignatureEditable(email: string): boolean {
