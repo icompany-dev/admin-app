@@ -43,8 +43,8 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: stretch;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 0px;
     perspective: 1200px; // Enable 3D perspective for card tilt effect
 
@@ -110,9 +110,9 @@
         grid-template-columns: repeat(7, minmax(0, 1fr));
         grid-template-rows: auto; //repeat(2, minmax(0, 1fr));
         padding: 15px;
-        width: calc(183px * 7);
+        max-width: calc(183px * 7);
         height: auto;
-        margin: auto;
+        // margin: auto;
 
         .document {
           position: relative;
