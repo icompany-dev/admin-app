@@ -143,7 +143,7 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   signatureTitle(): string {
-    return this.signatureItems.value.length > 0 ? `Board of Directors` : `Sole Director`
+    return this.signatureItems.value.length > 1 ? `Board of Directors` : `Sole Director`
   }
 
   isSignatureEditable(): boolean {
