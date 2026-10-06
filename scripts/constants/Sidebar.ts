@@ -173,9 +173,16 @@ export class PageSidebar {
     "services/tekun-applications",
     false
   )
+  static newManagementAccount: Sidebar = new Sidebar(
+    "Create Management Account",
+    "Buat Akaun Pengurusan",
+    "services/management-accounts/new",
+    false
+  )
   static otherServiceGroup: SidebarGroup = new SidebarGroup("Others Services", "Servis Lain Lain", [
     this.documentRequests,
     this.tekunApplications,
+    this.newManagementAccount,
   ])
 
   static personsDraft: Sidebar = new Sidebar(

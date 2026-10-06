@@ -131,7 +131,7 @@ export class DividendVoucherController extends SdnBhdLegalDocumentController {
     }
 
     let userDetail = shareholder.user?.detail ?? new UserDetail()
-    let type = userDetail.identificationType === "passport" ? "Passport" : "IC"
+    let type = userDetail.identificationType === "passport" ? "Passport" : "MYKAD"
 
     return `${type} NO: ${userDetail.identification}`
   }

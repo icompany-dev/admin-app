@@ -158,7 +158,9 @@
               </div>
               <div class="cosec-details">
                 <span>FOR {{ controller.companyName() }}</span>
-                <img :src="controller.cosecSignature" />
+                <span class="signature-image to-print">
+                  <img :src="controller.cosecSignature" />
+                </span>
                 <b>{{ controller.cosecName }}</b>
                 <span>Company Secretary</span>
                 <span>{{ controller.cosecLicenseNumber }}</span>

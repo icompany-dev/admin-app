@@ -35,14 +35,14 @@ export class ConfirmToDeleteController extends BasePopupController {
   get content(): string {
     if (this.language.isMalay()) {
       return `
-        Anda ingin memadam ${this.removeItemName.value} ini. Tindakan ini tidak boleh ditarik balik.
+        Anda ingin memadam ${this.removeItemName.value}. Tindakan ini tidak boleh ditarik balik.
         <br><br>
         Klik '<b>Teruskan</b>' jika anda pasti.
       `
     }
 
     return `
-      You are about to remove this ${this.removeItemName.value}. This action cannot be undone.
+      You are about to remove ${this.removeItemName.value}. This action cannot be undone.
       <br><br>
       Click '<b>Proceed</b>' if you are sure.
     `

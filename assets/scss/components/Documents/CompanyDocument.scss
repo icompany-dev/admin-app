@@ -1,0 +1,118 @@
+.company-documents-document {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+
+  .checkbox {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 2;
+  }
+
+  .pdf-canvas {
+    width: 100%;
+    background-color: var(--bs-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1;
+
+    .placeholder {
+      width: calc(100% - 15px);
+      height: 100%;
+      background-color: var(--sdn-bhd-documents-placeholder-bg-color);
+      font-size: 1.9rem;
+      font-weight: 600;
+      padding-left: 15px;
+      color: var(--sdn-bhd-documents-placeholder-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      &.purchase {
+        color: var(--sdn-bhd-documents-placeholder-alt-color);
+      }
+    }
+
+    &:not(:has(.placeholder))::after {
+      content: 'Click to View';
+      width: calc(100% - 30px);
+      height: calc(100% - 30px);
+      max-height: 180px;
+      background-color: rgba(0, 0, 0, 0.5);
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      z-index: 0;
+      transition: all 0.3s ease;
+      font-size: 2.5rem;
+      line-height: 2.6rem;
+      color: var(--bs-white);
+      font-weight: 600;
+      letter-spacing: 0.2pt;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.4);
+      text-shadow: 0px 0px 8px rgba(255, 255, 255, 0);
+    }
+  }
+
+  .name {
+    width: 100%;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap: nowrap;
+    text-align: center;
+    font-weight: 600;
+    color: var(--sdn-bhd-documents-name-color);
+
+    .document-date {
+      font-weight: normal;
+    }
+  }
+
+  .mydata-ssm-marker {
+    position: absolute;
+    font-size: 0.8rem;
+    color: var(--bs-white);
+    background-color: var(--bs-icompany-orange);
+    padding: 5px 10px;
+    border-radius: 3px;
+    top: 5px;
+    left: -5px;
+  }
+
+  &:hover {
+    .pdf-canvas {
+      &:not(:has(.placeholder))::after {
+        opacity: 1;
+        z-index: 10;
+        color: rgba(255, 255, 255, 0.8);
+        text-shadow: 0px 0px 8px rgba(255, 255, 255, 0.5);
+      }
+    }
+  }
+
+  &.is-stacked {
+    .pdf-canvas {
+      &:not(:has(.placeholder))::after {
+        max-height: unset;
+      }
+    }
+  }
+}

@@ -208,8 +208,8 @@ export abstract class ResolutionController<T> {
   signatureTitle(): string {
     const typeOfSignatures = this.isDcr.value ? "Director" : "Member"
 
-    const title = this.signatureItems.value.length > 0 ? "Board of" : "Sole"
-    return this.signatureItems.value.length > 0 ? `${title} ${typeOfSignatures}s` : `${title} ${typeOfSignatures}`
+    const title = this.signatureItems.value.length > 1 ? "Board of" : "Sole"
+    return this.signatureItems.value.length > 1 ? `${title} ${typeOfSignatures}s` : `${title} ${typeOfSignatures}`
   }
 
   isSignatureEditable(group: string): boolean {
@@ -350,17 +350,7 @@ export abstract class ResolutionController<T> {
       return false
     }
 
-    if (this.application.value && this.application.value.signatureGroups.length > 0) {
-      return false
-    }
-
-    return (
-      this.application.value &&
-      (StringUtil.isNullOrEmpty(this.application.value.id) ||
-        this.application.value.status === StatusConstants.DRAFT ||
-        this.application.value.status === StatusConstants.PENDING ||
-        this.application.value.status === StatusConstants.PAID)
-    )
+    return true
   }
 
   getApplication(): T | null {

@@ -12,6 +12,14 @@ import { PdfRenderer } from "~/scripts/library/PdfRenderer"
 import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import type { Form } from "~/scripts/models/Form"
 import { CompanyDocumentNames } from "~/scripts/constants/CompanyDocuments"
+import { Shareholder } from "~/scripts/models/Shareholder"
+import type { Director } from "~/scripts/models/Director"
+import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { User } from "~/scripts/models/User"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class TekunApplicationController
   extends ServiceController
@@ -46,6 +54,9 @@ export class TekunApplicationController
 
   documentsAndForms = ref<DocumentsAndForms>(new DocumentsAndForms(""))
 
+  shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+  identificationRefs = ref<any[]>([])
+
   isLoading = ref<boolean>(false)
 
   constructor(companyId: string, emitEvents: any | null, applicationId: string | null = null) {
@@ -57,7 +68,7 @@ export class TekunApplicationController
   async init(applicationId: string): Promise<void> {
     this.applicationId = applicationId
 
-    let promises = [this.setData()]
+    let promises = [this.setData(), this.fetchShareholders()]
 
     if (!StringUtil.isNullOrEmpty(applicationId)) {
       promises.push(this.fetchApplication(applicationId ?? ""))
@@ -67,6 +78,7 @@ export class TekunApplicationController
   }
 
   async fetchApplication(id: string): Promise<void> {
+    this.applicationId = id
     let response = await this.repository.fetch(id)
     if (!this.repository.error) {
       this.application = new CompanyTekunApplication(response)
@@ -74,6 +86,26 @@ export class TekunApplicationController
       // this.applicationId = this.application.id
       this.targetId = this.applicationId
     }
+  }
+
+  async fetchShareholders(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId)) {
+      return
+    }
+
+    let repository = useShareholderStore()
+    let responses = await repository.fetchAllForCompany(this.companyId)
+    this.shareholders.value = responses.map((d: any) => {
+      return new Shareholder(d)
+    })
+
+    let promises = this.shareholders.value.map((d: Shareholder) => {
+      return d.getRegisteredUser(useUserStore()).then((response) => {
+        d.user = new User(response)
+      })
+    })
+
+    await Promise.allSettled(promises)
   }
 
   async setApplication(companyId: string): Promise<void> {
@@ -118,6 +150,10 @@ export class TekunApplicationController
     }
 
     await Promise.all(promises)
+  }
+
+  setIdentificationRefs(ref: any, index: number): void {
+    this.identificationRefs.value[index] = ref
   }
 
   setPageCanvasesForApplicationForm(pageNumber: number, canvas: HTMLCanvasElement | null): void {
@@ -196,6 +232,89 @@ export class TekunApplicationController
     // Must ask for confirmation before it proceeds to delete
     // await this.application.remove(this.repository)
     this.emitEvents("back")
+  }
+
+  getIdentificationDocumentWatermarkProps(person: Director | Shareholder): PropsIdentificationDocumentWatermark {
+    let userDetail = person.user?.detail
+
+    return new PropsIdentificationDocumentWatermark(
+      this.company.value.getFullName(),
+      `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`,
+      userDetail?.verificationFile?.url ?? "",
+      userDetail?.verificationFileAlt?.url ?? "",
+      "URUSAN TEKUN SAHAJA",
+      PaperOrientation.Portrait,
+      PaperSize.A4
+    )
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let promises = []
+      let files: DownloadFileData[] = []
+      let blobs: Blob[] = []
+
+      if (this.mcrRef) {
+        let mcrPages = await this.mcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.getPdfBlob(
+            mcrPages,
+            19,
+            "MCR - TEKUN Application.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          ).then((blob: Blob) => {
+            blobs.push(blob)
+            files.push(new DownloadFileData(URL.createObjectURL(blob), "MCR - TEKUN Application.pdf"))
+          })
+        )
+      }
+
+      let identificationPages: HTMLElement[] = []
+      for (let i = 0; i <= this.identificationRefs.value.length; i++) {
+        let identificationRef = this.identificationRefs.value[i]
+        if (!identificationRef) {
+          continue
+        }
+
+        let identificationPage = await identificationRef.getPdfPages()
+        identificationPages = identificationPages.concat(identificationPage)
+      }
+
+      if (identificationPages.length > 0) {
+        promises.push(
+          PdfPaperUtil.getPdfBlob(
+            identificationPages,
+            19,
+            "Identification Documents.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          ).then((blob: Blob) => {
+            blobs.push(blob)
+            files.push(new DownloadFileData(URL.createObjectURL(blob), "Identification Documents.pdf"))
+          })
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+
+      await FileZipper.zipAndDownload(files, "TEKUN Application Documents.zip")
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   helpTitle(): string {

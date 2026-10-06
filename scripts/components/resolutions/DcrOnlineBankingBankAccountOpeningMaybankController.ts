@@ -508,7 +508,8 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
       true, //isUsingTemplate
       this.isLoading.value, //isLoading
       true, //isSignatureTinted
-      "Wet Ink Required" //signatureTintLabel
+      "Wet Ink Required", //signatureTintLabel
+      this.companyAddressMultiline()
     )
 
     props.additionalCssClass = "dcr-maybank-online-banking"

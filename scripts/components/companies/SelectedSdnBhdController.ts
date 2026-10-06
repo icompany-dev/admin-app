@@ -1,8 +1,10 @@
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { Error } from "~/scripts/library/Error"
+import { Filter } from "~/scripts/library/Filter"
 import { Company } from "~/scripts/models/Company"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
+import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
@@ -37,6 +39,8 @@ export class SelectedSdnBhdController {
 
   spineRef: any | null = null
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
+
+  isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
 
   applicationRefs: any[] = []
 
@@ -255,6 +259,22 @@ export class SelectedSdnBhdController {
     }
   }
 
+  async notifyDocumentRegularised(): Promise<void> {
+    if (this.isNotifyingRegularise.value) {
+      return
+    }
+
+    try {
+      this.isNotifyingRegularise.value = true
+      let repository = useCompanyStore()
+      await repository.notifyRegularise(this.companyId.value)
+    } catch (e) {
+      //
+    } finally {
+      this.isNotifyingRegularise.value = false
+    }
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -273,6 +293,10 @@ export class SelectedSdnBhdController {
 
   get printSpine(): string {
     return this.language.isMalay() ? "Folder Spine" : " Folder Spine"
+  }
+
+  get notifyRegularise(): string {
+    return this.language.isMalay() ? "Notify Regularise" : " Notify Regularise"
   }
 
   get edit(): string {
@@ -328,7 +352,9 @@ export class SelectedSdnBhdController {
   }
 
   get showDocument(): boolean {
-    return !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value) && !this.isOverview.value
+    return (
+      !StringUtil.isNullOrEmpty(this.selectedDocumentTarget.value) && !this.isOverview.value && !this.isDocuments.value
+    )
   }
 
   get loaderLabel(): string {
@@ -337,5 +363,9 @@ export class SelectedSdnBhdController {
 
   get loaderSublabel(): string {
     return this.language.isMalay() ? "Butiran Sdn Bhd" : "Sdn Bhd Details"
+  }
+
+  get companyDocumentProps(): PropsCompanyDocument {
+    return new PropsCompanyDocument(this.companyId.value, new Filter())
   }
 }

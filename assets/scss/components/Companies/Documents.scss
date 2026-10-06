@@ -1,0 +1,183 @@
+#companies-documents {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  position: relative;
+  padding-bottom: 50px;
+
+  .container-header {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: calc(183px * 4);
+    max-width: calc(183px * 4);
+  }
+
+  .small-no-record {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 15px;
+
+    #placeholder-no-record {
+      min-height: unset;
+    }
+  }
+
+  .company-documents-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+
+    &.show-full {
+      .container-header {
+        display: none;
+      }
+    }
+  }
+
+  .documents {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    margin-bottom: 40px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 0px;
+    perspective: 1200px; // Enable 3D perspective for card tilt effect
+
+    .document {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0px;
+      transform-origin: top;
+      transition: all 0.7s ease;
+
+      .company-documents-document {
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+        .placeholder {
+          height: calc(0.5 * 297mm);
+        }
+      }
+    }
+
+    .action-buttons {
+      position: absolute;
+      bottom: 20px;
+      width: calc(100% - 30px);
+      padding: 0 15px;
+      z-index: 6;
+    }
+  }
+
+  .empty-to-do-list {
+    margin: auto;
+    width: 75%;
+    height: calc(100% - 40px);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .emphasis {
+      font-size: 2.6rem;
+    }
+
+    .subnote {
+      font-size: 1.6rem;
+    }
+
+    .ask-saira {
+      color: var(--bs-icompany-blue);
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1.6rem;
+    }
+  }
+
+  @media (min-width: 990px) {
+    .documents {
+      &.is-grid-mode {
+        gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        grid-template-rows: auto; //repeat(2, minmax(0, 1fr));
+        justify-items: start;
+        padding: 15px 0;
+        max-width: calc(183px * 7);
+        width: fit-content;
+        height: auto;
+        margin: 0;
+
+        .document {
+          position: relative;
+          display: none;
+          transform: none;
+          opacity: 0;
+          height: 0;
+          z-index: -1;
+          box-shadow: none;
+
+          &.is-visible {
+            opacity: 1;
+            display: block;
+            width: 100%;
+            height: 100%;
+            z-index: auto;
+          }
+
+          .company-documents-document {
+            box-shadow: none;
+
+            .placeholder {
+              height: 210px;
+            }
+          }
+
+          &.empty-to-add {
+            border: dashed 3px var(--bs-gray-600);
+            color: var(--bs-gray-600);
+            border-radius: 10px;
+            cursor: pointer;
+            width: 160px;
+            height: 204px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            transition: all 0.7s ease;
+
+            &:hover {
+              border-radius: 15px;
+              border-color: var(--bs-gray-80);
+              color: var(--bs-gray-800);
+              background-color: rgba(255, 255, 255, 0.5);
+            }
+          }
+        }
+
+        .action-buttons {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+#action-tray {
+  z-index: 8; //viewdocument z-index = 10
+}

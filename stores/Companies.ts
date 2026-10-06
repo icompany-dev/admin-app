@@ -126,6 +126,21 @@ export const useCompanyStore = defineStore("company", () => {
     }
   }
 
+  async function notifyRegularise(id: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companies.notifyRegularise(id)
+      return response
+    } catch (e: any) {
+      console.error(`Error to send regularised`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanies = computed(() => companies.value.length)
 
   return {
@@ -142,5 +157,6 @@ export const useCompanyStore = defineStore("company", () => {
     fetchPublic,
     fetchStatisticsForAssignment,
     postService,
+    notifyRegularise,
   }
 })

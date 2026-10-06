@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-dividend-declaration">
+  <div
+    id="dcr-dividend-declaration"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @total-page-changed="emit('totalPageChanged')"
@@ -246,6 +249,8 @@
 
   const emit = defineEmits(["startLoading", "doneLoading", "totalPageChanged"])
 
+  const documentRef = ref(null)
+
   const controller = new DcrDeclarationOfSolvencyDividendController(props, emit)
 
   watch(
@@ -278,10 +283,19 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -41,7 +41,11 @@ export class TransferOfSharesController extends SecretarialServicesController<Co
   applicationDate(data: any): string {
     let application = new CompanyShareholderTransfer(data)
     if (!application.paidAt) {
-      return this.language.isMalay() ? "Belum Dibayar" : "(Unpaid)"
+      if (application.status === StatusConstants.DRAFT || application.status === StatusConstants.PENDING) {
+        return this.language.isMalay() ? "Belum Dibayar" : "(Unpaid)"
+      } else {
+        return this.language.isMalay() ? "" : ""
+      }
     }
 
     return this.time.formatDateTimeFull(application.paidAt)

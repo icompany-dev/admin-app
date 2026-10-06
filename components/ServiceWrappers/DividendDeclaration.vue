@@ -38,10 +38,12 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrDeclarationOfSolvencyDividend from "~/components/Resolutions/DcrDeclarationOfSolvencyDividend.vue"
   import Section132 from "~/components/LegalDocuments/Section132.vue"
   import { DividendDeclarationController } from "~/scripts/components/service-wrappers/DividendDeclarationController"

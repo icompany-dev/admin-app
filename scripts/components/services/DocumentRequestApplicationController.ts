@@ -17,7 +17,7 @@ import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderItemMandatory"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import type { PaymentOrder } from "~/scripts/models/PaymentOrder"
-import { DeliveryConstants } from "~/scripts/constants/Payment"
+import { CtcConstants, DeliveryConstants } from "~/scripts/constants/Payment"
 import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 import { FileZipper } from "~/scripts/utils/FileZipper"
@@ -31,6 +31,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
+  isCompleting: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -80,7 +81,15 @@ export class DocumentRequestApplicationController extends ApplicationController<
     this.isShowResolutions.value = true
     this.isShowCompleted.value = false
 
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+    // this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+  }
+
+  onCompleteApplicationClickedClicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowCompleted.value = true
+
+    // this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
   }
 
   async onDownloadClicked(): Promise<void> {
@@ -148,7 +157,38 @@ export class DocumentRequestApplicationController extends ApplicationController<
   }
 
   async onCompleteClicked(): Promise<void> {
-    //
+    if (this.isCompleting.value || !this.application.value) {
+      return
+    }
+
+    try {
+      this.isCompleting.value = true
+
+      let repository = useCompanyDocumentRequestStore()
+      this.application.value.status = StatusConstants.COMPLETED
+
+      await repository.complete(this.application.value.id)
+
+      let toastTitle = this.language.isMalay() ? "Permohonan ini selesai" : "You have completed this application"
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahu melalui emel dan WhatsApp."
+        : "The Directors have been informed via email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push(`/sdnbhds/${this.application.value.companyId}`)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isCompleting.value = false
+    }
   }
 
   onDocumentClicked(item: CompanyDocumentRequestItem): void {
@@ -199,7 +239,15 @@ export class DocumentRequestApplicationController extends ApplicationController<
       return "-"
     }
 
-    if (!this.application.value.isCtcRequired && this.application.value.isSsmCtcRequired) {
+    if (this.paymentOrderItem.isCtcRequired) {
+      if (this.paymentOrderItem.ctcBy === CtcConstants.CTC_TYPE_COSEC) {
+        return this.language.isMalay() ? "oleh Setiausaha Syarikat" : "By Cosec"
+      }
+
+      return this.language.isMalay() ? "oleh SSM" : "By SSM"
+    }
+
+    if (!this.application.value.isCtcRequired && !this.application.value.isSsmCtcRequired) {
       return this.language.isMalay() ? "Tidak Diperlukan" : "Not Required"
     }
 

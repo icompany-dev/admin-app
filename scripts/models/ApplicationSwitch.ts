@@ -197,6 +197,7 @@ export class ApplicationSwitch implements IApplication {
       secretary_company_name: this.secretaryCompanyName,
       secretary_company_address: this.secretaryCompanyAddress,
       secretary_name: this.secretaryName,
+      status: this.status,
     }
   }
 
@@ -391,6 +392,30 @@ export class ApplicationSwitch implements IApplication {
     return (
       !StringUtil.isNullOrEmpty(this.registrationNumberNew) && !StringUtil.isNullOrEmpty(this.registrationNumberOld)
     )
+  }
+
+  async addFilesToMetadata(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      meta_data: this.metadata,
+    }
+    let response = await repository.update(this.id, data)
+    if (repository.error !== null) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    if (response instanceof ApplicationSwitch) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
   }
 
   get companyName(): string {

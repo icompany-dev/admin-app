@@ -55,7 +55,7 @@ export class Section236ThreeServiceController {
     await PdfPaperUtil.generatePdfFile(
       pages,
       20,
-      `${this.registrationNumberOld.value} Section 236(3).pdf`,
+      `Section 236(3).pdf - Consent to Act as Company Secretary`,
       PaperSize.A4,
       PaperOrientation.Portrait
     )
@@ -72,13 +72,14 @@ export class Section236ThreeServiceController {
       return null
     }
 
-    let filename = `${this.registrationNumberOld.value} Section 236(3).pdf`
+    let filename = `Section 236(3) - Consent to Act as Company Secretary.pdf`
     let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
     let pdfFile = new File([pdfBlob], filename, {
       type: "application/pdf",
     })
 
     let uploadedFile = new UploadedFile()
+    uploadedFile.name = filename
     await uploadedFile.uploadFile(pdfFile, useFileStore())
 
     return uploadedFile.id

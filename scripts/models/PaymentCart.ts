@@ -120,7 +120,7 @@ export class PaymentCart implements IModel<PaymentCart> {
 
   async create(repository: ReturnType<typeof usePaymentCartStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -128,7 +128,7 @@ export class PaymentCart implements IModel<PaymentCart> {
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -138,7 +138,7 @@ export class PaymentCart implements IModel<PaymentCart> {
 
   async update(repository: ReturnType<typeof usePaymentCartStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -146,7 +146,7 @@ export class PaymentCart implements IModel<PaymentCart> {
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -156,14 +156,14 @@ export class PaymentCart implements IModel<PaymentCart> {
 
   async remove(repository: ReturnType<typeof usePaymentCartStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

@@ -633,15 +633,32 @@
   }
 
   ol {
-    list-style-type: none;
+    list-style-type: decimal;
 
     li {
       padding-left: 20px;
       text-align: justify;
+      padding-bottom: 5px !important;
 
       &::marker {
         content: "(" counter(list-item, round) ") ";
       }
+    }
+
+    &.number-list {
+      padding: 5px 0;
+      padding-left: 15px;
+      list-style: decimal;
+
+      li {
+        margin-bottom: 5px;
+      }
+    }
+
+    &.alpha-list {
+      padding: 5px 0;
+      padding-left: 15px;
+      list-style: lower-alpha;
     }
   }
 }
