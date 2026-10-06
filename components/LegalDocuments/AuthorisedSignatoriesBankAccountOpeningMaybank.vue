@@ -47,6 +47,8 @@
           </div>
           <div class="company-incorporated-in">(Incorporated in Malaysia)</div>
           <br />
+          <div v-html="controller.company.value.businessAddressLocation?.getMultilineAddress()" />
+          <br />
           <div>
             ( also referred to as the
             <b>“Company”</b>

@@ -46,6 +46,11 @@
             </div>
             (Incorporated in Malaysia)
             <br />
+            <br v-if="props.companyAddressMultiline" />
+            <div
+              v-if="props.companyAddressMultiline"
+              v-html="props.companyAddressMultiline"
+            />
             <br />
             <div>
               ( also referred to as the
@@ -71,8 +76,12 @@
           >
             <div
               class="signature-title"
-              v-if="page === props.signatureStartOnPage"
+              v-if="
+                page ===
+                (props.maxSignatureOnFirstPage > 0 ? props.signatureStartOnPage : props.signatureStartOnPage + 1)
+              "
             >
+              <!-- TODO: clean up this Logic. this is a rush: handle signature page start after current page -->
               {{ props.signatureTitle }}
             </div>
             <div

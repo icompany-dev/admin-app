@@ -289,8 +289,8 @@ export class DeclarationBankAccountOpeningMaybankController extends SdnBhdLegalD
   }
 
   signatureTitle(): string {
-    const title = this.signatureItems.value.length > 0 ? "Board of" : "Sole"
-    return this.signatureItems.value.length > 0 ? `${title} Directors` : `${title} Director`
+    const title = this.signatureItems.value.length > 1 ? "Board of" : "Sole"
+    return this.signatureItems.value.length > 1 ? `${title} Directors` : `${title} Director`
   }
 
   getSignatureOnPage(page: number): SignatureItem[] {

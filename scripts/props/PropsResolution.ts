@@ -23,6 +23,7 @@ export interface IPropsResolution {
   isSignatureTinted: boolean
   signatureTintLabel: string
   additionalCssClass: string
+  companyAddressMultiline: string
 }
 
 export class PropsResolution implements IPropsResolution {
@@ -48,6 +49,7 @@ export class PropsResolution implements IPropsResolution {
   isSignatureTinted: boolean
   signatureTintLabel: string
   additionalCssClass: string = ""
+  companyAddressMultiline: string = ""
 
   constructor(
     companyName: string,
@@ -70,7 +72,8 @@ export class PropsResolution implements IPropsResolution {
     isUsingTemplate: boolean,
     isLoading: boolean,
     isSignatureTinted: boolean = false,
-    signatureTintLabel: string = ""
+    signatureTintLabel: string = "",
+    companyAddressMultiline: string = ""
   ) {
     this.companyName = companyName
     this.registrationNumberOld = registrationNumberOld
@@ -93,5 +96,6 @@ export class PropsResolution implements IPropsResolution {
     this.isLoading = isLoading
     this.isSignatureTinted = isSignatureTinted
     this.signatureTintLabel = signatureTintLabel
+    this.companyAddressMultiline = companyAddressMultiline
   }
 }

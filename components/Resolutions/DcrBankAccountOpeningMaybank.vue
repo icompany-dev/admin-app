@@ -15,29 +15,25 @@
       :watermark-text="props.watermarkText"
     >
       <template #paperContent>
-        <div
-          class="company-detail-head"
-          :class="{ 'maybank-other-pages': index > 0 }"
-        >
+        <div class="company-detail-head">
           <div class="company-name">
             {{ controller.companyName() }}
           </div>
           <div class="company-registration-number">
             Company No: {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
           </div>
-          <div v-if="index === 0">
+          <div>
             (Incorporated in Malaysia)
             <br />
+            <br />
+            <div v-html="controller.companyAddressMultiline()" />
             <br />
             (also refered to as the
             <b>“Company”</b>
             )
           </div>
         </div>
-        <div
-          class="resolution-title"
-          :class="{ 'maybank-other-pages': index > 0 }"
-        >
+        <div class="resolution-title">
           <span
             v-if="index === 0"
             v-html="controller.resolutionTitleRef.value"
@@ -51,7 +47,10 @@
           class="signature-section"
           v-if="index + 1 >= controller.signatureStartOnPage.value"
         >
-          <div class="signature-title">
+          <div
+            class="signature-title"
+            v-if="controller.maxSignatureOnFirstPage.value > 0"
+          >
             {{ controller.signatureTitle() }}
           </div>
           <div
@@ -93,19 +92,35 @@
       :watermark-text="props.watermarkText"
     >
       <template #paperContent>
-        <div class="company-detail-head maybank-other-pages">
+        <div class="company-detail-head">
           <div class="company-name">
             {{ controller.companyName() }}
           </div>
           <div class="company-registration-number">
             [Company No: {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})]
           </div>
+          <div>
+            (Incorporated in Malaysia)
+            <br />
+            <br />
+            <div v-html="controller.companyAddressMultiline()" />
+            <br />
+            (also refered to as the
+            <b>“Company”</b>
+            )
+          </div>
         </div>
-        <div class="resolution-title maybank-other-pages">
+        <div class="resolution-title">
           (Directors’ Resolution in Writing Re: Opening of bank Account with Malayan Banking Berhad/ Maybank Islamic
           Berhad – cont’d)
         </div>
         <div class="signature-section">
+          <div
+            class="signature-title"
+            v-if="controller.maxSignatureOnFirstPage.value <= 0 && index === 0"
+          >
+            {{ controller.signatureTitle() }}
+          </div>
           <div
             class="signature-item"
             v-for="(signatureItem, i) in controller.getSignatureOnCurrentPage(page)"
