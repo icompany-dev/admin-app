@@ -92,6 +92,12 @@
         v-bind="controller.uploadDocumentProps"
         @proceed="controller.postUploadDocument()"
       />
+      <EditFilenames
+        ref="editFilenamesRef"
+        v-bind="controller.editFilenamesProps"
+        @back="controller.onCancelUpdateFilenameClicked()"
+        @proceed="controller.onCompleteUpdateFilename()"
+      />
     </Teleport>
   </div>
 </template>
@@ -101,6 +107,7 @@
   import LoaderPrepare from "~/components/Loaders/Prepare.vue"
   import ViewDocument from "@/components/Documents/ViewDocument.vue"
   import CompanyDocument from "@/components/Documents/CompanyDocument.vue"
+  import EditFilenames from "../Popups/EditFilenames.vue"
   // import PaginationBubble from "@/components/Paginations/Bubbles.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   // import Tooltip from "../Tooltips/Tooltip.vue"
@@ -114,6 +121,7 @@
 
   const uploadDocumentRef = ref(null)
   const viewDocumentRef = ref(null)
+  const editFilenamesRef = ref(null)
 
   const controller = new DocumentsController(props, emit)
 
@@ -137,6 +145,14 @@
     viewDocumentRef,
     (newVal) => {
       controller.setViewDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    editFilenamesRef,
+    (newVal) => {
+      controller.setEditFilenamesRef(newVal)
     },
     { immediate: true }
   )

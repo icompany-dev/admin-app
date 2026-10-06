@@ -1,9 +1,12 @@
+import ThirdSchedule from "~/components/LegalDocuments/ThirdSchedule.vue"
 import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { Toast } from "~/scripts/library/Toast"
+import { File } from "~/scripts/models/File"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsDocument } from "~/scripts/props/PropsDocument"
+import { PropsEditFilenames } from "~/scripts/props/PropsEditFilenames"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
@@ -23,11 +26,13 @@ export class DocumentsController {
 
   uploadDocumentRef: any | null = null
   viewDocumentRef: any | null = null
+  editFilenamesRef: any | null = null
 
   selectedDocuments: Ref<CompanyDocument[]> = ref<CompanyDocument[]>([])
 
   isDownloading: Ref<boolean> = ref<boolean>(false)
   isDeleting: Ref<boolean> = ref<boolean>(false)
+  isUpdating: Ref<boolean> = ref<boolean>(false)
 
   pdfUrlToView: Ref<string> = ref<string>("")
 
@@ -55,6 +60,10 @@ export class DocumentsController {
 
   setUploadDocumentRef(uploadDocumentRef: any): void {
     this.uploadDocumentRef = uploadDocumentRef
+  }
+
+  setEditFilenamesRef(editFilenamesRef: any): void {
+    this.editFilenamesRef = editFilenamesRef
   }
 
   onUploadDocumentClicked(): void {
@@ -208,6 +217,31 @@ export class DocumentsController {
     }
   }
 
+  onCancelUpdateFilenameClicked(): void {
+    this.isUpdating.value = false
+  }
+
+  onUpdateFilenameClicked(): void {
+    if (!this.editFilenamesRef) {
+      return
+    }
+
+    this.isUpdating.value = true
+    this.editFilenamesRef.show()
+  }
+
+  async onCompleteUpdateFilename(): Promise<void> {
+    try {
+      this.selectedDocuments.value = []
+
+      await this.documentsAndForms.value.init()
+    } catch (e) {
+      //
+    } finally {
+      this.isUpdating.value = false
+    }
+  }
+
   get isLoadingPage(): boolean {
     return this.isLoading.value || this.documentsAndForms.value.isFetchingDocuments
   }
@@ -311,6 +345,12 @@ export class DocumentsController {
 
   get actionTrayElements(): ActionTrayElement[] {
     return [
+      new ActionTrayElement("edit", this.onUpdateFilenameClicked.bind(this), {
+        label: new ActionTrayLabel("Update Name", "Kemaskini Nama"),
+        isDisabled: !this.canCarryOutActions,
+        iconClass: this.isUpdating.value ? "fa-regular fa-spin fa-spinner" : "",
+        isIconStart: this.isUpdating.value,
+      }),
       new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
         label: new ActionTrayLabel("Download", "Muat Turun"),
         isDisabled: !this.canCarryOutActions,
@@ -331,6 +371,28 @@ export class DocumentsController {
   }
 
   get canCarryOutActions(): boolean {
-    return !this.isDownloading.value && !this.isDeleting.value && this.selectedDocuments.value.length > 0
+    return (
+      !this.isDownloading.value &&
+      !this.isDeleting.value &&
+      !this.isUpdating.value &&
+      this.selectedDocuments.value.length > 0
+    )
+  }
+
+  get editFilenamesProps(): PropsEditFilenames {
+    let props = new PropsEditFilenames(
+      this.selectedDocuments.value
+        .filter((cd: CompanyDocument) => {
+          return !StringUtil.isNullOrEmpty(cd.fileId)
+        })
+        .map((cd: CompanyDocument) => {
+          let file = new File()
+          file.id = cd.fileId
+          file.name = cd.documentName
+          return file
+        })
+    )
+
+    return props
   }
 }

@@ -1,5 +1,7 @@
 import _ from "lodash"
 import type { IModel } from "./IModel"
+import { StringUtil } from "../utils/String"
+import { Error } from "../library/Error"
 
 export class File implements IModel<File> {
   id: string = ""
@@ -79,6 +81,25 @@ export class File implements IModel<File> {
     formData.append("name", fileName)
     await repository.uploadFile(formData)
     this.clone(repository.file)
+  }
+
+  async update(repository: ReturnType<typeof useFileStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.name) || StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+    }
+
+    let data = {
+      name: this.name,
+    }
+
+    let response = await repository.update(this.id, data)
+
+    if (response !== null && response instanceof File) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
   }
 }
 
