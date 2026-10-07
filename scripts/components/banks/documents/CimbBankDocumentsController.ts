@@ -4,6 +4,8 @@ import { BankDocumentsController } from "./BankDocumentsController"
 import { BankConstants } from "~/scripts/constants/Banks"
 import type { OnlineBanking } from "~/scripts/types/banks/OnlineBanking"
 import { CimbBankApplicationDetails } from "~/scripts/types/banks/CimbBankApplicationDetails"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { PDFDocument } from "pdf-lib"
 
 export class CimbBankDocumentsController extends BankDocumentsController {
   bankId: string = BankConstants.CIMB_DETAIL.id
@@ -198,5 +200,58 @@ export class CimbBankDocumentsController extends BankDocumentsController {
 
   get isShowCimbApplication(): boolean {
     return this.application.value.cimbBankApplicationDetails?.typeOfApplication === "prefilled-information"
+  }
+
+  async getPrefilledApplicationPdf(): Promise<Blob> {
+    const pdfUrl =
+      "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/banks/document/CIMB+APPLICATION+FORM.pdf"
+
+    const response = await fetch(pdfUrl)
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch CIMB application form: ${response.status}`)
+    }
+    const pdfBytes = await response.arrayBuffer()
+
+    const pdfDoc = await PDFDocument.load(pdfBytes)
+    const form = pdfDoc.getForm()
+
+    const application = this.getApplication()
+    const details = application?.cimbBankApplicationDetails
+
+    if (application && details) {
+      form.getTextField("Text249").setText(this.company.value.getFullName())
+      form.getTextField("Text250").setText(this.company.value.registrationNumberNew ?? "")
+      form.getTextField("Text252").setText(details.generalOperationSigningCondition ?? "")
+    }
+
+    const output = await pdfDoc.save()
+
+    const arrayBuffer = output.buffer.slice(output.byteOffset, output.byteOffset + output.byteLength) as ArrayBuffer
+
+    return new Blob([arrayBuffer], {
+      type: "application/pdf",
+    })
+  }
+
+  async logCimbPdfFields(): Promise<void> {
+    const pdfUrl =
+      "https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/banks/document/CIMB+APPLICATION+FORM.pdf"
+
+    const response = await fetch(pdfUrl)
+    const pdfBytes = await response.arrayBuffer()
+
+    const pdfDoc = await PDFDocument.load(pdfBytes)
+    const form = pdfDoc.getForm()
+
+    form.getFields().forEach((field) => {
+      console.log(field.getName(), field.constructor.name)
+    })
+  }
+
+  override async getAdditionalDownloadFiles(): Promise<DownloadFileData[]> {
+    const applicationPdf = await this.getPrefilledApplicationPdf()
+
+    return [new DownloadFileData(URL.createObjectURL(applicationPdf), "CIMB Application Form.pdf")]
   }
 }

@@ -57,6 +57,7 @@
     "nuxt": "3.17.7",
     "nuxt-signature-pad": "^1.6.0",
     "nuxt-toast": "^1.1.4",
+    "pdf-lib": "^1.17.1",
     "pdfjs-dist": "5.4.54",
     "pinia": "^3.0.3",
     "prettier": "^3.6.2",

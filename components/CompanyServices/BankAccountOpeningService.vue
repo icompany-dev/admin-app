@@ -43,7 +43,6 @@
             :resolution-document="controller.resolutionDocumentProps"
             :is-show-all-documents="controller.bankId.value === BankConstants.CIMB_DETAIL.id"
           />
-          <!-- TODO fixme: is-show-all-documents should be in the cimb documents -->
         </TransitionGroup>
       </template>
     </CompanyServiceWrapper>
