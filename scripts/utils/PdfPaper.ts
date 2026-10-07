@@ -63,7 +63,7 @@ export class PdfPaperUtil {
             continue
           }
 
-          imgElements[j].setAttribute("src", `data:image/png;base64, ${fileBase64.base64}`)
+          imgElements[j].setAttribute("src", `data:image/png;base64,${fileBase64.base64}`)
         }
       }
 

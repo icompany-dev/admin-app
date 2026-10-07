@@ -2,7 +2,7 @@ import { Location } from "../models/Location"
 import type { Secretary } from "../types/Secretary"
 
 export class SecretaryInformation {
-  static SECRETARY_NAME: string = "NUR ASHIKIN BINTI SHAHARUDIN" //AHMAD ASYRAQ BIN ABDUL RASID
+  static SECRETARY_NAME: string = "AHMAD ASYRAQ BIN ABDUL RASID" //AHMAD ASYRAQ BIN ABDUL RASID
   static SECRETARY_NRIC: string = "941024-04-5428" //870523-04-5725
   static SECRETARY_LICENSE: string = "LS0010853" //BC/A/2271
   static SECRETARY_SSM_PC_NO: string = "202408000763" //202608000324

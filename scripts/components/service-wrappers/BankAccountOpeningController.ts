@@ -270,16 +270,22 @@ export class BankAccountOpeningController
       let promises = []
 
       if (this.dcrRef) {
-        let dcrPages = await this.dcrRef.getPdfPages()
-        promises.push(
-          PdfPaperUtil.generatePdfFile(
-            dcrPages,
-            20,
-            "Open Bank Account Documents.pdf",
-            PaperSize.A4,
-            PaperOrientation.Portrait
+        const dcrPages = await this.dcrRef.getPdfPages()
+
+        // Notes: HLB have different paper margin
+        const margin = this.bankId.value === BankConstants.HONG_LEONG_BANK_DETAIL.id ? [10, 10, 0, 10] : 20
+
+        if (dcrPages.length > 0) {
+          promises.push(
+            PdfPaperUtil.generatePdfFile(
+              dcrPages,
+              margin,
+              "Open Bank Account Documents.pdf",
+              PaperSize.A4,
+              PaperOrientation.Portrait
+            )
           )
-        )
+        }
 
         promises.push(this.dcrRef.downloadPdfs())
       }
