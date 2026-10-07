@@ -17,7 +17,7 @@
         ref="documentRef"
         :is="activeDocumentComponent"
         :company-id="controller.companyId.value"
-        :view-type="'new'"
+        :view-type="'existing'"
         :application-id="controller.applicationId.value"
         :target-id="controller.paymentOrderId.value"
         :target-type="controller.target"

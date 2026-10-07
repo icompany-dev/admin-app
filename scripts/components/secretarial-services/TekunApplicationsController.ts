@@ -24,7 +24,11 @@ export class TekunApplicationsController extends SecretarialServicesController<C
   applicationDetails(data: any): string {
     let application = new CompanyTekunApplication(data)
     return `
-      //
+      <b>Alamat:</b><br>
+      ${StringUtil.isNullOrEmpty(application.applicationDetails.address) ? "(Not Complete)" : application.applicationDetails.address}
+      <br><br>
+      <b>Orang yang Diberi Kuasa:</b><br>
+      ${StringUtil.isNullOrEmpty(application.applicationDetails.authorisedPerson) ? "(Not Complete)" : application.applicationDetails.authorisedPerson}
     `
   }
 

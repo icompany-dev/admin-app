@@ -143,7 +143,7 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   signatureTitle(): string {
-    return this.signatureItems.value.length > 0 ? `Board of Directors` : `Sole Director`
+    return this.signatureItems.value.length > 1 ? `Board of Directors` : `Sole Director`
   }
 
   isSignatureEditable(): boolean {
@@ -334,7 +334,6 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   async getPdfPages(): Promise<HTMLElement[]> {
-    console.log(this.documentRef, "pdfpage")
     if (!this.documentRef.value) {
       return []
     }

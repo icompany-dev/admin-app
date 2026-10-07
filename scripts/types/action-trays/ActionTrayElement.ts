@@ -23,6 +23,7 @@ export class ActionTrayElementParams {
 export interface IActionTrayElementOptions {
   label: ActionTrayLabel
   subLabel: ActionTrayLabel
+  badge: ActionTrayLabel
   iconClass: string
   isIconOnly: boolean
   isIconStart: boolean
@@ -41,6 +42,7 @@ export class ActionTrayElement {
 
   label: ActionTrayLabel
   subLabel: ActionTrayLabel
+  badge: ActionTrayLabel
   iconClass: string
   isIconOnly: boolean
   isIconStart: boolean
@@ -62,6 +64,7 @@ export class ActionTrayElement {
 
     this.label = options.label ?? new ActionTrayLabel("", "")
     this.subLabel = options.subLabel ?? new ActionTrayLabel("", "")
+    this.badge = options.badge ?? new ActionTrayLabel("", "")
     this.iconClass = options.iconClass ?? ""
     this.isIconOnly = options.isIconOnly ?? false
     this.isIconStart = options.isIconStart ?? false

@@ -1,5 +1,5 @@
 import { PaperOrientation } from "~/scripts/constants/Paper"
-import { PaymentConstants } from "~/scripts/constants/Payment"
+import { CtcConstants, PaymentConstants } from "~/scripts/constants/Payment"
 import { ActivityLogger } from "~/scripts/library/ActivityLogger"
 import { Error } from "~/scripts/library/Error"
 import { ReceiptInvoiceGenerator } from "~/scripts/library/ReceiptInvoiceGenerator"
@@ -387,6 +387,24 @@ export class ReceiptInvoiceController {
         new ReceiptTableColumn(Number(item.handlingFees ?? "0.00").toFixed(2), "price", true, 1)
       )
       this.tableRows.value.push(handlingFeesRow)
+
+      if (item.isCtcRequired) {
+        let ctcLabel = "CTC"
+        if (item.ctcBy === CtcConstants.CTC_TYPE_COSEC) {
+          ctcLabel = `${ctcLabel} by Company Secretary`
+        } else if (item.ctcBy === CtcConstants.CTC_TYPE_SSM) {
+          ctcLabel = `${ctcLabel} by SSM`
+        }
+
+        let ctcRow: ReceiptTableRow = new ReceiptTableRow(
+          "configuration-row",
+          new ReceiptTableColumn(ctcLabel, "item", true, 2),
+          new ReceiptTableColumn("", "", false, 1),
+          new ReceiptTableColumn(Number(item.ctcAmount ?? "0.00").toFixed(2), "price", true, 1)
+        )
+
+        this.tableRows.value.push(ctcRow)
+      }
 
       if (item.isDeliveryRequired) {
         let deliveryRow: ReceiptTableRow = new ReceiptTableRow(

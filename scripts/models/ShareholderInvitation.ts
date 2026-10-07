@@ -1,3 +1,4 @@
+import { CompanyConstants } from "../constants/Company"
 import { ShareholdingType } from "../constants/Shareholder"
 import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
@@ -165,6 +166,31 @@ export class ShareholderInvitation extends Invitation implements IInvitation<Sha
 
     return response
   }
+
+  isCorporateRepresentative(): boolean {
+    return this.type === ShareholdingType.Representative
+  }
+
+  fullName(): string {
+    if (this.isCorporateRepresentative()) {
+      return this.company?.getFullName() ?? this.name
+    }
+
+    return this.user?.name ?? this.name
+  }
+
+  get identification(): string {
+    if (this.isCorporateRepresentative()) {
+      let registrationNumber = this.company?.registrationNumberNew ?? ""
+      if (!StringUtil.isNullOrEmpty(this.company?.registrationNumberOld ?? "")) {
+        return `${registrationNumber} (${this.company?.registrationNumberOld})`
+      }
+
+      return registrationNumber
+    }
+
+    return this.user?.detail?.identification ?? "-"
+  }
 }
 
 export class ShareholderInvitationCompany {
@@ -210,5 +236,22 @@ export class ShareholderInvitationCompany {
       company_registration_number_old: this.registrationNumberOld,
       company_resolution: this.resolution ? this.resolution.id : null,
     }
+  }
+
+  getType(): string {
+    switch (this.type) {
+      case "sdnbhd":
+        return CompanyConstants.TYPE_SDNBHD
+      case "berhad":
+        return CompanyConstants.TYPE_BERHAD
+      case "others":
+        return ""
+      default:
+        return CompanyConstants.TYPE_SDNBHD
+    }
+  }
+
+  getFullName(): string {
+    return `${this.name} ${this.getType()}`
   }
 }

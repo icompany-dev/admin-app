@@ -77,6 +77,6 @@ export class DirectorController extends InvitationController {
   }
 
   get removeItemName(): string {
-    return this.language.isMalay() ? "Pengarah" : "Director"
+    return this.language.isMalay() ? "Pengarah ini" : "this Director"
   }
 }

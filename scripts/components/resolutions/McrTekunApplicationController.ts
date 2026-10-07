@@ -11,6 +11,8 @@ import { PaperOrientation } from "~/scripts/constants/Paper"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureItem } from "~/scripts/types/SignatureItem"
 import { StatusConstants } from "~/scripts/constants/Status"
+import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class McrTekunApplicationController extends ResolutionController<CompanyTekunApplication> {
   companyTekunApplicationRepository = useCompanyLoanApplicationStore()
@@ -26,6 +28,9 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
 
   shareholders = ref<Shareholder[]>([])
   signatures = ref<SignatureItem[]>([])
+
+  address: Ref<string> = ref<string>("")
+  resolutionDocumentDate: Ref<string> = ref<string>("")
 
   constructor(props: IPropsResolutionDocument<CompanyTekunApplication>, emitEvents: any | null) {
     super(
@@ -61,8 +66,14 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
     if (!this.companyTekunApplicationRepository.error && response !== null) {
       this.application.value = new CompanyTekunApplication(response)
       this.isPaid.value = this.application.value.status !== StatusConstants.DRAFT
+      this.address.value = this.application.value.applicationDetails.address
+      this.resolutionDocumentDate.value = this.application.value.applicationDetails.documentDate
       this.authorisedPerson.value = this.application.value.applicationDetails.authorisedPerson
       this.initializeData()
+
+      if (StringUtil.isNullOrEmpty(this.address.value)) {
+        this.address.value = this.addressOptions.length > 0 ? this.addressOptions[0] : this.companyAddress
+      }
     }
   }
 
@@ -173,8 +184,9 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
     let address = this.application.value.company.getOnelineAddress()
     address = address.replaceAll("MALAYSIA", "")
     address = address.replaceAll(",,", ",")
+    address = address.replace(/\s+/g, " ").trim()
 
-    return `<b>${StringUtil.capitalize(address).trim()}</b>.`
+    return `${StringUtil.capitalize(address).trim()}`
   }
 
   get authorisedPersonName(): string {
@@ -187,5 +199,30 @@ export class McrTekunApplicationController extends ResolutionController<CompanyT
 
   get cosecCertification(): SignatureItem {
     return new SignatureItem(null, false, false, false, "Pengesahan Setiausaha Syarikat", "", "")
+  }
+
+  get addressOptions(): string[] {
+    if (!this.application.value || !this.application.value.company) {
+      return []
+    }
+
+    let addresses = [this.companyAddress]
+
+    addresses = addresses.concat(
+      this.application.value.company.branches.map((cb: CompanyBranch) => {
+        let address = cb.location?.getOnelineAddress() ?? ""
+        address = address.replaceAll("MALAYSIA", "")
+        address = address.replaceAll(",,", ",")
+        address = address.replace(/\s+/g, " ").trim()
+
+        return address
+      })
+    )
+
+    return addresses
+  }
+
+  get selectedAddress(): string {
+    return `<b>${this.address.value}</b>.`
   }
 }

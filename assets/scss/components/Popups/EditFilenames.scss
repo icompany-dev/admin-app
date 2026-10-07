@@ -1,0 +1,21 @@
+// #popups-edit-filenames {
+//   // Styles go here
+// }
+
+.table-edit-filenames {
+  width: 100%;
+  table-layout: fixed;
+
+  tbody {
+    tr {
+      td {
+        .form-control {
+          width: calc(100% - 20px);
+          padding: 5px 10px;
+          border-radius: 5px;
+          background-color: var(--bs-white);
+        }
+      }
+    }
+  }
+}

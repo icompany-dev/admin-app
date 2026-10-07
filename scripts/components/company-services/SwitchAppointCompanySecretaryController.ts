@@ -8,6 +8,7 @@ import { CompanyAmendmentName } from "~/scripts/models/CompanyAmendmentName"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
 import { SwitchConstants } from "~/scripts/constants/Switches"
+import { File as UploadedFile } from "~/scripts/models/File"
 
 export class SwitchAppointCompanySecretaryController {
   applicationSwitchId: Ref<string> = ref<string>("")
@@ -86,12 +87,57 @@ export class SwitchAppointCompanySecretaryController {
       return
     }
 
-    let filename = "Directors' Resolution to Appoint New Company Secretary.pdf"
+    let filename = "DCR - Appoint New Company Secretary.pdf"
     if (this.application.value.switchType === SwitchConstants.TYPE_SETTLE) {
-      filename = "Directors' Resolution to Change Company Secretary.pdf"
+      filename = "DCR - Change Company Secretary.pdf"
     }
 
     await PdfPaperUtil.generatePdfFile(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+  }
+
+  async onGenerateBlob(): Promise<Blob | null> {
+    if (!this.documentRef) {
+      return null
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return null
+    }
+
+    let filename = "DCR - Appoint New Company Secretary.pdf"
+    if (this.application.value.switchType === SwitchConstants.TYPE_SETTLE) {
+      filename = "DCR - Change Company Secretary.pdf"
+    }
+
+    let blob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+
+    return blob
+  }
+
+  async onGenerateClicked(): Promise<string | null> {
+    if (!this.documentRef) {
+      return null
+    }
+
+    let pages: HTMLElement[] = await this.documentRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      return null
+    }
+
+    let filename = `DCR - Appoint New Company Secretary.pdf`
+    let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 19, filename, PaperSize.A4, PaperOrientation.Portrait)
+    let pdfFile = new File([pdfBlob], filename, {
+      type: "application/pdf",
+    })
+
+    let uploadedFile = new UploadedFile()
+    uploadedFile.name = filename
+    await uploadedFile.uploadFile(pdfFile, useFileStore())
+
+    return uploadedFile.id
   }
 
   get serviceWrapperProps() {

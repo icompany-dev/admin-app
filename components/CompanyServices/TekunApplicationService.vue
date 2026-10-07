@@ -1,5 +1,8 @@
 <template>
-  <div id="company-services-tekun-application-service">
+  <div
+    id="company-services-tekun-application-service"
+    class="company-services"
+  >
     <CompanyServiceWrapper
       ref="wrapperRef"
       v-bind="controller.serviceWrapperProps"

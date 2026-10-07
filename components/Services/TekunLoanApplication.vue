@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="application-details">
-              // details
+              <span v-html="controller.details" />
               <br />
               <br />
               <b>{{ controller.itemsToPrepareLabel }}</b>
@@ -79,6 +79,8 @@
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isCompleting.value }"
+              :disabled="controller.isCompleting.value"
               @click="controller.onCompleteClicked()"
             >
               {{ controller.markCompletedLabel }}

@@ -13,6 +13,10 @@ import { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
 import { PropsAddCompanyAuditor } from "~/scripts/props/PropsAddCompanyAuditor"
 import { UserDetail } from "~/scripts/models/UserDetail"
 import { Toast } from "~/scripts/library/Toast"
+import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
+import { PaymentOrder } from "~/scripts/models/PaymentOrder"
+import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
+import { PurchasedItemTracker } from "~/scripts/models/PurchasedItemTracker"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -35,6 +39,13 @@ export class OverviewController {
   addCompanyAuditorRef: any | null = null
 
   companyAuditor = ref<CompanyAuditor>(new CompanyAuditor())
+
+  paymentOrders: Ref<PaymentOrder[]> = ref<PaymentOrder[]>([])
+  paymentOrderItems: Ref<PaymentOrderItem[]> = ref<PaymentOrderItem[]>([])
+
+  purchasedItemTrackers: Ref<PurchasedItemTracker[]> = ref<PurchasedItemTracker[]>([])
+
+  isOrderingChop: Ref<boolean> = ref<boolean>(false)
 
   language = useLanguage()
   time = useLocalTime()
@@ -79,7 +90,12 @@ export class OverviewController {
         this.fetchShareholders(),
         this.fetchCompanyBanks(),
         this.fetchCompanyAuditors(),
+        this.fetchPurchasedItemTrackers(),
       ])
+
+      await this.fetchPaymentOrderItems()
+
+      console.log("latest", this.latestPaymentOrderItemForChop)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -158,6 +174,37 @@ export class OverviewController {
     this.auditors.value = response.data.map((d: any) => {
       return new CompanyAuditor(d)
     })
+  }
+
+  async fetchPaymentOrderItems(): Promise<void> {
+    let repository = usePaymentOrderStore()
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    filter.searchText = this.company.value.name.toLowerCase()
+    filter.takeAll = true
+    filter.statuses = ["paid"]
+
+    let dayjs = useDayjs()
+    filter.startDate = dayjs().startOf("year").format("YYYY-MM-DD")
+    filter.endDate = dayjs().startOf("year").format("YYYY-MM-DD")
+
+    let response = await repository.fetchAll(filter)
+    this.paymentOrders.value = response.data.map((d: any) => {
+      return new PaymentOrder(d)
+    })
+
+    this.paymentOrderItems.value = this.paymentOrders.value.flatMap((po: PaymentOrder) => {
+      return po.items.map((poi: PaymentOrderItem) => {
+        return new PaymentOrderItem(poi)
+      })
+    })
+  }
+
+  async fetchPurchasedItemTrackers(): Promise<void> {
+    let repository = usePurchasedItemTrackerStore()
+    let response = await repository.ongoingForCompany(this.companyId.value)
+
+    console.log(response)
   }
 
   onShowSharePercentageClicked(): void {
@@ -244,6 +291,58 @@ ${detailsOfBO.join("\n")}
       error.handle()
     } finally {
       this.isGeneratingBO.value = false
+    }
+  }
+
+  async onOrderChopClicked(): Promise<void> {
+    if (this.isOrderingChop.value || !this.latestPaymentOrderItemForChop) {
+      return
+    }
+
+    this.isOrderingChop.value = true
+
+    try {
+      let dayjs = useDayjs()
+      let repository = usePurchasedItemTrackerStore()
+
+      if (!StringUtil.isNullOrEmpty(this.latestPaymentOrderItemForChop.id)) {
+        let purchasedItemTracker = new PurchasedItemTracker()
+        purchasedItemTracker.targetType = "company"
+        purchasedItemTracker.targetId = this.companyId.value
+        purchasedItemTracker.paymentOrderItemId = this.latestPaymentOrderItemForChop.id
+        purchasedItemTracker.itemName = "Rounded Company Chop (R24 Colop)"
+        purchasedItemTracker.paidAt = this.latestPaymentOrderItemForChop.paidAt ?? dayjs().format("YYYY-MM-DD")
+        purchasedItemTracker.status = "paid"
+
+        await purchasedItemTracker.create(repository)
+        await repository.orderChop(purchasedItemTracker.id, this.companyId.value)
+      } else {
+        await repository.orderChopUntracked(this.companyId.value)
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Kami telah hantar pesanan untuk chop"
+        : "We have placed an order for the chop"
+      let toastMessage = this.language.isMalay()
+        ? "Sila semak inbox anda untuk kepastian"
+        : "Please check your inbox for confirmation"
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.type = Error.ERROR_TYPE_API
+        error.title = this.language.isMalay()
+          ? "Ada masalah untuk hantar pesanan chop."
+          : "There are problems to place the order for chop."
+        error.message = this.language.isMalay()
+          ? "Ada masalah untuk hantar pesanan chop."
+          : "Please check your inbox to see if ."
+      }
+    } finally {
+      this.isOrderingChop.value = false
     }
   }
 
@@ -418,5 +517,33 @@ ${detailsOfBO.join("\n")}
 
   get addCompanyAuditorProps(): PropsAddCompanyAuditor {
     return new PropsAddCompanyAuditor(this.companyId.value, this.companyAuditor.value as CompanyAuditor)
+  }
+
+  get paymentOrderItemsForChop(): PaymentOrderItem[] {
+    return this.paymentOrderItems.value.filter((poi: PaymentOrderItem) => {
+      if (StringUtil.contains(poi.serviceName, "company chop")) {
+        return true
+      }
+
+      let inOptionals = poi.optionals.some((poio: PaymentOrderItemOptional) => {
+        return StringUtil.contains(poio.serviceName, "company chop")
+      })
+
+      return inOptionals
+    })
+  }
+
+  get hasOrderedCompanyChop(): boolean {
+    return this.paymentOrderItemsForChop.length > 0
+  }
+
+  get latestPaymentOrderItemForChop(): PaymentOrderItem {
+    if (!this.hasOrderedCompanyChop) {
+      return new PaymentOrderItem()
+    }
+
+    let orderedChops = ObjectUtil.sort<PaymentOrderItem>(this.paymentOrderItemsForChop, "paidAt", "desc")
+
+    return orderedChops[0]
   }
 }

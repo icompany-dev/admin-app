@@ -93,6 +93,7 @@ export abstract class SecretarialServicesController<T> {
       StatusConstants.PAID,
       StatusConstants.NAME_REJECTED,
       StatusConstants.STAMPING,
+      StatusConstants.SHIPPED,
       StatusConstants.APPROVED,
       StatusConstants.REJECTED,
       StatusConstants.SUBMITTED,

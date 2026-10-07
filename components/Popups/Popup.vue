@@ -48,13 +48,15 @@
   import { PopupController } from "~/scripts/components/popups/PopupController"
   import { usePopupStack } from "~/composables/usePopupStack"
   import type { IPropsPopup } from "~/scripts/props/PropsPopup"
+  import { EmitMessages } from "~/scripts/constants/EmitMessages"
 
   const props = defineProps<IPropsPopup>()
+  const emit = defineEmits(EmitMessages.POPUPS)
 
   const instanceId = useId()
   const { addToStack, removeFromStack, isTop } = usePopupStack()
 
-  const controller = new PopupController()
+  const controller = new PopupController(emit)
 
   const handleKeyUp = (event: KeyboardEvent) => {
     if (event.key === "Escape" && isTop(instanceId)) {
