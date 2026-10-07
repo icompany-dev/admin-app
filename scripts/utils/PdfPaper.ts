@@ -115,6 +115,9 @@ export class PdfPaperUtil {
 
     document.body.appendChild(container)
 
+    // Notes: to overwrite with actual rendered height
+    container.style.height = `${container.scrollHeight}px`
+
     const html2PdfOptions = this.getHtml2PdfOptions(margin, filename, paperSize, paperOrientation)
 
     await html2pdf().set(html2PdfOptions).from(container).save()
