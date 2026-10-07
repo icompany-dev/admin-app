@@ -240,41 +240,19 @@ export class BankAccountOpeningController
       this.isDownloading.value = true
       this.setActionTrayElements()
 
-      if (typeof this.dcrRef.getPdfDocumentGroups === "function") {
-        const groups: { filename: string; pages: HTMLElement[] }[] = await this.dcrRef.getPdfDocumentGroups()
+      const pages: HTMLElement[] = await this.dcrRef.getPdfPages()
 
-        // Download sequentially, with a separate PDF render per document.
-        for (const group of groups) {
-          console.log(`[PDF] Rendering: ${group.filename}`, `Pages: ${group.pages.length}`)
-
-          try {
-            await PdfPaperUtil.generatePdfFile(group.pages, 20, group.filename, PaperSize.A4, PaperOrientation.Portrait)
-
-            console.log(`[PDF] Completed: ${group.filename}`)
-          } catch (error) {
-            console.error(`[PDF] Failed: ${group.filename}`, error)
-
-            // Print the full renderer stack as text.
-            if (error instanceof globalThis.Error) {
-              console.error(error.stack)
-            }
-          }
-        }
-      } else {
-        const pages: HTMLElement[] = await this.dcrRef.getPdfPages()
-
-        if (!pages.length) {
-          throw new Error()
-        }
-
-        await PdfPaperUtil.generatePdfFile(
-          pages,
-          20,
-          "Open Bank Account Documents.pdf",
-          PaperSize.A4,
-          PaperOrientation.Portrait
-        )
+      if (!pages.length) {
+        throw new Error()
       }
+
+      await PdfPaperUtil.generatePdfFile(
+        pages,
+        20,
+        "Open Bank Account Documents.pdf",
+        PaperSize.A4,
+        PaperOrientation.Portrait
+      )
 
       // Preserve downloads of the existing supporting files.
       await this.dcrRef.downloadPdfs()

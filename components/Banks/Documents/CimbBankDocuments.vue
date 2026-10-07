@@ -273,7 +273,6 @@
     getOtherDetails: controller.getOtherDetails.bind(controller),
     getPdfPages: controller.getPdfPages.bind(controller),
     downloadPdfs: controller.downloadPdfs.bind(controller),
-    getPdfDocumentGroups: controller.getPdfDocumentGroups.bind(controller),
   })
 </script>
 
