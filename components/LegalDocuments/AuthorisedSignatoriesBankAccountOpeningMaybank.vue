@@ -50,9 +50,9 @@
           <div v-html="controller.company.value.businessAddressLocation?.getMultilineAddress()" />
           <br />
           <div>
-            ( also referred to as the
-            <b>“Company”</b>
-            )
+            (also referred to as the “
+            <b>Company</b>
+            ”)
           </div>
         </div>
         <div class="document-content">
