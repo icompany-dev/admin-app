@@ -53,9 +53,9 @@
             />
             <br />
             <div>
-              ( also referred to as the
-              <b>“Company”</b>
-              )
+              (also referred to as the “
+              <b>Company</b>
+              ”)
             </div>
           </div>
           <div class="resolution-title">
@@ -157,9 +157,9 @@
               <br />
               <br />
               <div>
-                ( also referred to as the
-                <b>“Company”</b>
-                )
+                (also referred to as the “
+                <b>Company</b>
+                ”)
               </div>
             </div>
             <div class="resolution-content accompanying-document">

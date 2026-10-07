@@ -222,48 +222,82 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
 
     let datalist = this.datalistForDirectors(itemIndex)
     let role = item?.role === "maker" ? "maker" : "checker"
+
     if (this.isDocumentEditable()) {
       let canRemove = itemIndex > 0 && itemIndex === this.onlineAccessPersons.value.length - 1
       let removeButton = ""
+
       if (canRemove) {
         removeButton = `<i class='fa-regular fa-trash-alt remove-button' />`
       }
-      return `
-        <tr>
-          <td>
-            <input type='text' value='${item?.name ?? ""}' class='form-control authorised-persons' id='name-${itemIndex}' list="directorsList${itemIndex}">
-            ${datalist}
-          </td>
-          <td>
-            <input type='text' value='${item?.id ?? ""}' class='form-control authorised-person-id' id='id-${itemIndex}'>
-          </td>
-          <td>
-            <select class='form-select form-control authorised-person-role' id='role-${itemIndex}'>
-              <option value='checker' ${role === "checker" ? "selected" : ""}>Checker</option>
-              <option value='maker' ${role === "maker" ? "selected" : ""}>Maker</option>
-            </select>
-            ${removeButton}
-          </td>
-        </tr>
-      `
-    } else {
-      let spanClass = this.isInPreviewMode.value ? 'class="placeholder"' : ""
-      let itemName = this.isInPreviewMode.value ? "NAME OF AUTHORISED PERSON" : item?.name
-      let itemId = this.isInPreviewMode.value ? "NRIC NO. OF AUTHORISED PERSON" : item?.id
+
       return `
       <tr>
         <td>
-          <span ${spanClass}>${itemName}</span>
+          <input type='text' value='${item?.name ?? ""}' class='form-control authorised-persons' id='name-${itemIndex}' list="directorsList${itemIndex}">
+          ${datalist}
         </td>
         <td>
-        <span ${spanClass}>${itemId}</span>
+          <input type='text' value='${item?.id ?? ""}' class='form-control authorised-person-id' id='id-${itemIndex}'>
         </td>
         <td>
-          ${role.toUpperCase()}
+          <select class='form-select form-control authorised-person-role' id='role-${itemIndex}'>
+            <option value='checker' ${role === "checker" ? "selected" : ""}>Checker</option>
+            <option value='maker' ${role === "maker" ? "selected" : ""}>Maker</option>
+          </select>
+          ${removeButton}
         </td>
       </tr>
     `
     }
+
+    let displayRole = role
+
+    if (!this.isInPreviewMode.value && item?.name) {
+      let normalizedName = item.name.trim().toLowerCase()
+
+      let matchingPersons = this.onlineAccessPersons.value.filter((person: OnlineBanking) => {
+        return person.name?.trim().toLowerCase() === normalizedName
+      })
+
+      let firstMatchingIndex = this.onlineAccessPersons.value.findIndex((person: OnlineBanking) => {
+        return person.name?.trim().toLowerCase() === normalizedName
+      })
+
+      if (matchingPersons.length > 1 && itemIndex !== firstMatchingIndex) {
+        return ""
+      }
+
+      let hasMaker = matchingPersons.some((person: OnlineBanking) => {
+        return person.role === "maker"
+      })
+
+      let hasChecker = matchingPersons.some((person: OnlineBanking) => {
+        return person.role === "checker"
+      })
+
+      if (hasMaker && hasChecker) {
+        displayRole = "checker & maker"
+      }
+    }
+
+    let spanClass = this.isInPreviewMode.value ? 'class="placeholder"' : ""
+    let itemName = this.isInPreviewMode.value ? "NAME OF AUTHORISED PERSON" : (item?.name ?? "")
+    let itemId = this.isInPreviewMode.value ? "NRIC NO. OF AUTHORISED PERSON" : (item?.id ?? "")
+
+    return `
+    <tr>
+      <td>
+        <span ${spanClass}>${itemName.toUpperCase()}</span>
+      </td>
+      <td>
+        <span ${spanClass}>${itemId}</span>
+      </td>
+      <td>
+        ${displayRole.toUpperCase()}
+      </td>
+    </tr>
+  `
   }
 
   authorisedOnlineBankingHtml(): string {
