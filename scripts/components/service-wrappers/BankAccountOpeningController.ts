@@ -14,6 +14,9 @@ import { StatusConstants } from "~/scripts/constants/Status"
 import { AffinBankApplicationDetails } from "~/scripts/types/banks/AffinBankApplicationDetails"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { ActionTrayDropdown } from "~/scripts/types/action-trays/ActionTrayDropdown"
+import { SelectOption } from "~/scripts/types/SelectOption"
 
 export class BankAccountOpeningController
   extends ServiceController
@@ -40,6 +43,8 @@ export class BankAccountOpeningController
 
   constructor(companyId: string, emitEvents: any | null, applicationId: string | null = null) {
     super(CompanyConstants.TARGET_OPEN_BANK_ACCOUNT, companyId, emitEvents)
+
+    this.resolutionHeaderType.value = "headerWithAddress"
 
     if (!StringUtil.isNullOrEmpty(applicationId)) {
       this.applicationId = applicationId
@@ -93,6 +98,28 @@ export class BankAccountOpeningController
       this.autoSaveAlertRef.show()
       this.isAlertShown.value = true
     }
+  }
+
+  override getAdditionalActionTrayElement(): Array<ActionTrayElement> {
+    return [
+      new ActionTrayDropdown(
+        "action-dropdown",
+        {
+          label: new ActionTrayLabel("Edit", "Ubah"),
+        },
+        [
+          new ActionTrayElement("header", this.onSelectResolutionHeaderType.bind(this), {
+            label: new ActionTrayLabel("Header:", "Header:"),
+            isSelectElement: true,
+            selectedElementValue: this.resolutionHeaderType.value,
+            selectElementOptions: [
+              new SelectOption("headerWithAddress", "headerWithAddress", "With Address"),
+              new SelectOption("headerWithoutAddress", "headerWithoutAddress", "Without Address"),
+            ],
+          }),
+        ]
+      ),
+    ]
   }
 
   async onSubmitClicked(): Promise<void> {
@@ -300,6 +327,7 @@ export class BankAccountOpeningController
     )
 
     props.isShowTag = false
+    props.isShowCompanyAddress = this.resolutionHeaderType.value === "headerWithAddress"
 
     return props
   }

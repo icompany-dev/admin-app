@@ -30,6 +30,8 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
 
   onlineAccessPersons = ref<OnlineBanking[]>([])
 
+  isShowCompanyAddress: Ref<boolean> = ref<boolean>(true)
+
   time = useLocalTime()
   language = useLanguage()
 
@@ -41,11 +43,16 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
     showWatermark: boolean,
     watermarkText: string,
     emitEvents: any | null,
-    bankId: string = ""
+    bankId: string = "",
+    isShowCompanyAddress: boolean = true
   ) {
     super(companyId, application, CompanyBankAccountOpening, isInPreviewMode, showWatermark, watermarkText, emitEvents)
     this.isDcr.value = true
     this.bankId.value = bankId
+    this.setIsShowCompanyAddress(isShowCompanyAddress)
+
+    this.signatureStartOnPage.value = 1
+    this.maxSignatureOnFirstPage.value = 2
 
     this.initializeResolution(applicationId, companyId)
   }
@@ -244,6 +251,7 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
           <select class='form-select form-control authorised-person-role' id='role-${itemIndex}'>
             <option value='checker' ${role === "checker" ? "selected" : ""}>Checker</option>
             <option value='maker' ${role === "maker" ? "selected" : ""}>Maker</option>
+            <option value='checker-maker' ${role === "checker-maker" ? "selected" : ""}>Checker & Maker</option>
           </select>
           ${removeButton}
         </td>
@@ -521,6 +529,8 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
   }
 
   override get resolutionProps() {
+    let companyAddress = this.isShowCompanyAddres.value ? this.companyAddressMultiline() : ""
+
     let props = new PropsResolution(
       this.companyName(), //companyName
       this.registrationNumberOld(), //registrationNumberOld
@@ -543,7 +553,7 @@ export class DcrOnlineBankingBankAccountOpeningMaybankController extends OpenBan
       this.isLoading.value, //isLoading
       true, //isSignatureTinted
       "Wet Ink Required", //signatureTintLabel
-      this.companyAddressMultiline()
+      companyAddress
     )
 
     props.additionalCssClass = "dcr-maybank-online-banking"

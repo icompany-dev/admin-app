@@ -46,8 +46,10 @@
             Company No. {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
           </div>
           <div class="company-incorporated-in">(Incorporated in Malaysia)</div>
-          <br />
-          <div v-html="controller.company.value.businessAddressLocation?.getMultilineAddress()" />
+          <div v-if="props.isShowCompanyAddress">
+            <br />
+            <div v-html="controller.company.value.businessAddressLocation?.getMultilineAddress()" />
+          </div>
           <br />
           <div>
             (also referred to as the “
@@ -107,6 +109,10 @@
       default: "DRAFT",
     },
     isShowTags: {
+      type: Boolean,
+      default: true,
+    },
+    isShowCompanyAddress: {
       type: Boolean,
       default: true,
     },
