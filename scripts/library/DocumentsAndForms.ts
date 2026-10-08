@@ -514,9 +514,12 @@ export class DocumentsAndForms {
     return this.documents
       .filter((cd: CompanyDocument) => {
         return (
-          StringUtil.contains(cd.documentName, "audit ") ||
-          StringUtil.contains(cd.documentName, "financial statement") ||
-          StringUtil.contains(cd.documentName, "annual report")
+          (StringUtil.contains(cd.documentName, "audit ") ||
+            StringUtil.contains(cd.documentName, "financial statement") ||
+            StringUtil.contains(cd.documentName, "financial report") ||
+            StringUtil.contains(cd.documentName, "annual report")) &&
+          !StringUtil.contains(cd.documentName, "dcr") &&
+          !StringUtil.contains(cd.documentName, "mcr")
         )
       })
       .map((document: CompanyDocument) => {
