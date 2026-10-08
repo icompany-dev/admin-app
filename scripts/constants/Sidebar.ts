@@ -155,6 +155,12 @@ export class PageSidebar {
     "services/change-business-address",
     false
   )
+  static auditorAppointment: Sidebar = new Sidebar(
+    "Appointment of Auditor",
+    "Perlantikan Juruaudit",
+    "services/appointment-of-auditor",
+    false
+  )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
     this.changeBusinessDescription,
@@ -166,6 +172,7 @@ export class PageSidebar {
     this.purchaseAssets,
     this.declareDividends,
     this.changeBankSignatories,
+    this.auditorAppointment,
   ])
 
   static documentRequests: Sidebar = new Sidebar(
