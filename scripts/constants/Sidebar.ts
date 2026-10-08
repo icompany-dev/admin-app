@@ -3,6 +3,8 @@ export class Sidebar {
   labelBm: string = ""
   route: string = ""
   isDisabled: boolean = false
+  isPulsing: boolean = false
+  // Model and store here
 
   constructor(labelEn: string, labelBm: string, route: string, isDisabled: boolean) {
     this.labelEn = labelEn
@@ -32,6 +34,7 @@ export class SidebarGroup {
   labelBm: string = ""
   items: Sidebar[] = []
   isExpanded: boolean = false
+  isPulsing: boolean = false
 
   constructor(labelEn: string, labelBm: string, items: Sidebar[], isExpanded: boolean = false) {
     this.labelEn = labelEn

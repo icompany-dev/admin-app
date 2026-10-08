@@ -23,6 +23,11 @@
           @click="controller.onGroupClicked(group)"
         >
           {{ group.labelEn }}
+
+          <div
+            class="is-pulsing"
+            v-if="group.isPulsing"
+          />
         </div>
         <template v-if="group.isShowChildren">
           <div
@@ -33,6 +38,11 @@
             :class="{ selected: item.isShowing, disabled: item.isDisabled }"
           >
             {{ item.labelEn }}
+
+            <div
+              class="is-pulsing"
+              v-if="item.isPulsing"
+            />
           </div>
         </template>
       </div>
