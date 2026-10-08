@@ -106,6 +106,12 @@ export class PageSidebar {
     "services/change-business-name",
     false
   )
+  static changeBusinessDescription: Sidebar = new Sidebar(
+    "Change of Nature",
+    "Penukaran Perihal",
+    "services/change-business-description",
+    false
+  )
   static openBankAccount: Sidebar = new Sidebar(
     "Open Bank Account",
     "Buka Akaun Bank",
@@ -151,6 +157,7 @@ export class PageSidebar {
   )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
+    this.changeBusinessDescription,
     this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
