@@ -2,6 +2,7 @@ import { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import * as pdfjsLib from "pdfjs-dist"
 import { StringUtil } from "~/scripts/utils/String"
 import type { PropsDocument } from "~/scripts/props/PropsDocument"
+import { PaperOrientation } from "~/scripts/constants/Paper"
 
 export class CompanyDocumentController {
   companyDocument = ref<CompanyDocument>(new CompanyDocument("", false, "", null, false, new Date()))
@@ -18,6 +19,9 @@ export class CompanyDocumentController {
   isRendering = ref<boolean>(false)
   urlsToRender = ref<string[]>([])
   renderedUrl = ref<string[]>([])
+
+  paperOrientation: Ref<string> = ref<string>(PaperOrientation.Portrait)
+
   private currentLoadingTask: any = null
 
   constructor(props: PropsDocument, emitEvents: any | null) {
@@ -34,6 +38,7 @@ export class CompanyDocumentController {
     )
 
     this.emitEvents = emitEvents
+    this.paperOrientation.value = props.paperOrientation
 
     this.addToUrlsToRender(props.fileUrl ?? "")
 
@@ -139,8 +144,8 @@ export class CompanyDocumentController {
       const context = this.pdfCanvasRef.getContext("2d")
 
       if (!context || !this.pdfCanvasRef) {
-        this.pdfCanvasRef.width = 148
-        this.pdfCanvasRef.height = 210
+        this.pdfCanvasRef.width = this.paperOrientation.value === PaperOrientation.Portrait ? 148 : 210
+        this.pdfCanvasRef.height = this.paperOrientation.value === PaperOrientation.Portrait ? 210 : 148
         return
       }
 
@@ -149,9 +154,12 @@ export class CompanyDocumentController {
       this.pdfCanvasRef.width = viewport.width
       this.pdfCanvasRef.height = viewport.height
 
-      if (viewport.height !== 210) {
+      if (this.paperOrientation.value === PaperOrientation.Portrait && viewport.height !== 210) {
         this.pdfCanvasRef.width = 148
         this.pdfCanvasRef.height = 210
+      } else if (this.paperOrientation.value === PaperOrientation.Landscape && viewport.height !== 148) {
+        this.pdfCanvasRef.width = 210
+        this.pdfCanvasRef.height = 148
       }
 
       await page.render({

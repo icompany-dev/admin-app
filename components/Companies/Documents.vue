@@ -76,6 +76,30 @@
           <i class="fa-solid fa-plus" />
         </div>
       </div>
+      <template v-if="controller.hasVouchersOrCerts">
+        <div class="container-header">
+          {{ controller.vouchersCertsLabel }}
+        </div>
+        <div class="documents is-grid-mode landscape">
+          <div
+            v-for="(companyDocument, index) in controller.vouchersAndCerts"
+            class="document is-visible"
+          >
+            <CompanyDocument
+              v-bind="controller.getPropsDocument(companyDocument)"
+              :paper-orientation="PaperOrientation.Landscape"
+              @is-selected-changed="controller.onSelectionChanged($event, companyDocument)"
+              @is-viewing-document="controller.onDocumentClicked(companyDocument)"
+            />
+          </div>
+          <div
+            class="document is-visible empty-to-add"
+            @click="controller.onUploadDocumentClicked()"
+          >
+            <i class="fa-solid fa-plus" />
+          </div>
+        </div>
+      </template>
     </div>
     <Teleport to="body">
       <ViewDocument
@@ -121,6 +145,7 @@
   import UploadDocument from "../Popups/UploadDocument.vue"
   import { DocumentsController } from "~/scripts/components/companies/DocumentsController"
   import type { IPropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
+  import { PaperOrientation } from "~/scripts/constants/Paper"
 
   const props = defineProps<IPropsCompanyDocument>()
 
