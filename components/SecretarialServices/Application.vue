@@ -40,6 +40,7 @@
   import BankAccountOpening from "./BankAccountOpening.vue"
   import ChangeBankSignatory from "./ChangeBankSignatory.vue"
   import ChangeOfAddress from "./ChangeOfAddress.vue"
+  import ChangeOfDescription from "./ChangeOfDescription.vue"
   import ChangeOfName from "./ChangeOfName.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import DividendDeclaration from "./DividendDeclaration.vue"
@@ -59,6 +60,7 @@
 
   const componentMap: Record<string, any> = {
     [CompanyConstants.TARGET_AMENDMENT_ADDRESS]: ChangeOfAddress,
+    [CompanyConstants.TARGET_AMENDMENT_DESCRIPTION]: ChangeOfDescription,
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
     [CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY]: ChangeBankSignatory,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
