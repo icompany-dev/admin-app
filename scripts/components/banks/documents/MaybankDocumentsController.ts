@@ -83,6 +83,11 @@ export class MaybankDocumentsController extends BankDocumentsController {
       pages = pages.concat(docPages)
     }
 
+    if (this.noConstiDeclarationRef) {
+      let docPages = await this.noConstiDeclarationRef.getPdfPages()
+      pages = pages.concat(docPages)
+    }
+
     for (let i = 0; i <= this.identificationRefs.value.length; i++) {
       let identificationRef = this.identificationRefs.value[i]
       if (!identificationRef) {
