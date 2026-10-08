@@ -2,6 +2,8 @@ import type { IRepositoryStore } from "../models/IRepositoryStore"
 import { Filter } from "~/scripts/library/Filter"
 import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
+import { StringUtil } from "../utils/String"
+import { Company } from "../models/Company"
 
 export class TableDataFetcher<T> {
   data: T[] = []
@@ -30,9 +32,25 @@ export class TableDataFetcher<T> {
         throw this.repository.error
       }
 
-      this.data = response.data.map((c: any) => {
-        return new this.itemClassType(c)
-      })
+      this.data = response.data
+        .map((c: any) => {
+          return new this.itemClassType(c)
+        })
+        .filter((c: any) => {
+          if (this.filter.includeTestAccount) {
+            return
+          }
+
+          if (c instanceof Company) {
+            return !StringUtil.contains(c.name, "lorem ipsum")
+          }
+
+          if (!c.company) {
+            return
+          }
+
+          return !StringUtil.contains(c.company.name, "lorem ipsum")
+        })
 
       this.filter.setDataFromApiRecord(response)
     } catch (e) {

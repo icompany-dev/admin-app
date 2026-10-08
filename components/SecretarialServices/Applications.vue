@@ -74,10 +74,12 @@
   import CreateDocumentRequest from "../Popups/CreateDocumentRequest.vue"
   import { AllotNewSharesController } from "~/scripts/components/secretarial-services/AllotNewSharesController"
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
+  import { AppointAuditorsController } from "~/scripts/components/secretarial-services/AppointAuditorsController"
   import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
   import { ChangeBankSignatoriesController } from "~/scripts/components/secretarial-services/ChangeBankSignatoriesController"
   import { ChangeOfAddressesController } from "~/scripts/components/secretarial-services/ChangeOfAddressesController"
+  import { ChangeOfDescriptionsController } from "~/scripts/components/secretarial-services/ChangeOfDescriptionsController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { DividendDeclarationsController } from "~/scripts/components/secretarial-services/DividendDeclarationsController"
   import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
@@ -101,8 +103,14 @@
     case CompanyConstants.TARGET_AMENDMENT_ADDRESS:
       controller = new ChangeOfAddressesController(props, emit)
       break
+    case CompanyConstants.TARGET_AMENDMENT_DESCRIPTION:
+      controller = new ChangeOfDescriptionsController(props, emit)
+      break
     case CompanyConstants.TARGET_AMENDMENT_NAME:
       controller = new ChangeOfNamesController(props, emit)
+      break
+    case CompanyConstants.TARGET_AUDITOR_APPOINTMENT:
+      controller = new AppointAuditorsController(props, emit)
       break
     case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
       controller = new AppointDirectorsController(props, emit)

@@ -275,6 +275,10 @@ export abstract class InvitationController {
       return "-"
     }
 
+    if (StringUtil.isEqual(detail.location?.city?.name ?? "", "others")) {
+      return detail.location?.otherCity?.toUpperCase() ?? ""
+    }
+
     return detail.location?.city?.name.toUpperCase() ?? "-"
   }
 
@@ -288,6 +292,10 @@ export abstract class InvitationController {
       return "-"
     }
 
+    if (StringUtil.isEqual(detail.location?.state?.name ?? "", "others")) {
+      return detail.location?.otherState?.toUpperCase() ?? ""
+    }
+
     return detail.location?.state?.name.toUpperCase() ?? "-"
   }
 
@@ -299,6 +307,10 @@ export abstract class InvitationController {
     let detail = this.invitation.value.user.detail
     if (!detail) {
       return "-"
+    }
+
+    if (StringUtil.isEqual(detail.location?.country?.name ?? "", "others")) {
+      return detail.location?.otherCountry?.toUpperCase() ?? ""
     }
 
     return detail.location?.country?.name.toUpperCase() ?? "-"

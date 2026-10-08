@@ -9,6 +9,8 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { AuditorPartner } from "~/scripts/models/AuditorPartner"
 import { AuditorInvitation } from "~/scripts/models/AuditorInvitation"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class AppointmentOfAuditorController
   extends ServiceController
@@ -87,7 +89,7 @@ export class AppointmentOfAuditorController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -137,6 +139,55 @@ export class AppointmentOfAuditorController
       this.emitEvents("back")
     }
     this.emitEvents("back")
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let promises = []
+
+      if (this.dcrRef) {
+        let dcrPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            19,
+            "DCR - Appointment of Auditor.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.nominationRef) {
+        let letter = await this.nominationRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            letter,
+            19,
+            "Letter of Nomination of Auditor.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   helpTitle(): string {
