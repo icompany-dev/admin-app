@@ -7,3 +7,27 @@
     font-weight: 600;
   }
 }
+
+.paper {
+  textarea {
+    max-width: 170mm;
+    text-wrap: wrap;
+    resize: vertical;
+  }
+
+  .business-description {
+    font-weight: 600;
+  }
+
+  &.is-printing,
+  .printing {
+    textarea {
+      max-width: 170mm !important;
+      text-wrap: wrap !important;
+      resize: vertical;
+      padding: 0;
+      border-color: transparent;
+      resize: none;
+    }
+  }
+}
