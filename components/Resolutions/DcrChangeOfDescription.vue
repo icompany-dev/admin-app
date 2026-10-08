@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-change-of-descriptions">
+  <div
+    id="dcr-change-of-descriptions"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
@@ -47,6 +50,8 @@
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed"])
 
+  const documentRef = ref(null)
+
   const controller = new DcrChangeOfDescriptionsController(props, emit)
 
   watch(
@@ -77,11 +82,20 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     isLoading: controller.isLoading.value,
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 
