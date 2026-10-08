@@ -71,8 +71,8 @@ export class ChangeOfBusinessDescriptionServiceController extends CompanyService
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -101,8 +101,8 @@ export class ChangeOfBusinessDescriptionServiceController extends CompanyService
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -163,8 +163,8 @@ export class ChangeOfBusinessDescriptionServiceController extends CompanyService
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForCUD()
         errorMessage.handle()
       }
     } finally {

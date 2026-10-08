@@ -81,6 +81,9 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
       case CompanyConstants.TARGET_AMENDMENT_NAME:
         this.pageAlias = "Change Business Name"
         break
+      case CompanyConstants.TARGET_AUDITOR_APPOINTMENT:
+        this.pageAlias = "Appoint Auditor"
+        break
       case CompanyConstants.TARGET_AUDIT_CIRCULATION:
         this.pageAlias = "Financial Statement Circulation"
         break

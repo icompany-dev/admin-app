@@ -32,10 +32,12 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrChangeOfDescription from "../Resolutions/DcrChangeOfDescription.vue"
   import { ChangeOfDescriptionController } from "~/scripts/components/service-wrappers/ChangeOfDescriptionController"
 

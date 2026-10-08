@@ -106,7 +106,13 @@ export abstract class CompanyServiceController<T> {
     this.ongoingFilter.sortOrder = "desc"
     this.ongoingFilter.orderBy = "created_at"
     this.ongoingFilter.companyId = this.companyId
-    this.ongoingFilter.statuses = [StatusConstants.PAID]
+    this.ongoingFilter.statuses = [
+      StatusConstants.PAID,
+      StatusConstants.READY,
+      StatusConstants.APPROVED,
+      StatusConstants.COMPLETED,
+      StatusConstants.CONVERTED,
+    ]
 
     this.lastSubmissionFilter.take = 1
     this.lastSubmissionFilter.statuses = [StatusConstants.CONVERTED]
@@ -658,6 +664,7 @@ export abstract class CompanyServiceController<T> {
     }
 
     if (pages.length <= 0) {
+      console.log("no page?s")
       return
     }
 

@@ -42,61 +42,7 @@
           />
         </TransitionGroup>
       </template>
-      <template #step-status>
-        <div v-if="controller.isStepStatusVisible()">
-          <div v-if="!controller.isSubmittedToSSM()">
-            {{ controller.processingLabel() }}
-            <i class="fa-solid fa-loader fa-spin"></i>
-          </div>
-
-          <div v-if="controller.isSubmittedToSSM()">
-            <b>{{ controller.submittedToSsmLabel() }}:</b>
-            <div class="step-date">
-              {{ controller.getSubmissionDate() }}
-              <i class="check-icon fa-solid fa-circle-check"></i>
-            </div>
-
-            <div class="step-buttons">
-              <button
-                class="btn btn-submit"
-                @click="controller.onPayForAccess()"
-              >
-                {{ controller.payForAccessLabel() }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #cornerButton>
-        <!-- <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-primary"
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </button> -->
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-pay"
-          @click="controller.onProceedClicked()"
-        >
-          {{ controller.payLabel() }}
-        </button>
-      </template>
     </CompanyServiceWrapper>
-    <ActionTray
-      v-if="controller.showActionTray()"
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
-    <Teleport to="body">
-      <AuditorPartners
-        ref="auditorPartnerRef"
-        :company-id="controller.companyId"
-        @back="controller.onCancelAuditorPartnerSelection()"
-        @proceed="controller.onAuditorPartnerSelected($event)"
-      />
-    </Teleport>
   </div>
 </template>
 
@@ -104,7 +50,7 @@
   import DcrAppointmentOfAuditor from "../Resolutions/DcrAppointmentOfAuditor.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import ActionTray from "../ActionTrays/ActionTray.vue"
-  import AuditorPartners from "../Popups/AuditorPartners.vue"
+  // import AuditorPartners from "../Popups/AuditorPartners.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import { AppointmentOfAuditorServiceController } from "~/scripts/components/company-services/AppointmentOfAuditorServiceController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
@@ -176,6 +122,11 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onGenerateBlob: controller.onGenerateBlob.bind(controller),
+  })
 </script>
 
 <style lang="scss">

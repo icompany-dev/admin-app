@@ -259,7 +259,7 @@ export class BankAccountOpeningController
   }
 
   override async onDownloadClicked(): Promise<void> {
-    if (this.isDownloading.value) {
+    if (this.isDownloading.value || !this.dcrRef) {
       return
     }
 
@@ -270,15 +270,19 @@ export class BankAccountOpeningController
       let promises = []
 
       if (this.dcrRef) {
-        const dcrPages = await this.dcrRef.getPdfPages()
+      const pages: HTMLElement[] = await this.dcrRef.getPdfPages()
+      
+      if (!pages.length) {
+        throw new Error()
+      }
 
         // Notes: HLB have different paper margin
         const margin = this.bankId.value === BankConstants.HONG_LEONG_BANK_DETAIL.id ? [10, 10, 0, 10] : 20
 
-        if (dcrPages.length > 0) {
+        if (pages.length > 0) {
           promises.push(
             PdfPaperUtil.generatePdfFile(
-              dcrPages,
+              pages,
               margin,
               "Open Bank Account Documents.pdf",
               PaperSize.A4,
@@ -287,16 +291,10 @@ export class BankAccountOpeningController
           )
         }
 
-        promises.push(this.dcrRef.downloadPdfs())
-      }
-
-      if (promises.length <= 0) {
-        return
-      }
-
-      await Promise.all(promises)
+      // Preserve downloads of the existing supporting files.
+      await this.dcrRef.downloadPdfs()
     } catch (e) {
-      console.error(e)
+      console.error("Failed to download bank account opening documents:", e)
     } finally {
       this.isDownloading.value = false
       this.setActionTrayElements()

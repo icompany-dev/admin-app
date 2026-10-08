@@ -106,6 +106,12 @@ export class PageSidebar {
     "services/change-business-name",
     false
   )
+  static changeBusinessDescription: Sidebar = new Sidebar(
+    "Change of Nature",
+    "Penukaran Perihal",
+    "services/change-business-description",
+    false
+  )
   static openBankAccount: Sidebar = new Sidebar(
     "Open Bank Account",
     "Buka Akaun Bank",
@@ -149,8 +155,15 @@ export class PageSidebar {
     "services/change-business-address",
     false
   )
+  static auditorAppointment: Sidebar = new Sidebar(
+    "Appointment of Auditor",
+    "Perlantikan Juruaudit",
+    "services/appointment-of-auditor",
+    false
+  )
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
+    this.changeBusinessDescription,
     this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
@@ -159,6 +172,7 @@ export class PageSidebar {
     this.purchaseAssets,
     this.declareDividends,
     this.changeBankSignatories,
+    this.auditorAppointment,
   ])
 
   static documentRequests: Sidebar = new Sidebar(
