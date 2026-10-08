@@ -2,7 +2,18 @@ import { Location } from "../models/Location"
 import type { Secretary } from "../types/Secretary"
 
 export class SecretaryInformation {
-  static SECRETARY_NAME: string = "NUR ASHIKIN BINTI SHAHARUDIN" //AHMAD ASYRAQ BIN ABDUL RASID
+  static FIRM_NAME: string = "COSEC TECH SOLUTIONS SDN BHD"
+  static FIRM_REGISTRATION_NO_NEW: string = "202301032770"
+  static FIRM_REGISTRATION_NO_OLD: string = "1526693-W"
+  static FIRM_ADDRESS: Location = new Location({
+    address_line_1: "D-1-6, FIRST FLOOR, BLOCK D, SEKITAR26 ENTERPRISE",
+    address_line_2: "PERSIARAN HULU SELANGOR, SEKSYEN 26",
+    postcode: "40400",
+    city: { name: "Shah Alam" },
+    state: { name: "Selangor" },
+    country: { name: "Malaysia" },
+  })
+  static SECRETARY_NAME: string = "AHMAD ASYRAQ BIN ABDUL RASID" //AHMAD ASYRAQ BIN ABDUL RASID
   static SECRETARY_NRIC: string = "941024-04-5428" //870523-04-5725
   static SECRETARY_LICENSE: string = "LS0010853" //BC/A/2271
   static SECRETARY_SSM_PC_NO: string = "202408000763" //202608000324

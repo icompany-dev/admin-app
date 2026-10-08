@@ -105,7 +105,7 @@ export class NoConstitutionDeclarationController extends SdnBhdLegalDocumentCont
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -114,6 +114,10 @@ export class NoConstitutionDeclarationController extends SdnBhdLegalDocumentCont
 
   isPaid(): boolean {
     return !StringUtil.isNullOrEmpty(this.application.value.id)
+  }
+
+  get hasDocumentDate(): boolean {
+    return !StringUtil.isNullOrEmpty(this.application.value.createdAt)
   }
 
   documentDate(): string {
@@ -164,7 +168,7 @@ export class NoConstitutionDeclarationController extends SdnBhdLegalDocumentCont
         )
       } else {
         this.documentTemplate.value.title = this.originalTitle.value
-        let addressTo = `To Whom It May Concern <pan class='action-link no-print'>Edit?</span>`
+        let addressTo = `To Whom It May Concern,`
 
         this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
           "<p>$textarea.&lt;name=toAddress&gt;$</p>",
@@ -177,9 +181,24 @@ export class NoConstitutionDeclarationController extends SdnBhdLegalDocumentCont
         )
       }
     } else {
-      this.documentTemplate.value.title = this.originalTitle.value
-      if (StringUtil.isNullOrEmpty(this.application.value.toWhom)) {
-        this.application.value.toWhom = "To Whom It May Concern"
+      if (this.isDocumentEditable()) {
+        this.documentTemplate.value.title = this.originalTitle.value
+        if (StringUtil.isNullOrEmpty(this.application.value.toWhom)) {
+          this.application.value.toWhom = "To Whom It May Concern"
+        }
+      } else {
+        this.documentTemplate.value.title = this.originalTitle.value
+        let addressTo = `To Whom It May Concern,`
+
+        this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
+          "<p>$textarea.&lt;name=toAddress&gt;$</p>",
+          ""
+        )
+
+        this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
+          "$text.&lt;name=toWhom&gt;$",
+          addressTo
+        )
       }
     }
 
