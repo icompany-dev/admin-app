@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="dcr-change-of-descriptions"
-    ref="documentRef"
-  >
+  <div id="dcr-change-of-descriptions" ref="documentRef">
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
@@ -17,7 +14,7 @@
           THAT the change of business nature of the Company to:
           <br v-if="!controller.isDocumentEditable()" />
           <br v-if="!controller.isDocumentEditable()" />
-          <span
+          <div
             v-if="!controller.isDocumentEditable()"
             v-html="controller.businessDescription()"
             class="business-description"
@@ -82,13 +79,9 @@
     }
   )
 
-  watch(
-    documentRef,
-    (newVal) => {
-      controller.setDocumentRef(newVal)
-    },
-    { immediate: true }
-  )
+  watch(documentRef, (newVal) => {
+    controller.setDocumentRef(newVal)
+  }, {immediate: true})
 
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
