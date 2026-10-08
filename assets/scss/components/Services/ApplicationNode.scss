@@ -80,6 +80,12 @@
     flex: 1;
     padding: 10px 15px;
     padding-left: 0;
+
+    .button-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
   }
 
   &.is-selected {

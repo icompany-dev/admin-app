@@ -57,12 +57,22 @@
             </button>
           </template>
           <template #nodeActions>
-            <button
-              class="btn btn-pill btn-submit btn-repeatable"
-              @click="controller.onShippedClicked()"
-            >
-              {{ controller.shipLabel }}
-            </button>
+            <div class="button-groups">
+              <button
+                class="btn btn-pill btn-submit"
+                @click="controller.onShippedClicked()"
+              >
+                {{ controller.shipLabel }}
+              </button>
+
+              <button
+                v-if="controller.isShipped"
+                class="btn btn-pill btn-submit btn-repeatable"
+                @click="controller.onShippedClicked()"
+              >
+                {{ controller.reShipLabel }}
+              </button>
+            </div>
           </template>
         </ApplicationNode>
         <ApplicationNode
