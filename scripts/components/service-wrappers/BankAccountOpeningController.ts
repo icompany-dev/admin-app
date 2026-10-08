@@ -270,11 +270,11 @@ export class BankAccountOpeningController
       let promises = []
 
       if (this.dcrRef) {
-      const pages: HTMLElement[] = await this.dcrRef.getPdfPages()
-      
-      if (!pages.length) {
-        throw new Error()
-      }
+        const pages: HTMLElement[] = await this.dcrRef.getPdfPages()
+
+        if (!pages.length) {
+          throw new Error()
+        }
 
         // Notes: HLB have different paper margin
         const margin = this.bankId.value === BankConstants.HONG_LEONG_BANK_DETAIL.id ? [10, 10, 0, 10] : 20
@@ -290,6 +290,7 @@ export class BankAccountOpeningController
             )
           )
         }
+      }
 
       // Preserve downloads of the existing supporting files.
       await this.dcrRef.downloadPdfs()
