@@ -220,9 +220,23 @@ export class CimbBankDocumentsController extends BankDocumentsController {
     const details = application?.cimbBankApplicationDetails
 
     if (application && details) {
-      form.getTextField("Text249").setText(this.company.value.getFullName())
-      form.getTextField("Text250").setText(this.company.value.registrationNumberNew ?? "")
-      form.getTextField("Text252").setText(details.generalOperationSigningCondition ?? "")
+      const companyName = this.company.value.getFullName().toUpperCase()
+      const registrationNumber = this.company.value.registrationNumberNew ?? ""
+
+      // Page 1 - Business Information
+      form.getTextField("Text15").setText(companyName)
+      form.getTextField("Text17").setText(registrationNumber)
+
+      // Signature Form
+      form.getTextField("Text125").setText(companyName)
+
+      // Omnibus Board Resolution
+      form.getTextField("Text249").setText(companyName)
+      form.getTextField("Text250").setText(registrationNumber)
+
+      // Extract Omnibus Board Resolution
+      form.getTextField("Text249ab").setText(companyName)
+      form.getTextField("Text250ab").setText(registrationNumber)
     }
 
     const output = await pdfDoc.save()
