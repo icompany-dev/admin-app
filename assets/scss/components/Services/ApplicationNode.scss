@@ -21,7 +21,7 @@
       border-radius: 5px;
 
       &::before {
-        content: ' ';
+        content: " ";
         position: absolute;
         top: -12px;
         left: -7px;
@@ -33,7 +33,7 @@
       }
 
       &::after {
-        content: ' ';
+        content: " ";
         position: absolute;
         top: -15px;
         left: -10px;
@@ -115,13 +115,14 @@
     .node-actions {
       cursor: default;
 
-
       .btn {
-        color: var(--btn-out-focus-color);
-        background-color: var(--btn-out-focus-bg-color);
-        border-color: var(--btn-out-focus-border-color);
-        pointer-events: none;
-        cursor: default;
+        &:not(.btn-repeatable) {
+          color: var(--btn-out-focus-color);
+          background-color: var(--btn-out-focus-bg-color);
+          border-color: var(--btn-out-focus-border-color);
+          pointer-events: none;
+          cursor: default;
+        }
       }
     }
   }

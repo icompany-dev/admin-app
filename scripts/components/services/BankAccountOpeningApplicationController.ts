@@ -232,6 +232,10 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
   }
 
   get shipLabel(): string {
+    if (this.isShipped) {
+      return this.language.isMalay() ? "Hantar Semula" : "Re-Shipped"
+    }
+
     return this.language.isMalay() ? "Hantar" : "Shipped"
   }
 

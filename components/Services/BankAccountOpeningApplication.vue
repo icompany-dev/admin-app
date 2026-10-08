@@ -58,7 +58,7 @@
           </template>
           <template #nodeActions>
             <button
-              class="btn btn-pill btn-submit"
+              class="btn btn-pill btn-submit btn-repeatable"
               @click="controller.onShippedClicked()"
             >
               {{ controller.shipLabel }}
