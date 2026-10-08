@@ -169,6 +169,11 @@ export class CimbBankDocumentsController extends BankDocumentsController {
       pages.push(...omnibusPages)
     }
 
+    if (this.noConstiDeclarationRef) {
+      let noConstitutionPages = await this.noConstiDeclarationRef.getPdfPages()
+      pages.push(...noConstitutionPages)
+    }
+
     const resolutionPages = await super.getPdfPages()
     pages.push(...resolutionPages)
 

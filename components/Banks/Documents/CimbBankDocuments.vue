@@ -139,6 +139,10 @@
           v-bind="props.resolutionDocument"
           @updated="emit('updated')"
         />
+        <NoConstitutionDeclaration
+          ref="noConstiDeclarationRef"
+          :company-id="controller.companyId.value"
+        />
         <div
           class="document pdf-file"
           v-for="(document, index) in controller.documentsToDisplay"
@@ -188,6 +192,7 @@
 </template>
 
 <script lang="ts" setup>
+  import NoConstitutionDeclaration from "~/components/LegalDocuments/NoConstitutionDeclaration.vue"
   import DcrBankAccountOpeningCimbBank from "~/components/Resolutions/DcrBankAccountOpeningCimbBank.vue"
   import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
   import { CompanyBankAccountOpening } from "~/scripts/models/CompanyBankAccountOpening"
@@ -215,6 +220,7 @@
   const applicationRef = ref(null)
   const omnibusRef = ref(null)
   const dcrRef = ref(null)
+  const noConstiDeclarationRef = ref(null)
 
   const controller = new CimbBankDocumentsController(props, emit)
 
@@ -260,6 +266,14 @@
     dcrRef,
     (newVal) => {
       controller.setBankResolutionRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    noConstiDeclarationRef,
+    (newVal) => {
+      controller.setNoConstiDeclarationRef(newVal)
     },
     { immediate: true }
   )

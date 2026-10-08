@@ -12,7 +12,6 @@
         :bank-id="controller.bankId"
         :is-in-preview-mode="props.resolutionDocument.isInPreviewMode"
         :is-show-tags="props.resolutionDocument.isShowTag"
-        :is-show-company-address="props.resolutionDocument.isShowCompanyAddress"
         @updated="emit('updated')"
       />
       <template v-if="props.isShowAllDocuments">
@@ -27,7 +26,6 @@
           :application-id="props.resolutionDocument.applicationId"
           :bank-id="controller.bankId"
           :is-in-preview-mode="props.resolutionDocument.isInPreviewMode"
-          :is-show-company-address="props.resolutionDocument.isShowCompanyAddress"
         />
         <DeclarationBankAccountOpeningMaybank
           ref="declarationRef"
@@ -35,7 +33,6 @@
           :application-id="props.resolutionDocument.applicationId"
           :bank-id="controller.bankId"
           :is-in-preview-mode="props.resolutionDocument.isInPreviewMode"
-          :is-show-company-address="props.resolutionDocument.isShowCompanyAddress"
         />
         <NoConstitutionDeclaration
           ref="noConstiDeclarationRef"
