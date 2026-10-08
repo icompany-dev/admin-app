@@ -37,9 +37,11 @@
           class="documents"
         >
           <component
+            ref="dcrRef"
             :is="activeDocumentComponent"
             :company-id="controller.companyId"
             :resolution-document="controller.resolutionDocumentProps"
+            :is-show-all-documents="controller.bankId.value === BankConstants.CIMB_DETAIL.id"
           />
         </TransitionGroup>
       </template>
@@ -59,6 +61,7 @@
   import BankIslamDocuments from "../Banks/Documents/BankIslamDocuments.vue"
   import AllianceBankDocuments from "../Banks/Documents/AllianceBankDocuments.vue"
   import AffinBankDocuments from "../Banks/Documents/AffinBankDocuments.vue"
+  import CimbBankDocuments from "../Banks/Documents/CimbBankDocuments.vue"
   import { BankConstants } from "~/scripts/constants/Banks"
 
   const props = defineProps({
@@ -84,7 +87,7 @@
     [BankConstants.MAYBANK_DETAIL.id]: MaybankDocuments,
     [BankConstants.OCBC_BANK_DETAIL.id]: BankDocuments,
     [BankConstants.UOB_DETAIL.id]: BankDocuments,
-    [BankConstants.CIMB_DETAIL.id]: BankDocuments,
+    [BankConstants.CIMB_DETAIL.id]: CimbBankDocuments,
     [BankConstants.AFFIN_BANK_DETAIL.id]: AffinBankDocuments,
     [BankConstants.PUBLIC_BANK_DETAIL.id]: BankDocuments,
     [BankConstants.MUAMALAT_DETAIL.id]: BankDocuments,
@@ -222,6 +225,7 @@
 
   defineExpose({
     isDoneLoading: controller.isDoneLoading.bind(controller),
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
   })
 </script>
 
