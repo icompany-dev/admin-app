@@ -105,7 +105,7 @@ export class NoConstitutionDeclarationController extends SdnBhdLegalDocumentCont
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -114,6 +114,10 @@ export class NoConstitutionDeclarationController extends SdnBhdLegalDocumentCont
 
   isPaid(): boolean {
     return !StringUtil.isNullOrEmpty(this.application.value.id)
+  }
+
+  get hasDocumentDate(): boolean {
+    return !StringUtil.isNullOrEmpty(this.application.value.createdAt)
   }
 
   documentDate(): string {
@@ -151,37 +155,37 @@ export class NoConstitutionDeclarationController extends SdnBhdLegalDocumentCont
   }
 
   setTitle(): void {
-    if (!this.isPaid()) {
-      if (this.isEditDetails.value) {
-        this.documentTemplate.value.title = this.originalTitle.value
-        let addressTo = `
-          $text.&lt;name=toWhom&gt;$ <span class='action-link no-print'>Cancel?</span>
-        `
+    // if (!this.isPaid()) {
+    //   if (this.isEditDetails.value) {
+    //     this.documentTemplate.value.title = this.originalTitle.value
+    //     let addressTo = `
+    //       $text.&lt;name=toWhom&gt;$ <span class='action-link no-print'>Cancel?</span>
+    //     `
 
-        this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
-          "$text.&lt;name=toWhom&gt;$",
-          addressTo
-        )
-      } else {
-        this.documentTemplate.value.title = this.originalTitle.value
-        let addressTo = `To Whom It May Concern <pan class='action-link no-print'>Edit?</span>`
+    //     this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
+    //       "$text.&lt;name=toWhom&gt;$",
+    //       addressTo
+    //     )
+    //   } else {
+    //     this.documentTemplate.value.title = this.originalTitle.value
+    //     let addressTo = `To Whom It May Concern,`
 
-        this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
-          "<p>$textarea.&lt;name=toAddress&gt;$</p>",
-          ""
-        )
+    //     this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
+    //       "<p>$textarea.&lt;name=toAddress&gt;$</p>",
+    //       ""
+    //     )
 
-        this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
-          "$text.&lt;name=toWhom&gt;$",
-          addressTo
-        )
-      }
-    } else {
-      this.documentTemplate.value.title = this.originalTitle.value
-      if (StringUtil.isNullOrEmpty(this.application.value.toWhom)) {
-        this.application.value.toWhom = "To Whom It May Concern"
-      }
+    //     this.documentTemplate.value.title = this.documentTemplate.value.title.replace(
+    //       "$text.&lt;name=toWhom&gt;$",
+    //       addressTo
+    //     )
+    //   }
+    // } else {
+    this.documentTemplate.value.title = this.originalTitle.value
+    if (StringUtil.isNullOrEmpty(this.application.value.toWhom)) {
+      this.application.value.toWhom = "To Whom It May Concern"
     }
+    // }
 
     let templateProcessor = new TemplateProcessor(this.documentTemplate.value)
 

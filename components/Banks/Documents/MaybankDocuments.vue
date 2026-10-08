@@ -12,6 +12,7 @@
         :bank-id="controller.bankId"
         :is-in-preview-mode="props.resolutionDocument.isInPreviewMode"
         :is-show-tags="props.resolutionDocument.isShowTag"
+        :is-show-company-address="props.resolutionDocument.isShowCompanyAddress"
         @updated="emit('updated')"
       />
       <template v-if="props.isShowAllDocuments">
@@ -26,6 +27,7 @@
           :application-id="props.resolutionDocument.applicationId"
           :bank-id="controller.bankId"
           :is-in-preview-mode="props.resolutionDocument.isInPreviewMode"
+          :is-show-company-address="props.resolutionDocument.isShowCompanyAddress"
         />
         <DeclarationBankAccountOpeningMaybank
           ref="declarationRef"
@@ -33,6 +35,11 @@
           :application-id="props.resolutionDocument.applicationId"
           :bank-id="controller.bankId"
           :is-in-preview-mode="props.resolutionDocument.isInPreviewMode"
+          :is-show-company-address="props.resolutionDocument.isShowCompanyAddress"
+        />
+        <NoConstitutionDeclaration
+          ref="noConstiDeclarationRef"
+          :company-id="controller.companyId.value"
         />
         <div
           class="document pdf-file"
@@ -83,6 +90,7 @@
 </template>
 
 <script lang="ts" setup>
+  import NoConstitutionDeclaration from "~/components/LegalDocuments/NoConstitutionDeclaration.vue"
   import AuthorisedSignatoriesBankAccountOpeningMaybank from "@/components/LegalDocuments/AuthorisedSignatoriesBankAccountOpeningMaybank.vue"
   import DcrBankAccountOpeningMaybank from "@/components/Resolutions/DcrBankAccountOpeningMaybank.vue"
   import DcrOnlineBankingBankAccountOpeningMaybank from "@/components/Resolutions/DcrOnlineBankingBankAccountOpeningMaybank.vue"
@@ -113,6 +121,7 @@
   const onlineBankingRef = ref(null)
   const accountOpeningRef = ref(null)
   const declarationRef = ref(null)
+  const noConstiDeclarationRef = ref(null)
 
   const controller = new MaybankDocumentsController(props.companyId, emit)
 
@@ -151,6 +160,14 @@
     declarationRef,
     (newVal) => {
       controller.setDeclarationRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    noConstiDeclarationRef,
+    (newVal) => {
+      controller.setNoConstiDeclarationRef(newVal)
     },
     { immediate: true }
   )
