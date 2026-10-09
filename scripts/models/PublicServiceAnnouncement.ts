@@ -1,9 +1,9 @@
 import { PublicServiceAnnouncementType } from "../constants/PublicServiceAnnouncements"
 import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
+import { Application } from "./Application"
 
-export class PublicServiceAnnouncement {
-  id: string = ""
+export class PublicServiceAnnouncement extends Application {
   type: PublicServiceAnnouncementType = PublicServiceAnnouncementType.ImportantNotice
   name: string = ""
   description: string = ""
@@ -12,6 +12,8 @@ export class PublicServiceAnnouncement {
   excludeCompanyIds: string[] = []
 
   constructor(data: any | null = null) {
+    super()
+
     if (!data) {
       return
     }
@@ -23,7 +25,7 @@ export class PublicServiceAnnouncement {
     }
   }
 
-  convertFromResponse(data: any): void {
+  override convertFromResponse(data: any): void {
     this.id = data.id
     this.type = data.type
     this.name = data.name
@@ -33,7 +35,7 @@ export class PublicServiceAnnouncement {
     this.excludeCompanyIds = data.exclude_company_ids
   }
 
-  clone(data: PublicServiceAnnouncement): void {
+  override clone(data: PublicServiceAnnouncement): void {
     this.id = data.id
     this.type = data.type
     this.name = data.name
