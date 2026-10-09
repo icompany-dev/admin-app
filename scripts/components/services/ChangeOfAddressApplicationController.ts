@@ -11,6 +11,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 
 export class ChangeOfAddressApplicationController extends ApplicationController<CompanyAmendmentAddress> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -38,6 +39,8 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   isShowPD2: Ref<boolean> = ref<boolean>(false)
   isShowCON: Ref<boolean> = ref<boolean>(false)
   isShowComplete: Ref<boolean> = ref<boolean>(false)
+
+  isDownloadingPD2: Ref<boolean> = ref<boolean>(false)
 
   resolutionsRef: any | null = null
   fileInputRef: any | null = null
@@ -179,6 +182,44 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.isShowPd2Actions.value = !this.isShowPd2Actions.value
   }
 
+  async onDownloadPD2Clicked(): Promise<void> {
+    if (!this.isPD2Uploaded || this.isDownloadingPD2.value) {
+      return
+    }
+
+    try {
+      let companyDocument = this.uplaodedPD2
+
+      if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
+        throw "new file"
+      }
+
+      this.isDownloadingPD2.value = true
+      let url = companyDocument.fileUrl
+
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw "Unable to fetch PDF document from source."
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", companyDocument.documentName)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (e) {
+      let error = new Error()
+      error.setForFetch()
+      error.handle()
+    } finally {
+      this.isDownloadingPD2.value = false
+    }
+  }
+
   async onSubmitToSSMClicked(): Promise<void> {
     this.isShowPd2Actions.value = false
 
@@ -188,6 +229,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
 
     try {
       this.isUpdatingPd2.value = true
+      this.application.value.status = "submitted"
       await this.application.value.submit(useCompanyAmendmentAddressStore())
     } catch (e) {
       if (e instanceof Error) {
@@ -215,10 +257,6 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   onShowCompleteActions(): void {
-    // if (!this.isCONUploaded) {
-    //   return
-    // }
-
     this.isShowCompletedActions.value = !this.isShowCompletedActions.value
   }
 
@@ -337,18 +375,6 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     return this.language.isMalay() ? "Nama yang Dicadangkan" : "Proposed Addresss"
   }
 
-  // get hasNextStepsForSection27(): boolean {
-  //   return this.canSubmitSection27 || this.canUpdateSection27
-  // }
-
-  // get canSubmitSection27(): boolean {
-  //   return !this.latestSection27Application || this.latestSection27Application.status === StatusConstants.REJECTED
-  // }
-
-  // get canUpdateSection27(): boolean {
-  //   return this.latestSection27Application !== null && this.latestSection27Application.status === StatusConstants.PAID
-  // }
-
   get submitSection27ApplicationLabel(): string {
     return this.language.isMalay() ? "Hantar" : "Submit"
   }
@@ -362,23 +388,12 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   get uploadSection27Label(): string {
-    // if (this.isSection27Uploaded) {
-    //   return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
-    // }
-
     return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
   get downloadDocumentSection27Label(): string {
     return this.language.isMalay() ? "Seksyen 27" : "Section 27"
   }
-
-  // get AddressReservationRejectedProps(): PropsAddressReservationRejected {
-  //   return new PropsAddressReservationRejected(
-  //     this.application.value?.company?.getFullAddress() ?? "Company",
-  //     this.latestSection27Application?.proposedAddress ?? "PROPOSED Address"
-  //   )
-  // }
 
   get isRegistrationOfAddressSubmitted(): boolean {
     return this.application.value?.status === StatusConstants.SUBMITTED
@@ -445,14 +460,6 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     return this.language.isMalay() ? "Seksyen 28(4) Akta" : "Section 28(4) of the Act"
   }
 
-  // get uploadCONLabel(): string {
-  //   if (this.isCONUploaded) {
-  //     return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
-  //   }
-
-  //   return this.language.isMalay() ? "Muat Naik" : "Upload"
-  // }
-
   get uploadPD2Label(): string {
     if (this.isPD2Uploaded) {
       return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
@@ -489,14 +496,24 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   get isPD2Uploaded(): boolean {
     return this.uploadedDocumentChecker.value.isDocumentUploaded(
       DocumentTargets.TARGET_PD2,
-      this.application.value?.createdAt ?? ""
+      this.application.value?.paidAt ?? ""
     )
   }
 
-  // get isCONUploaded(): boolean {
-  //   return this.uploadedDocumentChecker.value.isDocumentUploaded(
-  //     DocumentTargets.TARGET_AMENDMENT_ADDRESS_SECTION28,
-  //     this.application.value?.createdAt ?? ""
-  //   )
-  // }
+  get pd2FileLabel(): string {
+    return "PD2 - Change of Business Address"
+  }
+
+  get uplaodedPD2(): CompanyDocument | null {
+    if (!this.isPD2Uploaded) {
+      return null
+    }
+
+    let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_PD2,
+      this.application.value?.paidAt ?? ""
+    )
+
+    return companyDocument ?? null
+  }
 }
