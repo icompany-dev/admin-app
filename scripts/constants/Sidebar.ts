@@ -54,10 +54,11 @@ export class SidebarGroup {
 export class PageSidebar {
   static commandCentre: Sidebar = new Sidebar("Command Centre", "Pusat Kawalan", "", false)
   static analytics: Sidebar = new Sidebar("Analytics", "Analytics", "command-centre/analytics", false)
+  static announcements: Sidebar = new Sidebar("Announcements", "Announcements", "command-centre/announcements", false)
   static dashboardGroup: SidebarGroup = new SidebarGroup(
     "Dashboard",
     "Dashboard",
-    [this.commandCentre, this.analytics],
+    [this.commandCentre, this.analytics, this.announcements],
     true
   )
 
