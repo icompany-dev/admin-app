@@ -163,6 +163,7 @@ import { PostcodeRepository } from "~/scripts/repositories/PostcodeRepository"
 import { ProductRepository } from "~/scripts/repositories/ProductRepository"
 import { ProgressRepository } from "~/scripts/repositories/ProgressRepository"
 import { PublicRepository } from "~/scripts/repositories/PublicRepository"
+import { PublicServiceAnnouncementRepository } from "~/scripts/repositories/PublicServiceAnnouncementRepository"
 import { PurchasedDocumentTemplateRepository } from "~/scripts/repositories/PurchasedDocumentTemplateRepository"
 import { PurchasedItemTrackerRepository } from "~/scripts/repositories/PurchasedItemTrackerRepository"
 import { SearchComplianceRepository } from "~/scripts/repositories/SearchComplianceRepository"
@@ -349,6 +350,7 @@ interface Repositories {
   products: ProductRepository
   progresses: ProgressRepository
   publics: PublicRepository
+  publicServiceAnnouncements: PublicServiceAnnouncementRepository
   purchasedDocumentTemplates: PurchasedDocumentTemplateRepository
   purchasedItemTrackers: PurchasedItemTrackerRepository
   searchCompliance: SearchComplianceRepository
@@ -1040,16 +1042,20 @@ export default defineNuxtPlugin((nuxtApp) => {
       "public",
       config.public.apiBaseUrl,
       getAuthToken),
+    publicServiceAnnouncements: new PublicServiceAnnouncementRepository(
+      "notices/public-service-announcements",
+      "notices/public-service-announcement",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     purchasedDocumentTemplates: new PurchasedDocumentTemplateRepository("company/purchased-document-templates",
       "company/purchased-document-template",
       config.public.apiBaseUrl,
       getAuthToken),
-    purchasedItemTrackers: new PurchasedItemTrackerRepository(
-      "purchased-items",
+    purchasedItemTrackers: new PurchasedItemTrackerRepository("purchased-items",
       "purchased-item",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     searchCompliance: new SearchComplianceRepository("search/compliance",
       "search/compliance",
       config.public.apiBaseUrl,
@@ -1287,6 +1293,7 @@ declare module "#app" {
       products: import("~/scripts/repositories/ProductRepository").ProductRepository
       progresses: import("~/scripts/repositories/ProgressRepository").ProgressRepository
       publics: import("~/scripts/repositories/PublicRepository").PublicRepository
+      publicServiceAnnouncements: import("~/scripts/repositories/PublicServiceAnnouncementRepository").PublicServiceAnnouncementRepository
       purchasedDocumentTemplates: import("~/scripts/repositories/PurchasedDocumentTemplateRepository").PurchasedDocumentTemplateRepository
       purchasedItemTrackers: import("~/scripts/repositories/PurchasedItemTrackerRepository").PurchasedItemTrackerRepository
       searchCompliance: import("~/scripts/repositories/SearchComplianceRepository").SearchComplianceRepository
@@ -1477,6 +1484,7 @@ declare module "pinia" {
       products: import("~/scripts/repositories/ProductRepository").ProductRepository
       progresses: import("~/scripts/repositories/ProgressRepository").ProgressRepository
       publics: import("~/scripts/repositories/PublicRepository").PublicRepository
+      publicServiceAnnouncements: import("~/scripts/repositories/PublicServiceAnnouncementRepository").PublicServiceAnnouncementRepository
       purchasedDocumentTemplates: import("~/scripts/repositories/PurchasedDocumentTemplateRepository").PurchasedDocumentTemplateRepository
       purchasedItemTrackers: import("~/scripts/repositories/PurchasedItemTrackerRepository").PurchasedItemTrackerRepository
       searchCompliance: import("~/scripts/repositories/SearchComplianceRepository").SearchComplianceRepository

@@ -13,9 +13,9 @@ import { generateStores } from "./stores/generate-stores.js"
 // Add or remove classes here. This is the only source of truth.
 const classes = [
   {
-    name: "PurchasedItemTracker",
-    url: "purchased-items",
-    singleUrl: "purchased-item",
+    name: "PublicServiceAnnouncement",
+    url: "notices/public-service-announcements",
+    singleUrl: "notices/public-service-announcement",
   },
 ]
 
