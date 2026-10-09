@@ -1,9 +1,7 @@
 import { DeliveryInfo } from "./DeliveryInfo"
 import type { IModel } from "./IModel"
 
-export class PaymentOrderItemDelivery
-  implements IModel<PaymentOrderItemDelivery>
-{
+export class PaymentOrderItemDelivery implements IModel<PaymentOrderItemDelivery> {
   id: string = ""
   paymentOrderItemId: string = ""
   deliveryInfo: DeliveryInfo = new DeliveryInfo()
@@ -41,6 +39,7 @@ export class PaymentOrderItemDelivery
       dalivery_phone: data.recipient_phone,
       dalivery_address_line_1: data.address_line_1,
       dalivery_address_line_2: data.address_line_2,
+      dalivery_address_line_3: data.address_line_3,
       dalivery_address_postcode: data.address_postcode,
       dalivery_address_city: data.address_city,
       dalivery_address_state: data.address_state,
