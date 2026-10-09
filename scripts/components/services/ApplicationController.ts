@@ -544,10 +544,12 @@ export abstract class ApplicationController<Application> {
       return this.language.isMalay() ? "Penghantaran Tidak Diperlukan" : "No Delivery Required"
     }
 
-    if (!this.application.value.company?.hasBusinessAddress) {
+    let paymentOrderItemDelivery = this.paymentOrderItem.delivery
+    if (!paymentOrderItemDelivery) {
       let addressFragments: string[] = [`<b>${this.paymentOrder.value.billingInfo.name}</b>`]
       addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
       addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
+      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine3 ?? "")
       addressFragments.push(
         `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
       )
@@ -562,10 +564,22 @@ export abstract class ApplicationController<Application> {
         .join("<br>")
     }
 
-    return `
-      <b>${this.paymentOrder.value.billingInfo.name}</b><br>
-      ${this.application.value.company?.businessAddressLocation?.getMultilineAddress()}
-    `
+    let addressFragments: string[] = [`<b>${paymentOrderItemDelivery.deliveryInfo.name}</b>`]
+    addressFragments.push(paymentOrderItemDelivery.deliveryInfo.addressLine1 ?? "")
+    addressFragments.push(paymentOrderItemDelivery.deliveryInfo.addressLine2 ?? "")
+    addressFragments.push(paymentOrderItemDelivery.deliveryInfo.addressLine3 ?? "")
+    addressFragments.push(
+      `${paymentOrderItemDelivery.deliveryInfo.addressPostcode} ${paymentOrderItemDelivery.deliveryInfo.addressCity}`
+    )
+    addressFragments.push(
+      `${paymentOrderItemDelivery.deliveryInfo.addressState} ${paymentOrderItemDelivery.deliveryInfo.addressCountry}`
+    )
+
+    return addressFragments
+      .filter((s: string) => {
+        return !StringUtil.isNullOrEmpty(s)
+      })
+      .join("<br>")
   }
 
   get deliveryAddressToCopy(): string {
