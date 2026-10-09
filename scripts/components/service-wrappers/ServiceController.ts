@@ -12,7 +12,13 @@ import { Company } from "~/scripts/models/Company"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
 import { SignatureGroup, SignatureGroupGroup, SignatureGroupTarget } from "~/scripts/models/SignatureGroup"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
-import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { ActionTrayDropdown } from "~/scripts/types/action-trays/ActionTrayDropdown"
+import {
+  ActionTrayElement,
+  ActionTrayElementParams,
+  ActionTrayLabel,
+} from "~/scripts/types/action-trays/ActionTrayElement"
+import { SelectOption } from "~/scripts/types/SelectOption"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -49,6 +55,7 @@ export abstract class ServiceController {
   servicePricingRepository = useServicePricingStore()
 
   price = ref<number>(19)
+  resolutionHeaderType: Ref<string> = ref<string>("headerWithAddress")
 
   dcrRef: any | null = null
   mcrRef: any | null = null
@@ -94,6 +101,7 @@ export abstract class ServiceController {
         iconClass: "fa-solid fa-circle-arrow-left",
         isDisabled: this.isDownloading.value,
       }),
+      ...this.getAdditionalActionTrayElement(),
       new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
         label: new ActionTrayLabel("Download", "Muat Turun"),
         isIconStart: this.isDownloading.value,
@@ -101,6 +109,10 @@ export abstract class ServiceController {
         iconClass: this.isDownloading.value ? "fa-solid fa-spin fa-spinner" : "",
       }),
     ]
+  }
+
+  getAdditionalActionTrayElement(): Array<ActionTrayElement> {
+    return []
   }
 
   async getCompany(): Promise<void> {
@@ -245,6 +257,11 @@ export abstract class ServiceController {
 
   onBackClicked(): void {
     this.emitEvents("back")
+  }
+
+  onSelectResolutionHeaderType(params?: ActionTrayElementParams): void {
+    this.resolutionHeaderType.value = String(params?.outcome ?? "")
+    this.setActionTrayElements()
   }
 
   onZoomInClicked(): void {

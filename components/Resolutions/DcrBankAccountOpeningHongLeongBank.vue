@@ -338,42 +338,70 @@
                       <div class="form-check-wrapper">
                         <div class="form-check">
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isSignatoryTypeSelected('anyone')"
                             :disabled="!controller.isDocumentEditable()"
                             @click="controller.onSignatoryTypeChanged('anyone')"
                           />
+                          <span
+                            v-if="!controller.isDocumentEditable()"
+                            class="pdf-checkbox"
+                          >
+                            {{ controller.isSignatoryTypeSelected("anyone") ? "✓" : "" }}
+                          </span>
                           <span class="label">Any One to sign</span>
                         </div>
                         <div class="form-check">
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isSignatoryTypeSelected('any-two')"
                             :disabled="!controller.isDocumentEditable()"
                             @click="controller.onSignatoryTypeChanged('any-two')"
                           />
+                          <span
+                            v-if="!controller.isDocumentEditable()"
+                            class="pdf-checkbox"
+                          >
+                            {{ controller.isSignatoryTypeSelected("any-two") ? "✓" : "" }}
+                          </span>
                           <span class="label">Any two to sign</span>
                         </div>
                         <div class="form-check">
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isSignatoryTypeSelected('all')"
                             :disabled="!controller.isDocumentEditable()"
                             @click="controller.onSignatoryTypeChanged('all')"
                           />
+                          <span
+                            v-if="!controller.isDocumentEditable()"
+                            class="pdf-checkbox"
+                          >
+                            {{ controller.isSignatoryTypeSelected("all") ? "✓" : "" }}
+                          </span>
                           <span class="label">All to sign</span>
                         </div>
                         <div class="form-check">
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isSignatoryTypeSelected('others')"
                             :disabled="!controller.isDocumentEditable()"
                             @click="controller.onSignatoryTypeChanged('others')"
                           />
+                          <span
+                            v-if="!controller.isDocumentEditable()"
+                            class="pdf-checkbox"
+                          >
+                            {{ controller.isSignatoryTypeSelected("others") ? "✓" : "" }}
+                          </span>
                           <span class="label">Others:</span>
                         </div>
                       </div>

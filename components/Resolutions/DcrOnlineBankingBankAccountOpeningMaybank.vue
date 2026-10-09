@@ -39,7 +39,8 @@
     props.showWatermark,
     props.watermarkText,
     emit,
-    props.bankId ?? ""
+    props.bankId ?? "",
+    props.isShowCompanyAddress ?? true
   )
 
   watch(
@@ -87,6 +88,13 @@
     () => props.watermarkText,
     (newVal) => {
       controller.setWatermarkText(newVal)
+    }
+  )
+
+  watch(
+    () => props.isShowCompanyAddress,
+    (newVal) => {
+      controller.setIsShowCompanyAddress(newVal)
     }
   )
 

@@ -23,10 +23,14 @@
             {{ controller.registrationNumberNew() }}
             ({{ controller.registrationNumberOld() }})]
           </div>
-          ("Company")
-          <br />
-          <br />
           (Incorporated in Malaysia)
+          <br />
+          <br />
+          <div>
+            (also referred to as the “
+            <b>Company</b>
+            ”)
+          </div>
         </div>
         <div class="resolution-title">
           {{ controller.resolutionTitle() }}

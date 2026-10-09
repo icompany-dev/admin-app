@@ -63,7 +63,7 @@ export class PdfPaperUtil {
             continue
           }
 
-          imgElements[j].setAttribute("src", `data:image/png;base64, ${fileBase64.base64}`)
+          imgElements[j].setAttribute("src", `data:image/png;base64,${fileBase64.base64}`)
         }
       }
 
@@ -114,6 +114,10 @@ export class PdfPaperUtil {
     }
 
     document.body.appendChild(container)
+
+    // Notes: to overwrite with actual rendered height
+    container.style.height = `${container.scrollHeight}px`
+
     const html2PdfOptions = this.getHtml2PdfOptions(margin, filename, paperSize, paperOrientation)
 
     try {

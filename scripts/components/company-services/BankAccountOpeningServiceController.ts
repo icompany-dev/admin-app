@@ -1737,6 +1737,7 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
     )
 
     props.isShowTag = false
+    props.isShowCompanyAddress = true
 
     return props
   }
