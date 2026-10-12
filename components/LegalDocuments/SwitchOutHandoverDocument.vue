@@ -215,7 +215,7 @@
   )
 
   defineExpose({
-    getPdfElements: controller.getPdfElements.bind(controller),
+    getPdfElements: controller.getPdfPages.bind(controller),
   })
 </script>
 

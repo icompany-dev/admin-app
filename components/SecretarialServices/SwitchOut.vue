@@ -27,8 +27,10 @@
 </template>
 
 <script lang="ts" setup>
+  import LetterToSwitchOutService from "../CompanyServices/LetterToSwitchOutService.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
   import SwitchOutApplication from "../Services/SwitchOutApplication.vue"
+  import SwitchOutHandoverDocumentService from "../CompanyServices/SwitchOutHandoverDocumentService.vue"
   import { SwitchOutController } from "~/scripts/components/secretarial-services/SwitchOutController"
   import type { IPropsSecretarialService } from "~/scripts/props/PropsSecretarialService"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
@@ -43,6 +45,8 @@
 
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
+    [DocumentTargets.TARGET_SWITCH_OUT_LETTER]: LetterToSwitchOutService,
+    [DocumentTargets.TARGET_SWITCH_OUT_DOCUMENT]: SwitchOutHandoverDocumentService,
   }
 
   const activeDocumentComponent = computed(() => {

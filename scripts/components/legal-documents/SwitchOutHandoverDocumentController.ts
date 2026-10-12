@@ -192,7 +192,7 @@ export class SwitchOutHandoverDocumentController {
     return this.tableRows.slice(start, end)
   }
 
-  async getPdfElements(): Promise<HTMLElement[]> {
+  async getPdfPages(): Promise<HTMLElement[]> {
     if (!this.documentRef) {
       return []
     }
