@@ -47,6 +47,7 @@
                     type="text"
                     class="form-control"
                     v-model="controller.purpose.value"
+                    style="min-width: 300px"
                   />
                 </div>
               </div>
@@ -71,6 +72,7 @@
                 type="text"
                 class="form-control"
                 v-model="controller.title.value"
+                style="min-width: 300px"
               />
             </div>
             <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px">
@@ -79,6 +81,7 @@
                 type="text"
                 class="form-control"
                 v-model="controller.subtitle.value"
+                style="min-width: 300px"
               />
             </div>
           </div>
@@ -87,6 +90,7 @@
               v-bind="controller.getIdentificationDocumentWatermarkProps()"
               ref="identificationRef"
             />
+            <!-- TODO: need to scale this to the drawer size -->
           </div>
         </div>
 

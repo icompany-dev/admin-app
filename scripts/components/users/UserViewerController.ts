@@ -17,6 +17,7 @@ export class UserViewerController {
   purpose: Ref<string> = ref<string>("")
   title: Ref<string> = ref<string>("")
   subtitle: Ref<string> = ref<string>("")
+  // TODO: need to allow auto select company
 
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
