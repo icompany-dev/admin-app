@@ -42,22 +42,17 @@
         </p>
         <p>
           The proposed allotment is intended to be made for the purpose of
-          <input
+          <select
             v-if="controller.isDocumentEditable()"
             class="form-control in-resolution"
             v-model="controller.companyShareholderAllotment.value.details.purposeOfAllotment"
-            list="purposeOfAllotmentList"
-          />
-          <datalist id="purposeOfAllotmentList">
-            <option value="working capital" />
-            <option value="business expansion" />
-            <option value="capital injection" />
-            <option value="investment" />
-            <option value="other purpose" />
-          </datalist>
-          <span v-if="!controller.isDocumentEditable()">
-            {{ controller.companyShareholderAllotment.value.details.purposeOfAllotment }}.
-          </span>
+          >
+            <option value="working-capital">working capital</option>
+            <option value="business-expansion">business expansion</option>
+            <option value="capital-injection">capital injection</option>
+            <option value="investment">investment</option>
+            <option value="other-purpose">other purpose</option>
+          </select>
         </p>
         <p>
           <b><u>2.&nbsp;&nbsp;MEMBERS' APPROVAL</u></b>
