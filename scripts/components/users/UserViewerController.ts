@@ -2,7 +2,6 @@ import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdent
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { User } from "~/scripts/models/User"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
-import { StringUtil } from "~/scripts/utils/String"
 
 export class UserViewerController {
   emitEvents: any | null = null
@@ -12,6 +11,7 @@ export class UserViewerController {
   email: Ref<string | null> = ref<string | null>(null)
 
   isShowNric: Ref<boolean> = ref<boolean>(false)
+  isShowUserDetail: Ref<boolean> = ref<boolean>(false)
   identificationRef: any | null = null
 
   purpose: Ref<string> = ref<string>("")
@@ -55,6 +55,23 @@ export class UserViewerController {
     }
   }
 
+  async onUserDetailClicked(): Promise<void> {
+    if (!this.user.value.id) {
+      await this.fetchUserDetail()
+    }
+
+    if (!this.user.value.id) {
+      return
+    }
+
+    this.isShowNric.value = false
+    this.isShowUserDetail.value = true
+  }
+
+  onCloseUserDetailClicked(): void {
+    this.isShowUserDetail.value = false
+  }
+
   async onNricClicked(): Promise<void> {
     if (!this.user.value.id) {
       await this.fetchUserDetail()
@@ -64,10 +81,11 @@ export class UserViewerController {
       return
     }
 
+    this.isShowUserDetail.value = false
     this.isShowNric.value = true
   }
 
-  closeNric(): void {
+  onCloseNricClicked(): void {
     this.isShowNric.value = false
   }
 
