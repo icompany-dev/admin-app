@@ -23,15 +23,9 @@
         <div
           v-if="controller.isShowNric.value"
           class="user-nric-window"
-          :style="{
-            left: `${controller.windowPosition.x}px`,
-            top: `${controller.windowPosition.y}px`,
-          }"
+          style="position: absolute"
         >
-          <div
-            class="user-nric-window-header"
-            @pointerdown="controller.onDragStart($event)"
-          >
+          <div class="user-nric-window-header">
             <span>Identification Document</span>
 
             <div
@@ -55,12 +49,35 @@
                   />
                 </div>
               </div>
+
+              <div>
+                <div
+                  class="btn btn-sm btn-submit"
+                  @click="controller.onDownloadNricClicked()"
+                >
+                  <i
+                    class="fa-solid fa-download"
+                    style="margin-right: 5px"
+                  />
+                  Download
+                </div>
+              </div>
             </div>
+
+            <div>
+              Company:
+              <input
+                type="text"
+                class="form-control"
+                v-model="controller.purpose.value"
+              />
+            </div>
+            <div>Company Registration No:</div>
           </div>
           <div class="user-nric-window-content">
             <IdentificationDocumentWatermark
               v-bind="controller.getIdentificationDocumentWatermarkProps()"
-              ref="identification"
+              ref="identificationRef"
             />
           </div>
         </div>
@@ -85,6 +102,8 @@
   })
   const emit = defineEmits([])
 
+  const identificationRef = ref("identificationRef")
+
   const controller = new UserViewerController(props, emit)
 
   watch(
@@ -101,9 +120,13 @@
     }
   )
 
-  onBeforeUnmount(() => {
-    controller.destroy()
-  })
+  watch(
+    identificationRef,
+    (newVal) => {
+      controller.setIdentificationRef(newVal)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style lang="scss">

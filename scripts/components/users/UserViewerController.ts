@@ -10,18 +10,11 @@ export class UserViewerController {
   email: Ref<string | null> = ref<string | null>(null)
 
   isShowNric: Ref<boolean> = ref<boolean>(false)
+  identificationRef: any | null = null
 
   purpose: Ref<string> = ref<string>("")
-
-  windowPosition = reactive({
-    x: 200,
-    y: 150,
-  })
-
-  private dragOffset = {
-    x: 0,
-    y: 0,
-  }
+  companyName: Ref<string> = ref<string>("")
+  companyRegistrationNumber: Ref<string> = ref<string>("")
 
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -36,6 +29,10 @@ export class UserViewerController {
 
   setEmail(email: string | null): void {
     this.email.value = email
+  }
+
+  setIdentificationRef(identificationRef: any | null): void {
+    this.identificationRef = identificationRef
   }
 
   async fetchUserDetail(): Promise<void> {
@@ -68,32 +65,14 @@ export class UserViewerController {
     this.isShowNric.value = false
   }
 
-  onDragStart(event: PointerEvent): void {
-    if (event.button !== 0) {
+  async onDownloadNricClicked(): Promise<void> {
+    if (!this.identificationRef) {
       return
     }
 
-    this.dragOffset.x = event.clientX - this.windowPosition.x
-    this.dragOffset.y = event.clientY - this.windowPosition.y
+    let identificationPage = await this.identificationRef.getPdfPages()
 
-    window.addEventListener("pointermove", this.onDragMove)
-    window.addEventListener("pointerup", this.onDragEnd)
-    window.addEventListener("pointercancel", this.onDragEnd)
-  }
-
-  onDragMove = (event: PointerEvent): void => {
-    this.windowPosition.x = event.clientX - this.dragOffset.x
-    this.windowPosition.y = event.clientY - this.dragOffset.y
-  }
-
-  onDragEnd = (): void => {
-    window.removeEventListener("pointermove", this.onDragMove)
-    window.removeEventListener("pointerup", this.onDragEnd)
-    window.removeEventListener("pointercancel", this.onDragEnd)
-  }
-
-  destroy(): void {
-    this.onDragEnd()
+    console.log(identificationPage)
   }
 
   getIdentificationDocumentWatermarkProps(): PropsIdentificationDocumentWatermark {
