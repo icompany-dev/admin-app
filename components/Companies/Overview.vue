@@ -95,7 +95,14 @@
               :key="i"
             >
               <div class="human-details">
-                <div class="name">{{ director.name }}</div>
+                <UserViewer
+                  :user-id="director.userId"
+                  :email="director.email"
+                >
+                  <div class="name">
+                    {{ director.name }}
+                  </div>
+                </UserViewer>
                 <div class="human-detail">
                   <i class="fa-regular fa-envelope"></i>
                   <span class="email">{{ director.email }}</span>
@@ -228,6 +235,7 @@
 
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
+  import UserViewer from "../Users/UserViewer.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 
