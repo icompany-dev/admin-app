@@ -162,6 +162,7 @@ export class PageSidebar {
     "services/appointment-of-auditor",
     false
   )
+  static switchOut: Sidebar = new Sidebar("Switch Outs", "Switch Out", "services/switch-outs", false)
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
     this.changeBusinessDescription,
@@ -174,6 +175,7 @@ export class PageSidebar {
     this.declareDividends,
     this.changeBankSignatories,
     this.auditorAppointment,
+    this.switchOut,
   ])
 
   static documentRequests: Sidebar = new Sidebar(

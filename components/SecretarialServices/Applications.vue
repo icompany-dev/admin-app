@@ -85,6 +85,7 @@
   import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
+  import { SwitchOutsController } from "~/scripts/components/secretarial-services/SwitchOutsController"
   import { TransferOfSharesController } from "~/scripts/components/secretarial-services/TransferOfSharesController"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import type { Application } from "~/scripts/models/Application"
@@ -138,6 +139,9 @@
       break
     case CompanyConstants.TARGET_LOAN_APPLICATION:
       controller = new TekunApplicationsController(props, emit)
+      break
+    case CompanyConstants.TARGET_SWITCH_OUT:
+      controller = new SwitchOutsController(props, emit)
       break
   }
 
