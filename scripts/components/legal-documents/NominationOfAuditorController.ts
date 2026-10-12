@@ -123,7 +123,7 @@ export class NominationOfAuditorController extends SdnBhdLegalDocumentController
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }

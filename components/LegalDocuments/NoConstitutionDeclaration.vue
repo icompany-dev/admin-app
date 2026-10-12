@@ -1,6 +1,6 @@
 <template>
   <div
-    ref="declarationRef"
+    ref="documentRef"
     id="company-no-constitution-declaration"
   >
     <Paper
@@ -12,7 +12,36 @@
       :page-number="1"
     >
       <template #paperContent>
-        <div class="document-date">Date: {{ controller.documentDate() }}</div>
+        <div
+          class="document-header"
+          style="text-align: center"
+        >
+          <b class="company-name">{{ SecretaryInformation.FIRM_NAME }}</b>
+          <br />
+          Company No: {{ SecretaryInformation.FIRM_REGISTRATION_NO_NEW }} ({{
+            SecretaryInformation.FIRM_REGISTRATION_NO_OLD
+          }})
+          <br />
+          <br />
+          <div v-html="SecretaryInformation.FIRM_ADDRESS.getMultilineAddress()" />
+        </div>
+        <br />
+        <br />
+
+        <div class="document-date">
+          <b>Dated:</b>
+          <input
+            type="date"
+            v-model="controller.application.value.createdAt"
+            v-if="controller.isDocumentEditable()"
+          />
+          <span
+            v-if="!controller.isDocumentEditable()"
+            :class="{ 'value-placeholder': !controller.hasDocumentDate }"
+          >
+            {{ controller.documentDate() }}
+          </span>
+        </div>
         <div
           class="letter-title"
           @click="controller.onTitleClicked($event)"
@@ -64,7 +93,7 @@
 
   const emit = defineEmits(["applicationLoaded"])
 
-  const declarationRef = ref(null)
+  const documentRef = ref(null)
 
   const controller = new NoConstitutionDeclarationController(props.companyId, props.applicationId, emit)
 
@@ -90,15 +119,16 @@
   )
 
   watch(
-    declarationRef,
+    documentRef,
     (newVal) => {
-      controller.setDeclarationRef(newVal)
+      controller.setDocumentRef(newVal)
     },
     { immediate: true }
   )
 
   defineExpose({
     getPaperElements: controller.getPaperElements.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -2,6 +2,7 @@ import { EmailUser } from "~/scripts/library/EmailUser"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class UserDetailController {
   user: Ref<User> = ref<User>(new User())
@@ -75,14 +76,26 @@ export class UserDetailController {
   }
 
   get addressCity(): string {
+    if (StringUtil.isEqual(this.userDetail.value.location?.city?.name ?? "", "others")) {
+      return this.userDetail.value.location?.otherCity?.toUpperCase() ?? ""
+    }
+
     return this.userDetail.value.location?.city?.name.toUpperCase() ?? "-"
   }
 
   get addressState(): string {
+    if (StringUtil.isEqual(this.userDetail.value.location?.state?.name ?? "", "others")) {
+      return this.userDetail.value.location?.otherState?.toUpperCase() ?? ""
+    }
+
     return this.userDetail.value.location?.state?.name.toUpperCase() ?? "-"
   }
 
   get addressCountry(): string {
+    if (StringUtil.isEqual(this.userDetail.value.location?.country?.name ?? "", "others")) {
+      return this.userDetail.value.location?.otherCountry?.toUpperCase() ?? ""
+    }
+
     return this.userDetail.value.location?.country?.name.toUpperCase() ?? "-"
   }
 }

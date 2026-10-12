@@ -1,5 +1,8 @@
 <template>
-  <div id="legal-documents-nomination-of-auditor">
+  <div
+    id="legal-documents-nomination-of-auditor"
+    ref="documentRef"
+  >
     <Paper
       :total-pages="1"
       :page-number="1"
@@ -58,7 +61,10 @@
       default: false,
     },
   })
+
   const emit = defineEmits(["signed"])
+
+  const documentRef = ref(null)
 
   const controller = new NominationOfAuditorController(
     props.companyId,
@@ -67,8 +73,17 @@
     emit
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     setApplicationData: controller.setApplicationData.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-appointment-of-auditor">
+  <div
+    id="dcr-appointment-of-auditor"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @total-page-changed="emit('totalPageChanged')"
@@ -38,6 +41,7 @@
   ])
 
   const resolutionContent = ref(null)
+  const documentRef = ref(null)
 
   const controller = new DcrAppointmentOfAuditorController(props, emit)
 
@@ -92,10 +96,19 @@
     { immediate: true }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

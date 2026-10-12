@@ -7,8 +7,11 @@ export class Location {
   addressLine3: string | null = ""
   postcode: string = ""
   city: City | null = null
+  otherCity: string | null = null
   state: State | null = null
+  otherState: string | null = null
   country: Country | null = null
+  otherCountry: string | null = null
   latitude: number | null = null
   longitude: number | null = null
   createdAt: string | null = null
@@ -31,8 +34,11 @@ export class Location {
     this.addressLine3 = data.address_line_3 || ""
     this.postcode = data.postcode || ""
     this.city = new City(data.city || null)
+    this.otherCity = data.other_city || null
     this.state = new State(data.state || null)
+    this.otherState = data.other_state || null
     this.country = new Country(data.country || null)
+    this.otherCountry = data.other_country || null
     this.latitude = data.latitude || null
     this.longitude = data.longitude || null
     this.createdAt = data.created_at || null
@@ -46,8 +52,11 @@ export class Location {
     this.addressLine3 = data.addressLine3 || ""
     this.postcode = data.postcode || ""
     this.city = new City(data.city || null)
+    this.otherCity = data.otherCity
     this.state = new State(data.state || null)
+    this.otherState = data.otherState
     this.country = new Country(data.country || null)
+    this.otherCountry = data.otherCountry
     this.latitude = data.latitude || null
     this.longitude = data.longitude || null
     this.createdAt = data.createdAt || null
@@ -60,10 +69,10 @@ export class Location {
     }
 
     return `${this.addressLine1.toUpperCase()}, 
-      ${!StringUtil.isNullOrEmpty(this.addressLine2) ? this.addressLine2?.toUpperCase() + ", " : ""}
-      ${!StringUtil.isNullOrEmpty(this.addressLine3) ? this.addressLine3?.toUpperCase() + ", " : ""}
-      ${this.postcode} ${this.city?.name.toUpperCase()}, 
-      ${this.state?.name.toUpperCase()} ${this.country?.name.toUpperCase()}`
+      ${this.addressLine2 ? this.addressLine2.toUpperCase() + ", " : ""}
+      ${this.addressLine3 ? this.addressLine3.toUpperCase() + ", " : ""}
+      ${this.postcode} ${this.cityName.toUpperCase()}, 
+      ${this.stateName.toUpperCase()} ${this.countryName.toUpperCase()}`
   }
 
   getMultilineAddress(): string {
@@ -74,8 +83,8 @@ export class Location {
     return `${this.addressLine1.toUpperCase()}<br>
       ${this.addressLine2 ? this.addressLine2.toUpperCase() + "<br>" : ""}
       ${this.addressLine3 ? this.addressLine3.toUpperCase() + "<br>" : ""}
-      ${this.postcode} ${this.city?.name.toUpperCase()},<br>
-      ${this.state?.name.toUpperCase()} ${this.country?.name.toUpperCase()}`
+      ${this.postcode} ${this.cityName.toUpperCase()}<br>
+      ${this.stateName.toUpperCase()} ${this.countryName.toUpperCase()}`
   }
 
   getRequestBody() {
@@ -85,8 +94,11 @@ export class Location {
       address_line_3: this.addressLine3,
       postcode: this.postcode,
       city_id: this.city?.id,
+      other_city: this.otherCity,
       state_id: this.state?.id,
+      other_state: this.otherState,
       country_id: this.country?.id,
+      other_country: this.otherCountry,
       latitude: this.latitude,
       longitude: this.longitude,
     }
@@ -103,6 +115,42 @@ export class Location {
       this.country !== null &&
       this.country.id > 0
     )
+  }
+
+  get cityName(): string {
+    if (!this.city) {
+      return ""
+    }
+
+    if (StringUtil.isEqual(this.city.name, "others")) {
+      return this.otherCity ?? ""
+    }
+
+    return this.city.name
+  }
+
+  get stateName(): string {
+    if (!this.state) {
+      return ""
+    }
+
+    if (StringUtil.isEqual(this.state.name, "others")) {
+      return this.otherState ?? ""
+    }
+
+    return this.state.name
+  }
+
+  get countryName(): string {
+    if (!this.country) {
+      return ""
+    }
+
+    if (StringUtil.isEqual(this.country.name, "others")) {
+      return this.otherCountry ?? ""
+    }
+
+    return this.country.name
   }
 }
 
