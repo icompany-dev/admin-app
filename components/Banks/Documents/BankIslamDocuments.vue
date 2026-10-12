@@ -10,6 +10,10 @@
         @updated="emit('updated')"
       />
       <template v-if="props.isShowAllDocuments">
+        <NoConstitutionDeclaration
+          ref="noConstiDeclarationRef"
+          :company-id="controller.companyId.value"
+        />
         <div
           class="document pdf-file"
           v-for="(document, index) in controller.documentsToDisplay"
@@ -50,6 +54,7 @@
 </template>
 
 <script lang="ts" setup>
+  import NoConstitutionDeclaration from "~/components/LegalDocuments/NoConstitutionDeclaration.vue"
   import DcrBankAccountOpeningBankIslam from "~/components/Resolutions/DcrBankAccountOpeningBankIslam.vue"
   import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import { BankIslamDocumentsController } from "~/scripts/components/banks/documents/BankIslamDocumentsController"
@@ -73,6 +78,7 @@
   const emit = defineEmits(["updated"])
 
   const dcrRef = ref(null)
+  const noConstiDeclarationRef = ref(null)
 
   const controller = new BankIslamDocumentsController(props.companyId, emit)
 
@@ -87,6 +93,14 @@
     dcrRef,
     (newVal) => {
       controller.setDcrRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    noConstiDeclarationRef,
+    (newVal) => {
+      controller.setNoConstiDeclarationRef(newVal)
     },
     { immediate: true }
   )

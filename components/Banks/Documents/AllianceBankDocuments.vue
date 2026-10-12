@@ -15,6 +15,10 @@
           v-bind="props.resolutionDocument"
           @updated="emit('updated')"
         />
+        <NoConstitutionDeclaration
+          ref="noConstiDeclarationRef"
+          :company-id="controller.companyId.value"
+        />
         <div
           class="document pdf-file"
           v-for="(document, index) in controller.documentsToDisplay"
@@ -55,6 +59,7 @@
 </template>
 
 <script lang="ts" setup>
+  import NoConstitutionDeclaration from "~/components/LegalDocuments/NoConstitutionDeclaration.vue"
   import DcrBankAccountOpeningAllianceBank from "~/components/Resolutions/DcrBankAccountOpeningAllianceBank.vue"
   import DcrBankAccountOpeningCurrent from "~/components/Resolutions/DcrBankAccountOpeningCurrent.vue"
   import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
@@ -80,6 +85,7 @@
 
   const dcrRef = ref(null)
   const currentRef = ref(null)
+  const noConstiDeclarationRef = ref(null)
 
   const controller = new AllianceBankDocumentsController(props.companyId, emit)
 
@@ -102,6 +108,14 @@
     currentRef,
     (newVal) => {
       controller.setCurrentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    noConstiDeclarationRef,
+    (newVal) => {
+      controller.setNoConstiDeclarationRef(newVal)
     },
     { immediate: true }
   )
