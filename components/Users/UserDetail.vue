@@ -5,6 +5,16 @@
   >
     <div class="name human-detail">
       {{ controller.name }}
+      <span
+        @click="controller.onOpenNricClicked()"
+        class="action-icon"
+        title="Identification"
+      >
+        <i
+          class="fa-solid"
+          :class="controller.userDetail.value.identificationType === 'passport' ? 'fa-passport' : 'fa-address-card'"
+        />
+      </span>
       <CopyValue :value="controller.name" />
     </div>
     <div class="human-detail">
@@ -68,19 +78,79 @@
       </span>
     </div>
 
-    <Transition>
-      <div v-if="controller.isShowNric.value"></div>
-    </Transition>
+    <Teleport to="body">
+      <Transition name="nric-drawer">
+        <div
+          v-if="controller.isShowNric.value"
+          class="nric-display-drawer"
+          @click.self="controller.onCloseNricClicked()"
+        >
+          <div class="nric-document-content">
+            <IdentificationDocumentWatermark
+              v-bind="controller.identificationDocumentWatermarkProps"
+              ref="identificationRef"
+            />
+          </div>
+
+          <div class="nric-document-editor">
+            <div class="nric-document-editor-input-wrapper">
+              <div class="label">Document Title:</div>
+              <input
+                type="text"
+                v-model="controller.nricDownloadTitle.value"
+                class="form-control"
+              />
+            </div>
+
+            <div class="nric-document-editor-input-wrapper">
+              <div class="label">Document Subtitle:</div>
+              <input
+                type="text"
+                v-model="controller.nricDownloadSubtitle.value"
+                class="form-control"
+              />
+            </div>
+
+            <div class="nric-document-editor-input-wrapper">
+              <div class="label">Purpose Watermark:</div>
+              <input
+                type="text"
+                v-model="controller.nricDownloadPurpose.value"
+                class="form-control"
+              />
+            </div>
+
+            <div class="action-buttons">
+              <div
+                class="btn btn-sm btn-submit"
+                @click="controller.onDownloadNricClicked()"
+              >
+                Download
+              </div>
+              <div
+                class="btn btn-sm btn-danger"
+                @click="controller.onCloseNricClicked()"
+              >
+                Close
+              </div>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script lang="ts" setup>
   import CopyValue from "../Buttons/CopyValue.vue"
+  import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import { UserDetailController } from "~/scripts/components/users/UserDetailController"
   import type { IPropsUserDetail } from "~/scripts/props/PropsUserDetail"
 
   const props = defineProps<IPropsUserDetail>()
   const emit = defineEmits([])
+
+  const identificationRef = ref(null)
 
   const controller = new UserDetailController(props, emit)
 
@@ -90,6 +160,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    identificationRef,
+    (newVal) => {
+      controller.setIdentificationRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 
