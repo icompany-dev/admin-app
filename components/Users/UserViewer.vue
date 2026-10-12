@@ -49,6 +49,13 @@
                 style="height: 300px; width: 300px; object-fit: cover"
               />
             </div>
+            <div style="display: flex">
+              <div style="width: 100px">
+                <b>NAME</b>
+              </div>
+              <div>{{ controller.user.value.name }}</div>
+            </div>
+
             <div style="display: flex; flex-direction: column; gap: 10px">
               <div style="display: flex">
                 <div style="width: 100px">
@@ -56,11 +63,30 @@
                 </div>
                 <div>{{ controller.user.value.name }}</div>
               </div>
+
               <div style="display: flex">
                 <div style="width: 100px">
                   <b>{{ controller.identificationType }}</b>
                 </div>
                 <div>{{ controller.user.value.detail?.identification }}</div>
+              </div>
+
+              <div style="display: flex">
+                <div style="width: 100px">
+                  <b>GENDER</b>
+                </div>
+                <div>
+                  {{ controller.user.value.detail?.gender }}
+                </div>
+              </div>
+
+              <div style="display: flex">
+                <div style="width: 100px">
+                  <b>CITIZENSHIP</b>
+                </div>
+                <div>
+                  {{ controller.user.value.detail?.citizenship.toUpperCase() }}
+                </div>
               </div>
 
               <div style="display: flex">
@@ -74,6 +100,37 @@
                     {{ controller.user.value.detail?.customRace }}
                   </div>
                 </div>
+              </div>
+
+              <div style="display: flex">
+                <div style="width: 100px">
+                  <b>EMAIL</b>
+                </div>
+                <div>
+                  {{ controller.user.value.email }}
+                </div>
+              </div>
+
+              <div style="display: flex">
+                <div style="width: 100px">
+                  <b>PHONE</b>
+                </div>
+                <div>
+                  {{ controller.user.value.phone }}
+                </div>
+              </div>
+
+              <div style="display: flex">
+                <div style="width: 100px">
+                  <b>LOCATION</b>
+                </div>
+                <div v-html="controller.user.value.detail?.location?.getMultilineAddress()" />
+              </div>
+
+              <div style="overflow: auto">
+                <pre>
+                  {{ controller.user.value }}
+                </pre>
               </div>
             </div>
           </div>
@@ -117,7 +174,7 @@
                     class="fa-solid fa-download"
                     style="margin-right: 5px"
                   />
-                  Download
+                  {{ controller.downloadLabel }}
                 </div>
               </div>
             </div>

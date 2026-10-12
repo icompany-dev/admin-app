@@ -4,6 +4,7 @@ import { User } from "~/scripts/models/User"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class UserViewerController {
+  language = useLanguage()
   emitEvents: any | null = null
 
   user: Ref<User> = ref<User>(new User())
@@ -142,5 +143,10 @@ export class UserViewerController {
     }
 
     return this.user.value?.detail?.identificationType === "passport" ? "PASSPORT" : "MYKAD"
+  }
+
+  // Copywriting
+  get downloadLabel(): string {
+    return this.language.isMalay() ? "Muat Turun" : "Download"
   }
 }
