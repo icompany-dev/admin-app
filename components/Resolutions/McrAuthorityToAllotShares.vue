@@ -7,7 +7,7 @@
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
     >
-      <template
+      <!-- <template
         #paperMargins1
         v-if="controller.isDocumentEditable()"
       >
@@ -19,7 +19,7 @@
       >
         <div class="paper-tag point-right authorised-tag">Select Applicable</div>
         <div class="paper-tag point-right effective-date-tag">Complete This</div>
-      </template>
+      </template> -->
       <template #page1>
         <div
           ref="resolutionContent"
