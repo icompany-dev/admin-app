@@ -82,6 +82,91 @@
               </ol>
             </td>
           </tr>
+          <tr>
+            <td>
+              {{ controller.incomeTaxLabel }}
+            </td>
+            <td>:</td>
+            <td>
+              <template v-if="!controller.isEditTaxNumber.value">
+                <CopyValue :value="controller.incomeTaxNumber" />
+                {{ controller.incomeTaxNumber }}
+                <span
+                  class="action-link"
+                  @click="controller.onEditTaxClicked()"
+                >
+                  <i class="fa-regular fa-edit"></i>
+                </span>
+              </template>
+              <template v-if="controller.isEditTaxNumber.value">
+                C
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="controller.newIncomeTaxNumber.value"
+                />
+                <span
+                  class="action-link"
+                  @click="controller.onSaveTaxNumberClicked()"
+                >
+                  <i
+                    class="fa-regular"
+                    :class="controller.isUpdatingTaxNumber.value ? 'fa-spin fa-spinner' : 'fa-save'"
+                  ></i>
+                </span>
+                <span
+                  v-if="!controller.isUpdatingTaxNumber.value"
+                  class="action-link remove"
+                  @click="controller.onCancelEditTaxClicked()"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+              </template>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ controller.employerTaxLabel }}
+            </td>
+            <td>:</td>
+            <td>
+              <template v-if="!controller.isEditTaxNumber.value">
+                <CopyValue :value="controller.employerTaxNumber" />
+                {{ controller.employerTaxNumber }}
+
+                <span
+                  class="action-link"
+                  @click="controller.onEditTaxClicked()"
+                >
+                  <i class="fa-regular fa-edit"></i>
+                </span>
+              </template>
+              <template v-if="controller.isEditTaxNumber.value">
+                E
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="controller.newEmployerTaxNumber.value"
+                />
+                <span
+                  class="action-link"
+                  @click="controller.onSaveTaxNumberClicked()"
+                >
+                  <i
+                    class="fa-regular"
+                    :class="controller.isUpdatingTaxNumber.value ? 'fa-spin fa-spinner' : 'fa-save'"
+                  ></i>
+                </span>
+                <span
+                  v-if="!controller.isUpdatingTaxNumber.value"
+                  class="action-link remove"
+                  @click="controller.onCancelEditTaxClicked()"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+              </template>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -228,6 +313,7 @@
 
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 

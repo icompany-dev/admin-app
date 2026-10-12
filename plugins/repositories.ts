@@ -122,6 +122,7 @@ import { CompanyPreferenceShareTermRepository } from "~/scripts/repositories/Com
 import { CompanySecretaryRepository } from "~/scripts/repositories/CompanySecretaryRepository"
 import { CompanySection47Repository } from "~/scripts/repositories/CompanySection47Repository"
 import { CompanySetFinancialYearEndRepository } from "~/scripts/repositories/CompanySetFinancialYearEndRepository"
+import { CompanySettingRepository } from "~/scripts/repositories/CompanySettingRepository"
 import { CompanyShareAuthorizationRepository } from "~/scripts/repositories/CompanyShareAuthorizationRepository"
 import { CompanyShareholderAllotmentRepository } from "~/scripts/repositories/CompanyShareholderAllotmentRepository"
 import { CompanyShareholderTransferNoticeRepository } from "~/scripts/repositories/CompanyShareholderTransferNoticeRepository"
@@ -309,6 +310,7 @@ interface Repositories {
   companySecretaries: CompanySecretaryRepository
   companySection47s: CompanySection47Repository
   companySetFinancialYearEnds: CompanySetFinancialYearEndRepository
+  companySettings: CompanySettingRepository
   companyShareAuthorizations: CompanyShareAuthorizationRepository
   companyShareholderAllotments: CompanyShareholderAllotmentRepository
   companyShareholderTransferNotices: CompanyShareholderTransferNoticeRepository
@@ -876,6 +878,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/set-financial-year-end",
       config.public.apiBaseUrl,
       getAuthToken),
+    companySettings: new CompanySettingRepository(
+      "company/settings",
+      "company/setting",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     companyShareAuthorizations: new CompanyShareAuthorizationRepository("company/shares/authorizations",
       "company/shares/authorization",
       config.public.apiBaseUrl,
@@ -1042,12 +1050,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "public",
       config.public.apiBaseUrl,
       getAuthToken),
-    publicServiceAnnouncements: new PublicServiceAnnouncementRepository(
-      "notices/public-service-announcements",
+    publicServiceAnnouncements: new PublicServiceAnnouncementRepository("notices/public-service-announcements",
       "notices/public-service-announcement",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     purchasedDocumentTemplates: new PurchasedDocumentTemplateRepository("company/purchased-document-templates",
       "company/purchased-document-template",
       config.public.apiBaseUrl,
@@ -1252,6 +1258,7 @@ declare module "#app" {
       companySecretaries: import("~/scripts/repositories/CompanySecretaryRepository").CompanySecretaryRepository
       companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
+      companySettings: import("~/scripts/repositories/CompanySettingRepository").CompanySettingRepository
       companyShareAuthorizations: import("~/scripts/repositories/CompanyShareAuthorizationRepository").CompanyShareAuthorizationRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository
@@ -1443,6 +1450,7 @@ declare module "pinia" {
       companySecretaries: import("~/scripts/repositories/CompanySecretaryRepository").CompanySecretaryRepository
       companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
+      companySettings: import("~/scripts/repositories/CompanySettingRepository").CompanySettingRepository
       companyShareAuthorizations: import("~/scripts/repositories/CompanyShareAuthorizationRepository").CompanyShareAuthorizationRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository

@@ -17,6 +17,7 @@ import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import { PurchasedItemTracker } from "~/scripts/models/PurchasedItemTracker"
+import { CompanySetting, CompanySettingTaxDetails } from "~/scripts/models/CompanySetting"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -46,6 +47,11 @@ export class OverviewController {
   purchasedItemTrackers: Ref<PurchasedItemTracker[]> = ref<PurchasedItemTracker[]>([])
 
   isOrderingChop: Ref<boolean> = ref<boolean>(false)
+
+  isEditTaxNumber: Ref<boolean> = ref<boolean>(false)
+  isUpdatingTaxNumber: Ref<boolean> = ref<boolean>(false)
+  newIncomeTaxNumber: Ref<string> = ref<string>("")
+  newEmployerTaxNumber: Ref<string> = ref<string>("")
 
   language = useLanguage()
   time = useLocalTime()
@@ -94,8 +100,6 @@ export class OverviewController {
       ])
 
       await this.fetchPaymentOrderItems()
-
-      console.log("latest", this.latestPaymentOrderItemForChop)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -115,6 +119,8 @@ export class OverviewController {
     if (repository.error !== null) {
       throw repository.error
     }
+
+    console.log("data", response)
 
     this.company.value = new Company(response)
   }
@@ -203,8 +209,6 @@ export class OverviewController {
   async fetchPurchasedItemTrackers(): Promise<void> {
     let repository = usePurchasedItemTrackerStore()
     let response = await repository.ongoingForCompany(this.companyId.value)
-
-    console.log(response)
   }
 
   onShowSharePercentageClicked(): void {
@@ -343,6 +347,56 @@ ${detailsOfBO.join("\n")}
       }
     } finally {
       this.isOrderingChop.value = false
+    }
+  }
+
+  onEditTaxClicked(): void {
+    this.isEditTaxNumber.value = true
+    this.newIncomeTaxNumber.value = this.company.value.companySetting?.tax?.incomeTaxNo ?? ""
+    this.newEmployerTaxNumber.value = this.company.value.companySetting?.tax?.employerTaxNo ?? ""
+  }
+
+  onCancelEditTaxClicked(): void {
+    this.isEditTaxNumber.value = false
+  }
+
+  async onSaveTaxNumberClicked(): Promise<void> {
+    if (this.isUpdatingTaxNumber.value) {
+      return
+    }
+
+    this.isUpdatingTaxNumber.value = true
+
+    try {
+      if (this.company.value.companySetting !== null) {
+        this.company.value.companySetting.tax = new CompanySettingTaxDetails()
+        this.company.value.companySetting.tax.incomeTaxNo = this.newIncomeTaxNumber.value
+        this.company.value.companySetting.tax.employerTaxNo = this.newEmployerTaxNumber.value
+
+        await this.company.value.companySetting.update(useCompanySettingStore())
+
+        let toastTitle = this.language.isMalay()
+          ? "Anda telah berjaya kemaskini maklumat cukai syarikat."
+          : "You have successfully updated the tax information."
+        let toast = new Toast(toastTitle, "")
+        toast.success()
+
+        this.isEditTaxNumber.value = false
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        throw error
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingTaxNumber.value = false
     }
   }
 
@@ -545,5 +599,41 @@ ${detailsOfBO.join("\n")}
     let orderedChops = ObjectUtil.sort<PaymentOrderItem>(this.paymentOrderItemsForChop, "paidAt", "desc")
 
     return orderedChops[0]
+  }
+
+  get companySetting(): CompanySetting {
+    if (!this.company.value.companySetting) {
+      return new CompanySetting()
+    }
+
+    return this.company.value.companySetting
+  }
+
+  get incomeTaxLabel(): string {
+    return this.language.isMalay() ? "Cukai Pendapatan" : "Income Tax"
+  }
+
+  get employerTaxLabel(): string {
+    return this.language.isMalay() ? "No Cukai Majikan" : "Employer Tax Number"
+  }
+
+  get taxInformation(): CompanySettingTaxDetails | null {
+    return this.companySetting.tax
+  }
+
+  get incomeTaxNumber(): string {
+    if (!this.taxInformation || StringUtil.isNullOrEmpty(this.taxInformation.incomeTaxNo)) {
+      return "-"
+    }
+
+    return `C ${this.taxInformation.incomeTaxNo}`
+  }
+
+  get employerTaxNumber(): string {
+    if (!this.taxInformation || StringUtil.isNullOrEmpty(this.taxInformation.employerTaxNo)) {
+      return "-"
+    }
+
+    return `E ${this.taxInformation.employerTaxNo}`
   }
 }
