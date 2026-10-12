@@ -89,6 +89,8 @@
             />
           </div>
         </div>
+
+        <!-- TODO: need to add user detail view here (show, detail and race. and image) -->
       </Transition>
     </Teleport>
   </div>
