@@ -96,15 +96,16 @@ export class SwitchOutLetterController extends SdnBhdLegalDocumentController {
   }
 
   get isDocumentEditable(): boolean {
-    if (this.isInPreviewMode.value) {
-      return false
-    }
+    return true
+    // if (this.isInPreviewMode.value) {
+    //   return false
+    // }
 
-    if (this.companySwitchOut.value.signatureGroups.length > 0) {
-      return false
-    }
+    // if (this.companySwitchOut.value.signatureGroups.length > 0) {
+    //   return false
+    // }
 
-    return this.isPaid
+    // return this.isPaid
   }
 
   get loaderLabel(): string {

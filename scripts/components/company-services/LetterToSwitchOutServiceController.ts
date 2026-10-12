@@ -12,6 +12,7 @@ import { City, Country, State } from "~/scripts/models/Location"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { Filter } from "~/scripts/library/Filter"
 
 export class LetterToSwitchOutServiceController extends CompanyServiceController<CompanySwitchOut> {
   companySwitchOut = ref<CompanySwitchOut>(new CompanySwitchOut())
@@ -20,7 +21,7 @@ export class LetterToSwitchOutServiceController extends CompanyServiceController
 
   constructor(companyId: string, viewType: string, emitEvents: any | null) {
     super(companyId, true, false, CompanySwitchOut, useCompanySwitchOutStore(), emitEvents)
-    this.target = CompanyConstants.TARGET_SWITCH_OUT
+    this.target = CompanyConstants.TARGET_SWITCH_OUT_LETTER
     this.setViewType(viewType)
     this.initializeData()
   }
@@ -28,35 +29,27 @@ export class LetterToSwitchOutServiceController extends CompanyServiceController
   async initializeData(): Promise<void> {
     this.isLoading.value = true
 
-    switch (this.viewType.value) {
-      case ViewMode.New:
-        this.isInPreviewMode.value = true
-        this.companySwitchOut.value = new CompanySwitchOut(this.companyServiceInitializer.newApplication)
-        await Promise.all([this.fetchPrice(), this.companyServiceInitializer.setExistingApplication()])
-        if (this.companyServiceInitializer.existingApplication) {
-          this.hasOngoingApplication.value = true //We need to warn users
-        }
-        break
-      case ViewMode.Existing:
-        this.isInPreviewMode.value = false
-        this.hasOngoingApplication.value = true
-        await Promise.all([this.fetchPrice(), this.companyServiceInitializer.setExistingApplication()])
-        this.companySwitchOut.value = new CompanySwitchOut(this.companyServiceInitializer.existingApplication)
+    let filter = new Filter()
+    filter.companyId = this.companyId
+    let response = await this.repository.fetchAll(filter)
+    if (response.totalRecords > 0) {
+      let data = response.data.map((d: any) => {
+        return new CompanySwitchOut(d)
+      })
 
-        if (StringUtil.isNullOrEmpty(this.companySwitchOut.value.id)) {
-          this.hasOngoingApplication.value = false
-          this.isInPreviewMode.value = true
-        }
-        break
-      case ViewMode.Past:
-        this.isInPreviewMode.value = true
-        await Promise.all([this.fetchPrice(), this.companyServiceInitializer.setPastApplications()])
-        this.hasPastApplications.value = this.companyServiceInitializer.pastApplications.length > 0
-        this.emitEvents(EmitMessages.HAS_PAST_APPLICATIONS, this.hasPastApplications.value)
-        break
+      let orderedData = ObjectUtil.sort<CompanySwitchOut>(data, "createdAt", "desc")
+      this.companySwitchOut.value = new CompanySwitchOut(orderedData[0])
+      this.hasOngoingApplication.value = true
+      this.viewType.value = "existing"
+    } else {
+      this.companySwitchOut.value = new CompanySwitchOut()
+      this.hasOngoingApplication.value = false
+      this.viewType.value = "new"
     }
 
-    this.init(this.companySwitchOut.value as CompanySwitchOut)
+    this.isInPreviewMode.value = false
+
+    await this.init(this.companySwitchOut.value as CompanySwitchOut)
 
     this.isLoading.value = false
   }

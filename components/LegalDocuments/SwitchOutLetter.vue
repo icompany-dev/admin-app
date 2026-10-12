@@ -26,10 +26,12 @@
       >
         <template #paperContent>
           <div class="document-header">
-            <div
-              class="document-date"
-              v-html="controller.documentDate"
-            />
+            <div class="document-date">
+              <input
+                type="date"
+                class="form-control in-resolution"
+              />
+            </div>
             <div class="document-company-details">
               <div class="company-name">{{ controller.companyName() }}</div>
               <div
