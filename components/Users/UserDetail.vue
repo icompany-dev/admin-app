@@ -67,6 +67,10 @@
         <CopyValue :value="controller.addressCountry" />
       </span>
     </div>
+
+    <Transition>
+      <div v-if="controller.isShowNric.value"></div>
+    </Transition>
   </div>
 </template>
 

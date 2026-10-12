@@ -7,6 +7,7 @@ import { StringUtil } from "~/scripts/utils/String"
 export class UserDetailController {
   user: Ref<User> = ref<User>(new User())
   userDetail: Ref<UserDetail> = ref<UserDetail>(new UserDetail())
+  isShowNric: Ref<boolean> = ref<boolean>(false)
 
   emitEvents: any | null = null
 
@@ -24,6 +25,14 @@ export class UserDetailController {
   onEmailClicked(): void {
     let emailUser = new EmailUser(this.email)
     emailUser.connectToGmail()
+  }
+
+  onOpenNricClicked(): void {
+    this.isShowNric.value = true
+  }
+
+  onCloseNricClicked(): void {
+    this.isShowNric.value = false
   }
 
   get name(): string {
