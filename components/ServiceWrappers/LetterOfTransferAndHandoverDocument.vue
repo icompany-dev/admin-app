@@ -23,10 +23,12 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import SwitchOutLetter from "@/components/LegalDocuments/SwitchOutLetter.vue"
   import SwitchOutHandoverDocument from "@/components/LegalDocuments/SwitchOutHandoverDocument.vue"
   import { LetterOfTransferAndHandoverDocumentController } from "~/scripts/components/service-wrappers/LetterOfTransferAndHandoverDocumentController"

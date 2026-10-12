@@ -53,7 +53,7 @@
             >
               {{ controller.newCosecName }}
             </span>
-            , Company Secretary
+            Company Secretary
           </div>
           <div class="document-title">
             {{ controller.legalDocumentName.value }}

@@ -132,9 +132,9 @@ export class SwitchOutLetterController extends SdnBhdLegalDocumentController {
 
   get newCosecName(): string {
     if (!this.isPaid || StringUtil.isNullOrEmpty(this.companySwitchOut.value.newCosecName)) {
-      return "NAME OF YOUR COMPANY SECRETARY"
+      return "NAME OF YOUR COMPANY SECRETARY,"
     }
 
-    return this.companySwitchOut.value.newCosecName.toUpperCase()
+    return this.companySwitchOut.value.newCosecName.toUpperCase() + ","
   }
 }

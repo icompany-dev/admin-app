@@ -9,6 +9,8 @@ import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { StatusConstants } from "~/scripts/constants/Status"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class SwitchOutHandoverDocumentController
   extends ServiceController
@@ -108,6 +110,42 @@ export class SwitchOutHandoverDocumentController
     // Must ask for confirmation before it proceeds to delete
     // await this.application.value.remove(this.repository)
     this.emitEvents("back")
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let promises = []
+
+      if (this.dcrRef) {
+        let dcrPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            20,
+            "List of Documents Available at Registered Address.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   get isShowWatermark(): boolean {
