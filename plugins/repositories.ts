@@ -135,11 +135,13 @@ import { CompanyStrikingOffRegistrarLetterRepository } from "~/scripts/repositor
 import { CompanyStrikingOffRequirementRepository } from "~/scripts/repositories/CompanyStrikingOffRequirementRepository"
 import { CompanyStrikingOffResolutionRepository } from "~/scripts/repositories/CompanyStrikingOffResolutionRepository"
 import { CompanyStrikingOffWaiverRepository } from "~/scripts/repositories/CompanyStrikingOffWaiverRepository"
+import { CompanySwitchOutRepository } from "~/scripts/repositories/CompanySwitchOutRepository"
 import { CompanyTermOfReferenceRepository } from "~/scripts/repositories/CompanyTermOfReferenceRepository"
 import { CountryRepository } from "~/scripts/repositories/CountryRepository"
 import { DirectorDeclarationConflictOfInterestRepository } from "~/scripts/repositories/DirectorDeclarationConflictOfInterestRepository"
 import { DirectorInvitationRepository } from "~/scripts/repositories/DirectorInvitationRepository"
 import { DirectorRepository } from "~/scripts/repositories/DirectorRepository"
+import { DocumentHandoverRepository } from "~/scripts/repositories/DocumentHandoverRepository"
 import { DocumentTemplateRepository } from "~/scripts/repositories/DocumentTemplateRepository"
 import { FileRepository } from "~/scripts/repositories/FileRepository"
 import { FormRepository } from "~/scripts/repositories/FormRepository"
@@ -323,11 +325,13 @@ interface Repositories {
   companyStrikingOffRequirements: CompanyStrikingOffRequirementRepository
   companyStrikingOffResolutions: CompanyStrikingOffResolutionRepository
   companyStrikingOffWaivers: CompanyStrikingOffWaiverRepository
+  companySwitchOuts: CompanySwitchOutRepository
   companyTermOfReferences: CompanyTermOfReferenceRepository
   countries: CountryRepository
   directorDeclarationConflictOfInterests: DirectorDeclarationConflictOfInterestRepository
   directorInvitations: DirectorInvitationRepository
   directors: DirectorRepository
+  documentHandovers: DocumentHandoverRepository
   documentTemplates: DocumentTemplateRepository
   files: FileRepository
   forms: FormRepository
@@ -878,12 +882,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/set-financial-year-end",
       config.public.apiBaseUrl,
       getAuthToken),
-    companySettings: new CompanySettingRepository(
-      "company/settings",
+    companySettings: new CompanySettingRepository("company/settings",
       "company/setting",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyShareAuthorizations: new CompanyShareAuthorizationRepository("company/shares/authorizations",
       "company/shares/authorization",
       config.public.apiBaseUrl,
@@ -932,6 +934,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/striking-off/waiver",
       config.public.apiBaseUrl,
       getAuthToken),
+    companySwitchOuts: new CompanySwitchOutRepository("company/switch-outs",
+      "company/switch-out",
+      config.public.apiBaseUrl,
+      getAuthToken),
     companyTermOfReferences: new CompanyTermOfReferenceRepository("company/terms-of-references",
       "company/terms-of-reference",
       config.public.apiBaseUrl,
@@ -952,6 +958,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "director",
       config.public.apiBaseUrl,
       getAuthToken),
+    documentHandovers: new DocumentHandoverRepository(
+      "documents/handovers",
+      "documents/handover",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     documentTemplates: new DocumentTemplateRepository("resolution-templates",
       "resolution-template",
       config.public.apiBaseUrl,
@@ -1271,11 +1283,13 @@ declare module "#app" {
       companyStrikingOffRequirements: import("~/scripts/repositories/CompanyStrikingOffRequirementRepository").CompanyStrikingOffRequirementRepository
       companyStrikingOffResolutions: import("~/scripts/repositories/CompanyStrikingOffResolutionRepository").CompanyStrikingOffResolutionRepository
       companyStrikingOffWaivers: import("~/scripts/repositories/CompanyStrikingOffWaiverRepository").CompanyStrikingOffWaiverRepository
+      companySwitchOuts: import("~/scripts/repositories/CompanySwitchOutRepository").CompanySwitchOutRepository
       companyTermOfReferences: import("~/scripts/repositories/CompanyTermOfReferenceRepository").CompanyTermOfReferenceRepository
       countries: import("~/scripts/repositories/CountryRepository").CountryRepository
       directorDeclarationConflictOfInterests: import("~/scripts/repositories/DirectorDeclarationConflictOfInterestRepository").DirectorDeclarationConflictOfInterestRepository
       directorInvitations: import("~/scripts/repositories/DirectorInvitationRepository").DirectorInvitationRepository
       directors: import("~/scripts/repositories/DirectorRepository").DirectorRepository
+      documentHandovers: import("~/scripts/repositories/DocumentHandoverRepository").DocumentHandoverRepository
       documentTemplates: import("~/scripts/repositories/DocumentTemplateRepository").DocumentTemplateRepository
       files: import("~/scripts/repositories/FileRepository").FileRepository
       forms: import("~/scripts/repositories/FormRepository").FormRepository
@@ -1463,11 +1477,13 @@ declare module "pinia" {
       companyStrikingOffRequirements: import("~/scripts/repositories/CompanyStrikingOffRequirementRepository").CompanyStrikingOffRequirementRepository
       companyStrikingOffResolutions: import("~/scripts/repositories/CompanyStrikingOffResolutionRepository").CompanyStrikingOffResolutionRepository
       companyStrikingOffWaivers: import("~/scripts/repositories/CompanyStrikingOffWaiverRepository").CompanyStrikingOffWaiverRepository
+      companySwitchOuts: import("~/scripts/repositories/CompanySwitchOutRepository").CompanySwitchOutRepository
       companyTermOfReferences: import("~/scripts/repositories/CompanyTermOfReferenceRepository").CompanyTermOfReferenceRepository
       countries: import("~/scripts/repositories/CountryRepository").CountryRepository
       directorDeclarationConflictOfInterests: import("~/scripts/repositories/DirectorDeclarationConflictOfInterestRepository").DirectorDeclarationConflictOfInterestRepository
       directorInvitations: import("~/scripts/repositories/DirectorInvitationRepository").DirectorInvitationRepository
       directors: import("~/scripts/repositories/DirectorRepository").DirectorRepository
+      documentHandovers: import("~/scripts/repositories/DocumentHandoverRepository").DocumentHandoverRepository
       documentTemplates: import("~/scripts/repositories/DocumentTemplateRepository").DocumentTemplateRepository
       files: import("~/scripts/repositories/FileRepository").FileRepository
       forms: import("~/scripts/repositories/FormRepository").FormRepository
