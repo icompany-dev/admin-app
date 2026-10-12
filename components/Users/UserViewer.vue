@@ -37,10 +37,11 @@
             </div>
           </div>
 
+          <!-- TODO: Fix hardcode. -->
           <div style="width: calc(100% - 20px); padding: 15px 10px; box-shadow: var(--box-shadow)">
             <div style="display: flex; justify-content: space-between">
               <div style="display: flex; align-items: center; gap: 10px">
-                <div>Usage:</div>
+                <div style="width: 50px">Usage:</div>
                 <div>
                   <input
                     type="text"
@@ -64,15 +65,22 @@
               </div>
             </div>
 
-            <div>
-              Company:
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px">
+              <div style="width: 50px">Title:</div>
               <input
                 type="text"
                 class="form-control"
-                v-model="controller.purpose.value"
+                v-model="controller.title.value"
               />
             </div>
-            <div>Company Registration No:</div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px">
+              <div style="width: 50px">Subtitle:</div>
+              <input
+                type="text"
+                class="form-control"
+                v-model="controller.subtitle.value"
+              />
+            </div>
           </div>
           <div class="user-nric-window-content">
             <IdentificationDocumentWatermark

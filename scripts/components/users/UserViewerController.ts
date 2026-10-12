@@ -1,6 +1,8 @@
 import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { User } from "~/scripts/models/User"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class UserViewerController {
   emitEvents: any | null = null
@@ -13,8 +15,8 @@ export class UserViewerController {
   identificationRef: any | null = null
 
   purpose: Ref<string> = ref<string>("")
-  companyName: Ref<string> = ref<string>("")
-  companyRegistrationNumber: Ref<string> = ref<string>("")
+  title: Ref<string> = ref<string>("")
+  subtitle: Ref<string> = ref<string>("")
 
   constructor(props: any, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -46,6 +48,9 @@ export class UserViewerController {
 
     if (!repository.error && response) {
       this.user.value = new User(response)
+      this.purpose.value = `COPY OF ${this.identificationType}`
+      this.title.value = this.user.value.name
+      this.subtitle.value = this.user.value.detail?.identification ?? ""
     }
   }
 
@@ -70,9 +75,30 @@ export class UserViewerController {
       return
     }
 
-    let identificationPage = await this.identificationRef.getPdfPages()
+    const printWindow = window.open("", "_blank")
+    if (printWindow) {
+      printWindow.document.write("Please wait, generating Spince for printing...")
+    } else {
+      throw "Fail to open new window"
+    }
 
-    console.log(identificationPage)
+    let pages = await this.identificationRef.getPdfPages()
+
+    if (pages.length <= 0) {
+      printWindow.close()
+      return
+    }
+
+    const fileName = `${this.user.value.name} ${this.identificationType}.pdf`
+    const blob = await PdfPaperUtil.getPdfBlob(pages, 20, fileName, PaperSize.A4, PaperOrientation.Portrait)
+    const blobURL = URL.createObjectURL(blob)
+
+    await nextTick()
+    printWindow.location.href = blobURL
+
+    setTimeout(() => {
+      printWindow.print()
+    }, 500)
   }
 
   getIdentificationDocumentWatermarkProps(): PropsIdentificationDocumentWatermark {
@@ -81,13 +107,21 @@ export class UserViewerController {
     let x = this.purpose.value
 
     return new PropsIdentificationDocumentWatermark(
-      "",
-      "",
+      this.title.value,
+      this.subtitle.value,
       detail?.verificationFile?.url ?? "",
       detail?.verificationFileAlt?.url ?? null,
       x ?? "Purpose",
       PaperOrientation.Portrait,
       PaperSize.A4
     )
+  }
+
+  get identificationType(): string {
+    if (!this.user.value.detail) {
+      return "MYKAD"
+    }
+
+    return this.user.value?.detail?.identificationType === "passport" ? "PASSPORT" : "MYKAD"
   }
 }
