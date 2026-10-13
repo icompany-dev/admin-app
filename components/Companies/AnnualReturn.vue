@@ -13,6 +13,14 @@
       <div class="annual-return-details">
         <div class="detail">
           <div class="detail-row">
+            <button
+              class="btn btn-submit"
+              :class="{ 'is-loading': controller.isGenerating.value }"
+              :disabled="controller.isGenerating.value"
+              @click="controller.onGenerateXBRLClicked()"
+            >
+              {{ controller.generateXbrlLabel }}
+            </button>
             <table class="annual-return-detail-table">
               <tbody>
                 <tr>
@@ -146,6 +154,9 @@
                       v-for="director in controller.directorsForAnnualReturn"
                     >
                       <UserDetail v-bind="controller.getUserDetailProps(director)" />
+                      <br />
+                      <b>{{ controller.dateAppointed }}</b>
+                      : {{ controller.getDateOfAppointment(director) }}
                     </div>
                   </td>
                 </tr>

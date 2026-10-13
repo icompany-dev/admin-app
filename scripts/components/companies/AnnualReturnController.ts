@@ -1,4 +1,6 @@
+import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 import { StatusConstants } from "~/scripts/constants/Status"
+import { AnnualReturnXBRLGenerator } from "~/scripts/library/AnnualReturnXBRLGenerator"
 import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
@@ -11,6 +13,8 @@ import { Shareholder } from "~/scripts/models/Shareholder"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
+import type { ARShareCapital, AnnualReturnData } from "~/scripts/types/AnnualReturnXBRLGenerator"
+import type { Secretary } from "~/scripts/types/Secretary"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class AnnualReturnController {
@@ -24,6 +28,7 @@ export class AnnualReturnController {
   documentsAndForms = ref<DocumentsAndForms>(new DocumentsAndForms(""))
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+  isGenerating: Ref<boolean> = ref<boolean>(false)
 
   emitEvents: any | null = null
 
@@ -172,6 +177,54 @@ export class AnnualReturnController {
     this.companyAnnualReturnRequest.value.year = this.yearToLodge
   }
 
+  getDateOfAppointment(human: Director | Shareholder): string {
+    let time = useLocalTime()
+    return time.formatDateOnlyFull(human.dateAppointed ?? "")
+  }
+
+  async onGenerateXBRLClicked(): Promise<void> {
+    if (this.isGenerating.value) {
+      return
+    }
+
+    try {
+      this.isGenerating.value = true
+
+      let generator = new AnnualReturnXBRLGenerator()
+      generator.setAnnualReturnData(this.annualReturnData)
+
+      let xbrlPackage = generator.generateXBRLPackage()
+      if (!xbrlPackage) {
+        let error = new Error()
+        error.type = Error.ERROR_TYPE_DATA
+        error.title = this.language.isMalay() ? "Pakej XBRL adalah kosong" : "XBRL Package is Null"
+        throw error
+      }
+
+      let { zipBlob, sizeBytes } = await generator.createZipBlobFromPackage(
+        xbrlPackage.xbrlFilename,
+        xbrlPackage.xbrlXml,
+        xbrlPackage.manifestXml,
+        xbrlPackage.calculationXml
+      )
+      const blobUrl = window.URL.createObjectURL(zipBlob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", xbrlPackage.filename)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (e) {
+      console.error(e)
+      if (e instanceof Error) {
+        e.handle()
+      }
+    } finally {
+      this.isGenerating.value = false
+    }
+  }
+
   get yearToLodge(): string {
     let dayjs = useDayjs()
 
@@ -280,6 +333,14 @@ export class AnnualReturnController {
     return this.language.isMalay() ? "Pemegang Saham" : "Shareholders"
   }
 
+  get dateAppointed(): string {
+    return this.language.isMalay() ? "Tarikh Dilantik" : "Date Appointed"
+  }
+
+  get generateXbrlLabel(): string {
+    return this.language.isMalay() ? "Jana Pakej XBRL" : "Generate XBRL Package"
+  }
+
   get businessDescription(): string {
     return this.company.value.businessDescription
   }
@@ -364,5 +425,105 @@ export class AnnualReturnController {
       .reduce((a, b) => {
         return a + b
       }, 0)
+  }
+
+  get annualReturnData(): AnnualReturnData {
+    let dayjs = useDayjs()
+
+    let shareCapital: ARShareCapital[] = [
+      {
+        shareClass: "Ordinary",
+        numberOfShares: this.totalOrdinaryShares,
+        amountPaidUp: this.totalOrdinaryShares,
+        currency: "MYR",
+      },
+    ]
+
+    if (this.totalPreferenceShares > 0) {
+      shareCapital.push({
+        shareClass: "Preference",
+        numberOfShares: this.totalPreferenceShares,
+        amountPaidUp: this.totalPreferenceShares,
+        currency: "MYR",
+      })
+    }
+
+    return {
+      companyName: this.company.value.getFullName().replace("SDN BHD", "SDN. BHD."),
+      companyNumber: this.company.value.registrationNumberNew,
+      oldCompanyNumber: this.company.value.registrationNumberOld,
+      companyType: "Private Limited (Sdn. Bhd.)",
+      registeredOfficeAddress: {
+        addressLine1: this.registeredAddressLine1,
+        addressLine2: this.registeredAddressLine2,
+        postcode: this.registeredAddressPostcode,
+        city: this.registeredAddressCity,
+        state: this.registeredAddressState,
+      },
+      businessAddress: {
+        addressLine1: this.businessAddressLine1,
+        addressLine2: this.businessAddressLine2,
+        postcode: this.businessAddressPostcode,
+        city: this.businessAddressCity,
+        state: this.businessAddressState,
+      },
+      principalActivities: this.businessDescription,
+      msicCode: "",
+      msicCodes: this.msicCodes.map((m: MsicCode, index: number) => {
+        return {
+          id: m.code,
+          code: m.code,
+          description: m.descriptionEn,
+          isPrimary: index === 0,
+        }
+      }),
+      annualReturnDate: dayjs(this.annualReturnDate).format("YYYY-MM-DD"),
+      financialYearEndDate: "", //to do
+      isExemptPrivateCompany: false,
+      shareCapital: shareCapital,
+      directors: this.directorsForAnnualReturn.map((d: Director) => {
+        return {
+          id: d.id,
+          name: d.user?.name ?? d.name,
+          idNumber: d.user?.detail?.identification ?? "",
+          residentialAddress: d.user?.detail?.location?.getOnelineAddress() ?? "",
+          nationality: d.user?.detail?.citizenship ?? "MALAYSIAN",
+          designation: "Director",
+          appointmentDate: dayjs(d.dateAppointed).format("YYYY-MM-DD"),
+        }
+      }),
+      secretaries: SecretaryInformation.SECRETARY_NAME_LIST.map((s: Secretary) => {
+        return {
+          id: "",
+          name: s.name,
+          idNumber: s.nric,
+          licenseNumber: s.license,
+          registeredAddress: this.company.value.registeredAddressLocation?.getOnelineAddress() ?? "",
+          appointmentDate: dayjs().format("YYYY-MM-DD"),
+        }
+      }),
+      auditor: {
+        firmName: "",
+        firmNumber: "",
+        firmAddress: "",
+        appointmentDate: "",
+      },
+      shareholders: this.shareholders.value.map((s: Shareholder) => {
+        return {
+          id: s.id,
+          name: s.fullName(),
+          idOrRegNumber: s.identification,
+          address: s.getAddress().replaceAll("<br>", ", "),
+          nationalityOrCountry: s.isCorporateRepresentative() ? "" : (s.user?.detail?.citizenship ?? ""),
+          shareClass: s.ordinaryShares > 0 ? "Ordinary" : "Preference",
+          numberOfShares: s.ordinaryShares,
+          percentage: s.percentageShares,
+        }
+      }),
+      indebtedness: {
+        hasCharges: false,
+        totalAmountSecured: 0,
+      },
+    }
   }
 }
