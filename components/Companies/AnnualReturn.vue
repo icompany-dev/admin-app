@@ -13,14 +13,6 @@
       <div class="annual-return-details">
         <div class="detail">
           <div class="detail-row">
-            <button
-              class="btn btn-submit"
-              :class="{ 'is-loading': controller.isGenerating.value }"
-              :disabled="controller.isGenerating.value"
-              @click="controller.onGenerateXBRLClicked()"
-            >
-              {{ controller.generateXbrlLabel }}
-            </button>
             <table class="annual-return-detail-table">
               <tbody>
                 <tr>
@@ -180,6 +172,31 @@
                       : {{ NumberUtil.thousandSeparator(shareholder.preferenceShares) }}
                       <CopyValue :value="shareholder.preferenceShares.toString()" />
                       <br />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td>
+                    <div class="action-buttons">
+                      <button
+                        class="btn btn-submit btn-pill"
+                        :class="{ 'is-loading': controller.isGenerating.value }"
+                        :disabled="controller.isGenerating.value"
+                        @click="controller.onGenerateXBRLClicked()"
+                      >
+                        {{ controller.generateXbrlLabel }}
+                      </button>
+
+                      <button
+                        class="btn btn-pill btn-primary"
+                        :class="{ 'is-loading': controller.isGeneratingBO.value }"
+                        :disabled="controller.isGeneratingBO.value"
+                        @click="controller.onGenerateBOAnnexureTxtClicked()"
+                      >
+                        Generate BO Annexure
+                      </button>
                     </div>
                   </td>
                 </tr>
