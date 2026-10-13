@@ -130,7 +130,7 @@ export class DocumentsAndForms {
     // })
 
     this.forms.forEach((form: Form) => {
-      let documentDate = form.documentDate ? new Date(form.documentDate) : new Date(this.company?.createdAt ?? "")
+      let documentDate = form.documentDate ? new Date(form.documentDate) : new Date(form.createdAt ?? "")
       this.documents.push(
         new CompanyDocument(
           form.id,

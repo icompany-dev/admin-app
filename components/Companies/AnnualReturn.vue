@@ -52,10 +52,21 @@
                 </tr>
                 <tr>
                   <td>
+                    <b>{{ controller.lodgementDeadlineLabel }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>{{ controller.lodgementDeadline }}</td>
+                </tr>
+                <tr>
+                  <td>
                     <b>{{ controller.paymentDateLabel }}</b>
                   </td>
                   <td>:</td>
-                  <td>{{ controller.paymentDate }}</td>
+                  <td>
+                    <span :class="{ 'text-danger': !controller.isPaid && !controller.hasSubmittedForYear }">
+                      {{ controller.paymentDate }}
+                    </span>
+                  </td>
                 </tr>
                 <tr>
                   <td></td>
@@ -287,7 +298,7 @@
       required: true,
     },
   })
-  const emit = defineEmits(["isPaid"])
+  const emit = defineEmits(["isPaid", "yearToLodge"])
 
   const viewDocumentRef = ref(null)
 

@@ -66,6 +66,11 @@
                     cursor: pointer;
                   }
                 }
+
+                .text-danger {
+                  color: var(--bs-danger);
+                  font-weight: 600;
+                }
               }
             }
           }

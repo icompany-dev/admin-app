@@ -127,6 +127,21 @@
             @click="controller.onAnnualReturnClicked()"
           >
             {{ controller.annualReturn }}
+            <TransitionGroup name="fade">
+              <span
+                class="text-danger"
+                v-if="controller.isShowWarningForAnnualReturn"
+                :title="`No Payment Received`"
+              >
+                <i class="fa-solid fa-circle-dollar" />
+              </span>
+              <span
+                class="text-success"
+                v-if="controller.hasSubmittedForYear"
+              >
+                <i class="fa-solid fa-circle-check" />
+              </span>
+            </TransitionGroup>
           </div>
           <!-- <div
             class="page-tab"

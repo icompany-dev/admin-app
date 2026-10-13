@@ -2,10 +2,13 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
+import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Company } from "~/scripts/models/Company"
+import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -44,6 +47,11 @@ export class SelectedSdnBhdController {
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
   isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
+
+  isAnnualReturnPaid: Ref<boolean> = ref<boolean>(false)
+  annualReturnYear: Ref<string> = ref<string>("")
+
+  uploadedDocumentChecker = ref<UploadedDocumentChecker>(new UploadedDocumentChecker(""))
 
   applicationRefs: any[] = []
 
@@ -95,6 +103,15 @@ export class SelectedSdnBhdController {
       }
 
       this.company.value = new Company(response)
+
+      this.uploadedDocumentChecker.value = new UploadedDocumentChecker(this.companyId.value)
+      await this.uploadedDocumentChecker.value.fetchDocuments()
+
+      if (!this.hasSubmittedForYear) {
+        await this.fetchAnnualReturn()
+      } else {
+        this.isAnnualReturnPaid.value = true
+      }
     } catch (e) {
       this.company.value = new Company()
       if (e instanceof Error) {
@@ -107,6 +124,49 @@ export class SelectedSdnBhdController {
     } finally {
       this.isLoading.value = false
     }
+  }
+
+  async fetchAnnualReturn(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let repository = useCompanyAnnualReturnStore()
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    filter.take = 5
+    filter.sortOrder = "desc"
+    filter.orderBy = "year"
+    let response = await repository.fetchAll(filter)
+
+    if (response.totalRecords <= 0) {
+      this.isAnnualReturnPaid.value = false
+      return
+    }
+
+    let requestsForYear = response.data
+      .map((d: any) => {
+        return new CompanyAnnualReturnRequest(d)
+      })
+      .filter((d: CompanyAnnualReturnRequest) => {
+        return d.year === this.yearToLodge
+      })
+
+    if (requestsForYear.length <= 0) {
+      this.isAnnualReturnPaid.value = false
+      return
+    }
+
+    let paidForYear = requestsForYear.find((d: CompanyAnnualReturnRequest) => {
+      return !StringUtil.isNullOrEmpty(d.paidAt)
+    })
+
+    if (!paidForYear) {
+      this.isAnnualReturnPaid.value = false
+      return
+    }
+
+    this.isAnnualReturnPaid.value = true
   }
 
   onOverviewClicked(): void {
@@ -285,6 +345,14 @@ export class SelectedSdnBhdController {
     }
   }
 
+  onIsAnnualReturnPaidUpdated(isAnnualReturnPaid: boolean): void {
+    this.isAnnualReturnPaid.value = isAnnualReturnPaid
+  }
+
+  onAnnualReturnYearLodge(yearToLodge: string): void {
+    this.annualReturnYear.value = yearToLodge
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -338,7 +406,9 @@ export class SelectedSdnBhdController {
   }
 
   get annualReturn(): string {
-    return this.language.isMalay() ? "Penyata Tahunan" : "Annual Return"
+    return this.language.isMalay()
+      ? `Penyata Tahunan untuk ${this.yearToLodge}`
+      : `Annual Return for ${this.yearToLodge}`
   }
 
   get shareholders(): string {
@@ -395,5 +465,47 @@ export class SelectedSdnBhdController {
     let time = useLocalTime()
 
     return time.formatDateOnlyFull(this.company.value.incorporatedAt ?? "")
+  }
+
+  get yearToLodge(): string {
+    let dayjs = useDayjs()
+
+    // if (this.hasSubmittedForYear) {
+    //   return dayjs().add(1, "year").format("YYYY")
+    // }
+
+    return dayjs().format("YYYY")
+  }
+
+  get currentYearAnnualReturnDate(): string {
+    let dayjs = useDayjs()
+
+    let currentYear = dayjs().year()
+    let incorporatedAt = dayjs(this.company.value.incorporatedAt)
+
+    let annualReturnDate = dayjs(this.company.value.incorporatedAt).year(currentYear)
+    return annualReturnDate.format("YYYY-MM-DD")
+  }
+
+  get hasSubmittedForYear(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
+      this.currentYearAnnualReturnDate
+    )
+  }
+
+  get latestSection68(): CompanyDocument | null {
+    return this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
+      this.currentYearAnnualReturnDate
+    )
+  }
+
+  get isShowWarningForAnnualReturn(): boolean {
+    if (this.hasSubmittedForYear) {
+      return false
+    }
+
+    return !this.isAnnualReturnPaid.value
   }
 }

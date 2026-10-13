@@ -78,8 +78,6 @@ export class AnnualReturnController {
         this.documentsAndForms.value.init(),
         this.uploadedDocumentChecker.value.fetchDocuments(),
       ])
-
-      this.emitEvents("isPaid", this.isPaid)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -94,7 +92,7 @@ export class AnnualReturnController {
   }
 
   async fetchAnnualReturn(): Promise<void> {
-    if (!StringUtil.isNullOrEmpty(this.companyId.value)) {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       return
     }
 
@@ -335,6 +333,12 @@ ${detailsOfBO.join("\n")}
   }
 
   get paymentDate(): string {
+    if (this.hasSubmittedForYear) {
+      return this.language.isMalay()
+        ? `Telah Diserah Simpan untuk Tahun ${this.yearToLodge}`
+        : `Lodged for Year ${this.yearToLodge}`
+    }
+
     if (StringUtil.isNullOrEmpty(this.companyAnnualReturnRequest.value.paidAt)) {
       return this.language.isMalay() ? "Tiada Bayaran Diterima" : "No Payment Received"
     }
@@ -350,11 +354,20 @@ ${detailsOfBO.join("\n")}
 
   get annualReturnDate(): string {
     let dayjs = useDayjs()
-    let incorporatedAtMonth = dayjs(this.incorporationDate).month()
+    let incorporatedAtMonth = dayjs(this.incorporationDate).month() + 1
     let incorporatedAtDate = dayjs(this.incorporationDate).date()
     let annualReturnDateString = `${this.yearToLodge}-${incorporatedAtMonth}-${incorporatedAtDate}`
 
     return annualReturnDateString
+  }
+
+  get lodgementDeadline(): string {
+    let dayjs = useDayjs()
+    let oneMonthLater = dayjs(this.annualReturnDate).add(1, "month").format("YYYY-MM-DD")
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyFull(oneMonthLater)
   }
 
   get formattedAnnualReturn(): string {
@@ -395,6 +408,10 @@ ${detailsOfBO.join("\n")}
 
   get annualReturnLabel(): string {
     return this.language.isMalay() ? "Tarikh Penyata Tahunan" : "Annual Return Date"
+  }
+
+  get lodgementDeadlineLabel(): string {
+    return this.language.isMalay() ? "Tarikh Akhir Serah Simpan" : "Lodgement Due Date"
   }
 
   get descriptionLabel(): string {
@@ -629,7 +646,7 @@ ${detailsOfBO.join("\n")}
 
   get latestSection68(): CompanyDocument | null {
     let dayjs = useDayjs()
-    let previousTwoAnnualReturn = dayjs(this.annualReturnDate).subtract(2, "years").format("YYYY-MM-DD")
+    let previousTwoAnnualReturn = dayjs(this.annualReturnDate).subtract(1, "year").format("YYYY-MM-DD")
 
     return this.uploadedDocumentChecker.value.latestDocument(
       DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
@@ -659,5 +676,21 @@ ${detailsOfBO.join("\n")}
     }
 
     return this.latestSection68?.fileUrl ?? ""
+  }
+
+  get currentYearAnnualReturnDate(): string {
+    let dayjs = useDayjs()
+
+    let currentYear = dayjs().year()
+
+    let annualReturnDate = dayjs(this.company.value.incorporatedAt).year(currentYear)
+    return annualReturnDate.format("YYYY-MM-DD")
+  }
+
+  get hasSubmittedForYear(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
+      this.currentYearAnnualReturnDate
+    )
   }
 }
