@@ -179,7 +179,8 @@
               v-for="(director, i) in controller.directorsDetails"
               :key="i"
             >
-              <div class="human-details">
+              <UserDetail v-bind="controller.getPropsUserDetail(director)" />
+              <!-- <div class="human-details">
                 <div class="name">{{ director.name }}</div>
                 <div class="human-detail">
                   <i class="fa-regular fa-envelope"></i>
@@ -189,7 +190,7 @@
                   <i class="fa-brands fa-whatsapp" />
                   <span class="phone">{{ director.phone }}</span>
                 </div>
-              </div>
+              </div> -->
             </li>
           </ol>
         </div>
@@ -202,7 +203,8 @@
               v-for="(shareholder, i) in controller.shareholdersDetails"
               :key="i"
             >
-              <div class="human-details">
+              <UserDetail v-bind="controller.getPropsUserDetail(shareholder)" />
+              <!-- <div class="human-details">
                 <div class="name">{{ shareholder.name }}</div>
                 <div class="human-detail">
                   <i class="fa-regular fa-envelope"></i>
@@ -222,7 +224,7 @@
                   <span>{{ controller.preferenceSharesLabel }}:</span>
                   <span>{{ shareholder.preferenceShares }}</span>
                 </div>
-              </div>
+              </div> -->
             </li>
           </ol>
           <button
@@ -231,7 +233,7 @@
           >
             Generate BO Annexure
           </button>
-          <div
+          <!-- <div
             class="chart-wrapper"
             v-if="controller.isShowShareDistribution.value"
           >
@@ -247,7 +249,7 @@
             >
               {{ controller.showDistributionLabel }}
             </span>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -314,6 +316,7 @@
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
+  import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 

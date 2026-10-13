@@ -18,6 +18,8 @@ import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import { PurchasedItemTracker } from "~/scripts/models/PurchasedItemTracker"
 import { CompanySetting, CompanySettingTaxDetails } from "~/scripts/models/CompanySetting"
+import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
+import { User } from "~/scripts/models/User"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -120,8 +122,6 @@ export class OverviewController {
       throw repository.error
     }
 
-    console.log("data", response)
-
     this.company.value = new Company(response)
   }
 
@@ -135,6 +135,14 @@ export class OverviewController {
     this.directors.value = response.map((d: any) => {
       return new Director(d)
     })
+
+    let promises = this.directors.value.map((d: Director) => {
+      return d.getRegisteredUser(useUserStore()).then((r) => {
+        d.user = new User(r)
+      })
+    })
+
+    await Promise.all(promises)
   }
 
   async fetchShareholders(): Promise<void> {
@@ -398,6 +406,10 @@ ${detailsOfBO.join("\n")}
     } finally {
       this.isUpdatingTaxNumber.value = false
     }
+  }
+
+  getPropsUserDetail(human: Director | Shareholder): PropsUserDetail {
+    return new PropsUserDetail(human.user ?? new User(), human.user?.detail ?? new UserDetail())
   }
 
   // getters
