@@ -54,10 +54,11 @@ export class SidebarGroup {
 export class PageSidebar {
   static commandCentre: Sidebar = new Sidebar("Command Centre", "Pusat Kawalan", "", false)
   static analytics: Sidebar = new Sidebar("Analytics", "Analytics", "command-centre/analytics", false)
+  static announcements: Sidebar = new Sidebar("Announcements", "Announcements", "command-centre/announcements", false)
   static dashboardGroup: SidebarGroup = new SidebarGroup(
     "Dashboard",
     "Dashboard",
-    [this.commandCentre, this.analytics],
+    [this.commandCentre, this.analytics, this.announcements],
     true
   )
 
@@ -106,6 +107,12 @@ export class PageSidebar {
     "services/change-business-name",
     false
   )
+  static changeBusinessDescription: Sidebar = new Sidebar(
+    "Change of Nature",
+    "Penukaran Perihal",
+    "services/change-business-description",
+    false
+  )
   static openBankAccount: Sidebar = new Sidebar(
     "Open Bank Account",
     "Buka Akaun Bank",
@@ -149,8 +156,16 @@ export class PageSidebar {
     "services/change-business-address",
     false
   )
+  static auditorAppointment: Sidebar = new Sidebar(
+    "Appointment of Auditor",
+    "Perlantikan Juruaudit",
+    "services/appointment-of-auditor",
+    false
+  )
+  static switchOut: Sidebar = new Sidebar("Switch Outs", "Switch Out", "services/switch-outs", false)
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
+    this.changeBusinessDescription,
     this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
@@ -159,6 +174,8 @@ export class PageSidebar {
     this.purchaseAssets,
     this.declareDividends,
     this.changeBankSignatories,
+    this.auditorAppointment,
+    this.switchOut,
   ])
 
   static documentRequests: Sidebar = new Sidebar(

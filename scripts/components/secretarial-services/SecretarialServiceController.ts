@@ -100,6 +100,7 @@ export abstract class SecretarialServiceController<T, R> {
 
   async onDownloadClicked(): Promise<void> {
     if (this.isDownloading.value || !this.documentRef) {
+      console.log("this lver", this.documentRef)
       return
     }
 

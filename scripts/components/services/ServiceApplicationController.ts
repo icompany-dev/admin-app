@@ -105,7 +105,7 @@ export class ServiceApplicationController {
 
   get paymentSublabel(): string {
     if (!this.hasPaid) {
-      return ""
+      return this.language.isMalay() ? "Menunggu Bayaran" : "Waiting for Payment"
     }
 
     let time = useLocalTime()

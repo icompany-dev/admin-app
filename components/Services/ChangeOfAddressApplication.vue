@@ -87,6 +87,18 @@
             >
               {{ controller.uploadPD2Label }}
             </button>
+            <div v-if="controller.isPD2Uploaded">
+              <span
+                class="action-link download"
+                @click="controller.onDownloadPD2Clicked()"
+              >
+                <i
+                  class="fa-regular"
+                  :class="controller.isDownloadingPD2.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-down'"
+                />
+                {{ controller.pd2FileLabel }}
+              </span>
+            </div>
           </template>
           <template #nodeActions>
             <div class="actions-button-options">

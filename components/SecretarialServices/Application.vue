@@ -36,15 +36,18 @@
 <script lang="ts" setup>
   import AssetPurchase from "./AssetPurchase.vue"
   import AllotNewShare from "./AllotNewShare.vue"
+  import AppointAuditor from "./AppointAuditor.vue"
   import AppointDirector from "./AppointDirector.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
   import ChangeBankSignatory from "./ChangeBankSignatory.vue"
   import ChangeOfAddress from "./ChangeOfAddress.vue"
+  import ChangeOfDescription from "./ChangeOfDescription.vue"
   import ChangeOfName from "./ChangeOfName.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import DividendDeclaration from "./DividendDeclaration.vue"
   import DocumentRequest from "./DocumentRequest.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import SwitchOut from "./SwitchOut.vue"
   import TekunApplication from "./TekunApplication.vue"
   import TransferOfShare from "./TransferOfShare.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
@@ -59,7 +62,9 @@
 
   const componentMap: Record<string, any> = {
     [CompanyConstants.TARGET_AMENDMENT_ADDRESS]: ChangeOfAddress,
+    [CompanyConstants.TARGET_AMENDMENT_DESCRIPTION]: ChangeOfDescription,
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
+    [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointAuditor,
     [CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY]: ChangeBankSignatory,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
     [CompanyConstants.TARGET_DIVIDEND_DECLARATION]: DividendDeclaration,
@@ -69,6 +74,7 @@
     [CompanyConstants.TARGET_PURCHASE_ASSET]: AssetPurchase,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotNewShare,
     [CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES]: TransferOfShare,
+    [CompanyConstants.TARGET_SWITCH_OUT]: SwitchOut,
   }
 
   const activeDocumentComponent = computed(() => {

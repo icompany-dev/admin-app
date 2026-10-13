@@ -251,7 +251,7 @@ export class AllotmentOfSharesController
           PdfPaperUtil.generatePdfFile(
             dcrPages,
             20,
-            "Directors' Resolution - Propose Allotment of Shares.pdf",
+            "DCR - Propose Allotment of Shares.pdf",
             PaperSize.A4,
             PaperOrientation.Portrait
           )
@@ -264,7 +264,7 @@ export class AllotmentOfSharesController
           PdfPaperUtil.generatePdfFile(
             mcrPages,
             20,
-            "Members' Resolution - Authority to Allot Shares.pdf",
+            "MCR - Authority to Allot Shares.pdf",
             PaperSize.A4,
             PaperOrientation.Portrait
           )
@@ -290,7 +290,7 @@ export class AllotmentOfSharesController
           PdfPaperUtil.generatePdfFile(
             allotPages,
             20,
-            "Directors' Resolution - Allotment of Shares.pdf",
+            "DCR - Allotment of Shares.pdf",
             PaperSize.A4,
             PaperOrientation.Portrait
           )

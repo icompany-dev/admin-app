@@ -143,4 +143,20 @@
     padding: 3px 0;
     font-weight: 600;
   }
+
+  .action-link {
+    cursor: pointer;
+    color: var(--bs-icompany-blue);
+
+    &.remove {
+      color: var(--bs-danger);
+    }
+  }
+
+  .form-control {
+    padding: 4px 5px;
+    min-width: 150px;
+    border-radius: 5px;
+    background-color: var(--bs-white);
+  }
 }

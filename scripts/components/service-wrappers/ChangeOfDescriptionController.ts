@@ -7,6 +7,8 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { StringUtil } from "~/scripts/utils/String"
 import { Company } from "~/scripts/models/Company"
 import { Error } from "~/scripts/library/Error"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class ChangeOfDescriptionController
   extends ServiceController
@@ -63,7 +65,7 @@ export class ChangeOfDescriptionController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -112,5 +114,54 @@ export class ChangeOfDescriptionController
           </ul>
           You can Purchase & Download SSM Corporate Profile as confirmation of the change (optional).
         `
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let promises = []
+
+      if (this.dcrRef) {
+        let dcrPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            20,
+            "DCR - Change of Business Nature.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.mcrRef) {
+        let mcrPages = await this.mcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            mcrPages,
+            20,
+            "Member's Resolutions.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 }

@@ -232,7 +232,7 @@ export class BankAccountOpeningController
   }
 
   override async onDownloadClicked(): Promise<void> {
-    if (this.isDownloading.value) {
+    if (this.isDownloading.value || !this.dcrRef) {
       return
     }
 
@@ -240,30 +240,24 @@ export class BankAccountOpeningController
       this.isDownloading.value = true
       this.setActionTrayElements()
 
-      let promises = []
+      const pages: HTMLElement[] = await this.dcrRef.getPdfPages()
 
-      if (this.dcrRef) {
-        let dcrPages = await this.dcrRef.getPdfPages()
-        promises.push(
-          PdfPaperUtil.generatePdfFile(
-            dcrPages,
-            20,
-            "Open Bank Account Documents.pdf",
-            PaperSize.A4,
-            PaperOrientation.Portrait
-          )
-        )
-
-        promises.push(this.dcrRef.downloadPdfs())
+      if (!pages.length) {
+        throw new Error()
       }
 
-      if (promises.length <= 0) {
-        return
-      }
+      await PdfPaperUtil.generatePdfFile(
+        pages,
+        20,
+        "Open Bank Account Documents.pdf",
+        PaperSize.A4,
+        PaperOrientation.Portrait
+      )
 
-      await Promise.all(promises)
+      // Preserve downloads of the existing supporting files.
+      await this.dcrRef.downloadPdfs()
     } catch (e) {
-      console.error(e)
+      console.error("Failed to download bank account opening documents:", e)
     } finally {
       this.isDownloading.value = false
       this.setActionTrayElements()

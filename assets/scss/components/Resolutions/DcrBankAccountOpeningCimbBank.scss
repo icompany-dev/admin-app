@@ -1,0 +1,45 @@
+#dcr-bank-account-opening-cimb-bank {
+  .paper-wrapper {
+    .branch-selection {
+      top: 300px;
+      right: -25mm;
+      border-radius: 0 5px 5px 0;
+    }
+
+    .paper {
+      .company-detail-head {
+        &.cimb-other-pages {
+          .company-name {
+            text-align: left;
+            font-weight: 400;
+            text-transform: unset;
+          }
+
+          .company-registration-number {
+            text-align: left;
+            font-weight: 400;
+          }
+        }
+      }
+
+      .resolution-title {
+        &.cimb-other-pages {
+          margin-top: 0px;
+          margin-bottom: 25px;
+        }
+      }
+    }
+  }
+}
+
+.paper {
+  &.dcr-cimb-bank {
+    ol {
+      list-style-type: decimal;
+
+      > li {
+        list-style-type: decimal;
+      }
+    }
+  }
+}

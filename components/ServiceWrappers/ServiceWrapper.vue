@@ -83,6 +83,7 @@
   import DividendDeclaration from "./DividendDeclaration.vue"
   import DividendVouchers from "./DividendVouchers.vue"
   import EnterContract from "./EnterContract.vue"
+  import LetterOfTransferAndHandoverDocument from "./LetterOfTransferAndHandoverDocument.vue"
   import LetterToExistingCosec from "./LetterToExistingCosec.vue"
   import LoanToDirector from "./LoanToDirector.vue"
   import LodgeAnnualReturn from "./LodgeAnnualReturn.vue"
@@ -113,6 +114,7 @@
   import Section219And221 from "./Section219And221.vue"
   import StrikingOff from "./StrikingOff.vue"
   import SubscribeBusinessAddress from "./SubscribeBusinessAddress.vue"
+  import SwitchOutHandoverDocument from "./SwitchOutHandoverDocument.vue"
   import TekunApplication from "./TekunApplication.vue"
   import TermOfReference from "./TermOfReference.vue"
   import ThirdSchedule from "./ThirdSchedule.vue"
@@ -188,6 +190,8 @@
     [CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES]: NoticeTransferOfShares,
     [CompanyConstants.TARGET_STRIKING_OFF_RESOLUTION]: StrikingOff,
     [CompanyConstants.TARGET_SUBSCRIBE_BUSINESS_ADDRESS]: SubscribeBusinessAddress,
+    [CompanyConstants.TARGET_SWITCH_OUT_LETTER]: LetterOfTransferAndHandoverDocument,
+    [CompanyConstants.TARGET_SWITCH_OUT_DOCUMENT]: SwitchOutHandoverDocument,
     [CompanyConstants.TARGET_THIRD_SCHEDULE]: ThirdSchedule,
     [CompanyConstants.TARGET_TERMS_OF_REFERENCE]: TermOfReference,
   }

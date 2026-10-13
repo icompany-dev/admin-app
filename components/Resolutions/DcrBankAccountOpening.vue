@@ -104,6 +104,7 @@
     getSignatoryType: controller.getSignatoryType.bind(controller),
     getSignatories: controller.getSignatories.bind(controller),
     getBranchId: controller.getBranchId.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
     isLoading: controller.isLoading.value,
   })
 </script>

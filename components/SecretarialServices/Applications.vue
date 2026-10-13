@@ -74,15 +74,18 @@
   import CreateDocumentRequest from "../Popups/CreateDocumentRequest.vue"
   import { AllotNewSharesController } from "~/scripts/components/secretarial-services/AllotNewSharesController"
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
+  import { AppointAuditorsController } from "~/scripts/components/secretarial-services/AppointAuditorsController"
   import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
   import { ChangeBankSignatoriesController } from "~/scripts/components/secretarial-services/ChangeBankSignatoriesController"
   import { ChangeOfAddressesController } from "~/scripts/components/secretarial-services/ChangeOfAddressesController"
+  import { ChangeOfDescriptionsController } from "~/scripts/components/secretarial-services/ChangeOfDescriptionsController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { DividendDeclarationsController } from "~/scripts/components/secretarial-services/DividendDeclarationsController"
   import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
+  import { SwitchOutsController } from "~/scripts/components/secretarial-services/SwitchOutsController"
   import { TransferOfSharesController } from "~/scripts/components/secretarial-services/TransferOfSharesController"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import type { Application } from "~/scripts/models/Application"
@@ -101,8 +104,14 @@
     case CompanyConstants.TARGET_AMENDMENT_ADDRESS:
       controller = new ChangeOfAddressesController(props, emit)
       break
+    case CompanyConstants.TARGET_AMENDMENT_DESCRIPTION:
+      controller = new ChangeOfDescriptionsController(props, emit)
+      break
     case CompanyConstants.TARGET_AMENDMENT_NAME:
       controller = new ChangeOfNamesController(props, emit)
+      break
+    case CompanyConstants.TARGET_AUDITOR_APPOINTMENT:
+      controller = new AppointAuditorsController(props, emit)
       break
     case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
       controller = new AppointDirectorsController(props, emit)
@@ -130,6 +139,9 @@
       break
     case CompanyConstants.TARGET_LOAN_APPLICATION:
       controller = new TekunApplicationsController(props, emit)
+      break
+    case CompanyConstants.TARGET_SWITCH_OUT:
+      controller = new SwitchOutsController(props, emit)
       break
   }
 

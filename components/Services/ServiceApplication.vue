@@ -31,6 +31,7 @@
             </template>
             <template #nodeOptions>
               <button
+                v-if="controller.hasPaid"
                 class="btn btn-pill btn-primary"
                 :class="{ 'is-loading': controller.isDownloadingReceipt.value }"
                 @click="controller.onDownloaReceiptClicked()"

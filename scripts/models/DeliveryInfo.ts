@@ -7,6 +7,7 @@ export class DeliveryInfo implements IModel<DeliveryInfo> {
   phone: string | null = ""
   addressLine1: string | null = ""
   addressLine2: string | null = ""
+  addressLine3: string | null = ""
   addressPostcode: string | null = ""
   addressCity: string | null = ""
   addressState: string | null = ""
@@ -30,6 +31,7 @@ export class DeliveryInfo implements IModel<DeliveryInfo> {
     this.phone = data.delivery_phone ?? null
     this.addressLine1 = data.delivery_address_line_1 ?? null
     this.addressLine2 = data.delivery_address_line_2 ?? null
+    this.addressLine3 = data.delivery_address_line_3 ?? null
     this.addressPostcode = data.delivery_address_postcode ?? null
     this.addressCity = data.delivery_address_city ?? null
     this.addressState = data.delivery_address_state ?? null
@@ -42,6 +44,7 @@ export class DeliveryInfo implements IModel<DeliveryInfo> {
     this.phone = data.phone
     this.addressLine1 = data.addressLine1
     this.addressLine2 = data.addressLine2
+    this.addressLine3 = data.addressLine3
     this.addressPostcode = data.addressPostcode
     this.addressCity = data.addressCity
     this.addressState = data.addressState
@@ -55,6 +58,7 @@ export class DeliveryInfo implements IModel<DeliveryInfo> {
       recipient_phone: this.phone,
       address_line_1: this.addressLine1,
       address_line_2: this.addressLine2,
+      address_line_3: this.addressLine3,
       address_postcode: this.addressPostcode,
       address_city: this.addressCity,
       address_state: this.addressState,
