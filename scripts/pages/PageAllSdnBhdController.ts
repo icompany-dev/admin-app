@@ -7,6 +7,7 @@ export class PageAllSdnBhdController extends PageController {
   sortOrder: Ref<string> = ref<string>("asc")
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
   isSdnBhdSelected: Ref<boolean> = ref<boolean>(false)
+  isOverdueAnnualReturn: Ref<boolean> = ref<boolean>(false)
 
   constructor() {
     let title: string = "Admin Dashboard - iCompany Malaysia"
@@ -29,6 +30,10 @@ export class PageAllSdnBhdController extends PageController {
       this.isIncludeDemo.value = data.sortOrder ? true : false
       return
     }
+
+    if (data.orderColumn === "Pending Annual Returns") {
+      this.isOverdueAnnualReturn.value = data.sortOrder ? true : false
+    }
   }
 
   onSdnBhdSelected(): void {
@@ -48,7 +53,11 @@ export class PageAllSdnBhdController extends PageController {
   }
 
   get propsDataOrders(): PropsDataOrders[] {
-    return [new PropsDataOrders(this.sortOrderLabel, "asc"), new PropsDataOrders("Show Demo", "false")]
+    return [
+      new PropsDataOrders(this.sortOrderLabel, "asc"),
+      new PropsDataOrders("Show Demo", "false"),
+      new PropsDataOrders("Pending Annual Returns", "false"),
+    ]
   }
 
   get tableFilterProps(): PropsTableFilter {

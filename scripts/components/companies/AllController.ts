@@ -42,7 +42,7 @@ export class AllController {
     await this.tableDataFetcher.value.fetchData()
   }
 
-  async setsOverdueAnnualReturn(isOverdueAnnualReturn: boolean): Promise<void> {
+  async setIsOverdueAnnualReturn(isOverdueAnnualReturn: boolean): Promise<void> {
     this.tableDataFetcher.value.filter.isOverdueAnnualReturn = isOverdueAnnualReturn
     await this.tableDataFetcher.value.fetchData()
   }
