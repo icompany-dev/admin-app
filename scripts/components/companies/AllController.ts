@@ -44,6 +44,13 @@ export class AllController {
 
   async setIsOverdueAnnualReturn(isOverdueAnnualReturn: boolean): Promise<void> {
     this.tableDataFetcher.value.filter.isOverdueAnnualReturn = isOverdueAnnualReturn
+    if (isOverdueAnnualReturn) {
+      this.tableDataFetcher.value.filter.orderBy = "incorporated_at"
+      this.tableDataFetcher.value.filter.sortOrder = "asc"
+    } else {
+      this.tableDataFetcher.value.filter.orderBy = "name"
+      this.tableDataFetcher.value.filter.sortOrder = "asc"
+    }
     await this.tableDataFetcher.value.fetchData()
   }
 
