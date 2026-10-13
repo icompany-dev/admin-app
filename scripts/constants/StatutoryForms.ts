@@ -54,7 +54,7 @@ export enum StatutoryFormKeywords {
   S58 = "S. 58,Register of Directors,Section 58,S 58",
   S46 = "S. 46,Notification of Change Registered Address, S 46,Section 46",
   S51 = "S. 51,Register of Member, S 51,Section 51",
-  AnnualReturn = "Annual Return",
+  AnnualReturn = "Annual Return,Section 68,S 68",
   BankAccountResolution = "Bank Account",
   PD2 = "Notification of change in the Business Address and / or Nature of Business",
   ChangeOfName = "Change of Business Name, Change of Name, Change Co Name, Change Business Name",

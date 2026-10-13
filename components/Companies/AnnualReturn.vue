@@ -17,6 +17,34 @@
               <tbody>
                 <tr>
                   <td>
+                    <b>{{ controller.section68Label }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>
+                    <div class="document-action">
+                      <span>{{ controller.section68 }}</span>
+                      <template v-if="controller.isSection68Uploaded">
+                        <span
+                          class="action-link"
+                          @click="controller.onSection68Clicked()"
+                        >
+                          <i
+                            class="fa-regular"
+                            :class="controller.isViewingDocument.value ? 'fa-eye' : 'fa-eye-closed'"
+                          />
+                        </span>
+                        <a
+                          :href="controller.pdfUrl"
+                          target="_blank"
+                        >
+                          <i class="fa-solid fa-up-right-from-square"></i>
+                        </a>
+                      </template>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     <b>{{ controller.annualReturnLabel }}</b>
                   </td>
                   <td>:</td>
@@ -28,6 +56,11 @@
                   </td>
                   <td>:</td>
                   <td>{{ controller.paymentDate }}</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
                 <tr>
                   <td></td>
@@ -176,6 +209,27 @@
                   </td>
                 </tr>
                 <tr>
+                  <td>
+                    <b>{{ controller.secretariesDetail }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>
+                    <div
+                      class="secretary"
+                      v-for="secretary in SecretaryInformation.SECRETARY_NAME_LIST"
+                    >
+                      <b>{{ secretary.name }}</b>
+                      <CopyValue :value="secretary.name" />
+                      <br />
+                      {{ secretary.nric }}
+                      <CopyValue :value="secretary.nric" />
+                      <br />
+                      {{ secretary.license }}
+                      <CopyValue :value="secretary.license" />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
                   <td></td>
                   <td></td>
                   <td>
@@ -206,17 +260,26 @@
         </div>
       </div>
     </template>
+    <Teleport to="body">
+      <ViewDocument
+        ref="viewDocumentRef"
+        :pdf-url="controller.pdfUrl"
+        @hide="controller.onHideSection68()"
+      />
+    </Teleport>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import CopyValue from "../Buttons/CopyValue.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import UserDetail from "@/components/Users/UserDetail.vue"
-  import CopyValue from "../Buttons/CopyValue.vue"
+  import ViewDocument from "@/components/Documents/ViewDocument.vue"
   import { AnnualReturnController } from "~/scripts/components/companies/AnnualReturnController"
   import { Company } from "~/scripts/models/Company"
   import { StringUtil } from "~/scripts/utils/String"
   import { NumberUtil } from "~/scripts/utils/Number"
+  import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 
   const props = defineProps({
     company: {
@@ -226,6 +289,8 @@
   })
   const emit = defineEmits(["isPaid"])
 
+  const viewDocumentRef = ref(null)
+
   const controller = new AnnualReturnController(props.company, emit)
 
   watch(
@@ -234,6 +299,14 @@
       controller.setCompany(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    viewDocumentRef,
+    (newVal) => {
+      controller.setViewDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

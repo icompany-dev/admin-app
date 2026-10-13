@@ -184,7 +184,7 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_LOAN_APPLICATION_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_LODGE_ANNUAL_RETURN:
-        return ""
+        return StatutoryFormKeywords.AnnualReturn
       case DocumentTargets.TARGET_LODGE_ANNUAL_RETURN_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_MAILROOM_SERVICE:

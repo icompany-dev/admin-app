@@ -44,13 +44,27 @@
                 }
 
                 .director,
-                .shareholder {
+                .shareholder,
+                .secretary {
                   margin-bottom: 20px;
                 }
 
                 .action-buttons {
                   width: 100%;
                   justify-content: flex-start;
+                }
+
+                .document-action {
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: flex-start;
+                  align-items: center;
+                  gap: 10px;
+
+                  .action-link {
+                    color: var(--bs-icompany-blue);
+                    cursor: pointer;
+                  }
                 }
               }
             }

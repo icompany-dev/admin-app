@@ -1,3 +1,4 @@
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { AnnualReturnXBRLGenerator } from "~/scripts/library/AnnualReturnXBRLGenerator"
@@ -5,6 +6,7 @@ import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { Toast } from "~/scripts/library/Toast"
+import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
 import { Director } from "~/scripts/models/Director"
@@ -15,6 +17,7 @@ import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import type { ARShareCapital, AnnualReturnData } from "~/scripts/types/AnnualReturnXBRLGenerator"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import type { Secretary } from "~/scripts/types/Secretary"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -26,11 +29,15 @@ export class AnnualReturnController {
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
 
+  uploadedDocumentChecker = ref<UploadedDocumentChecker>(new UploadedDocumentChecker(""))
   documentsAndForms = ref<DocumentsAndForms>(new DocumentsAndForms(""))
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isGenerating: Ref<boolean> = ref<boolean>(false)
   isGeneratingBO: Ref<boolean> = ref<boolean>(false)
+
+  viewDocumentRef: any | null = null
+  isViewingDocument: Ref<boolean> = ref<boolean>(false)
 
   emitEvents: any | null = null
 
@@ -47,8 +54,13 @@ export class AnnualReturnController {
     if (this.company.value.id !== this.companyId.value) {
       this.companyId.value = this.company.value.id
       this.documentsAndForms.value.companyId = this.companyId.value
+      this.uploadedDocumentChecker.value = new UploadedDocumentChecker(this.companyId.value)
       await this.initializeData()
     }
+  }
+
+  setViewDocumentRef(viewDocumentRef: any): void {
+    this.viewDocumentRef = viewDocumentRef
   }
 
   async initializeData(): Promise<void> {
@@ -64,6 +76,7 @@ export class AnnualReturnController {
         this.fetchDirectors(),
         this.fetchShareholders(),
         this.documentsAndForms.value.init(),
+        this.uploadedDocumentChecker.value.fetchDocuments(),
       ])
 
       this.emitEvents("isPaid", this.isPaid)
@@ -182,6 +195,19 @@ export class AnnualReturnController {
   getDateOfAppointment(human: Director | Shareholder): string {
     let time = useLocalTime()
     return time.formatDateOnlyFull(human.dateAppointed ?? "")
+  }
+
+  onSection68Clicked(): void {
+    if (!this.isSection68Uploaded || !this.viewDocumentRef) {
+      return
+    }
+
+    this.viewDocumentRef.show()
+    this.isViewingDocument.value = true
+  }
+
+  onHideSection68(): void {
+    this.isViewingDocument.value = false
   }
 
   async onGenerateXBRLClicked(): Promise<void> {
@@ -407,6 +433,10 @@ ${detailsOfBO.join("\n")}
     return this.language.isMalay() ? "Tarikh Dilantik" : "Date Appointed"
   }
 
+  get secretariesDetail(): string {
+    return this.language.isMalay() ? "Setiausaha" : "Secretaries"
+  }
+
   get generateXbrlLabel(): string {
     return this.language.isMalay() ? "Jana Pakej XBRL" : "Generate XBRL Package"
   }
@@ -595,5 +625,39 @@ ${detailsOfBO.join("\n")}
         totalAmountSecured: 0,
       },
     }
+  }
+
+  get latestSection68(): CompanyDocument | null {
+    let dayjs = useDayjs()
+    let previousTwoAnnualReturn = dayjs(this.annualReturnDate).subtract(2, "years").format("YYYY-MM-DD")
+
+    return this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
+      previousTwoAnnualReturn
+    )
+  }
+
+  get isSection68Uploaded(): boolean {
+    return this.latestSection68 !== null
+  }
+
+  get section68Label(): string {
+    return this.language.isMalay() ? "Seksyen 68 Terkini" : "Latest Section 68"
+  }
+
+  get section68(): string {
+    if (!this.isSection68Uploaded) {
+      return this.language.isMalay() ? "Tiada Seksyen 68" : "No Section 68 Found"
+    }
+
+    return this.latestSection68?.documentName ?? ""
+  }
+
+  get pdfUrl(): string {
+    if (!this.isSection68Uploaded) {
+      return ""
+    }
+
+    return this.latestSection68?.fileUrl ?? ""
   }
 }
