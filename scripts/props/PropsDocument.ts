@@ -1,3 +1,5 @@
+import { PaperOrientation } from "../constants/Paper"
+
 export interface IPropsDocument {
   id: string
   isSelected: boolean
@@ -11,6 +13,7 @@ export interface IPropsDocument {
   isShowName: boolean
   canvasScale: number
   isStacked: boolean
+  paperOrientation: PaperOrientation
 }
 
 export class PropsDocument implements IPropsDocument {
@@ -26,6 +29,7 @@ export class PropsDocument implements IPropsDocument {
   isShowName: boolean = true
   canvasScale: number = 1
   isStacked: boolean = false
+  paperOrientation: PaperOrientation = PaperOrientation.Portrait
 
   constructor(
     id: string,

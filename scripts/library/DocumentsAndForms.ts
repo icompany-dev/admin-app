@@ -185,8 +185,20 @@ export class DocumentsAndForms {
     })
   }
 
+  getVouchersAndCertificates(): CompanyDocument[] {
+    return this.documents.filter((cd: CompanyDocument) => {
+      return (
+        (StringUtil.contains(cd.documentName, "voucher") || StringUtil.contains(cd.documentName, "certifcate")) &&
+        !StringUtil.contains(cd.documentName, "incorporation") &&
+        !StringUtil.contains(cd.documentName, "dcr") &&
+        !StringUtil.contains(cd.documentName, "mcr")
+      )
+    })
+  }
+
   getNonResolutionStatutoryForms(): CompanyDocument[] {
     let statutoryForms = this.getStatutoryForms()
+    let vouchersAndCerts = this.getVouchersAndCertificates()
 
     return this.documents.filter((cd: CompanyDocument) => {
       if (StringUtil.contains(cd.documentName, "ctc")) {
@@ -200,6 +212,9 @@ export class DocumentsAndForms {
           StringUtil.contains(cd.documentName, "mcr")
         ) &&
         !statutoryForms.some((sf: CompanyDocument) => {
+          return cd.documentName === sf.documentName
+        }) &&
+        !vouchersAndCerts.some((sf: CompanyDocument) => {
           return cd.documentName === sf.documentName
         }) &&
         !(
@@ -514,9 +529,12 @@ export class DocumentsAndForms {
     return this.documents
       .filter((cd: CompanyDocument) => {
         return (
-          StringUtil.contains(cd.documentName, "audit ") ||
-          StringUtil.contains(cd.documentName, "financial statement") ||
-          StringUtil.contains(cd.documentName, "annual report")
+          (StringUtil.contains(cd.documentName, "audit ") ||
+            StringUtil.contains(cd.documentName, "financial statement") ||
+            StringUtil.contains(cd.documentName, "financial report") ||
+            StringUtil.contains(cd.documentName, "annual report")) &&
+          !StringUtil.contains(cd.documentName, "dcr") &&
+          !StringUtil.contains(cd.documentName, "mcr")
         )
       })
       .map((document: CompanyDocument) => {

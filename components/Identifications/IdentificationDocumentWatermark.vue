@@ -19,7 +19,12 @@
 
           <div class="image-containers">
             <div class="idenfication-image-container">
-              <div class="marker">{{ controller.markerText.value }}</div>
+              <div
+                class="marker"
+                v-if="!StringUtil.isNullOrEmpty(controller.markerText.value)"
+              >
+                {{ controller.markerText.value }}
+              </div>
               <img :src="controller.identificationFileUrl.value" />
             </div>
 
@@ -27,8 +32,13 @@
               class="idenfication-image-container"
               v-if="controller.hasAltIdentificationFile"
             >
-              <div class="marker">{{ controller.markerText.value }}</div>
-              <img :src="controller.altIdentificationFileUrl.value ?? ''" />
+              <div
+                class="marker"
+                v-if="!StringUtil.isNullOrEmpty(controller.markerText.value)"
+              >
+                {{ controller.markerText.value }}
+              </div>
+              <img :src="controller.altIdentificationFileUrl?.value ?? ''" />
             </div>
           </div>
         </div>
@@ -39,6 +49,7 @@
 
 <script lang="ts" setup>
   import Paper from "../Papers/Paper.vue"
+  import { StringUtil } from "~/scripts/utils/String.js"
   import { IdentificationDocumentWatermarkController } from "~/scripts/components/identifications/IdentificationDocumentWatermarkController"
   import type { IPropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
 

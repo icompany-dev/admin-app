@@ -24,6 +24,10 @@
         <div class="details">
           <div class="registration-numbers">
             {{ controller.company.value.registrationNumberNew }} ({{ controller.company.value.registrationNumberOld }})
+            <br />
+            <b>{{ controller.incorporationDateLabel }}</b>
+            :
+            {{ controller.incorporationDate }}
           </div>
         </div>
       </div>
@@ -60,14 +64,14 @@
                 class="text-warning"
                 :title="'Pending Lodgement'"
               >
-                <i class="fa-solid fa-circle-exclamation" />
+                <i class="fa-solid fa-triangle-exclamation" />
               </span>
               <span
                 v-if="annualReturn.isLodged"
                 class="text-success"
                 :title="'Lodged'"
               >
-                <i class="fa-solid fa-circle-exclamation" />
+                <i class="fa-solid fa-check" />
               </span>
             </li>
           </ul>
@@ -92,14 +96,14 @@
                 class="text-warning"
                 :title="'Pending Lodgement'"
               >
-                <i class="fa-solid fa-circle-exclamation" />
+                <i class="fa-solid fa-triangle-exclamation" />
               </span>
               <span
                 v-if="annualReturn.isLodged"
                 class="text-success"
                 :title="'Lodged'"
               >
-                <i class="fa-solid fa-circle-exclamation" />
+                <i class="fa-solid fa-check" />
               </span>
             </li>
           </ul>
@@ -124,14 +128,14 @@
                 class="text-warning"
                 :title="'Pending Lodgement'"
               >
-                <i class="fa-solid fa-circle-exclamation" />
+                <i class="fa-solid fa-triangle-exclamation" />
               </span>
               <span
                 v-if="annualReturn.isLodged"
                 class="text-success"
                 :title="'Lodged'"
               >
-                <i class="fa-solid fa-circle-exclamation" />
+                <i class="fa-solid fa-check" />
               </span>
             </li>
           </ul>
@@ -158,6 +162,15 @@
         </button>
       </div> -->
       <Tags v-bind="controller.tagsProps" />
+    </div>
+    <div class="open-new-tab">
+      <a
+        :href="controller.link"
+        target="_blank"
+        :title="controller.tooltip"
+      >
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>
     </div>
   </div>
 </template>

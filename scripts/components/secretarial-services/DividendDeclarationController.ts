@@ -12,7 +12,7 @@ export class DividendDeclarationController extends SecretarialServiceController<
   application = ref<CompanyDividendDeclaration>(new CompanyDividendDeclaration())
 
   constructor(props: PropsSecretarialService, emitEvents: any) {
-    super(props, CompanyConstants.TARGET_AMENDMENT_NAME, emitEvents)
+    super(props, CompanyConstants.TARGET_DIVIDEND_DECLARATION, emitEvents)
   }
 
   async fetchApplication(): Promise<void> {

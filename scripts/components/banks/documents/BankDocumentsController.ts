@@ -20,12 +20,15 @@ export class BankDocumentsController {
   company: Ref<Company> = ref<Company>(new Company())
 
   documentFetcher = ref<BankDocumentFetcher>(new BankDocumentFetcher(""))
+  hasConstitution: Ref<boolean> = ref<boolean>(false)
 
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
 
   dcrRef: any | null = null
   currentRef: any | null = null
+
+  noConstiDeclarationRef: any | null = null
 
   emitEvents: any | null = null
 
@@ -75,6 +78,8 @@ export class BankDocumentsController {
       })
 
     await Promise.all(promises)
+
+    this.setConstitutionDocument()
   }
 
   setDcrRef(dcrRef: any): void {
@@ -87,6 +92,10 @@ export class BankDocumentsController {
 
   setIdentificationRefs(ref: any, index: number): void {
     this.identificationRefs.value[index] = ref
+  }
+
+  setNoConstiDeclarationRef(noConstiDeclarationRef: any): void {
+    this.noConstiDeclarationRef = noConstiDeclarationRef
   }
 
   setupPdfRenderers(): void {
@@ -112,6 +121,14 @@ export class BankDocumentsController {
 
   documentName(index: number): string {
     return this.documentNames[index] ?? "Document Name"
+  }
+
+  setConstitutionDocument(): void {
+    if (!this.documentFetcher.value) {
+      return
+    }
+
+    this.hasConstitution.value = !StringUtil.isNullOrEmpty(this.documentFetcher.value.constitutionFileUrl)
   }
 
   async fetchCompany(): Promise<void> {
@@ -309,6 +326,11 @@ export class BankDocumentsController {
 
     if (this.dcrRef) {
       let docPages = await this.dcrRef.getPdfPages()
+      pages = pages.concat(docPages)
+    }
+
+    if (this.noConstiDeclarationRef) {
+      let docPages = await this.noConstiDeclarationRef.getPdfPages()
       pages = pages.concat(docPages)
     }
 

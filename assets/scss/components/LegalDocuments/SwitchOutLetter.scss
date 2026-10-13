@@ -1,0 +1,234 @@
+// #legal-documents-switch-out-letter {
+//   // Styles go here
+// }
+
+.switch-out-letter {
+
+  div,
+  span,
+  li,
+  p {
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  p {
+    text-align: justify;
+    margin-bottom: 10px;
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  .document-header {
+    margin-bottom: 15px;
+
+    .document-date {
+      margin-bottom: 13px;
+    }
+
+    .document-company-details {
+      .company-name {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .attention-to {
+    margin-bottom: 15px;
+  }
+
+  .document-title {
+    font-weight: 600;
+    margin-bottom: 15px;
+    width: fit-content;
+    padding-bottom: 2px;
+    border-bottom: 2px solid var(--bs-black);
+  }
+
+  .document-content {
+    .pre-company-details {
+      margin-bottom: 5px;
+    }
+
+    .company-details {
+      border: 1px solid var(--bs-black);
+      padding: 10px;
+      width: calc(100% - 22px) !important;
+    }
+
+    .post-company-details {
+      margin-top: 5px;
+    }
+  }
+
+  .document-sign-off {
+    margin-top: 20px;
+  }
+
+  .acknowledgement-receipt {
+    background-color: var(--bs-black);
+    padding: 10px;
+    color: var(--bs-white);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 40px;
+  }
+
+  .recipient-section {
+    .recipient-details {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 5px;
+
+      .label {
+        font-weight: 600;
+        width: 100px;
+      }
+
+      .colon {
+        width: 10px;
+      }
+
+      .signature-box {
+        width: calc(100% - 120px);
+        padding: 5px;
+        border: 1px solid var(--bs-black);
+        height: 30px;
+      }
+    }
+  }
+
+  .annexure-details {
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 3px;
+
+    .annexture-title {
+      font-size: 18px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .company-name {
+      font-weight: 600;
+    }
+  }
+
+  .heading {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding: 0 10px;
+  }
+
+  .notes {
+    font-size: 12px;
+    color: var(--bs-gray-700);
+    font-weight: 600;
+    padding: 0 10px;
+
+    .note-details {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 5px;
+
+      span {
+        font-size: 12px;
+        font-weight: normal;
+      }
+
+      .label {
+        font-weight: 600;
+      }
+    }
+  }
+
+  .document-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      tr {
+        th {
+          padding: 5px;
+          border: solid 1px var(--bs-gray-200);
+          background-color: var(--bs-gray-400);
+          font-size: 15px;
+          font-weight: 600;
+          text-transform: uppercase;
+
+          &.subhead {
+            font-size: 12px;
+            font-weight: normal;
+            text-transform: none;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          padding: 2px 5px;
+          border: solid 1px transparent;
+
+          &.has-border {
+            border: 1px solid var(--bs-gray-400);
+            width: 61px !important;
+          }
+
+          &.left-to-border {
+            border-right: 1px solid var(--bs-gray-400);
+          }
+
+          &.top-of-border {
+            border-bottom: 1px solid var(--bs-gray-400);
+          }
+
+          &:first-child {
+            text-align: center;
+            width: 20px;
+          }
+
+          &:nth-child(2) {
+            width: calc(85% - 182px);
+          }
+
+          &:last-child {
+            width: 15%;
+          }
+
+          &.note-content {
+            text-align: justify;
+            padding: 5px;
+          }
+        }
+
+        &.section-row {
+          td {
+            font-size: 15px;
+            font-weight: 600;
+          }
+        }
+
+        &.empty-row {
+          td {
+            height: 10px;
+          }
+        }
+      }
+    }
+  }
+}

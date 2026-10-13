@@ -82,6 +82,91 @@
               </ol>
             </td>
           </tr>
+          <tr>
+            <td>
+              {{ controller.incomeTaxLabel }}
+            </td>
+            <td>:</td>
+            <td>
+              <template v-if="!controller.isEditTaxNumber.value">
+                <CopyValue :value="controller.incomeTaxNumber" />
+                {{ controller.incomeTaxNumber }}
+                <span
+                  class="action-link"
+                  @click="controller.onEditTaxClicked()"
+                >
+                  <i class="fa-regular fa-edit"></i>
+                </span>
+              </template>
+              <template v-if="controller.isEditTaxNumber.value">
+                C
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="controller.newIncomeTaxNumber.value"
+                />
+                <span
+                  class="action-link"
+                  @click="controller.onSaveTaxNumberClicked()"
+                >
+                  <i
+                    class="fa-regular"
+                    :class="controller.isUpdatingTaxNumber.value ? 'fa-spin fa-spinner' : 'fa-save'"
+                  ></i>
+                </span>
+                <span
+                  v-if="!controller.isUpdatingTaxNumber.value"
+                  class="action-link remove"
+                  @click="controller.onCancelEditTaxClicked()"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+              </template>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              {{ controller.employerTaxLabel }}
+            </td>
+            <td>:</td>
+            <td>
+              <template v-if="!controller.isEditTaxNumber.value">
+                <CopyValue :value="controller.employerTaxNumber" />
+                {{ controller.employerTaxNumber }}
+
+                <span
+                  class="action-link"
+                  @click="controller.onEditTaxClicked()"
+                >
+                  <i class="fa-regular fa-edit"></i>
+                </span>
+              </template>
+              <template v-if="controller.isEditTaxNumber.value">
+                E
+                <input
+                  type="text"
+                  class="form-control"
+                  v-model="controller.newEmployerTaxNumber.value"
+                />
+                <span
+                  class="action-link"
+                  @click="controller.onSaveTaxNumberClicked()"
+                >
+                  <i
+                    class="fa-regular"
+                    :class="controller.isUpdatingTaxNumber.value ? 'fa-spin fa-spinner' : 'fa-save'"
+                  ></i>
+                </span>
+                <span
+                  v-if="!controller.isUpdatingTaxNumber.value"
+                  class="action-link remove"
+                  @click="controller.onCancelEditTaxClicked()"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+              </template>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -94,7 +179,8 @@
               v-for="(director, i) in controller.directorsDetails"
               :key="i"
             >
-              <div class="human-details">
+              <UserDetail v-bind="controller.getPropsUserDetail(director)" />
+              <!-- <div class="human-details">
                 <div class="name">{{ director.name }}</div>
                 <div class="human-detail">
                   <i class="fa-regular fa-envelope"></i>
@@ -104,7 +190,7 @@
                   <i class="fa-brands fa-whatsapp" />
                   <span class="phone">{{ director.phone }}</span>
                 </div>
-              </div>
+              </div> -->
             </li>
           </ol>
         </div>
@@ -117,7 +203,8 @@
               v-for="(shareholder, i) in controller.shareholdersDetails"
               :key="i"
             >
-              <div class="human-details">
+              <UserDetail v-bind="controller.getPropsUserDetail(shareholder)" />
+              <!-- <div class="human-details">
                 <div class="name">{{ shareholder.name }}</div>
                 <div class="human-detail">
                   <i class="fa-regular fa-envelope"></i>
@@ -137,7 +224,7 @@
                   <span>{{ controller.preferenceSharesLabel }}:</span>
                   <span>{{ shareholder.preferenceShares }}</span>
                 </div>
-              </div>
+              </div> -->
             </li>
           </ol>
           <button
@@ -146,7 +233,7 @@
           >
             Generate BO Annexure
           </button>
-          <div
+          <!-- <div
             class="chart-wrapper"
             v-if="controller.isShowShareDistribution.value"
           >
@@ -162,7 +249,7 @@
             >
               {{ controller.showDistributionLabel }}
             </span>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -228,6 +315,8 @@
 
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
+  import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
 

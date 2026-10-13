@@ -173,4 +173,7 @@ export class DocumentTargets {
 
   static TARGET_SWITCH_LETTER_TO_COSEC: string = "letter_to_cosec"
   static TARGET_SWITCH_RESO: string = "switch_reso"
+
+  static TARGET_SWITCH_OUT_LETTER: string = "company_switch_out_letter"
+  static TARGET_SWITCH_OUT_DOCUMENT: string = "company_switch_out_document"
 }
