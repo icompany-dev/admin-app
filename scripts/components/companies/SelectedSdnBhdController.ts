@@ -22,9 +22,12 @@ export class SelectedSdnBhdController {
   isShowApplicationDocuments: Ref<boolean> = ref<boolean>(false)
 
   isOverview: Ref<boolean> = ref<boolean>(true)
+  isDocuments: Ref<boolean> = ref<boolean>(false)
+  isAnnualReturn: Ref<boolean> = ref<boolean>(false)
+
+  //TODO: To remove
   isBusiness: Ref<boolean> = ref<boolean>(false)
   isDirectors: Ref<boolean> = ref<boolean>(false)
-  isDocuments: Ref<boolean> = ref<boolean>(false)
   isShareholders: Ref<boolean> = ref<boolean>(false)
   isAccounting: Ref<boolean> = ref<boolean>(false)
 
@@ -108,58 +111,65 @@ export class SelectedSdnBhdController {
 
   onOverviewClicked(): void {
     this.isOverview.value = true
-    this.isBusiness.value = false
-    this.isDirectors.value = false
     this.isDocuments.value = false
-    this.isShareholders.value = false
-    this.isAccounting.value = false
+    this.isAnnualReturn.value = false
+    // this.isBusiness.value = false
+    // this.isDirectors.value = false
+    // this.isShareholders.value = false
+    // this.isAccounting.value = false
   }
 
-  onBusinessClicked(): void {
-    this.isOverview.value = false
-    this.isBusiness.value = true
-    this.isDirectors.value = false
-    this.isDocuments.value = false
-    this.isShareholders.value = false
-    this.isAccounting.value = false
-  }
+  // onBusinessClicked(): void {
+  //   this.isOverview.value = false
+  //   this.isBusiness.value = true
+  //   this.isDirectors.value = false
+  //   this.isDocuments.value = false
+  //   this.isShareholders.value = false
+  //   this.isAccounting.value = false
+  // }
 
-  onDirectorsClicked(): void {
-    this.isOverview.value = false
-    this.isBusiness.value = false
-    this.isDirectors.value = true
-    this.isDocuments.value = false
-    this.isShareholders.value = false
-    this.isAccounting.value = false
-  }
+  // onDirectorsClicked(): void {
+  //   this.isOverview.value = false
+  //   this.isBusiness.value = false
+  //   this.isDirectors.value = true
+  //   this.isDocuments.value = false
+  //   this.isShareholders.value = false
+  //   this.isAccounting.value = false
+  // }
 
   onDocumentsClicked(): void {
     this.isOverview.value = false
-    this.isOverview.value = false
-    this.isBusiness.value = false
-    this.isDirectors.value = false
     this.isDocuments.value = true
-    this.isShareholders.value = false
-    this.isAccounting.value = false
+    this.isAnnualReturn.value = false
+    // this.isBusiness.value = false
+    // this.isDirectors.value = false
+    // this.isShareholders.value = false
+    // this.isAccounting.value = false
   }
 
-  onShareholdersClicked(): void {
+  onAnnualReturnClicked(): void {
     this.isOverview.value = false
-    this.isBusiness.value = false
-    this.isDirectors.value = false
     this.isDocuments.value = false
-    this.isShareholders.value = true
-    this.isAccounting.value = false
+    this.isAnnualReturn.value = true
   }
 
-  onAccountingClicked(): void {
-    this.isOverview.value = false
-    this.isBusiness.value = false
-    this.isDirectors.value = false
-    this.isDocuments.value = false
-    this.isShareholders.value = false
-    this.isAccounting.value = true
-  }
+  // onShareholdersClicked(): void {
+  //   this.isOverview.value = false
+  //   this.isBusiness.value = false
+  //   this.isDirectors.value = false
+  //   this.isDocuments.value = false
+  //   this.isShareholders.value = true
+  //   this.isAccounting.value = false
+  // }
+
+  // onAccountingClicked(): void {
+  //   this.isOverview.value = false
+  //   this.isBusiness.value = false
+  //   this.isDirectors.value = false
+  //   this.isDocuments.value = false
+  //   this.isShareholders.value = false
+  //   this.isAccounting.value = true
+  // }
 
   onOptionsClicked(): void {
     this.isShowOptions.value = !this.isShowOptions.value
@@ -325,6 +335,10 @@ export class SelectedSdnBhdController {
 
   get documents(): string {
     return this.language.isMalay() ? "Dokumen" : "Documents"
+  }
+
+  get annualReturn(): string {
+    return this.language.isMalay() ? "Penyata Tahunan" : "Annual Return"
   }
 
   get shareholders(): string {
