@@ -19,7 +19,7 @@ export class AllController {
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
 
-    this.tableDataFetcher.value.filter.take = 20
+    this.tableDataFetcher.value.filter.take = 10
     this.tableDataFetcher.value.filter.takeAll = false
     this.tableDataFetcher.value.filter.orderBy = "name"
     this.tableDataFetcher.value.filter.sortOrder = "asc"
@@ -39,6 +39,11 @@ export class AllController {
 
   async setIsIncludeDemo(isIncludeDemo: boolean): Promise<void> {
     this.tableDataFetcher.value.filter.includeTestAccount = isIncludeDemo
+    await this.tableDataFetcher.value.fetchData()
+  }
+
+  async setsOverdueAnnualReturn(isOverdueAnnualReturn: boolean): Promise<void> {
+    this.tableDataFetcher.value.filter.isOverdueAnnualReturn = isOverdueAnnualReturn
     await this.tableDataFetcher.value.fetchData()
   }
 
