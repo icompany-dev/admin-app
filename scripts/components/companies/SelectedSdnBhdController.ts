@@ -368,4 +368,18 @@ export class SelectedSdnBhdController {
   get companyDocumentProps(): PropsCompanyDocument {
     return new PropsCompanyDocument(this.companyId.value, new Filter())
   }
+
+  get incorporationDateLabel(): string {
+    return this.language.isMalay() ? "Tarikh Diperbadankan" : "Date of Incorporation"
+  }
+
+  get incorporationDate(): string {
+    if (!this.company.value) {
+      return ""
+    }
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyFull(this.company.value.incorporatedAt ?? "")
+  }
 }
