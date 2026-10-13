@@ -13,6 +13,16 @@
       <div class="annual-return-details">
         <div class="detail">
           <div class="detail-row">
+            <div class="lodged-button">
+              <button
+                class="btn btn-submit"
+                :class="{ 'is-loading': controller.isUploadingDocument.value }"
+                :disabled="controller.isUploadingDocument.value"
+                @click="controller.uploadDocumentClicked()"
+              >
+                {{ controller.completeAnnualReturnLabel }}
+              </button>
+            </div>
             <table class="annual-return-detail-table">
               <tbody>
                 <tr>
@@ -277,6 +287,11 @@
         :pdf-url="controller.pdfUrl"
         @hide="controller.onHideSection68()"
       />
+      <UploadDocument
+        ref="uploadDocumentRef"
+        v-bind="controller.uploadDocumentProps"
+        @proceed="controller.onProceedUploadDocument()"
+      />
     </Teleport>
   </div>
 </template>
@@ -284,6 +299,7 @@
 <script lang="ts" setup>
   import CopyValue from "../Buttons/CopyValue.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import UploadDocument from "../Popups/UploadDocument.vue"
   import UserDetail from "@/components/Users/UserDetail.vue"
   import ViewDocument from "@/components/Documents/ViewDocument.vue"
   import { AnnualReturnController } from "~/scripts/components/companies/AnnualReturnController"
@@ -298,9 +314,10 @@
       required: true,
     },
   })
-  const emit = defineEmits(["isPaid", "yearToLodge"])
+  const emit = defineEmits(["isPaid", "yearToLodge", "goToDocuments"])
 
   const viewDocumentRef = ref(null)
+  const uploadDocumentRef = ref(null)
 
   const controller = new AnnualReturnController(props.company, emit)
 
@@ -316,6 +333,13 @@
     viewDocumentRef,
     (newVal) => {
       controller.setViewDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+  watch(
+    uploadDocumentRef,
+    (newVal) => {
+      controller.setUploadDocumentRef(newVal)
     },
     { immediate: true }
   )

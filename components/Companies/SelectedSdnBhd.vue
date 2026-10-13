@@ -216,7 +216,10 @@
             class="application-contents"
             v-if="controller.isAnnualReturn.value"
           >
-            <AnnualReturn :company="controller.company.value" />
+            <AnnualReturn
+              :company="controller.company.value"
+              @goToDocuments="controller.onDocumentsClicked()"
+            />
           </div>
         </TransitionGroup>
       </div>

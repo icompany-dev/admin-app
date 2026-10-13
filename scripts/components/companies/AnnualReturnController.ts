@@ -1,3 +1,4 @@
+import { CompanyConstants } from "~/scripts/constants/Company"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 import { StatusConstants } from "~/scripts/constants/Status"
@@ -15,6 +16,7 @@ import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
+import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import type { ARShareCapital, AnnualReturnData } from "~/scripts/types/AnnualReturnXBRLGenerator"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
@@ -39,6 +41,9 @@ export class AnnualReturnController {
   viewDocumentRef: any | null = null
   isViewingDocument: Ref<boolean> = ref<boolean>(false)
 
+  uploadDocumentRef: any | null = null
+  isUploadingDocument: Ref<boolean> = ref<boolean>(false)
+
   emitEvents: any | null = null
 
   language = useLanguage()
@@ -61,6 +66,10 @@ export class AnnualReturnController {
 
   setViewDocumentRef(viewDocumentRef: any): void {
     this.viewDocumentRef = viewDocumentRef
+  }
+
+  setUploadDocumentRef(uploadDocumentRef: any): void {
+    this.uploadDocumentRef = uploadDocumentRef
   }
 
   async initializeData(): Promise<void> {
@@ -319,6 +328,46 @@ ${detailsOfBO.join("\n")}
     }
   }
 
+  uploadDocumentClicked(): void {
+    if (!this.uploadDocumentRef) {
+      return
+    }
+
+    this.uploadDocumentRef.show()
+  }
+
+  async onProceedUploadDocument(): Promise<void> {
+    try {
+      this.isUploadingDocument.value = true
+
+      let repository = useCompanyStore()
+
+      if (!StringUtil.isNullOrEmpty(this.companyAnnualReturnRequest.value.id)) {
+        await repository.postService(
+          CompanyConstants.TARGET_LODGE_ANNUAL_RETURN,
+          this.companyAnnualReturnRequest.value.id
+        )
+      }
+
+      await repository.notifyRegularise(this.companyId.value)
+
+      let toastTitle = this.language.isMalay()
+        ? "Dokumen telah dimuat naik. Penyata Tahunan telah dilengkapkan."
+        : "The Document is uploaded. Annual Return is completed."
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahun melalui emel dan WhatsApp."
+        : "The Directors is informed through email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      this.emitEvents("goToDocuments")
+    } catch (e) {
+      //
+    } finally {
+      this.isUploadingDocument.value = false
+    }
+  }
+
   get yearToLodge(): string {
     let dayjs = useDayjs()
 
@@ -456,6 +505,10 @@ ${detailsOfBO.join("\n")}
 
   get generateXbrlLabel(): string {
     return this.language.isMalay() ? "Jana Pakej XBRL" : "Generate XBRL Package"
+  }
+
+  get completeAnnualReturnLabel(): string {
+    return this.language.isMalay() ? "Telah Diserah Simpan" : "Annual Return Lodged"
   }
 
   get businessDescription(): string {
@@ -692,5 +745,14 @@ ${detailsOfBO.join("\n")}
       DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
       this.currentYearAnnualReturnDate
     )
+  }
+
+  get uploadDocumentProps(): PropsUploadDocument {
+    let companyId = this.companyId.value
+    let props = new PropsUploadDocument(companyId)
+
+    props.canUploadPdf = true
+
+    return props
   }
 }

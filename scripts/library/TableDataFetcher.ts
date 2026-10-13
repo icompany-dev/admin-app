@@ -38,7 +38,7 @@ export class TableDataFetcher<T> {
         })
         .filter((c: any) => {
           if (this.filter.includeTestAccount) {
-            return
+            return true
           }
 
           if (c instanceof Company) {
