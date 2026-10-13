@@ -71,7 +71,7 @@ export class UserDetailController {
     }
 
     const fileName = `${this.user.value.name} ${this.userDetail.value.identificationType === "passport" ? "Passport" : "MYKAD"}.pdf`
-    const blob = await PdfPaperUtil.getPdfBlob(pages, 20, fileName, PaperSize.A4, PaperOrientation.Portrait)
+    const blob = await PdfPaperUtil.getPdfBlob(pages, 19, fileName, PaperSize.A4, PaperOrientation.Portrait)
     const blobURL = URL.createObjectURL(blob)
 
     await nextTick()
