@@ -91,7 +91,10 @@ export class DcrChangeOfDescriptionsController extends ResolutionController<Comp
       return ""
     }
 
-    let formattedDescription = this.application.value.businessDescription.replace("\n", "<br>")
+    console.log("YO!", this.application.value.businessDescription)
+
+    let formattedDescription = this.application.value.businessDescription.replace("\n", "<br><br>")
+    console.log("F", formattedDescription)
 
     return formattedDescription
   }

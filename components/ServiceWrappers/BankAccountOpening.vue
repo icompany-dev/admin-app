@@ -53,6 +53,7 @@
   import BankIslamDocuments from "../Banks/Documents/BankIslamDocuments.vue"
   import AllianceBankDocuments from "../Banks/Documents/AllianceBankDocuments.vue"
   import AffinBankDocuments from "../Banks/Documents/AffinBankDocuments.vue"
+  import CimbBankDocuments from "../Banks/Documents/CimbBankDocuments.vue"
   import { BankAccountOpeningController } from "~/scripts/components/service-wrappers/BankAccountOpeningController"
   import { BankConstants } from "~/scripts/constants/Banks"
 
@@ -87,7 +88,7 @@
     [BankConstants.MAYBANK_DETAIL.id]: MaybankDocuments,
     [BankConstants.OCBC_BANK_DETAIL.id]: BankDocuments,
     [BankConstants.UOB_DETAIL.id]: BankDocuments,
-    [BankConstants.CIMB_DETAIL.id]: BankDocuments,
+    [BankConstants.CIMB_DETAIL.id]: CimbBankDocuments,
     [BankConstants.AFFIN_BANK_DETAIL.id]: AffinBankDocuments,
     [BankConstants.PUBLIC_BANK_DETAIL.id]: BankDocuments,
     [BankConstants.MUAMALAT_DETAIL.id]: BankDocuments,

@@ -15,6 +15,7 @@ import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDo
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { StatusConstants } from "~/scripts/constants/Status"
 import type { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 
 export class DcrAppointmentOfAuditorController extends ResolutionController<CompanyAuditorAppointment> {
   companyAuditorAppointmentRepository = useCompanyAuditorAppointmentStore()
@@ -195,7 +196,7 @@ export class DcrAppointmentOfAuditorController extends ResolutionController<Comp
     this.documentTemplate.value.content = this.originalResolutionContent.value
 
     let auditorSelection = '<span class="value-placeholder">YOUR AUDITOR NAME HERE</span>'
-    if (this.isDocumentEditable()) {
+    if (this.isDocumentEditable() && !this.isGettingPdfPages.value) {
       auditorSelection = `
         <select name='auditorPartnerId' id='auditor-partner-id' class='form-control in-resolution auditor-partner'>
           <option value=''>Select an auditor</option>
@@ -266,6 +267,14 @@ export class DcrAppointmentOfAuditorController extends ResolutionController<Comp
   }
 
   auditorFirm(): string {
+    if (!this.application.value) {
+      return ""
+    }
+
+    if (!StringUtil.isNullOrEmpty(this.application.value.auditorPartner.id)) {
+      return this.application.value.auditorPartner.companyName
+    }
+
     if (this.auditorInvitations.value.length === 0) {
       return ""
     }
@@ -339,5 +348,30 @@ export class DcrAppointmentOfAuditorController extends ResolutionController<Comp
       auditorPartnerSelector.removeEventListener("change", this.handleAuditorPartnerSelected.bind(this))
       auditorPartnerSelector.addEventListener("change", this.handleAuditorPartnerSelected.bind(this))
     }
+  }
+
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    this.isGettingPdfPages.value = true
+
+    let originalResolutionContent = this.resolutionContent.value
+    this.resolutionContent.value = this.getContent()
+    // if (!StringUtil.isNullOrEmpty(this.resolutionContent.value)) {
+    //   let templateProcessor = new TemplateProcessor(null)
+    //   this.resolutionContent.value = templateProcessor.replaceInputsWithValues(this.resolutionContent.value)
+    // }
+
+    await nextTick()
+
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    this.resolutionContent.value = originalResolutionContent
+
+    this.isGettingPdfPages.value = false
+
+    return pdfPages
   }
 }

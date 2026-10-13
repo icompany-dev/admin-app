@@ -114,12 +114,13 @@ export class PdfPaperUtil {
     }
 
     document.body.appendChild(container)
-
     const html2PdfOptions = this.getHtml2PdfOptions(margin, filename, paperSize, paperOrientation)
 
-    await html2pdf().set(html2PdfOptions).from(container).save()
-
-    document.body.removeChild(container)
+    try {
+      await html2pdf().set(html2PdfOptions).from(container).save()
+    } finally {
+      container.remove()
+    }
   }
 
   static getHtml2PdfOptions(
@@ -138,6 +139,16 @@ export class PdfPaperUtil {
         useCORS: true,
         allowTaint: false,
         proxy: "https://icompany.com",
+
+        onclone: (clonedDocument: Document) => {
+          const elements = clonedDocument.querySelectorAll("html2canvaspseudoelement")
+
+          for (const element of elements) {
+            if (window.getComputedStyle(element).backgroundColor === "") {
+              element.remove()
+            }
+          }
+        },
       },
       jsPDF: { unit: "mm", format: paperSize, orientation: paperOrientation },
     }

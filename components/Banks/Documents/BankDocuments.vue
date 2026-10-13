@@ -10,6 +10,10 @@
         @updated="emit('updated')"
       />
       <template v-if="props.isShowAllDocuments">
+        <NoConstitutionDeclaration
+          ref="noConstiDeclarationRef"
+          :company-id="controller.companyId.value"
+        />
         <div
           class="document pdf-file"
           v-for="(document, index) in controller.documentsToDisplay"
@@ -50,6 +54,7 @@
 </template>
 
 <script lang="ts" setup>
+  import NoConstitutionDeclaration from "~/components/LegalDocuments/NoConstitutionDeclaration.vue"
   import DcrBankAccountOpening from "~/components/Resolutions/DcrBankAccountOpening.vue"
   import IdentificationDocumentWatermark from "~/components/Identifications/IdentificationDocumentWatermark.vue"
   import { BankDocumentsController } from "~/scripts/components/banks/documents/BankDocumentsController"
@@ -73,6 +78,7 @@
   const emit = defineEmits(["updated"])
 
   const dcrRef = ref(null)
+  const noConstiDeclarationRef = ref(null)
 
   const controller = new BankDocumentsController(props.companyId, emit)
 
@@ -91,12 +97,21 @@
     { immediate: true }
   )
 
+  watch(
+    noConstiDeclarationRef,
+    (newVal) => {
+      controller.setNoConstiDeclarationRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     getBranchId: controller.getBranchId.bind(controller),
     getSignatories: controller.getSignatories.bind(controller),
     getSignatoryType: controller.getSignatoryType.bind(controller),
     getAuthorisedPersonsForOnlineBanking: controller.getAuthorisedPersonsForOnlineBanking.bind(controller),
     downloadPdfs: controller.downloadPdfs.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

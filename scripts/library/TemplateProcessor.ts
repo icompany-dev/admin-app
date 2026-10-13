@@ -369,6 +369,9 @@ export class TemplateProcessor {
   replaceInputsWithValues(content: string): string {
     if (!content) return ""
 
+    console.log("content", content)
+    content = content.replaceAll("\n", "<br>")
+
     const parser = new DOMParser()
     const doc = parser.parseFromString(content, "text/html")
 
@@ -406,7 +409,6 @@ export class TemplateProcessor {
 
       let inputValue = input.value || ""
 
-      console.log(inputValue, input.getAttribute("type"))
       if (
         input.getAttribute("type") === "date" ||
         (inputValue.length === 10 && inputValue.match(/^\d{4}-\d{2}-\d{2}$/))
