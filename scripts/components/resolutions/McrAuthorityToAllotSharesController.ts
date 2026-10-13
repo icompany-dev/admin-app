@@ -326,12 +326,14 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     )
 
     if (this.isDocumentEditable()) {
+      console.log("dalam ni")
       const purposeOfAllotmentRegex = /\[purpose-checkbox-options\]([\s\S]*?)\[\/purpose-checkbox-options\]/
       this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
         purposeOfAllotmentRegex,
         this.getPurposeOfProposedAllotment()
       )
     } else {
+      console.log("dalam ni kah???")
       const purposeOfAllotmentSearchString =
         "the proposed allotment of shares is intended for purposes including but not limited to:"
       this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
@@ -521,12 +523,49 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     })
   }
 
+  override isDocumentEditable(): boolean {
+    return false
+  }
+
   get purposeOfAllotments(): string[] {
     return Object.values(PurposeOfAllotment)
   }
 
   get effectiveTypes(): string[] {
     return Object.values(AuthorizationEffectiveType)
+  }
+
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    this.isGettingPdfPages.value = true
+
+    console.log("editable", this.isDocumentEditable())
+
+    let originalResolutionContent = this.resolutionContent.value
+    this.documentTemplate.value.content = this.originalContent.value
+    this.resolutionContent.value = this.getContent()
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    console.log(
+      "pages",
+      pdfPages
+        .map((s) => {
+          return s.innerHTML
+        })
+        .join("  ")
+    )
+
+    setTimeout(() => {
+      this.resolutionContent.value = originalResolutionContent
+      this.isGettingPdfPages.value = false
+    }, 2000)
+
+    return pdfPages
   }
 
   // override async getPdfPages(): Promise<HTMLElement[]> {

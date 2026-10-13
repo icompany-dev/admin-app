@@ -15,6 +15,7 @@
       :sort-order="pageController.sortOrder.value"
       :is-include-demo="pageController.isIncludeDemo.value"
       :is-unselect-sdn-bhd="!pageController.isSdnBhdSelected.value"
+      :is-overdue-annual-return="pageController.isOverdueAnnualReturn.value"
       @sdnbhd-selected="pageController.onSdnBhdSelected()"
     />
   </div>

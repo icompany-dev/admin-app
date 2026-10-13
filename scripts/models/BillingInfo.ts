@@ -7,6 +7,7 @@ export class BillingInfo implements IModel<BillingInfo> {
   phone: string | null = ""
   addressLine1: string | null = ""
   addressLine2: string | null = ""
+  addressLine3: string | null = ""
   addressPostcode: string | null = ""
   addressCity: string | null = ""
   addressState: string | null = ""
@@ -30,6 +31,7 @@ export class BillingInfo implements IModel<BillingInfo> {
     this.phone = data.billing_phone ?? null
     this.addressLine1 = data.billing_address_line_1 ?? null
     this.addressLine2 = data.billing_address_line_2 ?? null
+    this.addressLine3 = data.billing_address_line_3 ?? null
     this.addressPostcode = data.billing_address_postcode ?? null
     this.addressCity = data.billing_address_city ?? null
     this.addressState = data.billing_address_state ?? null
@@ -42,6 +44,7 @@ export class BillingInfo implements IModel<BillingInfo> {
     this.phone = data.phone
     this.addressLine1 = data.addressLine1
     this.addressLine2 = data.addressLine2
+    this.addressLine3 = data.addressLine3
     this.addressPostcode = data.addressPostcode
     this.addressCity = data.addressCity
     this.addressState = data.addressState
@@ -55,6 +58,7 @@ export class BillingInfo implements IModel<BillingInfo> {
       billing_phone: this.phone,
       billing_address_line_1: this.addressLine1,
       billing_address_line_2: this.addressLine2,
+      billing_address_line_3: this.addressLine3,
       billing_address_postcode: this.addressPostcode,
       billing_address_city: this.addressCity,
       billing_address_state: this.addressState,

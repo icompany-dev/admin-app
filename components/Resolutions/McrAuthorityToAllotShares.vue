@@ -7,19 +7,6 @@
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
     >
-      <template
-        #paperMargins1
-        v-if="controller.isDocumentEditable()"
-      >
-        <div class="paper-tag point-right purpose-tag">Select Applicable</div>
-      </template>
-      <template
-        #paperMargins2
-        v-if="controller.isDocumentEditable()"
-      >
-        <div class="paper-tag point-right authorised-tag">Select Applicable</div>
-        <div class="paper-tag point-right effective-date-tag">Complete This</div>
-      </template>
       <template #page1>
         <div
           ref="resolutionContent"
@@ -123,6 +110,6 @@
   })
 </script>
 
-<style lang="scss">
+<!-- <style lang="scss">
   @use "~/assets/scss/components/Resolutions/McrAuthorityToAllotShares" as *;
-</style>
+</style> -->

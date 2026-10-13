@@ -219,4 +219,26 @@ export class SdnBhdController {
   get tagsProps(): PropsTags {
     return new PropsTags("company", this.company.value.id, this.company.value.tags)
   }
+
+  get incorporationDateLabel(): string {
+    return this.language.isMalay() ? "Tarikh Diperbadankan" : "Date of Incorporation"
+  }
+
+  get incorporationDate(): string {
+    if (!this.company.value) {
+      return ""
+    }
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyFull(this.company.value.incorporatedAt ?? "")
+  }
+
+  get link(): string {
+    return `${window.location.origin}/sdnbhds/${this.company.value.id}`
+  }
+
+  get tooltip(): string {
+    return this.language.isMalay() ? "Buka di Tab Baharu" : "Open in New Tab"
+  }
 }

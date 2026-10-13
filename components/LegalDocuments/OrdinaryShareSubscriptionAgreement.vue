@@ -452,21 +452,8 @@
                   <div class="left-side-item">
                     <b>("Subscriber")</b>
                   </div>
-                  <div class="left-side-item">in the presence of:-</div>
                 </div>
                 <div class="right-side"></div>
-              </div>
-              <div class="witness-sections">
-                <div class="witness-row">
-                  <div class="witness-label">Name</div>
-                  <div class="colon">:</div>
-                  <div class="placeholder">to be completed by iCompany Systems</div>
-                </div>
-                <div class="witness-row">
-                  <div class="witness-label">Designation</div>
-                  <div class="colon">:</div>
-                  <div class="placeholder">to be completed by iCompany Systems</div>
-                </div>
               </div>
             </div>
             <div class="signature-section-wrapper">
@@ -480,21 +467,8 @@
                   <div class="left-side-item">
                     <b>("Company")</b>
                   </div>
-                  <div class="left-side-item">in the presence of:-</div>
                 </div>
                 <div class="right-side"></div>
-              </div>
-              <div class="witness-sections">
-                <div class="witness-row">
-                  <div class="witness-label">Name</div>
-                  <div class="colon">:</div>
-                  <div class="placeholder">to be completed by iCompany Systems</div>
-                </div>
-                <div class="witness-row">
-                  <div class="witness-label">Designation</div>
-                  <div class="colon">:</div>
-                  <div class="placeholder">to be completed by iCompany Systems</div>
-                </div>
               </div>
             </div>
           </div>

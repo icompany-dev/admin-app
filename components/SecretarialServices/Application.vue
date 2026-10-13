@@ -47,6 +47,7 @@
   import DividendDeclaration from "./DividendDeclaration.vue"
   import DocumentRequest from "./DocumentRequest.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import SwitchOut from "./SwitchOut.vue"
   import TekunApplication from "./TekunApplication.vue"
   import TransferOfShare from "./TransferOfShare.vue"
   import { ApplicationController } from "~/scripts/components/secretarial-services/ApplicationController"
@@ -73,6 +74,7 @@
     [CompanyConstants.TARGET_PURCHASE_ASSET]: AssetPurchase,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotNewShare,
     [CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES]: TransferOfShare,
+    [CompanyConstants.TARGET_SWITCH_OUT]: SwitchOut,
   }
 
   const activeDocumentComponent = computed(() => {

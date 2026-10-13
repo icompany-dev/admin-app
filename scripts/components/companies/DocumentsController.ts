@@ -289,6 +289,19 @@ export class DocumentsController {
     return documents
   }
 
+  get vouchersAndCerts(): CompanyDocument[] {
+    let documents = this.documentsAndForms.value.getVouchersAndCertificates()
+    documents.forEach((cd: CompanyDocument) => {
+      cd.isSelected = false
+    })
+
+    return documents
+  }
+
+  get hasVouchersOrCerts(): boolean {
+    return this.vouchersAndCerts.length > 0
+  }
+
   get numberOfDocuments(): number {
     return this.statutoryForms.length + this.resolutions.length + this.others.length
   }
@@ -303,6 +316,10 @@ export class DocumentsController {
 
   get otherDocumentsLabel(): string {
     return this.language.isMalay() ? "Lain-Lain" : "Others"
+  }
+
+  get vouchersCertsLabel(): string {
+    return this.language.isMalay() ? "Baucar & Sijil" : "Vouchers & Certificates"
   }
 
   get loaderLabel(): string {
