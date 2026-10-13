@@ -54,10 +54,11 @@ export class SidebarGroup {
 export class PageSidebar {
   static commandCentre: Sidebar = new Sidebar("Command Centre", "Pusat Kawalan", "", false)
   static analytics: Sidebar = new Sidebar("Analytics", "Analytics", "command-centre/analytics", false)
+  static announcements: Sidebar = new Sidebar("Announcements", "Announcements", "command-centre/announcements", false)
   static dashboardGroup: SidebarGroup = new SidebarGroup(
     "Dashboard",
     "Dashboard",
-    [this.commandCentre, this.analytics],
+    [this.commandCentre, this.analytics, this.announcements],
     true
   )
 
@@ -161,6 +162,7 @@ export class PageSidebar {
     "services/appointment-of-auditor",
     false
   )
+  static switchOut: Sidebar = new Sidebar("Switch Outs", "Switch Out", "services/switch-outs", false)
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
     this.changeBusinessDescription,
@@ -173,6 +175,7 @@ export class PageSidebar {
     this.declareDividends,
     this.changeBankSignatories,
     this.auditorAppointment,
+    this.switchOut,
   ])
 
   static documentRequests: Sidebar = new Sidebar(

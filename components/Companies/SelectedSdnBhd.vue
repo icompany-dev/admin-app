@@ -30,6 +30,9 @@
                 ({{ controller.company.value.registrationNumberOld }}
                 <CopyValue :value="controller.company.value.registrationNumberOld" />
                 )
+                <br />
+                <b>{{ controller.incorporationDateLabel }}</b>
+                : {{ controller.incorporationDate }}
               </div>
             </div>
             <div class="actions-button-options">

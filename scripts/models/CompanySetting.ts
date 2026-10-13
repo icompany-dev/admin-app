@@ -1,5 +1,7 @@
 import _ from "lodash"
 import type { IModel } from "./IModel"
+import { StringUtil } from "../utils/String"
+import { Error } from "../library/Error"
 
 export class CompanySetting implements IModel<CompanySetting> {
   id: string = ""
@@ -68,7 +70,38 @@ export class CompanySetting implements IModel<CompanySetting> {
 
   getRequestBody(): object {
     // At the moment, we don't allow the users to change the values here
-    return {}
+    return {
+      // annual_return_day: this.annualReturnDay,
+      // annual_return_month: this.annualReturnMonth,
+      // audit_day: this.auditDay,
+      // audit_month: this.auditMonth,
+      // epf_number: this.epfNumber,
+      // tax_code_number: this.taxCodeNumber,
+      // epf: this.epf,
+      // socso: this.socso,
+      tax: this.tax?.getRequestBody() ?? null,
+      // trademark: this.trademark,
+      // is_prn_required: this.isPrnRequired,
+    }
+  }
+
+  async update(repository: ReturnType<typeof useCompanySettingStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    let response = await repository.update(this.id, data)
+
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    if (response) {
+      this.clone(response)
+    }
   }
 }
 
@@ -102,5 +135,14 @@ export class CompanySettingTaxDetails {
     this.employerTaxNo = data.employerTaxNo
     this.branch = data.branch
     this.address = data.address
+  }
+
+  getRequestBody(): object {
+    return {
+      income_tax_no: this.incomeTaxNo,
+      employer_tax_no: this.employerTaxNo,
+      branch: this.branch,
+      address: this.address,
+    }
   }
 }

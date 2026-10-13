@@ -122,6 +122,7 @@ import { CompanyPreferenceShareTermRepository } from "~/scripts/repositories/Com
 import { CompanySecretaryRepository } from "~/scripts/repositories/CompanySecretaryRepository"
 import { CompanySection47Repository } from "~/scripts/repositories/CompanySection47Repository"
 import { CompanySetFinancialYearEndRepository } from "~/scripts/repositories/CompanySetFinancialYearEndRepository"
+import { CompanySettingRepository } from "~/scripts/repositories/CompanySettingRepository"
 import { CompanyShareAuthorizationRepository } from "~/scripts/repositories/CompanyShareAuthorizationRepository"
 import { CompanyShareholderAllotmentRepository } from "~/scripts/repositories/CompanyShareholderAllotmentRepository"
 import { CompanyShareholderTransferNoticeRepository } from "~/scripts/repositories/CompanyShareholderTransferNoticeRepository"
@@ -134,11 +135,13 @@ import { CompanyStrikingOffRegistrarLetterRepository } from "~/scripts/repositor
 import { CompanyStrikingOffRequirementRepository } from "~/scripts/repositories/CompanyStrikingOffRequirementRepository"
 import { CompanyStrikingOffResolutionRepository } from "~/scripts/repositories/CompanyStrikingOffResolutionRepository"
 import { CompanyStrikingOffWaiverRepository } from "~/scripts/repositories/CompanyStrikingOffWaiverRepository"
+import { CompanySwitchOutRepository } from "~/scripts/repositories/CompanySwitchOutRepository"
 import { CompanyTermOfReferenceRepository } from "~/scripts/repositories/CompanyTermOfReferenceRepository"
 import { CountryRepository } from "~/scripts/repositories/CountryRepository"
 import { DirectorDeclarationConflictOfInterestRepository } from "~/scripts/repositories/DirectorDeclarationConflictOfInterestRepository"
 import { DirectorInvitationRepository } from "~/scripts/repositories/DirectorInvitationRepository"
 import { DirectorRepository } from "~/scripts/repositories/DirectorRepository"
+import { DocumentHandoverRepository } from "~/scripts/repositories/DocumentHandoverRepository"
 import { DocumentTemplateRepository } from "~/scripts/repositories/DocumentTemplateRepository"
 import { FileRepository } from "~/scripts/repositories/FileRepository"
 import { FormRepository } from "~/scripts/repositories/FormRepository"
@@ -163,6 +166,7 @@ import { PostcodeRepository } from "~/scripts/repositories/PostcodeRepository"
 import { ProductRepository } from "~/scripts/repositories/ProductRepository"
 import { ProgressRepository } from "~/scripts/repositories/ProgressRepository"
 import { PublicRepository } from "~/scripts/repositories/PublicRepository"
+import { PublicServiceAnnouncementRepository } from "~/scripts/repositories/PublicServiceAnnouncementRepository"
 import { PurchasedDocumentTemplateRepository } from "~/scripts/repositories/PurchasedDocumentTemplateRepository"
 import { PurchasedItemTrackerRepository } from "~/scripts/repositories/PurchasedItemTrackerRepository"
 import { SearchComplianceRepository } from "~/scripts/repositories/SearchComplianceRepository"
@@ -308,6 +312,7 @@ interface Repositories {
   companySecretaries: CompanySecretaryRepository
   companySection47s: CompanySection47Repository
   companySetFinancialYearEnds: CompanySetFinancialYearEndRepository
+  companySettings: CompanySettingRepository
   companyShareAuthorizations: CompanyShareAuthorizationRepository
   companyShareholderAllotments: CompanyShareholderAllotmentRepository
   companyShareholderTransferNotices: CompanyShareholderTransferNoticeRepository
@@ -320,11 +325,13 @@ interface Repositories {
   companyStrikingOffRequirements: CompanyStrikingOffRequirementRepository
   companyStrikingOffResolutions: CompanyStrikingOffResolutionRepository
   companyStrikingOffWaivers: CompanyStrikingOffWaiverRepository
+  companySwitchOuts: CompanySwitchOutRepository
   companyTermOfReferences: CompanyTermOfReferenceRepository
   countries: CountryRepository
   directorDeclarationConflictOfInterests: DirectorDeclarationConflictOfInterestRepository
   directorInvitations: DirectorInvitationRepository
   directors: DirectorRepository
+  documentHandovers: DocumentHandoverRepository
   documentTemplates: DocumentTemplateRepository
   files: FileRepository
   forms: FormRepository
@@ -349,6 +356,7 @@ interface Repositories {
   products: ProductRepository
   progresses: ProgressRepository
   publics: PublicRepository
+  publicServiceAnnouncements: PublicServiceAnnouncementRepository
   purchasedDocumentTemplates: PurchasedDocumentTemplateRepository
   purchasedItemTrackers: PurchasedItemTrackerRepository
   searchCompliance: SearchComplianceRepository
@@ -874,6 +882,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/set-financial-year-end",
       config.public.apiBaseUrl,
       getAuthToken),
+    companySettings: new CompanySettingRepository("company/settings",
+      "company/setting",
+      config.public.apiBaseUrl,
+      getAuthToken),
     companyShareAuthorizations: new CompanyShareAuthorizationRepository("company/shares/authorizations",
       "company/shares/authorization",
       config.public.apiBaseUrl,
@@ -922,6 +934,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/striking-off/waiver",
       config.public.apiBaseUrl,
       getAuthToken),
+    companySwitchOuts: new CompanySwitchOutRepository("company/switch-outs",
+      "company/switch-out",
+      config.public.apiBaseUrl,
+      getAuthToken),
     companyTermOfReferences: new CompanyTermOfReferenceRepository("company/terms-of-references",
       "company/terms-of-reference",
       config.public.apiBaseUrl,
@@ -942,6 +958,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "director",
       config.public.apiBaseUrl,
       getAuthToken),
+    documentHandovers: new DocumentHandoverRepository(
+      "documents/handovers",
+      "documents/handover",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     documentTemplates: new DocumentTemplateRepository("resolution-templates",
       "resolution-template",
       config.public.apiBaseUrl,
@@ -1040,16 +1062,18 @@ export default defineNuxtPlugin((nuxtApp) => {
       "public",
       config.public.apiBaseUrl,
       getAuthToken),
+    publicServiceAnnouncements: new PublicServiceAnnouncementRepository("notices/public-service-announcements",
+      "notices/public-service-announcement",
+      config.public.apiBaseUrl,
+      getAuthToken),
     purchasedDocumentTemplates: new PurchasedDocumentTemplateRepository("company/purchased-document-templates",
       "company/purchased-document-template",
       config.public.apiBaseUrl,
       getAuthToken),
-    purchasedItemTrackers: new PurchasedItemTrackerRepository(
-      "purchased-items",
+    purchasedItemTrackers: new PurchasedItemTrackerRepository("purchased-items",
       "purchased-item",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     searchCompliance: new SearchComplianceRepository("search/compliance",
       "search/compliance",
       config.public.apiBaseUrl,
@@ -1246,6 +1270,7 @@ declare module "#app" {
       companySecretaries: import("~/scripts/repositories/CompanySecretaryRepository").CompanySecretaryRepository
       companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
+      companySettings: import("~/scripts/repositories/CompanySettingRepository").CompanySettingRepository
       companyShareAuthorizations: import("~/scripts/repositories/CompanyShareAuthorizationRepository").CompanyShareAuthorizationRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository
@@ -1258,11 +1283,13 @@ declare module "#app" {
       companyStrikingOffRequirements: import("~/scripts/repositories/CompanyStrikingOffRequirementRepository").CompanyStrikingOffRequirementRepository
       companyStrikingOffResolutions: import("~/scripts/repositories/CompanyStrikingOffResolutionRepository").CompanyStrikingOffResolutionRepository
       companyStrikingOffWaivers: import("~/scripts/repositories/CompanyStrikingOffWaiverRepository").CompanyStrikingOffWaiverRepository
+      companySwitchOuts: import("~/scripts/repositories/CompanySwitchOutRepository").CompanySwitchOutRepository
       companyTermOfReferences: import("~/scripts/repositories/CompanyTermOfReferenceRepository").CompanyTermOfReferenceRepository
       countries: import("~/scripts/repositories/CountryRepository").CountryRepository
       directorDeclarationConflictOfInterests: import("~/scripts/repositories/DirectorDeclarationConflictOfInterestRepository").DirectorDeclarationConflictOfInterestRepository
       directorInvitations: import("~/scripts/repositories/DirectorInvitationRepository").DirectorInvitationRepository
       directors: import("~/scripts/repositories/DirectorRepository").DirectorRepository
+      documentHandovers: import("~/scripts/repositories/DocumentHandoverRepository").DocumentHandoverRepository
       documentTemplates: import("~/scripts/repositories/DocumentTemplateRepository").DocumentTemplateRepository
       files: import("~/scripts/repositories/FileRepository").FileRepository
       forms: import("~/scripts/repositories/FormRepository").FormRepository
@@ -1287,6 +1314,7 @@ declare module "#app" {
       products: import("~/scripts/repositories/ProductRepository").ProductRepository
       progresses: import("~/scripts/repositories/ProgressRepository").ProgressRepository
       publics: import("~/scripts/repositories/PublicRepository").PublicRepository
+      publicServiceAnnouncements: import("~/scripts/repositories/PublicServiceAnnouncementRepository").PublicServiceAnnouncementRepository
       purchasedDocumentTemplates: import("~/scripts/repositories/PurchasedDocumentTemplateRepository").PurchasedDocumentTemplateRepository
       purchasedItemTrackers: import("~/scripts/repositories/PurchasedItemTrackerRepository").PurchasedItemTrackerRepository
       searchCompliance: import("~/scripts/repositories/SearchComplianceRepository").SearchComplianceRepository
@@ -1436,6 +1464,7 @@ declare module "pinia" {
       companySecretaries: import("~/scripts/repositories/CompanySecretaryRepository").CompanySecretaryRepository
       companySection47s: import("~/scripts/repositories/CompanySection47Repository").CompanySection47Repository
       companySetFinancialYearEnds: import("~/scripts/repositories/CompanySetFinancialYearEndRepository").CompanySetFinancialYearEndRepository
+      companySettings: import("~/scripts/repositories/CompanySettingRepository").CompanySettingRepository
       companyShareAuthorizations: import("~/scripts/repositories/CompanyShareAuthorizationRepository").CompanyShareAuthorizationRepository
       companyShareholderAllotments: import("~/scripts/repositories/CompanyShareholderAllotmentRepository").CompanyShareholderAllotmentRepository
       companyShareholderTransferNotices: import("~/scripts/repositories/CompanyShareholderTransferNoticeRepository").CompanyShareholderTransferNoticeRepository
@@ -1448,11 +1477,13 @@ declare module "pinia" {
       companyStrikingOffRequirements: import("~/scripts/repositories/CompanyStrikingOffRequirementRepository").CompanyStrikingOffRequirementRepository
       companyStrikingOffResolutions: import("~/scripts/repositories/CompanyStrikingOffResolutionRepository").CompanyStrikingOffResolutionRepository
       companyStrikingOffWaivers: import("~/scripts/repositories/CompanyStrikingOffWaiverRepository").CompanyStrikingOffWaiverRepository
+      companySwitchOuts: import("~/scripts/repositories/CompanySwitchOutRepository").CompanySwitchOutRepository
       companyTermOfReferences: import("~/scripts/repositories/CompanyTermOfReferenceRepository").CompanyTermOfReferenceRepository
       countries: import("~/scripts/repositories/CountryRepository").CountryRepository
       directorDeclarationConflictOfInterests: import("~/scripts/repositories/DirectorDeclarationConflictOfInterestRepository").DirectorDeclarationConflictOfInterestRepository
       directorInvitations: import("~/scripts/repositories/DirectorInvitationRepository").DirectorInvitationRepository
       directors: import("~/scripts/repositories/DirectorRepository").DirectorRepository
+      documentHandovers: import("~/scripts/repositories/DocumentHandoverRepository").DocumentHandoverRepository
       documentTemplates: import("~/scripts/repositories/DocumentTemplateRepository").DocumentTemplateRepository
       files: import("~/scripts/repositories/FileRepository").FileRepository
       forms: import("~/scripts/repositories/FormRepository").FormRepository
@@ -1477,6 +1508,7 @@ declare module "pinia" {
       products: import("~/scripts/repositories/ProductRepository").ProductRepository
       progresses: import("~/scripts/repositories/ProgressRepository").ProgressRepository
       publics: import("~/scripts/repositories/PublicRepository").PublicRepository
+      publicServiceAnnouncements: import("~/scripts/repositories/PublicServiceAnnouncementRepository").PublicServiceAnnouncementRepository
       purchasedDocumentTemplates: import("~/scripts/repositories/PurchasedDocumentTemplateRepository").PurchasedDocumentTemplateRepository
       purchasedItemTrackers: import("~/scripts/repositories/PurchasedItemTrackerRepository").PurchasedItemTrackerRepository
       searchCompliance: import("~/scripts/repositories/SearchComplianceRepository").SearchComplianceRepository

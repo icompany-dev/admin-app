@@ -42,14 +42,14 @@ export class TableDataFetcher<T> {
           }
 
           if (c instanceof Company) {
-            return !StringUtil.contains(c.name, "lorem ipsum")
+            return !StringUtil.contains(c.name, "lorem ipsum") && !c.isDemo
           }
 
           if (!c.company) {
             return
           }
 
-          return !StringUtil.contains(c.company.name, "lorem ipsum")
+          return !StringUtil.contains(c.company.name, "lorem ipsum") && !c.company.isDemo
         })
 
       this.filter.setDataFromApiRecord(response)

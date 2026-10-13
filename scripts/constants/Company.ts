@@ -76,6 +76,8 @@ export class CompanyConstants {
   static TARGET_SOURCE_OF_FUND_DECLARATION: string = "company_fund_source_declaration"
   static TARGET_STRIKING_OFF_RESOLUTION: string = "company_striking_off_resolution"
   static TARGET_SWITCH_OUT: string = "company_switch_out"
+  static TARGET_SWITCH_OUT_LETTER: string = "company_switch_out_letter"
+  static TARGET_SWITCH_OUT_DOCUMENT: string = "company_switch_out_document"
   static TARGET_SUBSCRIPTION: string = "company_subscription"
   static TARGET_SUBSCRIBE_BUSINESS_ADDRESS: string = "company_address_subscription"
   static TARGET_TERMS_OF_REFERENCE: string = "company_terms_of_reference"
@@ -159,6 +161,8 @@ export class CompanyConstants {
     this.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES,
     this.TARGET_STRIKING_OFF_RESOLUTION,
     this.TARGET_SWITCH_OUT,
+    this.TARGET_SWITCH_OUT_LETTER,
+    this.TARGET_SWITCH_OUT_DOCUMENT,
     this.TARGET_SUBSCRIBE_BUSINESS_ADDRESS,
     this.TARGET_SUBSCRIPTION,
     this.TARGET_THIRD_SCHEDULE,

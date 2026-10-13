@@ -28,6 +28,10 @@ export class Filter {
   isWithoutSignatures: boolean | null = null
   isInactive: boolean | null = null
 
+  isOverdueAnnualReturn: boolean | null = null
+  isOverdueFinancialStatements: boolean | null = null
+  isAnnualReturnIncoming: boolean | null = null
+
   statuses: string[] = []
 
   constructor() {
@@ -118,6 +122,18 @@ export class Filter {
 
     if (this.isInactive !== null) {
       slugElements.push(`is_inactive=${this.isInactive ? "1" : "0"}`)
+    }
+
+    if (this.isOverdueAnnualReturn !== null) {
+      slugElements.push(`is_overdue_annual_return=${this.isOverdueAnnualReturn ? "1" : "0"}`)
+    }
+
+    if (this.isOverdueFinancialStatements !== null) {
+      slugElements.push(`is_overdue_financial_statements=${this.isOverdueFinancialStatements ? "1" : "0"}`)
+    }
+
+    if (this.isAnnualReturnIncoming !== null) {
+      slugElements.push(`is_annual_return_incoming=${this.isAnnualReturnIncoming ? "1" : "0"}`)
     }
 
     return slugElements.join("&")

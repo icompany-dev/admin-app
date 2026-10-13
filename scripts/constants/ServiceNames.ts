@@ -270,6 +270,13 @@ export class ServiceNames {
     "tekun-applications",
     "documents"
   )
+  static switchOuts: ServiceName = new ServiceName(
+    "Switch Outs",
+    "Switch Outs",
+    "company_switch_out",
+    "switch-outs",
+    "director"
+  )
 
   static names: ServiceName[] = [
     this.applicationIncorporation,
@@ -309,5 +316,6 @@ export class ServiceNames {
     this.changeSignatories,
     this.documentRequests,
     this.tekunApplications,
+    this.switchOuts,
   ]
 }

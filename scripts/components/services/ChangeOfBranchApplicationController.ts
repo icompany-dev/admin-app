@@ -333,15 +333,6 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
     return this.language.isMalay() ? "Langkah Seterusnya" : "Next Step"
   }
 
-  get uploadDocumentProps(): PropsUploadDocument {
-    let props = new PropsUploadDocument(this.companyId.value)
-
-    props.canUploadImage = false
-    props.canUploadPdf = true
-
-    return props
-  }
-
   get certifcateOfBranchChangeLabel(): string {
     return this.language.isMalay() ? "Sijil Pertukaran Nama" : "Certificate of Branch Change"
   }

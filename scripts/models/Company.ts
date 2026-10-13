@@ -88,7 +88,7 @@ export class Company implements IModel<Company> {
     this.ordinaryShares = data.ordinary_shares ?? 0
     this.preferenceShares = data.preference_shares ?? 0
     this.companySettingId = data.company_settings?.id
-    this.companySetting = new CompanySetting(data.company_setting)
+    this.companySetting = new CompanySetting(data.company_settings)
     this.subscription = new CompanySubscription(data.company_subscription)
     this.branches =
       data.company_branches && Array.isArray(data.company_branches)
