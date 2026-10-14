@@ -122,13 +122,17 @@
       cursor: default;
 
       .btn {
-        &:not(.btn-repeatable) {
-          color: var(--btn-out-focus-color);
-          background-color: var(--btn-out-focus-bg-color);
-          border-color: var(--btn-out-focus-border-color);
-          pointer-events: none;
-          cursor: default;
-        }
+        color: var(--btn-out-focus-color);
+        background-color: var(--btn-out-focus-bg-color);
+        border-color: var(--btn-out-focus-border-color);
+        pointer-events: none;
+        cursor: default;
+      }
+
+      .action-link {
+        cursor: pointer;
+        text-align: center;
+        color: var(--bs-icompany-blue);
       }
     }
   }

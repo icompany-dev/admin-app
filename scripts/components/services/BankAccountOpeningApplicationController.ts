@@ -264,8 +264,8 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
     return this.language.isMalay() ? "Hantar" : "Shipped"
   }
 
-  get reShipLabel(): string {
-    return this.language.isMalay() ? "Hantar Semula" : "Re-Shipped"
+  get notifyAgainLabel(): string {
+    return this.language.isMalay() ? "Maklumkan Semula" : "Notify Again"
   }
 
   get isShipped(): boolean {

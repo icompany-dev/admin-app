@@ -65,13 +65,13 @@
                 {{ controller.shipLabel }}
               </button>
 
-              <button
+              <div
                 v-if="controller.isShipped"
-                class="btn btn-pill btn-submit btn-repeatable"
+                class="action-link"
                 @click="controller.onShippedClicked()"
               >
-                {{ controller.reShipLabel }}
-              </button>
+                {{ controller.notifyAgainLabel }}
+              </div>
             </div>
           </template>
         </ApplicationNode>
