@@ -209,7 +209,7 @@
         </ApplicationNode>
         <ApplicationNode
           v-bind="controller.completedNodeProps"
-          @click="controller.onApplicationDetailsClicked()"
+          @click="controller.onCompleteStepClicked()"
         >
           <template #nodeContent>
             <div class="application-container">
@@ -224,6 +224,8 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isUploadingROA.value }"
+              :disabled="controller.isUploadingROA.value"
               @click="controller.onUploadDocumentClicked()"
             >
               {{ controller.uploadLabel }}
@@ -240,6 +242,8 @@
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isCompleting.value }"
+              :disabled="controller.isCompleting.value"
               @click="controller.onCompleteClicked()"
             >
               {{ controller.markCompletedLabel }}

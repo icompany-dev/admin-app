@@ -120,6 +120,16 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA)
   }
 
+  onCompleteStepClicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowSection76.value = false
+    this.isShowPrn.value = false
+    this.isShowCompleted.value = true
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA)
+  }
+
   async onDownloadClicked(): Promise<void> {
     if (this.isShowResolutions.value) {
       this.isDownloadingIssuance.value = true
@@ -320,7 +330,9 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       let toastTitle = this.language.isMalay()
         ? "Anda telah mengemaskini status permohonan ini."
         : "You have updated this application status."
-      let toastMessage = this.language.isMalay() ? "Sila muat naik Resolusi." : "Please upload the Resolution."
+      let toastMessage = this.language.isMalay()
+        ? "Sila muat naik Return of Allotment."
+        : "Please upload the Return of Allotment."
 
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
@@ -366,6 +378,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       return
     }
     try {
+      this.isCompleting.value = true
       let repository = useCompanyStore()
       await repository.postService(this.target.value, this.application.value.id)
 
