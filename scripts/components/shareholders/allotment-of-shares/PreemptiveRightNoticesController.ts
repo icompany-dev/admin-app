@@ -100,7 +100,7 @@ export class PreemptiveRightNoticesController {
     })
 
     this.isInitiatorAShareholder.value = this.shareholders.value.some((s: Shareholder) => {
-      return s.email === initiatorEmail
+      return s.email === initiatorEmail && !s.isCorporateRepresentative()
     })
   }
 
@@ -129,7 +129,6 @@ export class PreemptiveRightNoticesController {
         throw repository.error
       }
 
-      console.log("over no", this.applicationId.value)
       this.application.value = new CompanyShareIssuance(response)
     } catch (e: any) {
       if (e instanceof Error) {
