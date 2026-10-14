@@ -92,6 +92,7 @@ import { CompanyDelegationOfAuthorityRepository } from "~/scripts/repositories/C
 import { CompanyDirectorAppointmentRepository } from "~/scripts/repositories/CompanyDirectorAppointmentRepository"
 import { CompanyDirectorLoanRepository } from "~/scripts/repositories/CompanyDirectorLoanRepository"
 import { CompanyDirectorManagerAppointmentRepository } from "~/scripts/repositories/CompanyDirectorManagerAppointmentRepository"
+import { CompanyDirectorPaymentRepository } from "~/scripts/repositories/CompanyDirectorPaymentRepository"
 import { CompanyDirectorRemovalRepository } from "~/scripts/repositories/CompanyDirectorRemovalRepository"
 import { CompanyDirectorResignationRepository } from "~/scripts/repositories/CompanyDirectorResignationRepository"
 import { CompanyDividendDeclarationRepository } from "~/scripts/repositories/CompanyDividendDeclarationRepository"
@@ -282,6 +283,7 @@ interface Repositories {
   companyDirectorAppointments: CompanyDirectorAppointmentRepository
   companyDirectorLoans: CompanyDirectorLoanRepository
   companyDirectorManagerAppointments: CompanyDirectorManagerAppointmentRepository
+  companyDirectorPayments: CompanyDirectorPaymentRepository
   companyDirectorRemovals: CompanyDirectorRemovalRepository
   companyDirectorResignations: CompanyDirectorResignationRepository
   companyDividendDeclarations: CompanyDividendDeclarationRepository
@@ -762,6 +764,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/director/manager/appointment",
       config.public.apiBaseUrl,
       getAuthToken),
+    companyDirectorPayments: new CompanyDirectorPaymentRepository(
+      "director/payments",
+      "director/payment",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     companyDirectorRemovals: new CompanyDirectorRemovalRepository("company/director/removals",
       "company/director/removal",
       config.public.apiBaseUrl,
@@ -958,12 +966,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "director",
       config.public.apiBaseUrl,
       getAuthToken),
-    documentHandovers: new DocumentHandoverRepository(
-      "documents/handovers",
+    documentHandovers: new DocumentHandoverRepository("documents/handovers",
       "documents/handover",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     documentTemplates: new DocumentTemplateRepository("resolution-templates",
       "resolution-template",
       config.public.apiBaseUrl,
@@ -1240,6 +1246,7 @@ declare module "#app" {
       companyDirectorAppointments: import("~/scripts/repositories/CompanyDirectorAppointmentRepository").CompanyDirectorAppointmentRepository
       companyDirectorLoans: import("~/scripts/repositories/CompanyDirectorLoanRepository").CompanyDirectorLoanRepository
       companyDirectorManagerAppointments: import("~/scripts/repositories/CompanyDirectorManagerAppointmentRepository").CompanyDirectorManagerAppointmentRepository
+      companyDirectorPayments: import("~/scripts/repositories/CompanyDirectorPaymentRepository").CompanyDirectorPaymentRepository
       companyDirectorRemovals: import("~/scripts/repositories/CompanyDirectorRemovalRepository").CompanyDirectorRemovalRepository
       companyDirectorResignations: import("~/scripts/repositories/CompanyDirectorResignationRepository").CompanyDirectorResignationRepository
       companyDividendDeclarations: import("~/scripts/repositories/CompanyDividendDeclarationRepository").CompanyDividendDeclarationRepository
@@ -1434,6 +1441,7 @@ declare module "pinia" {
       companyDirectorAppointments: import("~/scripts/repositories/CompanyDirectorAppointmentRepository").CompanyDirectorAppointmentRepository
       companyDirectorLoans: import("~/scripts/repositories/CompanyDirectorLoanRepository").CompanyDirectorLoanRepository
       companyDirectorManagerAppointments: import("~/scripts/repositories/CompanyDirectorManagerAppointmentRepository").CompanyDirectorManagerAppointmentRepository
+      companyDirectorPayments: import("~/scripts/repositories/CompanyDirectorPaymentRepository").CompanyDirectorPaymentRepository
       companyDirectorRemovals: import("~/scripts/repositories/CompanyDirectorRemovalRepository").CompanyDirectorRemovalRepository
       companyDirectorResignations: import("~/scripts/repositories/CompanyDirectorResignationRepository").CompanyDirectorResignationRepository
       companyDividendDeclarations: import("~/scripts/repositories/CompanyDividendDeclarationRepository").CompanyDividendDeclarationRepository
