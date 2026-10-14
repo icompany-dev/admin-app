@@ -33,6 +33,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   allotShares = ref<AllotShares>(new AllotShares("", ""))
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
+  isShowPrn: Ref<boolean> = ref<boolean>(false)
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
@@ -75,6 +76,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   onPaymentStepClicked(): void {
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false
+    this.isShowPrn.value = false
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
@@ -83,6 +85,16 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   onApplicationDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
+    this.isShowPrn.value = false
+    this.isShowCompleted.value = false
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
+  }
+
+  onSection85Clicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowPrn.value = true
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
@@ -331,7 +343,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get applicationDetailsNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isApproved, this.isShowResolutions.value)
+    return new PropsServiceApplicationNode(this.hasPaid, this.isSection76Uploaded, this.isShowResolutions.value)
   }
 
   get applicationDetailsLabel(): string {
@@ -389,7 +401,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get section75Label(): string {
-    return this.language.isMalay() ? "Seksyen 75 & 76" : "Section 75 & 76"
+    return this.language.isMalay() ? "Status Kebenaran:" : "Authorisation Status:"
   }
 
   get section75Details(): string {
@@ -406,7 +418,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       })
 
     if (signaturesCompleted) {
-      return this.language.isMalay() ? "Kelulusan Diterima" : "Approval Received"
+      return this.language.isMalay() ? "Kebenaran Diterima" : "Authorised"
     }
 
     if (this.language.isMalay()) {
@@ -476,7 +488,11 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get uploadSection76Label(): string {
-    return this.language.isMalay() ? "Muat Naik Seksyen 76" : "Upload Section 76"
+    if (this.isSection76Uploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
   get downloadLabel(): string {
@@ -503,6 +519,34 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
 
   get approveLabel(): string {
     return this.language.isMalay() ? "Diluluskan" : "Approved"
+  }
+
+  get section76NodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.hasPaid, this.isSection76Uploaded, this.isShowResolutions.value)
+  }
+
+  get section76Label(): string {
+    return this.language.isMalay()
+      ? "Seksyen 75 & 76 - Kuasa untuk Peruntuk Saham"
+      : "Section 75 & 76 - Authority to Allot Shares"
+  }
+
+  get section76Sublabel(): string {
+    return this.language.isMalay() ? "Muat Naik Seksyen 76 dari SSM" : "Upload Section 76 from SSM"
+  }
+
+  get section85NodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isSection76Uploaded, this.isApproved, this.isShowPrn.value)
+  }
+
+  get section85Label(): string {
+    return this.language.isMalay() ? "Peruntukkan Saham Baharu" : "Allotment of New Shares"
+  }
+
+  get section85Sublabel(): string {
+    return this.language.isMalay()
+      ? "Seksyen 85 - Notis Hak Pra-Beli, DCR untuk Peruntukkan Saham"
+      : "Section 85 - Pre-Emptive Rights, DCR to Issue and Allot New Shares"
   }
 
   get shipLabel(): string {

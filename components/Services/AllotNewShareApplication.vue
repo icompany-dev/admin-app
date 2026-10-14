@@ -28,28 +28,80 @@
                 class="details"
                 v-html="controller.proposalDetails"
               />
+            </div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onDownloadClicked()"
+            >
+              {{ controller.downloadLabel }}
+            </button>
+          </template>
+          <template #nodeActions></template>
+        </ApplicationNode>
+        <ApplicationNode
+          v-bind="controller.section76NodeProps"
+          @click="controller.onApplicationDetailsClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.section76Label }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.section76Sublabel }}
+              </div>
+            </div>
+            <div class="application-details">
               <b>{{ controller.section75Label }}</b>
               <div
                 class="details"
                 v-html="controller.section75Details"
               />
-              <span
-                class="action-link download"
-                v-if="!controller.isSection76Uploaded"
-                @click="controller.onUploadDocumentClicked()"
-              >
-                <i class="fa-regular fa-cloud-arrow-up"></i>
-                {{ controller.uploadSection76Label }}
-              </span>
-              <span
-                class="action-link download"
-                v-if="controller.isSection76Uploaded"
-                @click="controller.onDownloadSection76Clicked()"
-              >
-                <i class="fa-regular fa-cloud-arrow-down"></i>
-                {{ controller.downloadDocumentSection76Label }}
-              </span>
-              <br />
+            </div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onUploadDocumentClicked()"
+            >
+              {{ controller.uploadSection76Label }}
+            </button>
+            <span
+              class="action-link download"
+              v-if="controller.isSection76Uploaded"
+              @click="controller.onDownloadSection76Clicked()"
+            >
+              <i class="fa-regular fa-cloud-arrow-down"></i>
+              {{ controller.downloadDocumentSection76Label }}
+            </span>
+          </template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isApproving.value }"
+              :disabled="controller.isApproving.value"
+              @click="controller.onApprovedClicked()"
+            >
+              {{ controller.approveLabel }}
+            </button>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode
+          v-bind="controller.section85NodeProps"
+          @click="controller.onSection85Clicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.section85Label }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.section85Sublabel }}
+              </div>
+            </div>
+            <div class="application-details">
               <b>{{ controller.allotTosLabel }}</b>
               <table class="allotee-details">
                 <thead>
@@ -97,10 +149,18 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
-              @click="controller.onDownloadClicked()"
+              @click="controller.onUploadDocumentClicked()"
             >
-              {{ controller.downloadLabel }}
+              {{ controller.uploadSection76Label }}
             </button>
+            <span
+              class="action-link download"
+              v-if="controller.isSection76Uploaded"
+              @click="controller.onDownloadSection76Clicked()"
+            >
+              <i class="fa-regular fa-cloud-arrow-down"></i>
+              {{ controller.downloadDocumentSection76Label }}
+            </span>
           </template>
           <template #nodeActions>
             <button
