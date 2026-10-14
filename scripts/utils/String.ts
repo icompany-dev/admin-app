@@ -18,7 +18,11 @@ export class StringUtil {
   }
 
   static contains(stringA: string, stringB: string): boolean {
-    return stringA.toLowerCase().includes(stringB.toLowerCase())
+    if (stringA === null || stringB === null) {
+      return false
+    }
+
+    return stringA?.toLowerCase().includes(stringB?.toLowerCase())
   }
 
   static inArray(needle: string, haystack: string[]): boolean {
