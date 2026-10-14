@@ -1,4 +1,4 @@
-import { CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
+import { CompanyShareAllotTo, CompanyShareholderAllotment } from "~/scripts/models/CompanyShareholderAllotment"
 import { CompanyShareIssuance } from "~/scripts/models/CompanyShareIssuance"
 import { CompanyServiceController } from "./CompanyServiceController"
 import { Error } from "~/scripts/library/Error"
@@ -24,8 +24,6 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
   companyShareIssuance = ref<CompanyShareIssuance>(new CompanyShareIssuance())
 
   companyShareIssuanceRepository = useCompanyShareIssuanceStore()
-
-  wrapperRef: any | null = null
 
   private priceIdForLessThan1001: string = "2532bb00-7e39-4930-96f2-05f28bbc2b22"
   private priceIdForLessThan499K: string = "2624004f-24a5-43bb-aaa3-a7d288ed036f"
@@ -64,6 +62,28 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
             this.companyShareIssuance.value.allotmentId = this.companyShareholderAllotment.value.id
             this.companyShareIssuance.value.update(useCompanyShareIssuanceStore())
           }
+
+          // Clean up for clarity sake
+          let promises: any[] = []
+          let existing: CompanyShareAllotTo[] = []
+          this.companyShareholderAllotment.value.shareAllotTos.forEach((s: CompanyShareAllotTo) => {
+            if (s.shareholderId === null) {
+              existing.push(s)
+              return
+            }
+
+            let inExisting = existing.some((cs: CompanyShareAllotTo) => {
+              return cs.shareholderId === s.shareholderId
+            })
+
+            if (!inExisting) {
+              existing.push(s)
+            } else {
+              promises.push(s)
+            }
+          })
+          this.companyShareholderAllotment.value.shareAllotTos = existing
+          await this.companyShareholderAllotment.value.update(useCompanyShareholderAllotmentStore())
         }
       }
     } else {
@@ -129,8 +149,8 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -158,8 +178,8 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -194,8 +214,8 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -258,8 +278,8 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForCUD()
         errorMessage.handle()
       }
     } finally {
@@ -295,24 +315,6 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
       await this.makePayment()
       return
     }
-
-    if (this.wrapperRef) {
-      this.wrapperRef.enlarge()
-    }
-  }
-
-  setWrapperRef(wrapperRef: any | null): void {
-    this.wrapperRef = wrapperRef
-
-    this.setOptionButtons()
-  }
-
-  setOptionButtons(): void {
-    if (!this.wrapperRef) {
-      return
-    }
-
-    let label = this.language.isMalay() ? "Peruntuk Saham Baharu" : "Allot New Shares"
   }
 
   helpTitle(): string {
@@ -346,7 +348,7 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
   }
 
   slipCaseTitle(): string {
-    return this.language.isMalay() ? "Resolusi: Peruntukkan Saham" : "Resolution: Propose Allotment of Shares"
+    return this.language.isMalay() ? "Resolusi: Peruntukkan Saham" : "Resolution: Allotment of Shares"
   }
 
   slipCaseContentPoints(): string[] {
@@ -375,30 +377,7 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
       return false
     }
 
-    // This is a special reso
-    let totalShares = this.shareholders.value.reduce((total: number, shareholder: Shareholder) => {
-      return total + Number(shareholder.ordinaryShares) + Number(shareholder.preferenceShares)
-    }, 0)
-
-    let totalSigned = this.shareholders.value
-      .filter((shareholder: Shareholder) => {
-        if (!this.application.value) {
-          return
-        }
-
-        let hasSigned = this.application.value.signatureGroups.find((sg: SignatureGroup) => {
-          return sg.email === shareholder.email && sg.group?.target === "shareholder"
-        })
-
-        return hasSigned
-      })
-      .reduce((total: number, shareholder: Shareholder) => {
-        return total + Number(shareholder.ordinaryShares) + Number(shareholder.preferenceShares)
-      }, 0)
-
-    let percentage = Math.ceil((totalSigned / totalShares) * 100)
-
-    return percentage >= 50
+    return this.application.value.signatureGroups.length >= 0.5 * this.totalNumberOfDirectors.value
   }
 
   override isStepStatusVisible(): boolean {
@@ -437,6 +416,10 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
     return ""
   }
 
+  override onBackButtonClicked(): void {
+    this.emitEvents("back")
+  }
+
   override processingLabel(): string {
     return this.language.isMalay() ? "Menunggu Respons" : "Awaiting Responses"
   }
@@ -447,40 +430,45 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
 
     let showPasca = this.viewType.value === ViewMode.Existing
 
-    return new PropsCompanyServiceWrapper(
-      this.companyShareholderAllotment.value,
-      this.companyId,
-      this.target,
-      this.slipCaseTitle(),
-      this.viewType.value,
-      this.hasOngoingApplication.value,
-      this.hasPastApplications.value,
-      this.companyShareholderAllotment.value.id,
-      this.currentPage.value,
-      this.totalPages.value,
-      "DCR",
-      showPasca,
-      this.hasPaid(),
-      this.price.value,
-      this.isMajorityReached(),
-      this.hasSigned(),
-      this.signatureDate(),
-      this.hasDcr.value,
-      this.hasMcr.value,
-      this.totalNumberOfDirectors.value,
-      this.totalNumberOfShareholders.value,
-      false,
-      true,
-      this.backLabel(),
-      this.payLabel(),
-      this.hoveredButtonLabel(),
-      this.isInPreviewMode.value,
-      this.isSubmitting.value,
-      CompanyShareholderAllotment,
-      useCompanyShareholderAllotmentStore(),
-      false,
-      true
+    let props = new PropsCompanyServiceWrapper(
+      this.companyShareholderAllotment.value, //application
+      this.companyId, //companyId
+      this.target, //target
+      this.slipCaseTitle(), //slipCaseTitle
+      this.viewType.value, //viewType
+      this.hasOngoingApplication.value, //hasOngoingApplication
+      this.hasPastApplications.value, //hasPastApplications
+      this.companyShareholderAllotment.value.id, //targetId
+      this.currentPage.value, //currentPage
+      this.totalPages.value, //totalPages
+      "DCR", //earMarkText
+      showPasca, //showServiceSteps
+      this.hasPaid(), //hasPaid
+      this.price.value, //price
+      this.isMajorityReached(), //haveAllSigned
+      this.hasSigned(), //hasUserSigned
+      this.signatureDate(), //signatureDate
+      this.hasDcr.value, //isDcr
+      false, //isMcr
+      this.totalNumberOfDirectors.value, //numberOfDirectors
+      this.totalNumberOfShareholders.value, //numberOfShareholders
+      this.isMajorityReached(), //canSkipToConfirmation
+      true, //useDefaultConfirmation
+      this.backLabel(), //backButtonLabel
+      this.payLabel(), //proceedButtonLabel
+      this.hoveredButtonLabel(), //hoveredProceedButtonLabel
+      this.isInPreviewMode.value, //isInPreviewMode
+      this.isSubmitting.value, //isMakingPayment
+      CompanyShareholderAllotment, //applicationClassType
+      useCompanyShareholderAllotmentStore(), //repository
+      false, //isByShareholder
+      true, //hasMajorityRule
+      true //hasCustomAffirmation
     )
+
+    props.serviceStepProps.isPascaInPasca = true
+
+    return props
   }
 
   get resolutionDocumentProps() {
@@ -501,5 +489,124 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
 
   override loaderSublabel(): string {
     return this.language.isMalay() ? "Resolusi Anda" : "Resolution"
+  }
+
+  get backToIssuanceLabel(): string {
+    return this.language.isMalay() ? "Dokumen untuk Peruntukkan" : "Documents for Issuance"
+  }
+
+  get dcrLabel(): string {
+    return this.language.isMalay() ? "DCR Peruntukkan Saham" : "DCR to Issue and Allot Shares"
+  }
+
+  get hasSignedOnDcr(): boolean {
+    if (StringUtil.isNullOrEmpty(this.companyShareholderAllotment.value.id)) {
+      return false
+    }
+
+    if (!this.isADirector.value) {
+      return this.companyShareholderAllotment.value.signatureGroups.length >= 0.5 * this.totalNumberOfDirectors.value
+    }
+
+    let directorSignature =
+      this.companyShareholderAllotment.value.signatureGroups.find((sg: SignatureGroup) => {
+        return sg.email === this.currentUser.value.email
+      }) ?? null
+
+    return directorSignature !== null
+  }
+
+  get signatureDateOnDcr(): string {
+    if (!this.hasSignedOnDcr || this.companyShareholderAllotment.value.signatureGroups.length <= 0) {
+      return ""
+    }
+
+    if (!this.isADirector.value) {
+      let sortedSignatures = ObjectUtil.sort<SignatureGroup>(
+        this.companyShareholderAllotment.value.signatureGroups,
+        "createdAt",
+        "desc"
+      )
+      let latestSignature = sortedSignatures[0]
+
+      return this.time.formatDateOnlyFull(latestSignature.createdAt ?? "")
+    }
+
+    let directorSignature =
+      this.companyShareholderAllotment.value.signatureGroups.find((sg: SignatureGroup) => {
+        return sg.email === this.currentUser.value.email
+      }) ?? null
+
+    if (!directorSignature) {
+      return ""
+    }
+
+    return this.time.formatDateOnlyFull(directorSignature.createdAt ?? "")
+  }
+
+  get dcrSignedLabel(): string {
+    if (!this.isADirector.value) {
+      return this.language.isMalay() ? "Selesai" : "Completed"
+    }
+
+    return this.language.isMalay() ? "Tandatangan" : "Signed"
+  }
+
+  get directorsRange(): number[] {
+    return Array.from({ length: this.totalNumberOfDirectors.value }, (_, i) => i)
+  }
+
+  get directorsSignatures(): SignatureGroup[] {
+    return this.companyShareholderAllotment.value.signatureGroups.filter((sg: SignatureGroup) => {
+      return sg.group?.target === "director"
+    })
+  }
+
+  get numberOfDirectorsSignatures(): number {
+    return this.directorsSignatures.length
+  }
+
+  get hasUserSignedOnDcr(): boolean {
+    if (!this.isADirector.value) {
+      return false
+    }
+
+    let directorSignature =
+      this.directorsSignatures.find((sg: SignatureGroup) => {
+        return sg.email === this.currentUser.value.email
+      }) ?? null
+
+    return directorSignature !== null
+  }
+
+  get signedLabel(): string {
+    return this.language.isMalay() ? "Tandatangan diterima" : "Signed"
+  }
+
+  get statusOfDcr(): string {
+    if (!this.isMajorityReached()) {
+      return this.language.isMalay() ? "Menunggu tandatangan" : "Awaiting Signatures"
+    }
+
+    return this.language.isMalay() ? "Majoriti Diterima" : "Majority Reached"
+  }
+
+  get dateForMajorityReached(): string {
+    if (!this.isMajorityReached() || this.companyShareholderAllotment.value.signatureGroups.length <= 0) {
+      return ""
+    }
+
+    let sortedSignatures = ObjectUtil.sort<SignatureGroup>(
+      this.companyShareholderAllotment.value.signatureGroups,
+      "createdAt",
+      "desc"
+    )
+    let latestSignature = sortedSignatures[0]
+
+    return this.time.formatDateOnlyFull(latestSignature.createdAt ?? "")
+  }
+
+  get viewAllStepsLabel(): string {
+    return this.language.isMalay() ? "Kembali ke Peruntukkan" : "Back to Issuance"
   }
 }

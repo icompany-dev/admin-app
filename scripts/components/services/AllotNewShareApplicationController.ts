@@ -115,7 +115,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     this.isShowPrn.value = true
     this.isShowCompleted.value = false
 
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA)
   }
 
   async onDownloadClicked(): Promise<void> {

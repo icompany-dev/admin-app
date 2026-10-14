@@ -102,6 +102,7 @@
   import RemoveDirector from "./RemoveDirector.vue"
   import ReplaceCommonSeal from "./ReplaceCommonSeal.vue"
   import ResignationOfDirector from "./ResignationOfDirector.vue"
+  import ReturnOfAllotment from "./ReturnOfAllotment.vue"
   import Section47 from "./Section47.vue"
   import SetFinancialYearEnd from "./SetFinancialYearEnd.vue"
   import ShareIssuance from "./ShareIssuance.vue"
@@ -185,7 +186,7 @@
     [CompanyConstants.TARGET_REMOVAL_OF_DIRECTOR]: RemoveDirector,
     [CompanyConstants.TARGET_SET_FINANCIAL_YEAR_END]: SetFinancialYearEnd,
     [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT]: AllotmentOfShares,
-    [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotmentOfShares,
+    [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: ReturnOfAllotment,
     [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_TRANSFER]: NoticeTransferOfShares,
     [CompanyConstants.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER]: RegisterTransferOfShares,
     [CompanyConstants.TARGET_SECTION_47]: Section47,
