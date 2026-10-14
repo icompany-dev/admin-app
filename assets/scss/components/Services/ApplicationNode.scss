@@ -21,7 +21,7 @@
       border-radius: 5px;
 
       &::before {
-        content: ' ';
+        content: " ";
         position: absolute;
         top: -12px;
         left: -7px;
@@ -33,7 +33,7 @@
       }
 
       &::after {
-        content: ' ';
+        content: " ";
         position: absolute;
         top: -15px;
         left: -10px;
@@ -80,6 +80,12 @@
     flex: 1;
     padding: 10px 15px;
     padding-left: 0;
+
+    .button-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
   }
 
   &.is-selected {
@@ -115,13 +121,18 @@
     .node-actions {
       cursor: default;
 
-
       .btn {
         color: var(--btn-out-focus-color);
         background-color: var(--btn-out-focus-bg-color);
         border-color: var(--btn-out-focus-border-color);
         pointer-events: none;
         cursor: default;
+      }
+
+      .action-link {
+        cursor: pointer;
+        text-align: center;
+        color: var(--bs-icompany-blue);
       }
     }
   }

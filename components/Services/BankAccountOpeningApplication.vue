@@ -57,12 +57,22 @@
             </button>
           </template>
           <template #nodeActions>
-            <button
-              class="btn btn-pill btn-submit"
-              @click="controller.onShippedClicked()"
-            >
-              {{ controller.shipLabel }}
-            </button>
+            <div class="button-groups">
+              <button
+                class="btn btn-pill btn-submit"
+                @click="controller.onShippedClicked()"
+              >
+                {{ controller.shipLabel }}
+              </button>
+
+              <div
+                v-if="controller.isShipped"
+                class="action-link"
+                @click="controller.onShippedClicked()"
+              >
+                {{ controller.notifyAgainLabel }}
+              </div>
+            </div>
           </template>
         </ApplicationNode>
         <ApplicationNode

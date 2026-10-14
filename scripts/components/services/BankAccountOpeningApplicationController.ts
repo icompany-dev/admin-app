@@ -264,6 +264,10 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
     return this.language.isMalay() ? "Hantar" : "Shipped"
   }
 
+  get notifyAgainLabel(): string {
+    return this.language.isMalay() ? "Maklumkan Semula" : "Notify Again"
+  }
+
   get isShipped(): boolean {
     if (!this.application.value) {
       return false
