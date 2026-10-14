@@ -35,6 +35,8 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
     this.target = CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES
     this.setViewType(viewType)
     this.initializeData()
+
+    this.documentName.value = "DCR - Issue and Allotment of Shares"
   }
 
   async initializeData(): Promise<void> {
@@ -94,7 +96,7 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
     }
 
     await this.fetchPrice()
-    this.init(this.companyShareholderAllotment.value as CompanyShareholderAllotment)
+    await this.init(this.companyShareholderAllotment.value as CompanyShareholderAllotment)
     this.isLoading.value = false
   }
 

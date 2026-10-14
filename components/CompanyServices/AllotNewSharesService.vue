@@ -111,6 +111,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+  })
 </script>
 
 <style lang="scss">

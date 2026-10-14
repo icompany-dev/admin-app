@@ -30,8 +30,9 @@
         </Paper>
         <template v-if="!controller.isLoading.value">
           <DcrAllotmentOfShares
-            ref="allotRef"
+            ref="dcrRef"
             v-bind="controller.resolutionDocumentProps"
+            @changed="controller.onDcrChanged()"
           />
           <PreemptiveRightNotices
             ref="noticeRef"

@@ -109,6 +109,7 @@ export abstract class CompanyServiceController<T> {
     this.ongoingFilter.statuses = [
       StatusConstants.PAID,
       StatusConstants.READY,
+      StatusConstants.SUBMITTED,
       StatusConstants.APPROVED,
       StatusConstants.COMPLETED,
       StatusConstants.CONVERTED,

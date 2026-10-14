@@ -38,6 +38,8 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isDownloadingIssuance.value }"
+              :disabled="controller.isDownloadingIssuance.value"
               @click="controller.onDownloadClicked()"
             >
               {{ controller.downloadLabel }}
@@ -150,6 +152,8 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isDownloadingResoForROA.value }"
+              :disabled="controller.isDownloadingResoForROA.value"
               @click="controller.onDownloadClicked()"
             >
               {{ controller.downloadLabel }}
@@ -316,6 +320,15 @@
       controller.setUploadDocumentRef(newVal)
     },
     { immediate: true }
+  )
+
+  watch(
+    () => props.isDownloadCompleted,
+    (newVal) => {
+      if (newVal) {
+        controller.onDownloadCompleted()
+      }
+    }
   )
 
   defineExpose({

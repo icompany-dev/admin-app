@@ -46,6 +46,8 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingIssuance: Ref<boolean> = ref<boolean>(false)
+  isDownloadingResoForROA: Ref<boolean> = ref<boolean>(false)
   isDownloadingProof: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection76: Ref<boolean> = ref<boolean>(false)
   isDownloadingRoa: Ref<boolean> = ref<boolean>(false)
@@ -119,9 +121,20 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   async onDownloadClicked(): Promise<void> {
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
+    if (this.isShowResolutions.value) {
+      this.isDownloadingIssuance.value = true
+    }
+
+    if (this.isShowPrn.value) {
+      this.isDownloadingResoForROA.value = true
+    }
     await nextTick()
     this.emitEvents("download")
+  }
+
+  onDownloadCompleted(): void {
+    this.isDownloadingIssuance.value = false
+    this.isDownloadingResoForROA.value = false
   }
 
   async onUploadDocumentClicked(): Promise<void> {

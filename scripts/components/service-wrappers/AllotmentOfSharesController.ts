@@ -72,13 +72,37 @@ export class AllotmentOfSharesController
     this.showMcrFirst.value = !this.showMcrFirst.value
   }
 
-  onDcrChanged(): void {
-    if (!this.dcrRef || !this.mcrRef) {
+  async onDcrChanged(): Promise<void> {
+    if (!this.dcrRef) {
       return
     }
 
-    let updatedData = this.dcrRef.getApplicationData()
-    this.mcrRef.updateApplicationContent(updatedData)
+    if (this.isUpdating.value) {
+      setTimeout(() => {
+        this.onDcrChanged()
+      }, 500)
+      return
+    }
+
+    this.isUpdating.value = true
+
+    try {
+      let updatedData = this.dcrRef.getApplicationData()
+      this.application.value = new CompanyShareholderAllotment(updatedData)
+      this.application.value.id = this.applicationId ?? ""
+      await this.onUpdate()
+
+      this.isUpdated.value = true
+
+      setTimeout(() => {
+        this.isUpdated.value = false
+        this.isUpdating.value = false
+      }, 1000)
+    } catch (e) {
+      this.isUpdating.value = false
+    } finally {
+      // this.isUpdating.value = false
+    }
   }
 
   async onSignedMcr(signatureData: string): Promise<void> {
