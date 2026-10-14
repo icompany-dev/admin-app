@@ -72,6 +72,12 @@
             {{ props.validationMessage }}
           </div>
           <div class="incorporated-location">(Incorporated in Malaysia)</div>
+          <br />
+          <div>
+            (also referred to as the “
+            <b>Company</b>
+            ”)
+          </div>
         </div>
         <div class="document-date">
           <span class="label">Date:</span>

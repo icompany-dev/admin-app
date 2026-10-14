@@ -38,6 +38,12 @@
                 {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
               </div>
               <div class="incorporated">(Incorporated in Malaysia)</div>
+              <br />
+              <div>
+                (also referred to as the “
+                <b>Company</b>
+                ”)
+              </div>
             </div>
             <div class="voucher-table">
               <table>
