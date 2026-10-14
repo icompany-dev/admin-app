@@ -343,7 +343,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get applicationDetailsNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isSection76Uploaded, this.isShowResolutions.value)
+    return new PropsServiceApplicationNode(this.hasPaid, this.isAuthorisedToAllot, this.isShowResolutions.value)
   }
 
   get applicationDetailsLabel(): string {
@@ -521,8 +521,19 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     return this.language.isMalay() ? "Diluluskan" : "Approved"
   }
 
+  get isAuthorisedToAllot(): boolean {
+    let signaturesCompleted =
+      this.allotShares.value.existingShareAuthorization.signatureGroups.length >= this.shareholders.value.length
+
+    return signaturesCompleted
+  }
+
   get section76NodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isSection76Uploaded, this.isShowResolutions.value)
+    return new PropsServiceApplicationNode(
+      this.isAuthorisedToAllot,
+      this.isSection76Uploaded,
+      this.isShowResolutions.value
+    )
   }
 
   get section76Label(): string {

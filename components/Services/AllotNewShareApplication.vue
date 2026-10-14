@@ -28,6 +28,11 @@
                 class="details"
                 v-html="controller.proposalDetails"
               />
+              <b>{{ controller.section75Label }}</b>
+              <div
+                class="details"
+                v-html="controller.section75Details"
+              />
             </div>
           </template>
           <template #nodeOptions>
@@ -53,13 +58,7 @@
                 {{ controller.section76Sublabel }}
               </div>
             </div>
-            <div class="application-details">
-              <b>{{ controller.section75Label }}</b>
-              <div
-                class="details"
-                v-html="controller.section75Details"
-              />
-            </div>
+            <div class="application-details"></div>
           </template>
           <template #nodeOptions>
             <button
