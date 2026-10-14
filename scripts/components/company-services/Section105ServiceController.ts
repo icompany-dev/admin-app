@@ -66,6 +66,7 @@ export class Section105ServiceController extends CompanyServiceController<Compan
         StatusConstants.PENDING,
         StatusConstants.RESPONDED,
         StatusConstants.ONGOING,
+        StatusConstants.STAMPING,
       ]
       filter.orderBy = "created_at"
       filter.sortOrder = "desc"

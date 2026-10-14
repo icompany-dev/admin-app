@@ -174,7 +174,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
       let repository = useCompanyShareholderTransferStore()
       let response = await repository.notifyStamping(this.application.value.id)
 
-      if (repository.error !== null || !response) {
+      if (repository.error !== null) {
         let error = new Error()
         error.setForCUD()
         throw error
@@ -182,8 +182,18 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
       this.application.value.status = "stamping" //
 
-      await this.fetchApplication()
+      let toastTitle = this.language.isMalay()
+        ? "Status Permohonan telah dikemaskini."
+        : "Status of the Application has been updated."
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahu melalu emel dan WhatsApp."
+        : "Directors have been informed via email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      // await this.fetchApplication()
     } catch (e) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {

@@ -92,6 +92,7 @@ export class TransferSharesServiceController extends CompanyServiceController<Co
         StatusConstants.PENDING,
         StatusConstants.RESPONDED,
         StatusConstants.ONGOING,
+        StatusConstants.STAMPING,
       ]
       filter.orderBy = "created_at"
       filter.sortOrder = "desc"
