@@ -277,6 +277,13 @@ export class ServiceNames {
     "switch-outs",
     "director"
   )
+  static paymentToDirectors: ServiceName = new ServiceName(
+    "Payment to Directors",
+    "Bayaran ke Pengarah",
+    "company_director_payment",
+    "payment-to-directors",
+    "director"
+  )
 
   static names: ServiceName[] = [
     this.applicationIncorporation,
@@ -317,5 +324,6 @@ export class ServiceNames {
     this.documentRequests,
     this.tekunApplications,
     this.switchOuts,
+    this.paymentToDirectors,
   ]
 }

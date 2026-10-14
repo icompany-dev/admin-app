@@ -83,6 +83,7 @@
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { DividendDeclarationsController } from "~/scripts/components/secretarial-services/DividendDeclarationsController"
   import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
+  import { PaymentToDirectorsController } from "~/scripts/components/secretarial-services/PaymentToDirectorsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
   import { SwitchOutsController } from "~/scripts/components/secretarial-services/SwitchOutsController"
@@ -118,6 +119,9 @@
       break
     case CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY:
       controller = new ChangeBankSignatoriesController(props, emit)
+      break
+    case CompanyConstants.TARGET_DIRECTOR_PAYMENT:
+      controller = new PaymentToDirectorsController(props, emit)
       break
     case CompanyConstants.TARGET_DIVIDEND_DECLARATION:
       controller = new DividendDeclarationsController(props, emit)

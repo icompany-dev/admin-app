@@ -93,6 +93,7 @@
   import NoticeTransferOfShares from "./NoticeTransferOfShares.vue"
   import NoConstitution from "./NoConstitution.vue"
   import NotifyBankChangeOfCompanyName from "./NotifyBankChangeOfCompanyName.vue"
+  import PaymentToDirector from "./PaymentToDirector.vue"
   import PracticeDirective2 from "./PracticeDirective2.vue"
   import PreferenceShareRight from "./PreferenceShareRight.vue"
   import PurchaseAsset from "./PurchaseAsset.vue"
@@ -163,6 +164,7 @@
     [CompanyConstants.TARGET_DIRECTOR_LOAN]: LoanToDirector,
     [CompanyConstants.TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT]: AppointChairman,
     [CompanyConstants.TARGET_DIRECTOR_MANAGER_APPOINTMENT]: AppointManager,
+    [CompanyConstants.TARGET_DIRECTOR_PAYMENT]: PaymentToDirector,
     [CompanyConstants.TARGET_DIRECTOR_RESIGNATION]: ResignationOfDirector,
     [CompanyConstants.TARGET_DIVIDEND_DECLARATION]: DividendDeclaration,
     [CompanyConstants.TARGET_DIVIDEND_VOUCHER]: DividendVouchers,

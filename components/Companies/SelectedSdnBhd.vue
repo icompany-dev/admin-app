@@ -1,8 +1,5 @@
 <template>
-  <div
-    id="company-selected-sdn-bhd"
-    :class="{ 'is-showing-documents': controller.showDocument }"
-  >
+  <div id="company-selected-sdn-bhd">
     <template v-if="controller.isLoading.value">
       <LoaderPrepare
         :label="controller.loaderLabel"
@@ -103,7 +100,7 @@
           >
             {{ controller.overview }}
           </div>
-          <div
+          <!-- <div
             class="page-tab"
             :class="{ selected: controller.isBusiness.value }"
             @click="controller.onBusinessClicked()"
@@ -116,7 +113,7 @@
             @click="controller.onDirectorsClicked()"
           >
             {{ controller.directors }}
-          </div>
+          </div> -->
           <div
             class="page-tab"
             :class="{ selected: controller.isDocuments.value }"
@@ -125,6 +122,13 @@
             {{ controller.documents }}
           </div>
           <div
+            class="page-tab"
+            :class="{ selected: controller.isAnnualReturn.value }"
+            @click="controller.onAnnualReturnClicked()"
+          >
+            {{ controller.annualReturn }}
+          </div>
+          <!-- <div
             class="page-tab"
             :class="{ selected: controller.isShareholders.value }"
             @click="controller.onShareholdersClicked()"
@@ -137,7 +141,7 @@
             @click="controller.onAccountingClicked()"
           >
             {{ controller.accounting }}
-          </div>
+          </div> -->
         </TransitionGroup>
         <TransitionGroup name="slide-left">
           <div
@@ -146,7 +150,7 @@
           >
             <Overview :company-id="controller.companyId.value" />
           </div>
-          <div
+          <!-- <div
             class="application-contents"
             v-if="controller.isBusiness.value"
           >
@@ -186,16 +190,22 @@
               @download="controller.onDownloadClicked()"
               @show="controller.onPanelShow(3)"
             />
-          </div>
+          </div> -->
           <div
             class="application-contents"
             v-if="controller.isDocuments.value"
           >
             <Documents v-bind="controller.companyDocumentProps" />
           </div>
+          <div
+            class="application-contents"
+            v-if="controller.isAnnualReturn.value"
+          >
+            <AnnualReturn :company="controller.company.value" />
+          </div>
         </TransitionGroup>
       </div>
-      <TransitionGroup name="slide-left-leave-right">
+      <!-- <TransitionGroup name="slide-left-leave-right">
         <div
           class="application-document-container"
           v-if="controller.showDocument"
@@ -210,7 +220,7 @@
             :target-type="controller.selectedApplicationName.value"
           />
         </div>
-      </TransitionGroup>
+      </TransitionGroup> -->
       <Teleport to="body">
         <SdnBhdSpine
           ref="spineRef"
@@ -222,6 +232,7 @@
 </template>
 
 <script lang="ts" setup>
+  import AnnualReturn from "./AnnualReturn.vue"
   import BankAccountOpeningApplication from "@/components/Services/BankAccountOpeningApplication.vue"
   import BankAccountOpeningService from "@/components/CompanyServices/BankAccountOpeningService.vue"
   import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"

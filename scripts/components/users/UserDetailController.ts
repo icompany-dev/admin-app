@@ -10,6 +10,7 @@ import { StringUtil } from "~/scripts/utils/String"
 export class UserDetailController {
   user: Ref<User> = ref<User>(new User())
   userDetail: Ref<UserDetail> = ref<UserDetail>(new UserDetail())
+
   isShowNric: Ref<boolean> = ref<boolean>(false)
 
   emitEvents: any | null = null
@@ -22,6 +23,7 @@ export class UserDetailController {
   nricDownloadSubtitle: Ref<string> = ref<string>("")
 
   constructor(props: PropsUserDetail, emitEvents: any) {
+    this.setDataFromProps(props)
     this.emitEvents = emitEvents
   }
 
