@@ -73,6 +73,9 @@ export class DocumentTargets {
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT: string = "company_director_manager_appointment"
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT_RESOLUTIONS: string = "company_director_manager_appointment_resolutions"
 
+  static TARGET_DIRECTOR_PAYMENT: string = "company_director_payment"
+  static TARGET_DIRECTOR_PAYMENT_RESOLUTIONS: string = "company_director_payment_resolutions"
+
   static TARGET_DIRECTOR_RESIGNATION: string = "company_director_resignation"
   static TARGET_DIRECTOR_RESIGNATION_RESOLUTIONS: string = "company_director_resignation_resolutions"
 
