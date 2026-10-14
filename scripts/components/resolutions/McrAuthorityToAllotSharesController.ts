@@ -305,6 +305,8 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
         return "until specific date "
       case AuthorizationEffectiveType.OneAllotmentOnly:
         return "for this Allotment of New Shares only"
+      default:
+        return "until revoked"
     }
   }
 
@@ -326,14 +328,12 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     )
 
     if (this.isDocumentEditable()) {
-      console.log("dalam ni")
       const purposeOfAllotmentRegex = /\[purpose-checkbox-options\]([\s\S]*?)\[\/purpose-checkbox-options\]/
       this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
         purposeOfAllotmentRegex,
         this.getPurposeOfProposedAllotment()
       )
     } else {
-      console.log("dalam ni kah???")
       const purposeOfAllotmentSearchString =
         "the proposed allotment of shares is intended for purposes including but not limited to:"
       this.documentTemplate.value.content = this.documentTemplate.value.content.replace(
@@ -401,6 +401,58 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
   }
 
   // event listeners
+  handleMaxPercentageAllowed(event: Event): void {
+    if (!this.application.value || !this.isDocumentEditable()) {
+      return
+    }
+
+    let target = event.target as HTMLInputElement
+    let value = target.value
+
+    this.application.value.maxPercentageAllowed = Number(value)
+
+    this.emitEvents("dataUpdated")
+  }
+
+  handleMaxConsiderationAmountAllowed(event: Event): void {
+    if (!this.application.value || !this.isDocumentEditable()) {
+      return
+    }
+
+    let target = event.target as HTMLInputElement
+    let value = target.value
+
+    this.application.value.maxConsiderationAmountAllowed = Number(value)
+
+    this.emitEvents("dataUpdated")
+  }
+
+  handleMaxUnitsOfSharesAllowed(event: Event): void {
+    if (!this.application.value || !this.isDocumentEditable()) {
+      return
+    }
+
+    let target = event.target as HTMLInputElement
+    let value = target.value
+
+    this.application.value.maxUnitsOfSharesAllowed = Number(value)
+
+    this.emitEvents("dataUpdated")
+  }
+
+  handlePricePerShareAllowed(event: Event): void {
+    if (!this.application.value || !this.isDocumentEditable()) {
+      return
+    }
+
+    let target = event.target as HTMLInputElement
+    let value = target.value
+
+    this.application.value.pricePerShareAllowed = Number(value)
+
+    this.emitEvents("dataUpdated")
+  }
+
   handleOnPurposeAllotmentClicked(event: Event): void {
     if (!this.application.value || !this.isDocumentEditable()) {
       return
@@ -420,6 +472,7 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     }
 
     this.setContent()
+    this.emitEvents("dataUpdated")
   }
 
   handleOnCanSetNumberSharesClicked(event: Event): void {
@@ -430,6 +483,7 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     this.application.value.canSetNumberClassShares = !this.application.value.canSetNumberClassShares
 
     this.setContent()
+    this.emitEvents("dataUpdated")
   }
 
   handleOnCanSetIssuePriceClicked(event: Event): void {
@@ -440,6 +494,7 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     this.application.value.canSetIssuePrice = !this.application.value.canSetIssuePrice
 
     this.setContent()
+    this.emitEvents("dataUpdated")
   }
 
   handleOnCanAcceptRejectClicked(event: Event): void {
@@ -450,6 +505,7 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     this.application.value.canAcceptRejectSubscription = !this.application.value.canAcceptRejectSubscription
 
     this.setContent()
+    this.emitEvents("dataUpdated")
   }
 
   handleOnEffectiveDateTypeChanged(event: Event): void {
@@ -466,6 +522,7 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     }
 
     this.setContent()
+    this.emitEvents("dataUpdated")
   }
 
   handleOnEffectiveDateChanged(event: Event): void {
@@ -479,12 +536,37 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     this.application.value.effectiveDate = value
 
     this.setContent()
+    this.emitEvents("dataUpdated")
   }
 
   attachEventListeners(): void {
     if (!this.isDocumentEditable()) {
       return
     }
+
+    const maxPercentageAlloweds = document.querySelectorAll(".maxPercentageAllowed")
+    maxPercentageAlloweds.forEach((el) => {
+      el.removeEventListener("change", this.handleMaxPercentageAllowed.bind(this))
+      el.addEventListener("change", this.handleMaxPercentageAllowed.bind(this))
+    })
+
+    const maxConsiderationAmountAlloweds = document.querySelectorAll(".maxConsiderationAmountAllowed")
+    maxConsiderationAmountAlloweds.forEach((el) => {
+      el.removeEventListener("change", this.handleMaxConsiderationAmountAllowed.bind(this))
+      el.addEventListener("change", this.handleMaxConsiderationAmountAllowed.bind(this))
+    })
+
+    const maxUnitsOfSharesAlloweds = document.querySelectorAll(".maxUnitsOfSharesAllowed")
+    maxUnitsOfSharesAlloweds.forEach((el) => {
+      el.removeEventListener("change", this.handleMaxUnitsOfSharesAllowed.bind(this))
+      el.addEventListener("change", this.handleMaxUnitsOfSharesAllowed.bind(this))
+    })
+
+    const pricePerShareAlloweds = document.querySelectorAll(".pricePerShareAllowed")
+    pricePerShareAlloweds.forEach((el) => {
+      el.removeEventListener("change", this.handlePricePerShareAllowed.bind(this))
+      el.addEventListener("change", this.handlePricePerShareAllowed.bind(this))
+    })
 
     const purposeOfAllotmentBoxes = document.querySelectorAll(".purpose-of-allotment")
     purposeOfAllotmentBoxes.forEach((el) => {
@@ -523,10 +605,6 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     })
   }
 
-  override isDocumentEditable(): boolean {
-    return false
-  }
-
   get purposeOfAllotments(): string[] {
     return Object.values(PurposeOfAllotment)
   }
@@ -542,57 +620,25 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
 
     this.isGettingPdfPages.value = true
 
-    console.log("editable", this.isDocumentEditable())
-
+    let originalPage1 = this.resolutionContentPage1.value
+    let originalPage2 = this.resolutionContentPage2.value
     let originalResolutionContent = this.resolutionContent.value
-    this.documentTemplate.value.content = this.originalContent.value
+
     this.resolutionContent.value = this.getContent()
+    let pageContents = this.resolutionContent.value.split("&lt;pagebreak&gt;")
+    this.resolutionContentPage1.value = pageContents[0] ?? this.resolutionContent.value
+    this.resolutionContentPage2.value = pageContents[1] ?? ""
 
     await nextTick()
     let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
 
-    console.log(
-      "pages",
-      pdfPages
-        .map((s) => {
-          return s.innerHTML
-        })
-        .join("  ")
-    )
-
     setTimeout(() => {
       this.resolutionContent.value = originalResolutionContent
+      this.resolutionContentPage1.value = originalPage1
+      this.resolutionContentPage2.value = originalPage2
       this.isGettingPdfPages.value = false
     }, 2000)
 
     return pdfPages
   }
-
-  // override async getPdfPages(): Promise<HTMLElement[]> {
-  //   if (!this.documentRef) {
-  //     return []
-  //   }
-
-  //   this.isGettingPdfPages.value = true
-
-  //   let originalResolutionContent = this.resolutionContent.value
-  //   let originalAccompanyingDocumentContent = this.accompanyingDocumentContent.value
-  //   if (!StringUtil.isNullOrEmpty(this.resolutionContent.value)) {
-  //     let templateProcessor = new TemplateProcessor(null)
-  //     this.resolutionContent.value = templateProcessor.replaceInputsWithValues(this.resolutionContent.value)
-  //     this.accompanyingDocumentContent.value = templateProcessor.replaceInputsWithValues(
-  //       this.accompanyingDocumentContent.value
-  //     )
-  //   }
-
-  //   await nextTick()
-  //   let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
-
-  //   this.resolutionContent.value = originalResolutionContent
-  //   this.accompanyingDocumentContent.value = originalAccompanyingDocumentContent
-
-  //   this.isGettingPdfPages.value = false
-
-  //   return pdfPages
-  // }
 }

@@ -115,6 +115,43 @@ export class AllotmentOfSharesController
     }
   }
 
+  async onMcrUpdated(): Promise<void> {
+    if (!this.mcrRef) {
+      return
+    }
+
+    if (this.isUpdating.value) {
+      setTimeout(() => {
+        this.onMcrUpdated()
+      }, 500)
+      return
+    }
+
+    this.isUpdating.value = true
+
+    try {
+      let updatedData = this.mcrRef.getApplication()
+      let companyShareAuthorization = new CompanyShareAuthorization(updatedData)
+      if (StringUtil.isNullOrEmpty(companyShareAuthorization.id)) {
+        await companyShareAuthorization.create(useCompanyShareAuthorizationStore())
+      } else {
+        await companyShareAuthorization.update(useCompanyShareAuthorizationStore())
+      }
+      await this.allotShares.value.fetchExistingAuthorization()
+
+      this.isUpdated.value = true
+
+      setTimeout(() => {
+        this.isUpdated.value = false
+        this.isUpdating.value = false
+      }, 1000)
+    } catch (e) {
+      this.isUpdating.value = false
+    } finally {
+      // this.isUpdating.value = false
+    }
+  }
+
   async onSubmitMcrClicked(): Promise<void> {
     try {
       this.emitEvents("back", this.application)
