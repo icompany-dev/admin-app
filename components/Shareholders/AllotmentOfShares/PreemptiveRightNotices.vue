@@ -21,7 +21,7 @@
         </Paper>
         <template v-if="!controller.isLoading.value">
           <Section85PreemptiveRightNotice
-            v-for="(response, index) in controller.noticeResponses.value"
+            v-for="(response, index) in controller.responses"
             :company-id="controller.companyId.value"
             :initiator-signature-item="controller.initiatorSignatureItem.value"
             :notice-response="response"

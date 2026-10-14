@@ -129,6 +129,7 @@ export class PreemptiveRightNoticesController {
         throw repository.error
       }
 
+      console.log("over no", this.applicationId.value)
       this.application.value = new CompanyShareIssuance(response)
     } catch (e: any) {
       if (e instanceof Error) {
@@ -232,6 +233,15 @@ export class PreemptiveRightNoticesController {
               return sg.email === this.application.value.initiator.email
             }) ?? null)
           : null
+
+      if (!initiatorSignature && this.application.value.allotment) {
+        initiatorSignature =
+          this.application.value.allotment.signatureGroups.length > 0
+            ? (this.application.value.allotment.signatureGroups.find((sg: SignatureGroup) => {
+                return sg.email === this.application.value.initiator.email
+              }) ?? null)
+            : null
+      }
       let signatureUrl = initiatorSignature?.signature?.url ?? null
 
       let roles = []
@@ -269,7 +279,9 @@ export class PreemptiveRightNoticesController {
 
     this.signatureItems.value = []
     this.noticeResponses.value = []
+    console.log("we have emptied this", this.noticeResponses.value)
     if (this.application.value.responses.length <= 0) {
+      console.log("populating")
       this.shareholders.value.forEach((shareholder: Shareholder) => {
         let signatureItem = new SignatureItem(
           null,
@@ -289,6 +301,7 @@ export class PreemptiveRightNoticesController {
         this.noticeResponses.value.push(noticeResponse)
       })
     } else {
+      console.log("over??")
       this.application.value.responses.forEach((noticeResponse: CompanyShareIssuanceResponse) => {
         let shareholder = noticeResponse.shareholder
 
@@ -445,5 +458,29 @@ export class PreemptiveRightNoticesController {
 
   get submittingDocumentSublabel(): string {
     return this.language.isMalay() ? "Butiran dan Tandatangan" : "Details and Signatures"
+  }
+
+  get responses(): CompanyShareIssuanceResponse[] {
+    let existings: CompanyShareIssuanceResponse[] = []
+
+    this.noticeResponses.value.forEach((csir: CompanyShareIssuanceResponse) => {
+      let inExisting = existings.find((s: CompanyShareIssuanceResponse) => {
+        return s.shareholder.id === csir.shareholder.id
+      })
+
+      if (inExisting) {
+        if (inExisting.responseDate === null) {
+          existings = existings.filter((s: CompanyShareIssuanceResponse) => {
+            return s.shareholder.id !== inExisting?.shareholder.id
+          })
+
+          existings.push(csir)
+        }
+      } else {
+        existings.push(csir)
+      }
+    })
+
+    return existings
   }
 }
