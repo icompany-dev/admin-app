@@ -36,7 +36,7 @@
           tag="div"
           class="documents"
         >
-          <PaymentToDirector
+          <!-- <PaymentToDirector
             :company-id="controller.companyId"
             :application-id="controller.companyDirectorPayment.value.id"
             :is-in-preview-mode="controller.isInPreviewMode.value"
@@ -44,8 +44,8 @@
             :watermark-text="controller.watermarkText()"
             @back="controller.onUpdatingDocument()"
             @applicationUpdated="controller.onDocumentUpdated()"
-          />
-          <!-- <DcrPaymentToDirector
+          /> -->
+          <DcrPaymentToDirector
             v-if="!controller.isShowMcrFirst"
             ref="dcrRef"
             v-bind="controller.resolutionDocumentProps"
@@ -56,92 +56,10 @@
             ref="mcrRef"
             v-bind="controller.resolutionDocumentProps"
             @total-page-changed="controller.handleDoneLoading()"
-          /> -->
+          />
         </TransitionGroup>
       </template>
-      <template #step-status>
-        <div>
-          <b>{{ controller.status }}</b>
-          <i
-            class="fa-solid fa-loader fa-spin"
-            v-if="controller.isProcessing"
-          />
-          <div
-            class="signature-notes"
-            v-if="controller.isProposalRejected"
-          >
-            {{ controller.statusNotes }}
-            <br />
-          </div>
-          <div
-            class="step-date"
-            v-if="controller.isProcessComplete"
-          >
-            {{ controller.decisionDate }}
-          </div>
-        </div>
-      </template>
-      <template #cornerButton>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-learn-more"
-          v-keyboard-click
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </button>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-pay"
-          v-keyboard-click
-          @click="controller.onProceedClicked()"
-        >
-          {{ controller.payLabel() }}
-        </button>
-      </template>
-      <template #learnMoreButton>
-        <div
-          class="learn-more"
-          v-keyboard-click
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </div>
-      </template>
     </CompanyServiceWrapper>
-    <ActionTray
-      v-if="controller.showActionTray()"
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
-    <Teleport to="body">
-      <div
-        class="alert-tray"
-        :class="{ show: controller.isShowInfo.value }"
-        @click.self="controller.onMoreInfoClicked()"
-      >
-        <Transition name="alert-appear">
-          <Alert
-            :is-dismissible="true"
-            :type="'default'"
-            :is-show="controller.isShowInfo.value"
-            @hide="controller.onMoreInfoClicked()"
-          >
-            <template #alertContent>
-              <div class="title">
-                {{ controller.alertTitle() }}
-              </div>
-              <div
-                class="content"
-                v-html="controller.alertContent()"
-                v-keyboard-click
-                @click="controller.onGlossaryLinkClicked($event)"
-              />
-            </template>
-          </Alert>
-        </Transition>
-      </div>
-    </Teleport>
   </div>
 </template>
 
@@ -215,6 +133,12 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onGenerateBlob: controller.onGenerateBlob.bind(controller),
+    onMoveToForms: controller.onMoveToForms.bind(controller),
+  })
 </script>
 
 <style lang="scss">

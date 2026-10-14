@@ -81,6 +81,7 @@
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     onDataChanged: controller.onDataChanged.bind(controller),
     isLoading: controller.isLoading.value,
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

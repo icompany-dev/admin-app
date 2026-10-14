@@ -20,6 +20,7 @@ import { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { GenerateDocumentDetails } from "~/scripts/types/GenerateDocumentDetails"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import { NumberUtil } from "~/scripts/utils/Number"
 
 export class PaymentToDirectorApplicationController extends ApplicationController<CompanyDirectorPayment> {
   resolutionsRef: any | null = null
@@ -200,12 +201,34 @@ export class PaymentToDirectorApplicationController extends ApplicationControlle
     return this.language.isMalay() ? "Jenis Bayaran" : "Type of Payment"
   }
 
+  get typeOfPayment(): string {
+    return this.application.value?.typeOfPayment ?? (this.language.isMalay() ? "Tidak Lengkap" : "Incomplete")
+  }
+
   get amountLabel(): string {
     return this.language.isMalay() ? "Jumlah" : "Amount"
   }
 
+  get amount(): string {
+    if (!this.application.value || !this.application.value.amount) {
+      return this.language.isMalay() ? "Tidak Lengkap" : "Incomplete"
+    }
+
+    return NumberUtil.currency(this.application.value.amount)
+  }
+
   get financialYearEndDateLabel(): string {
     return this.language.isMalay() ? "Tarikh Akhir Tahun Kewangan" : "Financial Year End"
+  }
+
+  get financialYearEndDate(): string {
+    if (!this.application.value || !this.application.value.financialYearEndDate) {
+      return this.language.isMalay() ? "Tidak Lengkap" : "Incomplete"
+    }
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyFull(this.application.value.financialYearEndDate)
   }
 
   get expireAtLabel(): string {

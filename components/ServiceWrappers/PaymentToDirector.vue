@@ -32,10 +32,12 @@
         />
       </TransitionGroup>
     </div>
+    <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>
 
 <script setup lang="ts">
+  import ActionTray from "@/components/ActionTrays/ActionTray.vue"
   import DcrPaymentToDirector from "../Resolutions/DcrPaymentToDirector.vue"
   import McrPaymentToDirector from "../Resolutions/McrPaymentToDirector.vue"
   import { PaymentToDirectorController } from "~/scripts/components/service-wrappers/PaymentToDirectorController"

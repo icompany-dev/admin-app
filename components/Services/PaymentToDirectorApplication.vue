@@ -24,10 +24,13 @@
             </div>
             <div class="application-details">
               <b>{{ controller.typeOfPaymentLabel }}</b>
+              : {{ controller.typeOfPayment }}
               <br />
               <b>{{ controller.amountLabel }}</b>
+              : {{ controller.amount }}
               <br />
               <b>{{ controller.financialYearEndDateLabel }}</b>
+              : {{ controller.financialYearEndDate }}
               <br />
 
               <template v-if="controller.hasOtherRequirements">
