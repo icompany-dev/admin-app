@@ -119,7 +119,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
             }
 
             let blob = await response.blob()
-            files.push(new DownloadFileData(URL.createObjectURL(blob), item.documentName))
+            files.push(new DownloadFileData(URL.createObjectURL(blob), `${item.documentName}.pdf`))
           })
         )
       })
@@ -200,7 +200,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
   }
 
   canShowDocument(item: CompanyDocumentRequestItem): boolean {
-    return item.iCompanyFile?.url !== null
+    return !StringUtil.isNullOrEmpty(item.iCompanyFile?.url ?? "")
   }
 
   //getters
@@ -284,32 +284,6 @@ export class DocumentRequestApplicationController extends ApplicationController<
       orderItem.deliveryType !== DeliveryConstants.DELIVERY_EMAIL &&
       orderItem.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
     )
-  }
-
-  override get deliveryAddressToCopy(): string {
-    if (!this.application.value) {
-      return "-"
-    }
-
-    if (!this.application.value.company?.hasBusinessAddress) {
-      let addressFragments: string[] = []
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
-      )
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
-      )
-
-      return addressFragments
-        .filter((s: string) => {
-          return !StringUtil.isNullOrEmpty(s)
-        })
-        .join(", ")
-    }
-
-    return this.application.value.company?.businessAddressLocation?.getOnelineAddress() ?? ""
   }
 
   get downloadLabel(): string {

@@ -532,6 +532,10 @@ export abstract class ApplicationController<Application> {
   }
 
   get deliveryMethod(): string {
+    if (!this.isDeliveryRequired) {
+      return "Email"
+    }
+
     return this.paymentOrderItem.deliveryType ?? "-"
   }
 
@@ -540,8 +544,12 @@ export abstract class ApplicationController<Application> {
   }
 
   get deliveryAddress(): string {
-    if (!this.application.value || !this.isDeliveryRequired) {
+    if (!this.application.value) {
       return this.language.isMalay() ? "Penghantaran Tidak Diperlukan" : "No Delivery Required"
+    }
+
+    if (!this.isDeliveryRequired) {
+      return this.paymentOrder.value.billingInfo.email ?? "-"
     }
 
     let paymentOrderItemDelivery = this.paymentOrderItem.delivery
@@ -585,6 +593,10 @@ export abstract class ApplicationController<Application> {
   get deliveryAddressToCopy(): string {
     if (!this.application.value) {
       return "-"
+    }
+
+    if (!this.isDeliveryRequired) {
+      return this.paymentOrder.value.billingInfo.email ?? "-"
     }
 
     if (!this.application.value.company?.hasBusinessAddress) {
