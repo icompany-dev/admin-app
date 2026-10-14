@@ -916,4 +916,16 @@ export class TransferOfShareApplicationController extends ApplicationController<
   get section51Label(): string {
     return this.language.isMalay() ? "Seksyen 51" : "Section 51"
   }
+
+  get transferorLabel(): string {
+    return this.language.isMalay() ? "Daripada" : "From"
+  }
+
+  get transfereeLabel(): string {
+    return this.language.isMalay() ? "Kepada" : "To"
+  }
+
+  get transferLabel(): string {
+    return this.language.isMalay() ? "Pemindahan #" : "Transfer #"
+  }
 }
