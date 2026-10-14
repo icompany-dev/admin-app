@@ -47,6 +47,7 @@
   import DividendDeclaration from "./DividendDeclaration.vue"
   import DocumentRequest from "./DocumentRequest.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import PaymentToDirector from "./PaymentToDirector.vue"
   import SwitchOut from "./SwitchOut.vue"
   import TekunApplication from "./TekunApplication.vue"
   import TransferOfShare from "./TransferOfShare.vue"
@@ -67,6 +68,7 @@
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointAuditor,
     [CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY]: ChangeBankSignatory,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
+    [CompanyConstants.TARGET_DIRECTOR_PAYMENT]: PaymentToDirector,
     [CompanyConstants.TARGET_DIVIDEND_DECLARATION]: DividendDeclaration,
     [CompanyConstants.TARGET_DOCUMENT_REQUEST]: DocumentRequest,
     [CompanyConstants.TARGET_LOAN_APPLICATION]: TekunApplication,

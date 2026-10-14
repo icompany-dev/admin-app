@@ -162,6 +162,12 @@ export class PageSidebar {
     "services/appointment-of-auditor",
     false
   )
+  static paymentToDirectors: Sidebar = new Sidebar(
+    "Payment to Directors",
+    "Bayaran ke Pengarah",
+    "services/payment-to-directors",
+    false
+  )
   static switchOut: Sidebar = new Sidebar("Switch Outs", "Switch Out", "services/switch-outs", false)
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
@@ -169,6 +175,7 @@ export class PageSidebar {
     this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
+    this.paymentToDirectors,
     this.transferOfShares,
     this.allotNewShares,
     this.purchaseAssets,
