@@ -111,6 +111,9 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
       case CompanyConstants.TARGET_DIRECTOR_MANAGER_APPOINTMENT:
         this.pageAlias = "Appoint a CEO"
         break
+      case CompanyConstants.TARGET_DIRECTOR_PAYMENT:
+        this.pageAlias = "Payment to Director"
+        break
       case CompanyConstants.TARGET_DIRECTOR_RESIGNATION:
         this.pageAlias = "Resign as Director"
         break
