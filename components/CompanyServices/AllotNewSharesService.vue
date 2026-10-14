@@ -39,6 +39,21 @@
             v-bind="controller.resolutionDocumentProps"
             @total-page-changed="controller.handleDoneLoading()"
           />
+          <PreemptiveRightNotices
+            ref="mcrRef"
+            :company-id="controller.companyId"
+            :application-id="controller.issuanceId"
+            :application="null"
+            :is-in-preview-mode="controller.isInPreviewMode.value"
+            :is-by-shareholder="false"
+            :financial-period-id="null"
+            :bank-id="null"
+            :name-reservations="[]"
+            :year-to-lodge="null"
+            :type="null"
+            :show-watermark="controller.showWatermark()"
+            :watermark-text="controller.watermarkText()"
+          />
           <!-- <McrAllotmentOfShares
             ref="mcrRef"
             v-bind="controller.resolutionDocumentProps"
@@ -55,6 +70,7 @@
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import DcrAllotmentOfShares from "../Resolutions/DcrAllotmentOfShares.vue"
   import McrAllotmentOfShares from "../Resolutions/McrAllotmentOfShares.vue"
+  import PreemptiveRightNotices from "../Shareholders/AllotmentOfShares/PreemptiveRightNotices.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import ActionTray from "../ActionTrays/ActionTray.vue"
   import { AllotNewSharesServiceController } from "~/scripts/components/company-services/AllotNewSharesServiceController"

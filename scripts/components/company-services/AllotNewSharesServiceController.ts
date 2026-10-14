@@ -17,6 +17,10 @@ import { PaymentCartItem } from "~/scripts/models/PaymentCartItem"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { ObjectUtil } from "~/scripts/utils/Object"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { FileZipper } from "~/scripts/utils/FileZipper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class AllotNewSharesServiceController extends CompanyServiceController<CompanyShareholderAllotment> {
   companyShareholderAllotment = ref<CompanyShareholderAllotment>(new CompanyShareholderAllotment())
@@ -426,6 +430,48 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
     return this.language.isMalay() ? "Menunggu Respons" : "Awaiting Responses"
   }
 
+  override async onDownloadClicked(): Promise<void> {
+    let pages: HTMLElement[] = []
+    let dcrPages: HTMLElement[] = []
+    let mcrPages: HTMLElement[] = []
+
+    let promises: any[] = []
+
+    if (this.dcrRef) {
+      dcrPages = await this.dcrRef.getPdfPages()
+      pages = pages.concat(dcrPages)
+
+      promises.push(
+        PdfPaperUtil.generatePdfFile(
+          dcrPages,
+          20,
+          "DCR - Issue and Allotment of Shares.pdf",
+          PaperSize.A4,
+          PaperOrientation.Portrait
+        )
+      )
+    }
+
+    if (this.mcrRef) {
+      mcrPages = await this.mcrRef.getPdfPages()
+      pages = pages.concat(mcrPages)
+
+      mcrPages.forEach((page: HTMLElement, index: number) => {
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            [page],
+            20,
+            `${index + 1}. Section 85 - Preemptive Rights Notices.pdf`,
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      })
+    }
+
+    await Promise.all(promises)
+  }
+
   get serviceWrapperProps() {
     let application =
       this.viewType.value === ViewMode.New ? new CompanyShareholderAllotment() : this.companyShareholderAllotment.value
@@ -610,5 +656,9 @@ export class AllotNewSharesServiceController extends CompanyServiceController<Co
 
   get viewAllStepsLabel(): string {
     return this.language.isMalay() ? "Kembali ke Peruntukkan" : "Back to Issuance"
+  }
+
+  get issuanceId(): string {
+    return this.companyShareIssuance.value.id
   }
 }
