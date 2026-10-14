@@ -159,7 +159,7 @@ export class PreemptiveRightNoticesController {
       })
 
       this.isAShareholder.value = this.shareholders.value.some((s: Shareholder) => {
-        return s.email === this.user.value.email
+        return s.email === this.user.value.email && !s.isCorporateRepresentative()
       })
     } catch (e: any) {
       if (e instanceof Error) {
@@ -290,7 +290,9 @@ export class PreemptiveRightNoticesController {
           shareholder.email !== this.user.value.email,
           shareholder.name,
           shareholder.email,
-          "Member",
+          !shareholder.isCorporateRepresentative()
+            ? "Member"
+            : `On Behalf of<br><b>${shareholder.fullName().toUpperCase()}</b>`,
           false
         )
 
@@ -318,7 +320,9 @@ export class PreemptiveRightNoticesController {
           shareholder.user?.email !== this.user.value.email,
           shareholder.user?.name ?? "",
           shareholder.user?.email ?? "",
-          "Member",
+          !shareholder.isCorporateRepresentative()
+            ? "Member"
+            : `On Behalf of<br><b>${shareholder.fullName().toUpperCase()}</b>`,
           false
         )
 
@@ -335,10 +339,12 @@ export class PreemptiveRightNoticesController {
       noticeResponse.responseFile?.url ?? null,
       noticeResponse.responseFile !== null,
       false,
-      shareholder.user?.email !== this.user.value.email,
+      false,
       shareholder.user?.name ?? "",
-      shareholder.user?.email ?? "",
-      "Member",
+      "",
+      !shareholder.isCorporateRepresentative()
+        ? "Member"
+        : `On Behalf of<br><b>${shareholder.fullName().toUpperCase()}</b>`,
       false
     )
 

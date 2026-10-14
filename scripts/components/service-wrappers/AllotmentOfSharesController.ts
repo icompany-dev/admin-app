@@ -334,15 +334,17 @@ export class AllotmentOfSharesController
 
       if (this.noticeRef) {
         let noticePages = await this.noticeRef.getPdfPages()
-        promises.push(
-          PdfPaperUtil.generatePdfFile(
-            noticePages,
-            20,
-            "Section 85 - Preemptive Rights Notices.pdf",
-            PaperSize.A4,
-            PaperOrientation.Portrait
+        noticePages.forEach((page: HTMLElement, index: number) => {
+          promises.push(
+            PdfPaperUtil.generatePdfFile(
+              [page],
+              20,
+              `${index + 1}. Section 85 - Preemptive Rights Notices.pdf`,
+              PaperSize.A4,
+              PaperOrientation.Portrait
+            )
           )
-        )
+        })
       }
 
       if (this.allotRef) {
@@ -351,7 +353,7 @@ export class AllotmentOfSharesController
           PdfPaperUtil.generatePdfFile(
             allotPages,
             20,
-            "DCR - Allotment of Shares.pdf",
+            "DCR - Issue and Allotment of Shares.pdf",
             PaperSize.A4,
             PaperOrientation.Portrait
           )
