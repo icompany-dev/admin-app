@@ -75,7 +75,7 @@ export class TransferSharesServiceController extends CompanyServiceController<Co
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetchAll()
         errorMessage.handle()
       }
@@ -141,8 +141,8 @@ export class TransferSharesServiceController extends CompanyServiceController<Co
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -171,8 +171,8 @@ export class TransferSharesServiceController extends CompanyServiceController<Co
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -241,8 +241,8 @@ export class TransferSharesServiceController extends CompanyServiceController<Co
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     } finally {

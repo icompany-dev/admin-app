@@ -664,7 +664,6 @@ export abstract class CompanyServiceController<T> {
     }
 
     if (pages.length <= 0) {
-      console.log("no page?s")
       return
     }
 

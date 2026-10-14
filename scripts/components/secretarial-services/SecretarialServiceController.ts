@@ -100,7 +100,6 @@ export abstract class SecretarialServiceController<T, R> {
 
   async onDownloadClicked(): Promise<void> {
     if (this.isDownloading.value || !this.documentRef) {
-      console.log("this lver", this.documentRef)
       return
     }
 
@@ -155,6 +154,7 @@ export abstract class SecretarialServiceController<T, R> {
     let props = new PropsApplication("", this.applicationId.value)
 
     props.canCompleteService = this.canCompleteService.value
+    props.isDownloadCompleted = !this.isDownloading.value
 
     return props
   }

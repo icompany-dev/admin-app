@@ -37,6 +37,9 @@ export class TransferOfShareApplicationController extends ApplicationController<
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingSection105: Ref<boolean> = ref<boolean>(false)
+  isDownloadingRegister: Ref<boolean> = ref<boolean>(false)
+
   isDownloadingSijilSetem: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection51: Ref<boolean> = ref<boolean>(false)
   isSubmitting: Ref<boolean> = ref<boolean>(false)
@@ -62,6 +65,13 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   setResolutionsRef(resolutionsRef: any): void {
     this.resolutionsRef = resolutionsRef
+  }
+
+  setIsDocumentDownloadCompleted(isCompleted: boolean): void {
+    if (isCompleted) {
+      this.isDownloadingSection105.value = false
+      this.isDownloadingRegister.value = false
+    }
   }
 
   override async fetchApplication(): Promise<void> {
@@ -186,7 +196,14 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
   }
 
+  async onDownloadSection105Clicked(): Promise<void> {
+    this.isDownloadingSection105.value = true
+    await nextTick()
+    this.emitEvents("download")
+  }
+
   async onDownloadClicked(): Promise<void> {
+    this.isDownloadingRegister.value = true
     await nextTick()
     this.emitEvents("download")
   }

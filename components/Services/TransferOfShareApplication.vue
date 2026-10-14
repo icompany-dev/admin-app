@@ -127,7 +127,9 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
-              @click="controller.onDownloadClicked()"
+              :class="{ 'is-loading': controller.isDownloadingSection105.value }"
+              :disabled="controller.isDownloadingSection105.value"
+              @click="controller.onDownloadSection105Clicked()"
             >
               {{ controller.downloadLabel }}
             </button>
@@ -198,6 +200,8 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isDownloadingRegister.value }"
+              :disabled="controller.isDownloadingRegister.value"
               @click="controller.onDownloadClicked()"
             >
               {{ controller.downloadLabel }}
@@ -344,6 +348,13 @@
       if (!oldVal && newVal) {
         controller.onProceedPostCompleted()
       }
+    }
+  )
+
+  watch(
+    () => props.isDownloadCompleted,
+    (newVal) => {
+      controller.setIsDocumentDownloadCompleted(newVal)
     }
   )
 
