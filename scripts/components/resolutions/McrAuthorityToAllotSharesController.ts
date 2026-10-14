@@ -286,7 +286,7 @@ export class McrAuthorityToAllotSharesController extends ResolutionController<Co
     }
 
     let effectiveType = this.getEffectiveType(this.application.value.effectiveDateType as AuthorizationEffectiveType)
-    if (this.isEffectiveTypeSelected(AuthorizationEffectiveType.Revoked)) {
+    if (this.isEffectiveTypeSelected(AuthorizationEffectiveType.SpecificDate)) {
       let time = useLocalTime()
       let effectiveDate = time.formatDateOnlyFull(this.application.value.effectiveDate ?? "")
       effectiveType = `until ${effectiveDate}`
