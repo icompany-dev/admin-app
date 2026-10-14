@@ -1,5 +1,8 @@
 <template>
-  <div id="mcr-payment-to-director">
+  <div
+    id="mcr-payment-to-director"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
@@ -26,6 +29,7 @@
   const emit = defineEmits(["startLoading", "doneLoading", "signed"])
 
   const resolutionContent = ref(null)
+  const documentRef = ref(null)
 
   const controller = new McrPaymentToDirectorController(props, emit)
 
@@ -73,6 +77,14 @@
     (newVal) => {
       console.log(newVal)
     }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 
   defineExpose({

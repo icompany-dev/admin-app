@@ -1,5 +1,8 @@
 <template>
-  <div id="dcr-payment-to-director">
+  <div
+    id="dcr-payment-to-director"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
@@ -33,6 +36,7 @@
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "dataChanged"])
 
   const resolutionContent = ref(null)
+  const documentRef = ref(null)
 
   const controller = new DcrPaymentToDirectorController(props, emit)
 
@@ -89,6 +93,14 @@
         controller.attachEventListeners()
       })
     }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
   )
 
   defineExpose({
