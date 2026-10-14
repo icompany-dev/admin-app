@@ -44,6 +44,7 @@ export class CompanyConstants {
   static TARGET_DIRECTOR_LOAN: string = "company_director_loan"
   static TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT: string = "company_director_chairman_appointment"
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT: string = "company_director_manager_appointment"
+  static TARGET_DIRECTOR_PAYMENT: string = "company_director_payment"
   static TARGET_DIRECTOR_RESIGNATION: string = "company_director_resignation"
   static TARGET_DIVIDEND_DECLARATION: string = "company_dividend_declaration"
   static TARGET_DIVIDEND_VOUCHER: string = "company_dividend_declaration_voucher"
@@ -133,6 +134,7 @@ export class CompanyConstants {
     this.TARGET_DIRECTOR_LOAN,
     this.TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT,
     this.TARGET_DIRECTOR_MANAGER_APPOINTMENT,
+    this.TARGET_DIRECTOR_PAYMENT,
     this.TARGET_DIRECTOR_RESIGNATION,
     this.TARGET_DIVIDEND_DECLARATION,
     this.TARGET_DIVIDEND_VOUCHER,
