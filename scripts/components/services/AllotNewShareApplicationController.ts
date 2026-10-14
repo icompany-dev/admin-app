@@ -33,11 +33,16 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   allotShares = ref<AllotShares>(new AllotShares("", ""))
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
+  isShowSection76: Ref<boolean> = ref<boolean>(false)
   isShowPrn: Ref<boolean> = ref<boolean>(false)
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
+  isUploadingSection76: Ref<boolean> = ref<boolean>(false)
+  isUploadingROA: Ref<boolean> = ref<boolean>(false)
+
   isGenerating: Ref<boolean> = ref<boolean>(false)
+  isSubmitting: Ref<boolean> = ref<boolean>(false)
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
@@ -76,6 +81,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   onPaymentStepClicked(): void {
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false
+    this.isShowSection76.value = false
     this.isShowPrn.value = false
     this.isShowCompleted.value = false
 
@@ -85,6 +91,17 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   onApplicationDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
+    this.isShowSection76.value = false
+    this.isShowPrn.value = false
+    this.isShowCompleted.value = false
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
+  }
+
+  onSection76Clicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowSection76.value = true
     this.isShowPrn.value = false
     this.isShowCompleted.value = false
 
@@ -94,6 +111,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   onSection85Clicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = false
+    this.isShowSection76.value = false
     this.isShowPrn.value = true
     this.isShowCompleted.value = false
 
@@ -110,6 +128,24 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     if (this.uploadDocumentRef) {
       this.uploadDocumentRef.show()
     }
+  }
+
+  async onUploadSection76Clicked(): Promise<void> {
+    if (!this.uploadDocumentRef) {
+      return
+    }
+
+    this.isUploadingSection76.value = true
+    this.uploadDocumentRef.show()
+  }
+
+  async onUploadROAClicked(): Promise<void> {
+    if (!this.uploadDocumentRef) {
+      return
+    }
+
+    this.isUploadingROA.value = true
+    this.uploadDocumentRef.show()
   }
 
   async onDownloadSection76Clicked(): Promise<void> {
@@ -228,6 +264,35 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     //
   }
 
+  async onSubmitClicked(): Promise<void> {
+    if (!this.application.value) {
+      return
+    }
+
+    this.isSubmitting.value = true
+    try {
+      this.application.value.status = StatusConstants.SUBMITTED
+      await this.application.value.submit(useCompanyShareholderAllotmentStore())
+      // await this.fetchApplication()
+
+      let toastTitle = this.language.isMalay()
+        ? "Anda telah mengemaskini status permohonan ini."
+        : "You have updated this application status."
+      let toastMessage = this.language.isMalay()
+        ? "Sila muat naik Seksyen 76(2)."
+        : "Please upload Section 76(2) when it is available."
+
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+    } finally {
+      this.isSubmitting.value = false
+    }
+  }
+
   async onApprovedClicked(): Promise<void> {
     if (!this.application.value) {
       return
@@ -237,7 +302,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     try {
       this.application.value.status = StatusConstants.APPROVED
       await this.application.value.update(useCompanyShareholderAllotmentStore())
-      await this.fetchApplication()
+      // await this.fetchApplication()
 
       let toastTitle = this.language.isMalay()
         ? "Anda telah mengemaskini status permohonan ini."
@@ -246,10 +311,6 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
 
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
-
-      if (this.uploadDocumentRef) {
-        this.uploadDocumentRef.show()
-      }
     } catch (e) {
       let error = new Error()
       error.setForCUD()
@@ -260,11 +321,14 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   async onProceedPostUpload(): Promise<void> {
-    if (this.isCompleting.value) {
-      await this.proceedCompleteService()
-    }
+    // if (this.isCompleting.value) {
+    //   await this.proceedCompleteService()
+    // }
 
     await this.uploadedDocumentChecker.value.fetchDocuments()
+
+    this.isUploadingSection76.value = false
+    this.isUploadingROA.value = false
   }
 
   async onShippedClicked(): Promise<void> {
@@ -343,7 +407,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get applicationDetailsNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isAuthorisedToAllot, this.isShowResolutions.value)
+    return new PropsServiceApplicationNode(this.hasPaid, this.isSubmitted, this.isShowResolutions.value)
   }
 
   get applicationDetailsLabel(): string {
@@ -503,6 +567,25 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     return this.language.isMalay() ? "Seksyen 76" : "Section 76"
   }
 
+  get isSubmitted(): boolean {
+    if (!this.application.value) {
+      return false
+    }
+
+    return (
+      this.application.value.status === StatusConstants.SUBMITTED ||
+      this.application.value.status === StatusConstants.APPROVED ||
+      this.application.value.status === StatusConstants.SHIPPED ||
+      this.application.value.status === StatusConstants.DELIVERED ||
+      this.application.value.status === StatusConstants.CONVERTED ||
+      this.application.value.status === StatusConstants.COMPLETED
+    )
+  }
+
+  get submitLabel(): string {
+    return this.language.isMalay() ? "Dihantar" : "Submitted"
+  }
+
   get isApproved(): boolean {
     if (!this.application.value) {
       return false
@@ -529,11 +612,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get section76NodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(
-      this.isAuthorisedToAllot,
-      this.isSection76Uploaded,
-      this.isShowResolutions.value
-    )
+    return new PropsServiceApplicationNode(this.isSubmitted, this.isSection76Uploaded, this.isShowSection76.value)
   }
 
   get section76Label(): string {

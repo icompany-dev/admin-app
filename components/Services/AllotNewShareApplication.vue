@@ -43,11 +43,20 @@
               {{ controller.downloadLabel }}
             </button>
           </template>
-          <template #nodeActions></template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isSubmitting.value }"
+              :disabled="controller.isSubmitting.value"
+              @click="controller.onSubmitClicked()"
+            >
+              {{ controller.submitLabel }}
+            </button>
+          </template>
         </ApplicationNode>
         <ApplicationNode
           v-bind="controller.section76NodeProps"
-          @click="controller.onApplicationDetailsClicked()"
+          @click="controller.onSection76Clicked()"
         >
           <template #nodeContent>
             <div class="application-container">
@@ -63,7 +72,9 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
-              @click="controller.onUploadDocumentClicked()"
+              :class="{ 'is-loading': controller.isUploadingSection76.value }"
+              :disabled="controller.isUploadingSection76.value"
+              @click="controller.onUploadSection76Clicked()"
             >
               {{ controller.uploadSection76Label }}
             </button>
@@ -76,16 +87,7 @@
               {{ controller.downloadDocumentSection76Label }}
             </span>
           </template>
-          <template #nodeActions>
-            <button
-              class="btn btn-pill btn-submit"
-              :class="{ 'is-loading': controller.isApproving.value }"
-              :disabled="controller.isApproving.value"
-              @click="controller.onApprovedClicked()"
-            >
-              {{ controller.approveLabel }}
-            </button>
-          </template>
+          <template #nodeActions></template>
         </ApplicationNode>
         <ApplicationNode
           v-bind="controller.section85NodeProps"
@@ -148,18 +150,10 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
-              @click="controller.onUploadDocumentClicked()"
+              @click="controller.onDownloadClicked()"
             >
-              {{ controller.uploadSection76Label }}
+              {{ controller.downloadLabel }}
             </button>
-            <span
-              class="action-link download"
-              v-if="controller.isSection76Uploaded"
-              @click="controller.onDownloadSection76Clicked()"
-            >
-              <i class="fa-regular fa-cloud-arrow-down"></i>
-              {{ controller.downloadDocumentSection76Label }}
-            </span>
           </template>
           <template #nodeActions>
             <button

@@ -32,11 +32,13 @@ export class UploadedDocumentChecker {
       return false
     }
 
-    let firstDocumentDate = firstDocument.documentDate
-
     let dayjs = useDayjs()
+    let firstDocumentDate = dayjs(firstDocument.documentDate).endOf("day")
 
-    return dayjs(applicationDate).isBefore(firstDocumentDate) || dayjs(applicationDate).isSame(firstDocumentDate)
+    return (
+      dayjs(applicationDate).startOf("day").isBefore(firstDocumentDate) ||
+      dayjs(applicationDate).isSame(firstDocumentDate)
+    )
   }
 
   latestDocument(target: string, applicationDate: string): CompanyDocument | null {
