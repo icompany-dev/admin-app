@@ -1,3 +1,4 @@
+import { DeliveryConstants } from "~/scripts/constants/Payment"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
@@ -516,7 +517,7 @@ export abstract class ApplicationController<Application> {
   }
 
   get isDeliveryRequired(): boolean {
-    return this.paymentOrderItem.isDeliveryRequired
+    return this.paymentOrderItem.hasDelivery
   }
 
   get deliveryLabel(): string {
@@ -536,7 +537,23 @@ export abstract class ApplicationController<Application> {
       return "Email"
     }
 
-    return this.paymentOrderItem.deliveryType ?? "-"
+    let deliveryMethod = "PosLaju"
+    switch (this.paymentOrderItem.deliveryType) {
+      case DeliveryConstants.DELIVERY_COURIER:
+        deliveryMethod = "PosLaju"
+        break
+      case DeliveryConstants.DELIVERY_SELF_PICKUP:
+        deliveryMethod = "Self Pick Up"
+        break
+      case DeliveryConstants.DELIVERY_THIRD_PARTY:
+        deliveryMethod = "Lalamove (Third Party Delivery Service)"
+        break
+      case DeliveryConstants.DELIVERY_INTERNATIONAL:
+        deliveryMethod = "International Courier"
+        break
+    }
+
+    return deliveryMethod
   }
 
   get deliverToLabel(): string {

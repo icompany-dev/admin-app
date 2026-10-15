@@ -1,5 +1,5 @@
 import { PaperOrientation } from "~/scripts/constants/Paper"
-import { CtcConstants, PaymentConstants } from "~/scripts/constants/Payment"
+import { CtcConstants, DeliveryConstants, PaymentConstants } from "~/scripts/constants/Payment"
 import { ActivityLogger } from "~/scripts/library/ActivityLogger"
 import { Error } from "~/scripts/library/Error"
 import { ReceiptInvoiceGenerator } from "~/scripts/library/ReceiptInvoiceGenerator"
@@ -406,10 +406,26 @@ export class ReceiptInvoiceController {
         this.tableRows.value.push(ctcRow)
       }
 
-      if (item.isDeliveryRequired) {
+      if (item.hasDelivery) {
+        let deliveryMethod = "PosLaju"
+        switch (item.deliveryType) {
+          case DeliveryConstants.DELIVERY_COURIER:
+            deliveryMethod = "Delivery via PosLaju"
+            break
+          case DeliveryConstants.DELIVERY_SELF_PICKUP:
+            deliveryMethod = "Self Pick Up"
+            break
+          case DeliveryConstants.DELIVERY_THIRD_PARTY:
+            deliveryMethod = "Delivery via Lalamove"
+            break
+          case DeliveryConstants.DELIVERY_INTERNATIONAL:
+            deliveryMethod = "Delivery via International Courier"
+            break
+        }
+
         let deliveryRow: ReceiptTableRow = new ReceiptTableRow(
           "configuration-row",
-          new ReceiptTableColumn("Delivery Fees", "item", true, 2),
+          new ReceiptTableColumn(deliveryMethod, "item", true, 2),
           new ReceiptTableColumn("", "", false, 1),
           new ReceiptTableColumn(Number(item.deliveryFees() ?? "0.00").toFixed(2), "price", true, 1)
         )
