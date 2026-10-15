@@ -78,6 +78,8 @@ export class DirectorsController {
 
       await this.tableDataFetcher.value.fetchData()
 
+      console.log("data", this.tableDataFetcher.value.data)
+
       let promises = this.tableDataFetcher.value.data.map((d: Director) => {
         return d.setCompany(useCompanyStore())
       })
@@ -86,6 +88,7 @@ export class DirectorsController {
 
       this.selectedDirectorId.value = this.tableDataFetcher.value.data[0].id
     } catch (e) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {

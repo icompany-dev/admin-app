@@ -4,6 +4,7 @@ import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { StringUtil } from "../utils/String"
 import { Company } from "../models/Company"
+import { Director } from "../models/Director"
 
 export class TableDataFetcher<T> {
   data: T[] = []
@@ -28,6 +29,8 @@ export class TableDataFetcher<T> {
 
       let response = await this.repository.fetchAll(this.filter)
 
+      console.log(response)
+
       if (this.repository.error !== null) {
         throw this.repository.error
       }
@@ -37,7 +40,7 @@ export class TableDataFetcher<T> {
           return new this.itemClassType(c)
         })
         .filter((c: any) => {
-          if (this.filter.includeTestAccount) {
+          if (this.filter.includeTestAccount || c instanceof Director) {
             return true
           }
 
