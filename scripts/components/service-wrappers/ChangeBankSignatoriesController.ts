@@ -215,17 +215,51 @@ export class ChangeBankSignatoriesController
     this.isDownloading.value = true
     this.setActionTrayElements()
     try {
-      let pages = await this.getPdfPages()
+      let promises: any[] = []
+      if (this.dcrRef) {
+        let docPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            docPages,
+            19,
+            `DCR - ${this.bankName} Change of Bank Signatories.pdf`,
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
 
-      if (pages.length > 0) {
-        await PdfPaperUtil.generatePdfFile(
-          pages,
-          20,
-          "Resolution and Documents for Change of Bank Signatories.pdf",
+      let identificationPages: any[] = []
+      for (let i = 0; i <= this.identificationRefs.value.length; i++) {
+        let identificationRef = this.identificationRefs.value[i]
+        if (!identificationRef) {
+          continue
+        }
+
+        let identificationPage = await identificationRef.getPdfPages()
+        identificationPages = identificationPages.concat(identificationPage)
+      }
+
+      promises.push(
+        PdfPaperUtil.generatePdfFile(
+          identificationPages,
+          19,
+          `Identification Documents.pdf`,
           PaperSize.A4,
           PaperOrientation.Portrait
         )
-      }
+      )
+      // let pages = await this.getPdfPages()
+
+      // if (pages.length > 0) {
+      //   await PdfPaperUtil.generatePdfFile(
+      //     pages,
+      //     20,
+      //     "Resolution and Documents for Change of Bank Signatories.pdf",
+      //     PaperSize.A4,
+      //     PaperOrientation.Portrait
+      //   )
+      // }
     } catch (e) {
       console.error(e)
     } finally {
@@ -299,6 +333,10 @@ export class ChangeBankSignatoriesController
     props.companyBankId = this.companyBankId.value
 
     return props
+  }
+
+  get bankName(): string {
+    return this.application.value.companyBank.bank.nickname.toUpperCase() ?? ""
   }
 
   // get updatingLabel(): string {
