@@ -16,8 +16,12 @@
         tag="div"
         class="document-transition-wrapper"
       >
-        <SwitchOutLetter
+        <DcrChangeOfCompanySecretary
           ref="dcrRef"
+          v-bind="controller.resolutionDocumentProps"
+        />
+        <SwitchOutLetter
+          ref="mcrRef"
           :company-id="controller.companyId"
           :application-id="controller.applicationId"
         />
@@ -29,6 +33,7 @@
 
 <script lang="ts" setup>
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
+  import DcrChangeOfCompanySecretary from "../Resolutions/DcrChangeOfCompanySecretary.vue"
   import SwitchOutLetter from "@/components/LegalDocuments/SwitchOutLetter.vue"
   import SwitchOutHandoverDocument from "@/components/LegalDocuments/SwitchOutHandoverDocument.vue"
   import { LetterOfTransferAndHandoverDocumentController } from "~/scripts/components/service-wrappers/LetterOfTransferAndHandoverDocumentController"

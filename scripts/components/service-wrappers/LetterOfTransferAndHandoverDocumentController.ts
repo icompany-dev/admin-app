@@ -127,7 +127,20 @@ export class LetterOfTransferAndHandoverDocumentController
         promises.push(
           PdfPaperUtil.generatePdfFile(
             dcrPages,
-            20,
+            19,
+            "DCR - Resignation of Company Secretary.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.mcrRef) {
+        let dcrPages = await this.mcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            19,
             "Letter to Transfer and Handover of Secretarial Documents.pdf",
             PaperSize.A4,
             PaperOrientation.Portrait

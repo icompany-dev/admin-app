@@ -35,8 +35,12 @@
           tag="div"
           class="documents"
         >
-          <SwitchOutLetter
+          <DcrChangeOfCompanySecretary
             ref="dcrRef"
+            v-bind="controller.resolutionDocumentProps"
+          />
+          <SwitchOutLetter
+            ref="mcrRef"
             v-bind="controller.resolutionDocumentProps"
             @total-page-changed="controller.handleDoneLoading()"
           />
@@ -98,6 +102,7 @@
 
 <script lang="ts" setup>
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
+  import DcrChangeOfCompanySecretary from "../Resolutions/DcrChangeOfCompanySecretary.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import SwitchOutLetter from "@/components/LegalDocuments/SwitchOutLetter.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
