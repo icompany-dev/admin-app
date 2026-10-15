@@ -29,8 +29,8 @@ export class ChangeBankSignatoriesController
 
   directors: Ref<Director[]> = ref<Director[]>([])
 
-  isUpdating: Ref<boolean> = ref<boolean>(false)
-  isUpdated: Ref<boolean> = ref<boolean>(false)
+  // isUpdating: Ref<boolean> = ref<boolean>(false)
+  // isUpdated: Ref<boolean> = ref<boolean>(false)
 
   identificationRefs = ref<any[]>([])
 
@@ -124,6 +124,8 @@ export class ChangeBankSignatoriesController
 
     try {
       this.isUpdating.value = true
+
+      console.log("updated", updatedData)
 
       this.application.value = new CompanyChangeBankSignatory(updatedData)
       this.application.value.id = this.applicationId ?? ""
@@ -299,19 +301,19 @@ export class ChangeBankSignatoriesController
     return props
   }
 
-  get updatingLabel(): string {
-    if (this.isUpdated.value) {
-      return this.language.isMalay() ? "Maklumat Anda telah dikemaskini!" : "Your Information is Saved!"
-    }
+  // get updatingLabel(): string {
+  //   if (this.isUpdated.value) {
+  //     return this.language.isMalay() ? "Maklumat Anda telah dikemaskini!" : "Your Information is Saved!"
+  //   }
 
-    return this.language.isMalay() ? "Sedang Mengemaskini Maklumat Anda" : "Saving Your Information"
-  }
+  //   return this.language.isMalay() ? "Sedang Mengemaskini Maklumat Anda" : "Saving Your Information"
+  // }
 
-  get updatingSublabel(): string {
-    if (this.isUpdated.value) {
-      return ""
-    }
+  // get updatingSublabel(): string {
+  //   if (this.isUpdated.value) {
+  //     return ""
+  //   }
 
-    return this.language.isMalay() ? "Sila jangan muat semula!" : "Please do not refresh!"
-  }
+  //   return this.language.isMalay() ? "Sila jangan muat semula!" : "Please do not refresh!"
+  // }
 }

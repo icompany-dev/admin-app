@@ -106,6 +106,7 @@
                     type="text"
                     class="form-control in-resolution"
                     v-model="signatory.identification"
+                    @change="controller.handleDataUpdated()"
                   />
                 </template>
                 <span v-if="!controller.isDocumentEditable()">{{ signatory.identification }}</span>
@@ -115,6 +116,7 @@
                   <select
                     class="form-control in-resolution"
                     v-model="signatory.role"
+                    @change="controller.handleDataUpdated()"
                   >
                     <option value="maker">MAKER</option>
                     <option value="checker">CHECKER</option>
