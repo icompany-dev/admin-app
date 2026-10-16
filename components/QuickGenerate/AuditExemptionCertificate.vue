@@ -41,7 +41,12 @@
               <div
                 class="btn btn-sm btn-submit"
                 @click="controller.onDownloadDocument()"
+                :class="{ disabled: controller.isDownloading.value }"
               >
+                <i
+                  class="fa-duotone fa-loader fa-spin-pulse"
+                  v-if="controller.isDownloading.value"
+                />
                 Download
               </div>
               <div

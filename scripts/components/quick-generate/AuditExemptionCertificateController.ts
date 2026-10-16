@@ -9,6 +9,7 @@ export class AuditExemptionCertificateController {
   emitEvents: any | null = null
 
   isShowDocument: Ref<boolean> = ref<boolean>(false)
+  isDownloading: Ref<boolean> = ref<boolean>(false)
 
   auditExemptionCertificateRef: any | null = null
 
@@ -57,6 +58,10 @@ export class AuditExemptionCertificateController {
   }
 
   onCloseDocument(): void {
+    if (this.isDownloading.value) {
+      return
+    }
+
     this.isShowDocument.value = false
   }
 
@@ -65,29 +70,37 @@ export class AuditExemptionCertificateController {
       return
     }
 
-    const printWindow = window.open("", "_blank")
-    if (printWindow) {
-      printWindow.document.write("Please wait, generating Spince for printing...")
-    } else {
-      throw "Fail to open new window"
-    }
-
-    let pages = await this.auditExemptionCertificateRef.getPdfPages()
-
-    if (pages.length <= 0) {
-      printWindow.close()
+    if (this.isDownloading.value) {
       return
     }
 
-    const fileName = `UFS.pdf`
-    const blob = await PdfPaperUtil.getPdfBlob(pages, 19, fileName, PaperSize.A4, PaperOrientation.Portrait)
-    const blobURL = URL.createObjectURL(blob)
+    this.isDownloading.value = true
 
-    await nextTick()
-    printWindow.location.href = blobURL
+    try {
+      let promises = []
 
-    setTimeout(() => {
-      printWindow.print()
-    }, 500)
+      if (this.auditExemptionCertificateRef) {
+        let pages = await this.auditExemptionCertificateRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            pages,
+            19,
+            "Audit Exemption Certificate.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+    }
   }
 }
