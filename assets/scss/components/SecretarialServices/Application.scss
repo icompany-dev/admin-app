@@ -25,6 +25,11 @@
         font-weight: 800;
         letter-spacing: 0.5pt;
         font-family: 'Roboto', sans-serif;
+
+        a {
+          color: var(--color-text-primary);
+          text-decoration: none;
+        }
       }
 
       .company-registration-number {

@@ -34,4 +34,8 @@ export class ApplicationController {
   get loaderSublabel(): string {
     return this.language.isMalay() ? "Permohonan" : "Application"
   }
+
+  get sdnbhdLink(): string {
+    return `${window.location.origin}/sdnbhds/${this.company.value.id}`
+  }
 }

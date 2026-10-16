@@ -1,9 +1,9 @@
 <template>
   <div>
     <Section236Three
-      :company-name="'MAREO KITCHEN SDN BHD'"
-      :registrationNumberNew="'202501012616'"
-      :registrationNumberOld="'1614030-X'"
+      :company-name="'KZAASIFY SDN BHD'"
+      :registrationNumberNew="'202401006436'"
+      :registrationNumberOld="'1552286-T'"
     />
   </div>
 </template>

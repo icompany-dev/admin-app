@@ -66,7 +66,7 @@ export class Section236ThreeController {
 
   get declarationDate(): string {
     let dayjs = useDayjs()
-    let currentDate = dayjs().format("YYYY-MM-DD")
+    let currentDate = dayjs("2026-08-24").format("YYYY-MM-DD")
     let time = useLocalTime()
 
     return time.formatDateOnlyFull(currentDate)

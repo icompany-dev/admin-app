@@ -180,4 +180,6 @@ export class DocumentTargets {
 
   static TARGET_SWITCH_OUT_LETTER: string = "company_switch_out_letter"
   static TARGET_SWITCH_OUT_DOCUMENT: string = "company_switch_out_document"
+
+  static TARGET_DOCUMENT_REQUESTS: string = "company_switch_out_document"
 }

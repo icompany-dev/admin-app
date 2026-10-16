@@ -81,7 +81,11 @@ export class DocumentRequestApplicationController extends ApplicationController<
     this.isShowResolutions.value = true
     this.isShowCompleted.value = false
 
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+    let firstItem = this.documents[0] ?? null
+    if (firstItem && firstItem.iCompanyFile?.url) {
+      this.onDocumentClicked(firstItem)
+    }
+    // this.emitEvents("documentSelected", DocumentTargets.TARGET_DOCUMENT_REQUESTS)
   }
 
   onCompleteApplicationClickedClicked(): void {
@@ -89,7 +93,10 @@ export class DocumentRequestApplicationController extends ApplicationController<
     this.isShowResolutions.value = false
     this.isShowCompleted.value = true
 
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+    let firstItem = this.documents[0] ?? null
+    if (firstItem && firstItem.iCompanyFile?.url) {
+      this.onDocumentClicked(firstItem)
+    }
   }
 
   async onDownloadClicked(): Promise<void> {
@@ -177,7 +184,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
       toast.success()
 
       let router = useRouter()
-      router.push(`/sdnbhds/${this.application.value.companyId}`)
+      router.push(`/services/document-requests`)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
