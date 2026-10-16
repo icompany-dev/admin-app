@@ -60,8 +60,8 @@ export class AnnualReturnController {
       this.companyId.value = this.company.value.id
       this.documentsAndForms.value.companyId = this.companyId.value
       this.uploadedDocumentChecker.value = new UploadedDocumentChecker(this.companyId.value)
-      await this.initializeData()
     }
+    await this.initializeData()
   }
 
   setViewDocumentRef(viewDocumentRef: any): void {
@@ -105,7 +105,7 @@ export class AnnualReturnController {
       return
     }
 
-    let repository = useCompanyAnnualReturnStore()
+    let repository = useCompanyAnnualReturnRequestStore()
     let filter = new Filter()
     filter.companyId = this.companyId.value
     filter.take = 5
@@ -114,6 +114,7 @@ export class AnnualReturnController {
     let response = await repository.fetchAll(filter)
 
     if (response.totalRecords <= 0) {
+      console.log("empty?")
       this.setEmptyApplication()
       return
     }

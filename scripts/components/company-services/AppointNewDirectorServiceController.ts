@@ -31,7 +31,7 @@ export class AppointNewDirectorServiceController extends CompanyServiceControlle
     this.setIsByShareholder(isByShareholder)
     this.initializeData()
 
-    this.documentName.value = "DCR Appointment of Director.pdf"
+    this.documentName.value = "DCR - Appointment of Director.pdf"
   }
 
   setIsByShareholder(isByShareholder: boolean): void {

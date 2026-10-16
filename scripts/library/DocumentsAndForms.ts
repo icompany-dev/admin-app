@@ -186,12 +186,17 @@ export class DocumentsAndForms {
   }
 
   getVouchersAndCertificates(): CompanyDocument[] {
+    let statutoryForms = this.getStatutoryForms()
+
     return this.documents.filter((cd: CompanyDocument) => {
       return (
         (StringUtil.contains(cd.documentName, "voucher") || StringUtil.contains(cd.documentName, "certifcate")) &&
         !StringUtil.contains(cd.documentName, "incorporation") &&
         !StringUtil.contains(cd.documentName, "dcr") &&
-        !StringUtil.contains(cd.documentName, "mcr")
+        !StringUtil.contains(cd.documentName, "mcr") &&
+        !statutoryForms.some((sf: CompanyDocument) => {
+          return cd.documentName === sf.documentName
+        })
       )
     })
   }
@@ -580,7 +585,7 @@ export class DocumentsAndForms {
     return new CompanyDocument(
       coi?.id ?? crypto.randomUUID(),
       false,
-      documentName,
+      coi?.file?.name ?? documentName,
       coi?.file?.url ?? null,
       false,
       coi?.createdAt ? new Date(coi?.createdAt) : this.defaultDocumentDate,
@@ -614,7 +619,7 @@ export class DocumentsAndForms {
     return new CompanyDocument(
       latest.id,
       true,
-      documentName,
+      latest.documentName ?? documentName,
       latest.fileUrl,
       latest.isFromMyData,
       latest.documentDate,
@@ -861,7 +866,7 @@ export class DocumentsAndForms {
     return new CompanyDocument(
       s15?.id ?? crypto.randomUUID(),
       false,
-      documentName,
+      s15?.file?.name ?? documentName,
       s15?.file?.url ?? null,
       false,
       s15?.createdAt ? new Date(s15?.createdAt) : this.defaultDocumentDate,
