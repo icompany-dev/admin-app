@@ -84,6 +84,13 @@
                 >
                   {{ controller.switchOut }}
                 </button>
+
+                <button
+                  class="btn btn-pill btn-submit"
+                  @click="controller.onOpenGenerateAuditExemptionCertificate()"
+                >
+                  Generate Audit Exemption Certificate
+                </button>
               </div>
             </div>
           </div>
@@ -245,6 +252,10 @@
           :company-id="controller.companyId.value"
         />
       </Teleport>
+      <QuickGenerateAuditExemptionCertificate
+        ref="generateAuditExemptionCertificateRef"
+        :company-id="controller.companyId.value"
+      />
     </template>
   </div>
 </template>
@@ -283,6 +294,7 @@
 
   const documentRef = ref(null)
   const spineRef = ref(null)
+  const generateAuditExemptionCertificateRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -324,6 +336,10 @@
     },
     { immediate: true }
   )
+
+  watch(generateAuditExemptionCertificateRef, (newVal) => {
+    controller.setGenerateAuditExemptionCertificateRef(newVal)
+  })
 </script>
 
 <style lang="scss">

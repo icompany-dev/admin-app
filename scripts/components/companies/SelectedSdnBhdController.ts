@@ -44,6 +44,7 @@ export class SelectedSdnBhdController {
   isDownloading: Ref<boolean> = ref<boolean>(false)
 
   spineRef: any | null = null
+  generateAuditExemptionCertificateRef: any | null = null
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
   isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
@@ -76,6 +77,10 @@ export class SelectedSdnBhdController {
 
   setSpineRef(spineRef: any): void {
     this.spineRef = spineRef
+  }
+
+  setGenerateAuditExemptionCertificateRef(val: any): void {
+    this.generateAuditExemptionCertificateRef = val
   }
 
   setApplicationRefs(index: number, ref: any): void {
@@ -245,6 +250,14 @@ export class SelectedSdnBhdController {
 
   onSwitchOutClicked(): void {
     // initiate switchout process
+  }
+
+  onOpenGenerateAuditExemptionCertificate(): void {
+    if (!this.generateAuditExemptionCertificateRef) {
+      return
+    }
+
+    this.generateAuditExemptionCertificateRef.show()
   }
 
   onApplicationClicked(selectedService: string): void {
