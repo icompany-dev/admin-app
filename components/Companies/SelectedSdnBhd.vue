@@ -32,7 +32,10 @@
                 : {{ controller.incorporationDate }}
               </div>
             </div>
-            <div class="actions-button-options">
+            <div
+              class="actions-button-options"
+              :class="{ active: controller.isShowOptions.value }"
+            >
               <div
                 class="btn btn-pill btn-submit selected"
                 :class="{ 'is-loading': controller.isUpdatingDetails.value }"
@@ -50,7 +53,7 @@
                 :class="{ show: controller.isShowOptions.value }"
               >
                 <button
-                  class="btn btn-pill btn-submit"
+                  class="btn btn-pill btn-submit invert"
                   :class="{ 'is-loading': controller.isPrintingSpine.value }"
                   :disabled="controller.isPrintingSpine.value"
                   @click="controller.onPrintSpineClicked()"
@@ -58,7 +61,7 @@
                   {{ controller.printSpine }}
                 </button>
                 <button
-                  class="btn btn-pill btn-submit"
+                  class="btn btn-pill btn-submit invert"
                   :class="{ 'is-loading': controller.isNotifyingRegularise.value }"
                   :disabled="controller.isNotifyingRegularise.value"
                   @click="controller.notifyDocumentRegularised()"
@@ -66,14 +69,14 @@
                   {{ controller.notifyRegularise }}
                 </button>
                 <button
-                  class="btn btn-pill btn-submit"
+                  class="btn btn-pill btn-submit invert"
                   disabled
                   @click="controller.onEditClicked()"
                 >
                   {{ controller.edit }}
                 </button>
                 <button
-                  class="btn btn-pill btn-submit"
+                  class="btn btn-pill btn-submit invert"
                   :class="{ 'is-loading': controller.isSettingToStrikedOff.value }"
                   :disabled="controller.isSettingToStrikedOff.value"
                   @click="controller.onStrikeOffClicked()"
@@ -81,7 +84,7 @@
                   {{ controller.strikeOff }}
                 </button>
                 <button
-                  class="btn btn-pill btn-submit"
+                  class="btn btn-pill btn-submit invert"
                   :class="{ 'is-loading': controller.isSettingToSwitchedOut.value }"
                   :disabled="controller.isSettingToSwitchedOut.value"
                   @click="controller.onSwitchOutClicked()"
@@ -90,7 +93,7 @@
                 </button>
 
                 <button
-                  class="btn btn-pill btn-submit"
+                  class="btn btn-pill btn-submit invert"
                   @click="controller.onOpenGenerateAuditExemptionCertificate()"
                 >
                   Generate Audit Exemption Certificate

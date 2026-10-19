@@ -104,6 +104,8 @@
             left: 0;
             transform: scaleY(0);
             opacity: 0;
+            max-height: 0;
+            overflow: hidden;
             transition: all 0.7s ease;
             transform-origin: top center;
             display: flex;
@@ -115,6 +117,18 @@
             &.show {
               opacity: 1;
               transform: scaleY(1);
+              max-height: fit-content;
+            }
+
+            .btn-submit {
+              &.invert {
+                background-color: var(--bs-white);
+
+                &:hover {
+                  background-color: var(--btn-submit-bg-color);
+                  color: var(--btn-submit-color);
+                }
+              }
             }
           }
         }

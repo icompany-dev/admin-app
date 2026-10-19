@@ -469,11 +469,15 @@ export class SelectedSdnBhdController {
   }
 
   get strikeOff(): string {
-    return this.language.isMalay() ? "Strike Off" : "Strike Off"
+    return this.language.isMalay() ? "Striked Off" : "Striked Off"
   }
 
   get switchOut(): string {
-    return this.language.isMalay() ? "Switch Out" : "Switch Out"
+    return this.language.isMalay() ? "Switched Out" : "Switched Out"
+  }
+
+  get auditExemption(): string {
+    return this.language.isMalay() ? "Switched Out" : "Switched Out"
   }
 
   get overview(): string {
