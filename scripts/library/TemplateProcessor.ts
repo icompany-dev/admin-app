@@ -1,5 +1,6 @@
 import { Company } from "../models/Company"
 import { DocumentTemplate } from "../models/DocumentTemplate"
+import { NumberUtil } from "../utils/Number"
 import { StringUtil } from "../utils/String"
 
 export class TemplateProcessor {
@@ -248,6 +249,14 @@ export class TemplateProcessor {
       let value = data[name] ?? null
       if (!value) {
         return ""
+      }
+
+      console.log("type", type)
+
+      if (type === "text") {
+        const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(value)
+        console.log("yo", isNumericOrDecimal, value)
+        return isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(value)) : value
       }
 
       if (type === "date") {

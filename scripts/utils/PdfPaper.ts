@@ -1,6 +1,7 @@
 import html2pdf from "html2pdf.js"
 import type { FileBase64Response } from "../models/File"
 import { PaperOrientation, PaperSize } from "../constants/Paper"
+import { NumberUtil } from "./Number"
 
 export class PdfPaperUtil {
   static async getPdfElements(parentNode: HTMLElement): Promise<HTMLElement[]> {
@@ -44,9 +45,12 @@ export class PdfPaperUtil {
 
       const textInputs = paper.querySelectorAll<HTMLInputElement>('input[type="text"]')
       textInputs.forEach((input) => {
+        const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(input.value)
+        console.log("printing", isNumericOrDecimal)
+        const value = isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(input.value)) : input.value
         const textNode = document.createElement("span")
         textNode.className = input.className
-        textNode.textContent = input.value
+        textNode.textContent = value
         input.parentNode?.replaceChild(textNode, input)
       })
 

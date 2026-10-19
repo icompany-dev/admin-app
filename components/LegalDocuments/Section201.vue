@@ -94,7 +94,7 @@
                   </div>
                   <div
                     v-if="!controller.showStrikethrough()"
-                    class="strikethrough-notice"
+                    class="strikethrough-notice no-print"
                   >
                     <i>*Item No 4 and 5 will strike out when you affix your signature.</i>
                   </div>
@@ -125,7 +125,7 @@
                   </div>
                   <div class="declaration-date">
                     Date of Declaration:
-                    <span :class="{ 'date-placeholder': !props.hasSigned }">
+                    <span :class="{ 'date-placeholder': !props.hasSigned, 'no-print': !props.hasSigned }">
                       {{ props.signatureDate }}
                     </span>
                   </div>
