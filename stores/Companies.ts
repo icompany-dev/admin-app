@@ -141,6 +141,36 @@ export const useCompanyStore = defineStore("company", () => {
     }
   }
 
+  async function setToStrikedOff(id: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companies.setToStrikedOff(id)
+      return response
+    } catch (e: any) {
+      console.error(`Error to mark as striked off`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function setToSwitchedOut(id: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companies.setToSwitchedOut(id)
+      return response
+    } catch (e: any) {
+      console.error(`Error to mark as switched out`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanies = computed(() => companies.value.length)
 
   return {
@@ -158,5 +188,7 @@ export const useCompanyStore = defineStore("company", () => {
     fetchStatisticsForAssignment,
     postService,
     notifyRegularise,
+    setToStrikedOff,
+    setToSwitchedOut,
   }
 })

@@ -2,6 +2,7 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
+import { Toast } from "~/scripts/library/Toast"
 import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
@@ -22,6 +23,7 @@ export class SelectedSdnBhdController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isShowOptions: Ref<boolean> = ref<boolean>(false)
+  isUpdatingDetails: Ref<boolean> = ref<boolean>(false)
   isShowApplicationDocuments: Ref<boolean> = ref<boolean>(false)
 
   isOverview: Ref<boolean> = ref<boolean>(true)
@@ -48,6 +50,8 @@ export class SelectedSdnBhdController {
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
   isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
+  isSettingToStrikedOff: Ref<boolean> = ref<boolean>(false)
+  isSettingToSwitchedOut: Ref<boolean> = ref<boolean>(false)
 
   isAnnualReturnPaid: Ref<boolean> = ref<boolean>(false)
   annualReturnYear: Ref<string> = ref<string>("")
@@ -244,12 +248,82 @@ export class SelectedSdnBhdController {
     //
   }
 
-  onStrikeOffClicked(): void {
-    //
+  async onStrikeOffClicked(): Promise<void> {
+    if (this.isSettingToStrikedOff.value) {
+      return
+    }
+
+    try {
+      this.isSettingToStrikedOff.value = true
+      let repository = useCompanyStore()
+
+      let response = await repository.setToStrikedOff(this.companyId.value)
+
+      if (!response) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Data Sdn Bhd telah berjaya dikemaskini."
+        : "You have marked this Sdn Bhd as Striked Off."
+      let toastMessage = this.language.isMalay()
+        ? "Data ini akan disimpan selama 7 tahun sebelum dilupus."
+        : "The data will be retained for the next 7 years."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push("/sdnbhds/all")
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isSettingToStrikedOff.value = false
+    }
   }
 
-  onSwitchOutClicked(): void {
-    // initiate switchout process
+  async onSwitchOutClicked(): Promise<void> {
+    if (this.isSettingToSwitchedOut.value) {
+      return
+    }
+
+    try {
+      this.isSettingToSwitchedOut.value = true
+      let repository = useCompanyStore()
+
+      let response = await repository.setToSwitchedOut(this.companyId.value)
+
+      if (!response) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Data Sdn Bhd telah berjaya dikemaskini."
+        : "You have marked this Sdn Bhd as Switched Out."
+      let toastMessage = this.language.isMalay()
+        ? "Data ini akan disimpan selama 7 tahun sebelum dilupus."
+        : "The data will be retained for the next 7 years."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push("/sdnbhds/all")
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isSettingToSwitchedOut.value = false
+    }
   }
 
   onOpenGenerateAuditExemptionCertificate(): void {

@@ -111,4 +111,22 @@ export class CompanyRepository extends Repository<Company> {
       throw e
     }
   }
+
+  async setToStrikedOff(companyId: string): Promise<any> {
+    try {
+      const response = this.post<any>(`${this.singleResourceUrl}/striked-out/${companyId}`, {})
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async setToSwitchedOut(companyId: string): Promise<any> {
+    try {
+      const response = this.post<any>(`${this.singleResourceUrl}/switched-out/${companyId}`, {})
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }

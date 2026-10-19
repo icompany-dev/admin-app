@@ -35,6 +35,8 @@
             <div class="actions-button-options">
               <div
                 class="btn btn-pill btn-submit selected"
+                :class="{ 'is-loading': controller.isUpdatingDetails.value }"
+                :disabled="controller.isUpdatingDetails.value"
                 @click="controller.onOptionsClicked()"
               >
                 <span class="label">{{ controller.more }}</span>
@@ -72,14 +74,16 @@
                 </button>
                 <button
                   class="btn btn-pill btn-submit"
-                  disabled
+                  :class="{ 'is-loading': controller.isSettingToStrikedOff.value }"
+                  :disabled="controller.isSettingToStrikedOff.value"
                   @click="controller.onStrikeOffClicked()"
                 >
                   {{ controller.strikeOff }}
                 </button>
                 <button
                   class="btn btn-pill btn-submit"
-                  disabled
+                  :class="{ 'is-loading': controller.isSettingToSwitchedOut.value }"
+                  :disabled="controller.isSettingToSwitchedOut.value"
                   @click="controller.onSwitchOutClicked()"
                 >
                   {{ controller.switchOut }}
