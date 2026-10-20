@@ -114,20 +114,6 @@
           >
             {{ controller.overview }}
           </div>
-          <!-- <div
-            class="page-tab"
-            :class="{ selected: controller.isBusiness.value }"
-            @click="controller.onBusinessClicked()"
-          >
-            {{ controller.business }}
-          </div>
-          <div
-            class="page-tab"
-            :class="{ selected: controller.isDirectors.value }"
-            @click="controller.onDirectorsClicked()"
-          >
-            {{ controller.directors }}
-          </div> -->
           <div
             class="page-tab"
             :class="{ selected: controller.isDocuments.value }"
@@ -157,20 +143,6 @@
               </span>
             </TransitionGroup>
           </div>
-          <!-- <div
-            class="page-tab"
-            :class="{ selected: controller.isShareholders.value }"
-            @click="controller.onShareholdersClicked()"
-          >
-            {{ controller.shareholders }}
-          </div>
-          <div
-            class="page-tab"
-            :class="{ selected: controller.isAccounting.value }"
-            @click="controller.onAccountingClicked()"
-          >
-            {{ controller.accounting }}
-          </div> -->
         </TransitionGroup>
         <TransitionGroup name="slide-left">
           <div
@@ -179,47 +151,6 @@
           >
             <Overview :company-id="controller.companyId.value" />
           </div>
-          <!-- <div
-            class="application-contents"
-            v-if="controller.isBusiness.value"
-          >
-            <ChangeOfNameApplication
-              :ref="(el) => controller.setApplicationRefs(0, el)"
-              v-bind="controller.applicationProps"
-              @applicationId="controller.onApplicationIdUpdated($event)"
-              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
-              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_AMENDMENT_NAME)"
-              @download="controller.onDownloadClicked()"
-              @show="controller.onPanelShow(0)"
-            />
-            <ChangeOfAddressApplication
-              :ref="(el) => controller.setApplicationRefs(1, el)"
-              v-bind="controller.applicationProps"
-              @applicationId="controller.onApplicationIdUpdated($event)"
-              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
-              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_AMENDMENT_ADDRESS)"
-              @download="controller.onDownloadClicked()"
-              @show="controller.onPanelShow(1)"
-            />
-            <ChangeOfBranchApplication
-              :ref="(el) => controller.setApplicationRefs(2, el)"
-              v-bind="controller.applicationProps"
-              @applicationId="controller.onApplicationIdUpdated($event)"
-              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
-              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_AMENDMENT_BRANCH)"
-              @download="controller.onDownloadClicked()"
-              @show="controller.onPanelShow(2)"
-            />
-            <BankAccountOpeningApplication
-              :ref="(el) => controller.setApplicationRefs(3, el)"
-              v-bind="controller.applicationProps"
-              @applicationId="controller.onApplicationIdUpdated($event)"
-              @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
-              @documentSelected="controller.onDocumentTargetSelected($event, CompanyConstants.TARGET_OPEN_BANK_ACCOUNT)"
-              @download="controller.onDownloadClicked()"
-              @show="controller.onPanelShow(3)"
-            />
-          </div> -->
           <div
             class="application-contents"
             v-if="controller.isDocuments.value"
@@ -237,22 +168,6 @@
           </div>
         </TransitionGroup>
       </div>
-      <!-- <TransitionGroup name="slide-left-leave-right">
-        <div
-          class="application-document-container"
-          v-if="controller.showDocument"
-        >
-          <component
-            ref="documentRef"
-            :is="activeDocumentComponent"
-            :company-id="controller.companyId.value"
-            :view-type="'existing'"
-            :application-id="controller.selectedApplicationId.value"
-            :target-id="controller.selectedPaymentOrderId.value"
-            :target-type="controller.selectedApplicationName.value"
-          />
-        </div>
-      </TransitionGroup> -->
       <Teleport to="body">
         <SdnBhdSpine
           ref="spineRef"
