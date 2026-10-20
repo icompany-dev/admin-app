@@ -97,10 +97,83 @@
             </td>
           </tr>
           <tr>
-            <td>{{ controller.registeredAddressLabel }}</td>
+            <td>
+              <div class="editable-column">
+                {{ controller.registeredAddressLabel }}
+                <Transition name="fade">
+                  <div
+                    v-if="!controller.isEditingRegisteredAddress.value"
+                    class="action-icons"
+                  >
+                    <i
+                      v-if="
+                        controller.isEditingRegisteredAddress.value && !controller.isUpdatingRegisteredAddress.value
+                      "
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelEditRegisteredAddressClicked()"
+                    />
+                    <i
+                      v-if="
+                        controller.isEditingRegisteredAddress.value && !controller.isUpdatingRegisteredAddress.value
+                      "
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.onSaveRegisteredAddressClicked()"
+                    />
+                    <i
+                      v-if="!controller.isEditingRegisteredAddress.value"
+                      class="fa-regular fa-edit clickable edit"
+                      @click="controller.onEditRegisteredAddressClicked()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingRegisteredAddress.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </Transition>
+              </div>
+            </td>
             <td>:</td>
             <td>
+              <Transition name="fade">
+                <div
+                  v-if="controller.isEditingRegisteredAddress.value"
+                  class="action-icons"
+                >
+                  <i
+                    v-if="controller.isEditingRegisteredAddress.value && !controller.isUpdatingRegisteredAddress.value"
+                    class="fa-regular fa-xmark clickable cancel"
+                    @click="controller.onCancelEditRegisteredAddressClicked()"
+                  />
+                  <i
+                    v-if="controller.isEditingRegisteredAddress.value && !controller.isUpdatingRegisteredAddress.value"
+                    class="fa-regular fa-save clickable save"
+                    @click="controller.onSaveRegisteredAddressClicked()"
+                  />
+                  <i
+                    v-if="!controller.isEditingRegisteredAddress.value"
+                    class="fa-regular fa-edit clickable edit"
+                    @click="controller.onEditRegisteredAddressClicked()"
+                  />
+                  <i
+                    v-if="controller.isUpdatingRegisteredAddress.value"
+                    class="fa-regular fa-spin fa-spinner edit"
+                  />
+                </div>
+              </Transition>
+              <AddressInput
+                v-if="controller.isEditingRegisteredAddress.value"
+                :location="controller.registeredAddressLocation.value"
+                :is-disabled="!controller.isEditingRegisteredAddress.value"
+                @updateAddressLine1="controller.onUpdateRegisteredAddressLine1($event)"
+                @updateAddressLine2="controller.onUpdateRegisteredAddressLine2($event)"
+                @updateAddressLine3="controller.onUpdateRegisteredAddressLine3($event)"
+                @updateState="controller.onUpdateRegisteredState($event)"
+                @updateCity="controller.onUpdateRegisteredCity($event)"
+                @updatePostcode="controller.onUpdateRegisteredPostcode($event)"
+                @updateCountry="controller.onUpdateRegisteredCountry($event)"
+              />
               <span
+                v-if="!controller.isEditingRegisteredAddress.value"
                 class="address-span"
                 v-html="controller.registeredAddress"
               />

@@ -60,6 +60,10 @@ export class OverviewController {
   isUpdatingAddress: Ref<boolean> = ref<boolean>(false)
   addressLocation: Ref<Location> = ref<Location>(new Location())
 
+  isEditingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
+  isUpdatingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
+  registeredAddressLocation: Ref<Location> = ref<Location>(new Location())
+
   language = useLanguage()
   time = useLocalTime()
   dayjs = useDayjs()
@@ -107,6 +111,7 @@ export class OverviewController {
       ])
 
       this.addressLocation.value = new Location(this.company.value.businessAddressLocation)
+      this.registeredAddressLocation.value = new Location(this.company.value.registeredAddressLocation)
 
       this.fetchPaymentOrderItems()
     } catch (e) {
@@ -431,10 +436,6 @@ ${detailsOfBO.join("\n")}
   async onSaveBusinessAddressClicked(): Promise<void> {
     try {
       this.isUpdatingAddress.value = true
-      // await this.application.value.updateBusinessAddressAndMsicCodes(
-      //   this.selectedMsicCodeIds.value,
-      //   useApplicationIncorporateStore()
-      // )
       this.company.value.businessAddressLocation = new Location(this.addressLocation.value)
       await this.company.value.onUpdateBusinessAddress(useCompanyStore())
 
@@ -484,6 +485,69 @@ ${detailsOfBO.join("\n")}
 
   onUpdateCountry(data: any): void {
     this.addressLocation.value.country = data
+  }
+
+  //Update business address
+  onEditRegisteredAddressClicked(): void {
+    this.isEditingRegisteredAddress.value = true
+  }
+
+  onCancelEditRegisteredAddressClicked(): void {
+    this.isEditingRegisteredAddress.value = false
+  }
+
+  async onSaveRegisteredAddressClicked(): Promise<void> {
+    try {
+      this.isUpdatingRegisteredAddress.value = true
+      this.company.value.businessAddressLocation = new Location(this.registeredAddressLocation.value)
+      await this.company.value.onUpdateRegisteredAddress(useCompanyStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Alamat Perniagaan telah dikemaskini."
+        : "The Registered Address is Updated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isEditingRegisteredAddress.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingRegisteredAddress.value = false
+    }
+  }
+
+  onUpdateRegisteredAddressLine1(data: any): void {
+    this.registeredAddressLocation.value.addressLine1 = data
+  }
+
+  onUpdateRegisteredAddressLine2(data: any): void {
+    this.registeredAddressLocation.value.addressLine2 = data
+  }
+
+  onUpdateRegisteredAddressLine3(data: any): void {
+    this.registeredAddressLocation.value.addressLine3 = data
+  }
+
+  onUpdateRegisteredState(data: any): void {
+    this.registeredAddressLocation.value.state = data
+  }
+
+  onUpdateRegisteredCity(data: any): void {
+    this.registeredAddressLocation.value.city = data
+  }
+
+  onUpdateRegisteredPostcode(data: any): void {
+    this.registeredAddressLocation.value.postcode = data
+  }
+
+  onUpdateRegisteredCountry(data: any): void {
+    this.registeredAddressLocation.value.country = data
   }
 
   // getters
