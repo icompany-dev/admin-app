@@ -261,6 +261,7 @@ textarea {
   justify-content: flex-start;
   align-items: stretch;
   gap: 5px;
+  margin-bottom: 10px;
 
   .form-control {
     width: calc(100% - 16px);
@@ -318,6 +319,12 @@ textarea {
 
   .preview-text {
     color: var(--bs-gray-400);
+  }
+
+  .searchable-dropdown {
+    .dropdown-menu {
+      background-color: var(--bs-white) !important;
+    }
   }
 }
 

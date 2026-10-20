@@ -18,10 +18,79 @@
             </td>
           </tr>
           <tr>
-            <td>{{ controller.businessAddressLabel }}</td>
+            <td>
+              <div class="editable-column">
+                {{ controller.businessAddressLabel }}
+                <Transition name="fade">
+                  <div
+                    v-if="!controller.isEditingAddress.value"
+                    class="action-icons"
+                  >
+                    <i
+                      v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelEditBusinessAddressClicked()"
+                    />
+                    <i
+                      v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.onSaveBusinessAddressClicked()"
+                    />
+                    <i
+                      v-if="!controller.isEditingAddress.value"
+                      class="fa-regular fa-edit clickable edit"
+                      @click="controller.onEditBusinessAddressClicked()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingAddress.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </Transition>
+              </div>
+            </td>
             <td>:</td>
             <td>
+              <Transition name="fade">
+                <div
+                  v-if="controller.isEditingAddress.value"
+                  class="action-icons is-editing"
+                >
+                  <i
+                    v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                    class="fa-regular fa-xmark clickable cancel"
+                    @click="controller.onCancelEditBusinessAddressClicked()"
+                  />
+                  <i
+                    v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                    class="fa-regular fa-save clickable save"
+                    @click="controller.onSaveBusinessAddressClicked()"
+                  />
+                  <i
+                    v-if="!controller.isEditingAddress.value"
+                    class="fa-regular fa-edit clickable edit"
+                    @click="controller.onEditBusinessAddressClicked()"
+                  />
+                  <i
+                    v-if="controller.isUpdatingAddress.value"
+                    class="fa-regular fa-spin fa-spinner edit"
+                  />
+                </div>
+              </Transition>
+              <AddressInput
+                v-if="controller.isEditingAddress.value"
+                :location="controller.addressLocation.value"
+                :is-disabled="!controller.isEditingAddress.value"
+                @updateAddressLine1="controller.onUpdateAddressLine1($event)"
+                @updateAddressLine2="controller.onUpdateAddressLine2($event)"
+                @updateAddressLine3="controller.onUpdateAddressLine3($event)"
+                @updateState="controller.onUpdateState($event)"
+                @updateCity="controller.onUpdateCity($event)"
+                @updatePostcode="controller.onUpdatePostcode($event)"
+                @updateCountry="controller.onUpdateCountry($event)"
+              />
               <span
+                v-if="!controller.isEditingAddress.value"
                 class="address-span"
                 v-html="controller.businessAddress"
               />
@@ -266,6 +335,7 @@
 
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
+  import AddressInput from "@/components/Forms/AddressInput.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"

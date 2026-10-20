@@ -20,6 +20,7 @@ import { PurchasedItemTracker } from "~/scripts/models/PurchasedItemTracker"
 import { CompanySetting, CompanySettingTaxDetails } from "~/scripts/models/CompanySetting"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import { User } from "~/scripts/models/User"
+import { City, Country, Location, PostcodeMapping, State } from "~/scripts/models/Location"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -54,6 +55,10 @@ export class OverviewController {
   isUpdatingTaxNumber: Ref<boolean> = ref<boolean>(false)
   newIncomeTaxNumber: Ref<string> = ref<string>("")
   newEmployerTaxNumber: Ref<string> = ref<string>("")
+
+  isEditingAddress: Ref<boolean> = ref<boolean>(false)
+  isUpdatingAddress: Ref<boolean> = ref<boolean>(false)
+  addressLocation: Ref<Location> = ref<Location>(new Location())
 
   language = useLanguage()
   time = useLocalTime()
@@ -101,7 +106,9 @@ export class OverviewController {
         this.fetchPurchasedItemTrackers(),
       ])
 
-      await this.fetchPaymentOrderItems()
+      this.addressLocation.value = new Location(this.company.value.businessAddressLocation)
+
+      this.fetchPaymentOrderItems()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -410,6 +417,73 @@ ${detailsOfBO.join("\n")}
 
   getPropsUserDetail(human: Director | Shareholder): PropsUserDetail {
     return new PropsUserDetail(human.user ?? new User(), human.user?.detail ?? new UserDetail())
+  }
+
+  //Update business address
+  onEditBusinessAddressClicked(): void {
+    this.isEditingAddress.value = true
+  }
+
+  onCancelEditBusinessAddressClicked(): void {
+    this.isEditingAddress.value = false
+  }
+
+  async onSaveBusinessAddressClicked(): Promise<void> {
+    try {
+      this.isUpdatingAddress.value = true
+      // await this.application.value.updateBusinessAddressAndMsicCodes(
+      //   this.selectedMsicCodeIds.value,
+      //   useApplicationIncorporateStore()
+      // )
+      this.company.value.businessAddressLocation = new Location(this.addressLocation.value)
+      await this.company.value.onUpdateBusinessAddress(useCompanyStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Alamat Perniagaan telah dikemaskini."
+        : "The Business Address is Updated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isEditingAddress.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingAddress.value = false
+    }
+  }
+
+  onUpdateAddressLine1(data: any): void {
+    this.addressLocation.value.addressLine1 = data
+  }
+
+  onUpdateAddressLine2(data: any): void {
+    this.addressLocation.value.addressLine2 = data
+  }
+
+  onUpdateAddressLine3(data: any): void {
+    this.addressLocation.value.addressLine3 = data
+  }
+
+  onUpdateState(data: any): void {
+    this.addressLocation.value.state = data
+  }
+
+  onUpdateCity(data: any): void {
+    this.addressLocation.value.city = data
+  }
+
+  onUpdatePostcode(data: any): void {
+    this.addressLocation.value.postcode = data
+  }
+
+  onUpdateCountry(data: any): void {
+    this.addressLocation.value.country = data
   }
 
   // getters
