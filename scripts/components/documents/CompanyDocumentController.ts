@@ -211,4 +211,8 @@ export class CompanyDocumentController {
 
     this.pdfCanvasRef = null
   }
+
+  get overlayCopywriting(): string {
+    return this.companyDocument.value.documentName ?? "Click to View"
+  }
 }
