@@ -9,6 +9,7 @@ import { Filter } from "~/scripts/library/Filter"
 export class AddressInputController {
   addressLine1 = ref<string | null>(null)
   addressLine2 = ref<string | null>(null)
+  addressLine3 = ref<string | null>(null)
   postcode = ref<string | null>(null)
   cities = ref<City[]>([])
   selectedCity = ref<City | null>(null)
@@ -41,6 +42,7 @@ export class AddressInputController {
     if (location) {
       this.addressLine1.value = location.addressLine1
       this.addressLine2.value = location.addressLine2
+      this.addressLine3.value = location.addressLine3
       this.postcode.value = location.postcode
       if (location.city) {
         this.selectedCity.value = new City(location.city)

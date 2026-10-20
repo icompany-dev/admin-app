@@ -53,8 +53,11 @@ export class ApplicationController {
 
   isEditingDescription: Ref<boolean> = ref<boolean>(false)
   isUpdatingDescription: Ref<boolean> = ref<boolean>(false)
-  isEditingAddress: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection58: Ref<boolean> = ref<boolean>(false)
+
+  isEditingAddress: Ref<boolean> = ref<boolean>(false)
+  isUpdatingAddress: Ref<boolean> = ref<boolean>(false)
+  addressLocation: Ref<Location> = ref<Location>(new Location())
 
   selectedMsicCodeIds: Ref<string[]> = ref<string[]>([])
   searchTextsForMsicCodes: Ref<string[]> = ref<string[]>([])
@@ -136,6 +139,7 @@ export class ApplicationController {
       await Promise.allSettled([this.fetchApplicant(), this.setBusinessAddress()])
 
       this.application.value.paidAt = this.paymentOrder.value.paidAt
+      this.addressLocation.value = new Location(this.application.value.businessAddressLocation)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -356,6 +360,73 @@ export class ApplicationController {
     } else {
       this.searchTextsForMsicCodes.value.push(searchText)
     }
+  }
+
+  //Update business address
+  onEditBusinessAddressClicked(): void {
+    this.isEditingAddress.value = true
+  }
+
+  onCancelEditBusinessAddressClicked(): void {
+    this.isEditingAddress.value = false
+  }
+
+  async onSaveBusinessAddressClicked(): Promise<void> {
+    try {
+      this.isUpdatingAddress.value = true
+      // await this.application.value.updateBusinessAddressAndMsicCodes(
+      //   this.selectedMsicCodeIds.value,
+      //   useApplicationIncorporateStore()
+      // )
+      this.application.value.businessAddressLocation = new Location(this.addressLocation.value)
+      await this.application.value.onUpdateBusinessAddress(useApplicationSwitchStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Alamat Perniagaan telah dikemaskini."
+        : "The Business Address is Updated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isEditingAddress.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingAddress.value = false
+    }
+  }
+
+  onUpdateAddressLine1(data: any): void {
+    this.addressLocation.value.addressLine1 = data
+  }
+
+  onUpdateAddressLine2(data: any): void {
+    this.addressLocation.value.addressLine2 = data
+  }
+
+  onUpdateAddressLine3(data: any): void {
+    this.addressLocation.value.addressLine3 = data
+  }
+
+  onUpdateState(data: any): void {
+    this.addressLocation.value.state = data
+  }
+
+  onUpdateCity(data: any): void {
+    this.addressLocation.value.city = data
+  }
+
+  onUpdatePostcode(data: any): void {
+    this.addressLocation.value.postcode = data
+  }
+
+  onUpdateCountry(data: any): void {
+    this.addressLocation.value.country = data
   }
 
   // Application Step functions

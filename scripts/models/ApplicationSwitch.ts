@@ -248,7 +248,11 @@ export class ApplicationSwitch implements IApplication {
       throw repository.error
     }
 
-    this.convertFromResponse(response)
+    if (response instanceof ApplicationSwitch) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
   }
 
   async delete(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
@@ -264,6 +268,29 @@ export class ApplicationSwitch implements IApplication {
     }
 
     return response
+  }
+
+  async onUpdateBusinessAddress(repository: ReturnType<typeof useApplicationSwitchStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      business_address_location: this.businessAddressLocation?.getRequestBody() ?? null,
+    }
+
+    let response = await repository.update(this.id, data)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    if (response instanceof ApplicationSwitch) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
   }
 
   //UI helper

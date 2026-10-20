@@ -3,6 +3,7 @@
     <template v-if="props.isPreviewMode">
       <div class="preview-text">YOUR ADDRESS LINE 1</div>
       <div class="preview-text">YOUR ADDRESS LINE 2</div>
+      <div class="preview-text">YOUR ADDRESS LINE 3</div>
       <div class="form-row">
         <div class="postcode preview-text">POSTCODE</div>
         <div class="city preview-text">CITY</div>
@@ -29,6 +30,15 @@
         class="form-control text-uppercase"
         placeholder="Address Line 2"
         @input="emit('updateAddressLine2', controller.addressLine2.value)"
+        :disabled="props.isDisabled"
+      />
+      <input
+        v-if="!props.isPreviewMode"
+        type="text"
+        v-model="controller.addressLine3.value"
+        class="form-control text-uppercase"
+        placeholder="Address Line 3"
+        @input="emit('updateAddressLine3', controller.addressLine3.value)"
         :disabled="props.isDisabled"
       />
       <div class="form-row">
@@ -137,6 +147,7 @@
   const emit = defineEmits([
     "updateAddressLine1",
     "updateAddressLine2",
+    "updateAddressLine3",
     "updateState",
     "updateCity",
     "updatePostcode",

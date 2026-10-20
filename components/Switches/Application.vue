@@ -179,11 +179,43 @@
                       <div class="application-item">
                         <div class="application-item-title">
                           {{ controller.businessAddressLabel }}
+                          <div class="action-icons">
+                            <i
+                              v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                              class="fa-regular fa-xmark clickable cancel"
+                              @click="controller.onCancelEditBusinessAddressClicked()"
+                            />
+                            <i
+                              v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                              class="fa-regular fa-save clickable save"
+                              @click="controller.onSaveBusinessAddressClicked()"
+                            />
+                            <i
+                              v-if="!controller.isEditingAddress.value"
+                              class="fa-regular fa-edit clickable edit"
+                              @click="controller.onEditBusinessAddressClicked()"
+                            />
+                            <i
+                              v-if="controller.isUpdatingAddress.value"
+                              class="fa-regular fa-spin fa-spinner edit"
+                            />
+                          </div>
                         </div>
-                        <div
+                        <AddressInput
+                          :location="controller.addressLocation.value"
+                          :is-disabled="!controller.isEditingAddress.value"
+                          @updateAddressLine1="controller.onUpdateAddressLine1($event)"
+                          @updateAddressLine2="controller.onUpdateAddressLine2($event)"
+                          @updateAddressLine3="controller.onUpdateAddressLine3($event)"
+                          @updateState="controller.onUpdateState($event)"
+                          @updateCity="controller.onUpdateCity($event)"
+                          @updatePostcode="controller.onUpdatePostcode($event)"
+                          @updateCountry="controller.onUpdateCountry($event)"
+                        />
+                        <!-- <div
                           class="application-item-content"
                           v-html="controller.businessAddress"
-                        />
+                        /> -->
                       </div>
                       <div class="application-item">
                         <div class="application-item-title">
@@ -427,6 +459,7 @@
 </template>
 
 <script lang="ts" setup>
+  import AddressInput from "@/components/Forms/AddressInput.vue"
   import ApplicationNode from "@/components/Services/ApplicationNode.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import Director from "@/components/Invitations/Director.vue"
