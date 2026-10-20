@@ -99,6 +99,11 @@
       ref="shipApplicationRef"
       @proceed="controller.onProceedShipped()"
     />
+    <AddBankAccount
+      ref="addBankAccountRef"
+      :company-bank-account-opening-id="controller.applicationId.value ?? ''"
+      @proceed="controller.onProceedCompleted()"
+    />
   </div>
 </template>
 
@@ -107,6 +112,7 @@
   import CopyValue from "../Buttons/CopyValue.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
+  import AddBankAccount from "../Popups/AddBankAccount.vue"
   import ServiceApplication from "./ServiceApplication.vue"
   import { BankAccountOpeningApplicationController } from "~/scripts/components/services/BankAccountOpeningApplicationController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
@@ -117,6 +123,7 @@
   const resolutionsRef = ref(null)
   const shipApplicationRef = ref(null)
   const serviceApplicationRef = ref(null)
+  const addBankAccountRef = ref(null)
 
   const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
 
@@ -149,6 +156,14 @@
     serviceApplicationRef,
     (newVal) => {
       controller.setServiceApplicationRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    addBankAccountRef,
+    (newVal) => {
+      controller.setAddBankAccountRef(newVal)
     },
     { immediate: true }
   )
