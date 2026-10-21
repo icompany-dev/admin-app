@@ -84,22 +84,70 @@
                 <span v-html="controller.businessAddress" />
               </div>
             </div>
-            <div class="ufs-item">
-              <div class="ufs-section-title">Bankers</div>
+            <div
+              class="ufs-item"
+              :class="{ 'grey-out no-print': !controller.isIncludeBankers.value }"
+            >
+              <div class="ufs-section-title">
+                <div class="form-check">
+                  <input
+                    class="form-check"
+                    type="checkbox"
+                    v-model="controller.isIncludeBankers.value"
+                  />
+                  <span>Bankers</span>
+                </div>
+              </div>
               <div class="ufs-section-item">
-                <span v-html="controller.bankers" />
+                <textarea
+                  :disabled="!controller.isIncludeBankers.value"
+                  class="form-control"
+                  v-model="controller.bankersDetails.value"
+                />
               </div>
             </div>
-            <div class="ufs-item">
-              <div class="ufs-section-title">Tax Agent</div>
+            <div
+              class="ufs-item"
+              :class="{ 'grey-out no-print': !controller.isIncludeTaxAgents.value }"
+            >
+              <div class="ufs-section-title">
+                <div class="form-check">
+                  <input
+                    class="form-check"
+                    type="checkbox"
+                    v-model="controller.isIncludeTaxAgents.value"
+                  />
+                  <span>Tax Agent</span>
+                </div>
+              </div>
               <div class="ufs-section-item">
-                <span v-html="controller.taxAgent" />
+                <textarea
+                  :disabled="!controller.isIncludeTaxAgents.value"
+                  class="form-control"
+                  v-model="controller.taxAgentDetails.value"
+                />
               </div>
             </div>
-            <div class="ufs-item">
-              <div class="ufs-section-title">Corporate Secretary</div>
+            <div
+              class="ufs-item"
+              :class="{ 'grey-out no-print': !controller.isIncludeCorporateSecretary.value }"
+            >
+              <div class="ufs-section-title">
+                <div class="form-check">
+                  <input
+                    class="form-check"
+                    type="checkbox"
+                    v-model="controller.isIncludeCorporateSecretary.value"
+                  />
+                  <span>Corporate Secretary</span>
+                </div>
+              </div>
               <div class="ufs-section-item">
-                <span v-html="controller.companySecretary" />
+                <textarea
+                  :disabled="!controller.isIncludeCorporateSecretary.value"
+                  class="form-control"
+                  v-model="controller.corporateSecretaryDetails.value"
+                />
               </div>
             </div>
           </div>
@@ -137,9 +185,14 @@
             <div class="content-subtitle">Principal Activities</div>
             <p>
               The principal activity of the Company is focused on
-              <span :class="{ placeholder: controller.isPlaceholderRequired }">
-                {{ controller.businessNature }}
-              </span>
+              <input
+                type="text"
+                class="form-control in-resolution fit-content"
+                v-model="controller.businessNatureDetails.value"
+              />
+              <!-- <span :class="{ placeholder: controller.isPlaceholderRequired }">
+                {{  }}
+              </span> -->
               . The Company was incorporated on {{ controller.incorporatedAt }}. During the financial year, the Company
               <span :class="{ placeholder: controller.isPlaceholderRequired }">
                 {{ controller.exemptionType }}
@@ -150,8 +203,8 @@
             <table class="result-table">
               <thead>
                 <tr>
-                  <td>Result</td>
-                  <td>RM</td>
+                  <th>Result</th>
+                  <th>RM</th>
                 </tr>
               </thead>
               <tbody>
@@ -176,17 +229,67 @@
               </span>
             </p>
             <div class="content-subtitle">Reserves and Provisions</div>
-            <p>
+            <div class="form-check">
+              <input
+                type="checkbox"
+                class="form-control"
+                v-model="controller.application.value.hasAnyReservesOrProvisions"
+              />
+              <div>
+                <span v-if="!controller.application.value.hasAnyReservesOrProvisions">
+                  There are no transfers to or from reserves or provisions during the financial year.
+                </span>
+                <div v-if="controller.application.value.hasAnyReservesOrProvisions">
+                  There were RM
+                  <input
+                    type="text"
+                    class="form-control in-resolution"
+                    v-model="controller.application.value.reservedAmount"
+                  />
+                  transferred
+                  <select
+                    class="form-control in-resolution"
+                    v-model="controller.application.value.isTransferredToReserves"
+                  >
+                    <option value="1">to</option>
+                    <option value="0">from</option>
+                  </select>
+                  reserves or provisions during the financial year.
+                </div>
+              </div>
+            </div>
+            <!-- <p>
               <span :class="{ placeholder: controller.isPlaceholderRequired }">
                 {{ controller.reservesOrProvisions }}
               </span>
-            </p>
+            </p> -->
             <div class="content-subtitle">Dividends</div>
-            <p>
+            <div class="form-check">
+              <input
+                type="checkbox"
+                class="form-control"
+                v-model="controller.application.value.hasDeclaredAnyDividends"
+              />
+              <div>
+                <span v-if="!controller.application.value.hasDeclaredAnyDividends">
+                  No dividend was paid or declared during the financial year.
+                </span>
+                <div v-if="controller.application.value.hasDeclaredAnyDividends">
+                  Dividend of RM
+                  <input
+                    type="text"
+                    class="form-control in-resolution"
+                    v-model="controller.application.value.dividendAmount"
+                  />
+                  was declared and paid during the financial year.
+                </div>
+              </div>
+            </div>
+            <!-- <p>
               <span :class="{ placeholder: controller.isPlaceholderRequired }">
                 {{ controller.dividendDeclaration }}
               </span>
-            </p>
+            </p> -->
             <div class="content-subtitle">Director</div>
             <p>The Director who held office during the financial year and up to the date of this report is:</p>
             <ol>
@@ -194,6 +297,45 @@
                 {{ director.name }}
               </li>
             </ol>
+            <template v-if="controller.isShowDirectorsInterestOnPage3">
+              <div class="content-subtitle">Director's Interests</div>
+              <p>
+                The Director holding office at the end of the financial year had interest in the ordinary shares of the
+                Company as follows:
+              </p>
+              <table class="directors-interest">
+                <thead>
+                  <tr>
+                    <th>Shareholdings in the name of Director</th>
+                    <th>
+                      Balance at
+                      <span :class="{ placeholder: controller.isPlaceholderRequired }">
+                        {{ controller.formattedFinancialYearStart }}
+                      </span>
+                    </th>
+                    <th>Bought</th>
+                    <th>Sold</th>
+                    <th>
+                      Balance at
+                      <span :class="{ placeholder: controller.isPlaceholderRequired }">
+                        {{ controller.formattedFinancialYearEnd }}
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(director, i) in controller.directorsInterest">
+                    <td>
+                      {{ director.name }}
+                    </td>
+                    <td>{{ NumberUtil.thousandSeparator(director.ordinaryShares) }}</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>{{ NumberUtil.thousandSeparator(director.ordinaryShares) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </template>
           </div>
         </template>
       </Paper>
@@ -215,43 +357,45 @@
             </div>
           </div>
           <div class="document-content">
-            <div class="content-subtitle">Director's Interests</div>
-            <p>
-              The Director holding office at the end of the financial year had interest in the ordinary shares of the
-              Company as follows:
-            </p>
-            <table class="directors-interest">
-              <thead>
-                <tr>
-                  <th>Shareholdings in the name of Director</th>
-                  <th>
-                    Balance at
-                    <span :class="{ placeholder: controller.isPlaceholderRequired }">
-                      {{ controller.formattedFinancialYearStart }}
-                    </span>
-                  </th>
-                  <th>Bought</th>
-                  <th>Sold</th>
-                  <th>
-                    Balance at
-                    <span :class="{ placeholder: controller.isPlaceholderRequired }">
-                      {{ controller.formattedFinancialYearEnd }}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(director, i) in controller.directorsInterest">
-                  <td>
-                    {{ director.name }}
-                  </td>
-                  <td>{{ director.ordinaryShares }}</td>
-                  <td>-</td>
-                  <td>-</td>
-                  <td>{{ director.ordinaryShares }}</td>
-                </tr>
-              </tbody>
-            </table>
+            <template v-if="!controller.isShowDirectorsInterestOnPage3">
+              <div class="content-subtitle">Director's Interests</div>
+              <p>
+                The Director holding office at the end of the financial year had interest in the ordinary shares of the
+                Company as follows:
+              </p>
+              <table class="directors-interest">
+                <thead>
+                  <tr>
+                    <th>Shareholdings in the name of Director</th>
+                    <th>
+                      Balance at
+                      <span :class="{ placeholder: controller.isPlaceholderRequired }">
+                        {{ controller.formattedFinancialYearStart }}
+                      </span>
+                    </th>
+                    <th>Bought</th>
+                    <th>Sold</th>
+                    <th>
+                      Balance at
+                      <span :class="{ placeholder: controller.isPlaceholderRequired }">
+                        {{ controller.formattedFinancialYearEnd }}
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(director, i) in controller.directorsInterest">
+                    <td>
+                      {{ director.name }}
+                    </td>
+                    <td>{{ NumberUtil.thousandSeparator(director.ordinaryShares) }}</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>{{ NumberUtil.thousandSeparator(director.ordinaryShares) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </template>
             <div class="content-subtitle">Issue of Shares and Debentures</div>
             <p>
               <span :class="{ placeholder: controller.isPlaceholderRequired }">
@@ -283,6 +427,40 @@
                 ordinary course of business have been written down to their estimated realisable values.
               </li>
             </ol>
+            <template v-if="controller.isShowDirectorsInterestOnPage3">
+              <p>As of the date of this report, the Director are not aware of any circumstances:</p>
+              <ol class="lower-alpha-brackets">
+                <li>
+                  which would render the amount written off for bad debts or the amount of the allowance for doubtful
+                  debts inadequate to any substantial extent in the financial statement of the Company; or
+                </li>
+                <li>
+                  which would render the values attributed to current assets in the financial statements of the Company
+                  misleading; or
+                </li>
+                <li>
+                  which have arisen which render adherence to the existing method of valuation of assets or liabilities
+                  of the Company misleading or inappropriate; or
+                </li>
+                <li>
+                  not otherwise dealt with in this report or financial statements which would render any amount stated
+                  in the financial statements of the Company misleading.
+                </li>
+              </ol>
+              <p>As of the date of this report, there does not exist:</p>
+              <ol class="lower-alpha-brackets">
+                <li>
+                  any charge on the assets of the Company which has arisen since the end of the year and secures the
+                  liability of any other person; or
+                </li>
+                <li>any contingent liability of the Company which has arisen since the end of the year.</li>
+              </ol>
+              <p>
+                No contingent or other liability has become enforceable, or is likely to become enforceable within the
+                period of twelve months after the end of the year which, in the opinion of the Director, will or may
+                substantially affect the ability of the Company to meet its obligations as and when they fall due.
+              </p>
+            </template>
           </div>
         </template>
       </Paper>
@@ -304,38 +482,40 @@
             </div>
           </div>
           <div class="document-content">
-            <p>As of the date of this report, the Director are not aware of any circumstances:</p>
-            <ol class="lower-alpha-brackets">
-              <li>
-                which would render the amount written off for bad debts or the amount of the allowance for doubtful
-                debts inadequate to any substantial extent in the financial statement of the Company; or
-              </li>
-              <li>
-                which would render the values attributed to current assets in the financial statements of the Company
-                misleading; or
-              </li>
-              <li>
-                which have arisen which render adherence to the existing method of valuation of assets or liabilities of
-                the Company misleading or inappropriate; or
-              </li>
-              <li>
-                not otherwise dealt with in this report or financial statements which would render any amount stated in
-                the financial statements of the Company misleading.
-              </li>
-            </ol>
-            <p>As of the date of this report, there does not exist:</p>
-            <ol class="lower-alpha-brackets">
-              <li>
-                any charge on the assets of the Company which has arisen since the end of the year and secures the
-                liability of any other person; or
-              </li>
-              <li>any contingent liability of the Company which has arisen since the end of the year.</li>
-            </ol>
-            <p>
-              No contingent or other liability has become enforceable, or is likely to become enforceable within the
-              period of twelve months after the end of the year which, in the opinion of the Director, will or may
-              substantially affect the ability of the Company to meet its obligations as and when they fall due.
-            </p>
+            <template v-if="!controller.isShowDirectorsInterestOnPage3">
+              <p>As of the date of this report, the Director are not aware of any circumstances:</p>
+              <ol class="lower-alpha-brackets">
+                <li>
+                  which would render the amount written off for bad debts or the amount of the allowance for doubtful
+                  debts inadequate to any substantial extent in the financial statement of the Company; or
+                </li>
+                <li>
+                  which would render the values attributed to current assets in the financial statements of the Company
+                  misleading; or
+                </li>
+                <li>
+                  which have arisen which render adherence to the existing method of valuation of assets or liabilities
+                  of the Company misleading or inappropriate; or
+                </li>
+                <li>
+                  not otherwise dealt with in this report or financial statements which would render any amount stated
+                  in the financial statements of the Company misleading.
+                </li>
+              </ol>
+              <p>As of the date of this report, there does not exist:</p>
+              <ol class="lower-alpha-brackets">
+                <li>
+                  any charge on the assets of the Company which has arisen since the end of the year and secures the
+                  liability of any other person; or
+                </li>
+                <li>any contingent liability of the Company which has arisen since the end of the year.</li>
+              </ol>
+              <p>
+                No contingent or other liability has become enforceable, or is likely to become enforceable within the
+                period of twelve months after the end of the year which, in the opinion of the Director, will or may
+                substantially affect the ability of the Company to meet its obligations as and when they fall due.
+              </p>
+            </template>
             <p>In the opinion of the Director:</p>
             <ol class="lower-alpha-brackets">
               <li>
@@ -354,12 +534,27 @@
           <div class="signature-section for-reports">
             <div class="sign-off-header">Signed on behalf of the Board of Director:</div>
             <div class="signatures-for-report">
-              <Signature
-                v-for="(signatureItem, i) in controller.signatureItemsForDirectorsReport"
-                :signature-item="signatureItem"
-                :is-tinted="true"
-                :tint-label="'Sign after you received document'"
-              />
+              <div
+                class="signature-pad"
+                v-if="!controller.hasResponsiblePersons"
+              >
+                <div class="signature"></div>
+                <div class="sign-off">
+                  <select class="form-control in-resolution">
+                    <option v-for="(director, i) in controller.responsiblePersons">
+                      {{ director }}
+                    </option>
+                  </select>
+                  <br />
+                  <b>DIRECTOR</b>
+                </div>
+              </div>
+              <template v-if="controller.hasResponsiblePersons">
+                <Signature
+                  v-for="(signatureItem, i) in controller.signatureItemsForDirectorsReport"
+                  :signature-item="signatureItem"
+                />
+              </template>
             </div>
           </div>
         </template>
@@ -404,12 +599,27 @@
           <div class="signature-section for-reports">
             <div class="sign-off-header">Signed on behalf of the Board of Director:</div>
             <div class="signatures-for-report">
-              <Signature
-                v-for="(signatureItem, i) in controller.signatureItemsForDirectorsReport"
-                :signature-item="signatureItem"
-                :is-tinted="true"
-                :tint-label="'Sign after you received document'"
-              />
+              <div
+                class="signature-pad"
+                v-if="!controller.hasResponsiblePersons"
+              >
+                <div class="signature"></div>
+                <div class="sign-off">
+                  <select class="form-control in-resolution">
+                    <option v-for="(director, i) in controller.responsiblePersons">
+                      {{ director }}
+                    </option>
+                  </select>
+                  <br />
+                  <b>DIRECTOR</b>
+                </div>
+              </div>
+              <template v-if="controller.hasResponsiblePersons">
+                <Signature
+                  v-for="(signatureItem, i) in controller.signatureItemsForDirectorsReport"
+                  :signature-item="signatureItem"
+                />
+              </template>
             </div>
           </div>
         </template>
@@ -498,24 +708,33 @@
                 {{ controller.formattedDateOfDeclaration }}
               </span>
             </div>
-            <Signature
-              :signature-item="controller.signatureItem"
-              :is-tinted="true"
-              :tint-label="'Sign after you received document'"
-            />
+            <div
+              class="signature-pad"
+              v-if="!controller.hasResponsiblePersons"
+            >
+              <div class="signature"></div>
+              <div class="sign-off">
+                <select class="form-control in-resolution">
+                  <option v-for="(director, i) in controller.responsiblePersons">
+                    {{ director }}
+                  </option>
+                </select>
+                <br />
+                <b>DIRECTOR</b>
+              </div>
+            </div>
+            <template v-if="controller.hasResponsiblePersons">
+              <Signature :signature-item="controller.signatureItem" />
+            </template>
           </div>
           <div class="signature-section">
             <div class="sign-off-header">Before me:</div>
-            <Signature
-              :signature-item="controller.commissionerForOathSignatureItem"
-              :is-tinted="true"
-              :tint-label="'Sign after you received document'"
-            />
+            <Signature :signature-item="controller.commissionerForOathSignatureItem" />
           </div>
         </template>
       </Paper>
 
-      <Paper
+      <!-- <Paper
         :additional-css-class="controller.additionalCssClass"
         :paper-orientation="controller.paperOrientation"
         :total-pages="controller.totalPages.value"
@@ -723,13 +942,14 @@
             </template>
           </div>
         </template>
-      </Paper>
+      </Paper> -->
+
       <Paper
         :additional-css-class="controller.additionalCssClass"
         :paper-orientation="controller.paperOrientation"
         :total-pages="controller.totalPages.value"
         :page-number="controller.pageNumberForExemptionCertificate"
-        :show-page-number="true"
+        :show-page-number="false"
       >
         <template #paperContent>
           <div class="document-header">
@@ -794,11 +1014,24 @@
             </ol>
             <div class="signature-section">
               <b>Approved and Certify By the Director</b>
-              <Signature
-                :signature-item="controller.signatureItem"
-                :is-tinted="true"
-                :tint-label="'Sign after you received the document'"
-              />
+              <div
+                class="signature-pad"
+                v-if="!controller.hasResponsiblePersons"
+              >
+                <div class="signature"></div>
+                <div class="sign-off">
+                  <select class="form-control in-resolution">
+                    <option v-for="(director, i) in controller.responsiblePersons">
+                      {{ director }}
+                    </option>
+                  </select>
+                  <br />
+                  <b>DIRECTOR</b>
+                </div>
+              </div>
+              <template v-if="controller.hasResponsiblePersons">
+                <Signature :signature-item="controller.signatureItem" />
+              </template>
             </div>
           </div>
         </template>
@@ -815,6 +1048,7 @@
   import { UnauditedFinancialStatement } from "~/scripts/types/financial-statements/UnauditedFinancialStatement"
   import { UnauditedFinancialStatementController } from "~/scripts/components/legal-documents/UnauditedFinancialStatementController"
   import type { CompanyFinancialStatement } from "~/scripts/models/CompanyFinancialStatement"
+  import { NumberUtil } from "~/scripts/utils/Number"
 
   const props = defineProps<IPropsResolutionDocument<CompanyFinancialStatement>>()
 

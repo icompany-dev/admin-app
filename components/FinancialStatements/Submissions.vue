@@ -73,6 +73,7 @@
                 <div
                   class="financial-statement"
                   v-if="controller.getIsShowUFS(financialPeriod)"
+                  @click="controller.onFinancialStatementClicked()"
                 >
                   <Teleport
                     to="body"
@@ -83,7 +84,7 @@
                         'document-view show': controller.getIsFinancialStatementEnlarged(financialPeriod),
                         'financial-statement-document': !controller.getIsFinancialStatementEnlarged(financialPeriod),
                       }"
-                      @click="controller.onFinancialStatementClicked()"
+                      @click.self="controller.onFinancialStatementClicked()"
                     >
                       <UnauditedFinancialStatement v-bind="controller.getPropsForFinancialStatement(financialPeriod)" />
                     </div>

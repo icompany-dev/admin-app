@@ -43,6 +43,15 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
   totalShares: Ref<number> = ref<number>(0)
 
+  isIncludeBankers = ref<boolean>(false)
+  bankersDetails: Ref<string> = ref<string>("")
+  isIncludeTaxAgents = ref<boolean>(false)
+  taxAgentDetails: Ref<string> = ref<string>("")
+  isIncludeCorporateSecretary = ref<boolean>(false)
+  corporateSecretaryDetails: Ref<string> = ref<string>("")
+
+  businessNatureDetails: Ref<string> = ref<string>("")
+
   isOcrRunning = ref<boolean>(false)
   isOcrCompleted = ref<boolean>(false)
   ocr = ref<Ocr>(new Ocr())
@@ -81,11 +90,13 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
         return a + b.ordinaryShares
       }, 0)
 
-      if (!StringUtil.isNullOrEmpty(this.application.value.id)) {
-        if (this.application.value.statementData.statementOfFinancialPosition.length <= 0) {
-          await this.runOcr()
-        }
-      }
+      // if (!StringUtil.isNullOrEmpty(this.application.value.id)) {
+      //   if (this.application.value.statementData.statementOfFinancialPosition.length <= 0) {
+      //     await this.runOcr()
+      //   }
+      // }
+
+      this.businessNatureDetails.value = this.businessNature
     } catch (e) {
       //
     } finally {
@@ -284,7 +295,7 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
   }
 
   getNoteForFSOnPage(page: number): any[] {
-    let maxRows = 10
+    let maxRows = 6
 
     let flattenedNotes: any[] = []
     this.notesToTheFinancialStatements.forEach((d: any) => {
@@ -538,6 +549,10 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
       return this.getExemptionTypeDetails(this.application.value.exemptionType)
     }
 
+    if (this.application.value.exemptionType.length <= 0) {
+      return this.getExemptionTypeDetails("")
+    }
+
     return StringUtil.oxfordJoin(
       "and",
       this.application.value.exemptionType.map((s: string) => {
@@ -618,6 +633,13 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
     return new SignatureItem(null, false, false, false, this.responsiblePersonName, "", "DIRECTOR", false)
   }
 
+  get hasResponsiblePersons(): boolean {
+    return (
+      this.appointmentOfResponsiblePerson.value.authorisedForReports !== null &&
+      !StringUtil.isNullOrEmpty(this.appointmentOfResponsiblePerson.value.authorisedForReports)
+    )
+  }
+
   get signatureItemsForDirectorsReport(): SignatureItem[] {
     return this.responsibleForReports.map((s: string) => {
       return new SignatureItem(null, false, false, false, s, "", "DIRECTOR", false)
@@ -675,7 +697,7 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
   }
 
   get numberOfPagesForNotes(): number {
-    let maxRows = 10
+    let maxRows = 6
 
     let flattenedNotes: any[] = []
     this.notesToTheFinancialStatements.forEach((d: any) => {
@@ -708,5 +730,15 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
         return d.email === s.email
       })
     })
+  }
+
+  get responsiblePersons(): string[] {
+    return this.directors.value.map((d: Director) => {
+      return d.name
+    })
+  }
+
+  get isShowDirectorsInterestOnPage3(): boolean {
+    return this.directors.value.length <= 1
   }
 }

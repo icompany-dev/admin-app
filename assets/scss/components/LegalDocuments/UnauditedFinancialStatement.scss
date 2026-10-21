@@ -106,10 +106,22 @@
         font-weight: 500;
         font-size: 16px;
         margin-bottom: 10px;
+
+        span {
+          font-weight: 500;
+          font-size: 16px;
+        }
       }
 
       .ufs-section-item {
         font-size: 13px;
+
+        textarea {
+          width: 100%;
+          min-width: 300px;
+          border-radius: 5px;
+          padding: 5px;
+        }
       }
     }
 
@@ -144,6 +156,36 @@
             border: solid 1px var(--bs-black);
           }
         }
+      }
+    }
+
+    .result-table {
+      width: 50%;
+
+      thead,
+      tbody {
+        tr {
+          th {
+            font-weight: 600;
+            text-align: left;
+          }
+
+          th,
+          td {
+            padding: 2px 0;
+
+            &:last-child {
+              text-align: right;
+            }
+          }
+        }
+      }
+    }
+
+    .form-control {
+      &.fit-content {
+        width: fit-content !important;
+        min-width: 300px;
       }
     }
   }
@@ -187,6 +229,10 @@
       flex-direction: row;
       justify-content: flex-start;
       gap: 30px;
+
+      .signature-pad {
+        max-width: 45%;
+      }
     }
   }
 
