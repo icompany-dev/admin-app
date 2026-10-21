@@ -253,7 +253,7 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
 
     let pages = documentContainer.getElementsByClassName("paper")
 
-    this.totalPages.value = Array.from(pages).length
+    this.totalPages.value = Array.from(pages).length - 1
   }
 
   formatAmount(amount: number | null): string {
@@ -427,6 +427,17 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
     return "generated revenue less than the threshold amount."
   }
 
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    await nextTick()
+    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
+
+    return pdfPages
+  }
+
   // Document Generator
   async getPdfElements(): Promise<HTMLElement[]> {
     if (!this.documentContainerRef) {
@@ -482,6 +493,10 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
   get formattedDateOfDeclaration(): string {
     if (this.isPlaceholderRequired) {
       return "DATE OF DECLARATION"
+    }
+
+    if (StringUtil.isNullOrEmpty(this.application.value.circulationDate)) {
+      return ""
     }
 
     return this.formatDate(this.application.value.circulationDate)
@@ -655,7 +670,7 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
       !this.appointmentOfResponsiblePerson.value.authorisedForReports ||
       StringUtil.isNullOrEmpty(this.appointmentOfResponsiblePerson.value.authorisedForReports)
     ) {
-      return ["RESPONSIBLE DIRECTOR"]
+      return this.responsiblePersons
     }
 
     return this.appointmentOfResponsiblePerson.value.authorisedForReports.split(",")
@@ -666,7 +681,15 @@ export class UnauditedFinancialStatementController extends SdnBhdLegalDocumentCo
       !this.appointmentOfResponsiblePerson.value.authorisedForStatutory ||
       StringUtil.isNullOrEmpty(this.appointmentOfResponsiblePerson.value.authorisedForStatutory)
     ) {
-      return "RESPONSIBLE DIRECTOR"
+      if (this.responsiblePersons.length > 0) {
+        return this.responsiblePersons[0]
+      }
+
+      return this.responsiblePersons[0] ?? "RESPONSIBLE DIRECTOR"
+    }
+
+    if (StringUtil.isNullOrEmpty(this.appointmentOfResponsiblePerson.value.authorisedForStatutory)) {
+      return this.responsiblePersons[0] ?? ""
     }
 
     return this.appointmentOfResponsiblePerson.value.authorisedForStatutory

@@ -143,7 +143,13 @@
             font-weight: normal;
             padding: 5px;
             text-align: center;
-            border: solid 1px var(--bs-black);
+            border-top: solid 1px var(--bs-black);
+            border-left: solid 1px var(--bs-black);
+            border-bottom: solid 1px var(--bs-black);
+
+            &:last-child {
+              border-right: solid 1px var(--bs-black);
+            }
           }
         }
       }
@@ -153,7 +159,13 @@
           td {
             padding: 5px;
             text-align: center;
-            border: solid 1px var(--bs-black);
+            // border: solid 1px var(--bs-black);
+            border-left: solid 1px var(--bs-black);
+            border-bottom: solid 1px var(--bs-black);
+
+            &:last-child {
+              border-right: solid 1px var(--bs-black);
+            }
           }
         }
       }
@@ -212,6 +224,14 @@
 
       .declaration-signature {
         width: calc(50% - 5px);
+
+        .empty-field {
+          display: inline-block;
+          width: 200px;
+          min-height: 18px;
+          margin-right: 2px;
+          border-bottom: dotted 2px var(--bs-black);
+        }
       }
 
       .signature-pad {

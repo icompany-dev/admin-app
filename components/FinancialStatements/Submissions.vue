@@ -86,7 +86,20 @@
                       }"
                       @click.self="controller.onFinancialStatementClicked()"
                     >
-                      <UnauditedFinancialStatement v-bind="controller.getPropsForFinancialStatement(financialPeriod)" />
+                      <UnauditedFinancialStatement
+                        :ref="
+                          (el) => {
+                            if (controller.getIsFinancialStatementEnlarged(financialPeriod)) {
+                              controller.setUfsRef(el)
+                            }
+                          }
+                        "
+                        v-bind="controller.getPropsForFinancialStatement(financialPeriod)"
+                      />
+                      <ActionTray
+                        v-if="controller.getIsFinancialStatementEnlarged(financialPeriod)"
+                        :actions="controller.actionTrayElementForUFS"
+                      />
                     </div>
                   </Teleport>
                 </div>
@@ -100,6 +113,7 @@
 </template>
 
 <script lang="ts" setup>
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import PdfViewer from "../DocumentViewers/PdfViewer.vue"
   import UnauditedFinancialStatement from "@/components/LegalDocuments/UnauditedFinancialStatement.vue"

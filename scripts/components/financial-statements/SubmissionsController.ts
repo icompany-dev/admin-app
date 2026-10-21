@@ -1,4 +1,5 @@
 import { DocumentTypes } from "~/scripts/constants/DocumentTypes"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { Ocr } from "~/scripts/library/Ocr"
@@ -9,6 +10,8 @@ import { File as UploadedFile } from "~/scripts/models/File"
 import { GeminiAiJobStatusResponse } from "~/scripts/models/GeminiAiJobStatusResponse"
 import type { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SubmissionsController {
@@ -21,6 +24,8 @@ export class SubmissionsController {
 
   emitEvents: any | null = null
 
+  ufsRef: any | null = null
+
   language = useLanguage()
   dayjs = useDayjs()
   time = useLocalTime()
@@ -28,6 +33,8 @@ export class SubmissionsController {
   currentPage: Ref<number> = ref<number>(1)
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  isDownloadingUfs: Ref<boolean> = ref<boolean>(false)
 
   companyFinancialPeriods: Ref<CompanyFinancialPeriod[]> = ref<CompanyFinancialPeriod[]>([])
   companyFinancialStatements = ref<CompanyFinancialStatement[]>([])
@@ -58,6 +65,10 @@ export class SubmissionsController {
     this.isShowPendingOnly.value = props.isShowPendingOnly
 
     await this.init()
+  }
+
+  setUfsRef(ufsRef: any): void {
+    this.ufsRef = ufsRef
   }
 
   async init(): Promise<void> {
@@ -335,6 +346,25 @@ export class SubmissionsController {
     return props
   }
 
+  async onDownloadUFS(): Promise<void> {
+    if (!this.ufsRef || this.isDownloadingUfs.value) {
+      return
+    }
+
+    try {
+      this.isDownloadingUfs.value = true
+
+      let pages = await this.ufsRef.getPdfElements()
+      let filename = `Unaudited Financial Statement.pdf`
+
+      await PdfPaperUtil.generatePdfFile(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloadingUfs.value = false
+    }
+  }
+
   get selectedFinancialPeriod(): CompanyFinancialPeriod {
     return new CompanyFinancialPeriod(
       this.companyFinancialPeriods.value.find((fp: CompanyFinancialPeriod) => {
@@ -371,5 +401,16 @@ export class SubmissionsController {
 
   get loaderSublabel(): string {
     return this.language.isMalay() ? "Serahan" : "Submissions"
+  }
+
+  get actionTrayElementForUFS(): ActionTrayElement[] {
+    return [
+      new ActionTrayElement("download", this.onDownloadUFS.bind(this), {
+        label: new ActionTrayLabel("Download", "Muat Turun"),
+        isDisabled: this.isDownloadingUfs.value,
+        iconClass: this.isDownloadingUfs.value ? "fa-solid fa-spin fa-spinner" : "",
+        isIconStart: this.isDownloadingUfs.value,
+      }),
+    ]
   }
 }

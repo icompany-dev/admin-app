@@ -186,13 +186,17 @@
             <p>
               The principal activity of the Company is focused on
               <input
+                v-if="controller.isDocumentEditable"
                 type="text"
                 class="form-control in-resolution fit-content"
                 v-model="controller.businessNatureDetails.value"
               />
-              <!-- <span :class="{ placeholder: controller.isPlaceholderRequired }">
-                {{  }}
-              </span> -->
+              <span
+                v-if="!controller.isDocumentEditable"
+                :class="{ placeholder: controller.isPlaceholderRequired }"
+              >
+                {{ controller.businessNatureDetails.value }}
+              </span>
               . The Company was incorporated on {{ controller.incorporatedAt }}. During the financial year, the Company
               <span :class="{ placeholder: controller.isPlaceholderRequired }">
                 {{ controller.exemptionType }}
@@ -229,7 +233,10 @@
               </span>
             </p>
             <div class="content-subtitle">Reserves and Provisions</div>
-            <div class="form-check">
+            <div
+              v-if="controller.isDocumentEditable"
+              class="form-check"
+            >
               <input
                 type="checkbox"
                 class="form-control"
@@ -258,14 +265,18 @@
                 </div>
               </div>
             </div>
-            <!-- <p>
+            <p v-if="!controller.isDocumentEditable">
               <span :class="{ placeholder: controller.isPlaceholderRequired }">
                 {{ controller.reservesOrProvisions }}
               </span>
-            </p> -->
+            </p>
             <div class="content-subtitle">Dividends</div>
-            <div class="form-check">
+            <div
+              v-if="controller.isDocumentEditable"
+              class="form-check"
+            >
               <input
+                v-if="controller.isDocumentEditable"
                 type="checkbox"
                 class="form-control"
                 v-model="controller.application.value.hasDeclaredAnyDividends"
@@ -285,11 +296,11 @@
                 </div>
               </div>
             </div>
-            <!-- <p>
+            <p v-if="!controller.isDocumentEditable">
               <span :class="{ placeholder: controller.isPlaceholderRequired }">
                 {{ controller.dividendDeclaration }}
               </span>
-            </p> -->
+            </p>
             <div class="content-subtitle">Director</div>
             <p>The Director who held office during the financial year and up to the date of this report is:</p>
             <ol>
@@ -692,7 +703,10 @@
               />
               <span
                 v-if="!controller.isDocumentEditable"
-                :class="{ placeholder: controller.isPlaceholderRequired }"
+                class="empty-field"
+                :class="{
+                  placeholder: controller.isPlaceholderRequired,
+                }"
               >
                 {{ controller.cityOfDeclaration }}
               </span>
@@ -705,7 +719,10 @@
               />
               <span
                 v-if="!controller.isDocumentEditable"
-                :class="{ placeholder: controller.isPlaceholderRequired }"
+                class="empty-field"
+                :class="{
+                  placeholder: controller.isPlaceholderRequired,
+                }"
               >
                 {{ controller.stateOfDeclaration }}
               </span>
@@ -718,7 +735,10 @@
               />
               <span
                 v-if="!controller.isDocumentEditable"
-                :class="{ placeholder: controller.isPlaceholderRequired }"
+                class="empty-field"
+                :class="{
+                  placeholder: controller.isPlaceholderRequired,
+                }"
               >
                 {{ controller.formattedDateOfDeclaration }}
               </span>
@@ -1019,11 +1039,11 @@
                     v-model="controller.application.value.circulationDate"
                   />
                 </template>
-                <template v-if="!controller.isDocumentEditable">
+                <!-- <template v-if="!controller.isDocumentEditable">
                   <span :class="{ placeholder: controller.isPlaceholderRequired }">
                     {{ controller.formattedCirculationDate }}
                   </span>
-                </template>
+                </template> -->
                 .
               </li>
             </ol>
