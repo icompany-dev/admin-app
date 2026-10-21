@@ -39,6 +39,10 @@
             ref="dcrRef"
             v-bind="controller.resolutionDocumentProps"
           />
+          <LetterResignationSecretary
+            ref="letterRef"
+            :company-id="controller.companyId"
+          />
           <SwitchOutLetter
             ref="mcrRef"
             v-bind="controller.resolutionDocumentProps"
@@ -103,6 +107,7 @@
 <script lang="ts" setup>
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import DcrChangeOfCompanySecretary from "../Resolutions/DcrChangeOfCompanySecretary.vue"
+  import LetterResignationSecretary from "../LegalDocuments/LetterResignationSecretary.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import SwitchOutLetter from "@/components/LegalDocuments/SwitchOutLetter.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
@@ -122,6 +127,7 @@
   const emit = defineEmits(EmitMessages.COMPANY_SERVICES)
 
   const dcrRef = ref(null)
+  const letterRef = ref(null)
   const wrapperRef = ref(null)
 
   const controller = new LetterToSwitchOutServiceController(props.companyId, props.viewType, emit)

@@ -23,6 +23,8 @@ export class LetterOfTransferAndHandoverDocumentController
 
   showMcrFirst = ref<boolean>(false)
 
+  letterRef: any | null = null
+
   constructor(
     companyId: string,
     isInPreviewMode: boolean,
@@ -37,6 +39,10 @@ export class LetterOfTransferAndHandoverDocumentController
       this.applicationId = applicationId
       this.fetchApplication(applicationId ?? "")
     }
+  }
+
+  setLetterRef(letterRef: any): void {
+    this.letterRef = letterRef
   }
 
   async fetchApplication(id: string): Promise<void> {
@@ -129,6 +135,19 @@ export class LetterOfTransferAndHandoverDocumentController
             dcrPages,
             19,
             "DCR - Resignation of Company Secretary.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.letterRef) {
+        let letterPages = await this.letterRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            letterPages,
+            19,
+            "Letter Resignation of Company Secretary.pdf",
             PaperSize.A4,
             PaperOrientation.Portrait
           )
