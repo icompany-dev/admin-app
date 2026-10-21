@@ -40,22 +40,32 @@
             v-if="controller.isShowingDetails(financialPeriod)"
           >
             <template v-if="controller.hasUploadedManagementAccount(financialPeriod)">
-              <PdfViewer
-                :company-id="controller.companyId.value ?? ''"
-                :pdf-url="controller.getManagementAccountUrl(financialPeriod)"
-                :filename="'managementaccount.pdf'"
-                :can-zoom="false"
-                :zoom-level="0"
-              />
-              <div class="action-buttons">
-                <button
-                  class="btn btn-submit"
-                  :class="{ 'is-loading': controller.getIsGeneratingUFS(financialPeriod) }"
-                  :disabled="controller.isGeneratingUFS.value"
-                  @click="controller.onGenerateUFSClicked(financialPeriod)"
+              <div class="submission-documents">
+                <div class="management-account">
+                  <PdfViewer
+                    :company-id="controller.companyId.value ?? ''"
+                    :pdf-url="controller.getManagementAccountUrl(financialPeriod)"
+                    :filename="'managementaccount.pdf'"
+                    :can-zoom="false"
+                    :zoom-level="0"
+                  />
+                  <div class="action-buttons">
+                    <button
+                      class="btn btn-submit"
+                      :class="{ 'is-loading': controller.getIsGeneratingUFS(financialPeriod) }"
+                      :disabled="controller.isGeneratingUFS.value"
+                      @click="controller.onGenerateUFSClicked(financialPeriod)"
+                    >
+                      Generate UFS
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="financial-statement"
+                  v-if="controller.getIsShowUFS(financialPeriod)"
                 >
-                  Generate UFS
-                </button>
+                  <UnauditedFinancialStatement v-bind="controller.getPropsForFinancialStatement(financialPeriod)" />
+                </div>
               </div>
             </template>
           </div>
@@ -68,6 +78,7 @@
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import PdfViewer from "../DocumentViewers/PdfViewer.vue"
+  import UnauditedFinancialStatement from "@/components/LegalDocuments/UnauditedFinancialStatement.vue"
   import { SubmissionsController } from "~/scripts/components/financial-statements/SubmissionsController"
   import type { IPropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
 

@@ -8,6 +8,7 @@ import { CompanyFinancialStatement, FinancialStatementData } from "~/scripts/mod
 import { File as UploadedFile } from "~/scripts/models/File"
 import { GeminiAiJobStatusResponse } from "~/scripts/models/GeminiAiJobStatusResponse"
 import type { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
+import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SubmissionsController {
@@ -275,6 +276,36 @@ export class SubmissionsController {
     }
 
     return "generated revenue less than the threshold amount."
+  }
+
+  getIsShowUFS(financialPeriod: CompanyFinancialPeriod): boolean {
+    if (!this.hasUploadedManagementAccount(financialPeriod)) {
+      return false
+    }
+
+    let financialStatement = this.getFinancialStatement(financialPeriod)
+
+    return financialStatement.statementData.notesToTheFinancialStatements.length > 0
+  }
+
+  getPropsForFinancialStatement(
+    financialPeriod: CompanyFinancialPeriod
+  ): PropsResolutionDocument<CompanyFinancialStatement> {
+    let financialStatement = this.getFinancialStatement(financialPeriod)
+
+    let props = new PropsResolutionDocument<CompanyFinancialStatement>(
+      financialPeriod.companyId,
+      financialStatement.id,
+      financialStatement,
+      false,
+      "",
+      false,
+      false
+    )
+
+    props.financialYearEnd = financialPeriod.endDate
+
+    return props
   }
 
   get selectedFinancialPeriod(): CompanyFinancialPeriod {

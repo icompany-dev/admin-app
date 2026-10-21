@@ -1,0 +1,262 @@
+// #legal-documents-unaudited-financial-statement {
+//   // Styles go here
+// }
+
+.unaudited-financial-statement {
+  p {
+    text-align: justify;
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  span {
+    font-size: 13px;
+    line-height: 18px;
+
+    &.placeholder {
+      background-color: var(--bs-gray-200);
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 3px;
+      color: var(--bs-gray-500);
+    }
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  ol {
+    padding-left: 15px;
+
+    li {
+      font-size: 13px;
+      line-height: 18px;
+      padding-left: 10px;
+      padding-bottom: 3px;
+      text-align: justify;
+    }
+  }
+
+  .cover-page {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    .company-name {
+      font-size: 26px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .company-registration-number {
+      font-size: 20px !important;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding-bottom: 20px;
+    }
+
+    .cover-page-item {
+      font-size: 15px;
+
+      span {
+        display: inline-block;
+        font-size: 15px;
+      }
+    }
+  }
+
+  .document-header {
+    margin-bottom: 20px;
+
+    .company-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+  }
+
+  .document-section-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: 500;
+
+    &.certificate {
+      font-size: 18px;
+      font-weight: 600;
+      margin-top: 30px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .document-section-subtitle {
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+
+  .document-content {
+    .ufs-item {
+      margin-bottom: 20px;
+
+      .ufs-section-title {
+        font-weight: 500;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .ufs-section-item {
+        font-size: 13px;
+      }
+    }
+
+    .content-subtitle {
+      font-size: 14px;
+      margin-top: 20px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .directors-interest {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+
+      thead {
+        tr {
+          th {
+            font-weight: normal;
+            padding: 5px;
+            text-align: center;
+            border: solid 1px var(--bs-black);
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            padding: 5px;
+            text-align: center;
+            border: solid 1px var(--bs-black);
+          }
+        }
+      }
+    }
+  }
+
+  .signature-section {
+    margin-top: 30px;
+    width: 40%;
+
+    .sign-off-header {
+      font-weight: 600;
+    }
+
+    .sign-off {
+      width: 100%;
+    }
+
+    &.statutory-declaration {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 10px;
+
+      .declaration-signature {
+        width: calc(50% - 5px);
+      }
+
+      .signature-pad {
+        width: calc(50% - 5px);
+      }
+    }
+
+    &.for-reports {
+      width: 100%;
+    }
+
+    .signatures-for-report {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 30px;
+    }
+  }
+
+  .financial-statement-table {
+    width: 100%;
+
+    table {
+      width: 100%;
+
+      tbody {
+        tr {
+          td {
+            font-size: 13px;
+            padding: 5px;
+
+            &:last-child {
+              text-align: right;
+            }
+          }
+
+          &.header {
+            td {
+              font-size: 15px;
+              font-weight: 600;
+              padding-top: 20px;
+            }
+          }
+
+          &.subheader {
+            td {
+              font-size: 14px;
+              font-weight: 600;
+              padding-left: 10px;
+            }
+          }
+
+          &.item {
+            td {
+              padding-left: 20px;
+            }
+          }
+
+          &.total {
+            td {
+
+              font-size: 14px;
+              font-weight: 600;
+
+              &:last-child {
+                border-top: 1px solid var(--bs-black);
+                border-bottom: 2px solid var(--bs-black);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .financial-statement-notes {
+    margin-top: 30px;
+
+    .number-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+}
