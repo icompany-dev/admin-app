@@ -34,7 +34,8 @@ export class SubmissionsController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
-  isDownloadingUfs: Ref<boolean> = ref<boolean>(false)
+  isDownloadingManagementAccount: Ref<boolean> = ref<boolean>(false)
+  isDownloadingFs: Ref<boolean> = ref<boolean>(false)
 
   companyFinancialPeriods: Ref<CompanyFinancialPeriod[]> = ref<CompanyFinancialPeriod[]>([])
   companyFinancialStatements = ref<CompanyFinancialStatement[]>([])
@@ -196,6 +197,12 @@ export class SubmissionsController {
     return this.selectedFinancialPeriodId.value === financialPeriod.id
   }
 
+  hasUploadedDocuments(financialPeriod: CompanyFinancialPeriod): boolean {
+    return (
+      this.hasUploadedManagementAccount(financialPeriod) || this.getIsShowUploadedFinancialStatementUrl(financialPeriod)
+    )
+  }
+
   hasUploadedManagementAccount(financialPeriod: CompanyFinancialPeriod): boolean {
     let financialStatement = this.getFinancialStatement(financialPeriod)
 
@@ -224,6 +231,32 @@ export class SubmissionsController {
 
   getIsFinancialStatementEnlarged(financialPeriod: CompanyFinancialPeriod): boolean {
     return this.isShowingDetails(financialPeriod) && this.isFinancialStatementEnlarged.value
+  }
+
+  getIsShowEditableUFS(financialPeriod: CompanyFinancialPeriod): boolean {
+    return StringUtil.isNullOrEmpty(financialPeriod.financialStatementId) && !financialPeriod.isSubmittingAudited
+  }
+
+  getIsShowUploadedFinancialStatementUrl(financialPeriod: CompanyFinancialPeriod): boolean {
+    return !StringUtil.isNullOrEmpty(financialPeriod.financialStatementId)
+  }
+
+  getFinancialStatementUrl(financialPeriod: CompanyFinancialPeriod): string {
+    if (!this.getIsShowUploadedFinancialStatementUrl(financialPeriod)) {
+      return ""
+    }
+
+    return financialPeriod.financialStatement?.url ?? ""
+  }
+
+  getIsShowFinancialStatementNotUploaded(financialPeriod: CompanyFinancialPeriod): boolean {
+    return (
+      StringUtil.isNullOrEmpty(financialPeriod.financialStatementId) && financialPeriod.isSubmittingAudited === true
+    )
+  }
+
+  getIsShowGenerateUFSButton(financialPeriod: CompanyFinancialPeriod): boolean {
+    return StringUtil.isNullOrEmpty(financialPeriod.financialStatementId) && !financialPeriod.isSubmittingAudited
   }
 
   async runOcr(financialPeriod: CompanyFinancialPeriod): Promise<void> {
@@ -352,22 +385,78 @@ export class SubmissionsController {
     return props
   }
 
-  async onDownloadUFS(): Promise<void> {
-    if (!this.ufsRef || this.isDownloadingUfs.value) {
+  async onDownloadFinancialStatement(): Promise<void> {
+    if (this.isDownloadingFs.value) {
       return
     }
 
     try {
-      this.isDownloadingUfs.value = true
+      this.isDownloadingFs.value = true
 
-      let pages = await this.ufsRef.getPdfElements()
-      let filename = `Unaudited Financial Statement.pdf`
+      if (StringUtil.isNullOrEmpty(this.selectedFinancialPeriod.financialStatementId)) {
+        if (this.ufsRef) {
+          let pages = await this.ufsRef.getPdfElements()
+          let filename = `Unaudited Financial Statement.pdf`
 
-      await PdfPaperUtil.generatePdfFile(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+          await PdfPaperUtil.generatePdfFile(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+        }
+      } else {
+        let filename = this.selectedFinancialPeriod.financialStatement?.name ?? "Financial Statement.pdf"
+        if (!StringUtil.contains(filename, ".pdf")) {
+          filename = `${filename}.pdf`
+        }
+        let url = this.selectedFinancialPeriod.financialStatement?.url ?? ""
+        let response = await fetch(url)
+        if (response.ok) {
+          let blob = await response.blob()
+          const blobUrl = window.URL.createObjectURL(blob)
+          const link = document.createElement("a")
+          link.href = blobUrl
+          link.setAttribute("download", filename)
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+          window.URL.revokeObjectURL(blobUrl)
+        }
+      }
     } catch (e) {
       console.error(e)
     } finally {
-      this.isDownloadingUfs.value = false
+      this.isDownloadingFs.value = false
+    }
+  }
+
+  async onDownloadManagementAccount(): Promise<void> {
+    if (this.isDownloadingManagementAccount.value) {
+      return
+    }
+
+    try {
+      this.isDownloadingManagementAccount.value = true
+
+      let managementAccount = this.getManagementAccount(this.selectedFinancialPeriod)
+
+      let filename = managementAccount?.name ?? "Management Account.pdf"
+      if (!StringUtil.contains(filename, ".pdf")) {
+        filename = `${filename}.pdf`
+      }
+      let url = managementAccount?.url ?? ""
+      let response = await fetch(url)
+      if (response.ok) {
+        let blob = await response.blob()
+        const blobUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.setAttribute("download", filename)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(blobUrl)
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloadingManagementAccount.value = false
     }
   }
 
@@ -409,14 +498,59 @@ export class SubmissionsController {
     return this.language.isMalay() ? "Serahan" : "Submissions"
   }
 
-  get actionTrayElementForUFS(): ActionTrayElement[] {
+  get actionTrayElementForManagementAccount(): ActionTrayElement[] {
     return [
-      new ActionTrayElement("download", this.onDownloadUFS.bind(this), {
+      new ActionTrayElement("download", this.onDownloadManagementAccount.bind(this), {
         label: new ActionTrayLabel("Download", "Muat Turun"),
-        isDisabled: this.isDownloadingUfs.value,
-        iconClass: this.isDownloadingUfs.value ? "fa-solid fa-spin fa-spinner" : "",
-        isIconStart: this.isDownloadingUfs.value,
+        isDisabled: this.isDownloadingManagementAccount.value,
+        iconClass: this.isDownloadingManagementAccount.value ? "fa-solid fa-spin fa-spinner" : "",
+        isIconStart: this.isDownloadingManagementAccount.value,
       }),
     ]
+  }
+
+  get actionTrayElementForFS(): ActionTrayElement[] {
+    return [
+      new ActionTrayElement("download", this.onDownloadFinancialStatement.bind(this), {
+        label: new ActionTrayLabel("Download", "Muat Turun"),
+        isDisabled: this.isDownloadingFs.value,
+        iconClass: this.isDownloadingFs.value ? "fa-solid fa-spin fa-spinner" : "",
+        isIconStart: this.isDownloadingFs.value,
+      }),
+    ]
+  }
+
+  get noRecordFinancialStatementLabel(): string {
+    return this.language.isMalay()
+      ? "Sdn Bhd ini masih belum memuat naik penyata kewangan."
+      : "This Sdn Bhd has not uploaded any financial statement."
+  }
+
+  get noRecordFinancialStatementSublabel(): string {
+    return this.language.isMalay()
+      ? "Ia akan dipaparkan di sini jika ada."
+      : "It will be displayed here when it is available."
+  }
+
+  get noRecordLabel(): string {
+    return this.language.isMalay()
+      ? "Tiada Rekod Tarikh Akhir Tahun Kewangan bagi Sdn Bhd ini."
+      : "This Sdn Bhd has no record of Financial Year End."
+  }
+
+  get noRecordSublabel(): string {
+    return this.language.isMalay() ? "Sila kemaskini maklumat ini." : "Please confirm set or update the FYE."
+  }
+
+  get noRecordPendingDocumentsLabel(): string {
+    return this.language.isMalay()
+      ? "Sdn Bhd ini belum memuat naik akaun pengurusan dan/atau penyata kewangan."
+      : "This Sdn Bhd has not uploaded the management account and/or financial statements."
+  }
+
+  get noRecordPendingDocumentsSublabel(): string {
+    return this.language.isMalay()
+      ? "Ia akan dipaparkan di sini jika ada."
+      : "It will be displayed here when it is available."
   }
 }
