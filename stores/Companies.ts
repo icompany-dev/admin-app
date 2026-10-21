@@ -186,6 +186,21 @@ export const useCompanyStore = defineStore("company", () => {
     }
   }
 
+  async function fetchBeforeAfter(id: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companies.fetchBeforeAfter(id)
+      return response
+    } catch (e: any) {
+      console.error(`Error to check isSwitched`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanies = computed(() => companies.value.length)
 
   return {
@@ -206,5 +221,6 @@ export const useCompanyStore = defineStore("company", () => {
     setToStrikedOff,
     setToSwitchedOut,
     fetchSingleCompact,
+    fetchBeforeAfter,
   }
 })

@@ -138,4 +138,13 @@ export class CompanyRepository extends Repository<Company> {
       throw error
     }
   }
+
+  async fetchBeforeAfter(id: string): Promise<any> {
+    try {
+      const response = this.get<any>(`/api/company/prev-next/${id}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }
