@@ -78,6 +78,12 @@ export class PdfViewerController {
     }
   }
 
+  async setZoomLevel(zoomLevel: number): Promise<void> {
+    this.zoomLevel.value = zoomLevel
+
+    await this.renderPdf()
+  }
+
   getPageRange(): string[] {
     return Array.from({ length: this.numberOfPages.value }, (_, i) => (i + 1).toString())
   }

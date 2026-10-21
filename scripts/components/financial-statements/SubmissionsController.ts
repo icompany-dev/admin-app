@@ -34,6 +34,9 @@ export class SubmissionsController {
 
   selectedFinancialPeriodId: Ref<string> = ref<string>("")
 
+  isManagementAccountEnlarged: Ref<boolean> = ref<boolean>(false)
+  isFinancialStatementEnlarged: Ref<boolean> = ref<boolean>(false)
+
   isGeneratingUFS: Ref<boolean> = ref<boolean>(false)
   ocr = ref<Ocr>(new Ocr())
   isOcrRunning: Ref<boolean> = ref<boolean>(false)
@@ -162,6 +165,22 @@ export class SubmissionsController {
     }
   }
 
+  onManagementAccountClicked(): void {
+    this.isManagementAccountEnlarged.value = !this.isManagementAccountEnlarged.value
+  }
+
+  onMinimizeManagementAccount(): void {
+    this.isManagementAccountEnlarged.value = false
+  }
+
+  onFinancialStatementClicked(): void {
+    this.isFinancialStatementEnlarged.value = !this.isFinancialStatementEnlarged.value
+  }
+
+  onMinimizeFinancialStatement(): void {
+    this.isFinancialStatementEnlarged.value = false
+  }
+
   isShowingDetails(financialPeriod: CompanyFinancialPeriod): boolean {
     return this.selectedFinancialPeriodId.value === financialPeriod.id
   }
@@ -186,6 +205,14 @@ export class SubmissionsController {
 
   getIsGeneratingUFS(financialPeriod: CompanyFinancialPeriod): boolean {
     return this.isShowingDetails(financialPeriod) && this.isGeneratingUFS.value
+  }
+
+  getIsManagementAccountEnlarged(financialPeriod: CompanyFinancialPeriod): boolean {
+    return this.isShowingDetails(financialPeriod) && this.isManagementAccountEnlarged.value
+  }
+
+  getIsFinancialStatementEnlarged(financialPeriod: CompanyFinancialPeriod): boolean {
+    return this.isShowingDetails(financialPeriod) && this.isFinancialStatementEnlarged.value
   }
 
   async runOcr(financialPeriod: CompanyFinancialPeriod): Promise<void> {

@@ -42,13 +42,23 @@
             <template v-if="controller.hasUploadedManagementAccount(financialPeriod)">
               <div class="submission-documents">
                 <div class="management-account">
-                  <PdfViewer
-                    :company-id="controller.companyId.value ?? ''"
-                    :pdf-url="controller.getManagementAccountUrl(financialPeriod)"
-                    :filename="'managementaccount.pdf'"
-                    :can-zoom="false"
-                    :zoom-level="0"
-                  />
+                  <Teleport
+                    to="body"
+                    :disabled="!controller.getIsManagementAccountEnlarged(financialPeriod)"
+                  >
+                    <div
+                      :class="{ 'document-view show': controller.getIsManagementAccountEnlarged(financialPeriod) }"
+                      @click="controller.onManagementAccountClicked()"
+                    >
+                      <PdfViewer
+                        :company-id="controller.companyId.value ?? ''"
+                        :pdf-url="controller.getManagementAccountUrl(financialPeriod)"
+                        :filename="'managementaccount.pdf'"
+                        :can-zoom="false"
+                        :zoom-level="controller.getIsManagementAccountEnlarged(financialPeriod) ? 1 : 0"
+                      />
+                    </div>
+                  </Teleport>
                   <div class="action-buttons">
                     <button
                       class="btn btn-submit"
@@ -64,7 +74,20 @@
                   class="financial-statement"
                   v-if="controller.getIsShowUFS(financialPeriod)"
                 >
-                  <UnauditedFinancialStatement v-bind="controller.getPropsForFinancialStatement(financialPeriod)" />
+                  <Teleport
+                    to="body"
+                    :disabled="!controller.getIsFinancialStatementEnlarged(financialPeriod)"
+                  >
+                    <div
+                      :class="{
+                        'document-view show': controller.getIsFinancialStatementEnlarged(financialPeriod),
+                        'financial-statement-document': !controller.getIsFinancialStatementEnlarged(financialPeriod),
+                      }"
+                      @click="controller.onFinancialStatementClicked()"
+                    >
+                      <UnauditedFinancialStatement v-bind="controller.getPropsForFinancialStatement(financialPeriod)" />
+                    </div>
+                  </Teleport>
                 </div>
               </div>
             </template>
