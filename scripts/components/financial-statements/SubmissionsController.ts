@@ -1,8 +1,12 @@
+import { DocumentTypes } from "~/scripts/constants/DocumentTypes"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
+import { Ocr } from "~/scripts/library/Ocr"
 import { Company } from "~/scripts/models/Company"
 import { CompanyFinancialPeriod } from "~/scripts/models/CompanyFinancialPeriod"
-import { CompanyFinancialStatement } from "~/scripts/models/CompanyFinancialStatement"
+import { CompanyFinancialStatement, FinancialStatementData } from "~/scripts/models/CompanyFinancialStatement"
+import { File as UploadedFile } from "~/scripts/models/File"
+import { GeminiAiJobStatusResponse } from "~/scripts/models/GeminiAiJobStatusResponse"
 import type { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -28,6 +32,12 @@ export class SubmissionsController {
   companyFinancialStatements = ref<CompanyFinancialStatement[]>([])
 
   selectedFinancialPeriodId: Ref<string> = ref<string>("")
+
+  isGeneratingUFS: Ref<boolean> = ref<boolean>(false)
+  ocr = ref<Ocr>(new Ocr())
+  isOcrRunning: Ref<boolean> = ref<boolean>(false)
+  isOcrCompleted: Ref<boolean> = ref<boolean>(false)
+  jobStatusResponses: Ref<GeminiAiJobStatusResponse[]> = ref<GeminiAiJobStatusResponse[]>([])
 
   constructor(props: PropsFinancialStatementSubmissions, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -118,6 +128,10 @@ export class SubmissionsController {
   }
 
   onFinancialPeriodClicked(financialPeriod: CompanyFinancialPeriod): void {
+    if (this.isGeneratingUFS.value) {
+      return
+    }
+
     if (this.isShowingDetails(financialPeriod)) {
       this.selectedFinancialPeriodId.value = ""
     } else {
@@ -125,6 +139,25 @@ export class SubmissionsController {
       setTimeout(() => {
         this.selectedFinancialPeriodId.value = financialPeriod.id
       }, 700)
+    }
+  }
+
+  async onGenerateUFSClicked(financialPeriod: CompanyFinancialPeriod): Promise<void> {
+    if (this.isGeneratingUFS.value || !this.hasUploadedManagementAccount(financialPeriod)) {
+      return
+    }
+
+    try {
+      this.isGeneratingUFS.value = true
+
+      await this.runOcr(financialPeriod)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        console.error(e)
+      }
+      this.isGeneratingUFS.value = false
     }
   }
 
@@ -142,6 +175,114 @@ export class SubmissionsController {
     let financialStatement = this.getFinancialStatement(financialPeriod)
 
     return financialStatement.statementFile?.url ?? ""
+  }
+
+  getManagementAccount(financialPeriod: CompanyFinancialPeriod): UploadedFile {
+    let financialStatement = this.getFinancialStatement(financialPeriod)
+
+    return financialStatement.statementFile ?? new UploadedFile()
+  }
+
+  getIsGeneratingUFS(financialPeriod: CompanyFinancialPeriod): boolean {
+    return this.isShowingDetails(financialPeriod) && this.isGeneratingUFS.value
+  }
+
+  async runOcr(financialPeriod: CompanyFinancialPeriod): Promise<void> {
+    if (!this.hasUploadedManagementAccount(financialPeriod)) {
+      return
+    }
+
+    let dayjs = useDayjs()
+    let endDate = dayjs(financialPeriod.endDate).format("YYYY-MM-DD")
+    let startDate = dayjs(financialPeriod.startDate).format("YYYY-MM-DD")
+
+    let managementAccount = this.getManagementAccount(financialPeriod)
+    let fileUrl = managementAccount.url
+    const response = await fetch(fileUrl)
+    const blob = await response.blob()
+    const file = new File([blob], managementAccount.name, {
+      type: managementAccount.mimeType || blob.type || "application/octet-stream",
+      lastModified: Date.now(),
+    })
+    this.ocr.value.documentCategory = DocumentTypes.CATEGORY_UNAUDITED
+    this.ocr.value.financialYearEnd = endDate
+    this.ocr.value.totalShares = 100 // we will allow them to change in the document itself
+    this.isOcrRunning.value = true
+    this.isOcrCompleted.value = false
+    await this.ocr.value.processFile(file)
+    await this.ocr.value.run()
+
+    this.checkOcrStatus()
+  }
+
+  async checkOcrStatus(): Promise<void> {
+    if (this.ocr.value.isProcessing) {
+      setTimeout(() => {
+        this.checkOcrStatus()
+      }, 500)
+      return
+    }
+
+    await this.postOcrCompleted()
+    this.isOcrRunning.value = false
+  }
+
+  async postOcrCompleted(): Promise<void> {
+    this.isOcrCompleted.value = true
+
+    this.jobStatusResponses.value = this.ocr.value.geminiAi.jobStatuses.map((js: GeminiAiJobStatusResponse) => {
+      return new GeminiAiJobStatusResponse(js)
+    })
+
+    if (this.jobStatusResponses.value.length <= 0) {
+      return
+    }
+
+    let firstResponse = this.jobStatusResponses.value[0]
+    const data = firstResponse.result
+    const regex = /```([\s\S]*?)```/
+    const matchedData = data.match(regex)
+
+    if (!matchedData || !matchedData[0]) {
+      return
+    }
+
+    let info = matchedData[1].trim()
+    info = info.replace("json", "")
+
+    let jsonObject = JSON.parse(info)
+
+    let financialStatement = this.getFinancialStatement(this.selectedFinancialPeriod)
+
+    financialStatement.isProfitable = jsonObject.is_profit_or_loss === "profit" ?? false
+    financialStatement.exemptionType = jsonObject.type_of_exemption ?? []
+    financialStatement.statementData = new FinancialStatementData(jsonObject)
+
+    if (!StringUtil.isNullOrEmpty(financialStatement.id)) {
+      await financialStatement.update(useCompanyFinancialStatementStore())
+    }
+
+    this.isGeneratingUFS.value = false
+  }
+
+  getExemptionTypeDetails(exemptionType: string): string {
+    if (StringUtil.isEqual(exemptionType, "dormant")) {
+      return "was dormant"
+    }
+
+    if (StringUtil.isEqual(exemptionType, "zero-revenue")) {
+      return "generated no revenue."
+    }
+
+    return "generated revenue less than the threshold amount."
+  }
+
+  get selectedFinancialPeriod(): CompanyFinancialPeriod {
+    return new CompanyFinancialPeriod(
+      this.companyFinancialPeriods.value.find((fp: CompanyFinancialPeriod) => {
+        return fp.id === this.selectedFinancialPeriodId.value
+      })
+    )
   }
 
   get filter(): Filter {

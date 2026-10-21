@@ -48,7 +48,14 @@
                 :zoom-level="0"
               />
               <div class="action-buttons">
-                <button class="btn btn-submit">Generate UFS</button>
+                <button
+                  class="btn btn-submit"
+                  :class="{ 'is-loading': controller.getIsGeneratingUFS(financialPeriod) }"
+                  :disabled="controller.isGeneratingUFS.value"
+                  @click="controller.onGenerateUFSClicked(financialPeriod)"
+                >
+                  Generate UFS
+                </button>
               </div>
             </template>
           </div>

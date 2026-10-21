@@ -46,6 +46,7 @@ export class DocumentTypes {
   static CATEGORY_FINANCIAL: string = "financial"
   static CATEGORY_COSEC: string = "cosec"
   static CATEGORY_AUDIT: string = "audit"
+  static CATEGORY_UNAUDITED: string = "unaudited"
 
   static DOCUMENT_DATA: DocumentType[] = [
     new DocumentType(this.BANK_STATEMENT, this.BANK_STATEMENT_NAME, this.CATEGORY_FINANCIAL),
