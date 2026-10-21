@@ -54,7 +54,7 @@ export class TableDataFetcher<T> {
           }
 
           if (!c.company) {
-            return
+            return true
           }
 
           return !StringUtil.contains(c.company.name, "lorem ipsum") && !c.company.isDemo

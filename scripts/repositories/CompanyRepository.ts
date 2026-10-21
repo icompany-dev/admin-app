@@ -129,4 +129,13 @@ export class CompanyRepository extends Repository<Company> {
       throw e
     }
   }
+
+  async fetchSingleCompact(id: string): Promise<any> {
+    try {
+      const response = this.get<any>(`/api/compact-company/${id}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

@@ -171,6 +171,21 @@ export const useCompanyStore = defineStore("company", () => {
     }
   }
 
+  async function fetchSingleCompact(id: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.companies.fetchSingleCompact(id)
+      return response.data
+    } catch (e: any) {
+      console.error(`Error to check isSwitched`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanies = computed(() => companies.value.length)
 
   return {
@@ -190,5 +205,6 @@ export const useCompanyStore = defineStore("company", () => {
     notifyRegularise,
     setToStrikedOff,
     setToSwitchedOut,
+    fetchSingleCompact,
   }
 })
