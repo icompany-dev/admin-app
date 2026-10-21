@@ -18,6 +18,21 @@ export const useCompanyFinancialStatementStore = defineStore("companyFinancialSt
     error: error,
   })
 
+  async function byFinancialPeriodId(financialPeriodId: string): Promise<CompanyFinancialStatement | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.companyFinancialStatements.byFinancialPeriodId(financialPeriodId)
+      return new CompanyFinancialStatement(response.data)
+    } catch (e: any) {
+      console.error(`Error to get financial statement`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanyFinancialStatements = computed(() => companyFinancialStatements.value.length)
 
   return {
@@ -26,6 +41,7 @@ export const useCompanyFinancialStatementStore = defineStore("companyFinancialSt
     isLoading,
     error,
     totalCompanyFinancialStatements,
-    ...crudActions
+    ...crudActions,
+    byFinancialPeriodId,
   }
 })

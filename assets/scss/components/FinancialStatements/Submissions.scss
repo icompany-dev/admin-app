@@ -1,3 +1,38 @@
 #financial-statements-submissions {
-  // Styles go here
+  .submissions {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    .submission {
+      padding: 20px;
+      width: calc(100% - 40px);
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+
+      .details {
+        cursor: pointer;
+      }
+
+      .statement-details {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border-radius: 10px;
+        background-color: var(--bs-white);
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+      }
+    }
+  }
 }

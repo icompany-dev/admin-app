@@ -143,6 +143,13 @@
               </span>
             </TransitionGroup>
           </div>
+          <div
+            class="page-tab"
+            :class="{ selected: controller.isFinancialStatement.value }"
+            @click="controller.onFinancialStatementClicked()"
+          >
+            {{ controller.financialStatement }}
+          </div>
         </TransitionGroup>
         <TransitionGroup name="slide-left">
           <div
@@ -165,6 +172,12 @@
               :company="controller.company.value"
               @goToDocuments="controller.onDocumentsClicked()"
             />
+          </div>
+          <div
+            class="application-contents"
+            v-if="controller.isFinancialStatement.value"
+          >
+            <FinancialStatementSubmissions v-bind="controller.financialStatementSubmissionsProp" />
           </div>
         </TransitionGroup>
       </div>
@@ -201,6 +214,7 @@
   import SdnBhdSpine from "@/components/LegalDocuments/SdnBhdSpine.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
+  import FinancialStatementSubmissions from "@/components/FinancialStatements/Submissions.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
   import { CompanyConstants } from "~/scripts/constants/Company"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"

@@ -8,6 +8,7 @@ import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
+import { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
 import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
@@ -29,6 +30,7 @@ export class SelectedSdnBhdController {
   isOverview: Ref<boolean> = ref<boolean>(true)
   isDocuments: Ref<boolean> = ref<boolean>(false)
   isAnnualReturn: Ref<boolean> = ref<boolean>(false)
+  isFinancialStatement: Ref<boolean> = ref<boolean>(false)
 
   //TODO: To remove
   isBusiness: Ref<boolean> = ref<boolean>(false)
@@ -182,6 +184,7 @@ export class SelectedSdnBhdController {
     this.isOverview.value = true
     this.isDocuments.value = false
     this.isAnnualReturn.value = false
+    this.isFinancialStatement.value = false
     // this.isBusiness.value = false
     // this.isDirectors.value = false
     // this.isShareholders.value = false
@@ -210,6 +213,7 @@ export class SelectedSdnBhdController {
     this.isOverview.value = false
     this.isDocuments.value = true
     this.isAnnualReturn.value = false
+    this.isFinancialStatement.value = false
     // this.isBusiness.value = false
     // this.isDirectors.value = false
     // this.isShareholders.value = false
@@ -220,6 +224,14 @@ export class SelectedSdnBhdController {
     this.isOverview.value = false
     this.isDocuments.value = false
     this.isAnnualReturn.value = true
+    this.isFinancialStatement.value = false
+  }
+
+  onFinancialStatementClicked(): void {
+    this.isOverview.value = false
+    this.isDocuments.value = false
+    this.isAnnualReturn.value = false
+    this.isFinancialStatement.value = true
   }
 
   // onShareholdersClicked(): void {
@@ -502,6 +514,10 @@ export class SelectedSdnBhdController {
       : `Annual Return for ${this.yearToLodge}`
   }
 
+  get financialStatement(): string {
+    return this.language.isMalay() ? "Penyata Kewangan" : "Financial Statement"
+  }
+
   get shareholders(): string {
     return this.language.isMalay() ? "Pemegang Saham" : "Shareholders"
   }
@@ -598,5 +614,16 @@ export class SelectedSdnBhdController {
     }
 
     return !this.isAnnualReturnPaid.value
+  }
+
+  get financialStatementSubmissionsProp(): PropsFinancialStatementSubmissions {
+    return new PropsFinancialStatementSubmissions(
+      this.company.value.id,
+      this.company.value.name,
+      this.company.value.createdAt,
+      null,
+      false,
+      false
+    )
   }
 }

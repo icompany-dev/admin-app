@@ -10,4 +10,13 @@ export class CompanyFinancialStatementRepository extends Repository<CompanyFinan
   ) {
     super(resourceUrl, singleResourceUrl, baseUrl, getAuthToken, CompanyFinancialStatement)
   }
+
+  async byFinancialPeriodId(financialPeriodId: string): Promise<any> {
+    try {
+      const response = this.get(`${this.singleResourceUrl}/by-financial-period/${financialPeriodId}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

@@ -17,8 +17,10 @@
         v-for="(financialPeriod, index) in controller.companyFinancialPeriods.value"
         class="submission"
       >
-        <div class="company-name">{{ controller.getCompanyName(financialPeriod) }}</div>
-        <div class="details">
+        <div
+          class="details"
+          @click="controller.onFinancialPeriodClicked(financialPeriod)"
+        >
           <b>Start Date:</b>
           {{ controller.getStartDate(financialPeriod) }}
           <br />
@@ -32,6 +34,25 @@
           {{ controller.getStatusOfSubmission(financialPeriod) }}
           <br />
         </div>
+        <Transition name="fade">
+          <div
+            class="statement-details"
+            v-if="controller.isShowingDetails(financialPeriod)"
+          >
+            <template v-if="controller.hasUploadedManagementAccount(financialPeriod)">
+              <PdfViewer
+                :company-id="controller.companyId.value ?? ''"
+                :pdf-url="controller.getManagementAccountUrl(financialPeriod)"
+                :filename="'managementaccount.pdf'"
+                :can-zoom="false"
+                :zoom-level="0"
+              />
+              <div class="action-buttons">
+                <button class="btn btn-submit">Generate UFS</button>
+              </div>
+            </template>
+          </div>
+        </Transition>
       </div>
     </div>
   </div>
@@ -39,6 +60,7 @@
 
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import PdfViewer from "../DocumentViewers/PdfViewer.vue"
   import { SubmissionsController } from "~/scripts/components/financial-statements/SubmissionsController"
   import type { IPropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
 
