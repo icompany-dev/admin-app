@@ -556,6 +556,14 @@
                 />
               </template>
             </div>
+
+            <div class="document-date">
+              Date:
+              <input
+                type="date"
+                class="form-control in-resolution"
+              />
+            </div>
           </div>
         </template>
       </Paper>
@@ -620,6 +628,13 @@
                   :signature-item="signatureItem"
                 />
               </template>
+            </div>
+            <div class="document-date">
+              Date:
+              <input
+                type="date"
+                class="form-control in-resolution"
+              />
             </div>
           </div>
         </template>
@@ -1032,6 +1047,13 @@
               <template v-if="controller.hasResponsiblePersons">
                 <Signature :signature-item="controller.signatureItem" />
               </template>
+              <div class="document-date">
+                Date:
+                <input
+                  type="date"
+                  class="form-control in-resolution"
+                />
+              </div>
             </div>
           </div>
         </template>
