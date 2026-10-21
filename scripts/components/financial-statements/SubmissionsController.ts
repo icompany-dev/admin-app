@@ -301,6 +301,12 @@ export class SubmissionsController {
       await financialStatement.update(useCompanyFinancialStatementStore())
     }
 
+    this.companyFinancialStatements.value.forEach((fs: any) => {
+      if (fs.id === financialStatement.id) {
+        fs = new CompanyFinancialStatement(financialStatement) // refresh data
+      }
+    })
+
     this.isGeneratingUFS.value = false
   }
 
