@@ -26,14 +26,8 @@
     <template v-if="controller.isEditMode.value">
       <div class="branch-address editable">
         <AddressInput
+          ref="addressInputRef"
           :location="controller.branchLocation.value"
-          @updateAddressLine1="controller.onUpdateAddressLine1($event)"
-          @updateAddressLine2="controller.onUpdateAddressLine2($event)"
-          @updateAddressLine3="controller.onUpdateAddressLine3($event)"
-          @updateState="controller.onUpdateState($event)"
-          @updateCity="controller.onUpdateCity($event)"
-          @updatePostcode="controller.onUpdatePostcode($event)"
-          @updateCountry="controller.onUpdateCountry($event)"
         />
         <div class="actions">
           <span
@@ -78,6 +72,7 @@
   const emit = defineEmits(["branchUpdated", "removed"])
 
   const confirmToDeleteRef = ref(null)
+  const addressInputRef = ref(null)
 
   const controller = new BranchController(props, emit)
 
@@ -93,6 +88,14 @@
     confirmToDeleteRef,
     (newVal) => {
       controller.setConfirmToDeleteRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    addressInputRef,
+    (newVal) => {
+      controller.setAddressInputRef(newVal)
     },
     { immediate: true }
   )

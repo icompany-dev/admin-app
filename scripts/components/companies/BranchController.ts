@@ -18,6 +18,7 @@ export class BranchController {
 
   language = useLanguage()
 
+  addressInputRef: any | null = null
   confirmToDeleteRef: any | null = null
 
   constructor(props: PropsCompanyBranch, emitEvents: any) {
@@ -28,6 +29,10 @@ export class BranchController {
 
   setConfirmToDeleteRef(confirmToDeleteRef: any): void {
     this.confirmToDeleteRef = confirmToDeleteRef
+  }
+
+  setAddressInputRef(addressInputRef: any): void {
+    this.addressInputRef = addressInputRef
   }
 
   setDataFromProps(props: PropsCompanyBranch): void {
@@ -101,8 +106,12 @@ export class BranchController {
       this.isUpdating.value = true
       let isNew = StringUtil.isNullOrEmpty(this.companyBranch.value.id)
 
-      console.log("location", this.branchLocation.value)
-      console.log("updated", this.companyBranch.value.location)
+      if (this.addressInputRef) {
+        this.companyBranch.value.location = new Location(this.addressInputRef.getAddress())
+      }
+
+      this.companyBranch.value.name = this.companyBranch.value.location.addressLine1
+      this.companyBranch.value.descriptions = this.companyBranch.value.location.addressLine1
 
       if (StringUtil.isNullOrEmpty(this.companyBranch.value.id)) {
         await this.companyBranch.value.create(useCompanyBranchStore())
@@ -129,36 +138,6 @@ export class BranchController {
       this.isUpdating.value = false
       this.isEditMode.value = false
     }
-  }
-
-  onUpdateAddressLine1(data: any): void {
-    this.companyBranch.value.location.addressLine1 = data
-    this.companyBranch.value.name = data
-    this.companyBranch.value.descriptions = data
-  }
-
-  onUpdateAddressLine2(data: any): void {
-    this.companyBranch.value.location.addressLine2 = data
-  }
-
-  onUpdateAddressLine3(data: any): void {
-    this.companyBranch.value.location.addressLine3 = data
-  }
-
-  onUpdateState(data: any): void {
-    this.companyBranch.value.location.state = data
-  }
-
-  onUpdateCity(data: any): void {
-    this.companyBranch.value.location.city = data
-  }
-
-  onUpdatePostcode(data: any): void {
-    this.companyBranch.value.location.postcode = data
-  }
-
-  onUpdateCountry(data: any): void {
-    this.companyBranch.value.location.country = data
   }
 
   get canProceed(): boolean {

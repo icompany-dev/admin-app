@@ -164,4 +164,8 @@
     },
     { deep: true }
   )
+
+  defineExpose({
+    getAddress: controller.getAddress.bind(controller),
+  })
 </script>
