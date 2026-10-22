@@ -101,6 +101,7 @@
   import RegisterTransferOfShares from "./RegisterTransferOfShares.vue"
   import RemoveDirector from "./RemoveDirector.vue"
   import ReplaceCommonSeal from "./ReplaceCommonSeal.vue"
+  import LetterOfCosecResign from "./LetterOfCosecResign.vue"
   import ResignationOfDirector from "./ResignationOfDirector.vue"
   import ReturnOfAllotment from "./ReturnOfAllotment.vue"
   import Section47 from "./Section47.vue"
@@ -157,6 +158,7 @@
     [CompanyConstants.TARGET_COMMON_SEAL]: AdoptCommonSeal,
     [CompanyConstants.TARGET_COMMON_SEAL_REPLACEMENT]: ReplaceCommonSeal,
     [CompanyConstants.TARGET_CONTRACT_ENTER]: EnterContract,
+    [CompanyConstants.TARGET_COSEC_RESIGNATION]: LetterOfCosecResign,
     [CompanyConstants.TARGET_DELEGATION_OF_AUTHORITY]: DelegationOfAuthority,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointmentOfDirector,
     [CompanyConstants.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST]: Section219And221,

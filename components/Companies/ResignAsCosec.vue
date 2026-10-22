@@ -1,0 +1,166 @@
+<template>
+  <div id="companies-resign-as-cosec">
+    <LoaderPrepare
+      v-if="controller.tableDataFetcher.value.isLoading"
+      :label="controller.loaderLabel"
+      :sublabel="controller.loaderSublabel"
+    />
+    <div
+      class="companies-document"
+      v-if="!controller.tableDataFetcher.value.isLoading"
+    >
+      <NoRecord
+        v-if="controller.tableDataFetcher.value.data.length === 0"
+        :title="controller.noRecordTitle"
+        :subtitle="controller.noRecordSubtitle"
+      />
+      <div class="sdn-bhd-container">
+        <div
+          class="form-check"
+          v-for="(sdnbhd, index) in controller.tableDataFetcher.value.data"
+        >
+          <input
+            type="checkbox"
+            class="form-control form-check-input"
+            :checked="controller.isCompanySelected(sdnbhd.id)"
+            @click="controller.onCompanyCheckboxClicked(sdnbhd.id)"
+          />
+          <div
+            class="company-name"
+            @click="controller.onCompanySelected(sdnbhd.id)"
+          >
+            {{ sdnbhd.getFullName() }}
+            <div class="registration-numbers">
+              {{ sdnbhd.registrationNumberNew }} ({{ sdnbhd.registrationNumberOld }})
+            </div>
+          </div>
+        </div>
+        <TablePagination
+          v-bind="controller.tablePaginationProps"
+          @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
+        />
+      </div>
+      <Transition class="slide-left">
+        <div
+          class="document-in-view"
+          v-if="controller.isShowDocument"
+        >
+          <LetterResignAsCosecService
+            ref="documentRef"
+            :company-id="controller.selectedCompanyId.value"
+            :view-type="'new'"
+          />
+          <!-- <button
+            class="btn btn-submit"
+            @click="controller.onDownloadAll()"
+          >
+            <i
+              class="fa-regular fa-spin fa-spinner"
+              v-if="controller.isGeneratingPdf.value"
+            />
+            Generate for All
+          </button> -->
+        </div>
+      </Transition>
+    </div>
+    <ActionInProgress
+      ref="actionInProgressRef"
+      v-bind="controller.actionInProgressProps"
+    />
+    <ActionTray
+      v-if="!controller.tableDataFetcher.value.isLoading"
+      :is-lock-position="true"
+      :actions="controller.actionTrayElements"
+    />
+  </div>
+</template>
+
+<script lang="ts" setup>
+  import ActionInProgress from "../Popups/ActionInProgress.vue"
+  import ActionTray from "../ActionTrays/ActionTray.vue"
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import NoRecord from "../Placeholders/NoRecord.vue"
+  import LetterResignAsCosecService from "../CompanyServices/LetterResignAsCosecService.vue"
+  import TablePagination from "~/components/Paginations/TablePagination.vue"
+  import { ResignAsCosecController } from "~/scripts/components/companies/ResignAsCosecController"
+
+  const props = defineProps({
+    searchText: {
+      type: String,
+      default: null,
+    },
+    sortOrder: {
+      type: String,
+      default: null,
+    },
+    isIncludeDemo: {
+      type: Boolean,
+      default: false,
+    },
+    isUnselectSdnBhd: {
+      type: Boolean,
+      default: false,
+    },
+  })
+
+  const emit = defineEmits(["sdnbhdSelected"])
+
+  const documentRef = ref(null)
+  const actionInProgressRef = ref(null)
+
+  const controller = new ResignAsCosecController(emit)
+
+  watch(
+    () => props.searchText,
+    (newVal) => {
+      controller.setSearch(newVal)
+    }
+  )
+
+  watch(
+    () => props.sortOrder,
+    (newVal) => {
+      controller.setSortOrder(newVal)
+    }
+  )
+
+  watch(
+    () => props.isIncludeDemo,
+    (newVal) => {
+      controller.setIsIncludeDemo(newVal)
+    }
+  )
+
+  watch(
+    () => props.isUnselectSdnBhd,
+    (newVal) => {
+      if (newVal) {
+        controller.onCompanyUnselected()
+      }
+    }
+  )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    actionInProgressRef,
+    (newVal) => {
+      controller.setActionInProgressRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    onCompanyUnselected: controller.onCompanyUnselected.bind(controller),
+  })
+</script>
+
+<style lang="scss">
+  @use "~/assets/scss/components/Companies/ResignAsCosec" as *;
+</style>

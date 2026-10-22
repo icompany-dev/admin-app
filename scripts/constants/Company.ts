@@ -100,6 +100,7 @@ export class CompanyConstants {
   static TARGET_THIRD_SCHEDULE: string = "third_schedule" //this is not a service. but a document
 
   static TARGET_MERCHANDISE_PURCHASE: string = "merchandise_purchase"
+  static TARGET_COSEC_RESIGNATION: string = "resignation_of_cosec"
 
   static DOCUMENT_TARGETS: string[] = [
     this.TARGET_AMENDMENT_ADDRESS,
@@ -170,5 +171,6 @@ export class CompanyConstants {
     this.TARGET_THIRD_SCHEDULE,
     this.TARGET_SECTION_47,
     this.TARGET_TERMS_OF_REFERENCE,
+    this.TARGET_COSEC_RESIGNATION,
   ]
 }
