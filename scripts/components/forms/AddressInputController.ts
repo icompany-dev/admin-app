@@ -12,11 +12,11 @@ export class AddressInputController {
   addressLine3 = ref<string | null>(null)
   postcode = ref<string | null>(null)
   cities = ref<City[]>([])
-  selectedCity = ref<City | null>(new City())
+  selectedCity = ref<City | null>(null)
   states = ref<State[]>([])
-  selectedState = ref<State | null>(new State())
+  selectedState = ref<State | null>(null)
   countries = ref<Country[]>([])
-  selectedCountry = ref<Country | null>(new Country())
+  selectedCountry = ref<Country | null>(null)
 
   postcodeRepository = usePostcodeStore()
   cityRepository = useCityStore()
@@ -241,5 +241,21 @@ export class AddressInputController {
     location.country = this.selectedCountry.value
 
     return location
+  }
+
+  get selectedCityName(): string | null {
+    if (StringUtil.isNullOrEmpty(this.selectedCity.value?.name ?? "")) {
+      return null
+    }
+
+    return this.selectedCity.value?.name ?? null
+  }
+
+  get selectedStateName(): string | null {
+    if (StringUtil.isNullOrEmpty(this.selectedState.value?.name ?? "")) {
+      return null
+    }
+
+    return this.selectedState.value?.name ?? null
   }
 }
