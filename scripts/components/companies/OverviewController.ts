@@ -8,7 +8,7 @@ import { CompanyBank } from "~/scripts/models/CompanyBank"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import type { ChartData, ChartOptions } from "chart.js"
 import { Filter } from "~/scripts/library/Filter"
-import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
+import { CompanyBranch } from "~/scripts/models/CompanyBranch"
 import { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
 import { PropsAddCompanyAuditor } from "~/scripts/props/PropsAddCompanyAuditor"
 import { UserDetail } from "~/scripts/models/UserDetail"
@@ -629,6 +629,31 @@ ${detailsOfBO.join("\n")}
     }
   }
 
+  // branches
+  onBranchUpdated(companyBranch: CompanyBranch): void {
+    // let existing = this.company.value.branches.find((cb: CompanyBranch) => {
+    //   return cb.id === companyBranch.id
+    // })
+    // if (existing) {
+    //   existing = new CompanyBranch(companyBranch)
+    //   return
+    // }
+    // let newBranch = this.company.value.branches.find((cb: CompanyBranch) => {
+    //   return StringUtil.isNullOrEmpty(cb.id)
+    // })
+    // newBranch = new CompanyBranch(companyBranch)
+  }
+
+  onAddBranch(): void {
+    this.company.value.branches.push(new CompanyBranch())
+  }
+
+  onBranchRemoved(branchId: string): void {
+    this.company.value.branches = this.company.value.branches.filter((cb: CompanyBranch) => {
+      return cb.id !== branchId
+    })
+  }
+
   // getters
   get noneText(): string {
     return this.language.isMalay() ? "TIADA" : "NONE"
@@ -906,5 +931,11 @@ ${detailsOfBO.join("\n")}
     }
 
     return ObjectUtil.sort<CompanyFinancialPeriod>(this.companyFinancialPeriods.value, "endDate", "desc")
+  }
+
+  get canAddNewBranch(): boolean {
+    return this.company.value.branches.every((cb: CompanyBranch) => {
+      return !StringUtil.isNullOrEmpty(cb.id)
+    })
   }
 }

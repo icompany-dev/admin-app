@@ -20,7 +20,7 @@
         v-model="controller.addressLine1.value"
         class="form-control text-uppercase"
         placeholder="Address Line 1"
-        @input="emit('updateAddressLine1', controller.addressLine1.value)"
+        @change="emit('updateAddressLine1', controller.addressLine1.value)"
         :disabled="props.isDisabled"
       />
       <input
@@ -29,7 +29,7 @@
         v-model="controller.addressLine2.value"
         class="form-control text-uppercase"
         placeholder="Address Line 2"
-        @input="emit('updateAddressLine2', controller.addressLine2.value)"
+        @change="emit('updateAddressLine2', controller.addressLine2.value)"
         :disabled="props.isDisabled"
       />
       <input
@@ -38,7 +38,7 @@
         v-model="controller.addressLine3.value"
         class="form-control text-uppercase"
         placeholder="Address Line 3"
-        @input="emit('updateAddressLine3', controller.addressLine3.value)"
+        @change="emit('updateAddressLine3', controller.addressLine3.value)"
         :disabled="props.isDisabled"
       />
       <div class="form-row">
@@ -54,7 +54,6 @@
             v-model="controller.postcode.value"
             class="form-control"
             placeholder="Postcode"
-            @input="emit('updatePostcode', controller.postcode.value)"
             @change="controller.onPostcodeChanged()"
             :disabled="props.isDisabled"
           />

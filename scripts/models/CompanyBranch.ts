@@ -68,6 +68,10 @@ export class CompanyBranch implements IModel<CompanyBranch> {
 
   async create(repository: ReturnType<typeof useCompanyBranchStore>): Promise<void> {
     if (!this.canProceed()) {
+      console.log("companyId", this.companyId)
+      console.log("name", this.name)
+      console.log("descriptions", this.descriptions)
+      console.log("location", this.location)
       let error: Error = new Error()
       error.setForIncompleteData()
       throw error

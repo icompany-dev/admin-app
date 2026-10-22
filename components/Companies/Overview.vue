@@ -189,6 +189,7 @@
                   <Branch
                     :company-id="controller.companyId.value"
                     :company-branch="branch"
+                    @removed="controller.onBranchRemoved(branch.id)"
                   />
                   <!-- <span
                     class="address-span"
@@ -196,6 +197,13 @@
                   /> -->
                 </li>
               </ol>
+              <button
+                v-if="controller.canAddNewBranch"
+                class="btn btn-submit"
+                @click="controller.onAddBranch()"
+              >
+                Add Branch
+              </button>
             </td>
           </tr>
           <tr>

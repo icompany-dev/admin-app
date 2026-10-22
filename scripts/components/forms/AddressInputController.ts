@@ -150,6 +150,8 @@ export class AddressInputController {
   }
 
   async onPostcodeChanged(): Promise<void> {
+    this.emitEvents("updatePostcode", this.postcode.value)
+
     if (StringUtil.isNullOrEmpty(this.postcode.value) || this.postcodeRepository.isLoading) {
       return
     }

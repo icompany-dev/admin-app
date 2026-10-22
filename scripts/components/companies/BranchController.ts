@@ -8,14 +8,17 @@ import { StringUtil } from "~/scripts/utils/String"
 export class BranchController {
   companyId: Ref<string> = ref<string>("")
   companyBranch: Ref<CompanyBranch> = ref<CompanyBranch>(new CompanyBranch())
+  branchLocation: Ref<Location> = ref<Location>(new Location())
   emitEvents: any | null = null
 
   isEditMode: Ref<boolean> = ref<boolean>(false)
   isUpdating: Ref<boolean> = ref<boolean>(false)
 
+  isDeleting: Ref<boolean> = ref<boolean>(false)
+
   language = useLanguage()
 
-  addressInputRef: any | null = null
+  confirmToDeleteRef: any | null = null
 
   constructor(props: PropsCompanyBranch, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -23,8 +26,8 @@ export class BranchController {
     this.setDataFromProps(props)
   }
 
-  setAddressInputRef(addressInputRef: any): void {
-    this.addressInputRef = addressInputRef
+  setConfirmToDeleteRef(confirmToDeleteRef: any): void {
+    this.confirmToDeleteRef = confirmToDeleteRef
   }
 
   setDataFromProps(props: PropsCompanyBranch): void {
@@ -35,11 +38,54 @@ export class BranchController {
       this.companyBranch.value.companyId = this.companyId.value
       this.companyBranch.value.location = new Location()
       this.companyBranch.value.status = "active"
+
+      this.onEditClicked()
     }
+
+    this.branchLocation.value = new Location(this.companyBranch.value.location)
   }
 
   onEditClicked(): void {
     this.isEditMode.value = true
+  }
+
+  onRemoveClicked(): void {
+    if (this.confirmToDeleteRef) {
+      this.confirmToDeleteRef.show()
+    }
+  }
+
+  async onProceedToDelete(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyBranch.value.id)) {
+      this.emitEvents("removed")
+      return
+    }
+
+    if (this.isDeleting.value) {
+      return
+    }
+
+    try {
+      this.isDeleting.value = true
+
+      await this.companyBranch.value.remove(useCompanyBranchStore())
+
+      this.emitEvents("removed")
+
+      let toastTitle = this.language.isMalay() ? `Maklumat Cawangan telah dipadamkan.` : `The Branch info is removed.`
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isDeleting.value = false
+    }
   }
 
   onCancelEditClicked(): void {
@@ -54,6 +100,9 @@ export class BranchController {
     try {
       this.isUpdating.value = true
       let isNew = StringUtil.isNullOrEmpty(this.companyBranch.value.id)
+
+      console.log("location", this.branchLocation.value)
+      console.log("updated", this.companyBranch.value.location)
 
       if (StringUtil.isNullOrEmpty(this.companyBranch.value.id)) {
         await this.companyBranch.value.create(useCompanyBranchStore())
@@ -118,5 +167,9 @@ export class BranchController {
 
   get branchAddress(): string {
     return this.companyBranch.value.location.getMultilineAddress()
+  }
+
+  get itemToRemoveName(): string {
+    return this.language.isMalay() ? "Butiran Cawangan" : "Branch Details"
   }
 }

@@ -13,13 +13,20 @@
           >
             <i class="fa-regular fa-edit" />
           </span>
+
+          <span
+            class="clickable cancel"
+            @click="controller.onRemoveClicked()"
+          >
+            <i class="fa-regular fa-trash-alt" />
+          </span>
         </div>
       </div>
     </template>
     <template v-if="controller.isEditMode.value">
       <div class="branch-address editable">
         <AddressInput
-          :location="controller.companyBranch.value.location"
+          :location="controller.branchLocation.value"
           @updateAddressLine1="controller.onUpdateAddressLine1($event)"
           @updateAddressLine2="controller.onUpdateAddressLine2($event)"
           @updateAddressLine3="controller.onUpdateAddressLine3($event)"
@@ -52,17 +59,25 @@
         </div>
       </div>
     </template>
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :removeItemName="controller.itemToRemoveName"
+      @proceed="controller.onProceedToDelete()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import AddressInput from "../Forms/AddressInput.vue"
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import { BranchController } from "~/scripts/components/companies/BranchController"
   import type { IPropsCompanyBranch } from "~/scripts/props/PropsCompanyBranch"
 
   const props = defineProps<IPropsCompanyBranch>()
 
-  const emit = defineEmits(["branchUpdated"])
+  const emit = defineEmits(["branchUpdated", "removed"])
+
+  const confirmToDeleteRef = ref(null)
 
   const controller = new BranchController(props, emit)
 
@@ -72,6 +87,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
+    },
+    { immediate: true }
   )
 
   defineExpose({
