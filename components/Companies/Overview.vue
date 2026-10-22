@@ -185,11 +185,15 @@
             <td>
               <span v-if="controller.branchAddresses.length <= 0">{{ controller.noneText }}</span>
               <ol>
-                <li v-for="(branchAddress, i) in controller.branchAddresses">
-                  <span
+                <li v-for="(branch, i) in controller.companyBranches">
+                  <Branch
+                    :company-id="controller.companyId.value"
+                    :company-branch="branch"
+                  />
+                  <!-- <span
                     class="address-span"
                     v-html="branchAddress"
-                  />
+                  /> -->
                 </li>
               </ol>
             </td>
@@ -462,6 +466,7 @@
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import AddressInput from "@/components/Forms/AddressInput.vue"
+  import Branch from "./Branch.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"

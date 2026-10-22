@@ -687,6 +687,10 @@ ${detailsOfBO.join("\n")}
     return this.language.isMalay() ? "Cawangan Perniagaan" : "Business Branch"
   }
 
+  get companyBranches(): CompanyBranch[] {
+    return this.company.value.branches
+  }
+
   get branchAddresses(): string[] {
     return this.company.value.branches
       .filter((cb: CompanyBranch) => {
