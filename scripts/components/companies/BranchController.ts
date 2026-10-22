@@ -95,6 +95,10 @@ export class BranchController {
 
   onCancelEditClicked(): void {
     this.isEditMode.value = false
+
+    if (StringUtil.isNullOrEmpty(this.companyBranch.value.id)) {
+      this.emitEvents("removed")
+    }
   }
 
   async onSaveClicked(): Promise<void> {

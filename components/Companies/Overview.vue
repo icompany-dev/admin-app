@@ -191,19 +191,17 @@
                     :company-branch="branch"
                     @removed="controller.onBranchRemoved(branch.id)"
                   />
-                  <!-- <span
-                    class="address-span"
-                    v-html="branchAddress"
-                  /> -->
                 </li>
               </ol>
-              <button
-                v-if="controller.canAddNewBranch"
-                class="btn btn-submit"
-                @click="controller.onAddBranch()"
-              >
-                Add Branch
-              </button>
+              <div class="action-button-container">
+                <button
+                  v-if="controller.canAddNewBranch"
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onAddBranch()"
+                >
+                  Add Branch
+                </button>
+              </div>
             </td>
           </tr>
           <tr>
