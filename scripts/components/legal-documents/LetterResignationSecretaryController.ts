@@ -20,6 +20,9 @@ export class LetterResignationSecretaryController extends SdnBhdLegalDocumentCon
     super("Letter of Resignation of Company Secretary", companyId, PaperOrientation.Portrait)
 
     this.emitEvents = emitEvents
+
+    let dayjs = useDayjs()
+    this.documentDate.value = dayjs().format("YYYY-MM-DD")
   }
 
   override async getPdfPages(): Promise<HTMLElement[]> {

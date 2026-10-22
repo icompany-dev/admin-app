@@ -36,7 +36,7 @@
           class="documents"
         >
           <LetterResignationSecretary
-            ref="letterRef"
+            ref="dcrRef"
             :company-id="controller.companyIdRef.value"
           />
         </TransitionGroup>
@@ -160,6 +160,7 @@
 
   defineExpose({
     onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onGenerateBlob: controller.onGenerateBlob.bind(controller),
   })
 </script>
 

@@ -198,7 +198,7 @@ export class ResignAsCosecController {
         this.selectedCompanyId.value = company.id
 
         await nextTick()
-        await this.documentRef.isPageReady()
+        // await this.documentRef.isPageReady()
 
         let filename = `${company.name.toUpperCase()} - Letter of Resignation of Company Secretary.pdf`
         let blob = await this.documentRef.onGenerateBlob(filename, company.id)
