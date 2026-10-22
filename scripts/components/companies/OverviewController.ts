@@ -21,6 +21,7 @@ import { CompanySetting, CompanySettingTaxDetails } from "~/scripts/models/Compa
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import { User } from "~/scripts/models/User"
 import { City, Country, Location, PostcodeMapping, State } from "~/scripts/models/Location"
+import { CompanyFinancialPeriod } from "~/scripts/models/CompanyFinancialPeriod"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -63,6 +64,14 @@ export class OverviewController {
   isEditingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
   isUpdatingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
   registeredAddressLocation: Ref<Location> = ref<Location>(new Location())
+
+  isEditFYE: Ref<boolean> = ref<boolean>(false)
+  isEditingFYE: Ref<boolean> = ref<boolean>(false)
+  companyFinancialPeriods = ref<CompanyFinancialPeriod[]>([])
+  fyeStartDate: Ref<string> = ref<string>("")
+  fyeEndDate: Ref<string> = ref<string>("")
+  auditMonth: Ref<string> = ref<string>("")
+  auditYear: Ref<string> = ref<string>("")
 
   language = useLanguage()
   time = useLocalTime()
@@ -108,6 +117,7 @@ export class OverviewController {
         this.fetchCompanyBanks(),
         this.fetchCompanyAuditors(),
         this.fetchPurchasedItemTrackers(),
+        this.fetchFinancialPeriods(),
       ])
 
       this.addressLocation.value = new Location(this.company.value.businessAddressLocation)
@@ -229,6 +239,20 @@ export class OverviewController {
   async fetchPurchasedItemTrackers(): Promise<void> {
     let repository = usePurchasedItemTrackerStore()
     let response = await repository.ongoingForCompany(this.companyId.value)
+  }
+
+  async fetchFinancialPeriods(): Promise<void> {
+    let repository = useCompanyFinancialPeriodStore()
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    filter.sortOrder = "desc"
+    filter.orderBy = "end_date"
+    filter.take = 3
+    let response = await repository.fetchAll(filter)
+
+    this.companyFinancialPeriods.value = response.data.map((r: any) => {
+      return new CompanyFinancialPeriod(r)
+    })
   }
 
   onShowSharePercentageClicked(): void {
@@ -550,6 +574,61 @@ ${detailsOfBO.join("\n")}
     this.registeredAddressLocation.value.country = data
   }
 
+  // Edit FYE
+  onEditFyeClicked(): void {
+    let current = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+      return cp.status === "active"
+    })
+    this.fyeStartDate.value = current ? this.dayjs(current.startDate).format("YYYY-MM-MM") : ""
+    this.fyeEndDate.value = current ? this.dayjs(current.endDate).format("YYYY-MM-MM") : ""
+
+    this.isEditFYE.value = true
+  }
+
+  onCancelEditFyeClicked(): void {
+    this.isEditFYE.value = false
+  }
+
+  async onSaveFYEDatesClicked(): Promise<void> {
+    if (this.isEditingFYE.value) {
+      return
+    }
+
+    this.isEditingFYE.value = true
+    try {
+      let current = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+        return cp.status === "active"
+      })
+
+      let repository = useCompanyFinancialPeriodStore()
+      let promises = []
+      if (current) {
+        promises.push(repository.remove(current.id))
+      }
+
+      let newCompanyFinancialPeriod = new CompanyFinancialPeriod()
+      newCompanyFinancialPeriod.companyId = this.companyId.value
+      newCompanyFinancialPeriod.startDate = this.fyeStartDate.value
+      newCompanyFinancialPeriod.endDate = this.fyeEndDate.value
+      newCompanyFinancialPeriod.status = "active"
+      promises.push(newCompanyFinancialPeriod.create(repository))
+
+      await Promise.allSettled(promises)
+
+      await this.fetchFinancialPeriods()
+
+      let toastTitle = this.language.isMalay()
+        ? "Anda telah kemaskini FYE bagi Sdn Bhd ini."
+        : "You have updated the Financial Year End Date for this Sdn Bhd."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+    } finally {
+      this.isEditingFYE.value = false
+      this.isEditFYE.value = false
+    }
+  }
+
   // getters
   get noneText(): string {
     return this.language.isMalay() ? "TIADA" : "NONE"
@@ -785,5 +864,43 @@ ${detailsOfBO.join("\n")}
     }
 
     return `E ${this.taxInformation.employerTaxNo}`
+  }
+
+  get financialYearEndLabel(): string {
+    return this.language.isMalay() ? "Tarikh Akhir Tahun Kewangan" : "Financial Year End"
+  }
+
+  get previousFYE(): string {
+    let past =
+      this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+        return cp.status === "past"
+      }) ?? null
+
+    if (!past) {
+      return this.language.isMalay() ? "Tiada FYE yang terdahulu" : "No Past FYE"
+    }
+
+    return `${this.time.formatDateOnlyShort(past.startDate)} - ${this.time.formatDateOnlyShort(past.endDate)}`
+  }
+
+  get currentFYE(): string {
+    let current =
+      this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+        return cp.status === "active"
+      }) ?? null
+
+    if (!current) {
+      return this.language.isMalay() ? "FYE tidak ditetapkan" : "FYE is not set"
+    }
+
+    return `${this.time.formatDateOnlyShort(current.startDate)} - ${this.time.formatDateOnlyShort(current.endDate)}`
+  }
+
+  get orderedFinancialPeriods(): CompanyFinancialPeriod[] {
+    if (this.companyFinancialPeriods.value.length <= 0) {
+      return []
+    }
+
+    return ObjectUtil.sort<CompanyFinancialPeriod>(this.companyFinancialPeriods.value, "endDate", "desc")
   }
 }

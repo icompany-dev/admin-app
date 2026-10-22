@@ -76,7 +76,23 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
   }
 
   getRequestBody(): object {
-    return {}
+    return {
+      company_id: this.companyId,
+      start_date: this.startDate,
+      end_date: this.endDate,
+      status: this.status,
+    }
+  }
+
+  async create(repository: ReturnType<typeof useCompanyFinancialPeriodStore>): Promise<void> {
+    let data = this.getRequestBody()
+
+    let response = await repository.create(data)
+    if (response instanceof CompanyFinancialPeriod) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
   }
 
   getRequestBodyForStatementPreparation(): object {
