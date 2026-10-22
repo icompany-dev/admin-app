@@ -35,10 +35,10 @@ export class LetterOfCosecResignController
 
     this.isInPreviewMode.value = isInPreviewMode
 
-    if (!StringUtil.isNullOrEmpty(applicationId)) {
-      this.applicationId = applicationId
-      this.fetchApplication(applicationId ?? "")
-    }
+    // if (!StringUtil.isNullOrEmpty(applicationId)) {
+    //   this.applicationId = applicationId
+    //   this.fetchApplication(applicationId ?? "")
+    // }
   }
 
   setLetterRef(letterRef: any): void {
@@ -46,12 +46,12 @@ export class LetterOfCosecResignController
   }
 
   async fetchApplication(id: string): Promise<void> {
-    let response = await this.repository.fetch(id)
-    if (!this.repository.error) {
-      this.application.value = new CompanySwitchOut(response)
-      this.applicationId = id
-      this.targetId = id
-    }
+    // let response = await this.repository.fetch(id)
+    // if (!this.repository.error) {
+    //   this.application.value = new CompanySwitchOut(response)
+    //   this.applicationId = id
+    //   this.targetId = id
+    // }
   }
 
   async setApplication(companyId: string): Promise<void> {

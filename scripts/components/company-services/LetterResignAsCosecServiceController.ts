@@ -17,19 +17,27 @@ import { Filter } from "~/scripts/library/Filter"
 export class LetterResignAsCosecServiceController extends CompanyServiceController<CompanySwitchOut> {
   companySwitchOut = ref<CompanySwitchOut>(new CompanySwitchOut())
 
+  companyIdRef: Ref<string> = ref<string>("")
+
   wrapperRef: any | null = null
 
   constructor(companyId: string, viewType: string, emitEvents: any | null) {
     super(companyId, true, false, CompanySwitchOut, useCompanySwitchOutStore(), emitEvents)
+    this.companyIdRef.value = companyId
     this.target = CompanyConstants.TARGET_COSEC_RESIGNATION
     this.setViewType(viewType)
     this.initializeData()
   }
 
+  setCompanyIdRef(companyIdRef: string): void {
+    this.companyIdRef.value = companyIdRef
+    this.initializeData()
+  }
+
   async initializeData(): Promise<void> {
     this.companySwitchOut.value = new CompanySwitchOut()
-    this.companySwitchOut.value.id = this.companyId
-    this.companySwitchOut.value.companyId = this.companyId
+    this.companySwitchOut.value.id = this.companyIdRef.value
+    this.companySwitchOut.value.companyId = this.companyIdRef.value
     this.companySwitchOut.value.status = "paid"
     // this.isLoading.value = true
 
@@ -326,7 +334,7 @@ export class LetterResignAsCosecServiceController extends CompanyServiceControll
 
     return new PropsCompanyServiceWrapper(
       this.companySwitchOut.value,
-      this.companyId,
+      this.companyIdRef.value,
       this.target,
       this.slipCaseTitle(),
       this.viewType.value,
@@ -362,7 +370,7 @@ export class LetterResignAsCosecServiceController extends CompanyServiceControll
 
   get resolutionDocumentProps() {
     return new PropsResolutionDocument<CompanySwitchOut>(
-      this.companyId,
+      this.companyIdRef.value,
       this.companySwitchOut.value.id,
       null,
       this.showWatermark(),

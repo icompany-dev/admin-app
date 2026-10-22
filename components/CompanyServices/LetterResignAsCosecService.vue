@@ -37,7 +37,7 @@
         >
           <LetterResignationSecretary
             ref="letterRef"
-            :company-id="controller.companyId"
+            :company-id="controller.companyIdRef.value"
           />
         </TransitionGroup>
       </template>
@@ -148,6 +148,13 @@
     () => controller.eventManager.isItemRemovedFromCart,
     (newVal) => {
       controller.handlePostDelete()
+    }
+  )
+
+  watch(
+    () => props.companyId,
+    (newVal) => {
+      controller.setCompanyIdRef(newVal)
     }
   )
 
