@@ -1,79 +1,77 @@
 <template>
   <div id="companies-roles-accesses">
-    <TransitionGroup name="fade">
+    <div
+      class="loader-container"
+      v-if="controller.isLoadingPage"
+    >
+      <LoaderPrepare
+        :label="controller.loaderLabel"
+        :sublabel="controller.loaderSublabel"
+      />
+    </div>
+    <div
+      class="roles-accesses"
+      v-if="!controller.isLoadingPage"
+    >
       <div
-        class="loader-container"
-        v-if="controller.isLoadingPage"
+        class="no-record-container"
+        v-if="!controller.hasAdditionalRoles"
       >
-        <LoaderPrepare
-          :label="controller.loaderLabel"
-          :sublabel="controller.loaderSublabel"
+        <NoRecord
+          :title="controller.noRecordLabel"
+          :subtitle="controller.noRecordSublabel"
         />
       </div>
       <div
-        class="roles-accesses"
-        v-if="!controller.isLoadingPage"
+        class="user-access-roles"
+        v-if="controller.hasAdditionalRoles"
       >
         <div
-          class="no-record-container"
-          v-if="!controller.hasAdditionalRoles"
+          class="user-access-role"
+          v-for="(userAccessRole, i) in controller.nonDirectorsAndShareholders"
         >
-          <NoRecord
-            :title="controller.noRecordLabel"
-            :subtitle="controller.noRecordSublabel"
-          />
+          <div class="user-image">
+            <img
+              :src="userAccessRole.user?.detail?.image?.url"
+              :alt="'LOGO'"
+            />
+          </div>
+          <div class="user-name">{{ userAccessRole.user?.name ?? "UNKNOWN BUGGER" }}</div>
+          <div class="user-roles">{{ userAccessRole.getRoleName() }}</div>
+          <div
+            class="remove"
+            @click="controller.onRemoveAccessClicked(userAccessRole)"
+          >
+            {{ controller.removeLabel }}
+          </div>
         </div>
         <div
-          class="user-access-roles"
-          v-if="controller.hasAdditionalRoles"
+          class="user-access-role pending"
+          v-for="(userInvitation, i) in controller.userInvitations.value"
         >
+          <div class="pending-marker">Pending</div>
+          <div class="user-image">
+            <img
+              v-if="controller.hasImage(controller.getUserImage(userInvitation))"
+              :src="controller.getUserImage(userInvitation)"
+              :alt="'LOGO'"
+            />
+          </div>
+          <div class="user-name">{{ userInvitation.name ?? "UNKNOWN BUGGER" }}</div>
+          <div class="user-roles">{{ userInvitation.accessRole.name }}</div>
           <div
-            class="user-access-role"
-            v-for="(userAccessRole, i) in controller.nonDirectorsAndShareholders"
+            class="remove"
+            @click="controller.onRemoveInvitationClicked(userInvitation)"
           >
-            <div class="user-image">
-              <img
-                :src="userAccessRole.user?.detail?.image?.url"
-                :alt="'LOGO'"
-              />
-            </div>
-            <div class="user-name">{{ userAccessRole.user?.name ?? "UNKNOWN BUGGER" }}</div>
-            <div class="user-roles">{{ userAccessRole.getRoleName() }}</div>
-            <div
-              class="remove"
-              @click="controller.onRemoveAccessClicked(userAccessRole)"
-            >
-              {{ controller.removeLabel }}
-            </div>
+            {{ controller.removeLabel }}
           </div>
-          <div
-            class="user-access-role pending"
-            v-for="(userInvitation, i) in controller.userInvitations.value"
-          >
-            <div class="pending-marker">Pending</div>
-            <div class="user-image">
-              <img
-                v-if="controller.hasImage(controller.getUserImage(userInvitation))"
-                :src="controller.getUserImage(userInvitation)"
-                :alt="'LOGO'"
-              />
-            </div>
-            <div class="user-name">{{ userInvitation.name ?? "UNKNOWN BUGGER" }}</div>
-            <div class="user-roles">{{ userInvitation.accessRole.name }}</div>
-            <div
-              class="remove"
-              @click="controller.onRemoveInvitationClicked(userInvitation)"
-            >
-              {{ controller.removeLabel }}
-            </div>
-          </div>
-          <div class="user-access-role empty">
-            <i class="fa-solid fa-plus" />
-          </div>
+        </div>
+        <div class="user-access-role empty">
+          <i class="fa-solid fa-plus" />
         </div>
       </div>
       <ActionTray :actions="controller.actionTrayElements" />
-    </TransitionGroup>
+    </div>
     <CreateNewAccessRole
       ref="createAccessRoleRef"
       :company-id="controller.companyId.value"
