@@ -26,9 +26,9 @@ export class DeliveryInfo implements IModel<DeliveryInfo> {
   }
 
   convertFromResponse(data: any): void {
-    this.name = data.delivery_name ?? null
-    this.email = data.delivery_email ?? null
-    this.phone = data.delivery_phone ?? null
+    this.name = data.recipient_name ?? null
+    this.email = data.recipient_email ?? null
+    this.phone = data.recipient_phone ?? null
     this.addressLine1 = data.delivery_address_line_1 ?? null
     this.addressLine2 = data.delivery_address_line_2 ?? null
     this.addressLine3 = data.delivery_address_line_3 ?? null
