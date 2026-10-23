@@ -78,6 +78,7 @@
                 </div>
               </Transition>
               <AddressInput
+                ref="businessAddressRef"
                 v-if="controller.isEditingAddress.value"
                 :location="controller.addressLocation.value"
                 :is-disabled="!controller.isEditingAddress.value"
@@ -161,16 +162,10 @@
                 </div>
               </Transition>
               <AddressInput
+                ref="registeredAddressRef"
                 v-if="controller.isEditingRegisteredAddress.value"
                 :location="controller.registeredAddressLocation.value"
                 :is-disabled="!controller.isEditingRegisteredAddress.value"
-                @updateAddressLine1="controller.onUpdateRegisteredAddressLine1($event)"
-                @updateAddressLine2="controller.onUpdateRegisteredAddressLine2($event)"
-                @updateAddressLine3="controller.onUpdateRegisteredAddressLine3($event)"
-                @updateState="controller.onUpdateRegisteredState($event)"
-                @updateCity="controller.onUpdateRegisteredCity($event)"
-                @updatePostcode="controller.onUpdateRegisteredPostcode($event)"
-                @updateCountry="controller.onUpdateRegisteredCountry($event)"
               />
               <span
                 v-if="!controller.isEditingRegisteredAddress.value"
@@ -488,6 +483,8 @@
   const emit = defineEmits([])
 
   const addCompanyAuditorRef = ref(null)
+  const businessAddressRef = ref(null)
+  const registeredAddressRef = ref(null)
 
   const controller = new OverviewController(props.companyId, emit)
 
@@ -502,6 +499,22 @@
     addCompanyAuditorRef,
     (newVal) => {
       controller.setAddCompanyAuditorRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    businessAddressRef,
+    (newVal) => {
+      controller.setBusinessAddressRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    registeredAddressRef,
+    (newVal) => {
+      controller.setRegisteredAddressRef(newVal)
     },
     { immediate: true }
   )

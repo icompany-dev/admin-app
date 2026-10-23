@@ -42,6 +42,8 @@ export class OverviewController {
   emitEvents: any | null = null
 
   addCompanyAuditorRef: any | null = null
+  businessAddressRef: any | null = null
+  registeredAddressRef: any | null = null
 
   companyAuditor = ref<CompanyAuditor>(new CompanyAuditor())
 
@@ -90,6 +92,14 @@ export class OverviewController {
 
   setAddCompanyAuditorRef(addCompanyAuditorRef: any): void {
     this.addCompanyAuditorRef = addCompanyAuditorRef
+  }
+
+  setBusinessAddressRef(businessAddressRef: any): void {
+    this.businessAddressRef = businessAddressRef
+  }
+
+  setRegisteredAddressRef(registeredAddressRef: any): void {
+    this.registeredAddressRef = registeredAddressRef
   }
 
   async init(): Promise<void> {
@@ -523,7 +533,10 @@ ${detailsOfBO.join("\n")}
   async onSaveRegisteredAddressClicked(): Promise<void> {
     try {
       this.isUpdatingRegisteredAddress.value = true
-      this.company.value.businessAddressLocation = new Location(this.registeredAddressLocation.value)
+      if (this.registeredAddressRef) {
+        let registeredAddress = new Location(this.registeredAddressRef.getAddress())
+        this.company.value.registeredAddressLocation = new Location(registeredAddress)
+      }
       await this.company.value.onUpdateRegisteredAddress(useCompanyStore())
 
       let toastTitle = this.language.isMalay()
