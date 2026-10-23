@@ -212,7 +212,7 @@ export class Section201ForDirectorServiceController {
     }
 
     let filename = `${this.name.value}, ${this.director.value.user?.name} - Declaration under Section 201.pdf`
-    let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+    let pdfBlob = await PdfPaperUtil.getPdfBlob(pages, 19, filename, PaperSize.A4, PaperOrientation.Portrait)
 
     return pdfBlob
   }

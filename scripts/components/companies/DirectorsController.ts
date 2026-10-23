@@ -8,6 +8,9 @@ import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays
 import { PropsActionInProgress } from "~/scripts/props/PropsActionInProgress"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 import { FileZipper } from "~/scripts/utils/FileZipper"
+import { File as UploadedFile } from "~/scripts/models/File"
+import { Form } from "~/scripts/models/Form"
+import { Toast } from "~/scripts/library/Toast"
 
 export class DirectorsController {
   tableDataFetcher = ref<TableDataFetcher<Director>>(new TableDataFetcher(Director, useDirectorStore()))
@@ -27,6 +30,7 @@ export class DirectorsController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isDownloading: Ref<boolean> = ref<boolean>(false)
+  isUploadingToCompanyDocuments: Ref<boolean> = ref<boolean>(false)
   totalDownloaded: Ref<number> = ref<number>(0)
 
   constructor(emitEvents: any) {
@@ -178,11 +182,82 @@ export class DirectorsController {
         this.totalDownloaded.value = this.totalDownloaded.value + 1
       }
 
-      await FileZipper.zipAndDownload(files, `DCR Appointment of Joint Company Secretary.zip`)
+      if (files.length > 0) {
+        await FileZipper.zipAndDownload(files, `DCR Appointment of Joint Company Secretary.zip`)
+      }
     } catch (e) {
       //
     } finally {
       this.isDownloading.value = false
+
+      if (this.actionInProgressRef) {
+        this.actionInProgressRef.hide()
+      }
+    }
+  }
+
+  async onUploadToCompanyDocuments(): Promise<void> {
+    if (this.isUploadingToCompanyDocuments.value) {
+      return
+    }
+
+    if (this.actionInProgressRef) {
+      this.actionInProgressRef.show()
+    }
+
+    try {
+      this.isUploadingToCompanyDocuments.value = true
+
+      for (let i = 0; i < this.selectedDirectors.value.length; i++) {
+        let director = this.selectedDirectors.value[i]
+        if (
+          StringUtil.isNullOrEmpty(director.user?.name ?? "") ||
+          StringUtil.isNullOrEmpty(director.company?.id ?? "")
+        ) {
+          continue
+        }
+
+        this.selectedDirectorId.value = director.id
+        await nextTick()
+        await this.documentRef.waitForReady()
+
+        let filename = `Section 201 - Declaration before Appointment as Director.pdf`
+
+        let blob = await this.documentRef.onGenerateBlob()
+        if (!blob) {
+          continue
+        }
+
+        let file = new File([blob], filename, { type: "application/pdf" })
+        let uploadedFile = new UploadedFile()
+        uploadedFile.name = filename
+        await uploadedFile.uploadFile(file, useFileStore())
+
+        let dayjs = useDayjs()
+        let form = new Form()
+        form.companyId = director.company?.id ?? ""
+        form.type = "business_detail"
+        form.documentDate = dayjs(director.dateAppointed).format("YYYY-MM-DD")
+        form.fileId = uploadedFile.id
+        form.formTypeId = "49563f7f-ab5e-11f1-a76b-42010a8c0003"
+        form.noOfPages = 1
+        form.status = "active"
+        await form.create(useFormStore())
+
+        this.totalDownloaded.value = this.totalDownloaded.value + 1
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Dokumen telah dimasukkan ke Dokumen Syarikat"
+        : "Section 201 uploaded to Company Documents"
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.clearSelection()
+    } catch (e) {
+      //
+    } finally {
+      this.isUploadingToCompanyDocuments.value = false
 
       if (this.actionInProgressRef) {
         this.actionInProgressRef.hide()
@@ -230,6 +305,14 @@ export class DirectorsController {
     let downloadLabelBm =
       this.selectedDirectors.value.length > 0 ? `Muat Turun (${this.selectedDirectors.value.length})` : "Muat Turun"
 
+    let generateLabelEn =
+      this.selectedDirectors.value.length > 0
+        ? `Add to Company Documents (${this.selectedDirectors.value.length})`
+        : "Add to Company Documents"
+
+    let generateLabelBm =
+      this.selectedDirectors.value.length > 0 ? `Jana (${this.selectedDirectors.value.length})` : "Jana"
+
     return [
       new ActionTrayElement("select-all", this.selectAll.bind(this), {
         label: new ActionTrayLabel("Select All", "Pilih Semua"),
@@ -241,6 +324,10 @@ export class DirectorsController {
       new ActionTrayElement("download", this.onDownloadAll.bind(this), {
         label: new ActionTrayLabel(downloadLabelEn, downloadLabelBm),
         isDisabled: this.isDownloading.value || this.selectedDirectors.value.length <= 0,
+      }),
+      new ActionTrayElement("upload", this.onUploadToCompanyDocuments.bind(this), {
+        label: new ActionTrayLabel(generateLabelEn, generateLabelBm),
+        isDisabled: this.isUploadingToCompanyDocuments.value || this.selectedDirectors.value.length <= 0,
       }),
     ]
   }
