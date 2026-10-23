@@ -39,6 +39,8 @@ export class AssignRoleController extends BasePopupController {
     this.accessRoles.value = props.accessRoles.map((ar: AccessRole) => {
       return new AccessRole(ar)
     })
+
+    console.log("accessroles", this.accessRoles.value)
   }
 
   async onProceedClicked(): Promise<void> {
@@ -139,7 +141,7 @@ export class AssignRoleController extends BasePopupController {
       access_role_id: this.selectedAccessRole.value,
       company_id: this.companyId.value,
       password: this.password.value,
-      name: this.name.value,
+      name: this.name.value.toUpperCase(),
       phone: this.phone.value,
       is_require_ekyc: this.isRequireEkyc.value,
       license: this.license.value,
