@@ -40,6 +40,21 @@
             <div class="user-name">{{ userAccessRole.user?.name ?? "UNKNOWN BUGGER" }}</div>
             <div class="user-roles">{{ userAccessRole.getRoleName() }}</div>
           </div>
+          <div
+            class="user-access-role pending"
+            v-for="(userInvitation, i) in controller.userInvitations.value"
+          >
+            <div class="pending-marker">Pending</div>
+            <div class="user-image">
+              <img
+                v-if="controller.hasImage(controller.getUserImage(userInvitation))"
+                :src="controller.getUserImage(userInvitation)"
+                :alt="'LOGO'"
+              />
+            </div>
+            <div class="user-name">{{ userInvitation.name ?? "UNKNOWN BUGGER" }}</div>
+            <div class="user-roles">{{ userInvitation.accessRole.name }}</div>
+          </div>
           <div class="user-access-role empty">
             <i class="fa-solid fa-plus" />
           </div>

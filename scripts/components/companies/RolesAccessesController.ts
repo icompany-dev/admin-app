@@ -2,9 +2,11 @@ import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { AccessRole } from "~/scripts/models/AccessRole"
 import { UserAccessRole } from "~/scripts/models/UserAccessRole"
+import { UserInvitation } from "~/scripts/models/UserInvitation"
 import { PropsAssignRole } from "~/scripts/props/PropsAssignRole"
 import { UserRolesForCompany } from "~/scripts/types/access-rules/UserRolesForCompany"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class RolesAccessesController {
   companyId: Ref<string> = ref<string>("")
@@ -12,15 +14,18 @@ export class RolesAccessesController {
   userAccessRoles: Ref<UserAccessRole[]> = ref<UserAccessRole[]>([])
   userRolesForCompany: Ref<UserRolesForCompany[]> = ref<UserRolesForCompany[]>([])
   accessRoles: Ref<AccessRole[]> = ref<AccessRole[]>([])
+  userInvitations: Ref<UserInvitation[]> = ref<UserInvitation[]>([])
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
   isFetchingUserAccessRoles: Ref<boolean> = ref<boolean>(false)
   isFetchingUserRolesForCompany: Ref<boolean> = ref<boolean>(false)
   isFetchingAccessRoles: Ref<boolean> = ref<boolean>(false)
+  isFetchingUserInvitations: Ref<boolean> = ref<boolean>(false)
 
   filterUserAccessRoles: Filter = new Filter()
   filterAccessRoles: Filter = new Filter()
+  filterUserInvitations: Filter = new Filter()
 
   emitEvents: any | null = null
 
@@ -46,11 +51,20 @@ export class RolesAccessesController {
   async setCompanyId(companyId: string): Promise<void> {
     this.companyId.value = companyId
 
+    console.log("called??", this.companyId.value)
+
     this.isLoading.value = true
     try {
-      await Promise.all([this.fetchAccessRoles(), this.fetchUserAccessRoles(), this.fetchUserRolesForCompany()])
+      await Promise.all([
+        this.fetchAccessRoles(),
+        this.fetchUserAccessRoles(),
+        this.fetchUserRolesForCompany(),
+        this.fetchUserInvitations(),
+      ])
+
+      console.log("access", this.accessRoles.value)
     } catch (e) {
-      //
+      console.error(e)
     } finally {
       this.isLoading.value = false
     }
@@ -132,6 +146,9 @@ export class RolesAccessesController {
       this.accessRoles.value = response.data.map((d: any) => {
         return new AccessRole(d)
       })
+
+      console.log("response", response)
+      console.log("after fetch", this.accessRoles.value)
     } catch (e: any) {
       if (e instanceof Error) {
         e.handle()
@@ -142,6 +159,45 @@ export class RolesAccessesController {
       }
     } finally {
       this.isFetchingAccessRoles.value = false
+    }
+  }
+
+  async fetchUserInvitations(): Promise<void> {
+    this.userInvitations.value = []
+    this.isFetchingUserInvitations.value = true
+    this.filterUserInvitations.takeAll = true
+    this.filterUserInvitations.companyId = this.companyId.value
+
+    try {
+      let repository = useUserInvitationStore()
+      let response = await repository.fetchAll(this.filterUserInvitations)
+      if (repository.error !== null) {
+        throw repository.error
+      }
+      this.filterUserInvitations.totalPages = response.totalPages
+      this.filterUserInvitations.totalRecords = response.totalRecords
+      this.userInvitations.value = response.data.map((d) => {
+        return new UserInvitation(d)
+      })
+
+      console.log("i", response)
+      console.log("after invite", this.userInvitations.value)
+
+      // let promises = this.userInvitations.value.map((ui: UserInvitation) => {
+      //   return ui.setUser(useUserStore())
+      // })
+
+      // await Promise.all(promises)
+    } catch (e: any) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error: Error = new Error()
+        error.setForFetchAll()
+        error.handle()
+      }
+    } finally {
+      this.isFetchingUserInvitations.value = false
     }
   }
 
@@ -161,8 +217,16 @@ export class RolesAccessesController {
     }
   }
 
+  hasImage(imageUrl: string | null): boolean {
+    return !StringUtil.isNullOrEmpty(imageUrl)
+  }
+
+  getUserImage(userInvitation: UserInvitation): string {
+    return userInvitation.user.detail?.image?.url ?? ""
+  }
+
   async onRoleAssigned(): Promise<void> {
-    await this.fetchUserAccessRoles()
+    await Promise.all([this.fetchUserAccessRoles(), this.fetchUserInvitations()])
   }
 
   get loaderLabel(): string {
@@ -186,13 +250,15 @@ export class RolesAccessesController {
   }
 
   get hasAdditionalRoles(): boolean {
-    if (this.userAccessRoles.value.length <= 0) {
+    if (this.userAccessRoles.value.length <= 0 && this.userInvitations.value.length <= 0) {
       return false
     }
 
-    return this.userAccessRoles.value.some((uar: UserAccessRole) => {
-      return uar.getRoleName() !== "Director" && uar.getRoleName() !== "Shareholder"
-    })
+    return (
+      this.userAccessRoles.value.some((uar: UserAccessRole) => {
+        return uar.getRoleName() !== "Director" && uar.getRoleName() !== "Shareholder"
+      }) || this.userInvitations.value.length > 0
+    )
   }
 
   get nonDirectorsAndShareholders(): UserAccessRole[] {

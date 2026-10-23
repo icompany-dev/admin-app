@@ -42,6 +42,7 @@
           font-size: 16px;
           font-weight: 600;
           text-align: center;
+          text-transform: uppercase;
         }
 
         .user-roles {
@@ -67,6 +68,33 @@
             font-size: 40px;
             border-width: 4px;
             border-color: var(--bs-gray-800);
+          }
+        }
+
+        &.pending {
+          position: relative;
+
+          .user-image {
+            opacity: 0.5;
+          }
+
+          .user-name {
+            opacity: 0.5;
+          }
+
+          .user-roles {
+            opacity: 0.5;
+          }
+
+          .pending-marker {
+            position: absolute;
+            top: 10px;
+            right: 0px;
+            padding: 3px 10px;
+            border-radius: 5px;
+            background-color: var(--bs-gray-800);
+            color: var(--bs-white);
+            z-index: 2;
           }
         }
       }

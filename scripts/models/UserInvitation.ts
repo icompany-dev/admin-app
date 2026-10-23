@@ -2,6 +2,7 @@ import { StringUtil } from "../utils/String"
 import { Error } from "../library/Error"
 import { Company } from "./Company"
 import { AccessRole } from "./AccessRole"
+import { User } from "./User"
 
 export class UserInvitation {
   id: string = ""
@@ -15,6 +16,8 @@ export class UserInvitation {
   accessRole: AccessRole = new AccessRole()
   createdAt: string | null = null
   updatedAt: string | null = null
+
+  user: User = new User()
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -36,6 +39,7 @@ export class UserInvitation {
     this.email = data.email
     this.phone = data.phone
     this.userId = data.user_id ?? null
+    this.user = new User(data.user)
     this.accessRoleId = data.access_role_id
     this.accessRole = new AccessRole(data.access_role)
     this.createdAt = data.created_at
@@ -50,6 +54,7 @@ export class UserInvitation {
     this.email = data.email
     this.phone = data.phone
     this.userId = data.userId
+    this.user = new User(data.user)
     this.accessRoleId = data.accessRoleId
     this.accessRole = new AccessRole(data.accessRole)
     this.createdAt = data.createdAt
@@ -141,5 +146,14 @@ export class UserInvitation {
     }
 
     await repository.reject(this.id)
+  }
+
+  async setUser(repository: ReturnType<typeof useUserStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.userId)) {
+      return
+    }
+
+    let response = await repository.fetch(this.userId)
+    this.user = new User(response)
   }
 }
