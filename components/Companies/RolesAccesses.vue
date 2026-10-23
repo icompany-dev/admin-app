@@ -45,11 +45,18 @@
           </div>
         </div>
       </div>
+      <ActionTray :actions="controller.actionTrayElements" />
     </TransitionGroup>
+    <CreateNewAccessRole
+      ref="createAccessRoleRef"
+      :company-id="controller.companyId.value"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ActionTray from "../ActionTrays/ActionTray.vue"
+  import CreateNewAccessRole from "../Popups/CreateNewAccessRole.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import { RolesAccessesController } from "~/scripts/components/companies/RolesAccessesController"
@@ -63,6 +70,8 @@
 
   const emit = defineEmits([])
 
+  const createAccessRoleRef = ref(null)
+
   const controller = new RolesAccessesController(props.companyId, emit)
 
   watch(
@@ -71,6 +80,10 @@
       controller.setCompanyId(newVal)
     }
   )
+
+  watch(createAccessRoleRef, (newVal) => {
+    controller.setCreateAccessRoleRef(newVal)
+  })
 </script>
 
 <style lang="scss">

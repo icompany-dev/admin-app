@@ -3,6 +3,7 @@ import { Filter } from "~/scripts/library/Filter"
 import { AccessRole } from "~/scripts/models/AccessRole"
 import { UserAccessRole } from "~/scripts/models/UserAccessRole"
 import { UserRolesForCompany } from "~/scripts/types/access-rules/UserRolesForCompany"
+import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 
 export class RolesAccessesController {
   companyId: Ref<string> = ref<string>("")
@@ -22,12 +23,18 @@ export class RolesAccessesController {
 
   emitEvents: any | null = null
 
+  createAccessRoleRef: any | null = null
+
   language = useLanguage()
 
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.setCompanyId(companyId)
+  }
+
+  setCreateAccessRoleRef(createAccessRoleRef: any): void {
+    this.createAccessRoleRef = createAccessRoleRef
   }
 
   async setCompanyId(companyId: string): Promise<void> {
@@ -132,6 +139,16 @@ export class RolesAccessesController {
     }
   }
 
+  addNewAccessRole(): void {
+    if (this.createAccessRoleRef) {
+      this.createAccessRoleRef.show()
+    }
+  }
+
+  async onRoleAdded(): Promise<void> {
+    await this.fetchAccessRoles()
+  }
+
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
   }
@@ -166,5 +183,13 @@ export class RolesAccessesController {
     return this.userAccessRoles.value.filter((uar: UserAccessRole) => {
       return uar.getRoleName() !== "Director" && uar.getRoleName() !== "Shareholder"
     })
+  }
+
+  get actionTrayElements(): ActionTrayElement[] {
+    return [
+      new ActionTrayElement("add-role", this.addNewAccessRole.bind(this), {
+        label: new ActionTrayLabel("Add Role", "Tambah Peranan"),
+      }),
+    ]
   }
 }
