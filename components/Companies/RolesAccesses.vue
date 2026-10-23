@@ -1,0 +1,75 @@
+<template>
+  <div id="companies-roles-accesses">
+    <TransitionGroup name="fade">
+      <div
+        class="loader-container"
+        v-if="controller.isLoading.value"
+      >
+        <LoaderPrepare
+          :label="controller.loaderLabel"
+          :sublabel="controller.loaderSublabel"
+        />
+      </div>
+      <div
+        class="roles-accesses"
+        v-if="!controller.isLoading.value"
+      >
+        <div
+          class="no-record-container"
+          v-if="!controller.hasAdditionalRoles"
+        >
+          <NoRecord
+            :title="controller.noRecordLabel"
+            :subtitle="controller.noRecordSublabel"
+          />
+        </div>
+        <div
+          class="user-access-roles"
+          v-if="controller.hasAdditionalRoles"
+        >
+          <div
+            class="user-access-role"
+            v-for="(userAccessRole, i) in controller.nonDirectorsAndShareholders"
+          >
+            <div class="user-image">
+              <img
+                :src="userAccessRole.user?.detail?.image?.url"
+                :alt="'LOGO'"
+              />
+            </div>
+            <div class="user-name">{{ userAccessRole.user?.name ?? "UNKNOWN BUGGER" }}</div>
+            <div class="user-roles">{{ userAccessRole.getRoleName() }}</div>
+          </div>
+        </div>
+      </div>
+    </TransitionGroup>
+  </div>
+</template>
+
+<script lang="ts" setup>
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import NoRecord from "../Placeholders/NoRecord.vue"
+  import { RolesAccessesController } from "~/scripts/components/companies/RolesAccessesController"
+
+  const props = defineProps({
+    companyId: {
+      type: String,
+      required: true,
+    },
+  })
+
+  const emit = defineEmits([])
+
+  const controller = new RolesAccessesController(props.companyId, emit)
+
+  watch(
+    () => props.companyId,
+    (newVal) => {
+      controller.setCompanyId(newVal)
+    }
+  )
+</script>
+
+<style lang="scss">
+  @use "~/assets/scss/components/Companies/RolesAccesses" as *;
+</style>

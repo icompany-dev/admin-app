@@ -150,6 +150,13 @@
           >
             {{ controller.financialStatement }}
           </div>
+          <div
+            class="page-tab"
+            :class="{ selected: controller.isRolesAndAccess.value }"
+            @click="controller.onRolesAndAccessesClicked()"
+          >
+            {{ controller.rolesAndAccesses }}
+          </div>
         </TransitionGroup>
         <TransitionGroup name="slide-left">
           <div
@@ -179,6 +186,12 @@
           >
             <FinancialStatementSubmissions v-bind="controller.financialStatementSubmissionsProp" />
           </div>
+          <div
+            class="application-contents"
+            v-if="controller.isRolesAndAccess.value"
+          >
+            <RolesAccesses :company-id="controller.companyId.value" />
+          </div>
         </TransitionGroup>
       </div>
       <Teleport to="body">
@@ -197,11 +210,7 @@
 
 <script lang="ts" setup>
   import AnnualReturn from "./AnnualReturn.vue"
-  import BankAccountOpeningApplication from "@/components/Services/BankAccountOpeningApplication.vue"
   import BankAccountOpeningService from "@/components/CompanyServices/BankAccountOpeningService.vue"
-  import ChangeOfNameApplication from "@/components/Services/ChangeOfNameApplication.vue"
-  import ChangeOfAddressApplication from "@/components/Services/ChangeOfAddressApplication.vue"
-  import ChangeOfBranchApplication from "@/components/Services/ChangeOfBranchApplication.vue"
   import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
   import ChangeOfBusinessBranchService from "@/components/CompanyServices/ChangeOfBusinessBranchService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
@@ -211,12 +220,12 @@
   import Overview from "@/components/Companies/Overview.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
+  import RolesAccesses from "./RolesAccesses.vue"
   import SdnBhdSpine from "@/components/LegalDocuments/SdnBhdSpine.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
   import FinancialStatementSubmissions from "@/components/FinancialStatements/Submissions.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
-  import { CompanyConstants } from "~/scripts/constants/Company"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
   const props = defineProps({

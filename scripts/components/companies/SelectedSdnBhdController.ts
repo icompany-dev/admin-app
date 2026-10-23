@@ -31,6 +31,7 @@ export class SelectedSdnBhdController {
   isDocuments: Ref<boolean> = ref<boolean>(false)
   isAnnualReturn: Ref<boolean> = ref<boolean>(false)
   isFinancialStatement: Ref<boolean> = ref<boolean>(false)
+  isRolesAndAccess: Ref<boolean> = ref<boolean>(false)
 
   //TODO: To remove
   isBusiness: Ref<boolean> = ref<boolean>(false)
@@ -185,39 +186,15 @@ export class SelectedSdnBhdController {
     this.isDocuments.value = false
     this.isAnnualReturn.value = false
     this.isFinancialStatement.value = false
-    // this.isBusiness.value = false
-    // this.isDirectors.value = false
-    // this.isShareholders.value = false
-    // this.isAccounting.value = false
+    this.isRolesAndAccess.value = false
   }
-
-  // onBusinessClicked(): void {
-  //   this.isOverview.value = false
-  //   this.isBusiness.value = true
-  //   this.isDirectors.value = false
-  //   this.isDocuments.value = false
-  //   this.isShareholders.value = false
-  //   this.isAccounting.value = false
-  // }
-
-  // onDirectorsClicked(): void {
-  //   this.isOverview.value = false
-  //   this.isBusiness.value = false
-  //   this.isDirectors.value = true
-  //   this.isDocuments.value = false
-  //   this.isShareholders.value = false
-  //   this.isAccounting.value = false
-  // }
 
   onDocumentsClicked(): void {
     this.isOverview.value = false
     this.isDocuments.value = true
     this.isAnnualReturn.value = false
     this.isFinancialStatement.value = false
-    // this.isBusiness.value = false
-    // this.isDirectors.value = false
-    // this.isShareholders.value = false
-    // this.isAccounting.value = false
+    this.isRolesAndAccess.value = false
   }
 
   onAnnualReturnClicked(): void {
@@ -225,6 +202,7 @@ export class SelectedSdnBhdController {
     this.isDocuments.value = false
     this.isAnnualReturn.value = true
     this.isFinancialStatement.value = false
+    this.isRolesAndAccess.value = false
   }
 
   onFinancialStatementClicked(): void {
@@ -232,25 +210,16 @@ export class SelectedSdnBhdController {
     this.isDocuments.value = false
     this.isAnnualReturn.value = false
     this.isFinancialStatement.value = true
+    this.isRolesAndAccess.value = false
   }
 
-  // onShareholdersClicked(): void {
-  //   this.isOverview.value = false
-  //   this.isBusiness.value = false
-  //   this.isDirectors.value = false
-  //   this.isDocuments.value = false
-  //   this.isShareholders.value = true
-  //   this.isAccounting.value = false
-  // }
-
-  // onAccountingClicked(): void {
-  //   this.isOverview.value = false
-  //   this.isBusiness.value = false
-  //   this.isDirectors.value = false
-  //   this.isDocuments.value = false
-  //   this.isShareholders.value = false
-  //   this.isAccounting.value = true
-  // }
+  onRolesAndAccessesClicked(): void {
+    this.isOverview.value = false
+    this.isDocuments.value = false
+    this.isAnnualReturn.value = false
+    this.isFinancialStatement.value = false
+    this.isRolesAndAccess.value = true
+  }
 
   onOptionsClicked(): void {
     this.isShowOptions.value = !this.isShowOptions.value
@@ -516,6 +485,10 @@ export class SelectedSdnBhdController {
 
   get financialStatement(): string {
     return this.language.isMalay() ? "Penyata Kewangan" : "Financial Statement"
+  }
+
+  get rolesAndAccesses(): string {
+    return this.language.isMalay() ? "Peranan & Akses" : "Roles & Access"
   }
 
   get shareholders(): string {
