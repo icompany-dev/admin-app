@@ -137,7 +137,7 @@
               </span>
               <span
                 class="text-success"
-                v-if="controller.hasSubmittedForYear"
+                v-if="controller.hasSubmittedForYear && controller.isSubmittingForYear"
               >
                 <i class="fa-solid fa-circle-check" />
               </span>

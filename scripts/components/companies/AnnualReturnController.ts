@@ -372,6 +372,10 @@ ${detailsOfBO.join("\n")}
   get yearToLodge(): string {
     let dayjs = useDayjs()
 
+    if (dayjs().format("YYYY") === dayjs(this.incorporationDate).format("YYYY")) {
+      return dayjs().add(1, "year").format("YYYY")
+    }
+
     return dayjs().format("YYYY")
   }
 

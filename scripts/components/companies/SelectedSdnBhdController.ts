@@ -581,6 +581,12 @@ export class SelectedSdnBhdController {
     //   return dayjs().add(1, "year").format("YYYY")
     // }
 
+    let incorporatedAt = dayjs(this.company.value.incorporatedAt)
+
+    if (dayjs().year() === incorporatedAt.year()) {
+      return dayjs().add(1, "year").format("YYYY")
+    }
+
     return dayjs().format("YYYY")
   }
 
@@ -594,7 +600,17 @@ export class SelectedSdnBhdController {
     return annualReturnDate.format("YYYY-MM-DD")
   }
 
+  get isSubmittingForYear(): boolean {
+    let dayjs = useDayjs()
+    return this.yearToLodge === dayjs().format("YYYY")
+  }
+
   get hasSubmittedForYear(): boolean {
+    let dayjs = useDayjs()
+    if (this.yearToLodge !== dayjs().format("YYYY")) {
+      return true //
+    }
+
     return this.uploadedDocumentChecker.value.isDocumentUploaded(
       DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
       this.currentYearAnnualReturnDate
@@ -609,7 +625,7 @@ export class SelectedSdnBhdController {
   }
 
   get isShowWarningForAnnualReturn(): boolean {
-    if (this.hasSubmittedForYear) {
+    if (this.hasSubmittedForYear || !this.isSubmittingForYear) {
       return false
     }
 
