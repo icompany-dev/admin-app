@@ -3,6 +3,7 @@ import { BasePopupController } from "./BasePopupController"
 import { PopupTitles, PopupTitlesBm } from "~/scripts/constants/Popups"
 import { Toast } from "~/scripts/library/Toast"
 import { Error } from "~/scripts/library/Error"
+import { EmitMessages } from "~/scripts/constants/EmitMessages"
 
 export class CreateNewAccessRoleController extends BasePopupController {
   companyId: Ref<string> = ref<string>("")
@@ -13,6 +14,8 @@ export class CreateNewAccessRoleController extends BasePopupController {
 
   constructor(companyId: string, emitEvents: any) {
     super(emitEvents)
+
+    this.isCompliance.value = false
 
     this.setCompanyId(companyId)
   }
@@ -39,6 +42,8 @@ export class CreateNewAccessRoleController extends BasePopupController {
         : "Role is added for this Sdn Bhd."
       let toast = new Toast(toastTitle, "")
       toast.success()
+
+      this.emitEvents(EmitMessages.PROCEED)
 
       this.hide()
     } catch (e) {

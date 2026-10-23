@@ -51,11 +51,17 @@
       ref="createAccessRoleRef"
       :company-id="controller.companyId.value"
     />
+    <AssignRole
+      ref="assignRoleRef"
+      v-bind="controller.assignRoleProps"
+      @proceed="controller.onRoleAssigned()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ActionTray from "../ActionTrays/ActionTray.vue"
+  import AssignRole from "../Popups/AssignRole.vue"
   import CreateNewAccessRole from "../Popups/CreateNewAccessRole.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
@@ -71,6 +77,7 @@
   const emit = defineEmits([])
 
   const createAccessRoleRef = ref(null)
+  const assignRoleRef = ref(null)
 
   const controller = new RolesAccessesController(props.companyId, emit)
 
@@ -81,9 +88,21 @@
     }
   )
 
-  watch(createAccessRoleRef, (newVal) => {
-    controller.setCreateAccessRoleRef(newVal)
-  })
+  watch(
+    createAccessRoleRef,
+    (newVal) => {
+      controller.setCreateAccessRoleRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    assignRoleRef,
+    (newVal) => {
+      controller.setAssignRoleRef(newVal)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style lang="scss">

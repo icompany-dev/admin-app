@@ -2,6 +2,7 @@ import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { AccessRole } from "~/scripts/models/AccessRole"
 import { UserAccessRole } from "~/scripts/models/UserAccessRole"
+import { PropsAssignRole } from "~/scripts/props/PropsAssignRole"
 import { UserRolesForCompany } from "~/scripts/types/access-rules/UserRolesForCompany"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 
@@ -24,6 +25,7 @@ export class RolesAccessesController {
   emitEvents: any | null = null
 
   createAccessRoleRef: any | null = null
+  assignRoleRef: any | null = null
 
   language = useLanguage()
 
@@ -35,6 +37,10 @@ export class RolesAccessesController {
 
   setCreateAccessRoleRef(createAccessRoleRef: any): void {
     this.createAccessRoleRef = createAccessRoleRef
+  }
+
+  setAssignRoleRef(assignRoleRef: any): void {
+    this.assignRoleRef = assignRoleRef
   }
 
   async setCompanyId(companyId: string): Promise<void> {
@@ -149,6 +155,16 @@ export class RolesAccessesController {
     await this.fetchAccessRoles()
   }
 
+  assignRole(): void {
+    if (this.assignRoleRef) {
+      this.assignRoleRef.show()
+    }
+  }
+
+  async onRoleAssigned(): Promise<void> {
+    await this.fetchUserAccessRoles()
+  }
+
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
   }
@@ -190,6 +206,13 @@ export class RolesAccessesController {
       new ActionTrayElement("add-role", this.addNewAccessRole.bind(this), {
         label: new ActionTrayLabel("Add Role", "Tambah Peranan"),
       }),
+      new ActionTrayElement("assign-role", this.assignRole.bind(this), {
+        label: new ActionTrayLabel("Grant Access", "Beri Akses"),
+      }),
     ]
+  }
+
+  get assignRoleProps(): PropsAssignRole {
+    return new PropsAssignRole(this.companyId.value, this.accessRoles.value)
   }
 }
