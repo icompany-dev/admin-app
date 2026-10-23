@@ -40,6 +40,9 @@
             <div class="user-name">{{ userAccessRole.user?.name ?? "UNKNOWN BUGGER" }}</div>
             <div class="user-roles">{{ userAccessRole.getRoleName() }}</div>
           </div>
+          <div class="user-access-role empty">
+            <i class="fa-solid fa-plus" />
+          </div>
         </div>
       </div>
     </TransitionGroup>
