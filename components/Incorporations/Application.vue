@@ -26,15 +26,55 @@
                   <div class="node-title">{{ controller.nameReservationLabel }}</div>
                   <div class="node-subtitle">({{ controller.nameReservationSublabel }})</div>
                   <div class="application-details">
-                    <span class="application-label">
-                      {{ controller.proposedNamesLabel }}
-                    </span>
-                    &nbsp;
-                    <span
-                      class="propose-name"
-                      v-html="nameOption"
-                    />
-                    <CopyValue :value="nameOption" />
+                    <div class="proposed-name-details">
+                      <span class="application-label">
+                        {{ controller.proposedNamesLabel }}
+                      </span>
+                      &nbsp;
+                      <template v-if="!controller.isEditProposedNameAt(index)">
+                        <span
+                          class="propose-name"
+                          v-html="nameOption"
+                        />
+                      </template>
+                      <template v-if="controller.isEditProposedNameAt(index)">
+                        <input
+                          type="text"
+                          class="form-control"
+                          v-model="controller.newProposedName.value"
+                        />
+                      </template>
+                      <div class="actions-clickable">
+                        <span
+                          class="clickable edit"
+                          @click="controller.onEditProposedNameClicked(index)"
+                          v-if="!controller.isEditProposedNameAt(index)"
+                        >
+                          <i class="fa-regular fa-edit" />
+                        </span>
+                        <span
+                          class="clickable save"
+                          @click="controller.onSaveEditProposedName()"
+                          v-if="controller.isEditProposedNameAt(index) && !controller.isEditingProposedName.value"
+                        >
+                          <i class="fa-regular fa-save" />
+                        </span>
+                        <span
+                          class="clickable cancel"
+                          @click="controller.onCancelEditProposedNameClicked()"
+                          v-if="controller.isEditProposedNameAt(index) && !controller.isEditingProposedName.value"
+                        >
+                          <i class="fa-regular fa-xmark" />
+                        </span>
+                        <span
+                          class="clickable edit"
+                          v-if="controller.isEditingProposedNameAt(index)"
+                        >
+                          <i class="fa-regular fa-spinner fa-spin" />
+                        </span>
+                      </div>
+                      <CopyValue :value="nameOption" />
+                    </div>
                   </div>
                   <Transition name="fade">
                     <div

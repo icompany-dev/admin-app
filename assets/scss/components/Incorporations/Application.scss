@@ -306,6 +306,38 @@
     }
   }
 
+  .proposed-name-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+
+    .form-control {
+      width: 200px;
+      background-color: var(--bs-white);
+      padding: 4px 10px;
+      border-radius: 5px;
+    }
+
+    .clickable {
+      font-size: 14px;
+      cursor: pointer;
+
+      &.edit {
+        color: var(--bs-icompany-blue);
+      }
+
+      &.save {
+        color: var(--bs-icompany-green);
+      }
+
+      &.cancel {
+        color: var(--bs-danger);
+      }
+    }
+  }
+
   .application-details {
     margin-top: 10px;
 

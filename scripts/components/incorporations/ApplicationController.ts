@@ -95,6 +95,11 @@ export class ApplicationController {
   isShowSection27: Ref<boolean> = ref<boolean>(false)
   selectedNameReservationApplication: Ref<string> = ref<string>("")
 
+  isEditProposedName: Ref<boolean> = ref<boolean>(false)
+  isEditingProposedName: Ref<boolean> = ref<boolean>(false)
+  indexProposedNameToEdit: Ref<number> = ref<number>(0)
+  newProposedName: Ref<string> = ref<string>("")
+
   isShowRegistration: Ref<boolean> = ref<boolean>(false)
   isShowCompletion: Ref<boolean> = ref<boolean>(false)
 
@@ -435,6 +440,71 @@ export class ApplicationController {
 
   isShowingNameReservationsOptionFor(name: string): boolean {
     return this.isShowSection27Actions.value && this.selectedNameReservationApplication.value === name
+  }
+
+  onEditProposedNameClicked(index: number): void {
+    this.isEditProposedName.value = true
+    this.indexProposedNameToEdit.value = index
+    this.newProposedName.value = ""
+
+    if (this.indexProposedNameToEdit.value === 0) {
+      this.newProposedName.value = this.application.value.name1?.name ?? ""
+    } else if (this.indexProposedNameToEdit.value === 1) {
+      this.newProposedName.value = this.application.value.name2?.name ?? ""
+    } else if (this.indexProposedNameToEdit.value === 1) {
+      this.newProposedName.value = this.application.value.name3?.name ?? ""
+    }
+  }
+
+  onCancelEditProposedNameClicked(): void {
+    this.isEditProposedName.value = false
+  }
+
+  isEditProposedNameAt(index: number): boolean {
+    return this.isEditProposedName.value && this.indexProposedNameToEdit.value === index
+  }
+
+  isEditingProposedNameAt(index: number): boolean {
+    return this.isEditingProposedName.value && this.indexProposedNameToEdit.value === index
+  }
+
+  async onSaveEditProposedName(): Promise<void> {
+    if (!this.isEditProposedName.value || this.isEditingProposedName.value) {
+      return
+    }
+
+    try {
+      this.isEditingProposedName.value = true
+
+      let data = {}
+      if (this.indexProposedNameToEdit.value === 0) {
+        data = {
+          name_1: this.newProposedName.value,
+        }
+      } else if (this.indexProposedNameToEdit.value === 1) {
+        data = {
+          name_2: this.newProposedName.value,
+        }
+      } else if (this.indexProposedNameToEdit.value === 1) {
+        data = {
+          name_2: this.newProposedName.value,
+        }
+      }
+
+      let repository = useApplicationIncorporateStore()
+      let response = await repository.update(this.applicationId.value, data)
+
+      this.application.value = new ApplicationIncorporate(response)
+
+      let toastTitle = this.language.isMalay() ? "Nama yang dicadangkan" : "Proposed name is updated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      //
+    } finally {
+      this.isEditingProposedName.value = false
+      this.isEditProposedName.value = false
+    }
   }
 
   onProposedNamesClicked(): void {
