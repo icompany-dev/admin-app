@@ -1,5 +1,6 @@
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
+import { Toast } from "~/scripts/library/Toast"
 import { AccessRole } from "~/scripts/models/AccessRole"
 import { UserAccessRole } from "~/scripts/models/UserAccessRole"
 import { UserInvitation } from "~/scripts/models/UserInvitation"
@@ -31,6 +32,13 @@ export class RolesAccessesController {
 
   createAccessRoleRef: any | null = null
   assignRoleRef: any | null = null
+  confirmToDeleteRef: any | null = null
+
+  userAccessRoleToRemove: Ref<UserAccessRole> = ref<UserAccessRole>(new UserAccessRole())
+  isRemovingUserAccessRole: Ref<boolean> = ref<boolean>(false)
+
+  userInvitationToRemove: Ref<UserInvitation> = ref<UserInvitation>(new UserInvitation())
+  isRemovingUserInvitation: Ref<boolean> = ref<boolean>(false)
 
   language = useLanguage()
 
@@ -48,10 +56,12 @@ export class RolesAccessesController {
     this.assignRoleRef = assignRoleRef
   }
 
+  setConfirmToDeleteRef(confirmToDeleteRef: any): void {
+    this.confirmToDeleteRef = confirmToDeleteRef
+  }
+
   async setCompanyId(companyId: string): Promise<void> {
     this.companyId.value = companyId
-
-    console.log("called??", this.companyId.value)
 
     this.isLoading.value = true
     try {
@@ -61,8 +71,6 @@ export class RolesAccessesController {
         this.fetchUserRolesForCompany(),
         this.fetchUserInvitations(),
       ])
-
-      console.log("access", this.accessRoles.value)
     } catch (e) {
       console.error(e)
     } finally {
@@ -146,9 +154,6 @@ export class RolesAccessesController {
       this.accessRoles.value = response.data.map((d: any) => {
         return new AccessRole(d)
       })
-
-      console.log("response", response)
-      console.log("after fetch", this.accessRoles.value)
     } catch (e: any) {
       if (e instanceof Error) {
         e.handle()
@@ -179,15 +184,6 @@ export class RolesAccessesController {
       this.userInvitations.value = response.data.map((d) => {
         return new UserInvitation(d)
       })
-
-      console.log("i", response)
-      console.log("after invite", this.userInvitations.value)
-
-      // let promises = this.userInvitations.value.map((ui: UserInvitation) => {
-      //   return ui.setUser(useUserStore())
-      // })
-
-      // await Promise.all(promises)
     } catch (e: any) {
       if (e instanceof Error) {
         e.handle()
@@ -217,6 +213,62 @@ export class RolesAccessesController {
     }
   }
 
+  onRemoveInvitationClicked(userInvitation: UserInvitation): void {
+    this.userInvitationToRemove.value = userInvitation
+    this.isRemovingUserInvitation.value = true
+
+    if (this.confirmToDeleteRef) {
+      this.confirmToDeleteRef.show()
+    }
+  }
+
+  onRemoveAccessClicked(userAccessRole: UserAccessRole): void {
+    this.userAccessRoleToRemove.value = userAccessRole
+    this.isRemovingUserAccessRole.value = true
+
+    if (this.confirmToDeleteRef) {
+      this.confirmToDeleteRef.show()
+    }
+  }
+
+  onCancelRemove(): void {
+    this.isRemovingUserInvitation.value = false
+    this.isRemovingUserAccessRole.value = false
+    this.userInvitationToRemove.value = new UserInvitation()
+    this.userAccessRoleToRemove.value = new UserAccessRole()
+  }
+
+  async onProceedRemove(): Promise<void> {
+    try {
+      if (this.isRemovingUserInvitation.value && !StringUtil.isNullOrEmpty(this.userInvitationToRemove.value.id)) {
+        await this.userInvitationToRemove.value.remove(useUserInvitationStore())
+        await this.fetchUserInvitations()
+      }
+
+      if (this.isRemovingUserAccessRole.value && !StringUtil.isNullOrEmpty(this.userAccessRoleToRemove.value.id)) {
+        await this.userAccessRoleToRemove.value.remove(useUserAccessRoleStore())
+        await this.fetchUserAccessRoles()
+      }
+
+      let toastTitle = this.language.isMalay() ? "Akses telah dipadamkan." : "The access is successfully removed."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isRemovingUserInvitation.value = false
+      this.isRemovingUserAccessRole.value = false
+      this.userInvitationToRemove.value = new UserInvitation()
+      this.userAccessRoleToRemove.value = new UserAccessRole()
+    }
+  }
+
   hasImage(imageUrl: string | null): boolean {
     return !StringUtil.isNullOrEmpty(imageUrl)
   }
@@ -230,10 +282,18 @@ export class RolesAccessesController {
   }
 
   get loaderLabel(): string {
+    if (this.isRemovingUserAccessRole.value || this.isRemovingUserInvitation.value) {
+      return this.language.isMalay() ? "Sedang Memadam" : "Removing the"
+    }
+
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
   }
 
   get loaderSublabel(): string {
+    if (this.isRemovingUserAccessRole.value || this.isRemovingUserInvitation.value) {
+      return this.language.isMalay() ? "Akses" : "Access"
+    }
+
     return this.language.isMalay() ? "Peranan & Akses" : "Roles & Access"
   }
 
@@ -280,5 +340,23 @@ export class RolesAccessesController {
 
   get assignRoleProps(): PropsAssignRole {
     return new PropsAssignRole(this.companyId.value, this.accessRoles.value)
+  }
+
+  get itemToRemoveName(): string {
+    return this.language.isMalay() ? "Akses" : "Access"
+  }
+
+  get removeLabel(): string {
+    return this.language.isMalay() ? "Padam" : "Remove"
+  }
+
+  get isLoadingPage(): boolean {
+    return (
+      this.isLoading.value ||
+      this.isRemovingUserInvitation.value ||
+      this.isRemovingUserAccessRole.value ||
+      this.isFetchingUserInvitations.value ||
+      this.isFetchingUserAccessRoles.value
+    )
   }
 }

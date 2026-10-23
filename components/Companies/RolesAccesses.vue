@@ -3,7 +3,7 @@
     <TransitionGroup name="fade">
       <div
         class="loader-container"
-        v-if="controller.isLoading.value"
+        v-if="controller.isLoadingPage"
       >
         <LoaderPrepare
           :label="controller.loaderLabel"
@@ -12,7 +12,7 @@
       </div>
       <div
         class="roles-accesses"
-        v-if="!controller.isLoading.value"
+        v-if="!controller.isLoadingPage"
       >
         <div
           class="no-record-container"
@@ -39,6 +39,12 @@
             </div>
             <div class="user-name">{{ userAccessRole.user?.name ?? "UNKNOWN BUGGER" }}</div>
             <div class="user-roles">{{ userAccessRole.getRoleName() }}</div>
+            <div
+              class="remove"
+              @click="controller.onRemoveAccessClicked(userAccessRole)"
+            >
+              {{ controller.removeLabel }}
+            </div>
           </div>
           <div
             class="user-access-role pending"
@@ -54,6 +60,12 @@
             </div>
             <div class="user-name">{{ userInvitation.name ?? "UNKNOWN BUGGER" }}</div>
             <div class="user-roles">{{ userInvitation.accessRole.name }}</div>
+            <div
+              class="remove"
+              @click="controller.onRemoveInvitationClicked(userInvitation)"
+            >
+              {{ controller.removeLabel }}
+            </div>
           </div>
           <div class="user-access-role empty">
             <i class="fa-solid fa-plus" />
@@ -71,12 +83,19 @@
       v-bind="controller.assignRoleProps"
       @proceed="controller.onRoleAssigned()"
     />
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :remove-item-name="controller.itemToRemoveName"
+      @back="controller.onCancelRemove()"
+      @proceed="controller.onProceedRemove()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import ActionTray from "../ActionTrays/ActionTray.vue"
   import AssignRole from "../Popups/AssignRole.vue"
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import CreateNewAccessRole from "../Popups/CreateNewAccessRole.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
@@ -93,6 +112,7 @@
 
   const createAccessRoleRef = ref(null)
   const assignRoleRef = ref(null)
+  const confirmToDeleteRef = ref(null)
 
   const controller = new RolesAccessesController(props.companyId, emit)
 
@@ -115,6 +135,14 @@
     assignRoleRef,
     (newVal) => {
       controller.setAssignRoleRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
     },
     { immediate: true }
   )

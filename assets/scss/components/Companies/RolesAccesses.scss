@@ -17,8 +17,8 @@
         width: 150px;
         justify-content: center;
         align-items: center;
-        gap: 10px;
-        cursor: pointer;
+        gap: 3px;
+        position: relative;
 
         .user-image {
           width: 140px;
@@ -31,6 +31,7 @@
           border-radius: 50%;
           border: solid 5px var(--bs-gray-500);
           transition: all 0.7s ease;
+          margin-bottom: 10px;
 
           img {
             width: 100%;
@@ -72,8 +73,6 @@
         }
 
         &.pending {
-          position: relative;
-
           .user-image {
             opacity: 0.5;
           }
@@ -96,6 +95,12 @@
             color: var(--bs-white);
             z-index: 2;
           }
+        }
+
+        .remove {
+          color: var(--bs-danger);
+          font-weight: 600;
+          cursor: pointer;
         }
       }
     }

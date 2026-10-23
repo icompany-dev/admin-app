@@ -153,7 +153,7 @@
     (newVal) => {
       controller.setDataFromProps(newVal)
     },
-    { immediate: true }
+    { deep: true }
   )
 
   defineExpose({
