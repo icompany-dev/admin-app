@@ -36,6 +36,8 @@ import { BusinessNameDescriptionAI } from "~/scripts/library/BusinessNameDescrip
 import type { PaymentCartItem } from "~/scripts/models/PaymentCartItem"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
+import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
+import { UserDetail } from "~/scripts/models/UserDetail"
 
 /**
  * THINGS THEY WANT TO KNOW
@@ -2139,5 +2141,9 @@ export class ApplicationController {
 
   get superformLabel(): string {
     return "Superform"
+  }
+
+  get promoterPropsUserDetail(): PropsUserDetail {
+    return new PropsUserDetail(this.applicant.value, this.applicant.value.detail ?? new UserDetail())
   }
 }

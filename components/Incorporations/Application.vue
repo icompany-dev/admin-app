@@ -79,32 +79,7 @@
                         </div>
                       </div>
                       <b>{{ controller.applicantLabel }}</b>
-                      <div class="human-details">
-                        <span class="human-detail">
-                          <b>{{ controller.applicantName }}</b>
-                          <CopyValue :value="controller.applicantName" />
-                        </span>
-                        <span class="human-detail">
-                          <span>{{ controller.applicantIdentificationType }}</span>
-                          <span>{{ controller.applicantIdentification }}</span>
-                          <CopyValue :value="controller.applicantIdentification" />
-                        </span>
-                        <span class="human-detail">
-                          <i class="fa-regular fa-envelope" />
-                          {{ controller.applicantEmail }}
-                          <CopyValue :value="controller.applicantEmail" />
-                        </span>
-                        <span class="human-detail">
-                          <i class="fa-brands fa-whatsapp" />
-                          {{ controller.applicantPhone }}
-                          <CopyValue :value="controller.applicantPhone" />
-                        </span>
-                        <span class="human-detail align-top">
-                          <i class="fa-regular fa-location-pin" />
-                          <span v-html="controller.applicantAddress" />
-                          <CopyValue :value="controller.applicantOneLineAddress" />
-                        </span>
-                      </div>
+                      <UserDetail v-bind="controller.promoterPropsUserDetail" />
                     </div>
                   </Transition>
                 </div>
@@ -573,6 +548,7 @@
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
   import Shareholder from "@/components/Invitations/Shareholder.vue"
   import UploadFile from "@/components/Popups/UploadFile.vue"
+  import UserDetail from "../Users/UserDetail.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
