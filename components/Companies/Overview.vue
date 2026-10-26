@@ -187,6 +187,16 @@
                     @removed="controller.onBranchRemoved(branch.id)"
                   />
                 </li>
+                <Transition name="fade">
+                  <li v-if="controller.isAddingNewBranch.value">
+                    <Branch
+                      :company-id="controller.companyId.value"
+                      :company-branch="new CompanyBranch()"
+                      @branchAdded="controller.onNewBranchAdded($event)"
+                      @cancel="controller.onCancelAddBranch()"
+                    />
+                  </li>
+                </Transition>
               </ol>
               <div class="action-button-container">
                 <button
@@ -472,6 +482,7 @@
   import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
+  import { CompanyBranch } from "~/scripts/models/CompanyBranch"
 
   const props = defineProps({
     companyId: {

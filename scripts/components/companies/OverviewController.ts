@@ -67,6 +67,8 @@ export class OverviewController {
   isUpdatingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
   registeredAddressLocation: Ref<Location> = ref<Location>(new Location())
 
+  isAddingNewBranch: Ref<boolean> = ref<boolean>(false)
+
   isEditFYE: Ref<boolean> = ref<boolean>(false)
   isEditingFYE: Ref<boolean> = ref<boolean>(false)
   companyFinancialPeriods = ref<CompanyFinancialPeriod[]>([])
@@ -658,7 +660,17 @@ ${detailsOfBO.join("\n")}
   }
 
   onAddBranch(): void {
-    this.company.value.branches.push(new CompanyBranch())
+    // this.company.value.branches.push(new CompanyBranch())
+    this.isAddingNewBranch.value = true
+  }
+
+  onCancelAddBranch(): void {
+    this.isAddingNewBranch.value = false
+  }
+
+  onNewBranchAdded(branch: CompanyBranch): void {
+    this.company.value.branches.push(branch)
+    this.isAddingNewBranch.value = false
   }
 
   onBranchRemoved(branchId: string): void {

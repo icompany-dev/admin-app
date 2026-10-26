@@ -69,7 +69,7 @@
 
   const props = defineProps<IPropsCompanyBranch>()
 
-  const emit = defineEmits(["branchUpdated", "removed"])
+  const emit = defineEmits(["branchUpdated", "removed", "branchAdded", "cancel"])
 
   const confirmToDeleteRef = ref(null)
   const addressInputRef = ref(null)

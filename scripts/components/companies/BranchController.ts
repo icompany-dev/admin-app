@@ -97,7 +97,7 @@ export class BranchController {
     this.isEditMode.value = false
 
     if (StringUtil.isNullOrEmpty(this.companyBranch.value.id)) {
-      this.emitEvents("removed")
+      this.emitEvents("cancel")
     }
   }
 
@@ -123,7 +123,8 @@ export class BranchController {
         await this.companyBranch.value.update(useCompanyBranchStore())
       }
 
-      this.emitEvents("branchUpdated", this.companyBranch.value)
+      let toastMessage = isNew ? "branchAdded" : "branchUpdated"
+      this.emitEvents(toastMessage, this.companyBranch.value)
 
       let toastTitle = this.language.isMalay()
         ? `Maklumat Cawangan berjaya dikemas kini.`
