@@ -84,6 +84,9 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
       case CompanyConstants.TARGET_AUDITOR_APPOINTMENT:
         this.pageAlias = "Appoint Auditor"
         break
+      case CompanyConstants.TARGET_TAX_AGENT_APPOINTMENT:
+        this.pageAlias = "Appoint Tax Agent"
+        break
       case CompanyConstants.TARGET_AUDIT_CIRCULATION:
         this.pageAlias = "Financial Statement Circulation"
         break
@@ -122,6 +125,9 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
         break
       case CompanyConstants.TARGET_AUDITOR_APPOINTMENT:
         this.pageAlias = "Appointment of Auditor"
+        break
+      case CompanyConstants.TARGET_TAX_AGENT_APPOINTMENT:
+        this.pageAlias = "Appointment of Tax Agent"
         break
       case CompanyConstants.TARGET_SET_FINANCIAL_YEAR_END:
         this.pageAlias = "Set/Change Financial Year End"
