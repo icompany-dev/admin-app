@@ -1,0 +1,13 @@
+// #popups-create-new-application {
+//   // Styles go here
+// }
+
+.form-group {
+  margin: auto;
+
+  .searchable-dropdown {
+    .dropdown-menu {
+      background-color: var(--bs-white) !important;
+    }
+  }
+}

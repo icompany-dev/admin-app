@@ -69,6 +69,7 @@
 </template>
 
 <script lang="ts" setup>
+  import AddApplication from "../Buttons/AddApplication.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
   import CreateDocumentRequest from "../Popups/CreateDocumentRequest.vue"
@@ -168,6 +169,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    init: controller.init.bind(controller),
+  })
 </script>
 
 <style lang="scss">

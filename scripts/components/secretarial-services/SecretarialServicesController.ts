@@ -8,9 +8,11 @@ import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
 import { PropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
 import type { Company } from "~/scripts/models/Company"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import { PropsCreateNewApplication } from "~/scripts/props/PropsCreateNewApplication"
 
 export abstract class SecretarialServicesController<T> {
   tableDataFetcher = ref<TableDataFetcher<T> | null>(null)
+  repository: Ref<IRepositoryStore | null> = ref<IRepositoryStore | null>(null)
 
   emitEvents: any | null = null
 
@@ -38,6 +40,7 @@ export abstract class SecretarialServicesController<T> {
     this.emitEvents = emitEvents
 
     this.setDataFromProps(props)
+    this.repository.value = repository
   }
 
   async setDataFromProps(props: PropsSecretarialServices): Promise<void> {
@@ -141,5 +144,10 @@ export abstract class SecretarialServicesController<T> {
 
   get uploadDocumentsProps(): PropsUploadDocument {
     return new PropsUploadDocument("")
+  }
+
+  get addApplicationProps(): PropsCreateNewApplication {
+    console.log("repository0", this.repository.value)
+    return new PropsCreateNewApplication(this.repository.value)
   }
 }
