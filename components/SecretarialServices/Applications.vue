@@ -85,6 +85,7 @@
   import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
   import { PaymentToDirectorsController } from "~/scripts/components/secretarial-services/PaymentToDirectorsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
+  import { ResignationOfDirectorsController } from "~/scripts/components/secretarial-services/ResignationOfDirectorsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
   import { SwitchOutsController } from "~/scripts/components/secretarial-services/SwitchOutsController"
   import { TransferOfSharesController } from "~/scripts/components/secretarial-services/TransferOfSharesController"
@@ -146,6 +147,9 @@
       break
     case CompanyConstants.TARGET_SWITCH_OUT:
       controller = new SwitchOutsController(props, emit)
+      break
+    case CompanyConstants.TARGET_DIRECTOR_RESIGNATION:
+      controller = new ResignationOfDirectorsController(props, emit)
       break
   }
 
