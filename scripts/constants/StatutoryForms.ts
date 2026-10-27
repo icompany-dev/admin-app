@@ -65,6 +65,7 @@ export enum StatutoryFormKeywords {
   AppointDirector = "Section 58 - Add New Director, Section 58 - Appoint New Director",
   AppointDirectorDcr = "DCR - Appointment of Director,DCR - Appointment of New Director",
   ResignationOfDirector = "Section 58 - Resignation of Director",
+  ResignationOfDirectorDcr = "Letter - Resignation of Director",
   OpenBankAccount = "DCR Open, DCR re Open", // usually followed bank name,
   AllotmentOfShares = "Allotment of Shares, Purchase Shares, PRN, Preemptive Rights",
   TransferOfShares = "Transfer, Share Transfer",

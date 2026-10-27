@@ -438,7 +438,7 @@ export class ResignationOfDirectorApplicationController extends ApplicationContr
   // get document uploaded
   get isSection58Uploaded(): boolean {
     return this.uploadedDocumentChecker.value.isDocumentUploaded(
-      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT,
+      DocumentTargets.TARGET_DIRECTOR_RESIGNATION,
       this.application.value?.createdAt ?? ""
     )
   }
@@ -449,7 +449,7 @@ export class ResignationOfDirectorApplicationController extends ApplicationContr
     }
 
     return this.uploadedDocumentChecker.value.latestDocument(
-      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT,
+      DocumentTargets.TARGET_DIRECTOR_RESIGNATION,
       this.application.value?.createdAt ?? ""
     )
   }
@@ -464,7 +464,7 @@ export class ResignationOfDirectorApplicationController extends ApplicationContr
 
   get isDcrGenerated(): boolean {
     return this.uploadedDocumentChecker.value.isDocumentUploaded(
-      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS,
+      DocumentTargets.TARGET_DIRECTOR_RESIGNATION_RESOLUTIONS,
       this.application.value?.createdAt ?? ""
     )
   }
@@ -475,7 +475,7 @@ export class ResignationOfDirectorApplicationController extends ApplicationContr
     }
 
     return this.uploadedDocumentChecker.value.latestDocument(
-      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS,
+      DocumentTargets.TARGET_DIRECTOR_RESIGNATION_RESOLUTIONS,
       this.application.value?.createdAt ?? ""
     )
   }

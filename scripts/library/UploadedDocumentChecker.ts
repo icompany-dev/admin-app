@@ -162,9 +162,9 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_DIRECTOR_MANAGER_APPOINTMENT_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_RESIGNATION:
-        return ""
+        return StatutoryFormKeywords.ResignationOfDirector
       case DocumentTargets.TARGET_DIRECTOR_RESIGNATION_RESOLUTIONS:
-        return ""
+        return StatutoryFormKeywords.ResignationOfDirectorDcr
       case DocumentTargets.TARGET_DIVIDEND_DECLARATION:
         return ""
       case DocumentTargets.TARGET_DIVIDEND_DECLARATION_RESOLUTIONS:
