@@ -179,6 +179,12 @@ export class ApplicationSwitch implements IApplication {
   }
 
   getRequestBody(): object {
+    this.name = this.name
+      .replace("SDN BHD", "")
+      .replace("SDN. BHD.", "")
+      .replace("sdn bhd", "")
+      .replace("sdn. bhd.", "")
+
     return {
       name: this.name,
       name_type: "sdnbhd",
@@ -202,6 +208,12 @@ export class ApplicationSwitch implements IApplication {
   }
 
   getRequestBodyForMetadata(): object {
+    this.name = this.name
+      .replace("SDN BHD", "")
+      .replace("SDN. BHD.", "")
+      .replace("sdn bhd", "")
+      .replace("sdn. bhd.", "")
+
     return {
       name: this.name,
       name_type: "sdnbhd",
