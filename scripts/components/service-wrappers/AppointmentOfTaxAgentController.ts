@@ -24,7 +24,7 @@ export class AppointmentOfTaxAgentController
   canSubmit = ref<boolean>(true)
   canRemove = ref<boolean>(false)
 
-  isSaving = false
+  isSaved: Ref<boolean> = ref<boolean>(false)
   hasPendingChanges = false
 
   constructor(props: any, emitEvents: any | null) {
@@ -146,11 +146,11 @@ export class AppointmentOfTaxAgentController
 
     this.hasPendingChanges = true
 
-    if (this.isSaving) {
+    if (this.isUpdating.value) {
       return
     }
 
-    this.isSaving = true
+    this.isUpdating.value = true
 
     try {
       while (this.hasPendingChanges) {
@@ -180,10 +180,10 @@ export class AppointmentOfTaxAgentController
         console.error("Tax Agent auto-save failed:", error)
       }
     } finally {
-      this.isSaving = false
+      this.isUpdating.value = false
 
       setTimeout(() => {
-        if (!this.isSaving) {
+        if (!this.isUpdating.value) {
         }
       }, 1000)
     }
