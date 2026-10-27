@@ -140,7 +140,7 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT:
         return StatutoryFormKeywords.AppointDirector
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS:
-        return ""
+        return StatutoryFormKeywords.AppointDirectorDcr
       case DocumentTargets.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST_RESOLUTIONS:

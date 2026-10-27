@@ -43,10 +43,24 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isGeneratingReso.value }"
+              :disabled="controller.isDcrGenerated || controller.isGeneratingReso.value"
               @click="controller.onDownloadClicked()"
             >
               {{ controller.downloadLabel }}
             </button>
+            <div v-if="controller.isDcrGenerated">
+              <span
+                class="action-link download"
+                @click="controller.onDownloadGeneratedDcr()"
+              >
+                <i
+                  class="fa-regular"
+                  :class="controller.isDownloadingDcr.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'"
+                />
+                {{ controller.generatedDcrLabel }}
+              </span>
+            </div>
           </template>
           <template #nodeActions>
             <button
@@ -213,6 +227,13 @@
       controller.setUploadDocumentRef(newVal)
     },
     { immediate: true }
+  )
+
+  watch(
+    () => props.isGenerating,
+    (newVal) => {
+      controller.setIsGeneratingReso(newVal)
+    }
   )
 
   defineExpose({

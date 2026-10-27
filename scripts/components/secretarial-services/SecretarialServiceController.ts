@@ -156,6 +156,7 @@ export abstract class SecretarialServiceController<T, R> {
 
     props.canCompleteService = this.canCompleteService.value
     props.isDownloadCompleted = !this.isDownloading.value
+    props.isGenerating = this.isGenerating.value
 
     return props
   }

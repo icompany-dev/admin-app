@@ -35,6 +35,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingDcr: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection58: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
@@ -84,8 +85,40 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     this.emitEvents("generate", generateDocumentDetails)
   }
 
+  async onDownloadGeneratedDcr(): Promise<void> {
+    if (!this.isDownloadingDcr.value || !this.isDcrGenerated) {
+      return
+    }
+
+    let generatedDcr = this.generatedDcr
+    if (!generatedDcr) {
+      return
+    }
+
+    try {
+      this.isDownloadingDcr.value = true
+
+      let url = generatedDcr.fileUrl ?? ""
+      let response = await fetch(url)
+      if (response.ok) {
+        let blob = await response.blob()
+        const blobUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.setAttribute("download", generatedDcr.documentName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(blobUrl)
+      }
+    } catch (e) {
+    } finally {
+      this.isDownloadingDcr.value = false
+    }
+  }
+
   async onDownloadSection58(): Promise<void> {
-    if (!this.isDownloadingSection58.value || !this.isSection58Uploaded) {
+    if (this.isDownloadingSection58.value || !this.isSection58Uploaded) {
       return
     }
 
@@ -420,5 +453,31 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     }
 
     return this.language.isMalay() ? "Seksyen 58 - Tambah Pengarah Baharu" : "Section 58 - Add New Director"
+  }
+
+  get isDcrGenerated(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
+  get generatedDcr(): CompanyDocument | null {
+    if (!this.isDcrGenerated) {
+      return null
+    }
+
+    return this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
+  get generatedDcrLabel(): string {
+    if (this.generatedDcr) {
+      return this.generatedDcr.documentName
+    }
+
+    return this.language.isMalay() ? "DCR - Perlantikan Pengarah" : "DCR - Appointment of Director"
   }
 }
