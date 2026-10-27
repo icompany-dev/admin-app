@@ -49,7 +49,10 @@
             >
               {{ controller.downloadLabel }}
             </button>
-            <div v-if="controller.isDcrGenerated">
+            <div
+              v-if="controller.isDcrGenerated"
+              class="actions"
+            >
               <span
                 class="action-link download"
                 @click="controller.onDownloadGeneratedDcr()"
@@ -59,6 +62,16 @@
                   :class="controller.isDownloadingDcr.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'"
                 />
                 {{ controller.generatedDcrLabel }}
+              </span>
+              <span
+                class="action-link remove"
+                @click="controller.onRemoveDcrClicked()"
+              >
+                <i
+                  class="fa-regular fa-spinner fa-spin"
+                  v-if="controller.isRemovingDcr.value"
+                />
+                {{ controller.removeDcrLabel }}
               </span>
             </div>
           </template>

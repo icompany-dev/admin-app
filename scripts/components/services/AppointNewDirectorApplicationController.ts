@@ -37,6 +37,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
 
   isDownloadingDcr: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection58: Ref<boolean> = ref<boolean>(false)
+  isRemovingDcr: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -151,6 +152,39 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
 
   async onPrintClicked(): Promise<void> {
     //
+  }
+
+  async onRemoveDcrClicked(): Promise<void> {
+    if (this.isRemovingDcr.value || !this.isDcrGenerated) {
+      return
+    }
+
+    let generatedDcr = this.generatedDcr
+    if (!generatedDcr) {
+      return
+    }
+
+    try {
+      this.isRemovingDcr.value = true
+
+      let repository = useFormStore()
+      let response = await repository.remove(generatedDcr.id)
+
+      await this.uploadedDocumentChecker.value.fetchDocuments()
+
+      let toastTitle = this.language.isMalay()
+        ? "Resolusi telah dipadamkan."
+        : "The resolution is successfully removed."
+      let toastMessage = this.language.isMalay()
+        ? "Klik 'Jana DCR' untuk menjana dokumen ini semula."
+        : "Please click on 'Generate DCR' to generate it again."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isRemovingDcr.value = false
+    }
   }
 
   async onApprovedClicked(): Promise<void> {
@@ -479,5 +513,9 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     }
 
     return this.language.isMalay() ? "DCR - Perlantikan Pengarah" : "DCR - Appointment of Director"
+  }
+
+  get removeDcrLabel(): string {
+    return this.language.isMalay() ? "Padam" : "Remove"
   }
 }
