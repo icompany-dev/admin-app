@@ -7,6 +7,8 @@ import { useCompanyDirectorResignationStore } from "~/stores/CompanyDirectorResi
 import { useCompanyStore } from "~/stores/Companies"
 import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class ResignationOfDirectorController
   extends ServiceController
@@ -73,7 +75,7 @@ export class ResignationOfDirectorController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -127,5 +129,29 @@ export class ResignationOfDirectorController
       <br><br>
       Resignation does not absolve your prior obligations.
     `
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value || !this.noticeRef) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let pages = await this.noticeRef.getPdfPages()
+      await PdfPaperUtil.generatePdfFile(
+        pages,
+        20,
+        "Letter - Resignation of Director.pdf",
+        PaperSize.A4,
+        PaperOrientation.Portrait
+      )
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 }

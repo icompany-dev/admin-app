@@ -79,7 +79,7 @@ export class ResignationOfDirectorApplicationController extends ApplicationContr
     this.emitEvents("download")
 
     let generateDocumentDetails = new GenerateDocumentDetails(
-      `DCR - Resignation of Director.pdf`,
+      `Letter - Resignation of Director.pdf`,
       this.dayjs().format("YYYY-MM-DD"),
       1
     )

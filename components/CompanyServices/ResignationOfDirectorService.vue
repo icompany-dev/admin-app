@@ -132,6 +132,11 @@
       controller.handlePostDelete()
     }
   )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onGenerateBlob: controller.onGenerateBlob.bind(controller),
+  })
 </script>
 
 <style lang="scss">
