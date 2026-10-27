@@ -128,6 +128,7 @@ export abstract class SecretarialServiceController<T, R> {
       })
 
       let uploadedFile = new UploadedFile()
+      uploadedFile.name = generateDocumentDetails.filename
       await uploadedFile.uploadFile(pdfFile, useFileStore())
 
       let form = new Form()

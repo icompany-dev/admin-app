@@ -74,6 +74,14 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   async onDownloadClicked(): Promise<void> {
     await nextTick()
     this.emitEvents("download")
+
+    let generateDocumentDetails = new GenerateDocumentDetails(
+      `DCR - Appointment of Director.pdf`,
+      this.dayjs().format("YYYY-MM-DD"),
+      1
+    )
+
+    this.emitEvents("generate", generateDocumentDetails)
   }
 
   async onDownloadSection58(): Promise<void> {
@@ -289,7 +297,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   get downloadLabel(): string {
-    return this.language.isMalay() ? "Muat Turun" : "Download"
+    return this.language.isMalay() ? "Jana DCR" : "Generate DCR"
   }
 
   get isApproved(): boolean {

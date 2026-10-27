@@ -11,6 +11,8 @@ import { SignatureGroup } from "~/scripts/models/SignatureGroup"
 import { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import { InvitationTarget } from "~/scripts/models/Invitation"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class AppointmentOfDirectorController
   extends ServiceController
@@ -93,7 +95,7 @@ export class AppointmentOfDirectorController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -163,6 +165,55 @@ export class AppointmentOfDirectorController
 
   isDraft(): boolean {
     return this.application.signatureGroups.length <= 0
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    this.isDownloading.value = true
+    this.setActionTrayElements()
+    try {
+      let promises = []
+
+      if (this.dcrRef) {
+        let dcrPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            dcrPages,
+            20,
+            "DCR - Appointment of Director.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (this.mcrRef) {
+        let mcrPages = await this.mcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            mcrPages,
+            20,
+            "MCR - Appointment of Director.pdf",
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
+
+      if (promises.length <= 0) {
+        return
+      }
+
+      await Promise.allSettled(promises)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isDownloading.value = false
+      this.setActionTrayElements()
+    }
   }
 
   get resolutionDocumentProps() {
