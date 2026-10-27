@@ -62,8 +62,8 @@ export class CompanyAppointmentOfTaxAgent
       firm_address: this.firmAddress,
       firm_phone: this.firmPhone,
       firm_email: this.firmEmail,
-      // document_date: this.documentDate,
-      // location_id: this.locationId,
+      document_date: this.documentDate,
+      location_id: this.locationId,
       status: this.status,
     }
 
