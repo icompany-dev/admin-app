@@ -63,10 +63,11 @@ export enum StatutoryFormKeywords {
   ChangeOfBranch = "Change of Business Branch, Change of Branch, Change Business Branch",
   ChangeOfDescription = "Change of Nature of Business, Change of Business Nature, Change of Nature, Change of Business Description, Change of Description",
   AppointDirector = "Appoint Director",
-  ResignationOfDirector = "Resignation",
+  ResignationOfDirector = "Section 58 - Resignation of Director",
   OpenBankAccount = "DCR Open, DCR re Open", // usually followed bank name,
   AllotmentOfShares = "Allotment of Shares, Purchase Shares, PRN, Preemptive Rights",
   TransferOfShares = "Transfer, Share Transfer",
   Constitution = "Constitution",
   SetFye = "Financial Year End",
+  AppointNewDirector = "Section 58 - Appoint New Director, Section 58 - Appointment of New Director",
 }

@@ -20,6 +20,7 @@ import { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { GenerateDocumentDetails } from "~/scripts/types/GenerateDocumentDetails"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 
 export class AppointNewDirectorApplicationController extends ApplicationController<CompanyDirectorAppointment> {
   resolutionsRef: any | null = null
@@ -33,6 +34,8 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   isGenerating: Ref<boolean> = ref<boolean>(false)
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
+
+  isDownloadingSection58: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -73,6 +76,38 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     this.emitEvents("download")
   }
 
+  async onDownloadSection58(): Promise<void> {
+    if (!this.isDownloadingSection58.value || !this.isSection58Uploaded) {
+      return
+    }
+
+    let section58 = this.section58
+    if (!section58) {
+      return
+    }
+
+    try {
+      this.isDownloadingSection58.value = true
+
+      let url = section58.fileUrl ?? ""
+      let response = await fetch(url)
+      if (response.ok) {
+        let blob = await response.blob()
+        const blobUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.setAttribute("download", section58.documentName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(blobUrl)
+      }
+    } catch (e) {
+    } finally {
+      this.isDownloadingSection58.value = false
+    }
+  }
+
   async onPrintClicked(): Promise<void> {
     //
   }
@@ -109,9 +144,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   async onProceedPostUpload(): Promise<void> {
-    if (this.isCompleting.value) {
-      await this.proceedCompleteService()
-    }
+    await this.uploadedDocumentChecker.value.fetchDocuments()
   }
 
   async onShippedClicked(): Promise<void> {
@@ -362,7 +395,22 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     )
   }
 
+  get section58(): CompanyDocument | null {
+    if (!this.isSection58Uploaded) {
+      return null
+    }
+
+    return this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
   get section58Label(): string {
+    if (this.section58) {
+      return this.section58.documentName
+    }
+
     return this.language.isMalay() ? "Seksyen 58 - Tambah Pengarah Baharu" : "Section 58 - Add New Director"
   }
 }

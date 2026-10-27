@@ -118,8 +118,14 @@
               {{ controller.uploadLabel }}
             </button>
             <div v-if="controller.isSection58Uploaded">
-              <span class="action-link download">
-                <i class="fa-regular fa-cloud-arrow-up" />
+              <span
+                class="action-link download"
+                @click="controller.onDownloadSection58()"
+              >
+                <i
+                  class="fa-regular"
+                  :class="controller.isDownloadingSection58.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'"
+                />
                 {{ controller.section58Label }}
               </span>
             </div>

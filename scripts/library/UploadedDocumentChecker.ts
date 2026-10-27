@@ -138,7 +138,7 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_DELEGATION_OF_AUTHORITY_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT:
-        return "Section 58"
+        return StatutoryFormKeywords.AppointDirector
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST:
