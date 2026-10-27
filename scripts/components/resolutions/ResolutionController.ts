@@ -253,10 +253,6 @@ export abstract class ResolutionController<T> {
       await this.directorRepository.fetchAllForCompany(this.companyId.value)
       this.signatureItems.value = this.directorRepository.directors
         .filter((d: Director) => {
-          if (!this.excludeResigningDirectors) {
-            return true
-          }
-
           return !new Director(d).isResignationInProgress
         })
         .map((d: Director) => {
