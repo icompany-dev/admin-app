@@ -91,6 +91,7 @@ export abstract class SecretarialServicesController<T> {
       StatusConstants.READY,
       // StatusConstants.PENDING,
       StatusConstants.PAID,
+      StatusConstants.CONFIRMED,
       StatusConstants.NAME_REJECTED,
       StatusConstants.STAMPING,
       StatusConstants.SHIPPED,
@@ -98,6 +99,7 @@ export abstract class SecretarialServicesController<T> {
       StatusConstants.REJECTED,
       StatusConstants.SUBMITTED,
       StatusConstants.COMPLETED,
+      StatusConstants.CANCELLED,
     ]
 
     if (!StringUtil.isNullOrEmpty(this.searchText.value)) {

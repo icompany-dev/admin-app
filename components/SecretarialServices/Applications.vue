@@ -75,6 +75,7 @@
   import { AllotNewSharesController } from "~/scripts/components/secretarial-services/AllotNewSharesController"
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
   import { AppointAuditorsController } from "~/scripts/components/secretarial-services/AppointAuditorsController"
+  import { AppointTaxAgentsController } from "~/scripts/components/secretarial-services/AppointTaxAgentsController.js"
   import { AppointDirectorsController } from "~/scripts/components/secretarial-services/AppointDirectorsController"
   import { BankAccountOpeningsController } from "~/scripts/components/secretarial-services/BankAccountOpeningsController"
   import { ChangeBankSignatoriesController } from "~/scripts/components/secretarial-services/ChangeBankSignatoriesController"
@@ -113,6 +114,9 @@
       break
     case CompanyConstants.TARGET_AUDITOR_APPOINTMENT:
       controller = new AppointAuditorsController(props, emit)
+      break
+    case CompanyConstants.TARGET_TAX_AGENT_APPOINTMENT:
+      controller = new AppointTaxAgentsController(props, emit)
       break
     case CompanyConstants.TARGET_DIRECTOR_APPOINTMENT:
       controller = new AppointDirectorsController(props, emit)
