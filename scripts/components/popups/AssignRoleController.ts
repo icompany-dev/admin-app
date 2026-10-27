@@ -39,8 +39,6 @@ export class AssignRoleController extends BasePopupController {
     this.accessRoles.value = props.accessRoles.map((ar: AccessRole) => {
       return new AccessRole(ar)
     })
-
-    console.log("accessroles", this.accessRoles.value)
   }
 
   async onProceedClicked(): Promise<void> {
@@ -51,8 +49,6 @@ export class AssignRoleController extends BasePopupController {
     try {
       this.isSubmitting.value = true
       let repository = useUserInvitationStore()
-
-      console.log(this.requestPayload)
 
       await repository.adminGrantAccess(this.requestPayload)
 
