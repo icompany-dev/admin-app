@@ -19,8 +19,7 @@ export class DcrAppointmentOfDirectorController extends ResolutionAppointmentOfD
 
     let originalResolutionContent = this.dcrResolutionContent.value
     if (!StringUtil.isNullOrEmpty(this.dcrResolutionContent.value)) {
-      let templateProcessor = new TemplateProcessor(null)
-      this.dcrResolutionContent.value = templateProcessor.replaceInputsWithValues(this.dcrResolutionContent.value)
+      this.setContent()
     }
 
     await nextTick()
