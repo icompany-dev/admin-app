@@ -44,105 +44,20 @@
             :watermark-text="controller.watermarkText()"
             :director-id="controller.applicationDirectorId.value"
           />
-          <DcrAcknowledgementOfResignation
+          <!-- <DcrAcknowledgementOfResignation
             ref="dcrRef"
             v-if="controller.companyDirectorResignation.value.hasAcknowledgementDcr"
             v-bind="controller.resolutionDocumentProps"
-          />
+          /> -->
         </TransitionGroup>
       </template>
-      <template #step-status>
-        <b>{{ controller.statusPascaLabel() }}:</b>
-        <br />
-        {{ controller.statusDate() }}
-      </template>
-      <template #pasca-custom-confirmation>
-        <b>
-          <span v-html="controller.draftDcrLabel()" />
-          ?
-        </b>
-        <br />
-        <br />
-        <div class="action-buttons">
-          <button class="btn btn-sm btn-danger">
-            {{ controller.noThanksLabel() }}
-          </button>
-          <button
-            class="btn btn-sm btn-submit"
-            @click="controller.onDraftDcrClick()"
-          >
-            {{ controller.proceedLabel() }}
-          </button>
-        </div>
-      </template>
-      <template #learnMoreButton>
-        <div
-          class="learn-more"
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </div>
-      </template>
-      <template #cornerButton>
-        <div class="action-buttons">
-          <button
-            class="btn btn-standard btn-primary"
-            @click="controller.onMoreInfoClicked()"
-          >
-            {{ controller.learnMoreLabel() }}
-          </button>
-          <button
-            v-if="controller.showCornerButton()"
-            class="btn btn-standard btn-pay"
-            @click="controller.onProceedClicked()"
-          >
-            {{ controller.payLabel() }}
-          </button>
-        </div>
-      </template>
     </CompanyServiceWrapper>
-    <ActionTray
-      v-if="controller.showActionTray()"
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
-    <Teleport to="body">
-      <div
-        class="alert-tray"
-        :class="{ show: controller.isShowInfo.value }"
-      >
-        <Transition name="alert-appear">
-          <Alert
-            :is-dismissible="true"
-            :type="'default'"
-            :is-show="controller.isShowInfo.value"
-            @hide="controller.onMoreInfoClicked()"
-          >
-            <template #alertContent>
-              <div class="title">
-                {{ controller.slipCaseTitle() }}
-              </div>
-              <div class="content">
-                <ol>
-                  <li
-                    v-for="(point, i) in controller.slipCaseContentPoints()"
-                    :key="i"
-                  >
-                    <span v-html="point" />
-                  </li>
-                </ol>
-              </div>
-            </template>
-          </Alert>
-        </Transition>
-      </div>
-    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
   import ActionTray from "../ActionTrays/ActionTray.vue"
-  import Alert from "../Alerts/Alert.vue"
+  // import Alert from "../Alerts/Alert.vue"
   import NoticeOfResignation from "../LegalDocuments/NoticeOfResignation.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
   import DcrAcknowledgementOfResignation from "../Resolutions/DcrAcknowledgementOfResignation.vue"

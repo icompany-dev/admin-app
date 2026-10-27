@@ -1,4 +1,4 @@
-#legal-document-audit-exemption-certificate {
+#legal-document-notice-of-resignation {
   .paper {
     &.print {
       padding: 20mm;
@@ -6,13 +6,18 @@
   }
 }
 
-.audit-exemption-certificate {
+.notice-of-resignation {
+
   div,
   p,
   span {
     font-size: 13px;
     line-height: 19px;
     text-align: justify;
+  }
+
+  p {
+    margin-bottom: 10px;
   }
 
   .document-date {

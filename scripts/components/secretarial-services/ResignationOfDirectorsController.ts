@@ -11,7 +11,7 @@ export class ResignationOfDirectorsController extends SecretarialServicesControl
 
   onApplicationClicked(data: any): void {
     let application = new CompanyDirectorResignation(data)
-    this.router.push({ path: `/services/appoint-director-new/${application.id}` })
+    this.router.push({ path: `/services/resign-director/${application.id}` })
   }
 
   companyName(data: any): string {

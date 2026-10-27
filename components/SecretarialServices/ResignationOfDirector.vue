@@ -4,14 +4,14 @@
     class="secretarial-service-application"
   >
     <div class="service-application">
-      <!-- <ResignationOfDirectorApplication
+      <ResignationOfDirectorApplication
         v-bind="controller.applicationProps"
         @company="controller.onCompanyUpdated($event)"
         @paymentOrderId="controller.onPaymentOrderIdUpdated($event)"
         @documentSelected="controller.onDocumentTargetSelected($event)"
         @download="controller.onDownloadClicked()"
         @generate="controller.onGenerateClicked($event)"
-      /> -->
+      />
     </div>
     <div class="document-container">
       <component
@@ -44,7 +44,7 @@
   const controller = new ResignationOfDirectorController(props, emit)
 
   const componentMap: Record<string, any> = {
-    [DocumentTargets.TARGET_DIRECTOR_RESIGNATION_RESOLUTIONS]: ResignationOfDirectorApplication,
+    [DocumentTargets.TARGET_DIRECTOR_RESIGNATION_RESOLUTIONS]: ResignationOfDirectorService,
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
   }
 

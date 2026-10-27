@@ -1,17 +1,259 @@
 <template>
   <div id="services-resignation-of-director-application">
+    <ServiceApplication
+      ref="serviceApplicationRef"
+      v-bind="controller.serviceApplicationProps"
+      @paymentNodeSelected="controller.onPaymentStepClicked()"
+      @show="controller.onShowPanel()"
+      @hide="emit('hide')"
+      @download="emit('download', $event)"
+    >
+      <template #application>
+        <ApplicationNode
+          v-bind="controller.applicationDetailsNodeProps"
+          @click="controller.onApplicationDetailsClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.applicationDetailsLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.applicationDetailsSublabel }}
+              </div>
+            </div>
+            <div class="application-details">
+              <UserDetail v-bind="controller.userDetailProps" />
+
+              <template v-if="controller.hasOtherRequirements">
+                <b>{{ controller.itemsToPrepareLabel }}</b>
+                <ol>
+                  <li
+                    v-for="(item, i) in controller.itemsToPrepare"
+                    :key="i"
+                  >
+                    {{ item }}
+                  </li>
+                </ol>
+              </template>
+            </div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isGeneratingReso.value }"
+              :disabled="controller.isDcrGenerated || controller.isGeneratingReso.value"
+              @click="controller.onDownloadClicked()"
+            >
+              {{ controller.downloadLabel }}
+            </button>
+            <div
+              v-if="controller.isDcrGenerated"
+              class="actions"
+            >
+              <span
+                class="action-link download"
+                @click="controller.onDownloadGeneratedDcr()"
+              >
+                <i
+                  class="fa-regular"
+                  :class="controller.isDownloadingDcr.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'"
+                />
+                {{ controller.generatedDcrLabel }}
+              </span>
+              <span
+                class="action-link remove"
+                @click="controller.onRemoveDcrClicked()"
+              >
+                <i
+                  class="fa-regular fa-spinner fa-spin"
+                  v-if="controller.isRemovingDcr.value"
+                />
+                {{ controller.removeDcrLabel }}
+              </span>
+            </div>
+          </template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isApproving.value }"
+              :disabled="controller.isApproving.value"
+              @click="controller.onApprovedClicked()"
+            >
+              {{ controller.approveLabel }}
+            </button>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode
+          v-if="controller.isDeliveryRequired"
+          v-bind="controller.deliveryNodeProps"
+          @click="controller.onApplicationDetailsClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.deliveryLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.deliverySublabel }}
+              </div>
+            </div>
+            <div class="application-details">
+              <b>{{ controller.deliverMethodLabel }}</b>
+              <br />
+              {{ controller.deliveryMethod }}
+              <br />
+              <br />
+              <b>{{ controller.deliverToLabel }}</b>
+              <br />
+              <span v-html="controller.deliveryAddress" />
+              <CopyValue :value="controller.deliveryAddressToCopy" />
+            </div>
+          </template>
+          <!--This will be where the print slips be-->
+          <template #nodeOptions></template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              @click="controller.onShippedClicked()"
+            >
+              {{ controller.shipLabel }}
+            </button>
+          </template>
+        </ApplicationNode>
+        <ApplicationNode
+          v-bind="controller.completedNodeProps"
+          @click="controller.onApplicationDetailsClicked()"
+        >
+          <template #nodeContent>
+            <div class="application-container">
+              <div class="node-title">
+                {{ controller.applicationCompletedLabel }}
+              </div>
+              <div class="node-subtitle">
+                {{ controller.completedSublabel }}
+              </div>
+            </div>
+          </template>
+          <template #nodeOptions>
+            <button
+              class="btn btn-pill btn-primary"
+              @click="controller.onUploadClicked()"
+            >
+              {{ controller.uploadLabel }}
+            </button>
+            <div v-if="controller.isSection58Uploaded">
+              <span
+                class="action-link download"
+                @click="controller.onDownloadSection58()"
+              >
+                <i
+                  class="fa-regular"
+                  :class="controller.isDownloadingSection58.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'"
+                />
+                {{ controller.section58Label }}
+              </span>
+            </div>
+          </template>
+          <template #nodeActions>
+            <button
+              class="btn btn-pill btn-submit"
+              @click="controller.onCompleteClicked()"
+            >
+              {{ controller.markCompletedLabel }}
+            </button>
+          </template>
+        </ApplicationNode>
+      </template>
+    </ServiceApplication>
+    <PopupShipApplication
+      v-bind="controller.shipApplicationProps"
+      ref="shipApplicationRef"
+      @proceed="controller.onProceedShipped()"
+    />
+    <PopupUploadDocument
+      v-bind="controller.uploadDocumentProps"
+      ref="uploadDocumenRef"
+      @proceed="controller.onProceedPostUpload()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ResignationOfDirectorApplicationController } from '~/scripts/components/services/ResignationOfDirectorApplicationController'
+  import ApplicationNode from "./ApplicationNode.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
+  import Director from "../Invitations/Director.vue"
+  import UserDetail from "../Users/UserDetail.vue"
+  import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
+  import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
+  import ServiceApplication from "./ServiceApplication.vue"
+  import { ResignationOfDirectorApplicationController } from "~/scripts/components/services/ResignationOfDirectorApplicationController"
+  import { EmitMessages } from "~/scripts/constants/EmitMessages"
+  import type { IPropsApplication } from "~/scripts/props/PropsApplication"
 
-const props = defineProps({})
-const emit = defineEmits([]) 
+  const props = defineProps<IPropsApplication>()
 
-const controller = new ResignationOfDirectorApplicationController(props, emit)
+  const resolutionsRef = ref(null)
+  const shipApplicationRef = ref(null)
+  const serviceApplicationRef = ref(null)
+  const uploadDocumenRef = ref(null)
+
+  const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
+
+  const controller = new ResignationOfDirectorApplicationController(props, emit)
+
+  watch(
+    () => props.companyId,
+    (newVal) => {
+      controller.setCompanyId(newVal)
+    }
+  )
+
+  watch(
+    resolutionsRef,
+    (newVal) => {
+      controller.setResolutionsRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    shipApplicationRef,
+    (newVal) => {
+      controller.setShipApplicationRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    serviceApplicationRef,
+    (newVal) => {
+      controller.setServiceApplicationRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    uploadDocumenRef,
+    (newVal) => {
+      controller.setUploadDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => props.isGenerating,
+    (newVal) => {
+      controller.setIsGeneratingReso(newVal)
+    }
+  )
+
+  defineExpose({
+    expand: controller.expand.bind(controller),
+    collapse: controller.collapse.bind(controller),
+  })
 </script>
 
 <style lang="scss">
-@use '~/assets/scss/components/Services/ResignationOfDirectorApplication' as *;
+  @use "~/assets/scss/components/Services/ResignationOfDirectorApplication" as *;
 </style>

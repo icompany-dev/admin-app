@@ -48,6 +48,7 @@
   import DocumentRequest from "./DocumentRequest.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import PaymentToDirector from "./PaymentToDirector.vue"
+  import ResignationOfDirector from "./ResignationOfDirector.vue"
   import SwitchOut from "./SwitchOut.vue"
   import TekunApplication from "./TekunApplication.vue"
   import TransferOfShare from "./TransferOfShare.vue"
@@ -74,6 +75,7 @@
     [CompanyConstants.TARGET_LOAN_APPLICATION]: TekunApplication,
     [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
     [CompanyConstants.TARGET_PURCHASE_ASSET]: AssetPurchase,
+    [CompanyConstants.TARGET_DIRECTOR_RESIGNATION]: ResignationOfDirector,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotNewShare,
     [CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES]: TransferOfShare,
     [CompanyConstants.TARGET_SWITCH_OUT]: SwitchOut,
