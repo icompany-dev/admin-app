@@ -17,5 +17,9 @@
         color: var(--bs-icompany-blue);
       }
     }
+
+    &.text-danger {
+      color: var(--bs-danger);
+    }
   }
 }

@@ -44,8 +44,54 @@
               </ol>
               <b>{{ controller.deliverToLabel }}</b>
               <br />
-              <span v-html="controller.deliveryAddress" />
-              <CopyValue :value="controller.deliveryAddressToCopy" />
+              <div v-if="!controller.isDeliveryRequired">
+                {{ controller.noDeliveryRequired }}
+              </div>
+              <div
+                class="delivery-details"
+                v-if="controller.isDeliveryRequired"
+              >
+                <b>{{ controller.billingName }}</b>
+                <CopyValue :value="controller.billingName" />
+                <br />
+                Recipient Name: {{ controller.recipientName }}
+                <CopyValue :value="controller.recipientName" />
+                <br />
+                Email: {{ controller.recipientEmail }}
+                <CopyValue :value="controller.recipientEmail" />
+                <br />
+                <br />
+                <div>
+                  {{ controller.deliveryAddressLine1 }}
+                  <CopyValue :value="controller.deliveryAddressLine1" />
+                </div>
+                <div v-if="controller.deliveryAddressLine2.length > 0">
+                  {{ controller.deliveryAddressLine2 }}
+                  <CopyValue :value="controller.deliveryAddressLine2" />
+                </div>
+                <div v-if="controller.deliveryAddressLine3.length > 0">
+                  {{ controller.deliveryAddressLine3 }}
+                  <CopyValue :value="controller.deliveryAddressLine3" />
+                </div>
+                <div>
+                  {{ controller.deliveryAddressPostcode }}
+                  <CopyValue :value="controller.deliveryAddressPostcode" />
+                </div>
+                <div>
+                  {{ controller.deliveryAddressCity }}
+                  <CopyValue :value="controller.deliveryAddressCity" />
+                </div>
+                <div>
+                  {{ controller.deliveryAddressState }}
+                  <CopyValue :value="controller.deliveryAddressState" />
+                </div>
+                <div>
+                  {{ controller.deliveryAddressCountry }}
+                  <CopyValue :value="controller.deliveryAddressCountry" />
+                </div>
+              </div>
+              <!-- <span v-html="controller.deliveryAddress" />
+              <CopyValue :value="controller.deliveryAddressToCopy" /> -->
             </div>
           </template>
           <template #nodeOptions>
@@ -99,6 +145,11 @@
       ref="shipApplicationRef"
       @proceed="controller.onProceedShipped()"
     />
+    <AddBankAccount
+      ref="addBankAccountRef"
+      :company-bank-account-opening-id="controller.applicationId.value ?? ''"
+      @proceed="controller.onProceedCompleted()"
+    />
   </div>
 </template>
 
@@ -107,6 +158,7 @@
   import CopyValue from "../Buttons/CopyValue.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
+  import AddBankAccount from "../Popups/AddBankAccount.vue"
   import ServiceApplication from "./ServiceApplication.vue"
   import { BankAccountOpeningApplicationController } from "~/scripts/components/services/BankAccountOpeningApplicationController"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
@@ -117,6 +169,7 @@
   const resolutionsRef = ref(null)
   const shipApplicationRef = ref(null)
   const serviceApplicationRef = ref(null)
+  const addBankAccountRef = ref(null)
 
   const emit = defineEmits(EmitMessages.APPLICATION_SERVICES)
 
@@ -149,6 +202,14 @@
     serviceApplicationRef,
     (newVal) => {
       controller.setServiceApplicationRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    addBankAccountRef,
+    (newVal) => {
+      controller.setAddBankAccountRef(newVal)
     },
     { immediate: true }
   )

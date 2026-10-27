@@ -1,3 +1,5 @@
+import { CompanyConstants } from "~/scripts/constants/Company"
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { SecretaryInformation } from "~/scripts/constants/SecretaryInformation"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { AnnualReturnXBRLGenerator } from "~/scripts/library/AnnualReturnXBRLGenerator"
@@ -5,6 +7,7 @@ import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { Toast } from "~/scripts/library/Toast"
+import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
 import { Director } from "~/scripts/models/Director"
@@ -13,8 +16,10 @@ import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
+import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import type { ARShareCapital, AnnualReturnData } from "~/scripts/types/AnnualReturnXBRLGenerator"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import type { Secretary } from "~/scripts/types/Secretary"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -26,11 +31,18 @@ export class AnnualReturnController {
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
 
+  uploadedDocumentChecker = ref<UploadedDocumentChecker>(new UploadedDocumentChecker(""))
   documentsAndForms = ref<DocumentsAndForms>(new DocumentsAndForms(""))
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isGenerating: Ref<boolean> = ref<boolean>(false)
   isGeneratingBO: Ref<boolean> = ref<boolean>(false)
+
+  viewDocumentRef: any | null = null
+  isViewingDocument: Ref<boolean> = ref<boolean>(false)
+
+  uploadDocumentRef: any | null = null
+  isUploadingDocument: Ref<boolean> = ref<boolean>(false)
 
   emitEvents: any | null = null
 
@@ -47,8 +59,17 @@ export class AnnualReturnController {
     if (this.company.value.id !== this.companyId.value) {
       this.companyId.value = this.company.value.id
       this.documentsAndForms.value.companyId = this.companyId.value
-      await this.initializeData()
+      this.uploadedDocumentChecker.value = new UploadedDocumentChecker(this.companyId.value)
     }
+    await this.initializeData()
+  }
+
+  setViewDocumentRef(viewDocumentRef: any): void {
+    this.viewDocumentRef = viewDocumentRef
+  }
+
+  setUploadDocumentRef(uploadDocumentRef: any): void {
+    this.uploadDocumentRef = uploadDocumentRef
   }
 
   async initializeData(): Promise<void> {
@@ -64,9 +85,8 @@ export class AnnualReturnController {
         this.fetchDirectors(),
         this.fetchShareholders(),
         this.documentsAndForms.value.init(),
+        this.uploadedDocumentChecker.value.fetchDocuments(),
       ])
-
-      this.emitEvents("isPaid", this.isPaid)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -81,11 +101,11 @@ export class AnnualReturnController {
   }
 
   async fetchAnnualReturn(): Promise<void> {
-    if (!StringUtil.isNullOrEmpty(this.companyId.value)) {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       return
     }
 
-    let repository = useCompanyAnnualReturnStore()
+    let repository = useCompanyAnnualReturnRequestStore()
     let filter = new Filter()
     filter.companyId = this.companyId.value
     filter.take = 5
@@ -94,6 +114,7 @@ export class AnnualReturnController {
     let response = await repository.fetchAll(filter)
 
     if (response.totalRecords <= 0) {
+      console.log("empty?")
       this.setEmptyApplication()
       return
     }
@@ -182,6 +203,19 @@ export class AnnualReturnController {
   getDateOfAppointment(human: Director | Shareholder): string {
     let time = useLocalTime()
     return time.formatDateOnlyFull(human.dateAppointed ?? "")
+  }
+
+  onSection68Clicked(): void {
+    if (!this.isSection68Uploaded || !this.viewDocumentRef) {
+      return
+    }
+
+    this.viewDocumentRef.show()
+    this.isViewingDocument.value = true
+  }
+
+  onHideSection68(): void {
+    this.isViewingDocument.value = false
   }
 
   async onGenerateXBRLClicked(): Promise<void> {
@@ -295,8 +329,52 @@ ${detailsOfBO.join("\n")}
     }
   }
 
+  uploadDocumentClicked(): void {
+    if (!this.uploadDocumentRef) {
+      return
+    }
+
+    this.uploadDocumentRef.show()
+  }
+
+  async onProceedUploadDocument(): Promise<void> {
+    try {
+      this.isUploadingDocument.value = true
+
+      let repository = useCompanyStore()
+
+      if (!StringUtil.isNullOrEmpty(this.companyAnnualReturnRequest.value.id)) {
+        await repository.postService(
+          CompanyConstants.TARGET_LODGE_ANNUAL_RETURN,
+          this.companyAnnualReturnRequest.value.id
+        )
+      }
+
+      await repository.notifyRegularise(this.companyId.value)
+
+      let toastTitle = this.language.isMalay()
+        ? "Dokumen telah dimuat naik. Penyata Tahunan telah dilengkapkan."
+        : "The Document is uploaded. Annual Return is completed."
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahun melalui emel dan WhatsApp."
+        : "The Directors is informed through email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      this.emitEvents("goToDocuments")
+    } catch (e) {
+      //
+    } finally {
+      this.isUploadingDocument.value = false
+    }
+  }
+
   get yearToLodge(): string {
     let dayjs = useDayjs()
+
+    if (dayjs().format("YYYY") === dayjs(this.incorporationDate).format("YYYY")) {
+      return dayjs().add(1, "year").format("YYYY")
+    }
 
     return dayjs().format("YYYY")
   }
@@ -309,6 +387,12 @@ ${detailsOfBO.join("\n")}
   }
 
   get paymentDate(): string {
+    if (this.hasSubmittedForYear) {
+      return this.language.isMalay()
+        ? `Telah Diserah Simpan untuk Tahun ${this.yearToLodge}`
+        : `Lodged for Year ${this.yearToLodge}`
+    }
+
     if (StringUtil.isNullOrEmpty(this.companyAnnualReturnRequest.value.paidAt)) {
       return this.language.isMalay() ? "Tiada Bayaran Diterima" : "No Payment Received"
     }
@@ -324,11 +408,20 @@ ${detailsOfBO.join("\n")}
 
   get annualReturnDate(): string {
     let dayjs = useDayjs()
-    let incorporatedAtMonth = dayjs(this.incorporationDate).month()
+    let incorporatedAtMonth = dayjs(this.incorporationDate).month() + 1
     let incorporatedAtDate = dayjs(this.incorporationDate).date()
     let annualReturnDateString = `${this.yearToLodge}-${incorporatedAtMonth}-${incorporatedAtDate}`
 
     return annualReturnDateString
+  }
+
+  get lodgementDeadline(): string {
+    let dayjs = useDayjs()
+    let oneMonthLater = dayjs(this.annualReturnDate).add(1, "month").format("YYYY-MM-DD")
+
+    let time = useLocalTime()
+
+    return time.formatDateOnlyFull(oneMonthLater)
   }
 
   get formattedAnnualReturn(): string {
@@ -371,6 +464,10 @@ ${detailsOfBO.join("\n")}
     return this.language.isMalay() ? "Tarikh Penyata Tahunan" : "Annual Return Date"
   }
 
+  get lodgementDeadlineLabel(): string {
+    return this.language.isMalay() ? "Tarikh Akhir Serah Simpan" : "Lodgement Due Date"
+  }
+
   get descriptionLabel(): string {
     return this.language.isMalay() ? "Perihal Perniagaan" : "Business Description"
   }
@@ -407,8 +504,16 @@ ${detailsOfBO.join("\n")}
     return this.language.isMalay() ? "Tarikh Dilantik" : "Date Appointed"
   }
 
+  get secretariesDetail(): string {
+    return this.language.isMalay() ? "Setiausaha" : "Secretaries"
+  }
+
   get generateXbrlLabel(): string {
     return this.language.isMalay() ? "Jana Pakej XBRL" : "Generate XBRL Package"
+  }
+
+  get completeAnnualReturnLabel(): string {
+    return this.language.isMalay() ? "Telah Diserah Simpan" : "Annual Return Lodged"
   }
 
   get businessDescription(): string {
@@ -595,5 +700,64 @@ ${detailsOfBO.join("\n")}
         totalAmountSecured: 0,
       },
     }
+  }
+
+  get latestSection68(): CompanyDocument | null {
+    let dayjs = useDayjs()
+    let previousTwoAnnualReturn = dayjs(this.annualReturnDate).subtract(1, "year").format("YYYY-MM-DD")
+
+    return this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
+      previousTwoAnnualReturn
+    )
+  }
+
+  get isSection68Uploaded(): boolean {
+    return this.latestSection68 !== null
+  }
+
+  get section68Label(): string {
+    return this.language.isMalay() ? "Seksyen 68 Terkini" : "Latest Section 68"
+  }
+
+  get section68(): string {
+    if (!this.isSection68Uploaded) {
+      return this.language.isMalay() ? "Tiada Seksyen 68" : "No Section 68 Found"
+    }
+
+    return this.latestSection68?.documentName ?? ""
+  }
+
+  get pdfUrl(): string {
+    if (!this.isSection68Uploaded) {
+      return ""
+    }
+
+    return this.latestSection68?.fileUrl ?? ""
+  }
+
+  get currentYearAnnualReturnDate(): string {
+    let dayjs = useDayjs()
+
+    let currentYear = dayjs().year()
+
+    let annualReturnDate = dayjs(this.company.value.incorporatedAt).year(currentYear)
+    return annualReturnDate.format("YYYY-MM-DD")
+  }
+
+  get hasSubmittedForYear(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
+      this.currentYearAnnualReturnDate
+    )
+  }
+
+  get uploadDocumentProps(): PropsUploadDocument {
+    let companyId = this.companyId.value
+    let props = new PropsUploadDocument(companyId)
+
+    props.canUploadPdf = true
+
+    return props
   }
 }

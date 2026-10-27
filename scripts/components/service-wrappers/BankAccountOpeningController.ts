@@ -34,8 +34,6 @@ export class BankAccountOpeningController
   isShowing: Ref<boolean> = ref<boolean>(false)
   isAlertShown: Ref<boolean> = ref<boolean>(false)
 
-  isUpdating: Ref<boolean> = ref<boolean>(false)
-  isUpdated: Ref<boolean> = ref<boolean>(false)
   isUpdatingPending: Ref<boolean> = ref<boolean>(false)
 
   constructor(companyId: string, emitEvents: any | null, applicationId: string | null = null) {
@@ -298,7 +296,7 @@ export class BankAccountOpeningController
     return props
   }
 
-  get updatingLabel(): string {
+  override get updatingLabel(): string {
     if (this.isUpdated.value) {
       return this.language.isMalay() ? "Maklumat Anda telah dikemaskini!" : "Your Information is Saved!"
     }
@@ -306,7 +304,7 @@ export class BankAccountOpeningController
     return this.language.isMalay() ? "Sedang Mengemaskini Maklumat Anda" : "Saving Your Information"
   }
 
-  get updatingSublabel(): string {
+  override get updatingSublabel(): string {
     if (this.isUpdated.value) {
       return ""
     }

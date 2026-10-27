@@ -1,0 +1,42 @@
+#companies-branch {
+  max-width: 60%;
+
+  .branch-address {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+
+    &.editable {
+      width: 100%;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    width: fit-content;
+
+    .clickable {
+      max-width: 20px;
+      font-size: 14px;
+      cursor: pointer;
+
+      &.edit {
+        color: var(--bs-icompany-blue);
+      }
+
+      &.save {
+        color: var(--bs-icompany-green);
+      }
+
+      &.cancel {
+        color: var(--bs-danger);
+      }
+    }
+  }
+}

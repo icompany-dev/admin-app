@@ -8,6 +8,11 @@ export class PageSdnBhdController extends PageController {
   companyId: Ref<string> = ref<string>("")
   company: Ref<Company> = ref<Company>(new Company())
 
+  previousCompanyId: Ref<string> = ref<string>("")
+  previousCompanyName: Ref<string> = ref<string>("")
+  nextCompanyId: Ref<string> = ref<string>("")
+  nextCompanyName: Ref<string> = ref<string>("")
+
   router = useRouter()
   route = useRoute()
 
@@ -33,6 +38,12 @@ export class PageSdnBhdController extends PageController {
     let repository = useCompanyStore()
     let response = await repository.fetch(this.companyId.value)
 
+    let beforeAfterResponse = await repository.fetchBeforeAfter(this.companyId.value)
+    this.previousCompanyId.value = beforeAfterResponse?.previous?.id ?? ""
+    this.previousCompanyName.value = beforeAfterResponse?.previous?.name ?? ""
+    this.nextCompanyId.value = beforeAfterResponse?.next?.id ?? ""
+    this.nextCompanyName.value = beforeAfterResponse?.next?.name ?? ""
+
     if (!response || repository.error !== null) {
       this.company.value = new Company()
     } else {
@@ -43,8 +54,28 @@ export class PageSdnBhdController extends PageController {
     this.pageAlias = `${this.companyName} Sdn Bhd Page`
   }
 
+  onPreviousClicked(): void {
+    if (StringUtil.isNullOrEmpty(this.previousCompanyId.value)) {
+      this.onBackClicked()
+
+      return
+    }
+
+    this.router.push(`/sdnbhds/${this.previousCompanyId.value}`)
+  }
+
   onBackClicked(): void {
     this.router.push(`/sdnbhds/all`)
+  }
+
+  onNextClicked(): void {
+    if (StringUtil.isNullOrEmpty(this.nextCompanyId.value)) {
+      this.onBackClicked()
+
+      return
+    }
+
+    this.router.push(`/sdnbhds/${this.nextCompanyId.value}`)
   }
 
   get companyName(): string {
@@ -77,5 +108,13 @@ export class PageSdnBhdController extends PageController {
       new PropsDataDateFilter("", "", ""),
       true
     )
+  }
+
+  get canPrevious(): boolean {
+    return !StringUtil.isNullOrEmpty(this.previousCompanyId.value)
+  }
+
+  get canNext(): boolean {
+    return !StringUtil.isNullOrEmpty(this.nextCompanyId.value)
   }
 }

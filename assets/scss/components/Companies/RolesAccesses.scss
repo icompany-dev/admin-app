@@ -1,0 +1,108 @@
+#companies-roles-accesses {
+  padding: 30px;
+  margin: auto;
+
+  .roles-accesses {
+    .user-access-roles {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+
+      .user-access-role {
+        display: flex;
+        flex-direction: column;
+        width: 150px;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+        position: relative;
+
+        .user-image {
+          width: 140px;
+          height: 140px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%;
+          border: solid 5px var(--bs-gray-500);
+          transition: all 0.7s ease;
+          margin-bottom: 10px;
+
+          img {
+            width: 100%;
+            height: auto;
+          }
+        }
+
+        .user-name {
+          font-size: 16px;
+          font-weight: 600;
+          text-align: center;
+          text-transform: uppercase;
+        }
+
+        .user-roles {
+          font-size: 14px;
+        }
+
+        &:hover {
+          .user-image {
+            width: 150px;
+            height: 150px;
+            border-width: 0px;
+          }
+        }
+
+        &.empty {
+          border: dashed 2px var(--bs-gray-600);
+          border-radius: 50%;
+          font-size: 30px;
+          transition: all 0.7s ease;
+          height: 150px;
+
+          &:hover {
+            font-size: 40px;
+            border-width: 4px;
+            border-color: var(--bs-gray-800);
+          }
+        }
+
+        &.pending {
+          .user-image {
+            opacity: 0.5;
+          }
+
+          .user-name {
+            opacity: 0.5;
+          }
+
+          .user-roles {
+            opacity: 0.5;
+          }
+
+          .pending-marker {
+            position: absolute;
+            top: 10px;
+            right: 0px;
+            padding: 3px 10px;
+            border-radius: 5px;
+            background-color: var(--bs-gray-800);
+            color: var(--bs-white);
+            z-index: 2;
+          }
+        }
+
+        .remove {
+          color: var(--bs-danger);
+          font-weight: 600;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

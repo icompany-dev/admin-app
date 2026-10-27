@@ -4,6 +4,9 @@ import { Error } from "~/scripts/library/Error"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { StringUtil } from "../utils/String"
 import { Company } from "../models/Company"
+import { Director } from "../models/Director"
+import { ApplicationSwitch } from "../models/ApplicationSwitch"
+import { ApplicationIncorporate } from "../models/ApplicationIncorporate"
 
 export class TableDataFetcher<T> {
   data: T[] = []
@@ -37,8 +40,13 @@ export class TableDataFetcher<T> {
           return new this.itemClassType(c)
         })
         .filter((c: any) => {
-          if (this.filter.includeTestAccount) {
-            return
+          if (
+            this.filter.includeTestAccount ||
+            c instanceof Director ||
+            c instanceof ApplicationSwitch ||
+            c instanceof ApplicationIncorporate
+          ) {
+            return true
           }
 
           if (c instanceof Company) {
@@ -46,7 +54,7 @@ export class TableDataFetcher<T> {
           }
 
           if (!c.company) {
-            return
+            return true
           }
 
           return !StringUtil.contains(c.company.name, "lorem ipsum") && !c.company.isDemo

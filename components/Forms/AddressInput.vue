@@ -3,6 +3,7 @@
     <template v-if="props.isPreviewMode">
       <div class="preview-text">YOUR ADDRESS LINE 1</div>
       <div class="preview-text">YOUR ADDRESS LINE 2</div>
+      <div class="preview-text">YOUR ADDRESS LINE 3</div>
       <div class="form-row">
         <div class="postcode preview-text">POSTCODE</div>
         <div class="city preview-text">CITY</div>
@@ -19,7 +20,7 @@
         v-model="controller.addressLine1.value"
         class="form-control text-uppercase"
         placeholder="Address Line 1"
-        @input="emit('updateAddressLine1', controller.addressLine1.value)"
+        @change="emit('updateAddressLine1', controller.addressLine1.value)"
         :disabled="props.isDisabled"
       />
       <input
@@ -28,7 +29,16 @@
         v-model="controller.addressLine2.value"
         class="form-control text-uppercase"
         placeholder="Address Line 2"
-        @input="emit('updateAddressLine2', controller.addressLine2.value)"
+        @change="emit('updateAddressLine2', controller.addressLine2.value)"
+        :disabled="props.isDisabled"
+      />
+      <input
+        v-if="!props.isPreviewMode"
+        type="text"
+        v-model="controller.addressLine3.value"
+        class="form-control text-uppercase"
+        placeholder="Address Line 3"
+        @change="emit('updateAddressLine3', controller.addressLine3.value)"
         :disabled="props.isDisabled"
       />
       <div class="form-row">
@@ -44,7 +54,6 @@
             v-model="controller.postcode.value"
             class="form-control"
             placeholder="Postcode"
-            @input="emit('updatePostcode', controller.postcode.value)"
             @change="controller.onPostcodeChanged()"
             :disabled="props.isDisabled"
           />
@@ -61,7 +70,7 @@
             :label-key="'name'"
             :value-key="'id'"
             :placeholder="'Select a city'"
-            :selected-item-name="controller.selectedCity.value?.name"
+            :selected-item-name="controller.selectedCityName"
             :is-searchable="true"
             @selected="controller.onCitySelected($event)"
             @search="controller.onSearchCity($event)"
@@ -80,7 +89,7 @@
             :label-key="'name'"
             :value-key="'id'"
             :placeholder="'Select a state'"
-            :selected-item-name="controller.selectedState.value?.name"
+            :selected-item-name="controller.selectedStateName"
             :is-searchable="false"
             @selected="controller.onStateSelected($event)"
             :is-disabled="props.isDisabled"
@@ -98,7 +107,7 @@
             :label-key="'name'"
             :value-key="'id'"
             :placeholder="'Select a country'"
-            :selected-item-name="controller.selectedCountry.value?.name"
+            :selected-item-name="controller.selectedCountry.value?.name ?? 'Select a country'"
             :is-searchable="false"
             @selected="controller.onCountrySelected($event)"
             :is-disabled="props.isDisabled"
@@ -137,6 +146,7 @@
   const emit = defineEmits([
     "updateAddressLine1",
     "updateAddressLine2",
+    "updateAddressLine3",
     "updateState",
     "updateCity",
     "updatePostcode",
@@ -154,4 +164,8 @@
     },
     { deep: true }
   )
+
+  defineExpose({
+    getAddress: controller.getAddress.bind(controller),
+  })
 </script>

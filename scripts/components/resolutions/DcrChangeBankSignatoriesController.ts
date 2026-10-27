@@ -328,8 +328,8 @@ export class DcrChangeBankSignatoriesController extends ResolutionController<Com
       this.isLoading.value //isLoading
     )
 
-    props.isSignatureTinted = true
-    props.signatureTintLabel = "Your Signature is required in Wet Ink"
+    // props.isSignatureTinted = true
+    // props.signatureTintLabel = "Your Signature is required in Wet Ink"
 
     return props
   }

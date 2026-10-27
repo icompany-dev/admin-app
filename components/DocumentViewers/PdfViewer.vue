@@ -209,6 +209,13 @@
       controller.setOverlaySubtext(newVal)
     }
   )
+
+  watch(
+    () => props.zoomLevel,
+    (newVal) => {
+      controller.setZoomLevel(newVal)
+    }
+  )
 </script>
 
 <style lang="scss">

@@ -261,7 +261,7 @@ export class ChangeBankSignatoriesServiceController extends CompanyServiceContro
       null,
       this.showWatermark(),
       this.watermarkText(),
-      this.isInPreviewMode.value,
+      false,
       false
     )
 

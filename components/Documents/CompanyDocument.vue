@@ -18,6 +18,9 @@
       v-keyboard-click
       @click="controller.onDocumentClicked()"
     >
+      <div class="overlay-title">
+        {{ controller.overlayCopywriting }}
+      </div>
       <canvas
         :ref="(el) => setCanvasRef(el)"
         v-if="controller.companyDocument.value.fileUrl"

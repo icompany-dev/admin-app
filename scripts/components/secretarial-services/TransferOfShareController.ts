@@ -5,6 +5,8 @@ import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
+import { File as UploadedFile } from "~/scripts/models/File"
+import { Form } from "~/scripts/models/Form"
 
 export class TransferOfShareController extends SecretarialServiceController<
   CompanyShareholderTransfer,
@@ -43,9 +45,31 @@ export class TransferOfShareController extends SecretarialServiceController<
     this.isDocumentsMoved.value = false
 
     try {
-      this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION105
+      let promises: any[] = []
 
-      this.canCompleteService.value = true
+      this.selectedDocumentTarget.value = DocumentTargets.TARGET_SECTION105
+      await nextTick()
+
+      setTimeout(async () => {
+        let section105Blobs = await this.documentRef.onGenerateBlobs(`Section 105 - Form of Transfer of Securities.pdf`)
+        section105Blobs.forEach((blob: Blob) => {
+          promises.push(this.uploadToForms(blob, "Section 105 - Form of Transfer of Securities.pdf"))
+        })
+
+        this.selectedDocumentTarget.value = DocumentTargets.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER
+        await nextTick()
+
+        setTimeout(async () => {
+          let dcrBlob = await this.documentRef.onGenerateBlob("DCR - Register Transfer of Shares.pdf")
+          if (dcrBlob) {
+            promises.push(this.uploadToForms(dcrBlob, "DCR - Register Transfer of Shares.pdf"))
+          }
+
+          await Promise.allSettled(promises)
+
+          this.canCompleteService.value = true
+        }, 5000)
+      }, 5000)
     } catch (e) {
     } finally {
       this.isMovingToDocuments.value = false
@@ -64,6 +88,28 @@ export class TransferOfShareController extends SecretarialServiceController<
 
   onMinimizePdf(): void {
     this.zoomLevel.value = 0
+  }
+
+  async uploadToForms(blob: Blob, filename: string): Promise<void> {
+    let file = new File([blob], filename, {
+      type: "application/pdf",
+    })
+
+    let uploadedFile = new UploadedFile()
+    uploadedFile.name = filename.replace(".pdf", "")
+    await uploadedFile.uploadFile(file, useFileStore())
+
+    let dayjs = useDayjs()
+
+    let form = new Form()
+    form.companyId = this.companyId.value
+    form.type = "business_detail"
+    form.fileId = uploadedFile.id
+    form.documentDate = dayjs().format("YYYY-MM-DD")
+    form.status = "active"
+    form.noOfPages = 1
+
+    await form.create(useFormStore())
   }
 
   get showPdfViewer(): boolean {

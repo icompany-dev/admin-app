@@ -9,13 +9,14 @@ import { Filter } from "~/scripts/library/Filter"
 export class AddressInputController {
   addressLine1 = ref<string | null>(null)
   addressLine2 = ref<string | null>(null)
+  addressLine3 = ref<string | null>(null)
   postcode = ref<string | null>(null)
   cities = ref<City[]>([])
   selectedCity = ref<City | null>(null)
   states = ref<State[]>([])
   selectedState = ref<State | null>(null)
   countries = ref<Country[]>([])
-  selectedCountry = ref<Country | null>()
+  selectedCountry = ref<Country | null>(null)
 
   postcodeRepository = usePostcodeStore()
   cityRepository = useCityStore()
@@ -41,6 +42,7 @@ export class AddressInputController {
     if (location) {
       this.addressLine1.value = location.addressLine1
       this.addressLine2.value = location.addressLine2
+      this.addressLine3.value = location.addressLine3
       this.postcode.value = location.postcode
       if (location.city) {
         this.selectedCity.value = new City(location.city)
@@ -148,6 +150,8 @@ export class AddressInputController {
   }
 
   async onPostcodeChanged(): Promise<void> {
+    this.emitEvents("updatePostcode", this.postcode.value)
+
     if (StringUtil.isNullOrEmpty(this.postcode.value) || this.postcodeRepository.isLoading) {
       return
     }
@@ -224,5 +228,34 @@ export class AddressInputController {
         return new City(city)
       })
     }
+  }
+
+  getAddress(): Location {
+    let location = new Location()
+    location.addressLine1 = this.addressLine1.value ?? ""
+    location.addressLine2 = this.addressLine2.value
+    location.addressLine3 = this.addressLine3.value
+    location.postcode = this.postcode.value ?? ""
+    location.city = this.selectedCity.value
+    location.state = this.selectedState.value
+    location.country = this.selectedCountry.value
+
+    return location
+  }
+
+  get selectedCityName(): string | null {
+    if (StringUtil.isNullOrEmpty(this.selectedCity.value?.name ?? "")) {
+      return null
+    }
+
+    return this.selectedCity.value?.name ?? null
+  }
+
+  get selectedStateName(): string | null {
+    if (StringUtil.isNullOrEmpty(this.selectedState.value?.name ?? "")) {
+      return null
+    }
+
+    return this.selectedState.value?.name ?? null
   }
 }

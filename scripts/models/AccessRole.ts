@@ -62,13 +62,13 @@ export class AccessRole implements IModel<AccessRole> {
   }
 
   canSubmit() {
-    if (StringUtil.inArray(this.name, MultipleRoleConstants.LOCKED_ROLES)) {
-      return false
-    }
+    // if (StringUtil.inArray(this.name, MultipleRoleConstants.LOCKED_ROLES)) {
+    //   return false
+    // }
 
     return (
       !StringUtil.isNullOrEmpty(this.name) &&
-      this.isNameValid() &&
+      // this.isNameValid() &&
       !StringUtil.isNullOrEmpty(this.description) &&
       !StringUtil.isNullOrEmpty(this.companyId)
     )

@@ -4,10 +4,38 @@ import { CompanyDocumentRequest } from "~/scripts/models/CompanyDocumentRequest"
 import { Company } from "~/scripts/models/Company"
 import { StatusConstants } from "~/scripts/constants/Status"
 import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class DocumentRequestsController extends SecretarialServicesController<CompanyDocumentRequest> {
   constructor(props: PropsSecretarialServices, emitEvents: any | null) {
     super(props, CompanyDocumentRequest, useCompanyDocumentRequestStore(), emitEvents)
+  }
+
+  override async init(): Promise<void> {
+    if (!this.tableDataFetcher.value) {
+      return
+    }
+
+    this.tableDataFetcher.value.filter = this.filter
+    await this.tableDataFetcher.value.fetchData()
+
+    let data = this.tableDataFetcher.value.data
+      .map((d: any) => {
+        return new CompanyDocumentRequest(d)
+      })
+      .filter((d: CompanyDocumentRequest) => {
+        return (
+          (d.items.some((cdi: CompanyDocumentRequestItem) => {
+            return StringUtil.contains(cdi.documentName, "corporate profile")
+          }) &&
+            d.isCtcRequired) ||
+          d.items.every((cdi: CompanyDocumentRequestItem) => {
+            return !StringUtil.contains(cdi.documentName, "corporate profile")
+          })
+        )
+      })
+
+    this.tableDataFetcher.value.data = data
   }
 
   onApplicationClicked(data: any): void {

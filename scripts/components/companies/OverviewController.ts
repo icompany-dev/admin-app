@@ -8,7 +8,7 @@ import { CompanyBank } from "~/scripts/models/CompanyBank"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import type { ChartData, ChartOptions } from "chart.js"
 import { Filter } from "~/scripts/library/Filter"
-import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
+import { CompanyBranch } from "~/scripts/models/CompanyBranch"
 import { CompanyAuditor } from "~/scripts/models/CompanyAuditor"
 import { PropsAddCompanyAuditor } from "~/scripts/props/PropsAddCompanyAuditor"
 import { UserDetail } from "~/scripts/models/UserDetail"
@@ -20,6 +20,8 @@ import { PurchasedItemTracker } from "~/scripts/models/PurchasedItemTracker"
 import { CompanySetting, CompanySettingTaxDetails } from "~/scripts/models/CompanySetting"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import { User } from "~/scripts/models/User"
+import { City, Country, Location, PostcodeMapping, State } from "~/scripts/models/Location"
+import { CompanyFinancialPeriod } from "~/scripts/models/CompanyFinancialPeriod"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -40,6 +42,8 @@ export class OverviewController {
   emitEvents: any | null = null
 
   addCompanyAuditorRef: any | null = null
+  businessAddressRef: any | null = null
+  registeredAddressRef: any | null = null
 
   companyAuditor = ref<CompanyAuditor>(new CompanyAuditor())
 
@@ -54,6 +58,24 @@ export class OverviewController {
   isUpdatingTaxNumber: Ref<boolean> = ref<boolean>(false)
   newIncomeTaxNumber: Ref<string> = ref<string>("")
   newEmployerTaxNumber: Ref<string> = ref<string>("")
+
+  isEditingAddress: Ref<boolean> = ref<boolean>(false)
+  isUpdatingAddress: Ref<boolean> = ref<boolean>(false)
+  addressLocation: Ref<Location> = ref<Location>(new Location())
+
+  isEditingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
+  isUpdatingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
+  registeredAddressLocation: Ref<Location> = ref<Location>(new Location())
+
+  isAddingNewBranch: Ref<boolean> = ref<boolean>(false)
+
+  isEditFYE: Ref<boolean> = ref<boolean>(false)
+  isEditingFYE: Ref<boolean> = ref<boolean>(false)
+  companyFinancialPeriods = ref<CompanyFinancialPeriod[]>([])
+  fyeStartDate: Ref<string> = ref<string>("")
+  fyeEndDate: Ref<string> = ref<string>("")
+  auditMonth: Ref<string> = ref<string>("")
+  auditYear: Ref<string> = ref<string>("")
 
   language = useLanguage()
   time = useLocalTime()
@@ -72,6 +94,14 @@ export class OverviewController {
 
   setAddCompanyAuditorRef(addCompanyAuditorRef: any): void {
     this.addCompanyAuditorRef = addCompanyAuditorRef
+  }
+
+  setBusinessAddressRef(businessAddressRef: any): void {
+    this.businessAddressRef = businessAddressRef
+  }
+
+  setRegisteredAddressRef(registeredAddressRef: any): void {
+    this.registeredAddressRef = registeredAddressRef
   }
 
   async init(): Promise<void> {
@@ -99,9 +129,13 @@ export class OverviewController {
         this.fetchCompanyBanks(),
         this.fetchCompanyAuditors(),
         this.fetchPurchasedItemTrackers(),
+        this.fetchFinancialPeriods(),
       ])
 
-      await this.fetchPaymentOrderItems()
+      this.addressLocation.value = new Location(this.company.value.businessAddressLocation)
+      this.registeredAddressLocation.value = new Location(this.company.value.registeredAddressLocation)
+
+      this.fetchPaymentOrderItems()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -217,6 +251,20 @@ export class OverviewController {
   async fetchPurchasedItemTrackers(): Promise<void> {
     let repository = usePurchasedItemTrackerStore()
     let response = await repository.ongoingForCompany(this.companyId.value)
+  }
+
+  async fetchFinancialPeriods(): Promise<void> {
+    let repository = useCompanyFinancialPeriodStore()
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    filter.sortOrder = "desc"
+    filter.orderBy = "end_date"
+    filter.take = 3
+    let response = await repository.fetchAll(filter)
+
+    this.companyFinancialPeriods.value = response.data.map((r: any) => {
+      return new CompanyFinancialPeriod(r)
+    })
   }
 
   onShowSharePercentageClicked(): void {
@@ -412,6 +460,225 @@ ${detailsOfBO.join("\n")}
     return new PropsUserDetail(human.user ?? new User(), human.user?.detail ?? new UserDetail())
   }
 
+  //Update business address
+  onEditBusinessAddressClicked(): void {
+    this.isEditingAddress.value = true
+  }
+
+  onCancelEditBusinessAddressClicked(): void {
+    this.isEditingAddress.value = false
+  }
+
+  async onSaveBusinessAddressClicked(): Promise<void> {
+    try {
+      this.isUpdatingAddress.value = true
+      this.company.value.businessAddressLocation = new Location(this.addressLocation.value)
+      await this.company.value.onUpdateBusinessAddress(useCompanyStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Alamat Perniagaan telah dikemaskini."
+        : "The Business Address is Updated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isEditingAddress.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingAddress.value = false
+    }
+  }
+
+  onUpdateAddressLine1(data: any): void {
+    this.addressLocation.value.addressLine1 = data
+  }
+
+  onUpdateAddressLine2(data: any): void {
+    this.addressLocation.value.addressLine2 = data
+  }
+
+  onUpdateAddressLine3(data: any): void {
+    this.addressLocation.value.addressLine3 = data
+  }
+
+  onUpdateState(data: any): void {
+    this.addressLocation.value.state = data
+  }
+
+  onUpdateCity(data: any): void {
+    this.addressLocation.value.city = data
+  }
+
+  onUpdatePostcode(data: any): void {
+    this.addressLocation.value.postcode = data
+  }
+
+  onUpdateCountry(data: any): void {
+    this.addressLocation.value.country = data
+  }
+
+  //Update business address
+  onEditRegisteredAddressClicked(): void {
+    this.isEditingRegisteredAddress.value = true
+  }
+
+  onCancelEditRegisteredAddressClicked(): void {
+    this.isEditingRegisteredAddress.value = false
+  }
+
+  async onSaveRegisteredAddressClicked(): Promise<void> {
+    try {
+      this.isUpdatingRegisteredAddress.value = true
+      if (this.registeredAddressRef) {
+        let registeredAddress = new Location(this.registeredAddressRef.getAddress())
+        this.company.value.registeredAddressLocation = new Location(registeredAddress)
+      }
+      await this.company.value.onUpdateRegisteredAddress(useCompanyStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Alamat Perniagaan telah dikemaskini."
+        : "The Registered Address is Updated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isEditingRegisteredAddress.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingRegisteredAddress.value = false
+    }
+  }
+
+  onUpdateRegisteredAddressLine1(data: any): void {
+    this.registeredAddressLocation.value.addressLine1 = data
+  }
+
+  onUpdateRegisteredAddressLine2(data: any): void {
+    this.registeredAddressLocation.value.addressLine2 = data
+  }
+
+  onUpdateRegisteredAddressLine3(data: any): void {
+    this.registeredAddressLocation.value.addressLine3 = data
+  }
+
+  onUpdateRegisteredState(data: any): void {
+    this.registeredAddressLocation.value.state = data
+  }
+
+  onUpdateRegisteredCity(data: any): void {
+    this.registeredAddressLocation.value.city = data
+  }
+
+  onUpdateRegisteredPostcode(data: any): void {
+    this.registeredAddressLocation.value.postcode = data
+  }
+
+  onUpdateRegisteredCountry(data: any): void {
+    this.registeredAddressLocation.value.country = data
+  }
+
+  // Edit FYE
+  onEditFyeClicked(): void {
+    let current = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+      return cp.status === "active"
+    })
+    this.fyeStartDate.value = current ? this.dayjs(current.startDate).format("YYYY-MM-MM") : ""
+    this.fyeEndDate.value = current ? this.dayjs(current.endDate).format("YYYY-MM-MM") : ""
+
+    this.isEditFYE.value = true
+  }
+
+  onCancelEditFyeClicked(): void {
+    this.isEditFYE.value = false
+  }
+
+  async onSaveFYEDatesClicked(): Promise<void> {
+    if (this.isEditingFYE.value) {
+      return
+    }
+
+    this.isEditingFYE.value = true
+    try {
+      let current = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+        return cp.status === "active"
+      })
+
+      let repository = useCompanyFinancialPeriodStore()
+      let promises = []
+      if (current) {
+        promises.push(repository.remove(current.id))
+      }
+
+      let newCompanyFinancialPeriod = new CompanyFinancialPeriod()
+      newCompanyFinancialPeriod.companyId = this.companyId.value
+      newCompanyFinancialPeriod.startDate = this.fyeStartDate.value
+      newCompanyFinancialPeriod.endDate = this.fyeEndDate.value
+      newCompanyFinancialPeriod.status = "active"
+      promises.push(newCompanyFinancialPeriod.create(repository))
+
+      await Promise.allSettled(promises)
+
+      await this.fetchFinancialPeriods()
+
+      let toastTitle = this.language.isMalay()
+        ? "Anda telah kemaskini FYE bagi Sdn Bhd ini."
+        : "You have updated the Financial Year End Date for this Sdn Bhd."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+    } finally {
+      this.isEditingFYE.value = false
+      this.isEditFYE.value = false
+    }
+  }
+
+  // branches
+  onBranchUpdated(companyBranch: CompanyBranch): void {
+    // let existing = this.company.value.branches.find((cb: CompanyBranch) => {
+    //   return cb.id === companyBranch.id
+    // })
+    // if (existing) {
+    //   existing = new CompanyBranch(companyBranch)
+    //   return
+    // }
+    // let newBranch = this.company.value.branches.find((cb: CompanyBranch) => {
+    //   return StringUtil.isNullOrEmpty(cb.id)
+    // })
+    // newBranch = new CompanyBranch(companyBranch)
+  }
+
+  onAddBranch(): void {
+    // this.company.value.branches.push(new CompanyBranch())
+    this.isAddingNewBranch.value = true
+  }
+
+  onCancelAddBranch(): void {
+    this.isAddingNewBranch.value = false
+  }
+
+  onNewBranchAdded(branch: CompanyBranch): void {
+    this.company.value.branches.push(branch)
+    this.isAddingNewBranch.value = false
+  }
+
+  onBranchRemoved(branchId: string): void {
+    this.company.value.branches = this.company.value.branches.filter((cb: CompanyBranch) => {
+      return cb.id !== branchId
+    })
+  }
+
   // getters
   get noneText(): string {
     return this.language.isMalay() ? "TIADA" : "NONE"
@@ -468,6 +735,10 @@ ${detailsOfBO.join("\n")}
 
   get businessBranchesLabel(): string {
     return this.language.isMalay() ? "Cawangan Perniagaan" : "Business Branch"
+  }
+
+  get companyBranches(): CompanyBranch[] {
+    return this.company.value.branches
   }
 
   get branchAddresses(): string[] {
@@ -647,5 +918,49 @@ ${detailsOfBO.join("\n")}
     }
 
     return `E ${this.taxInformation.employerTaxNo}`
+  }
+
+  get financialYearEndLabel(): string {
+    return this.language.isMalay() ? "Tarikh Akhir Tahun Kewangan" : "Financial Year End"
+  }
+
+  get previousFYE(): string {
+    let past =
+      this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+        return cp.status === "past"
+      }) ?? null
+
+    if (!past) {
+      return this.language.isMalay() ? "Tiada FYE yang terdahulu" : "No Past FYE"
+    }
+
+    return `${this.time.formatDateOnlyShort(past.startDate)} - ${this.time.formatDateOnlyShort(past.endDate)}`
+  }
+
+  get currentFYE(): string {
+    let current =
+      this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+        return cp.status === "active"
+      }) ?? null
+
+    if (!current) {
+      return this.language.isMalay() ? "FYE tidak ditetapkan" : "FYE is not set"
+    }
+
+    return `${this.time.formatDateOnlyShort(current.startDate)} - ${this.time.formatDateOnlyShort(current.endDate)}`
+  }
+
+  get orderedFinancialPeriods(): CompanyFinancialPeriod[] {
+    if (this.companyFinancialPeriods.value.length <= 0) {
+      return []
+    }
+
+    return ObjectUtil.sort<CompanyFinancialPeriod>(this.companyFinancialPeriods.value, "endDate", "desc")
+  }
+
+  get canAddNewBranch(): boolean {
+    return this.company.value.branches.every((cb: CompanyBranch) => {
+      return !StringUtil.isNullOrEmpty(cb.id)
+    })
   }
 }

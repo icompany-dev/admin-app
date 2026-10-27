@@ -15,7 +15,7 @@
     >
       <div class="company-details">
         <div class="company-name">
-          {{ controller.companyName }}
+          <a :href="controller.sdnbhdLink">{{ controller.companyName }}</a>
         </div>
         <div class="company-registration-number">
           {{ controller.company.value.registrationNumberNew }}

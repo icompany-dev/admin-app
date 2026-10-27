@@ -43,11 +43,16 @@
   .content {
     p {
       text-align: justify;
+      padding-bottom: 5px;
     }
 
     .form-check {
       padding-bottom: 5px;
     }
+  }
+
+  hr {
+    margin: 20px 0;
   }
 
   .signature-container {

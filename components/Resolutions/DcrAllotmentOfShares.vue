@@ -253,7 +253,8 @@
         return
       }
 
-      controller.isChangeHandlingRequired.value = false
+      emit("changed")
+      // controller.isChangeHandlingRequired.value = false
     },
     { deep: true }
   )

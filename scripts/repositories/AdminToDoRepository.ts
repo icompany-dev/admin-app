@@ -21,4 +21,13 @@ export class AdminToDoRepository extends Repository<AdminToDo> {
   //     throw e
   //   }
   // }
+
+  async fetchActivities(filter: Filter): Promise<any> {
+    try {
+      let response = this.get(`/api/admin/pending-applications?${filter.getSlug()}`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }

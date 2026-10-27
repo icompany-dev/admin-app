@@ -100,7 +100,7 @@ export class PreemptiveRightNoticesController {
     })
 
     this.isInitiatorAShareholder.value = this.shareholders.value.some((s: Shareholder) => {
-      return s.email === initiatorEmail
+      return s.email === initiatorEmail && !s.isCorporateRepresentative()
     })
   }
 
@@ -158,7 +158,7 @@ export class PreemptiveRightNoticesController {
       })
 
       this.isAShareholder.value = this.shareholders.value.some((s: Shareholder) => {
-        return s.email === this.user.value.email
+        return s.email === this.user.value.email && !s.isCorporateRepresentative()
       })
     } catch (e: any) {
       if (e instanceof Error) {
@@ -232,6 +232,15 @@ export class PreemptiveRightNoticesController {
               return sg.email === this.application.value.initiator.email
             }) ?? null)
           : null
+
+      if (!initiatorSignature && this.application.value.allotment) {
+        initiatorSignature =
+          this.application.value.allotment.signatureGroups.length > 0
+            ? (this.application.value.allotment.signatureGroups.find((sg: SignatureGroup) => {
+                return sg.email === this.application.value.initiator.email
+              }) ?? null)
+            : null
+      }
       let signatureUrl = initiatorSignature?.signature?.url ?? null
 
       let roles = []
@@ -269,7 +278,9 @@ export class PreemptiveRightNoticesController {
 
     this.signatureItems.value = []
     this.noticeResponses.value = []
+    console.log("we have emptied this", this.noticeResponses.value)
     if (this.application.value.responses.length <= 0) {
+      console.log("populating")
       this.shareholders.value.forEach((shareholder: Shareholder) => {
         let signatureItem = new SignatureItem(
           null,
@@ -278,7 +289,9 @@ export class PreemptiveRightNoticesController {
           shareholder.email !== this.user.value.email,
           shareholder.name,
           shareholder.email,
-          "Member",
+          !shareholder.isCorporateRepresentative()
+            ? "Member"
+            : `On Behalf of<br><b>${shareholder.fullName().toUpperCase()}</b>`,
           false
         )
 
@@ -289,6 +302,7 @@ export class PreemptiveRightNoticesController {
         this.noticeResponses.value.push(noticeResponse)
       })
     } else {
+      console.log("over??")
       this.application.value.responses.forEach((noticeResponse: CompanyShareIssuanceResponse) => {
         let shareholder = noticeResponse.shareholder
 
@@ -305,7 +319,9 @@ export class PreemptiveRightNoticesController {
           shareholder.user?.email !== this.user.value.email,
           shareholder.user?.name ?? "",
           shareholder.user?.email ?? "",
-          "Member",
+          !shareholder.isCorporateRepresentative()
+            ? "Member"
+            : `On Behalf of<br><b>${shareholder.fullName().toUpperCase()}</b>`,
           false
         )
 
@@ -322,10 +338,12 @@ export class PreemptiveRightNoticesController {
       noticeResponse.responseFile?.url ?? null,
       noticeResponse.responseFile !== null,
       false,
-      shareholder.user?.email !== this.user.value.email,
+      false,
       shareholder.user?.name ?? "",
-      shareholder.user?.email ?? "",
-      "Member",
+      "",
+      !shareholder.isCorporateRepresentative()
+        ? "Member"
+        : `On Behalf of<br><b>${shareholder.fullName().toUpperCase()}</b>`,
       false
     )
 
@@ -445,5 +463,29 @@ export class PreemptiveRightNoticesController {
 
   get submittingDocumentSublabel(): string {
     return this.language.isMalay() ? "Butiran dan Tandatangan" : "Details and Signatures"
+  }
+
+  get responses(): CompanyShareIssuanceResponse[] {
+    let existings: CompanyShareIssuanceResponse[] = []
+
+    this.noticeResponses.value.forEach((csir: CompanyShareIssuanceResponse) => {
+      let inExisting = existings.find((s: CompanyShareIssuanceResponse) => {
+        return s.shareholder.id === csir.shareholder.id
+      })
+
+      if (inExisting) {
+        if (inExisting.responseDate === null) {
+          existings = existings.filter((s: CompanyShareIssuanceResponse) => {
+            return s.shareholder.id !== inExisting?.shareholder.id
+          })
+
+          existings.push(csir)
+        }
+      } else {
+        existings.push(csir)
+      }
+    })
+
+    return existings
   }
 }

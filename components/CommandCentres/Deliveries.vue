@@ -1,28 +1,6 @@
 <template>
   <div id="command-centres-deliveries">
     <div class="deliveries-title">
-      <!-- <div class="deliveries-status-selection">
-        <i
-          class="fa-solid fa-circle-sort"
-          @click="controller.onPeriodSelectionClicked()"
-        ></i>
-        <div
-          class="deliveries-status-options"
-          :class="{ show: controller.isShowPeriodOptions.value }"
-        >
-          <div
-            class="deliveries-status-option"
-            @click="controller.onPeriodSelected(status)"
-            v-for="(status, index) in controller.periodOptions"
-            :key="index"
-          >
-            {{ StringUtil.capitalize(status) }}
-          </div>
-        </div>
-      </div>
-      <span class="deliveries-status">
-        {{ StringUtil.capitalize(controller.selectedPeriod.value) }}
-      </span> -->
       <span class="deliveries-name">
         {{ controller.title }}
       </span>
@@ -69,9 +47,7 @@
 
 <script lang="ts" setup>
   import TablePagination from "@/components/Paginations/TablePagination.vue"
-  import { de } from "zod/v4/locales"
   import { DeliveriesController } from "~/scripts/components/command-centres/DeliveriesController"
-  import { StringUtil } from "~/scripts/utils/String"
 
   const props = defineProps({})
   const emit = defineEmits([])

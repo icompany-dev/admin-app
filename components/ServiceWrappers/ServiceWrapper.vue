@@ -101,7 +101,9 @@
   import RegisterTransferOfShares from "./RegisterTransferOfShares.vue"
   import RemoveDirector from "./RemoveDirector.vue"
   import ReplaceCommonSeal from "./ReplaceCommonSeal.vue"
+  import LetterOfCosecResign from "./LetterOfCosecResign.vue"
   import ResignationOfDirector from "./ResignationOfDirector.vue"
+  import ReturnOfAllotment from "./ReturnOfAllotment.vue"
   import Section47 from "./Section47.vue"
   import SetFinancialYearEnd from "./SetFinancialYearEnd.vue"
   import ShareIssuance from "./ShareIssuance.vue"
@@ -156,6 +158,7 @@
     [CompanyConstants.TARGET_COMMON_SEAL]: AdoptCommonSeal,
     [CompanyConstants.TARGET_COMMON_SEAL_REPLACEMENT]: ReplaceCommonSeal,
     [CompanyConstants.TARGET_CONTRACT_ENTER]: EnterContract,
+    [CompanyConstants.TARGET_COSEC_RESIGNATION]: LetterOfCosecResign,
     [CompanyConstants.TARGET_DELEGATION_OF_AUTHORITY]: DelegationOfAuthority,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointmentOfDirector,
     [CompanyConstants.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST]: Section219And221,
@@ -185,7 +188,7 @@
     [CompanyConstants.TARGET_REMOVAL_OF_DIRECTOR]: RemoveDirector,
     [CompanyConstants.TARGET_SET_FINANCIAL_YEAR_END]: SetFinancialYearEnd,
     [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_ALLOTMENT]: AllotmentOfShares,
-    [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotmentOfShares,
+    [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: ReturnOfAllotment,
     [CompanyConstants.TARGET_SHAREHOLDER_PROPOSE_TRANSFER]: NoticeTransferOfShares,
     [CompanyConstants.TARGET_SHAREHOLDER_POST_SHARE_TRANSFER]: RegisterTransferOfShares,
     [CompanyConstants.TARGET_SECTION_47]: Section47,

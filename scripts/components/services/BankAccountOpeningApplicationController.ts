@@ -25,6 +25,8 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
+  addBankAccountRef: any | null = null
+
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
       props.companyId,
@@ -43,6 +45,10 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
 
   setResolutionsRef(resolutionsRef: any): void {
     this.resolutionsRef = resolutionsRef
+  }
+
+  setAddBankAccountRef(addBankAccountRef: any): void {
+    this.addBankAccountRef = addBankAccountRef
   }
 
   async fetchBanks(): Promise<void> {
@@ -94,7 +100,18 @@ export class BankAccountOpeningApplicationController extends ApplicationControll
   }
 
   async onCompleteClicked(): Promise<void> {
-    //
+    if (this.addBankAccountRef) {
+      this.addBankAccountRef.show()
+    }
+  }
+
+  async onProceedCompleted(): Promise<void> {
+    let toastTitle = this.language.isMalay() ? "Permohonan ini telah selesai" : "This Application is completed."
+    let toast = new Toast(toastTitle, "")
+    toast.success()
+
+    let router = useRouter()
+    router.push("/services/open-bank-account")
   }
 
   //getters

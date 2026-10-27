@@ -8,28 +8,28 @@ export default defineNuxtRouteMiddleware((to) => {
       },
       layoutTransition: {
         name: "layout-change",
-        mode: "in-out",
+        mode: "out-in",
       },
     },
     auth: {
       layout: "auth",
       layoutTransition: {
         name: "layout-fade",
-        mode: "in-out",
+        mode: "out-in",
       },
     },
     default: {
       layout: "default",
       layoutTransition: {
         name: "layout-fade",
-        mode: "in-out",
+        mode: "out-in",
       },
     },
     public: {
       layout: "public",
       layoutTransition: {
         name: "layout-fade",
-        mode: "in-out",
+        mode: "out-in",
       },
     },
   }

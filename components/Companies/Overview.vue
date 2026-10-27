@@ -18,20 +18,157 @@
             </td>
           </tr>
           <tr>
-            <td>{{ controller.businessAddressLabel }}</td>
+            <td>
+              <div class="editable-column">
+                {{ controller.businessAddressLabel }}
+                <Transition name="fade">
+                  <div
+                    v-if="!controller.isEditingAddress.value"
+                    class="action-icons"
+                  >
+                    <i
+                      v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelEditBusinessAddressClicked()"
+                    />
+                    <i
+                      v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.onSaveBusinessAddressClicked()"
+                    />
+                    <i
+                      v-if="!controller.isEditingAddress.value"
+                      class="fa-regular fa-edit clickable edit"
+                      @click="controller.onEditBusinessAddressClicked()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingAddress.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </Transition>
+              </div>
+            </td>
             <td>:</td>
             <td>
+              <Transition name="fade">
+                <div
+                  v-if="controller.isEditingAddress.value"
+                  class="action-icons is-editing"
+                >
+                  <i
+                    v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                    class="fa-regular fa-xmark clickable cancel"
+                    @click="controller.onCancelEditBusinessAddressClicked()"
+                  />
+                  <i
+                    v-if="controller.isEditingAddress.value && !controller.isUpdatingAddress.value"
+                    class="fa-regular fa-save clickable save"
+                    @click="controller.onSaveBusinessAddressClicked()"
+                  />
+                  <i
+                    v-if="!controller.isEditingAddress.value"
+                    class="fa-regular fa-edit clickable edit"
+                    @click="controller.onEditBusinessAddressClicked()"
+                  />
+                  <i
+                    v-if="controller.isUpdatingAddress.value"
+                    class="fa-regular fa-spin fa-spinner edit"
+                  />
+                </div>
+              </Transition>
+              <AddressInput
+                ref="businessAddressRef"
+                v-if="controller.isEditingAddress.value"
+                :location="controller.addressLocation.value"
+                :is-disabled="!controller.isEditingAddress.value"
+                @updateAddressLine1="controller.onUpdateAddressLine1($event)"
+                @updateAddressLine2="controller.onUpdateAddressLine2($event)"
+                @updateAddressLine3="controller.onUpdateAddressLine3($event)"
+                @updateState="controller.onUpdateState($event)"
+                @updateCity="controller.onUpdateCity($event)"
+                @updatePostcode="controller.onUpdatePostcode($event)"
+                @updateCountry="controller.onUpdateCountry($event)"
+              />
               <span
+                v-if="!controller.isEditingAddress.value"
                 class="address-span"
                 v-html="controller.businessAddress"
               />
             </td>
           </tr>
           <tr>
-            <td>{{ controller.registeredAddressLabel }}</td>
+            <td>
+              <div class="editable-column">
+                {{ controller.registeredAddressLabel }}
+                <Transition name="fade">
+                  <div
+                    v-if="!controller.isEditingRegisteredAddress.value"
+                    class="action-icons"
+                  >
+                    <i
+                      v-if="
+                        controller.isEditingRegisteredAddress.value && !controller.isUpdatingRegisteredAddress.value
+                      "
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelEditRegisteredAddressClicked()"
+                    />
+                    <i
+                      v-if="
+                        controller.isEditingRegisteredAddress.value && !controller.isUpdatingRegisteredAddress.value
+                      "
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.onSaveRegisteredAddressClicked()"
+                    />
+                    <i
+                      v-if="!controller.isEditingRegisteredAddress.value"
+                      class="fa-regular fa-edit clickable edit"
+                      @click="controller.onEditRegisteredAddressClicked()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingRegisteredAddress.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </Transition>
+              </div>
+            </td>
             <td>:</td>
             <td>
+              <Transition name="fade">
+                <div
+                  v-if="controller.isEditingRegisteredAddress.value"
+                  class="action-icons"
+                >
+                  <i
+                    v-if="controller.isEditingRegisteredAddress.value && !controller.isUpdatingRegisteredAddress.value"
+                    class="fa-regular fa-xmark clickable cancel"
+                    @click="controller.onCancelEditRegisteredAddressClicked()"
+                  />
+                  <i
+                    v-if="controller.isEditingRegisteredAddress.value && !controller.isUpdatingRegisteredAddress.value"
+                    class="fa-regular fa-save clickable save"
+                    @click="controller.onSaveRegisteredAddressClicked()"
+                  />
+                  <i
+                    v-if="!controller.isEditingRegisteredAddress.value"
+                    class="fa-regular fa-edit clickable edit"
+                    @click="controller.onEditRegisteredAddressClicked()"
+                  />
+                  <i
+                    v-if="controller.isUpdatingRegisteredAddress.value"
+                    class="fa-regular fa-spin fa-spinner edit"
+                  />
+                </div>
+              </Transition>
+              <AddressInput
+                ref="registeredAddressRef"
+                v-if="controller.isEditingRegisteredAddress.value"
+                :location="controller.registeredAddressLocation.value"
+                :is-disabled="!controller.isEditingRegisteredAddress.value"
+              />
               <span
+                v-if="!controller.isEditingRegisteredAddress.value"
                 class="address-span"
                 v-html="controller.registeredAddress"
               />
@@ -43,13 +180,33 @@
             <td>
               <span v-if="controller.branchAddresses.length <= 0">{{ controller.noneText }}</span>
               <ol>
-                <li v-for="(branchAddress, i) in controller.branchAddresses">
-                  <span
-                    class="address-span"
-                    v-html="branchAddress"
+                <li v-for="(branch, i) in controller.companyBranches">
+                  <Branch
+                    :company-id="controller.companyId.value"
+                    :company-branch="branch"
+                    @removed="controller.onBranchRemoved(branch.id)"
                   />
                 </li>
+                <Transition name="fade">
+                  <li v-if="controller.isAddingNewBranch.value">
+                    <Branch
+                      :company-id="controller.companyId.value"
+                      :company-branch="new CompanyBranch()"
+                      @branchAdded="controller.onNewBranchAdded($event)"
+                      @cancel="controller.onCancelAddBranch()"
+                    />
+                  </li>
+                </Transition>
               </ol>
+              <div class="action-button-container">
+                <button
+                  v-if="controller.canAddNewBranch"
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onAddBranch()"
+                >
+                  Add Branch
+                </button>
+              </div>
             </td>
           </tr>
           <tr>
@@ -167,6 +324,59 @@
               </template>
             </td>
           </tr>
+          <tr>
+            <td>
+              {{ controller.financialYearEndLabel }}
+            </td>
+            <td>:</td>
+            <td>
+              <template v-if="!controller.isEditFYE.value">
+                <b>Previous FYE:</b>
+                <br />
+                {{ controller.previousFYE }}
+                <br />
+                <br />
+                <b>Current FYE:</b>
+                <br />
+                {{ controller.currentFYE }}
+                <span
+                  class="action-link"
+                  @click="controller.onEditFyeClicked()"
+                >
+                  <i class="fa-regular fa-edit"></i>
+                </span>
+              </template>
+              <template v-if="controller.isEditFYE.value">
+                <input
+                  type="date"
+                  class="form-control"
+                  v-model="controller.fyeStartDate.value"
+                />
+                <i class="fa-solid fa-minus" />
+                <input
+                  type="date"
+                  class="form-control"
+                  v-model="controller.fyeEndDate.value"
+                />
+                <span
+                  class="action-link"
+                  @click="controller.onSaveFYEDatesClicked()"
+                >
+                  <i
+                    class="fa-regular"
+                    :class="controller.isEditingFYE.value ? 'fa-spin fa-spinner' : 'fa-save'"
+                  ></i>
+                </span>
+                <span
+                  v-if="!controller.isEditingFYE.value"
+                  class="action-link remove"
+                  @click="controller.onCancelEditFyeClicked()"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+              </template>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -180,17 +390,6 @@
               :key="i"
             >
               <UserDetail v-bind="controller.getPropsUserDetail(director)" />
-              <!-- <div class="human-details">
-                <div class="name">{{ director.name }}</div>
-                <div class="human-detail">
-                  <i class="fa-regular fa-envelope"></i>
-                  <span class="email">{{ director.email }}</span>
-                </div>
-                <div class="human-detail">
-                  <i class="fa-brands fa-whatsapp" />
-                  <span class="phone">{{ director.phone }}</span>
-                </div>
-              </div> -->
             </li>
           </ol>
         </div>
@@ -204,27 +403,6 @@
               :key="i"
             >
               <UserDetail v-bind="controller.getPropsUserDetail(shareholder)" />
-              <!-- <div class="human-details">
-                <div class="name">{{ shareholder.name }}</div>
-                <div class="human-detail">
-                  <i class="fa-regular fa-envelope"></i>
-                  <span class="email">{{ shareholder.email }}</span>
-                </div>
-                <div class="human-detail">
-                  <i class="fa-brands fa-whatsapp" />
-                  <span class="phone">{{ shareholder.phone }}</span>
-                </div>
-                <div class="human-detail">
-                  <span>
-                    <b>{{ controller.totalSharesLabel }}:</b>
-                  </span>
-                  <span>{{ controller.ordinarySharesLabel }}:</span>
-                  <span>{{ shareholder.ordinaryShares }}</span>
-                  <span>/</span>
-                  <span>{{ controller.preferenceSharesLabel }}:</span>
-                  <span>{{ shareholder.preferenceShares }}</span>
-                </div>
-              </div> -->
             </li>
           </ol>
           <button
@@ -233,23 +411,6 @@
           >
             Generate BO Annexure
           </button>
-          <!-- <div
-            class="chart-wrapper"
-            v-if="controller.isShowShareDistribution.value"
-          >
-            <Pie
-              :data="controller.shareDistributionChartData"
-              :options="controller.shareDistributionChartOptions"
-            />
-          </div>
-          <div class="action-link-container right">
-            <span
-              class="action-link"
-              @click="controller.onShowSharePercentageClicked()"
-            >
-              {{ controller.showDistributionLabel }}
-            </span>
-          </div> -->
         </div>
       </div>
     </div>
@@ -315,10 +476,13 @@
 
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
+  import AddressInput from "@/components/Forms/AddressInput.vue"
+  import Branch from "./Branch.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
+  import { CompanyBranch } from "~/scripts/models/CompanyBranch"
 
   const props = defineProps({
     companyId: {
@@ -330,6 +494,8 @@
   const emit = defineEmits([])
 
   const addCompanyAuditorRef = ref(null)
+  const businessAddressRef = ref(null)
+  const registeredAddressRef = ref(null)
 
   const controller = new OverviewController(props.companyId, emit)
 
@@ -344,6 +510,22 @@
     addCompanyAuditorRef,
     (newVal) => {
       controller.setAddCompanyAuditorRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    businessAddressRef,
+    (newVal) => {
+      controller.setBusinessAddressRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    registeredAddressRef,
+    (newVal) => {
+      controller.setRegisteredAddressRef(newVal)
     },
     { immediate: true }
   )

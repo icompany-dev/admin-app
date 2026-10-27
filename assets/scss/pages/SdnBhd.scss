@@ -13,4 +13,26 @@
     width: 100%;
     margin-top: 20px;
   }
+
+  .navigation-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+
+    .clickable {
+      width: 28px;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: all 0.7s ease;
+      color: var(--bs-icompany-purple);
+
+      &:hover {
+        opacity: 1;
+        font-size: 22px;
+      }
+    }
+  }
 }

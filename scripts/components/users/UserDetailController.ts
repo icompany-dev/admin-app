@@ -105,6 +105,14 @@ export class UserDetailController {
     return this.userDetail.value.identification
   }
 
+  get nationalityLabel(): string {
+    return this.language.isMalay() ? "Warganegara" : "Nationality"
+  }
+
+  get nationality(): string {
+    return this.userDetail.value.citizenship?.toUpperCase() ?? "(Unknown)"
+  }
+
   get raceLabel(): string {
     return this.language.isMalay() ? "Bangsa" : "Race"
   }

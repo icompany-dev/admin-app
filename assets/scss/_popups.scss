@@ -112,12 +112,16 @@
             font-size: 1.1rem;
             display: inline-block;
           }
+        }
 
-          .form-control {
-            background-color: var(--bs-white);
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid var(--form-control-border-color);
+        .form-control {
+          background-color: var(--bs-white);
+          padding: 5px;
+          border-radius: 5px;
+          border: 1px solid var(--form-control-border-color);
+
+          &::placeholder {
+            color: var(--bs-gray-500);
           }
         }
 

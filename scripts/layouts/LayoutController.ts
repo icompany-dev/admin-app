@@ -142,7 +142,10 @@ export class LayoutController {
           return new PaymentOrder(d)
         })
         .filter((po: PaymentOrder) => {
-          return dayjs(po.paidAt).isAfter(dayjs(filter.startDate))
+          return (
+            dayjs(po.paidAt).isAfter(dayjs(filter.startDate)) &&
+            !StringUtil.contains(po.billingInfo.email ?? "", "icompany.my")
+          )
         })
 
       if (paymentToInform.length > 0) {

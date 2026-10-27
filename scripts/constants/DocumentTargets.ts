@@ -141,6 +141,7 @@ export class DocumentTargets {
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES: string = "company_shareholder_allotment"
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS: string = "company_shareholder_allotment_resolutions"
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76: string = "company_shareholder_allotment_section76"
+  static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION85: string = "company_shareholder_allotment_section85"
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA: string = "company_shareholder_allotment_roa"
 
   static TARGET_SHAREHOLDER_TRANSFER_OF_SHARES: string = "company_shareholder_transfer"
@@ -179,4 +180,6 @@ export class DocumentTargets {
 
   static TARGET_SWITCH_OUT_LETTER: string = "company_switch_out_letter"
   static TARGET_SWITCH_OUT_DOCUMENT: string = "company_switch_out_document"
+
+  static TARGET_DOCUMENT_REQUESTS: string = "company_switch_out_document"
 }

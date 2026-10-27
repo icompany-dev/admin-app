@@ -24,29 +24,18 @@
       <CopyValue :value="controller.identificationNumber" />
     </div>
     <div class="human-detail">
-      <i class="fa-brands fa-whatsapp" />
-      <span class="human-detail-content">
-        {{ controller.phone }}
-      </span>
-      <CopyValue :value="controller.phone" />
-    </div>
-    <div class="human-detail">
-      <i class="fa-regular fa-envelope" />
-      <span
-        class="action-clickable"
-        @click="controller.onEmailClicked()"
-      >
-        {{ controller.email }}
-      </span>
-      <CopyValue :value="controller.email" />
-    </div>
-
-    <div class="human-detail">
       <i class="fa-regular fa-user" />
       <span class="human-detail-content">
         {{ controller.race }}
       </span>
       <CopyValue :value="controller.race" />
+    </div>
+    <div class="human-detail">
+      <i class="fa-regular fa-globe" />
+      <span class="human-detail-content">
+        {{ controller.nationality }}
+      </span>
+      <CopyValue :value="controller.nationality" />
     </div>
     <div class="human-detail align-start">
       <i class="fa-regular fa-home" />
@@ -76,6 +65,23 @@
         {{ controller.addressCountry }}
         <CopyValue :value="controller.addressCountry" />
       </span>
+    </div>
+    <div class="human-detail">
+      <i class="fa-brands fa-whatsapp" />
+      <span class="human-detail-content">
+        {{ controller.phone }}
+      </span>
+      <CopyValue :value="controller.phone" />
+    </div>
+    <div class="human-detail">
+      <i class="fa-regular fa-envelope" />
+      <span
+        class="action-clickable"
+        @click="controller.onEmailClicked()"
+      >
+        {{ controller.email }}
+      </span>
+      <CopyValue :value="controller.email" />
     </div>
 
     <Teleport to="body">

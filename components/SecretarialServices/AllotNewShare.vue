@@ -28,6 +28,7 @@
 
 <script lang="ts" setup>
   import AllotNewShareApplication from "../Services/AllotNewShareApplication.vue"
+  import AllotNewSharesService from "../CompanyServices/AllotNewSharesService.vue"
   import IssueAndAllotShareService from "../CompanyServices/IssueAndAllotShareService.vue"
   import ReceiptInvoiceService from "../CompanyServices/ReceiptInvoiceService.vue"
   import { AllotNewShareController } from "~/scripts/components/secretarial-services/AllotNewShareController"
@@ -45,6 +46,7 @@
   const componentMap: Record<string, any> = {
     [DocumentTargets.TARGET_RECEIPT]: ReceiptInvoiceService,
     [DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS]: IssueAndAllotShareService,
+    [DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA]: AllotNewSharesService,
   }
 
   const activeDocumentComponent = computed(() => {

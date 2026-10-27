@@ -16,8 +16,16 @@
         tag="div"
         class="document-transition-wrapper"
       >
-        <SwitchOutLetter
+        <DcrChangeOfCompanySecretary
           ref="dcrRef"
+          v-bind="controller.resolutionDocumentProps"
+        />
+        <LetterResignationSecretary
+          ref="letterRef"
+          :company-id="controller.companyId"
+        />
+        <SwitchOutLetter
+          ref="mcrRef"
           :company-id="controller.companyId"
           :application-id="controller.applicationId"
         />
@@ -29,6 +37,8 @@
 
 <script lang="ts" setup>
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
+  import DcrChangeOfCompanySecretary from "../Resolutions/DcrChangeOfCompanySecretary.vue"
+  import LetterResignationSecretary from "../LegalDocuments/LetterResignationSecretary.vue"
   import SwitchOutLetter from "@/components/LegalDocuments/SwitchOutLetter.vue"
   import SwitchOutHandoverDocument from "@/components/LegalDocuments/SwitchOutHandoverDocument.vue"
   import { LetterOfTransferAndHandoverDocumentController } from "~/scripts/components/service-wrappers/LetterOfTransferAndHandoverDocumentController"
@@ -54,6 +64,7 @@
 
   const dcrRef = ref(null)
   const mcrRef = ref(null)
+  const letterRef = ref(null)
 
   const emit = defineEmits(["zoomOut", "zoomIn", "back", "applicationUpdated"])
 
@@ -76,6 +87,14 @@
     mcrRef,
     (newVal) => {
       controller.setMcrRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    letterRef,
+    (newVal) => {
+      controller.setLetterRef(newVal)
     },
     { immediate: true }
   )

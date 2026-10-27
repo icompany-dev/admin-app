@@ -26,15 +26,55 @@
                   <div class="node-title">{{ controller.nameReservationLabel }}</div>
                   <div class="node-subtitle">({{ controller.nameReservationSublabel }})</div>
                   <div class="application-details">
-                    <span class="application-label">
-                      {{ controller.proposedNamesLabel }}
-                    </span>
-                    &nbsp;
-                    <span
-                      class="propose-name"
-                      v-html="nameOption"
-                    />
-                    <CopyValue :value="nameOption" />
+                    <div class="proposed-name-details">
+                      <span class="application-label">
+                        {{ controller.proposedNamesLabel }}
+                      </span>
+                      &nbsp;
+                      <template v-if="!controller.isEditProposedNameAt(index)">
+                        <span
+                          class="propose-name"
+                          v-html="nameOption"
+                        />
+                      </template>
+                      <template v-if="controller.isEditProposedNameAt(index)">
+                        <input
+                          type="text"
+                          class="form-control"
+                          v-model="controller.newProposedName.value"
+                        />
+                      </template>
+                      <div class="actions-clickable">
+                        <span
+                          class="clickable edit"
+                          @click="controller.onEditProposedNameClicked(index)"
+                          v-if="!controller.isEditProposedNameAt(index)"
+                        >
+                          <i class="fa-regular fa-edit" />
+                        </span>
+                        <span
+                          class="clickable save"
+                          @click="controller.onSaveEditProposedName()"
+                          v-if="controller.isEditProposedNameAt(index) && !controller.isEditingProposedName.value"
+                        >
+                          <i class="fa-regular fa-save" />
+                        </span>
+                        <span
+                          class="clickable cancel"
+                          @click="controller.onCancelEditProposedNameClicked()"
+                          v-if="controller.isEditProposedNameAt(index) && !controller.isEditingProposedName.value"
+                        >
+                          <i class="fa-regular fa-xmark" />
+                        </span>
+                        <span
+                          class="clickable edit"
+                          v-if="controller.isEditingProposedNameAt(index)"
+                        >
+                          <i class="fa-regular fa-spinner fa-spin" />
+                        </span>
+                      </div>
+                      <CopyValue :value="nameOption" />
+                    </div>
                   </div>
                   <Transition name="fade">
                     <div
@@ -79,32 +119,7 @@
                         </div>
                       </div>
                       <b>{{ controller.applicantLabel }}</b>
-                      <div class="human-details">
-                        <span class="human-detail">
-                          <b>{{ controller.applicantName }}</b>
-                          <CopyValue :value="controller.applicantName" />
-                        </span>
-                        <span class="human-detail">
-                          <span>{{ controller.applicantIdentificationType }}</span>
-                          <span>{{ controller.applicantIdentification }}</span>
-                          <CopyValue :value="controller.applicantIdentification" />
-                        </span>
-                        <span class="human-detail">
-                          <i class="fa-regular fa-envelope" />
-                          {{ controller.applicantEmail }}
-                          <CopyValue :value="controller.applicantEmail" />
-                        </span>
-                        <span class="human-detail">
-                          <i class="fa-brands fa-whatsapp" />
-                          {{ controller.applicantPhone }}
-                          <CopyValue :value="controller.applicantPhone" />
-                        </span>
-                        <span class="human-detail align-top">
-                          <i class="fa-regular fa-location-pin" />
-                          <span v-html="controller.applicantAddress" />
-                          <CopyValue :value="controller.applicantOneLineAddress" />
-                        </span>
-                      </div>
+                      <UserDetail v-bind="controller.promoterPropsUserDetail" />
                     </div>
                   </Transition>
                 </div>
@@ -573,6 +588,7 @@
   import ServiceApplication from "@/components/Services/ServiceApplication.vue"
   import Shareholder from "@/components/Invitations/Shareholder.vue"
   import UploadFile from "@/components/Popups/UploadFile.vue"
+  import UserDetail from "../Users/UserDetail.vue"
   import { ApplicationController } from "~/scripts/components/incorporations/ApplicationController"
   import type { IPropsIncorporationApplication } from "~/scripts/props/PropsIncorporationApplication"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"

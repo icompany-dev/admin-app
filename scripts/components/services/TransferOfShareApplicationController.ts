@@ -37,6 +37,9 @@ export class TransferOfShareApplicationController extends ApplicationController<
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingSection105: Ref<boolean> = ref<boolean>(false)
+  isDownloadingRegister: Ref<boolean> = ref<boolean>(false)
+
   isDownloadingSijilSetem: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection51: Ref<boolean> = ref<boolean>(false)
   isSubmitting: Ref<boolean> = ref<boolean>(false)
@@ -62,6 +65,13 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
   setResolutionsRef(resolutionsRef: any): void {
     this.resolutionsRef = resolutionsRef
+  }
+
+  setIsDocumentDownloadCompleted(isCompleted: boolean): void {
+    if (isCompleted) {
+      this.isDownloadingSection105.value = false
+      this.isDownloadingRegister.value = false
+    }
   }
 
   override async fetchApplication(): Promise<void> {
@@ -164,7 +174,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
       let repository = useCompanyShareholderTransferStore()
       let response = await repository.notifyStamping(this.application.value.id)
 
-      if (repository.error !== null || !response) {
+      if (repository.error !== null) {
         let error = new Error()
         error.setForCUD()
         throw error
@@ -172,8 +182,18 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
       this.application.value.status = "stamping" //
 
-      await this.fetchApplication()
+      let toastTitle = this.language.isMalay()
+        ? "Status Permohonan telah dikemaskini."
+        : "Status of the Application has been updated."
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahu melalu emel dan WhatsApp."
+        : "Directors have been informed via email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      // await this.fetchApplication()
     } catch (e) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {
@@ -186,7 +206,14 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
   }
 
+  async onDownloadSection105Clicked(): Promise<void> {
+    this.isDownloadingSection105.value = true
+    await nextTick()
+    this.emitEvents("download")
+  }
+
   async onDownloadClicked(): Promise<void> {
+    this.isDownloadingRegister.value = true
     await nextTick()
     this.emitEvents("download")
   }
@@ -209,7 +236,17 @@ export class TransferOfShareApplicationController extends ApplicationController<
       await repository.submit(this.application.value.id)
 
       this.application.value.status = StatusConstants.SUBMITTED
-      await this.fetchApplication()
+
+      let toastTitle = this.language.isMalay()
+        ? "Status Permohonan telah dikemaskini."
+        : "Status of the Application has been updated."
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahu melalu emel dan WhatsApp."
+        : "Directors have been informed via email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      // await this.fetchApplication()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -273,7 +310,7 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
 
     try {
-      let companyDocument = this.uplaodedSection51
+      let companyDocument = this.uploadedSection51
 
       if (!companyDocument || !companyDocument.fileUrl || StringUtil.isNullOrEmpty(companyDocument.fileUrl)) {
         throw "new file"
@@ -313,22 +350,22 @@ export class TransferOfShareApplicationController extends ApplicationController<
     try {
       this.isCompleting.value = true
       // Generate all documents and put in Company Documents
-      // this.emitEvents("convertToForms")
-      let repository = useCompanyStore()
-      await repository.postService(this.target.value, this.application.value.id)
-      if (repository.error !== null) {
-        throw repository.error
-      }
-      let toastTitle = this.language.isMalay()
-        ? "Pemindahan Saham Syarikat telah selesai dan dikemaskinikan."
-        : "Your Transfer of Shares is completed and updated."
-      let toastMessage = this.language.isMalay()
-        ? "Anda akan dibawa ke halaman Sdn Bhd."
-        : "You will be redirected to the Sdn Bhd page."
-      let toast = new Toast(toastTitle, toastMessage)
-      toast.success()
-      let router = useRouter()
-      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+      this.emitEvents("convertToForms")
+      // let repository = useCompanyStore()
+      // await repository.postService(this.target.value, this.application.value.id)
+      // if (repository.error !== null) {
+      //   throw repository.error
+      // }
+      // let toastTitle = this.language.isMalay()
+      //   ? "Pemindahan Saham Syarikat telah selesai dan dikemaskinikan."
+      //   : "Your Transfer of Shares is completed and updated."
+      // let toastMessage = this.language.isMalay()
+      //   ? "Anda akan dibawa ke halaman Sdn Bhd."
+      //   : "You will be redirected to the Sdn Bhd page."
+      // let toast = new Toast(toastTitle, toastMessage)
+      // toast.success()
+      // let router = useRouter()
+      // router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()
@@ -343,21 +380,21 @@ export class TransferOfShareApplicationController extends ApplicationController<
     }
 
     try {
-      // let repository = useCompanyStore()
-      // await repository.postService(this.target.value, this.application.value.id)
-      // if (repository.error !== null) {
-      //   throw repository.error
-      // }
-      // let toastTitle = this.language.isMalay()
-      //   ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
-      //   : "Application is Completed. The Company Shares has been updated."
-      // let toastMessage = this.language.isMalay()
-      //   ? "Anda akan dibawa ke muka Sdn Bhd."
-      //   : "You will be redirected to the Sdn Bhd page."
-      // let toast = new Toast(toastTitle, toastMessage)
-      // toast.success()
-      // let router = useRouter()
-      // router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+      let repository = useCompanyStore()
+      await repository.postService(this.target.value, this.application.value.id)
+      if (repository.error !== null) {
+        throw repository.error
+      }
+      let toastTitle = this.language.isMalay()
+        ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
+        : "Application is Completed. The Company Shares has been updated."
+      let toastMessage = this.language.isMalay()
+        ? "Anda akan dibawa ke muka Sdn Bhd."
+        : "You will be redirected to the Sdn Bhd page."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+      let router = useRouter()
+      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()
@@ -900,8 +937,8 @@ export class TransferOfShareApplicationController extends ApplicationController<
     )
   }
 
-  get uplaodedSection51(): CompanyDocument | null {
-    if (!this.isSijilSetemUploaded) {
+  get uploadedSection51(): CompanyDocument | null {
+    if (!this.isSection51Uploaded) {
       return null
     }
 
@@ -914,6 +951,18 @@ export class TransferOfShareApplicationController extends ApplicationController<
   }
 
   get section51Label(): string {
-    return this.language.isMalay() ? "Seksyen 51" : "Section 51"
+    return this.language.isMalay() ? "Seksyen 51 - Register of Member" : "Section 51 - Register of Member"
+  }
+
+  get transferorLabel(): string {
+    return this.language.isMalay() ? "Daripada" : "From"
+  }
+
+  get transfereeLabel(): string {
+    return this.language.isMalay() ? "Kepada" : "To"
+  }
+
+  get transferLabel(): string {
+    return this.language.isMalay() ? "Pemindahan #" : "Transfer #"
   }
 }

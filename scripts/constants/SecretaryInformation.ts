@@ -54,8 +54,8 @@ export class SecretaryInformation {
       firmPhone: "03 3310 0896",
       firmFax: "03 3310 0896",
       address: new Location({
-        address_line_1: "D-1-6, FIRST FLOOR, BLOCK D, SEKITAR26 ENTERPRISE",
-        address_line_2: "PERSIARAN HULU SELANGOR, SEKSYEN 26",
+        address_line_1: "UNIT 48B-10-2, SRI IXORA APARTMENT",
+        address_line_2: "JALAN PERIMBUN 27/11, SEKSYEN 27",
         postcode: "40400",
         city: { name: "Shah Alam" },
         state: { name: "Selangor" },

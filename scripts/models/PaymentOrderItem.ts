@@ -404,7 +404,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   }
 
   paperPrintPackageCost(): number {
-    if (!this.isDeliveryRequired) {
+    if (!this.hasDelivery) {
       return 0
     }
 
@@ -415,7 +415,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   }
 
   bulkPackageFees(): number {
-    if (!this.isDeliveryRequired || this.targetType !== CompanyConstants.TARGET_SWITCH_OUT) {
+    if (!this.hasDelivery || this.targetType !== CompanyConstants.TARGET_SWITCH_OUT) {
       return 0
     }
 
@@ -426,7 +426,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   }
 
   deliveryFees(): number {
-    if (!this.isDeliveryRequired) {
+    if (!this.hasDelivery) {
       return 0
     }
 
@@ -456,5 +456,17 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       }, 0.0)
 
     return Number(totalOptionals)
+  }
+
+  get hasDelivery(): boolean {
+    return this.isDeliveryRequired || this.deliveryType !== DeliveryConstants.DELIVERY_NONE
+  }
+
+  get isPhysicalDelivery(): boolean {
+    return (
+      this.deliveryType !== DeliveryConstants.DELIVERY_NONE &&
+      this.deliveryType !== DeliveryConstants.DELIVERY_EMAIL &&
+      this.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
+    )
   }
 }

@@ -34,21 +34,21 @@
           tag="div"
           class="documents"
         >
-          <DcrProposeAllotmentOfShares
-            ref="dcrRef"
-            v-bind="controller.resolutionDocumentProps"
-            @doneLoading="controller.handleDisplayedPage()"
-          />
           <McrAuthorityToAllotShares
             ref="mcrRef"
             v-bind="controller.mcrResolutionDocumentProps"
             @doneLoading="controller.handleDisplayedPage()"
           />
-          <DcrAllotmentOfShares
-            ref="allotRef"
+          <DcrProposeAllotmentOfShares
+            ref="dcrRef"
             v-bind="controller.resolutionDocumentProps"
             @doneLoading="controller.handleDisplayedPage()"
           />
+          <!-- <DcrAllotmentOfShares
+            ref="allotRef"
+            v-bind="controller.resolutionDocumentProps"
+            @doneLoading="controller.handleDisplayedPage()"
+          /> -->
           <!-- <PreemptiveRightNotices
             ref="noticeRef"
             :company-id="controller.companyId"

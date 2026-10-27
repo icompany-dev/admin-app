@@ -42,8 +42,8 @@ export class McrPaymentToDirectorController extends ResolutionController<Company
     this.typeOfPayment.value = props.type as TypeOfPaymentToDirectors
 
     this.signatureStartOnPage.value = 1
-    this.maxSignatureOnOtherPages.value = 4
-    this.maxSignatureOnFirstPage.value = 6
+    this.maxSignatureOnOtherPages.value = 6
+    this.maxSignatureOnFirstPage.value = 4
   }
 
   setTypeOfPaymentToDirectors(type: string): void {
