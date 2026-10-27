@@ -29,7 +29,6 @@
         class="application"
         v-for="(application, i) in controller.tableDataFetcher.value?.data"
         :key="i"
-        @click="controller.onApplicationClicked(application)"
       >
         <div class="application-details">
           <div class="application-information">
@@ -55,8 +54,17 @@
           </div>
         </div>
         <div class="application-actions">
-          <button class="btn btn-submit btn-pill">
+          <button
+            class="btn btn-submit btn-pill"
+            @click="controller.onApplicationClicked(application)"
+          >
             {{ controller.viewApplicationLabel }}
+          </button>
+          <button
+            class="btn btn-danger btn-pill"
+            @click="controller.onRemoveClicked(application)"
+          >
+            {{ controller.removeApplicationLabel }}
           </button>
         </div>
       </div>
@@ -65,11 +73,16 @@
       ref="createDocumentRequestRef"
       v-bind="controller.uploadDocumentsProps"
     />
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :remove-item-name="controller.itemToRemoveName"
+      @proceed="controller.onProceedRemove()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
-  import AddApplication from "../Buttons/AddApplication.vue"
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
   import CreateDocumentRequest from "../Popups/CreateDocumentRequest.vue"
@@ -100,6 +113,7 @@
   const emit = defineEmits([])
 
   const createDocumentRequestRef = ref(null)
+  const confirmToDeleteRef = ref(null)
 
   let controller: SecretarialServicesController<Application> = new ApplicationsController(props, emit)
 
@@ -166,6 +180,14 @@
     createDocumentRequestRef,
     (newVal) => {
       controller.setCreateDocumentRequestRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
     },
     { immediate: true }
   )
