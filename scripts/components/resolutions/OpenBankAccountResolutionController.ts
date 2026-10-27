@@ -42,6 +42,7 @@ export abstract class OpenBankAccountResolutionController<T> {
   isInPreviewMode = ref<boolean>(false)
   isGettingPdfPages = ref<boolean>(false)
 
+  isShowCompanyAddres = ref<boolean>(true)
   signatureStartOnPage = ref<number>(1)
   maxSignatureOnFirstPage = ref<number>(0)
   maxSignatureOnOtherPages = ref<number>(6)
@@ -97,6 +98,10 @@ export abstract class OpenBankAccountResolutionController<T> {
     this.signatureItems.value.forEach((signatureItem: SignatureItem) => {
       signatureItem.isSignatureEditable = !this.isInPreviewMode.value
     })
+  }
+
+  setIsShowCompanyAddress(isShowCompanyAddress: boolean): void {
+    this.isShowCompanyAddres.value = isShowCompanyAddress
   }
 
   setShowWatermark(showWatermark: boolean): void {

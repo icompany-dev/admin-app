@@ -31,11 +31,11 @@
         <template #paperContent>
           <div class="document-footer">
             <div class="left-side">
-              <b>
+              <!-- <b>
                 Hong Leong Bank Berhad 193401000023 (97141-X) Hong Leong Islamic Bank Berhad 200501009144 (686191-W)
               </b>
               <br />
-              <i>Version 2.0</i>
+              <i>Version 2.0</i> -->
             </div>
             <div class="right-side">
               Page
@@ -58,21 +58,26 @@
               <p>
                 The Board of Directors of
                 <span class="prefilled-field company-name">{{ controller.companyName() }}</span>
-                [name of company] passed the following resolution on
-                <span class="prefilled-field document-full-date"></span>
-                [date]: -
+                passed the
+                <br />
+                following resolution on
+                <span class="prefilled-field document-full-date">5 October 2026</span>
+                <b style="margin-left: 4px">:</b>
+                -
               </p>
               <p>
-                <b>IT IS HEREBY RESOLVED AS FOLLOWS</b>
+                <b>IT IS HEREBY RESOLVED AS FOLLOWS:</b>
               </p>
             </div>
           </div>
           <div class="document-section">
             <div class="document-section-title">A. OPENING OF ACCOUNT AND OPERATING MANDATE**</div>
             <div class="document-section-content">
+              <br />
               <p>
                 <small>**Please draw a line diagonally across this part if not applicable.</small>
               </p>
+              <br />
               <ol>
                 <li>
                   "THAT authority be and is hereby given for the Company to apply for Business Deposits Account(s) (the
@@ -84,21 +89,28 @@
                     @branch-selected="controller.onBranchOptionSelected($event)"
                   />
                   [to state Branch] as required from time to time.”
+                  <br />
                 </li>
                 <li>
                   "THAT authority be and is hereby given to the authorised signatory(ies) as set out in Item D. of this
                   Resolution (”Authorised Signatories”) to do the following:-
+                  <br />
                   <ol class="lower-roman">
                     <li>
                       apply for, accept and sign, all relevant documents drawn or to be drawn up in connection with the
                       Account(s) and to act on any instructions and accept any receipts or other documents relating to
                       the Account(s), transactions or affairs of the Company, if so, signed on behalf of the Company;
+                      <br />
                     </li>
                     <li>
                       pay and honour all cheques, bills of exchange, deposits, receipts, requests involving payment or
                       transfer of funds and promissory notes
+                      <br />
                     </li>
-                    <li>perform fixed deposit placements and/or withdrawals under the Account(s);</li>
+                    <li>
+                      perform fixed deposit placements and/or withdrawals under the Account(s);
+                      <br />
+                    </li>
                   </ol>
                 </li>
                 <li>
@@ -120,9 +132,11 @@
               B. HONG LEONG BUSINESS INTERNET/ELECTRONIC BANKING - APPLICABLE TO ALL MODULES**
             </div>
             <div class="document-section-content">
+              <br />
               <p>
                 <b>IT IS HEREBY RESOLVED AS FOLLOWS:</b>
               </p>
+              <br />
               <ol>
                 <li>
                   “THAT approval be and is hereby given for the Company or its successors in title or assigns to apply
@@ -190,11 +204,11 @@
         <template #paperContent>
           <div class="document-footer">
             <div class="left-side">
-              <b>
+              <!-- <b>
                 Hong Leong Bank Berhad 193401000023 (97141-X) Hong Leong Islamic Bank Berhad 200501009144 (686191-W)
               </b>
               <br />
-              <i>Version 2.0</i>
+              <i>Version 2.0</i> -->
             </div>
             <div class="right-side">
               Page
@@ -217,7 +231,9 @@
           <div class="document-section">
             <div class="document-section-title">B. (i) TRADE SERVICES**</div>
             <div class="document-section-content">
+              <br />
               <p>**Please draw a line diagonally across this part if not applicable.</p>
+              <br />
               <ol>
                 <li>
                   “THAT approval be and is hereby given for the Company to make trade inquiries and submit trade
@@ -242,7 +258,9 @@
           <div class="document-section">
             <div class="document-section-title">B. (ii) COLLECTION SERVICES**</div>
             <div class="document-section-content">
+              <br />
               <p>**Please draw a line diagonally across this part if not applicable.</p>
+              <br />
               <ol>
                 <li>
                   “THAT approval be and is hereby given for the Company to enter into relevant agreement(s) from time to
@@ -260,7 +278,9 @@
               <span class="smaller">(ON APPLICATION BASIS AND SUBJECT TO HLB's/HLISB's APPROVAL)</span>
             </div>
             <div class="document-section-content">
+              <br />
               <p>**Please draw a line diagonally across this part if not applicable.</p>
+              <br />
               <ol>
                 <li>
                   “THAT approval be and is hereby given for the Company to apply for the Hong Leong Cash Management
@@ -311,11 +331,11 @@
         <template #paperContent>
           <div class="document-footer">
             <div class="left-side">
-              <b>
+              <!-- <b>
                 Hong Leong Bank Berhad 193401000023 (97141-X) Hong Leong Islamic Bank Berhad 200501009144 (686191-W)
               </b>
               <br />
-              <i>Version 2.0</i>
+              <i>Version 2.0</i> -->
             </div>
             <div class="right-side">
               Page
@@ -338,50 +358,78 @@
                       <div class="form-check-wrapper">
                         <div class="form-check">
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isSignatoryTypeSelected('anyone')"
                             :disabled="!controller.isDocumentEditable()"
                             @click="controller.onSignatoryTypeChanged('anyone')"
                           />
+                          <span
+                            v-if="!controller.isDocumentEditable()"
+                            class="pdf-checkbox"
+                          >
+                            {{ controller.isSignatoryTypeSelected("anyone") ? "✓" : "" }}
+                          </span>
                           <span class="label">Any One to sign</span>
                         </div>
                         <div class="form-check">
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isSignatoryTypeSelected('any-two')"
                             :disabled="!controller.isDocumentEditable()"
                             @click="controller.onSignatoryTypeChanged('any-two')"
                           />
+                          <span
+                            v-if="!controller.isDocumentEditable()"
+                            class="pdf-checkbox"
+                          >
+                            {{ controller.isSignatoryTypeSelected("any-two") ? "✓" : "" }}
+                          </span>
                           <span class="label">Any two to sign</span>
                         </div>
                         <div class="form-check">
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isSignatoryTypeSelected('all')"
                             :disabled="!controller.isDocumentEditable()"
                             @click="controller.onSignatoryTypeChanged('all')"
                           />
+                          <span
+                            v-if="!controller.isDocumentEditable()"
+                            class="pdf-checkbox"
+                          >
+                            {{ controller.isSignatoryTypeSelected("all") ? "✓" : "" }}
+                          </span>
                           <span class="label">All to sign</span>
                         </div>
                         <div class="form-check">
                           <input
+                            v-if="controller.isDocumentEditable()"
                             type="checkbox"
                             class="form-check-input"
                             :checked="controller.isSignatoryTypeSelected('others')"
                             :disabled="!controller.isDocumentEditable()"
                             @click="controller.onSignatoryTypeChanged('others')"
                           />
+                          <span
+                            v-if="!controller.isDocumentEditable()"
+                            class="pdf-checkbox"
+                          >
+                            {{ controller.isSignatoryTypeSelected("others") ? "✓" : "" }}
+                          </span>
                           <span class="label">Others:</span>
                         </div>
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <th>PERSONAL PARTICULARS</th>
-                    <th>SPECIMEN SIGNATURE</th>
+                    <th style="padding: 5px 0px">PERSONAL PARTICULARS</th>
+                    <th style="padding: 5px 0px">SPECIMEN SIGNATURE</th>
                   </tr>
                   <tr
                     v-for="(signatory, index) in controller.getCompanySignatoryOnPage(pageNumber)"
@@ -473,9 +521,9 @@
                             </td>
                           </tr>
                           <tr>
-                            <td>Mobile No.</td>
-                            <td>:</td>
-                            <td>
+                            <td style="padding-bottom: 10px">Mobile No.</td>
+                            <td style="padding-bottom: 10px">:</td>
+                            <td style="padding-bottom: 10px">
                               <input
                                 type="text"
                                 class="form-control"
@@ -490,7 +538,7 @@
                       </table>
                     </td>
                     <td class="signature-column">
-                      {{ signatory.name ? "Wet Ink Required" : "" }}
+                      {{ signatory.name ? "" : "" }}
                     </td>
                   </tr>
                   <tr v-if="controller.isDocumentEditable()">
@@ -516,6 +564,7 @@
           >
             <div class="document-section-title">CERTIFICATION OF RESOLUTIONS</div>
             <div class="document-section-content">
+              <br />
               <p>
                 These resolutions will remain in force unless and until the Company delivers to HLB/HLISB a new
                 resolution(s) revoking, amending or superseding these resolutions, and HLB/HLISB has had a reasonable
@@ -531,11 +580,10 @@
               </p>
               <p>
                 Dated this
-                <span class="prefilled-field document-date"></span>
+                <span class="prefilled-field document-date">5</span>
                 day of
-                <span class="prefilled-field document-month"></span>
-                20
-                <span class="prefilled-field document-year"></span>
+                <span class="prefilled-field document-month">October</span>
+                <span class="prefilled-field document-year">2026</span>
               </p>
               <div class="signatures-section">
                 <div
@@ -543,12 +591,12 @@
                   v-for="(signature, index) in controller.getSignatureOnLastAuthoriseSignatoryPage()"
                   :key="index"
                 >
-                  <div class="signature-placeholder">Wet Ink Required</div>
+                  <div class="signature-placeholder"></div>
                   <div class="role">
                     {{ index !== 1 ? "Director" : "Company Secretary" }}
                   </div>
                   <div class="name">Name: {{ signature }}</div>
-                  <div class="date">Date:</div>
+                  <div class="date">Date: 5 October 2026</div>
                 </div>
               </div>
             </div>

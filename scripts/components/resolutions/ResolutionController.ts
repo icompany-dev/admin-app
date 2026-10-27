@@ -176,6 +176,14 @@ export abstract class ResolutionController<T> {
     return this.application.value.company.registrationNumberNew
   }
 
+  companyAddressMultiline(): string {
+    if (!this.application.value?.company) {
+      return ""
+    }
+
+    return this.application.value.company.businessAddressLocation.getMultilineAddress() ?? ""
+  }
+
   resolutionTitle(): string {
     let title = ""
     if (this.isDcr.value) {

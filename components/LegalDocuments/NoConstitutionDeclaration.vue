@@ -59,10 +59,17 @@
               src="https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/signatures/cosec-signature.png"
             />
           </div>
-          <div class="cosec-name">
+          <div
+            class="cosec-name"
+            style="border-top-style: dotted"
+          >
             {{ SecretaryInformation.SECRETARY_NAME }}
             <br />
-            <span class="cosec-role">Company Secretary</span>
+            <span>
+              <b>COMPANY SECRETARY</b>
+            </span>
+            <br />
+            <span class="cosec-role">BC/A/2271 (SSM PC NO. 202608000324)</span>
           </div>
         </div>
       </template>

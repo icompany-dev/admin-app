@@ -19,6 +19,7 @@ export interface IPropsResolutionDocument<T> {
   financialYearEnd: string | null
 
   isShowTag: boolean
+  isShowCompanyAddress: boolean
   isReadOnly: boolean
   isLoadingData: boolean
 }
@@ -37,6 +38,7 @@ export class PropsResolutionDocument<T> {
   yearToLodge: string | null
   type: string | null
   isShowTag: boolean = true
+  isShowCompanyAddress: boolean = false
   companyBankId: string | null = null
   financialYearEnd: string | null = null
   isReadOnly: boolean = false

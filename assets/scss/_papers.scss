@@ -341,7 +341,7 @@
   }
 
   .signature-section {
-    margin-top: 30px;
+    margin-top: 10px;
     width: 100%;
     display: flex;
     flex-direction: row;
@@ -566,7 +566,7 @@
     .signature-image {
       width: 200px;
       height: 150px;
-      border-bottom: 2px solid var(--bs-black);
+      border-top: 2px dotted var(--bs-black);
     }
 
     .signee-name {
@@ -574,6 +574,45 @@
       font-weight: bold;
       letter-spacing: 0.1pt;
       text-transform: uppercase;
+    }
+
+    &.multiple {
+      margin-top: 30px;
+      max-width: 100% !important;
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px 40px;
+
+      .signature-title {
+        width: 100%;
+        font-weight: 600;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      .signature-item {
+        width: calc(50% - 55px);
+        padding-left: 15px;
+        padding-right: 15px;
+
+        &:nth-child(2n) {
+          padding-left: 0;
+          padding-right: 30px;
+
+          &:last-of-type {
+            padding: 0 15px;
+          }
+        }
+
+        &:nth-child(2n-1) {
+          padding-left: 30px;
+          padding-right: 0;
+        }
+      }
     }
   }
 }

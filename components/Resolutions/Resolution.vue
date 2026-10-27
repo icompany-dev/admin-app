@@ -53,20 +53,21 @@
             />
             <br />
             <div>
-              ( also referred to as the
-              <b>“Company”</b>
-              )
+              (also referred to as the “
+              <b>Company</b>
+              ”)
             </div>
           </div>
           <div class="resolution-title">
             {{ props.resolutionTitle }}
+            <span v-if="page > 1">- Cont</span>
           </div>
           <div class="resolution-content">
             <div
               v-if="page > 1"
               class="continue-page"
             >
-              (Continue from Prev. Page)
+              <!-- (Continue from Prev. Page) -->
             </div>
             <slot :name="`page${page}`" />
           </div>
@@ -157,9 +158,9 @@
               <br />
               <br />
               <div>
-                ( also referred to as the
-                <b>“Company”</b>
-                )
+                (also referred to as the “
+                <b>Company</b>
+                ”)
               </div>
             </div>
             <div class="resolution-content accompanying-document">

@@ -69,7 +69,7 @@
                 v-for="(secretary, i) in controller.secretaryOptions"
                 :value="secretary"
               >
-                <b>{{ secretary.name.toUpperCase() }}</b>
+                {{ secretary.name.toUpperCase() }}
               </option>
             </select>
             <span v-if="controller.isPrinting.value">
