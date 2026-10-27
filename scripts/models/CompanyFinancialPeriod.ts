@@ -1,11 +1,13 @@
 import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
+import { Company } from "./Company"
 import { File } from "./File"
 import type { IModel } from "./IModel"
 
 export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
   id: string = ""
   companyId: string = ""
+  company: Company = new Company()
   startDate: string = ""
   endDate: string = ""
   resolutionId: string | null = null
@@ -36,6 +38,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
   convertFromResponse(data: any): void {
     this.id = data.id
     this.companyId = data.company_id
+    this.company = new Company(data.company) //Backend response will not include this
     this.startDate = data.start_date
     this.endDate = data.end_date
     this.resolutionId = data.resolution_id
@@ -55,6 +58,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
   clone(data: CompanyFinancialPeriod): void {
     this.id = data.id
     this.companyId = data.companyId
+    this.company = new Company(data.company)
     this.startDate = data.startDate
     this.endDate = data.endDate
     this.resolutionId = data.resolutionId
@@ -72,7 +76,23 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
   }
 
   getRequestBody(): object {
-    return {}
+    return {
+      company_id: this.companyId,
+      start_date: this.startDate,
+      end_date: this.endDate,
+      status: this.status,
+    }
+  }
+
+  async create(repository: ReturnType<typeof useCompanyFinancialPeriodStore>): Promise<void> {
+    let data = this.getRequestBody()
+
+    let response = await repository.create(data)
+    if (response instanceof CompanyFinancialPeriod) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
   }
 
   getRequestBodyForStatementPreparation(): object {
@@ -87,7 +107,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
 
   async updateStatementPreparationMethod(repository: ReturnType<typeof useCompanyFinancialPeriodStore>): Promise<void> {
     if (!this.canSubmitStatementPreparationMethod()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -95,7 +115,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
     let data = this.getRequestBodyForStatementPreparation()
     let response = await repository.update(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -116,7 +136,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
 
   async updateFinancialStatement(repository: ReturnType<typeof useCompanyFinancialPeriodStore>): Promise<void> {
     if (!this.canSubmitFinancialStatement()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -124,7 +144,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
     let data = this.getRequestBodyForFinancialStatement()
     let response = await repository.update(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -145,7 +165,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
 
   async updateRecommendedSubmission(repository: ReturnType<typeof useCompanyFinancialPeriodStore>): Promise<void> {
     if (!this.canSubmitRecommendedSubmission()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -153,7 +173,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
     let data = this.getRequestBodyForRecommendedSubmission()
     let response = await repository.update(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -173,7 +193,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
 
   async updateSubmission(repository: ReturnType<typeof useCompanyFinancialPeriodStore>): Promise<void> {
     if (!this.canSubmitSubmission()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -181,7 +201,7 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
     let data = this.getRequestBodyForSubmission()
     let response = await repository.update(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

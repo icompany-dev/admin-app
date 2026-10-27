@@ -58,7 +58,7 @@ export class PageSidebar {
   static dashboardGroup: SidebarGroup = new SidebarGroup(
     "Dashboard",
     "Dashboard",
-    [this.commandCentre, this.analytics, this.announcements],
+    [this.commandCentre, this.analytics],
     true
   )
 
@@ -94,10 +94,17 @@ export class PageSidebar {
     "sdnbhds/assign-cosec",
     false
   )
+  static sdnbhdResign: Sidebar = new Sidebar(
+    "Resign as Company Secretary",
+    "Letak Jawatan Setiausaha Syarikat",
+    "sdnbhds/resign-cosec",
+    false
+  )
   static sdnbhdDirectors: Sidebar = new Sidebar("Directors", "Pengarah", "sdnbhds/directors", false)
   static sdnbhdGroup: SidebarGroup = new SidebarGroup("Company", "Syarikat", [
     this.sdnbhdAll,
     this.sdnbhdAssign,
+    this.sdnbhdResign,
     this.sdnbhdDirectors,
   ])
 
@@ -162,6 +169,12 @@ export class PageSidebar {
     "services/appointment-of-auditor",
     false
   )
+  static paymentToDirectors: Sidebar = new Sidebar(
+    "Payment to Directors",
+    "Bayaran ke Pengarah",
+    "services/payment-to-directors",
+    false
+  )
   static switchOut: Sidebar = new Sidebar("Switch Outs", "Switch Out", "services/switch-outs", false)
   static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
     this.changeBusinessName,
@@ -169,6 +182,7 @@ export class PageSidebar {
     this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
+    this.paymentToDirectors,
     this.transferOfShares,
     this.allotNewShares,
     this.purchaseAssets,

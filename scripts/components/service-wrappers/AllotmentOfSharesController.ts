@@ -72,13 +72,37 @@ export class AllotmentOfSharesController
     this.showMcrFirst.value = !this.showMcrFirst.value
   }
 
-  onDcrChanged(): void {
-    if (!this.dcrRef || !this.mcrRef) {
+  async onDcrChanged(): Promise<void> {
+    if (!this.dcrRef) {
       return
     }
 
-    let updatedData = this.dcrRef.getApplicationData()
-    this.mcrRef.updateApplicationContent(updatedData)
+    if (this.isUpdating.value) {
+      setTimeout(() => {
+        this.onDcrChanged()
+      }, 500)
+      return
+    }
+
+    this.isUpdating.value = true
+
+    try {
+      let updatedData = this.dcrRef.getApplicationData()
+      this.application.value = new CompanyShareholderAllotment(updatedData)
+      this.application.value.id = this.applicationId ?? ""
+      await this.onUpdate()
+
+      this.isUpdated.value = true
+
+      setTimeout(() => {
+        this.isUpdated.value = false
+        this.isUpdating.value = false
+      }, 1000)
+    } catch (e) {
+      this.isUpdating.value = false
+    } finally {
+      // this.isUpdating.value = false
+    }
   }
 
   async onSignedMcr(signatureData: string): Promise<void> {
@@ -112,6 +136,43 @@ export class AllotmentOfSharesController
         errorMessage.setForFetch()
         errorMessage.handle()
       }
+    }
+  }
+
+  async onMcrUpdated(): Promise<void> {
+    if (!this.mcrRef) {
+      return
+    }
+
+    if (this.isUpdating.value) {
+      setTimeout(() => {
+        this.onMcrUpdated()
+      }, 500)
+      return
+    }
+
+    this.isUpdating.value = true
+
+    try {
+      let updatedData = this.mcrRef.getApplication()
+      let companyShareAuthorization = new CompanyShareAuthorization(updatedData)
+      if (StringUtil.isNullOrEmpty(companyShareAuthorization.id)) {
+        await companyShareAuthorization.create(useCompanyShareAuthorizationStore())
+      } else {
+        await companyShareAuthorization.update(useCompanyShareAuthorizationStore())
+      }
+      await this.allotShares.value.fetchExistingAuthorization()
+
+      this.isUpdated.value = true
+
+      setTimeout(() => {
+        this.isUpdated.value = false
+        this.isUpdating.value = false
+      }, 1000)
+    } catch (e) {
+      this.isUpdating.value = false
+    } finally {
+      // this.isUpdating.value = false
     }
   }
 
@@ -273,15 +334,17 @@ export class AllotmentOfSharesController
 
       if (this.noticeRef) {
         let noticePages = await this.noticeRef.getPdfPages()
-        promises.push(
-          PdfPaperUtil.generatePdfFile(
-            noticePages,
-            20,
-            "Section 85 - Preemptive Rights Notices.pdf",
-            PaperSize.A4,
-            PaperOrientation.Portrait
+        noticePages.forEach((page: HTMLElement, index: number) => {
+          promises.push(
+            PdfPaperUtil.generatePdfFile(
+              [page],
+              20,
+              `${index + 1}. Section 85 - Preemptive Rights Notices.pdf`,
+              PaperSize.A4,
+              PaperOrientation.Portrait
+            )
           )
-        )
+        })
       }
 
       if (this.allotRef) {
@@ -290,7 +353,7 @@ export class AllotmentOfSharesController
           PdfPaperUtil.generatePdfFile(
             allotPages,
             20,
-            "DCR - Allotment of Shares.pdf",
+            "DCR - Issue and Allotment of Shares.pdf",
             PaperSize.A4,
             PaperOrientation.Portrait
           )

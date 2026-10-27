@@ -66,6 +66,10 @@ export class Section105ServiceController extends CompanyServiceController<Compan
         StatusConstants.PENDING,
         StatusConstants.RESPONDED,
         StatusConstants.ONGOING,
+        StatusConstants.STAMPING,
+        StatusConstants.SUBMITTED,
+        StatusConstants.COMPLETED,
+        StatusConstants.CONVERTED,
       ]
       filter.orderBy = "created_at"
       filter.sortOrder = "desc"
@@ -326,13 +330,13 @@ export class Section105ServiceController extends CompanyServiceController<Compan
       let ref = this.section105Refs[i]
 
       let pages = await ref.getPdfPages()
-      let filename = `${i + 1}. Section 105.pdf`
+      let filename = `${i + 1}. Section 105 - Form of Transfer of Securities.pdf`
       let blob = await PdfPaperUtil.getPdfBlob(pages, 10, filename, PaperSize.A4, PaperOrientation.Portrait)
       blobs.push(blob)
       files.push(new DownloadFileData(URL.createObjectURL(blob), filename))
     }
 
-    await FileZipper.zipAndDownload(files, `Section 105.zip`)
+    await FileZipper.zipAndDownload(files, `Section 105 - Form of Transfer of Securities.zip`)
   }
 
   async onGenerateBlobs(filename: string): Promise<Blob[]> {

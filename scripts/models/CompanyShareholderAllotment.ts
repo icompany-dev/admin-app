@@ -114,6 +114,7 @@ export class CompanyShareholderAllotment
         return allotTo.getRequestBody()
       }),
       details: this.details.getRequestBody(),
+      status: this.status,
     }
   }
 

@@ -211,7 +211,11 @@ export class DocumentsController {
         }
 
         let blob = await response.blob()
-        files.push(new DownloadFileData(URL.createObjectURL(blob), `${i + 1}. ${companyDocument.documentName}`))
+        let filename = companyDocument.documentName
+        if (!StringUtil.contains(companyDocument.documentName, ".pdf")) {
+          filename = `${filename}.pdf`
+        }
+        files.push(new DownloadFileData(URL.createObjectURL(blob), `${i + 1}. ${filename}`))
       }
 
       await FileZipper.zipAndDownload(files, `Company Documents.zip`)

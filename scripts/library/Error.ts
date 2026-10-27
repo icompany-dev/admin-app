@@ -191,4 +191,27 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_API
   }
+
+  setForFileforOCR(): void {
+    this.title = this.isMalay ? "Jenis fail anda tidak diterima" : "Your file type is incorrect"
+    this.message = this.isMalay
+      ? "Kami tidak dapat proses fail anda untuk OCR. Sila muat naik fail lain."
+      : "We are unable to process your file for OCR. Please upload another file to proceed."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
+  setForUploadFileToAws(): void {
+    this.title = this.isMalay ? "Fail anda tidak dimuat naik" : "Your file type is not uploaded"
+    this.message = this.isMalay ? "Sila cuba sekali lagi." : "Please try again"
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
+
+  setForNoFileToUpload(): void {
+    this.title = this.isMalay ? "Tiada fail untuk diteruskan" : "There is no file to proceed"
+    this.message = this.isMalay ? "Sila muat naik fail untuk teruskan." : "Please upload a file to proceed."
+
+    this.type = Error.ERROR_TYPE_DATA
+  }
 }

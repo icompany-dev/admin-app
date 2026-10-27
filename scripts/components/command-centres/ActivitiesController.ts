@@ -5,10 +5,13 @@ import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { FilterDateShortCuts } from "~/scripts/constants/FilterValues"
 import { ServiceName, ServiceNames } from "~/scripts/constants/ServiceNames"
 import { ObjectUtil } from "~/scripts/utils/Object"
+import { DailyActivity } from "~/scripts/models/DailyActivity"
 
 export class ActivitiesController {
   todos = ref<AdminToDo[]>([])
   filteredTodos = ref<AdminToDo[]>([])
+
+  activities = ref<DailyActivity[]>([])
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
@@ -44,6 +47,11 @@ export class ActivitiesController {
     try {
       this.isLoading.value = true
       let repository = useAdminToDoStore()
+
+      let activityResponse = await repository.fetchActivities(this.filter.value)
+      this.activities.value = activityResponse.data.map((d: any) => {
+        return new DailyActivity(d)
+      })
 
       let response = await repository.fetchAll(this.filter.value)
       this.todos.value = response.data.map((d: any) => {

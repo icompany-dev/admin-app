@@ -37,6 +37,13 @@
                     {{ item.documentName }}
                   </span>
                   <span v-if="item.isSsmPurchase">{{ controller.purchaseFrom }} MyData</span>
+                  <span
+                    v-if="!controller.canShowDocument(item)"
+                    class="text-danger"
+                  >
+                    &nbsp;
+                    <small>(Not in Available in Company Documents)</small>
+                  </span>
                 </li>
               </ol>
             </div>
@@ -59,7 +66,6 @@
           </template>
         </ApplicationNode>
         <ApplicationNode
-          v-if="controller.isDeliveryRequired"
           v-bind="controller.deliveryNodeProps"
           @click="controller.onApplicationDetailsClicked()"
         >

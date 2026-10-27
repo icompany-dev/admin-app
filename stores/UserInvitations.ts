@@ -68,6 +68,22 @@ export const useUserInvitationStore = defineStore("userInvitation", () => {
     }
   }
 
+  async function adminGrantAccess(data: object): Promise<UserInvitation | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.userInvitations.adminGrantAccess(data)
+      return response
+    } catch (e: any) {
+      error.value = e.message || `Failed to accept invitation`
+      console.error(`Error to accept invitation`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalUserInvitations = computed(() => userInvitations.value.length)
 
   return {
@@ -80,5 +96,6 @@ export const useUserInvitationStore = defineStore("userInvitation", () => {
     fetchByUserId,
     accept,
     reject,
+    adminGrantAccess,
   }
 })

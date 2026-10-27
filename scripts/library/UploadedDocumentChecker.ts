@@ -32,11 +32,13 @@ export class UploadedDocumentChecker {
       return false
     }
 
-    let firstDocumentDate = firstDocument.documentDate
-
     let dayjs = useDayjs()
+    let firstDocumentDate = dayjs(firstDocument.documentDate).endOf("day")
 
-    return dayjs(applicationDate).isBefore(firstDocumentDate) || dayjs(applicationDate).isSame(firstDocumentDate)
+    return (
+      dayjs(applicationDate).startOf("day").isBefore(firstDocumentDate) ||
+      dayjs(applicationDate).isSame(firstDocumentDate)
+    )
   }
 
   latestDocument(target: string, applicationDate: string): CompanyDocument | null {
@@ -184,7 +186,7 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_LOAN_APPLICATION_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_LODGE_ANNUAL_RETURN:
-        return ""
+        return StatutoryFormKeywords.AnnualReturn
       case DocumentTargets.TARGET_LODGE_ANNUAL_RETURN_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_MAILROOM_SERVICE:

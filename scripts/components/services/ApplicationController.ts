@@ -1,3 +1,4 @@
+import { DeliveryConstants } from "~/scripts/constants/Payment"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
@@ -5,6 +6,7 @@ import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentCheck
 import { Application } from "~/scripts/models/Application"
 import { Director } from "~/scripts/models/Director"
 import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
+import { PaymentCart } from "~/scripts/models/PaymentCart"
 import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import { Shareholder } from "~/scripts/models/Shareholder"
@@ -24,6 +26,7 @@ export abstract class ApplicationController<Application> {
 
   paymentOrderId: Ref<string> = ref<string>("")
   paymentOrder: Ref<PaymentOrder> = ref<PaymentOrder>(new PaymentOrder())
+  paymentCart: Ref<PaymentCart> = ref<PaymentCart>(new PaymentCart())
 
   directors: Ref<Director[]> = ref<Director[]>([])
   shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
@@ -229,6 +232,12 @@ export abstract class ApplicationController<Application> {
 
     this.paymentOrder.value = new PaymentOrder(response)
     this.paymentOrderId.value = this.paymentOrder.value.id
+
+    let paymentCartRepository = usePaymentCartStore()
+    let paymentCartResponse = await paymentCartRepository.fetch(this.paymentOrder.value.paymentCartId)
+    if (paymentCartResponse) {
+      this.paymentCart.value = new PaymentCart(paymentCartResponse)
+    }
 
     this.emitEvents("paymentOrder", this.paymentOrder.value)
   }
@@ -516,7 +525,7 @@ export abstract class ApplicationController<Application> {
   }
 
   get isDeliveryRequired(): boolean {
-    return this.paymentOrderItem.isDeliveryRequired
+    return this.application.value !== null && this.paymentOrderItem.hasDelivery
   }
 
   get deliveryLabel(): string {
@@ -532,16 +541,165 @@ export abstract class ApplicationController<Application> {
   }
 
   get deliveryMethod(): string {
-    return this.paymentOrderItem.deliveryType ?? "-"
+    if (!this.isDeliveryRequired) {
+      return "Email"
+    }
+
+    let deliveryMethod = "PosLaju"
+    switch (this.paymentOrderItem.deliveryType) {
+      case DeliveryConstants.DELIVERY_COURIER:
+        deliveryMethod = "PosLaju"
+        break
+      case DeliveryConstants.DELIVERY_SELF_PICKUP:
+        deliveryMethod = "Self Pick Up"
+        break
+      case DeliveryConstants.DELIVERY_THIRD_PARTY:
+        deliveryMethod = "Lalamove (Third Party Delivery Service)"
+        break
+      case DeliveryConstants.DELIVERY_INTERNATIONAL:
+        deliveryMethod = "International Courier"
+        break
+    }
+
+    return deliveryMethod
   }
 
   get deliverToLabel(): string {
     return this.language.isMalay() ? "Hantar ke" : "Deliver to"
   }
 
+  get billingName(): string {
+    return this.paymentOrder.value.billingInfo.name ?? "-"
+  }
+
+  get recipientName(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      return (this.paymentOrder.value.billingInfo.name ?? "-").toUpperCase()
+    }
+
+    let name = this.paymentCart.value.deliveryInfo.name ?? this.paymentCart.value.billingInfo.name ?? ""
+
+    return name.toUpperCase()
+  }
+
+  get recipientEmail(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      return this.paymentOrder.value.billingInfo.email ?? "-"
+    }
+
+    return this.paymentCart.value.deliveryInfo.email ?? ""
+  }
+
+  get recipientPhone(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      return this.paymentOrder.value.billingInfo.name ?? "-"
+    }
+
+    return this.paymentCart.value.deliveryInfo.phone ?? ""
+  }
+
+  get noDeliveryRequired(): string {
+    return this.language.isMalay() ? "Penghantaran Tidak Diperlukan" : "No Delivery Required"
+  }
+
+  get deliveryAddressLine1(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      let paymentOrderItemDelivery = this.paymentOrderItem.delivery
+      return (
+        paymentOrderItemDelivery?.deliveryInfo.addressLine1 ??
+        this.paymentOrder.value.billingInfo.addressLine1 ??
+        ""
+      ).toUpperCase()
+    }
+
+    return (this.paymentCart.value.deliveryInfo.addressLine1 ?? "").toUpperCase()
+  }
+
+  get deliveryAddressLine2(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      let paymentOrderItemDelivery = this.paymentOrderItem.delivery
+      return (
+        paymentOrderItemDelivery?.deliveryInfo.addressLine2 ??
+        this.paymentOrder.value.billingInfo.addressLine2 ??
+        ""
+      ).toUpperCase()
+    }
+
+    return (this.paymentCart.value.deliveryInfo.addressLine2 ?? "").toUpperCase()
+  }
+
+  get deliveryAddressLine3(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      let paymentOrderItemDelivery = this.paymentOrderItem.delivery
+      return (
+        paymentOrderItemDelivery?.deliveryInfo.addressLine3 ??
+        this.paymentOrder.value.billingInfo.addressLine3 ??
+        ""
+      ).toUpperCase()
+    }
+
+    return (this.paymentCart.value.deliveryInfo.addressLine3 ?? "").toUpperCase()
+  }
+
+  get deliveryAddressPostcode(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      let paymentOrderItemDelivery = this.paymentOrderItem.delivery
+      return (
+        paymentOrderItemDelivery?.deliveryInfo.addressPostcode ??
+        this.paymentOrder.value.billingInfo.addressPostcode ??
+        ""
+      ).toUpperCase()
+    }
+
+    return (this.paymentCart.value.deliveryInfo.addressPostcode ?? "").toUpperCase()
+  }
+
+  get deliveryAddressCity(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      let paymentOrderItemDelivery = this.paymentOrderItem.delivery
+      return (
+        paymentOrderItemDelivery?.deliveryInfo.addressCity ??
+        this.paymentOrder.value.billingInfo.addressCity ??
+        ""
+      ).toUpperCase()
+    }
+
+    return (this.paymentCart.value.deliveryInfo.addressCity ?? "").toUpperCase()
+  }
+
+  get deliveryAddressState(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      let paymentOrderItemDelivery = this.paymentOrderItem.delivery
+      return (
+        paymentOrderItemDelivery?.deliveryInfo.addressState ??
+        this.paymentOrder.value.billingInfo.addressState ??
+        ""
+      ).toUpperCase()
+    }
+
+    return (this.paymentCart.value.deliveryInfo.addressState ?? "").toUpperCase()
+  }
+
+  get deliveryAddressCountry(): string {
+    if (StringUtil.isNullOrEmpty(this.paymentCart.value.id)) {
+      let paymentOrderItemDelivery = this.paymentOrderItem.delivery
+      return (
+        paymentOrderItemDelivery?.deliveryInfo.addressCountry ??
+        this.paymentOrder.value.billingInfo.addressCountry ??
+        ""
+      ).toUpperCase()
+    }
+
+    return (this.paymentCart.value.deliveryInfo.addressCountry ?? "").toUpperCase()
+  }
+
   get deliveryAddress(): string {
-    if (!this.application.value || !this.isDeliveryRequired) {
+    if (!this.application.value) {
       return this.language.isMalay() ? "Penghantaran Tidak Diperlukan" : "No Delivery Required"
+    }
+
+    if (!this.isDeliveryRequired) {
+      return this.paymentOrder.value.billingInfo.email ?? "-"
     }
 
     let paymentOrderItemDelivery = this.paymentOrderItem.delivery
@@ -585,6 +743,10 @@ export abstract class ApplicationController<Application> {
   get deliveryAddressToCopy(): string {
     if (!this.application.value) {
       return "-"
+    }
+
+    if (!this.isDeliveryRequired) {
+      return this.paymentOrder.value.billingInfo.email ?? "-"
     }
 
     if (!this.application.value.company?.hasBusinessAddress) {

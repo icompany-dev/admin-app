@@ -87,9 +87,9 @@ export abstract class SecretarialServicesController<T> {
     filter.orderBy = "created_at"
     filter.includeTestAccount = this.isIncludeDemo.value
     filter.statuses = [
-      StatusConstants.DRAFT,
+      // StatusConstants.DRAFT,
       StatusConstants.READY,
-      StatusConstants.PENDING,
+      // StatusConstants.PENDING,
       StatusConstants.PAID,
       StatusConstants.NAME_REJECTED,
       StatusConstants.STAMPING,

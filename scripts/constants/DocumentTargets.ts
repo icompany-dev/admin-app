@@ -73,6 +73,9 @@ export class DocumentTargets {
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT: string = "company_director_manager_appointment"
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT_RESOLUTIONS: string = "company_director_manager_appointment_resolutions"
 
+  static TARGET_DIRECTOR_PAYMENT: string = "company_director_payment"
+  static TARGET_DIRECTOR_PAYMENT_RESOLUTIONS: string = "company_director_payment_resolutions"
+
   static TARGET_DIRECTOR_RESIGNATION: string = "company_director_resignation"
   static TARGET_DIRECTOR_RESIGNATION_RESOLUTIONS: string = "company_director_resignation_resolutions"
 
@@ -138,6 +141,7 @@ export class DocumentTargets {
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES: string = "company_shareholder_allotment"
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS: string = "company_shareholder_allotment_resolutions"
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION76: string = "company_shareholder_allotment_section76"
+  static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_SECTION85: string = "company_shareholder_allotment_section85"
   static TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA: string = "company_shareholder_allotment_roa"
 
   static TARGET_SHAREHOLDER_TRANSFER_OF_SHARES: string = "company_shareholder_transfer"
@@ -176,4 +180,6 @@ export class DocumentTargets {
 
   static TARGET_SWITCH_OUT_LETTER: string = "company_switch_out_letter"
   static TARGET_SWITCH_OUT_DOCUMENT: string = "company_switch_out_document"
+
+  static TARGET_DOCUMENT_REQUESTS: string = "company_switch_out_document"
 }

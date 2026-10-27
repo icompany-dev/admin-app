@@ -44,6 +44,7 @@ export class CompanyConstants {
   static TARGET_DIRECTOR_LOAN: string = "company_director_loan"
   static TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT: string = "company_director_chairman_appointment"
   static TARGET_DIRECTOR_MANAGER_APPOINTMENT: string = "company_director_manager_appointment"
+  static TARGET_DIRECTOR_PAYMENT: string = "company_director_payment"
   static TARGET_DIRECTOR_RESIGNATION: string = "company_director_resignation"
   static TARGET_DIVIDEND_DECLARATION: string = "company_dividend_declaration"
   static TARGET_DIVIDEND_VOUCHER: string = "company_dividend_declaration_voucher"
@@ -99,6 +100,7 @@ export class CompanyConstants {
   static TARGET_THIRD_SCHEDULE: string = "third_schedule" //this is not a service. but a document
 
   static TARGET_MERCHANDISE_PURCHASE: string = "merchandise_purchase"
+  static TARGET_COSEC_RESIGNATION: string = "resignation_of_cosec"
 
   static DOCUMENT_TARGETS: string[] = [
     this.TARGET_AMENDMENT_ADDRESS,
@@ -133,6 +135,7 @@ export class CompanyConstants {
     this.TARGET_DIRECTOR_LOAN,
     this.TARGET_DIRECTOR_CHAIRMAN_APPOINTMENT,
     this.TARGET_DIRECTOR_MANAGER_APPOINTMENT,
+    this.TARGET_DIRECTOR_PAYMENT,
     this.TARGET_DIRECTOR_RESIGNATION,
     this.TARGET_DIVIDEND_DECLARATION,
     this.TARGET_DIVIDEND_VOUCHER,
@@ -168,5 +171,6 @@ export class CompanyConstants {
     this.TARGET_THIRD_SCHEDULE,
     this.TARGET_SECTION_47,
     this.TARGET_TERMS_OF_REFERENCE,
+    this.TARGET_COSEC_RESIGNATION,
   ]
 }

@@ -2,10 +2,15 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
+import { Toast } from "~/scripts/library/Toast"
+import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Company } from "~/scripts/models/Company"
+import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
+import { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
 import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -19,12 +24,18 @@ export class SelectedSdnBhdController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isShowOptions: Ref<boolean> = ref<boolean>(false)
+  isUpdatingDetails: Ref<boolean> = ref<boolean>(false)
   isShowApplicationDocuments: Ref<boolean> = ref<boolean>(false)
 
   isOverview: Ref<boolean> = ref<boolean>(true)
+  isDocuments: Ref<boolean> = ref<boolean>(false)
+  isAnnualReturn: Ref<boolean> = ref<boolean>(false)
+  isFinancialStatement: Ref<boolean> = ref<boolean>(false)
+  isRolesAndAccess: Ref<boolean> = ref<boolean>(false)
+
+  //TODO: To remove
   isBusiness: Ref<boolean> = ref<boolean>(false)
   isDirectors: Ref<boolean> = ref<boolean>(false)
-  isDocuments: Ref<boolean> = ref<boolean>(false)
   isShareholders: Ref<boolean> = ref<boolean>(false)
   isAccounting: Ref<boolean> = ref<boolean>(false)
 
@@ -38,9 +49,17 @@ export class SelectedSdnBhdController {
   isDownloading: Ref<boolean> = ref<boolean>(false)
 
   spineRef: any | null = null
+  generateAuditExemptionCertificateRef: any | null = null
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
   isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
+  isSettingToStrikedOff: Ref<boolean> = ref<boolean>(false)
+  isSettingToSwitchedOut: Ref<boolean> = ref<boolean>(false)
+
+  isAnnualReturnPaid: Ref<boolean> = ref<boolean>(false)
+  annualReturnYear: Ref<string> = ref<string>("")
+
+  uploadedDocumentChecker = ref<UploadedDocumentChecker>(new UploadedDocumentChecker(""))
 
   applicationRefs: any[] = []
 
@@ -65,6 +84,10 @@ export class SelectedSdnBhdController {
 
   setSpineRef(spineRef: any): void {
     this.spineRef = spineRef
+  }
+
+  setGenerateAuditExemptionCertificateRef(val: any): void {
+    this.generateAuditExemptionCertificateRef = val
   }
 
   setApplicationRefs(index: number, ref: any): void {
@@ -92,6 +115,15 @@ export class SelectedSdnBhdController {
       }
 
       this.company.value = new Company(response)
+
+      this.uploadedDocumentChecker.value = new UploadedDocumentChecker(this.companyId.value)
+      await this.uploadedDocumentChecker.value.fetchDocuments()
+
+      if (!this.hasSubmittedForYear) {
+        await this.fetchAnnualReturn()
+      } else {
+        this.isAnnualReturnPaid.value = true
+      }
     } catch (e) {
       this.company.value = new Company()
       if (e instanceof Error) {
@@ -106,59 +138,87 @@ export class SelectedSdnBhdController {
     }
   }
 
+  async fetchAnnualReturn(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let repository = useCompanyAnnualReturnStore()
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    filter.take = 5
+    filter.sortOrder = "desc"
+    filter.orderBy = "year"
+    let response = await repository.fetchAll(filter)
+
+    if (response.totalRecords <= 0) {
+      this.isAnnualReturnPaid.value = false
+      return
+    }
+
+    let requestsForYear = response.data
+      .map((d: any) => {
+        return new CompanyAnnualReturnRequest(d)
+      })
+      .filter((d: CompanyAnnualReturnRequest) => {
+        return d.year === this.yearToLodge
+      })
+
+    if (requestsForYear.length <= 0) {
+      this.isAnnualReturnPaid.value = false
+      return
+    }
+
+    let paidForYear = requestsForYear.find((d: CompanyAnnualReturnRequest) => {
+      return !StringUtil.isNullOrEmpty(d.paidAt)
+    })
+
+    if (!paidForYear) {
+      this.isAnnualReturnPaid.value = false
+      return
+    }
+
+    this.isAnnualReturnPaid.value = true
+  }
+
   onOverviewClicked(): void {
     this.isOverview.value = true
-    this.isBusiness.value = false
-    this.isDirectors.value = false
     this.isDocuments.value = false
-    this.isShareholders.value = false
-    this.isAccounting.value = false
-  }
-
-  onBusinessClicked(): void {
-    this.isOverview.value = false
-    this.isBusiness.value = true
-    this.isDirectors.value = false
-    this.isDocuments.value = false
-    this.isShareholders.value = false
-    this.isAccounting.value = false
-  }
-
-  onDirectorsClicked(): void {
-    this.isOverview.value = false
-    this.isBusiness.value = false
-    this.isDirectors.value = true
-    this.isDocuments.value = false
-    this.isShareholders.value = false
-    this.isAccounting.value = false
+    this.isAnnualReturn.value = false
+    this.isFinancialStatement.value = false
+    this.isRolesAndAccess.value = false
   }
 
   onDocumentsClicked(): void {
     this.isOverview.value = false
-    this.isOverview.value = false
-    this.isBusiness.value = false
-    this.isDirectors.value = false
     this.isDocuments.value = true
-    this.isShareholders.value = false
-    this.isAccounting.value = false
+    this.isAnnualReturn.value = false
+    this.isFinancialStatement.value = false
+    this.isRolesAndAccess.value = false
   }
 
-  onShareholdersClicked(): void {
+  onAnnualReturnClicked(): void {
     this.isOverview.value = false
-    this.isBusiness.value = false
-    this.isDirectors.value = false
     this.isDocuments.value = false
-    this.isShareholders.value = true
-    this.isAccounting.value = false
+    this.isAnnualReturn.value = true
+    this.isFinancialStatement.value = false
+    this.isRolesAndAccess.value = false
   }
 
-  onAccountingClicked(): void {
+  onFinancialStatementClicked(): void {
     this.isOverview.value = false
-    this.isBusiness.value = false
-    this.isDirectors.value = false
     this.isDocuments.value = false
-    this.isShareholders.value = false
-    this.isAccounting.value = true
+    this.isAnnualReturn.value = false
+    this.isFinancialStatement.value = true
+    this.isRolesAndAccess.value = false
+  }
+
+  onRolesAndAccessesClicked(): void {
+    this.isOverview.value = false
+    this.isDocuments.value = false
+    this.isAnnualReturn.value = false
+    this.isFinancialStatement.value = false
+    this.isRolesAndAccess.value = true
   }
 
   onOptionsClicked(): void {
@@ -169,12 +229,90 @@ export class SelectedSdnBhdController {
     //
   }
 
-  onStrikeOffClicked(): void {
-    //
+  async onStrikeOffClicked(): Promise<void> {
+    if (this.isSettingToStrikedOff.value) {
+      return
+    }
+
+    try {
+      this.isSettingToStrikedOff.value = true
+      let repository = useCompanyStore()
+
+      let response = await repository.setToStrikedOff(this.companyId.value)
+
+      if (!response) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Data Sdn Bhd telah berjaya dikemaskini."
+        : "You have marked this Sdn Bhd as Striked Off."
+      let toastMessage = this.language.isMalay()
+        ? "Data ini akan disimpan selama 7 tahun sebelum dilupus."
+        : "The data will be retained for the next 7 years."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push("/sdnbhds/all")
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isSettingToStrikedOff.value = false
+    }
   }
 
-  onSwitchOutClicked(): void {
-    // initiate switchout process
+  async onSwitchOutClicked(): Promise<void> {
+    if (this.isSettingToSwitchedOut.value) {
+      return
+    }
+
+    try {
+      this.isSettingToSwitchedOut.value = true
+      let repository = useCompanyStore()
+
+      let response = await repository.setToSwitchedOut(this.companyId.value)
+
+      if (!response) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Data Sdn Bhd telah berjaya dikemaskini."
+        : "You have marked this Sdn Bhd as Switched Out."
+      let toastMessage = this.language.isMalay()
+        ? "Data ini akan disimpan selama 7 tahun sebelum dilupus."
+        : "The data will be retained for the next 7 years."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push("/sdnbhds/all")
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isSettingToSwitchedOut.value = false
+    }
+  }
+
+  onOpenGenerateAuditExemptionCertificate(): void {
+    if (!this.generateAuditExemptionCertificateRef) {
+      return
+    }
+
+    this.generateAuditExemptionCertificateRef.show()
   }
 
   onApplicationClicked(selectedService: string): void {
@@ -275,6 +413,14 @@ export class SelectedSdnBhdController {
     }
   }
 
+  onIsAnnualReturnPaidUpdated(isAnnualReturnPaid: boolean): void {
+    this.isAnnualReturnPaid.value = isAnnualReturnPaid
+  }
+
+  onAnnualReturnYearLodge(yearToLodge: string): void {
+    this.annualReturnYear.value = yearToLodge
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -304,11 +450,15 @@ export class SelectedSdnBhdController {
   }
 
   get strikeOff(): string {
-    return this.language.isMalay() ? "Strike Off" : "Strike Off"
+    return this.language.isMalay() ? "Striked Off" : "Striked Off"
   }
 
   get switchOut(): string {
-    return this.language.isMalay() ? "Switch Out" : "Switch Out"
+    return this.language.isMalay() ? "Switched Out" : "Switched Out"
+  }
+
+  get auditExemption(): string {
+    return this.language.isMalay() ? "Switched Out" : "Switched Out"
   }
 
   get overview(): string {
@@ -325,6 +475,20 @@ export class SelectedSdnBhdController {
 
   get documents(): string {
     return this.language.isMalay() ? "Dokumen" : "Documents"
+  }
+
+  get annualReturn(): string {
+    return this.language.isMalay()
+      ? `Penyata Tahunan untuk ${this.yearToLodge}`
+      : `Annual Return for ${this.yearToLodge}`
+  }
+
+  get financialStatement(): string {
+    return this.language.isMalay() ? "Penyata Kewangan" : "Financial Statement"
+  }
+
+  get rolesAndAccesses(): string {
+    return this.language.isMalay() ? "Peranan & Akses" : "Roles & Access"
   }
 
   get shareholders(): string {
@@ -381,5 +545,74 @@ export class SelectedSdnBhdController {
     let time = useLocalTime()
 
     return time.formatDateOnlyFull(this.company.value.incorporatedAt ?? "")
+  }
+
+  get yearToLodge(): string {
+    let dayjs = useDayjs()
+
+    // if (this.hasSubmittedForYear) {
+    //   return dayjs().add(1, "year").format("YYYY")
+    // }
+
+    let incorporatedAt = dayjs(this.company.value.incorporatedAt)
+
+    if (dayjs().year() === incorporatedAt.year()) {
+      return dayjs().add(1, "year").format("YYYY")
+    }
+
+    return dayjs().format("YYYY")
+  }
+
+  get currentYearAnnualReturnDate(): string {
+    let dayjs = useDayjs()
+
+    let currentYear = dayjs().year()
+    let incorporatedAt = dayjs(this.company.value.incorporatedAt)
+
+    let annualReturnDate = dayjs(this.company.value.incorporatedAt).year(currentYear)
+    return annualReturnDate.format("YYYY-MM-DD")
+  }
+
+  get isSubmittingForYear(): boolean {
+    let dayjs = useDayjs()
+    return this.yearToLodge === dayjs().format("YYYY")
+  }
+
+  get hasSubmittedForYear(): boolean {
+    let dayjs = useDayjs()
+    if (this.yearToLodge !== dayjs().format("YYYY")) {
+      return true //
+    }
+
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
+      this.currentYearAnnualReturnDate
+    )
+  }
+
+  get latestSection68(): CompanyDocument | null {
+    return this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_LODGE_ANNUAL_RETURN,
+      this.currentYearAnnualReturnDate
+    )
+  }
+
+  get isShowWarningForAnnualReturn(): boolean {
+    if (this.hasSubmittedForYear || !this.isSubmittingForYear) {
+      return false
+    }
+
+    return !this.isAnnualReturnPaid.value
+  }
+
+  get financialStatementSubmissionsProp(): PropsFinancialStatementSubmissions {
+    return new PropsFinancialStatementSubmissions(
+      this.company.value.id,
+      this.company.value.name,
+      this.company.value.createdAt,
+      null,
+      false,
+      false
+    )
   }
 }

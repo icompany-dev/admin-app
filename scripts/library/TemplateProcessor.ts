@@ -1,5 +1,6 @@
 import { Company } from "../models/Company"
 import { DocumentTemplate } from "../models/DocumentTemplate"
+import { NumberUtil } from "../utils/Number"
 import { StringUtil } from "../utils/String"
 
 export class TemplateProcessor {
@@ -225,13 +226,13 @@ export class TemplateProcessor {
         .toUpperCase()
 
       if (type === "text") {
-        return `<input type="text" data-field-name="${name}" name="${name}" value="${value}" class="form-control in-resolution" ${disable} placeholder='${placeholder}' >`
+        return `<input type="text" data-field-name="${name}" name="${name}" value="${value}" class="form-control in-resolution ${name}" ${disable} placeholder='${placeholder}' >`
       } else if (type === "textarea") {
-        return `<textarea data-field-name="${name}" name="${name}" class="form-control in-resolution" rows="5" placeholder='${placeholder}' ${disable}>${value}</textarea>`
+        return `<textarea data-field-name="${name}" name="${name}" class="form-control in-resolution ${name}" rows="5" placeholder='${placeholder}' ${disable}>${value}</textarea>`
       } else if (type === "date") {
-        return `<input type="date" data-field-name="${name}" name="${name}" value="${value}" class="form-control in-resolution" ${disable}>`
+        return `<input type="date" data-field-name="${name}" name="${name}" value="${value}" class="form-control in-resolution ${name}" ${disable}>`
       } else if (type === "checkbox") {
-        return `<input type="checkbox" data-field-name="${name}" name="${name}" value="${value}" class="form-control in-resolution" ${disable}>`
+        return `<input type="checkbox" data-field-name="${name}" name="${name}" value="${value}" class="form-control in-resolution ${name}" ${disable}>`
       }
       return match
     })
@@ -248,6 +249,14 @@ export class TemplateProcessor {
       let value = data[name] ?? null
       if (!value) {
         return ""
+      }
+
+      console.log("type", type)
+
+      if (type === "text") {
+        const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(value)
+        console.log("yo", isNumericOrDecimal, value)
+        return isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(value)) : value
       }
 
       if (type === "date") {

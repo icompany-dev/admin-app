@@ -1,0 +1,104 @@
+#financial-statements-submissions {
+  .submissions {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    .submission {
+      padding: 20px;
+      width: calc(100% - 40px);
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+
+      .details {
+        cursor: pointer;
+      }
+
+      .statement-details {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border-radius: 10px;
+        background-color: var(--bs-white);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+
+        .submission-documents {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          gap: 10px;
+
+          .management-account,
+          .financial-statement {
+            width: calc(50% - 5px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+
+            .financial-statement-document {
+              transform: scale(0.54);
+              max-height: 610px;
+              width: fit-content;
+              transform-origin: top;
+              cursor: pointer;
+
+              .paper-wrapper {
+                display: none;
+
+                &:first-child {
+                  display: block;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.document-view {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100dvh;
+  z-index: -999;
+  opacity: 0;
+  width: calc(100dvw - var(--scrollbar-width));
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.8);
+  transform-origin: bottom;
+  transition:
+    opacity 0.7s ease,
+    padding 0s ease 0.7s,
+    height 0s ease 0.7s;
+
+  &.show {
+    padding: 70px 0;
+    padding-top: 70px;
+    opacity: 1;
+    transition: opacity 0.7s ease;
+    z-index: 10;
+  }
+
+  .cosec-service-documents {
+    width: fit-content !important;
+    height: fit-content !important;
+    margin: auto;
+    margin-bottom: 70px;
+  }
+}

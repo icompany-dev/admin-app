@@ -42,7 +42,7 @@
   const resolutionContent = ref(null)
   const documentRef = ref(null)
 
-  const emit = defineEmits(["startLoading", "doneLoading", "signed"])
+  const emit = defineEmits(["startLoading", "doneLoading", "signed", "dataUpdated"])
 
   const controller = new McrAuthorityToAllotSharesController(props, emit)
 

@@ -7,7 +7,7 @@ export class CompanyBankSignatory {
   designation: string | null = null //HLB requires this
   email: string | null = null //HLB requires this
   phone: string | null = null //HLB requires this
-  type: string | null = null
+  type: string | null = "ic"
   identification: string | null = null
   role: string | null = null
   updatedAt: string | null = null

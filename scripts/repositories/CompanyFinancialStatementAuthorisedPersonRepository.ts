@@ -10,4 +10,13 @@ export class CompanyFinancialStatementAuthorisedPersonRepository extends Reposit
   ) {
     super(resourceUrl, singleResourceUrl, baseUrl, getAuthToken, CompanyFinancialStatementAuthorisedPerson)
   }
+
+  async byFinancialPeriod(financialPeriodId: string): Promise<any> {
+    try {
+      const response = this.get(`${this.singleResourceUrl}/by-financial-period/${financialPeriodId}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

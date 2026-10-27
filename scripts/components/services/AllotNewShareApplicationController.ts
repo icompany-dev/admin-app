@@ -33,13 +33,21 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   allotShares = ref<AllotShares>(new AllotShares("", ""))
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
+  isShowSection76: Ref<boolean> = ref<boolean>(false)
+  isShowPrn: Ref<boolean> = ref<boolean>(false)
   isShowShipped: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
 
+  isUploadingSection76: Ref<boolean> = ref<boolean>(false)
+  isUploadingROA: Ref<boolean> = ref<boolean>(false)
+
   isGenerating: Ref<boolean> = ref<boolean>(false)
+  isSubmitting: Ref<boolean> = ref<boolean>(false)
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
 
+  isDownloadingIssuance: Ref<boolean> = ref<boolean>(false)
+  isDownloadingResoForROA: Ref<boolean> = ref<boolean>(false)
   isDownloadingProof: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection76: Ref<boolean> = ref<boolean>(false)
   isDownloadingRoa: Ref<boolean> = ref<boolean>(false)
@@ -75,6 +83,8 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   onPaymentStepClicked(): void {
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false
+    this.isShowSection76.value = false
+    this.isShowPrn.value = false
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
@@ -83,21 +93,82 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   onApplicationDetailsClicked(): void {
     this.isShowReceipt.value = false
     this.isShowResolutions.value = true
+    this.isShowSection76.value = false
+    this.isShowPrn.value = false
     this.isShowCompleted.value = false
 
     this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
   }
 
-  async onDownloadClicked(): Promise<void> {
+  onSection76Clicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowSection76.value = true
+    this.isShowPrn.value = false
+    this.isShowCompleted.value = false
+
     this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_RESOLUTIONS)
+  }
+
+  onSection85Clicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowSection76.value = false
+    this.isShowPrn.value = true
+    this.isShowCompleted.value = false
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA)
+  }
+
+  onCompleteStepClicked(): void {
+    this.isShowReceipt.value = false
+    this.isShowResolutions.value = false
+    this.isShowSection76.value = false
+    this.isShowPrn.value = false
+    this.isShowCompleted.value = true
+
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES_ROA)
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (this.isShowResolutions.value) {
+      this.isDownloadingIssuance.value = true
+    }
+
+    if (this.isShowPrn.value) {
+      this.isDownloadingResoForROA.value = true
+    }
     await nextTick()
     this.emitEvents("download")
+  }
+
+  onDownloadCompleted(): void {
+    this.isDownloadingIssuance.value = false
+    this.isDownloadingResoForROA.value = false
   }
 
   async onUploadDocumentClicked(): Promise<void> {
     if (this.uploadDocumentRef) {
       this.uploadDocumentRef.show()
     }
+  }
+
+  async onUploadSection76Clicked(): Promise<void> {
+    if (!this.uploadDocumentRef) {
+      return
+    }
+
+    this.isUploadingSection76.value = true
+    this.uploadDocumentRef.show()
+  }
+
+  async onUploadROAClicked(): Promise<void> {
+    if (!this.uploadDocumentRef) {
+      return
+    }
+
+    this.isUploadingROA.value = true
+    this.uploadDocumentRef.show()
   }
 
   async onDownloadSection76Clicked(): Promise<void> {
@@ -216,6 +287,35 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     //
   }
 
+  async onSubmitClicked(): Promise<void> {
+    if (!this.application.value) {
+      return
+    }
+
+    this.isSubmitting.value = true
+    try {
+      this.application.value.status = StatusConstants.SUBMITTED
+      await this.application.value.submit(useCompanyShareholderAllotmentStore())
+      // await this.fetchApplication()
+
+      let toastTitle = this.language.isMalay()
+        ? "Anda telah mengemaskini status permohonan ini."
+        : "You have updated this application status."
+      let toastMessage = this.language.isMalay()
+        ? "Sila muat naik Seksyen 76(2)."
+        : "Please upload Section 76(2) when it is available."
+
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      let error = new Error()
+      error.setForCUD()
+      error.handle()
+    } finally {
+      this.isSubmitting.value = false
+    }
+  }
+
   async onApprovedClicked(): Promise<void> {
     if (!this.application.value) {
       return
@@ -225,19 +325,17 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     try {
       this.application.value.status = StatusConstants.APPROVED
       await this.application.value.update(useCompanyShareholderAllotmentStore())
-      await this.fetchApplication()
+      // await this.fetchApplication()
 
       let toastTitle = this.language.isMalay()
         ? "Anda telah mengemaskini status permohonan ini."
         : "You have updated this application status."
-      let toastMessage = this.language.isMalay() ? "Sila muat naik Resolusi." : "Please upload the Resolution."
+      let toastMessage = this.language.isMalay()
+        ? "Sila muat naik Return of Allotment."
+        : "Please upload the Return of Allotment."
 
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
-
-      if (this.uploadDocumentRef) {
-        this.uploadDocumentRef.show()
-      }
     } catch (e) {
       let error = new Error()
       error.setForCUD()
@@ -248,11 +346,14 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   async onProceedPostUpload(): Promise<void> {
-    if (this.isCompleting.value) {
-      await this.proceedCompleteService()
-    }
+    // if (this.isCompleting.value) {
+    //   await this.proceedCompleteService()
+    // }
 
     await this.uploadedDocumentChecker.value.fetchDocuments()
+
+    this.isUploadingSection76.value = false
+    this.isUploadingROA.value = false
   }
 
   async onShippedClicked(): Promise<void> {
@@ -277,6 +378,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       return
     }
     try {
+      this.isCompleting.value = true
       let repository = useCompanyStore()
       await repository.postService(this.target.value, this.application.value.id)
 
@@ -331,7 +433,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get applicationDetailsNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(this.hasPaid, this.isApproved, this.isShowResolutions.value)
+    return new PropsServiceApplicationNode(this.hasPaid, this.isSubmitted, this.isShowResolutions.value)
   }
 
   get applicationDetailsLabel(): string {
@@ -389,7 +491,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get section75Label(): string {
-    return this.language.isMalay() ? "Seksyen 75 & 76" : "Section 75 & 76"
+    return this.language.isMalay() ? "Status Kebenaran:" : "Authorisation Status:"
   }
 
   get section75Details(): string {
@@ -406,7 +508,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       })
 
     if (signaturesCompleted) {
-      return this.language.isMalay() ? "Kelulusan Diterima" : "Approval Received"
+      return this.language.isMalay() ? "Kebenaran Diterima" : "Authorised"
     }
 
     if (this.language.isMalay()) {
@@ -476,7 +578,11 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
   }
 
   get uploadSection76Label(): string {
-    return this.language.isMalay() ? "Muat Naik Seksyen 76" : "Upload Section 76"
+    if (this.isSection76Uploaded) {
+      return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
+    }
+
+    return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
   get downloadLabel(): string {
@@ -485,6 +591,25 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
 
   get downloadDocumentSection76Label(): string {
     return this.language.isMalay() ? "Seksyen 76" : "Section 76"
+  }
+
+  get isSubmitted(): boolean {
+    if (!this.application.value) {
+      return false
+    }
+
+    return (
+      this.application.value.status === StatusConstants.SUBMITTED ||
+      this.application.value.status === StatusConstants.APPROVED ||
+      this.application.value.status === StatusConstants.SHIPPED ||
+      this.application.value.status === StatusConstants.DELIVERED ||
+      this.application.value.status === StatusConstants.CONVERTED ||
+      this.application.value.status === StatusConstants.COMPLETED
+    )
+  }
+
+  get submitLabel(): string {
+    return this.language.isMalay() ? "Dihantar" : "Submitted"
   }
 
   get isApproved(): boolean {
@@ -503,6 +628,41 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
 
   get approveLabel(): string {
     return this.language.isMalay() ? "Diluluskan" : "Approved"
+  }
+
+  get isAuthorisedToAllot(): boolean {
+    let signaturesCompleted =
+      this.allotShares.value.existingShareAuthorization.signatureGroups.length >= this.shareholders.value.length
+
+    return signaturesCompleted
+  }
+
+  get section76NodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isSubmitted, this.isSection76Uploaded, this.isShowSection76.value)
+  }
+
+  get section76Label(): string {
+    return this.language.isMalay()
+      ? "Seksyen 75 & 76 - Kuasa untuk Peruntuk Saham"
+      : "Section 75 & 76 - Authority to Allot Shares"
+  }
+
+  get section76Sublabel(): string {
+    return this.language.isMalay() ? "Muat Naik Seksyen 76 dari SSM" : "Upload Section 76 from SSM"
+  }
+
+  get section85NodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(this.isSection76Uploaded, this.isApproved, this.isShowPrn.value)
+  }
+
+  get section85Label(): string {
+    return this.language.isMalay() ? "Peruntukkan Saham Baharu" : "Allotment of New Shares"
+  }
+
+  get section85Sublabel(): string {
+    return this.language.isMalay()
+      ? "Seksyen 85 - Notis Hak Pra-Beli, DCR untuk Peruntukkan Saham"
+      : "Section 85 - Pre-Emptive Rights, DCR to Issue and Allot New Shares"
   }
 
   get shipLabel(): string {

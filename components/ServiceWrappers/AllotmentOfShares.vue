@@ -38,11 +38,12 @@
             ref="mcrRef"
             v-bind="controller.mcrResolutionDocumentProps"
             @signed="controller.onSignedMcr($event)"
+            @dataUpdated="controller.onMcrUpdated()"
           />
-          <DcrAllotmentOfShares
+          <!-- <DcrAllotmentOfShares
             ref="allotRef"
             v-bind="controller.resolutionDocumentProps"
-          />
+          /> -->
           <!-- <PreemptiveRightNotices
             ref="noticeRef"
             :company-id="controller.companyId"
@@ -62,6 +63,23 @@
       </TransitionGroup>
     </div>
     <ActionTray :actions="controller.actionTrayElements.value" />
+    <Teleport to="body">
+      <Transition name="slide-left">
+        <div
+          class="document-auto-saved"
+          v-if="controller.isUpdating.value"
+        >
+          <i
+            class="fa-regular fa-spin fa-spinner"
+            v-if="!controller.isUpdated.value"
+          ></i>
+          <div class="label-details">
+            <div class="label">{{ controller.updatingLabel }}</div>
+            <div class="sublabel">{{ controller.updatingSublabel }}</div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 

@@ -29,8 +29,8 @@ export class ChangeBankSignatoriesController
 
   directors: Ref<Director[]> = ref<Director[]>([])
 
-  isUpdating: Ref<boolean> = ref<boolean>(false)
-  isUpdated: Ref<boolean> = ref<boolean>(false)
+  // isUpdating: Ref<boolean> = ref<boolean>(false)
+  // isUpdated: Ref<boolean> = ref<boolean>(false)
 
   identificationRefs = ref<any[]>([])
 
@@ -125,6 +125,8 @@ export class ChangeBankSignatoriesController
     try {
       this.isUpdating.value = true
 
+      console.log("updated", updatedData)
+
       this.application.value = new CompanyChangeBankSignatory(updatedData)
       this.application.value.id = this.applicationId ?? ""
       if (StringUtil.isNullOrEmpty(this.application.value.id)) {
@@ -213,17 +215,51 @@ export class ChangeBankSignatoriesController
     this.isDownloading.value = true
     this.setActionTrayElements()
     try {
-      let pages = await this.getPdfPages()
+      let promises: any[] = []
+      if (this.dcrRef) {
+        let docPages = await this.dcrRef.getPdfPages()
+        promises.push(
+          PdfPaperUtil.generatePdfFile(
+            docPages,
+            19,
+            `DCR - ${this.bankName} Change of Bank Signatories.pdf`,
+            PaperSize.A4,
+            PaperOrientation.Portrait
+          )
+        )
+      }
 
-      if (pages.length > 0) {
-        await PdfPaperUtil.generatePdfFile(
-          pages,
-          20,
-          "Resolution and Documents for Change of Bank Signatories.pdf",
+      let identificationPages: any[] = []
+      for (let i = 0; i <= this.identificationRefs.value.length; i++) {
+        let identificationRef = this.identificationRefs.value[i]
+        if (!identificationRef) {
+          continue
+        }
+
+        let identificationPage = await identificationRef.getPdfPages()
+        identificationPages = identificationPages.concat(identificationPage)
+      }
+
+      promises.push(
+        PdfPaperUtil.generatePdfFile(
+          identificationPages,
+          19,
+          `Identification Documents.pdf`,
           PaperSize.A4,
           PaperOrientation.Portrait
         )
-      }
+      )
+      // let pages = await this.getPdfPages()
+
+      // if (pages.length > 0) {
+      //   await PdfPaperUtil.generatePdfFile(
+      //     pages,
+      //     20,
+      //     "Resolution and Documents for Change of Bank Signatories.pdf",
+      //     PaperSize.A4,
+      //     PaperOrientation.Portrait
+      //   )
+      // }
     } catch (e) {
       console.error(e)
     } finally {
@@ -299,19 +335,23 @@ export class ChangeBankSignatoriesController
     return props
   }
 
-  get updatingLabel(): string {
-    if (this.isUpdated.value) {
-      return this.language.isMalay() ? "Maklumat Anda telah dikemaskini!" : "Your Information is Saved!"
-    }
-
-    return this.language.isMalay() ? "Sedang Mengemaskini Maklumat Anda" : "Saving Your Information"
+  get bankName(): string {
+    return this.application.value.companyBank.bank.nickname.toUpperCase() ?? ""
   }
 
-  get updatingSublabel(): string {
-    if (this.isUpdated.value) {
-      return ""
-    }
+  // get updatingLabel(): string {
+  //   if (this.isUpdated.value) {
+  //     return this.language.isMalay() ? "Maklumat Anda telah dikemaskini!" : "Your Information is Saved!"
+  //   }
 
-    return this.language.isMalay() ? "Sila jangan muat semula!" : "Please do not refresh!"
-  }
+  //   return this.language.isMalay() ? "Sedang Mengemaskini Maklumat Anda" : "Saving Your Information"
+  // }
+
+  // get updatingSublabel(): string {
+  //   if (this.isUpdated.value) {
+  //     return ""
+  //   }
+
+  //   return this.language.isMalay() ? "Sila jangan muat semula!" : "Please do not refresh!"
+  // }
 }

@@ -25,7 +25,21 @@
               >
                 {{ controller.markerText.value }}
               </div>
-              <img :src="controller.identificationFileUrl.value" />
+              <img
+                :src="controller.identificationFileUrl.value"
+                v-if="!controller.isPdfFile"
+              />
+              <template v-if="controller.isPdfFile">
+                <canvas
+                  v-for="(page, index) in controller.numberOfPages.value"
+                  :key="page"
+                  :ref="
+                    (el) => {
+                      return controller.setPageCanvas(page, el as HTMLCanvasElement | null)
+                    }
+                  "
+                />
+              </template>
             </div>
 
             <div

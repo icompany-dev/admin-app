@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import { useNuxtApp } from "#app"
 import { useStoreActions } from "~/stores/StoreActions"
 import { AdminToDo } from "~/scripts/models/AdminToDo"
+import type { Filter } from "~/scripts/library/Filter"
 
 export const useAdminToDoStore = defineStore("adminToDo", () => {
   const { $repositories } = useNuxtApp()
@@ -20,12 +21,28 @@ export const useAdminToDoStore = defineStore("adminToDo", () => {
 
   const totalAdminToDos = computed(() => adminToDos.value.length)
 
+  async function fetchActivities(filter: Filter): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.adminToDos.fetchActivities(filter)
+      return response
+    } catch (e) {
+      console.error(e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     adminToDos,
     adminToDo,
     isLoading,
     error,
     totalAdminToDos,
-    ...crudActions
+    ...crudActions,
+    fetchActivities,
   }
 })

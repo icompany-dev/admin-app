@@ -32,6 +32,9 @@ export class Ocr {
   fileUploadError: string | null = null
   isFileLoading: boolean = false
 
+  financialYearEnd: string | null = null
+  totalShares: number | null = null
+
   isProcessing: boolean = false
   totalPages: number = 0
   totalUploaded: number = 0
@@ -133,7 +136,7 @@ export class Ocr {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForUploadFileToAws()
         errorMessage.handle()
       }
@@ -144,7 +147,7 @@ export class Ocr {
 
   async run(): Promise<void> {
     if (!this.file || this.file === null) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForNoFileToUpload()
       errorMessage.handle()
 
@@ -189,7 +192,7 @@ export class Ocr {
 
     const rawFilename = uploadedFile.name.replace(".pdf", "").replace(".PDF", "")
     const filename = `${rawFilename}.pdf`
-    const prompt = OcrPrompt.byDocumentCategory(this.documentCategory, "pdf")
+    const prompt = OcrPrompt.byDocumentCategory(this.documentCategory, "pdf", this.financialYearEnd, this.totalShares)
     try {
       let aiResponse = await this.geminiAi.runOcrFromPdf(uploadedFile, prompt, filename)
       if (aiResponse.success) {
@@ -203,7 +206,7 @@ export class Ocr {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFileforOCR()
         errorMessage.handle()
       }
@@ -271,7 +274,7 @@ export class Ocr {
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFileforOCR()
         errorMessage.handle()
       }

@@ -81,7 +81,11 @@ export class DocumentRequestApplicationController extends ApplicationController<
     this.isShowResolutions.value = true
     this.isShowCompleted.value = false
 
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+    let firstItem = this.documents[0] ?? null
+    if (firstItem && firstItem.iCompanyFile?.url) {
+      this.onDocumentClicked(firstItem)
+    }
+    // this.emitEvents("documentSelected", DocumentTargets.TARGET_DOCUMENT_REQUESTS)
   }
 
   onCompleteApplicationClickedClicked(): void {
@@ -89,7 +93,10 @@ export class DocumentRequestApplicationController extends ApplicationController<
     this.isShowResolutions.value = false
     this.isShowCompleted.value = true
 
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_PURCHASE_ASSET_RESOLUTIONS)
+    let firstItem = this.documents[0] ?? null
+    if (firstItem && firstItem.iCompanyFile?.url) {
+      this.onDocumentClicked(firstItem)
+    }
   }
 
   async onDownloadClicked(): Promise<void> {
@@ -119,7 +126,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
             }
 
             let blob = await response.blob()
-            files.push(new DownloadFileData(URL.createObjectURL(blob), item.documentName))
+            files.push(new DownloadFileData(URL.createObjectURL(blob), `${item.documentName}.pdf`))
           })
         )
       })
@@ -177,7 +184,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
       toast.success()
 
       let router = useRouter()
-      router.push(`/sdnbhds/${this.application.value.companyId}`)
+      router.push(`/services/document-requests`)
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -200,7 +207,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
   }
 
   canShowDocument(item: CompanyDocumentRequestItem): boolean {
-    return item.iCompanyFile?.url !== null
+    return !StringUtil.isNullOrEmpty(item.iCompanyFile?.url ?? "")
   }
 
   //getters
@@ -284,32 +291,6 @@ export class DocumentRequestApplicationController extends ApplicationController<
       orderItem.deliveryType !== DeliveryConstants.DELIVERY_EMAIL &&
       orderItem.deliveryType !== DeliveryConstants.DELIVERY_WHATSAPP
     )
-  }
-
-  override get deliveryAddressToCopy(): string {
-    if (!this.application.value) {
-      return "-"
-    }
-
-    if (!this.application.value.company?.hasBusinessAddress) {
-      let addressFragments: string[] = []
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine1 ?? "")
-      addressFragments.push(this.paymentOrder.value.billingInfo.addressLine2 ?? "")
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressPostcode} ${this.paymentOrder.value.billingInfo.addressCity}`
-      )
-      addressFragments.push(
-        `${this.paymentOrder.value.billingInfo.addressState} ${this.paymentOrder.value.billingInfo.addressCountry}`
-      )
-
-      return addressFragments
-        .filter((s: string) => {
-          return !StringUtil.isNullOrEmpty(s)
-        })
-        .join(", ")
-    }
-
-    return this.application.value.company?.businessAddressLocation?.getOnelineAddress() ?? ""
   }
 
   get downloadLabel(): string {

@@ -59,6 +59,9 @@ export abstract class ServiceController {
   isDownloading = ref<boolean>(false)
   actionTrayElements = ref<ActionTrayElement[]>([])
 
+  isUpdating: Ref<boolean> = ref<boolean>(false)
+  isUpdated: Ref<boolean> = ref<boolean>(false)
+
   constructor(target: string, companyId: string, emitEvents: any | null) {
     this.target = target
     this.companyId = companyId
@@ -348,5 +351,21 @@ export abstract class ServiceController {
 
   get companyRegistrationNumber(): string {
     return `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`
+  }
+
+  get updatingLabel(): string {
+    if (this.isUpdated.value) {
+      return this.language.isMalay() ? "Maklumat Anda telah dikemaskini!" : "Your Changes are Saved!"
+    }
+
+    return this.language.isMalay() ? "Sedang Mengemaskini Maklumat Anda" : "Saving Your Changes"
+  }
+
+  get updatingSublabel(): string {
+    if (this.isUpdated.value) {
+      return ""
+    }
+
+    return this.language.isMalay() ? "Sila jangan muat semula!" : "Please do not refresh!"
   }
 }

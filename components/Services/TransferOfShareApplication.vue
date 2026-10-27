@@ -27,10 +27,19 @@
                 class="transfer"
                 v-for="(transferDetail, index) in controller.application.value?.transferDetails"
               >
+                <div class="transfer-header">{{ controller.transferLabel }} {{ index + 1 }}</div>
                 <div class="transfer-detail">
-                  <UserDetail v-bind="controller.getTransferorPropsUserDetail(transferDetail)" />
-                  <i class="fa-solid fa-arrow-right"></i>
-                  <UserDetail v-bind="controller.getTransfereePropsUserDetail(transferDetail)" />
+                  <div class="transferor">
+                    <div class="title-label">{{ controller.transferorLabel }}</div>
+                    <UserDetail v-bind="controller.getTransferorPropsUserDetail(transferDetail)" />
+                  </div>
+                  <!-- <div class="arrow-to">
+                    <i class="fa-solid fa-arrow-down" />
+                  </div> -->
+                  <div class="transferee">
+                    <div class="title-label">{{ controller.transfereeLabel }}</div>
+                    <UserDetail v-bind="controller.getTransfereePropsUserDetail(transferDetail)" />
+                  </div>
                 </div>
                 <div class="amount">
                   <b>{{ controller.amountToTransferLabel }}</b>
@@ -118,7 +127,9 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
-              @click="controller.onDownloadClicked()"
+              :class="{ 'is-loading': controller.isDownloadingSection105.value }"
+              :disabled="controller.isDownloadingSection105.value"
+              @click="controller.onDownloadSection105Clicked()"
             >
               {{ controller.downloadLabel }}
             </button>
@@ -189,6 +200,8 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isDownloadingRegister.value }"
+              :disabled="controller.isDownloadingRegister.value"
               @click="controller.onDownloadClicked()"
             >
               {{ controller.downloadLabel }}
@@ -335,6 +348,13 @@
       if (!oldVal && newVal) {
         controller.onProceedPostCompleted()
       }
+    }
+  )
+
+  watch(
+    () => props.isDownloadCompleted,
+    (newVal) => {
+      controller.setIsDocumentDownloadCompleted(newVal)
     }
   )
 

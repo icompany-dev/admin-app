@@ -109,6 +109,7 @@ export abstract class CompanyServiceController<T> {
     this.ongoingFilter.statuses = [
       StatusConstants.PAID,
       StatusConstants.READY,
+      StatusConstants.SUBMITTED,
       StatusConstants.APPROVED,
       StatusConstants.COMPLETED,
       StatusConstants.CONVERTED,
@@ -664,7 +665,6 @@ export abstract class CompanyServiceController<T> {
     }
 
     if (pages.length <= 0) {
-      console.log("no page?s")
       return
     }
 
@@ -674,8 +674,8 @@ export abstract class CompanyServiceController<T> {
       let dcrFilename = `Directors' Resolution.pdf`
       let mcrFilename = `Members' Resolution.pdf`
 
-      let dcrBlob = await PdfPaperUtil.getPdfBlob(dcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
-      let mcrBlob = await PdfPaperUtil.getPdfBlob(mcrPages, 20, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
+      let dcrBlob = await PdfPaperUtil.getPdfBlob(dcrPages, 19, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
+      let mcrBlob = await PdfPaperUtil.getPdfBlob(mcrPages, 19, dcrFilename, PaperSize.A4, PaperOrientation.Portrait)
 
       let files = [
         new DownloadFileData(URL.createObjectURL(dcrBlob), dcrFilename),
@@ -703,7 +703,7 @@ export abstract class CompanyServiceController<T> {
       return null
     }
 
-    let blob = await PdfPaperUtil.getPdfBlob(pages, 20, filename, PaperSize.A4, PaperOrientation.Portrait)
+    let blob = await PdfPaperUtil.getPdfBlob(pages, 19, filename, PaperSize.A4, PaperOrientation.Portrait)
 
     return blob
   }

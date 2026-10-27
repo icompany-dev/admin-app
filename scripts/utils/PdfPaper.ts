@@ -1,6 +1,7 @@
 import html2pdf from "html2pdf.js"
 import type { FileBase64Response } from "../models/File"
 import { PaperOrientation, PaperSize } from "../constants/Paper"
+import { NumberUtil } from "./Number"
 
 export class PdfPaperUtil {
   static async getPdfElements(parentNode: HTMLElement): Promise<HTMLElement[]> {
@@ -26,27 +27,41 @@ export class PdfPaperUtil {
         if (input.value) {
           const [year, month, day] = input.value.split("-").map(Number)
           dateObj = new Date(year, month - 1, day)
+          const formattedDate = dateObj.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })
+
+          const textNode = document.createElement("span")
+          textNode.className = input.className
+          textNode.textContent = formattedDate
+          input.parentNode?.replaceChild(textNode, input)
         } else {
-          dateObj = new Date()
+          const textNode = document.createElement("span")
+          textNode.className = input.className
+          textNode.textContent = ""
+          input.parentNode?.replaceChild(textNode, input)
         }
-
-        const formattedDate = dateObj.toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })
-
-        const textNode = document.createElement("span")
-        textNode.className = input.className
-        textNode.textContent = formattedDate
-        input.parentNode?.replaceChild(textNode, input)
       })
 
       const textInputs = paper.querySelectorAll<HTMLInputElement>('input[type="text"]')
       textInputs.forEach((input) => {
+        const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(input.value)
+        const value = isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(input.value)) : input.value
         const textNode = document.createElement("span")
         textNode.className = input.className
-        textNode.textContent = input.value
+        textNode.textContent = value
+        input.parentNode?.replaceChild(textNode, input)
+      })
+
+      const selectInputs = paper.querySelectorAll<HTMLInputElement>("select")
+      selectInputs.forEach((input) => {
+        const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(input.value)
+        const value = isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(input.value)) : input.value
+        const textNode = document.createElement("span")
+        textNode.className = input.className
+        textNode.textContent = value
         input.parentNode?.replaceChild(textNode, input)
       })
 

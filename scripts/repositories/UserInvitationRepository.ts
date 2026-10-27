@@ -43,4 +43,13 @@ export class UserInvitationRepository extends Repository<UserInvitation> {
       throw e
     }
   }
+
+  async adminGrantAccess(data: object): Promise<any> {
+    try {
+      let response = this.post(`${this.singleResourceUrl}/by-admin`, data)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }

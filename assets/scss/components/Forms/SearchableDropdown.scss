@@ -10,7 +10,8 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background-color: var(----searchable-dropdown-bg);
+    background-color: var(--bs-white);
+    //background-color: var(----searchable-dropdown-bg);
     border: solid 1px var(--searchable-dropdown-border-color);
     border-radius: 5px;
     transition: all 0.7s ease;
@@ -117,6 +118,18 @@
 
       .form-control {
         width: 100%;
+      }
+    }
+  }
+
+  &.disabled {
+    .dropdown {
+      background-color: transparent;
+      padding: 2px;
+      justify-content: flex-start;
+
+      .fa-caret-down {
+        display: none;
       }
     }
   }

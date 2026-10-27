@@ -75,7 +75,7 @@ export class File implements IModel<File> {
     const formData = new FormData()
     const type = fileToUpload.type
     const fileNameLength = this.name.length ?? fileToUpload.name.length
-    const fileName = fileNameLength > 40 ? this.name.substring(0, 41) : this.name
+    const fileName = fileNameLength > 250 ? this.name.substring(0, 251) : this.name
     formData.append("attachment", fileToUpload)
     formData.append("type", type)
     formData.append("name", fileName)
