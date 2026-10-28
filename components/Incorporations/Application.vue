@@ -164,35 +164,30 @@
                   >
                     <button
                       class="btn btn-pill btn-submit"
-                      :disabled="!controller.canSubmitSection27"
                       @click="controller.onSubmitNameReservation()"
                     >
                       {{ controller.submitSection27ApplicationLabel }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      :disabled="!controller.canUpdateSection27"
                       @click="controller.onQueryNameReservation()"
                     >
                       {{ controller.querySection27ApplicationLabel }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      :disabled="!controller.canResubmitSection27"
                       @click="controller.onSubmitNameReservation()"
                     >
                       {{ controller.resubmitSection27ApplicationLabel }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      :disabled="!controller.canUpdateSection27"
                       @click="controller.onApproveNameReservation()"
                     >
                       {{ controller.approvedSection27Label }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      :disabled="!controller.canUpdateSection27"
                       @click="controller.onNameReservationRejectedClicked()"
                     >
                       {{ controller.rejectedSection27Label }}

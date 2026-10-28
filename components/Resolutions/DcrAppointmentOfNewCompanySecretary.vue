@@ -39,13 +39,15 @@
             (Continue from Prev. Page)
           </div>
           <p>
+            <br />
             <b>RESOLVED:</b>
-          </p>
-          <p>
-            <b>{{ controller.resolutionName().toUpperCase() }}</b>
+            <br />
           </p>
           <!--NOTE: We get all these details automatically from the purchase of corporate profile. Users cannot change them.-->
-          <!-- <p v-if="!controller.isAppointNew()">
+          <p v-if="controller.hasExistingCosec()">
+            <b>RESIGNATION OF COMPANY SECRETARY</b>
+            <br />
+            <br />
             THAT the resignation of
             <span
               class="prev-cosec-details"
@@ -56,10 +58,17 @@
                 (NRIC No. {{ controller.previousCompanySecretaryNRIC() }})
               </b>
             </span>
-            as the Secretary of the Company be and is hereby accepted.
-          </p> -->
+            as the Secretary of the Company be and is hereby accepted with immediate effect.
+            <br />
+            <br />
+          </p>
           <p>
-            THAT the appointment of
+            <b>{{ controller.resolutionName().toUpperCase() }}</b>
+            <br />
+            <br />
+            THAT the appointment of:
+          </p>
+          <p>
             <select
               class="form-control in-resolution"
               v-model="controller.selectedCompanySecretary.value"
@@ -72,16 +81,14 @@
                 <b>{{ secretary.name.toUpperCase() }}</b>
               </option>
             </select>
-            <span v-if="controller.isPrinting.value">
-              <b>{{ controller.getSecretaryName() }}</b>
-            </span>
             <b>
-              (NRIC No: {{ controller.getSecretaryIC() }}) ({{ controller.getSecretaryLicense() }} /
-              <br />
-              SSM PC NO. {{ controller.getSecretarySsmPcNo() }})
+              <span v-if="controller.isPrinting.value">
+                {{ controller.getSecretaryName() }}
+              </span>
+              &nbsp; NRIC No: {{ controller.getSecretaryIC() }} (SSM PC NO. {{ controller.getSecretarySsmPcNo() }})
             </b>
-            as the Secretary of the Company be and is hereby be accepted with immediate effect.
           </p>
+          <p>as the Secretary of the Company be and is hereby be accepted with immediate effect.</p>
           <p>
             FURTHER RESOLVED that the Company Secretary be and is hereby authorised to file the relevant documents and
             take all necessary steps as may be necessary to give effect to this Resolution.
@@ -111,7 +118,8 @@
           class="resolution-date"
           v-if="page === controller.totalPages()"
         >
-          Date:
+          Dated:
+          <br />
           <span
             class="date"
             v-if="controller.isPrinting.value"
