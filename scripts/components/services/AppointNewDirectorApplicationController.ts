@@ -20,6 +20,7 @@ import { DirectorInvitation } from "~/scripts/models/DirectorInvitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
 import { GenerateDocumentDetails } from "~/scripts/types/GenerateDocumentDetails"
 import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 
 export class AppointNewDirectorApplicationController extends ApplicationController<CompanyDirectorAppointment> {
   resolutionsRef: any | null = null
@@ -33,6 +34,10 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   isGenerating: Ref<boolean> = ref<boolean>(false)
   isApproving: Ref<boolean> = ref<boolean>(false)
   isCompleting: Ref<boolean> = ref<boolean>(false)
+
+  isDownloadingDcr: Ref<boolean> = ref<boolean>(false)
+  isDownloadingSection58: Ref<boolean> = ref<boolean>(false)
+  isRemovingDcr: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: IPropsApplication, emitEvents: any | null) {
     super(
@@ -71,10 +76,115 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   async onDownloadClicked(): Promise<void> {
     await nextTick()
     this.emitEvents("download")
+
+    let generateDocumentDetails = new GenerateDocumentDetails(
+      `DCR - Appointment of Director.pdf`,
+      this.dayjs().format("YYYY-MM-DD"),
+      1
+    )
+
+    this.emitEvents("generate", generateDocumentDetails)
+  }
+
+  async onDownloadGeneratedDcr(): Promise<void> {
+    if (!this.isDownloadingDcr.value || !this.isDcrGenerated) {
+      return
+    }
+
+    let generatedDcr = this.generatedDcr
+    if (!generatedDcr) {
+      return
+    }
+
+    try {
+      this.isDownloadingDcr.value = true
+
+      let url = generatedDcr.fileUrl ?? ""
+      let response = await fetch(url)
+      if (response.ok) {
+        let blob = await response.blob()
+        const blobUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.setAttribute("download", generatedDcr.documentName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(blobUrl)
+      }
+    } catch (e) {
+    } finally {
+      this.isDownloadingDcr.value = false
+    }
+  }
+
+  async onDownloadSection58(): Promise<void> {
+    if (this.isDownloadingSection58.value || !this.isSection58Uploaded) {
+      return
+    }
+
+    let section58 = this.section58
+    if (!section58) {
+      return
+    }
+
+    try {
+      this.isDownloadingSection58.value = true
+
+      let url = section58.fileUrl ?? ""
+      let response = await fetch(url)
+      if (response.ok) {
+        let blob = await response.blob()
+        const blobUrl = window.URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = blobUrl
+        link.setAttribute("download", section58.documentName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(blobUrl)
+      }
+    } catch (e) {
+    } finally {
+      this.isDownloadingSection58.value = false
+    }
   }
 
   async onPrintClicked(): Promise<void> {
     //
+  }
+
+  async onRemoveDcrClicked(): Promise<void> {
+    if (this.isRemovingDcr.value || !this.isDcrGenerated) {
+      return
+    }
+
+    let generatedDcr = this.generatedDcr
+    if (!generatedDcr) {
+      return
+    }
+
+    try {
+      this.isRemovingDcr.value = true
+
+      let repository = useFormStore()
+      let response = await repository.remove(generatedDcr.id)
+
+      await this.uploadedDocumentChecker.value.fetchDocuments()
+
+      let toastTitle = this.language.isMalay()
+        ? "Resolusi telah dipadamkan."
+        : "The resolution is successfully removed."
+      let toastMessage = this.language.isMalay()
+        ? "Klik 'Jana DCR' untuk menjana dokumen ini semula."
+        : "Please click on 'Generate DCR' to generate it again."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.isRemovingDcr.value = false
+    }
   }
 
   async onApprovedClicked(): Promise<void> {
@@ -109,9 +219,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   async onProceedPostUpload(): Promise<void> {
-    if (this.isCompleting.value) {
-      await this.proceedCompleteService()
-    }
+    await this.uploadedDocumentChecker.value.fetchDocuments()
   }
 
   async onShippedClicked(): Promise<void> {
@@ -256,7 +364,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
   }
 
   get downloadLabel(): string {
-    return this.language.isMalay() ? "Muat Turun" : "Download"
+    return this.language.isMalay() ? "Jana DCR" : "Generate DCR"
   }
 
   get isApproved(): boolean {
@@ -362,7 +470,52 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
     )
   }
 
+  get section58(): CompanyDocument | null {
+    if (!this.isSection58Uploaded) {
+      return null
+    }
+
+    return this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
   get section58Label(): string {
+    if (this.section58) {
+      return this.section58.documentName
+    }
+
     return this.language.isMalay() ? "Seksyen 58 - Tambah Pengarah Baharu" : "Section 58 - Add New Director"
+  }
+
+  get isDcrGenerated(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
+  get generatedDcr(): CompanyDocument | null {
+    if (!this.isDcrGenerated) {
+      return null
+    }
+
+    return this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS,
+      this.application.value?.createdAt ?? ""
+    )
+  }
+
+  get generatedDcrLabel(): string {
+    if (this.generatedDcr) {
+      return this.generatedDcr.documentName
+    }
+
+    return this.language.isMalay() ? "DCR - Perlantikan Pengarah" : "DCR - Appointment of Director"
+  }
+
+  get removeDcrLabel(): string {
+    return this.language.isMalay() ? "Padam" : "Remove"
   }
 }

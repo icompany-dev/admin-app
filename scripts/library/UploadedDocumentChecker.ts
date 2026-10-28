@@ -22,6 +22,7 @@ export class UploadedDocumentChecker {
     }
 
     this.documentsAndForms.companyId = this.companyId
+
     await this.documentsAndForms.init()
   }
 
@@ -113,6 +114,8 @@ export class UploadedDocumentChecker {
         return "" //StatutoryFormKeywords.AuditorAppointment
       case DocumentTargets.TARGET_AUDITOR_APPOINTMENT_RESOLUTIONS:
         return "" //StatutoryFormKeywords.AuditorAppointment
+      case DocumentTargets.TARGET_TAX_AGENT_APPOINTMENT_RESOLUTIONS:
+        return "Appointment of Tax Agent, Appoint Tax Agent, DCR - Appointment of Tax Agent" //StatutoryFormKeywords.AuditorAppointment
       case DocumentTargets.TARGET_BO_DECLARATION:
         return ""
       case DocumentTargets.TARGET_BO_DECLARATION_RESOLUTIONS:
@@ -138,9 +141,9 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_DELEGATION_OF_AUTHORITY_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT:
-        return "Section 58"
+        return StatutoryFormKeywords.AppointDirector
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS:
-        return ""
+        return StatutoryFormKeywords.AppointDirectorDcr
       case DocumentTargets.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST_RESOLUTIONS:
