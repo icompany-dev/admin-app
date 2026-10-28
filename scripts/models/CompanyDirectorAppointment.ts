@@ -91,6 +91,7 @@ export class CompanyDirectorAppointment
       effective_from_type_details: this.effectiveFromTypeDetails,
       is_appoint_by_shareholder: this.isAppointByShareholder,
       status: this.status,
+      document_date: this.documentDate,
     }
 
     const directorInvitationIds = this.getDirectorInvitationIds()

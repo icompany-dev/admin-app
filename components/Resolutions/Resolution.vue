@@ -227,7 +227,12 @@
   watch(
     () => props.resolutionDate,
     (newVal) => {
-      controller.documentDate.value = newVal
+      if (newVal) {
+        let dayjs = useDayjs()
+        controller.documentDate.value = dayjs(newVal).format("YYYY-MM-DD")
+      } else {
+        controller.documentDate.value = newVal
+      }
     }
   )
 

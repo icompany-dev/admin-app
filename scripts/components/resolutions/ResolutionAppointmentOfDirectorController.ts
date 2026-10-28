@@ -148,7 +148,7 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
       let additionalSelectClass = this.isEffectFromTerms() ? "large" : ""
       let fields = `
         <select
-          class="form-control in-resolution ${additionalSelectClass}"
+          class="form-control in-resolution ${additionalSelectClass} effect-from"
           id='effect-from'
           name='effectiveFromType'
         >
@@ -166,7 +166,7 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
           ${fields}
           <input
             type="${type}"
-            class="form-control in-resolution"
+            class="form-control in-resolution effect-from-details"
             name="effectiveFromTypeDetails"
             id="effect-from-details"
             value="${this.application.value?.effectiveFromTypeDetails ?? ""}"
@@ -214,6 +214,7 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
           `<span class='placeholder'>${this.directorEmailValue()}</span>`
         )
       } else {
+        console.log("cannot edit")
         documentTemplate.content = documentTemplate.content.replace(
           "$text.&lt;name=directorIdentificationType&gt;$",
           this.directorIdentificationTypeValue()
@@ -241,22 +242,32 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
     return template
   }
 
+  handleDataChanges(event: Event): void {
+    this.emitEvents("applicationUpdated")
+  }
+
   attachEventListeners(): void {
     if (!this.isDocumentEditable()) {
       return
     }
 
-    const withEffectFrom = document.getElementById("effect-from")
-    if (withEffectFrom) {
+    const inputFields = document.querySelectorAll(".form-control")
+    inputFields.forEach((inputField) => {
+      inputField.removeEventListener("change", this.handleDataChanges.bind(this))
+      inputField.addEventListener("change", this.handleDataChanges.bind(this))
+    })
+
+    const withEffectFroms = document.querySelectorAll(".effect-from")
+    withEffectFroms.forEach((withEffectFrom) => {
       withEffectFrom.removeEventListener("change", this.onEffectFromChanged.bind(this))
       withEffectFrom.addEventListener("change", this.onEffectFromChanged.bind(this))
-    }
+    })
 
-    const withEffectFromDetails = document.getElementById("effect-from-details")
-    if (withEffectFromDetails) {
-      withEffectFromDetails.removeEventListener("change", this.onEffectFromDetailsChanged.bind(this))
-      withEffectFromDetails.addEventListener("change", this.onEffectFromDetailsChanged.bind(this))
-    }
+    const withEffectFromDetails = document.querySelectorAll(".effect-from-details")
+    withEffectFromDetails.forEach((withEffectFromDetail) => {
+      withEffectFromDetail.removeEventListener("change", this.onEffectFromDetailsChanged.bind(this))
+      withEffectFromDetail.addEventListener("change", this.onEffectFromDetailsChanged.bind(this))
+    })
   }
 
   totalPages(): number {
@@ -331,6 +342,7 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
     if (!this.isShowSelectedEffectFromDetails()) {
       this.application.value.effectiveFromTypeDetails = ""
     }
+
     this.setContent()
   }
 

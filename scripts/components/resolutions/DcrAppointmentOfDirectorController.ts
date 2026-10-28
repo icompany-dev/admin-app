@@ -18,9 +18,7 @@ export class DcrAppointmentOfDirectorController extends ResolutionAppointmentOfD
     this.isGettingPdfPages.value = true
 
     let originalResolutionContent = this.dcrResolutionContent.value
-    if (!StringUtil.isNullOrEmpty(this.dcrResolutionContent.value)) {
-      this.setContent()
-    }
+    this.setContent()
 
     await nextTick()
     let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)

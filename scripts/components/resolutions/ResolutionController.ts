@@ -292,6 +292,17 @@ export abstract class ResolutionController<T> {
     }
   }
 
+  onDocumentDateUpdated(event: Event): void {
+    if (!this.application.value) {
+      return
+    }
+
+    let target = event.target as HTMLInputElement
+
+    this.application.value.documentDate = target.value
+    this.emitEvents("applicationUpdated")
+  }
+
   haveAllSigned(): boolean {
     return this.signatureItems.value.every((si: SignatureItem) => {
       return si.hasSigned
@@ -299,8 +310,17 @@ export abstract class ResolutionController<T> {
   }
 
   resolutionDate(): string {
-    if (!this.application.value || this.application.value.signatureGroups.length <= 0 || !this.haveAllSigned()) {
+    if (
+      !this.application.value ||
+      StringUtil.isNullOrEmpty(this.application.value.documentDate) ||
+      this.application.value.signatureGroups.length <= 0 ||
+      !this.haveAllSigned()
+    ) {
       return "To be determined"
+    }
+
+    if (!StringUtil.isNullOrEmpty(this.application.value.documentDate)) {
+      return this.dayjs(this.application.value.documentDate).format("YYYY-MM-DD")
     }
 
     const latestDate = this.application.value.signatureGroups
@@ -411,6 +431,10 @@ export abstract class ResolutionController<T> {
   get lastSignatureDate(): string {
     if (!this.application.value) {
       return ""
+    }
+
+    if (!StringUtil.isNullOrEmpty(this.application.value.documentDate)) {
+      return this.application.value.documentDate
     }
 
     let orderedSignatureGroup = ObjectUtil.sort<SignatureGroup>(
