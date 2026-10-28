@@ -33,6 +33,8 @@ export class DocumentTargets {
   static TARGET_AUDITOR_APPOINTMENT: string = "company_auditor_appointment"
   static TARGET_AUDITOR_APPOINTMENT_RESOLUTIONS: string = "company_auditor_appointment_resolutions"
 
+  static TARGET_TAX_AGENT_APPOINTMENT_RESOLUTIONS: string = "company_tax_agent_appointment_resolutions"
+
   static TARGET_BO_DECLARATION: string = "company_bo_declaration"
   static TARGET_BO_DECLARATION_RESOLUTIONS: string = "company_bo_declaration_resolutions"
 
