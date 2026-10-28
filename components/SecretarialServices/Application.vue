@@ -37,6 +37,7 @@
   import AssetPurchase from "./AssetPurchase.vue"
   import AllotNewShare from "./AllotNewShare.vue"
   import AppointAuditor from "./AppointAuditor.vue"
+  import AppointTaxAgent from "./AppointTaxAgent.vue"
   import AppointDirector from "./AppointDirector.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
   import ChangeBankSignatory from "./ChangeBankSignatory.vue"
@@ -67,6 +68,7 @@
     [CompanyConstants.TARGET_AMENDMENT_DESCRIPTION]: ChangeOfDescription,
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointAuditor,
+    [CompanyConstants.TARGET_TAX_AGENT_APPOINTMENT]: AppointTaxAgent,
     [CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY]: ChangeBankSignatory,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
     [CompanyConstants.TARGET_DIRECTOR_PAYMENT]: PaymentToDirector,

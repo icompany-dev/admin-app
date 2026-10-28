@@ -22,6 +22,7 @@ export class UploadedDocumentChecker {
     }
 
     this.documentsAndForms.companyId = this.companyId
+
     await this.documentsAndForms.init()
   }
 
@@ -113,6 +114,8 @@ export class UploadedDocumentChecker {
         return "" //StatutoryFormKeywords.AuditorAppointment
       case DocumentTargets.TARGET_AUDITOR_APPOINTMENT_RESOLUTIONS:
         return "" //StatutoryFormKeywords.AuditorAppointment
+      case DocumentTargets.TARGET_TAX_AGENT_APPOINTMENT_RESOLUTIONS:
+        return "Appointment of Tax Agent, Appoint Tax Agent, DCR - Appointment of Tax Agent" //StatutoryFormKeywords.AuditorAppointment
       case DocumentTargets.TARGET_BO_DECLARATION:
         return ""
       case DocumentTargets.TARGET_BO_DECLARATION_RESOLUTIONS:

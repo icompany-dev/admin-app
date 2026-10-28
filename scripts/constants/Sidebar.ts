@@ -175,6 +175,12 @@ export class PageSidebar {
     "services/appointment-of-auditor",
     false
   )
+  static taxAgentAppointment: Sidebar = new Sidebar(
+    "Appointment of Tax Agent",
+    "Perlantikan Tax Agent",
+    "services/appointment-of-tax-agent",
+    false
+  )
   static paymentToDirectors: Sidebar = new Sidebar(
     "Payment to Directors",
     "Bayaran ke Pengarah",
@@ -196,6 +202,7 @@ export class PageSidebar {
     this.declareDividends,
     this.changeBankSignatories,
     this.auditorAppointment,
+    this.taxAgentAppointment,
     this.switchOut,
   ])
 
