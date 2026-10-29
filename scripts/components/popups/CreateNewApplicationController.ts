@@ -132,7 +132,7 @@ export class CreateNewApplicationController extends BasePopupController {
         return true
       })
       .map((c: Company) => {
-        return new SelectOption(c.id, c.id, c.getFullName(), false, c.id === this.selectedCompanyId.value)
+        return new SelectOption(c.id, c.id, c.name, false, c.id === this.selectedCompanyId.value)
       })
   }
 
@@ -142,7 +142,7 @@ export class CreateNewApplicationController extends BasePopupController {
         return c.id === this.selectedCompanyId.value
       }) ?? null
 
-    return matched?.getFullName() ?? "(Select a Company)"
+    return matched?.name ?? "(Select a Company)"
   }
 
   get canProceed(): boolean {
