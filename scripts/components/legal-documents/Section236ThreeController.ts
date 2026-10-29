@@ -26,6 +26,8 @@ export class Section236ThreeController {
 
   isPrinting: Ref<boolean> = ref<boolean>(false)
 
+  documentDate: Ref<string> = ref<string>("")
+
   constructor(props: PropsSection236Three, emitEvents: any) {
     this.setDataFromProps(props)
     this.emitEvents = emitEvents
@@ -66,7 +68,9 @@ export class Section236ThreeController {
 
   get declarationDate(): string {
     let dayjs = useDayjs()
-    let currentDate = dayjs("2026-08-24").format("YYYY-MM-DD")
+    let currentDate = !StringUtil.isNullOrEmpty(this.documentDate.value)
+      ? dayjs(this.documentDate.value).format("YYYY-MM-DD")
+      : dayjs().format("YYYY-MM-DD")
     let time = useLocalTime()
 
     return time.formatDateOnlyFull(currentDate)
