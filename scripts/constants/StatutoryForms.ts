@@ -62,7 +62,7 @@ export enum StatutoryFormKeywords {
   ChangeOfRegisteredAddress = "Change of Registered Address, Change in the Registered Address, Change of Reg Address, Change Reg Address",
   ChangeOfBranch = "Change of Business Branch, Change of Branch, Change Business Branch",
   ChangeOfDescription = "Change of Nature of Business, Change of Business Nature, Change of Nature, Change of Business Description, Change of Description",
-  AppointDirector = "Section 58 - Add New Director, Section 58 - Appoint New Director",
+  AppointDirector = "Section 58 - Add New Director, Section 58 - Appoint New Director, Section 58 - Appointment of Director, Section 58 - Appoint Director",
   AppointDirectorDcr = "DCR - Appointment of Director,DCR - Appointment of New Director",
   ResignationOfDirector = "Section 58 - Resignation of Director",
   ResignationOfDirectorDcr = "Letter - Resignation of Director",

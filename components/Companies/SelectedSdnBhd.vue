@@ -9,13 +9,13 @@
     <template v-if="!controller.isLoading.value">
       <div class="company-details">
         <div class="name-logo">
-          <div
-            class="logo"
-            :class="{ 'no-logo': !controller.hasCompanyLogo }"
-          >
-            <img :src="controller.companyLogo" />
-          </div>
-          <div class="name-registration-numbers-actions">
+          <div class="name-registration-numbers-logo">
+            <div
+              class="logo"
+              :class="{ 'no-logo': !controller.hasCompanyLogo }"
+            >
+              <img :src="controller.companyLogo" />
+            </div>
             <div class="name-registration-number">
               <div class="company-name">
                 {{ controller.company.value.getFullName() }}
@@ -32,73 +32,73 @@
                 : {{ controller.incorporationDate }}
               </div>
             </div>
+          </div>
+          <div
+            class="actions-button-options"
+            :class="{ active: controller.isShowOptions.value }"
+          >
             <div
-              class="actions-button-options"
-              :class="{ active: controller.isShowOptions.value }"
+              class="btn btn-pill btn-submit selected"
+              :class="{ 'is-loading': controller.isUpdatingDetails.value }"
+              :disabled="controller.isUpdatingDetails.value"
+              @click="controller.onOptionsClicked()"
             >
-              <div
-                class="btn btn-pill btn-submit selected"
-                :class="{ 'is-loading': controller.isUpdatingDetails.value }"
-                :disabled="controller.isUpdatingDetails.value"
-                @click="controller.onOptionsClicked()"
+              <span class="label">{{ controller.more }}</span>
+              <i
+                class="fa-solid fa-caret-down"
+                :class="{ rotate: controller.isShowOptions.value }"
+              ></i>
+            </div>
+            <div
+              class="options"
+              :class="{ show: controller.isShowOptions.value }"
+            >
+              <button
+                class="btn btn-pill btn-submit invert"
+                :class="{ 'is-loading': controller.isPrintingSpine.value }"
+                :disabled="controller.isPrintingSpine.value"
+                @click="controller.onPrintSpineClicked()"
               >
-                <span class="label">{{ controller.more }}</span>
-                <i
-                  class="fa-solid fa-caret-down"
-                  :class="{ rotate: controller.isShowOptions.value }"
-                ></i>
-              </div>
-              <div
-                class="options"
-                :class="{ show: controller.isShowOptions.value }"
+                {{ controller.printSpine }}
+              </button>
+              <button
+                class="btn btn-pill btn-submit invert"
+                :class="{ 'is-loading': controller.isNotifyingRegularise.value }"
+                :disabled="controller.isNotifyingRegularise.value"
+                @click="controller.notifyDocumentRegularised()"
               >
-                <button
-                  class="btn btn-pill btn-submit invert"
-                  :class="{ 'is-loading': controller.isPrintingSpine.value }"
-                  :disabled="controller.isPrintingSpine.value"
-                  @click="controller.onPrintSpineClicked()"
-                >
-                  {{ controller.printSpine }}
-                </button>
-                <button
-                  class="btn btn-pill btn-submit invert"
-                  :class="{ 'is-loading': controller.isNotifyingRegularise.value }"
-                  :disabled="controller.isNotifyingRegularise.value"
-                  @click="controller.notifyDocumentRegularised()"
-                >
-                  {{ controller.notifyRegularise }}
-                </button>
-                <button
-                  class="btn btn-pill btn-submit invert"
-                  disabled
-                  @click="controller.onEditClicked()"
-                >
-                  {{ controller.edit }}
-                </button>
-                <button
-                  class="btn btn-pill btn-submit invert"
-                  :class="{ 'is-loading': controller.isSettingToStrikedOff.value }"
-                  :disabled="controller.isSettingToStrikedOff.value"
-                  @click="controller.onStrikeOffClicked()"
-                >
-                  {{ controller.strikeOff }}
-                </button>
-                <button
-                  class="btn btn-pill btn-submit invert"
-                  :class="{ 'is-loading': controller.isSettingToSwitchedOut.value }"
-                  :disabled="controller.isSettingToSwitchedOut.value"
-                  @click="controller.onSwitchOutClicked()"
-                >
-                  {{ controller.switchOut }}
-                </button>
+                {{ controller.notifyRegularise }}
+              </button>
+              <button
+                class="btn btn-pill btn-submit invert"
+                disabled
+                @click="controller.onEditClicked()"
+              >
+                {{ controller.edit }}
+              </button>
+              <button
+                class="btn btn-pill btn-submit invert"
+                :class="{ 'is-loading': controller.isSettingToStrikedOff.value }"
+                :disabled="controller.isSettingToStrikedOff.value"
+                @click="controller.onStrikeOffClicked()"
+              >
+                {{ controller.strikeOff }}
+              </button>
+              <button
+                class="btn btn-pill btn-submit invert"
+                :class="{ 'is-loading': controller.isSettingToSwitchedOut.value }"
+                :disabled="controller.isSettingToSwitchedOut.value"
+                @click="controller.onSwitchOutClicked()"
+              >
+                {{ controller.switchOut }}
+              </button>
 
-                <button
-                  class="btn btn-pill btn-submit invert"
-                  @click="controller.onOpenGenerateAuditExemptionCertificate()"
-                >
-                  Generate Audit Exemption Certificate
-                </button>
-              </div>
+              <button
+                class="btn btn-pill btn-submit invert"
+                @click="controller.onOpenGenerateAuditExemptionCertificate()"
+              >
+                Generate Audit Exemption Certificate
+              </button>
             </div>
           </div>
         </div>

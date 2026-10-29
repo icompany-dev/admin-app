@@ -50,7 +50,6 @@ export class UploadedDocumentChecker {
     }
 
     let keywordParts = keyword.split(",")
-
     let matchedDocuments = this.documentsAndForms.documents.filter((d: CompanyDocument) => {
       return keywordParts.some((k: string) => {
         return StringUtil.contains(d.documentName, k)

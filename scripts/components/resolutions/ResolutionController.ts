@@ -16,9 +16,12 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { DocumentTemplate } from "~/scripts/models/DocumentTemplate"
 import { TemplateProcessor } from "~/scripts/library/TemplateProcessor"
+import { Location } from "~/scripts/models/Location"
+import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 
 export abstract class ResolutionController<T> {
   companyId: Ref<string> = ref<string>("")
+  company: Ref<Company> = ref<Company>(new Company())
   applicationId: Ref<string | null> = ref<string | null>(null)
   application = ref<T | null>(null)
   applicationClassType: new (data: any) => T
@@ -451,6 +454,24 @@ export abstract class ResolutionController<T> {
     let dayjs = useDayjs()
 
     return dayjs(lastSignatureReceived.createdAt).format("YYYY-MM-DD")
+  }
+
+  get companyAddressOptions(): Location[] {
+    let addresses: Location[] = []
+
+    if (this.company.value.businessAddressLocation !== null) {
+      addresses.push(this.company.value.businessAddressLocation)
+    }
+
+    if (this.company.value.registeredAddressLocation !== null) {
+      addresses.push(this.company.value.registeredAddressLocation)
+    }
+
+    this.company.value.branches.forEach((b: CompanyBranch) => {
+      addresses.push(b.location)
+    })
+
+    return addresses
   }
 
   get resolutionProps() {

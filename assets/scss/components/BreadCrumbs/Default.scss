@@ -26,4 +26,12 @@
     }
   }
 
+  @media (max-width: 600px) {
+
+    .fa-solid,
+    .slash,
+    .page-name {
+      font-size: 1.6rem !important;
+    }
+  }
 }
