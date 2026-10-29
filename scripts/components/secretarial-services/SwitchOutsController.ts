@@ -7,6 +7,8 @@ import { StatusConstants } from "~/scripts/constants/Status"
 export class SwitchOutsController extends SecretarialServicesController<CompanySwitchOut> {
   constructor(props: PropsSecretarialServices, emitEvents: any | null) {
     super(props, CompanySwitchOut, useCompanySwitchOutStore(), emitEvents)
+
+    this.isShowDetails.value = false
   }
 
   onApplicationClicked(data: any): void {

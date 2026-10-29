@@ -20,6 +20,9 @@ export abstract class SecretarialServicesController<T> {
 
   searchText: Ref<string | null> = ref<string | null>(null)
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
+  isShowPaidOnly: Ref<boolean> = ref<boolean>(true)
+
+  isShowDetails: Ref<boolean> = ref<boolean>(true)
 
   createDocumentRequestRef: any | null = null
   confirmToDeleteRef: any | null = null
@@ -51,6 +54,7 @@ export abstract class SecretarialServicesController<T> {
   async setDataFromProps(props: PropsSecretarialServices): Promise<void> {
     this.searchText.value = props.searchText
     this.isIncludeDemo.value = props.isIncludeDemo
+    this.isShowPaidOnly.value = props.isShowPaidOnly
 
     await this.init()
   }
@@ -133,9 +137,7 @@ export abstract class SecretarialServicesController<T> {
     filter.orderBy = "created_at"
     filter.includeTestAccount = this.isIncludeDemo.value
     filter.statuses = [
-      // StatusConstants.DRAFT,
       StatusConstants.READY,
-      // StatusConstants.PENDING,
       StatusConstants.PAID,
       StatusConstants.CONFIRMED,
       StatusConstants.NAME_REJECTED,
@@ -147,6 +149,11 @@ export abstract class SecretarialServicesController<T> {
       StatusConstants.COMPLETED,
       StatusConstants.CANCELLED,
     ]
+
+    if (!this.isShowPaidOnly.value) {
+      filter.statuses.push(StatusConstants.DRAFT)
+      filter.statuses.push(StatusConstants.PENDING)
+    }
 
     if (!StringUtil.isNullOrEmpty(this.searchText.value)) {
       filter.searchText = this.searchText.value

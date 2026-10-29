@@ -15,6 +15,7 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   searchText: Ref<string> = ref<string>("")
   sortOrder: Ref<string> = ref<string>("asc")
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
+  isShowPaidOnly: Ref<boolean> = ref<boolean>(true)
 
   applicationsRef: any | null = null
 
@@ -45,6 +46,11 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
 
     if (data.orderColumn === "Show Demo") {
       this.isIncludeDemo.value = data.sortOrder ? true : false
+      return
+    }
+
+    if (data.orderColumn === "Show Paid Only") {
+      this.isShowPaidOnly.value = data.sortOrder ? true : false
       return
     }
   }
@@ -229,7 +235,11 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   }
 
   get propsDataOrders(): PropsDataOrders[] {
-    return [new PropsDataOrders(this.sortOrderLabel, "asc"), new PropsDataOrders("Show Demo", "false")]
+    return [
+      new PropsDataOrders(this.sortOrderLabel, "asc"),
+      new PropsDataOrders("Show Demo", "false"),
+      new PropsDataOrders("Show Paid Only", "true"),
+    ]
   }
 
   get tableFilterProps(): PropsTableFilter {
@@ -245,7 +255,12 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   }
 
   get secretarialServicesProps(): PropsSecretarialServices {
-    return new PropsSecretarialServices(this.searchText.value, this.isIncludeDemo.value, this.targetName.value)
+    return new PropsSecretarialServices(
+      this.searchText.value,
+      this.isIncludeDemo.value,
+      this.isShowPaidOnly.value,
+      this.targetName.value
+    )
   }
 
   get repositoryByTarget(): IRepositoryStore | null {
