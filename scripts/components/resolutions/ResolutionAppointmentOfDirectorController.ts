@@ -421,8 +421,8 @@ export abstract class ResolutionAppointmentOfDirectorController extends Resoluti
   }
 
   effectFromValue(): string {
-    if (!this.application.value) {
-      return `with effect from ${this.dayjs().add(1, "week").format("DD MMMM YYYY")}`
+    if (!this.application.value || this.isInPreviewMode.value) {
+      return `with effect from <span class='placeholder'>APPOINTMENT EFFECTIVE DATE</span>`
     }
 
     switch (this.application.value.effectiveFromType) {
