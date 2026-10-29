@@ -478,9 +478,7 @@ export class SelectedSdnBhdController {
   }
 
   get annualReturn(): string {
-    return this.language.isMalay()
-      ? `Penyata Tahunan untuk ${this.yearToLodge}`
-      : `Annual Return for ${this.yearToLodge}`
+    return this.language.isMalay() ? `Penyata Tahunan` : `Annual Return`
   }
 
   get financialStatement(): string {
