@@ -93,4 +93,15 @@ export class UserRepository extends Repository<User> {
       throw error
     }
   }
+
+  async generateMagicLink(userId: string): Promise<any> {
+    try {
+      let response = await this.post<any>(`/api/auth/magiclinks`, {
+        user_id: userId,
+      })
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

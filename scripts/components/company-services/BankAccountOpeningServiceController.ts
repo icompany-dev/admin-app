@@ -138,7 +138,8 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
         StatusConstants.READY,
         StatusConstants.SHIPPED,
         StatusConstants.SUBMITTED,
-        StatusConstants.APPROVED
+        StatusConstants.APPROVED,
+        StatusConstants.COMPLETED
       )
 
       let response = await this.repository.fetchAll(filter)
