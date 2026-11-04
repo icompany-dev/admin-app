@@ -39,13 +39,15 @@
             Company No. {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
           </div>
           <div class="company-incorporated-in">(Incorporated in Malaysia)</div>
-          <br />
-          <div v-html="controller.company.value.businessAddressLocation?.getMultilineAddress()" />
+          <div v-if="props.isShowCompanyAddress">
+            <br />
+            <div v-html="controller.company.value.businessAddressLocation?.getMultilineAddress()" />
+          </div>
           <br />
           <div>
-            ( also referred to as the
-            <b>“Company”</b>
-            )
+            (also referred to as the “
+            <b>Company</b>
+            ”)
           </div>
         </div>
         <div class="document-content">
@@ -73,6 +75,8 @@
             </div>
           </div>
 
+          <br />
+          <br />
           <div class="resolution-date">
             <b>Dated:</b>
             <br />
@@ -122,6 +126,10 @@
     watermarkText: {
       type: String,
       default: "DRAFT",
+    },
+    isShowCompanyAddress: {
+      type: Boolean,
+      default: true,
     },
   })
 

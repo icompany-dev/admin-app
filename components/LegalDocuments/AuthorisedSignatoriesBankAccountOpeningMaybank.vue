@@ -46,13 +46,15 @@
             Company No. {{ controller.registrationNumberNew() }} ({{ controller.registrationNumberOld() }})
           </div>
           <div class="company-incorporated-in">(Incorporated in Malaysia)</div>
-          <br />
-          <div v-html="controller.company.value.businessAddressLocation?.getMultilineAddress()" />
+          <div v-if="props.isShowCompanyAddress">
+            <br />
+            <div v-html="controller.company.value.businessAddressLocation?.getMultilineAddress()" />
+          </div>
           <br />
           <div>
-            ( also referred to as the
-            <b>“Company”</b>
-            )
+            (also referred to as the “
+            <b>Company</b>
+            ”)
           </div>
         </div>
         <div class="document-content">
@@ -60,12 +62,21 @@
             class="content"
             v-html="controller.resolutionContent.value"
           />
-          <div class="signature-section">
-            <Signature
-              :signature-item="controller.signatureItem.value"
-              :is-tinted="false"
-              @signed="emit('signed', $event)"
-            />
+
+          <div class="signature-section multiple">
+            <div class="signature-title">
+              {{ controller.signatureTitle() }}
+            </div>
+            <div
+              class="signature-item"
+              v-for="(signatureItem, i) in controller.signatureItems.value"
+            >
+              <Signature
+                :signature-item="signatureItem"
+                :is-tinted="false"
+                @signed="emit('signed', $event)"
+              />
+            </div>
           </div>
         </div>
       </template>
@@ -107,6 +118,10 @@
       default: "DRAFT",
     },
     isShowTags: {
+      type: Boolean,
+      default: true,
+    },
+    isShowCompanyAddress: {
       type: Boolean,
       default: true,
     },

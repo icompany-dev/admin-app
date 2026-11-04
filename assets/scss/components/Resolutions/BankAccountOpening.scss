@@ -93,7 +93,7 @@
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
     }
 
-    :where(div.text-justify, p, li)>.fake-marker {
+    :where(div.text-justify, p, li) > .fake-marker {
       position: absolute;
       left: calc(var(--indent-level) * var(--indent-step));
       width: var(--marker-width);
@@ -106,7 +106,7 @@
       position: relative;
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
 
-      >.fake-indent {
+      > .fake-indent {
         display: none !important;
       }
     }
@@ -169,6 +169,14 @@
       min-width: 200px;
       display: inline-block;
     }
+  }
+
+  .signature-section {
+    row-gap: 1px;
+  }
+
+  .resolution-date {
+    margin-top: 20px;
   }
 }
 
@@ -304,7 +312,7 @@
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
     }
 
-    :where(div, p, li)>.fake-marker {
+    :where(div, p, li) > .fake-marker {
       position: absolute;
       left: calc(var(--indent-level) * var(--indent-step));
       width: var(--marker-width);
@@ -317,7 +325,7 @@
       position: relative;
       padding-left: calc(var(--marker-width) + (var(--indent-level) * var(--indent-step))) !important;
 
-      >.fake-indent {
+      > .fake-indent {
         display: none !important;
       }
     }
@@ -582,10 +590,11 @@
   }
 }
 
-#dcr-bank-account-opening-bank-islam {
+.dcr-bank-account-opening-bank-islam {
   table {
     margin-top: 10px;
-    border-collapse: collapse;
+    border-collapse: collapse !important;
+    border-spacing: 0 !important;
     width: 100%;
 
     thead {
@@ -654,5 +663,39 @@
     width: fit-content;
     padding: 5px 0;
     font-style: italic;
+  }
+
+  .signature-section {
+    margin-top: 12px;
+  }
+
+  .resolution-date {
+    margin-top: 20px;
+  }
+
+  &.is-printing {
+    table {
+      border-collapse: separate !important;
+      border-spacing: 0 !important;
+
+      th,
+      td {
+        border: none !important;
+        border-right: 1px solid black !important;
+        border-bottom: 1px solid black !important;
+      }
+
+      tr > :first-child {
+        border-left: 1px solid black !important;
+      }
+
+      thead tr:first-child th {
+        border-top: 1px solid black !important;
+      }
+
+      td.remove-section {
+        display: none !important;
+      }
+    }
   }
 }
