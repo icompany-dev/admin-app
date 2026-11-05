@@ -115,8 +115,8 @@
           </div>
         </div>
         <div class="resolution-title">
-          (Directors’ Resolution in Writing Re: Opening of bank Account with Malayan Banking Berhad/ Maybank Islamic
-          Berhad – cont’d)
+          <span>{{ controller.otherPageTitle?.toUpperCase() }}</span>
+          – cont
         </div>
         <div class="signature-section">
           <div

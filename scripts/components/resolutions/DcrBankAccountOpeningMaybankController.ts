@@ -362,9 +362,9 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
 
     const inAccordance = this.application.value?.company?.hasConstitution
       ? `COMPANY'S CONSTITUTION`
-      : `PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016.`
+      : `PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016`
 
-    return `DIRECTORS' RESOLUTIONS IN WRITING PASSED ON ${resolutionDate} in accordance with ${inAccordance} – cont’d`
+    return `DIRECTORS' RESOLUTIONS IN WRITING PASSED ON ${resolutionDate.toUpperCase()} IN ACCORDANCE WITH ${inAccordance.toUpperCase()} – Cont’d`
   }
 
   get documentDate(): string {
