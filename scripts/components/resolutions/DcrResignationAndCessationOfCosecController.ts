@@ -55,6 +55,8 @@ export class DcrResignationAndCessationOfCosecController {
       if (version !== this.loadVersion) return
 
       const director = new Director(directorResponse)
+      director.name = director.name?.trim() || directorResponse.user?.name || ""
+
       const signatureGroups = (signatureResponse ?? []).map((item: any) => new SignatureGroup(item))
 
       const signatureGroup = signatureGroups.find(
