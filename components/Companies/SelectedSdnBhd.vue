@@ -95,6 +95,13 @@
 
               <button
                 class="btn btn-pill btn-submit invert"
+                @click="controller.onOpenGenerateResignationAndAppointmentOfCosec()"
+              >
+                Resign & Appoint Cosec
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
                 @click="controller.onOpenGenerateAuditExemptionCertificate()"
               >
                 Generate Audit Exemption Certificate
@@ -204,6 +211,10 @@
         ref="generateAuditExemptionCertificateRef"
         :company-id="controller.companyId.value"
       />
+      <QuickGenerateResignationAndAppointmentOfCosec
+        ref="generateResignationAndAppointmentOfCosecRef"
+        :company-id="controller.companyId.value"
+      />
     </template>
   </div>
 </template>
@@ -240,6 +251,7 @@
   const documentRef = ref(null)
   const spineRef = ref(null)
   const generateAuditExemptionCertificateRef = ref(null)
+  const generateResignationAndAppointmentOfCosecRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -282,9 +294,21 @@
     { immediate: true }
   )
 
-  watch(generateAuditExemptionCertificateRef, (newVal) => {
-    controller.setGenerateAuditExemptionCertificateRef(newVal)
-  })
+  watch(
+    generateAuditExemptionCertificateRef,
+    (newVal) => {
+      controller.setGenerateAuditExemptionCertificateRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    generateResignationAndAppointmentOfCosecRef,
+    (newVal) => {
+      controller.setGenerateResignationAndAppointmentOfCosecRef(newVal)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style lang="scss">
