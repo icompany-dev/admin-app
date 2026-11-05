@@ -19,6 +19,7 @@
         <p>
           <b>RESOLVED:</b>
         </p>
+
         <p>
           <b><u>RESIGNATION &amp; CESSATION</u></b>
         </p>
@@ -26,7 +27,18 @@
         <p>
           <b>THAT</b>
           the resignation of
-          <b>{{ props.resigningSecretaryName }} (NRIC NO. {{ props.resigningSecretaryIdentification }})</b>
+          <b>
+            {{ props.resigningSecretaryName }}
+            <template v-if="!StringUtil.isNullOrEmpty(props.resigningSecretaryIdentification.trim())">
+              {{ " NRIC NO. " + props.resigningSecretaryIdentification.trim() }}
+            </template>
+            <template v-if="!StringUtil.isNullOrEmpty(props.resigningSecretaryPractisingCertificateNumber.trim())">
+              {{ " " }}
+              <span class="secretary-pc-number">
+                {{ `(SSM PC NO. ${props.resigningSecretaryPractisingCertificateNumber.trim()})` }}
+              </span>
+            </template>
+          </b>
           as the Secretary of the Company, who no longer intends to continue practising, be and is hereby accepted with
           immediate effect.
         </p>
@@ -37,17 +49,28 @@
 
         <p>
           <b>THAT</b>
-          the appointment as replacement, addition and instead of her as the Secretary of the Company be:
+          the appointment of:
         </p>
 
         <p>
           <b>
-            {{ props.replacementSecretaryName }} (NRIC NO. {{ props.replacementSecretaryIdentification }}) (SSM PC NO.
-            {{ props.replacementSecretaryPractisingCertificateNumber }})
+            {{ props.replacementSecretaryName }}
+            <template v-if="!StringUtil.isNullOrEmpty(props.replacementSecretaryIdentification.trim())">
+              {{ " NRIC NO. " + props.replacementSecretaryIdentification.trim() }}
+            </template>
+            <template v-if="!StringUtil.isNullOrEmpty(props.replacementSecretaryPractisingCertificateNumber.trim())">
+              {{ " " }}
+              <span class="secretary-pc-number">
+                {{ `(SSM PC NO. ${props.replacementSecretaryPractisingCertificateNumber.trim()})` }}
+              </span>
+            </template>
           </b>
         </p>
 
-        <p>be accepted with immediate effect.</p>
+        <p>
+          as Secretary of the Company in place of the resigning Secretary be and is hereby approved with immediate
+          effect.
+        </p>
 
         <p>
           <b>FURTHER RESOLVED THAT</b>
@@ -60,6 +83,7 @@
 </template>
 
 <script setup lang="ts">
+  import { StringUtil } from "~/scripts/utils/String.js"
   import Resolution from "./Resolution.vue"
   import { DcrResignationAndCessationOfCosecController } from "~/scripts/components/resolutions/DcrResignationAndCessationOfCosecController"
 
@@ -78,7 +102,11 @@
     },
     resigningSecretaryIdentification: {
       type: String,
-      required: true,
+      default: "",
+    },
+    resigningSecretaryPractisingCertificateNumber: {
+      type: String,
+      default: "",
     },
     replacementSecretaryName: {
       type: String,
@@ -86,11 +114,11 @@
     },
     replacementSecretaryIdentification: {
       type: String,
-      required: true,
+      default: "",
     },
     replacementSecretaryPractisingCertificateNumber: {
       type: String,
-      required: true,
+      default: "",
     },
   })
 
@@ -119,3 +147,9 @@
     errorMessage: controller.errorMessage,
   })
 </script>
+
+<style scoped>
+  .secretary-pc-number {
+    white-space: nowrap;
+  }
+</style>

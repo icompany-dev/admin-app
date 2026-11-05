@@ -1,104 +1,143 @@
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { Director } from "~/scripts/models/Director"
-import { SignatureGroup } from "~/scripts/models/SignatureGroup"
-import { User } from "~/scripts/models/User"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
-import { StringUtil } from "~/scripts/utils/String"
+
+interface ResignationAndCessationDocument {
+  isLoading: boolean
+  errorMessage: string
+  getPdfPages(): Promise<HTMLElement[]>
+}
 
 export class ResignationAndAppointmentOfCosecController {
-  emitEvents: any | null = null
+  companyId = ref("")
+  documentRef = ref<ResignationAndCessationDocument | null>(null)
 
-  isShowDocument: Ref<boolean> = ref<boolean>(false)
-  isDownloading: Ref<boolean> = ref<boolean>(false)
+  isShowDocument = ref(false)
+  isDownloading = ref(false)
+  isLoadingDirectors = ref(false)
+  errorMessage = ref("")
 
-  auditExemptionCertificateRef: any | null = null
+  directors = ref<Director[]>([])
+  directorId = ref("")
 
-  companyId: Ref<string> = ref<string>("")
-  directors: Ref<Director[]> = ref<Director[]>([])
-  directorId: Ref<string> = ref<string>("")
-  signatureGroups: Ref<SignatureGroup[]> = ref<SignatureGroup[]>([])
+  resigningSecretaryName = ref("NUR ASHIKIN BINTI SHAHARUDDIN")
+  resigningSecretaryIdentification = ref("941024-04-5428")
+  resigningSecretaryPractisingCertificateNumber = ref("202408000763")
 
-  constructor(props: any, emitEvents: any) {
-    this.emitEvents = emitEvents
-    this.setCompanyId(props.companyId)
-    this.fetchDirectors()
+  replacementSecretaryName = ref("AHMAD ASYRAQ BIN ABDUL RASID")
+  replacementSecretaryIdentification = ref("870523-04-5275")
+  replacementSecretaryPractisingCertificateNumber = ref("202608000324")
+
+  private directorsLoadVersion = 0
+
+  constructor(companyId: string) {
+    this.companyId.value = companyId
   }
 
-  setCompanyId(val: string): void {
-    this.companyId.value = val
+  get canDownload(): boolean {
+    return (
+      !this.isDownloading.value &&
+      !this.isLoadingDirectors.value &&
+      !!this.documentRef.value &&
+      !this.documentRef.value.isLoading &&
+      !this.documentRef.value.errorMessage &&
+      !!this.directorId.value
+    )
+  }
+
+  setCompanyId(companyId: string): void {
+    this.companyId.value = companyId
+
+    if (this.isShowDocument.value) {
+      void this.fetchDirectors()
+    }
   }
 
   async fetchDirectors(): Promise<void> {
-    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
-      return
+    const version = ++this.directorsLoadVersion
+
+    this.isLoadingDirectors.value = true
+    this.errorMessage.value = ""
+    this.directors.value = []
+    this.directorId.value = ""
+
+    try {
+      if (!this.companyId.value) {
+        throw new Error("Company is required.")
+      }
+
+      const repository = useDirectorStore()
+      const response = await repository.fetchAllForCompany(this.companyId.value)
+
+      if (repository.error) {
+        throw new Error("Unable to load directors.")
+      }
+
+      if (version !== this.directorsLoadVersion) return
+
+      this.directors.value = (response ?? []).map((item: any) => new Director(item))
+
+      if (this.directors.value.length === 1) {
+        this.directorId.value = this.directors.value[0].id
+      }
+
+      if (this.directors.value.length === 0) {
+        this.errorMessage.value = "No directors found for this company."
+      }
+    } catch (error) {
+      if (version !== this.directorsLoadVersion) return
+
+      this.errorMessage.value = error instanceof Error ? error.message : "Unable to load directors."
+
+      console.error(error)
+    } finally {
+      if (version === this.directorsLoadVersion) {
+        this.isLoadingDirectors.value = false
+      }
     }
-
-    let directorRepository = useDirectorStore()
-    let response = await directorRepository.fetchAllForCompany(this.companyId.value)
-
-    this.directors.value = response.map((d: any) => {
-      return new Director(d)
-    })
-
-    let promises = this.directors.value.map((d: Director) => {
-      return d.getRegisteredUser(useUserStore()).then((response) => {
-        d.user = new User(response)
-      })
-    })
-
-    await Promise.allSettled(promises)
-  }
-
-  setAuditExemptionCertificateRef(auditExemptionCertificateRef: any): void {
-    this.auditExemptionCertificateRef = auditExemptionCertificateRef
   }
 
   onOpenDocument(): void {
+    if (this.isShowDocument.value) return
+
     this.isShowDocument.value = true
+    void this.fetchDirectors()
   }
 
   onCloseDocument(): void {
-    if (this.isDownloading.value) {
-      return
-    }
+    if (this.isDownloading.value) return
 
     this.isShowDocument.value = false
   }
 
   async onDownloadDocument(): Promise<void> {
-    if (!this.auditExemptionCertificateRef) {
-      return
-    }
+    const document = this.documentRef.value
 
-    if (this.isDownloading.value) {
-      return
-    }
+    if (!this.canDownload || !document) return
 
     this.isDownloading.value = true
+    this.errorMessage.value = ""
 
     try {
-      let promises = []
+      await nextTick()
 
-      if (this.auditExemptionCertificateRef) {
-        let pages = await this.auditExemptionCertificateRef.getPdfPages()
-        promises.push(
-          PdfPaperUtil.generatePdfFile(
-            pages,
-            19,
-            "Audit Exemption Certificate.pdf",
-            PaperSize.A4,
-            PaperOrientation.Portrait
-          )
-        )
+      const pages = await document.getPdfPages()
+
+      if (pages.length === 0) {
+        throw new Error("No document pages available to download.")
       }
 
-      if (promises.length <= 0) {
-        return
-      }
+      await PdfPaperUtil.generatePdfFile(
+        pages,
+        19,
+        "Resignation and Appointment of Company Secretary.pdf",
+        PaperSize.A4,
+        PaperOrientation.Portrait
+      )
+    } catch (error) {
+      this.errorMessage.value = error instanceof Error ? error.message : "Unable to download the document."
 
-      await Promise.allSettled(promises)
-    } catch (e) {
-      console.error(e)
+      console.error(error)
     } finally {
       this.isDownloading.value = false
     }
