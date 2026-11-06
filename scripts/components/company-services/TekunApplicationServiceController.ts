@@ -17,7 +17,12 @@ export class TekunApplicationServiceController extends CompanyServiceController<
 
   wrapperRef: any | null = null
 
-  constructor(companyId: string, viewType: string, emitEvents: any | null) {
+  constructor(
+    companyId: string,
+    viewType: string,
+    emitEvents: any | null,
+    private adminApplicationId: string = ""
+  ) {
     super(companyId, true, false, CompanyTekunApplication, useCompanyLoanApplicationStore(), emitEvents)
     this.target = CompanyConstants.TARGET_LOAN_APPLICATION
     this.setViewType(viewType)
@@ -25,6 +30,36 @@ export class TekunApplicationServiceController extends CompanyServiceController<
   }
 
   async initializeData(): Promise<void> {
+    if (!StringUtil.isNullOrEmpty(this.adminApplicationId)) {
+      try {
+        const repository = useCompanyLoanApplicationStore()
+        const response = await repository.fetch(this.adminApplicationId)
+
+        if (repository.error) {
+          throw repository.error
+        }
+
+        const application = new CompanyTekunApplication(response)
+
+        this.companyTekunApplication.value = application
+        this.companyId = application.companyId
+        this.isInPreviewMode.value = false
+        this.hasOngoingApplication.value = true
+
+        this.init(application)
+      } catch (error) {
+        if (error instanceof Error) {
+          error.handle()
+        } else {
+          const fetchError = new Error()
+          fetchError.setForFetch()
+          fetchError.handle()
+        }
+      }
+
+      return
+    }
+
     switch (this.viewType.value) {
       case ViewMode.New:
         this.isInPreviewMode.value = true
