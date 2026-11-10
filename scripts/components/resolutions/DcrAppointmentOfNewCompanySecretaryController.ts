@@ -93,7 +93,31 @@ export class DcrAppointmentOfNewCompanySecretaryController {
     return "DIRECTORS’ RESOLUTION IN WRITING PURSUANT TO PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016"
   }
 
+  hasExistingCosec(): boolean {
+    if (this.application.value.metadata) {
+      let jsonData = this.application.value.getCorporateProfileData()
+      if (jsonData) {
+        let secretary = jsonData.officerInfos.find((oi: CorporateProfileJsonOfficerInfo) => {
+          return oi.designationCode.toLowerCase() === "s"
+        })
+
+        return !StringUtil.isNullOrEmpty(secretary?.name ?? "")
+      } else if (!StringUtil.isNullOrEmpty(this.application.value.secretaryName)) {
+        return true
+      }
+    }
+
+    return this.application.value.switchType === SwitchConstants.TYPE_SETTLE
+  }
+
   isAppointNew(): boolean {
+    if (this.application.value.metadata) {
+      let jsonData = this.application.value.getCorporateProfileData()
+      if (!jsonData) {
+        return !StringUtil.isNullOrEmpty(this.application.value.secretaryName)
+      }
+    }
+
     return (
       this.application.value.switchType === SwitchConstants.TYPE_VACATED ||
       this.application.value.switchType === SwitchConstants.TYPE_SELF_SERVICE
@@ -139,6 +163,10 @@ export class DcrAppointmentOfNewCompanySecretaryController {
   }
 
   resolutionName(): string {
+    if (this.hasExistingCosec()) {
+      return "Appointment of New Company Secretary"
+    }
+
     return "Add New Secretary" //this.isAppointNew() ? "Appointment of New Company Secretary" : "Add New Secretary"
   }
 

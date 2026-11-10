@@ -12,7 +12,7 @@ export class TekunApplicationController extends SecretarialServiceController<
   application = ref<CompanyTekunApplication>(new CompanyTekunApplication())
 
   constructor(props: PropsSecretarialService, emitEvents: any) {
-    super(props, CompanyConstants.TARGET_AMENDMENT_NAME, emitEvents)
+    super(props, CompanyConstants.TARGET_LOAN_APPLICATION, emitEvents)
   }
 
   async fetchApplication(): Promise<void> {

@@ -25,8 +25,10 @@
           <div>
             (Incorporated in Malaysia)
             <br />
-            <br />
-            <div v-html="controller.companyAddressMultiline()" />
+            <div v-if="props.isShowCompanyAddress">
+              <br />
+              <div v-html="controller.companyAddressMultiline()" />
+            </div>
             <br />
             (also refered to as the
             <b>“Company”</b>
@@ -102,8 +104,10 @@
           <div>
             (Incorporated in Malaysia)
             <br />
-            <br />
-            <div v-html="controller.companyAddressMultiline()" />
+            <div v-if="props.isShowCompanyAddress">
+              <br />
+              <div v-html="controller.companyAddressMultiline()" />
+            </div>
             <br />
             (also refered to as the
             <b>“Company”</b>
@@ -111,8 +115,8 @@
           </div>
         </div>
         <div class="resolution-title">
-          (Directors’ Resolution in Writing Re: Opening of bank Account with Malayan Banking Berhad/ Maybank Islamic
-          Berhad – cont’d)
+          <span>{{ controller.otherPageTitle?.toUpperCase() }}</span>
+          – cont
         </div>
         <div class="signature-section">
           <div
@@ -181,6 +185,10 @@
     bankId: {
       type: String,
       default: "",
+    },
+    isShowCompanyAddress: {
+      type: Boolean,
+      default: true,
     },
   })
 

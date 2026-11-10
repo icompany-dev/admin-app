@@ -4,7 +4,9 @@
 export class StatusConstants {
   static ACTIVE: string = "active"
   static APPROVED: string = "approved"
+  static CANCELLED: string = "cancelled"
   static COMPLETED: string = "completed"
+  static CONFIRMED: string = "confirmed"
   static CONVERTED: string = "converted"
   static DELIVERED: string = "delivered"
   static DOCUMENT_RECEIVED: string = "document-received"

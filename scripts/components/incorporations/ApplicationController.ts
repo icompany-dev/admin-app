@@ -308,6 +308,8 @@ export class ApplicationController {
     this.isShowRegistration.value = false
     this.isShowCompletion.value = false
 
+    this.selectedNameReservationApplication.value = ""
+
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
 
@@ -431,11 +433,25 @@ export class ApplicationController {
   }
 
   // Name Reservation Step
+  onNameReservationClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowSection27.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
+
+    console.log("this step called?")
+  }
+
   onNameReservationStepClicked(name: string): void {
     this.resetAllDocumentValues()
     this.isShowSection27.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
     this.selectedNameReservationApplication.value = name
+
+    console.log("step called?")
+  }
+
+  isSelectingNameReservationFor(name: string): boolean {
+    return this.isShowSection27.value && this.selectedNameReservationApplication.value === name
   }
 
   isShowingNameReservationsOptionFor(name: string): boolean {
@@ -607,21 +623,19 @@ export class ApplicationController {
     }
   }
 
-  async onSubmitNameReservation(): Promise<void> {
+  async onSubmitNameReservation(nameOption: string): Promise<void> {
     this.isShowSection27Actions.value = false
 
     if (this.isUpdatingSection27.value || !this.application.value) {
       return
     }
 
-    if (StringUtil.isNullOrEmpty(this.selectedProposedName.value)) {
-      this.selectedProposedName.value = this.nameOptions[0]
-    }
+    this.selectedProposedName.value = nameOption
 
     try {
       this.applicationNameReservation.value = new ApplicationNameReservation()
       this.applicationNameReservation.value.applicationIncorporateId = this.application.value.id
-      this.applicationNameReservation.value.name = this.selectedProposedName.value
+      this.applicationNameReservation.value.name = nameOption
         .replace("SDN BHD", "")
         .replace("sdn bhd", "")
         .replace("SDN. BHD.", "")
@@ -654,6 +668,9 @@ export class ApplicationController {
       this.applicationNameReservation.value.clone(data)
 
       await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
+
+      this.application.value.nameReservationApplications.push(this.applicationNameReservation.value)
+
       await this.fetchApplication()
 
       let toastTitle = this.language.isMalay()
@@ -678,15 +695,30 @@ export class ApplicationController {
     }
   }
 
-  onQueryNameReservation(): void {
+  async onQueryNameReservation(nameOption: string): Promise<void> {
     this.isShowSection27Actions.value = false
 
     try {
-      if (!this.latestSection27Application || !this.nameReservedQueriedPopup) {
+      if (!this.nameReservedQueriedPopup) {
         throw ""
       }
 
-      this.applicationNameReservation.value = new ApplicationNameReservation(this.latestSection27Application)
+      if (this.latestSection27Application) {
+        this.applicationNameReservation.value = new ApplicationNameReservation(this.latestSection27Application)
+      } else {
+        this.applicationNameReservation.value = new ApplicationNameReservation()
+        this.applicationNameReservation.value.applicationIncorporateId = this.application.value.id
+        this.applicationNameReservation.value.name = nameOption
+          .replace("SDN BHD", "")
+          .replace("sdn bhd", "")
+          .replace("SDN. BHD.", "")
+          .replace("sdn. bhd.", "")
+        this.applicationNameReservation.value.nameType = "sdnbhd"
+        this.applicationNameReservation.value.status = "paid"
+        await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
+
+        this.application.value.nameReservationApplications.push(this.applicationNameReservation.value)
+      }
 
       this.nameReservedQueriedPopup.show()
     } catch (e) {
@@ -707,6 +739,16 @@ export class ApplicationController {
       this.applicationNameReservation.value.clone(data)
 
       await this.applicationNameReservation.value.queried(useApplicationNameReservationStore())
+
+      let matchedApplication = this.application.value.nameReservationApplications.find(
+        (anr: ApplicationNameReservation) => {
+          return anr.id === this.applicationNameReservation.value.id
+        }
+      )
+      if (matchedApplication) {
+        matchedApplication.clone(this.applicationNameReservation.value)
+      }
+
       await this.fetchApplication()
 
       let toastTitle = this.language.isMalay()
@@ -731,8 +773,28 @@ export class ApplicationController {
     }
   }
 
-  onNameReservationRejectedClicked(): void {
+  async onNameReservationRejectedClicked(nameOption: string): Promise<void> {
     this.isShowSection27Actions.value = false
+
+    let matchedApplication = this.application.value.nameReservationApplications.find(
+      (anr: ApplicationNameReservation) => {
+        return anr.name === nameOption
+      }
+    )
+    if (!matchedApplication) {
+      this.applicationNameReservation.value = new ApplicationNameReservation()
+      this.applicationNameReservation.value.applicationIncorporateId = this.application.value.id
+      this.applicationNameReservation.value.name = nameOption
+        .replace("SDN BHD", "")
+        .replace("sdn bhd", "")
+        .replace("SDN. BHD.", "")
+        .replace("sdn. bhd.", "")
+      this.applicationNameReservation.value.nameType = "sdnbhd"
+      this.applicationNameReservation.value.status = "paid"
+      await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
+
+      this.application.value.nameReservationApplications.push(this.applicationNameReservation.value)
+    }
 
     if (this.nameReservationRejectedPopup) {
       this.nameReservationRejectedPopup.show()
@@ -766,23 +828,27 @@ export class ApplicationController {
     }
   }
 
-  async onApproveNameReservation(): Promise<void> {
+  async onApproveNameReservation(nameOption: string): Promise<void> {
     this.isShowSection27Actions.value = false
 
-    if (!this.latestSection27Application || this.isUpdatingSection27.value) {
+    if (this.isUpdatingSection27.value) {
       return
     }
 
-    let application = this.latestSection27Application
+    if (this.latestSection27Application) {
+      let application = this.latestSection27Application
 
-    this.isUpdatingSection27.value = true
+      this.isUpdatingSection27.value = true
 
-    this.selectedNameReservationForApproval.value = new NameReservationVariant(
-      application.name,
-      application.nameType,
-      application.nameDescription,
-      application.supportingDocumentId
-    )
+      this.selectedNameReservationForApproval.value = new NameReservationVariant(
+        application.name,
+        application.nameType,
+        application.nameDescription,
+        application.supportingDocumentId
+      )
+    } else {
+      this.selectedNameReservationForApproval.value = new NameReservationVariant(nameOption, "sdnbhd", null, null)
+    }
 
     await nextTick()
 
@@ -793,26 +859,42 @@ export class ApplicationController {
   }
 
   async onProceedApproveReservation(nameReservation: NameReservationVariant): Promise<void> {
-    console.log("name", nameReservation)
-    if (!this.latestSection27Application) {
-      console.log("here??")
-      return
-    }
-
-    let application = this.latestSection27Application
-
-    application.name = nameReservation.name
-
     try {
-      let data = {
-        name: application.name,
-      }
-      let repository = useApplicationNameReservationStore()
-      await repository.update(application.id, data)
+      this.isUpdatingSection27.value = true
 
-      await application.approve(useApplicationNameReservationStore())
+      this.application.value.nameSelected = nameReservation
+
+      if (this.latestSection27Application) {
+        let application = this.latestSection27Application
+
+        application.name = nameReservation.name
+        let data = {
+          name: application.name,
+        }
+
+        let repository = useApplicationNameReservationStore()
+        await repository.update(application.id, data)
+        await application.approve(useApplicationNameReservationStore())
+      } else {
+        let data = {
+          name_selected: nameReservation.name,
+          name_type_selected: nameReservation.nameType,
+        }
+
+        let repository = useApplicationIncorporateStore()
+        await repository.update(this.application.value.id, data)
+      }
 
       await this.fetchApplication()
+
+      let toastTitle = this.language.isMalay()
+        ? "Cadangan nama yang diluluskan telah direkod."
+        : "The Approved Proposed Name is recorded."
+      let toastMessage = this.language.isMalay()
+        ? "Pemohon akan diberitahu melalui emel dan WhatsApp."
+        : "The applicant will be informed via Email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -865,8 +947,8 @@ export class ApplicationController {
         ? "Maklumat baharu telah dikemaskini."
         : "Your changes have been recorded."
       let toastMessage = this.language.isMalay()
-        ? "Teruskan dengan Seksyen 236(3) dan Profil Korporat."
-        : "Proceed with generation of Section 236(3) and purchase of Corporate Profile."
+        ? "Teruskan dengan Seksyen 236(3)."
+        : "Proceed with generation of Section 236(3)."
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
     } catch (e) {
@@ -1895,7 +1977,7 @@ export class ApplicationController {
   }
 
   get generateSection236Label(): string {
-    return this.language.isMalay() ? "Seksyen 236(2)" : "Section 236(2)"
+    return this.language.isMalay() ? "Seksyen 236(3)" : "Section 236(3)"
   }
 
   get corporateProfileLabel(): string {

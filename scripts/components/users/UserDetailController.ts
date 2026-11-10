@@ -1,5 +1,7 @@
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { EmailUser } from "~/scripts/library/EmailUser"
+import { Error } from "~/scripts/library/Error"
+import { Toast } from "~/scripts/library/Toast"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
 import { PropsIdentificationDocumentWatermark } from "~/scripts/props/PropsIdentificationDocumentWatermark"
@@ -82,6 +84,43 @@ export class UserDetailController {
     setTimeout(() => {
       printWindow.print()
     }, 500)
+  }
+
+  async onGenerateMagicLink(): Promise<void> {
+    const loginTab = window.open("about:blank", "_blank")
+
+    try {
+      if (!loginTab) {
+        throw new Error()
+      }
+
+      loginTab.opener = null
+
+      const userRepository = useUserStore()
+      const response = await userRepository.generateMagicLink(this.user.value.id)
+
+      const magicLinkId = response?.data?.magic_link_id ?? response?.magic_link_id
+
+      if (userRepository.error || !magicLinkId) {
+        throw new Error()
+      }
+
+      const toastTitle = this.language.isMalay()
+        ? "Pautan log masuk berjaya dijana. Membuka halaman log masuk..."
+        : "Login link generated. Opening login page..."
+
+      new Toast(toastTitle, "").success()
+
+      await new Promise<void>((resolve) => setTimeout(resolve, 500))
+
+      loginTab.location.replace(`https://cosec.icompany.my/login/${magicLinkId}`)
+    } catch (e) {
+      loginTab?.close()
+
+      const error = new Error()
+      error.setForCUD()
+      error.handle()
+    }
   }
 
   get name(): string {

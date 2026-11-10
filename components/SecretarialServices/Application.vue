@@ -37,6 +37,7 @@
   import AssetPurchase from "./AssetPurchase.vue"
   import AllotNewShare from "./AllotNewShare.vue"
   import AppointAuditor from "./AppointAuditor.vue"
+  import AppointTaxAgent from "./AppointTaxAgent.vue"
   import AppointDirector from "./AppointDirector.vue"
   import BankAccountOpening from "./BankAccountOpening.vue"
   import ChangeBankSignatory from "./ChangeBankSignatory.vue"
@@ -48,6 +49,7 @@
   import DocumentRequest from "./DocumentRequest.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import PaymentToDirector from "./PaymentToDirector.vue"
+  import ResignationOfDirector from "./ResignationOfDirector.vue"
   import SwitchOut from "./SwitchOut.vue"
   import TekunApplication from "./TekunApplication.vue"
   import TransferOfShare from "./TransferOfShare.vue"
@@ -66,6 +68,7 @@
     [CompanyConstants.TARGET_AMENDMENT_DESCRIPTION]: ChangeOfDescription,
     [CompanyConstants.TARGET_AMENDMENT_NAME]: ChangeOfName,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointAuditor,
+    [CompanyConstants.TARGET_TAX_AGENT_APPOINTMENT]: AppointTaxAgent,
     [CompanyConstants.TARGET_CHANGE_BANK_SIGNATORY]: ChangeBankSignatory,
     [CompanyConstants.TARGET_DIRECTOR_APPOINTMENT]: AppointDirector,
     [CompanyConstants.TARGET_DIRECTOR_PAYMENT]: PaymentToDirector,
@@ -74,6 +77,7 @@
     [CompanyConstants.TARGET_LOAN_APPLICATION]: TekunApplication,
     [CompanyConstants.TARGET_OPEN_BANK_ACCOUNT]: BankAccountOpening,
     [CompanyConstants.TARGET_PURCHASE_ASSET]: AssetPurchase,
+    [CompanyConstants.TARGET_DIRECTOR_RESIGNATION]: ResignationOfDirector,
     [CompanyConstants.TARGET_SHAREHOLDER_ALLOTMENT_OF_SHARES]: AllotNewShare,
     [CompanyConstants.TARGET_SHAREHOLDER_TRANSFER_OF_SHARES]: TransferOfShare,
     [CompanyConstants.TARGET_SWITCH_OUT]: SwitchOut,

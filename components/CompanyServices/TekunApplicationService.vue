@@ -84,6 +84,10 @@
       type: String,
       required: true,
     },
+    applicationId: {
+      type: String,
+      default: "",
+    },
   })
 
   const emit = defineEmits(EmitMessages.COMPANY_SERVICES)
@@ -91,7 +95,7 @@
   const dcrRef = ref(null)
   const wrapperRef = ref(null)
 
-  const controller = new TekunApplicationServiceController(props.companyId, props.viewType, emit)
+  const controller = new TekunApplicationServiceController(props.companyId, props.viewType, emit, props.applicationId)
 
   onMounted(async () => {
     await nextTick()

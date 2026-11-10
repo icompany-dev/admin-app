@@ -33,6 +33,8 @@ export abstract class ApplicationController<Application> {
 
   isShowReceipt: Ref<boolean> = ref<boolean>(true)
 
+  isGeneratingReso: Ref<boolean> = ref<boolean>(false)
+
   isShowApprovalTypeOptions: Ref<boolean> = ref<boolean>(false)
   selectedApprovalType: Ref<string> = ref<string>("director-member")
 
@@ -145,6 +147,14 @@ export abstract class ApplicationController<Application> {
 
   setServiceApplicationRef(serviceApplicationRef: any): void {
     this.serviceApplicationRef = serviceApplicationRef
+  }
+
+  setIsGeneratingReso(isGeneratingReso: boolean): void {
+    if (this.isGeneratingReso.value && !isGeneratingReso) {
+      this.uploadedDocumentChecker.value.fetchDocuments()
+    }
+
+    this.isGeneratingReso.value = isGeneratingReso
   }
 
   async initializeData(): Promise<void> {

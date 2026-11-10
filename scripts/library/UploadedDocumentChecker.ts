@@ -22,6 +22,7 @@ export class UploadedDocumentChecker {
     }
 
     this.documentsAndForms.companyId = this.companyId
+
     await this.documentsAndForms.init()
   }
 
@@ -49,7 +50,6 @@ export class UploadedDocumentChecker {
     }
 
     let keywordParts = keyword.split(",")
-
     let matchedDocuments = this.documentsAndForms.documents.filter((d: CompanyDocument) => {
       return keywordParts.some((k: string) => {
         return StringUtil.contains(d.documentName, k)
@@ -113,6 +113,8 @@ export class UploadedDocumentChecker {
         return "" //StatutoryFormKeywords.AuditorAppointment
       case DocumentTargets.TARGET_AUDITOR_APPOINTMENT_RESOLUTIONS:
         return "" //StatutoryFormKeywords.AuditorAppointment
+      case DocumentTargets.TARGET_TAX_AGENT_APPOINTMENT_RESOLUTIONS:
+        return "Appointment of Tax Agent, Appoint Tax Agent, DCR - Appointment of Tax Agent" //StatutoryFormKeywords.AuditorAppointment
       case DocumentTargets.TARGET_BO_DECLARATION:
         return ""
       case DocumentTargets.TARGET_BO_DECLARATION_RESOLUTIONS:
@@ -138,9 +140,9 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_DELEGATION_OF_AUTHORITY_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT:
-        return "Section 58"
+        return StatutoryFormKeywords.AppointDirector
       case DocumentTargets.TARGET_DIRECTOR_APPOINTMENT_RESOLUTIONS:
-        return ""
+        return StatutoryFormKeywords.AppointDirectorDcr
       case DocumentTargets.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_DECLARATION_CONFLICT_OF_INTEREST_RESOLUTIONS:
@@ -162,9 +164,9 @@ export class UploadedDocumentChecker {
       case DocumentTargets.TARGET_DIRECTOR_MANAGER_APPOINTMENT_RESOLUTIONS:
         return ""
       case DocumentTargets.TARGET_DIRECTOR_RESIGNATION:
-        return ""
+        return StatutoryFormKeywords.ResignationOfDirector
       case DocumentTargets.TARGET_DIRECTOR_RESIGNATION_RESOLUTIONS:
-        return ""
+        return StatutoryFormKeywords.ResignationOfDirectorDcr
       case DocumentTargets.TARGET_DIVIDEND_DECLARATION:
         return ""
       case DocumentTargets.TARGET_DIVIDEND_DECLARATION_RESOLUTIONS:

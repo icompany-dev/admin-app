@@ -1,0 +1,13 @@
+#buttons-add-application {
+  .add-icon {
+    font-size: 30px;
+    opacity: 0.5;
+    transition: all 0.7s ease;
+    cursor: pointer;
+    color: var(--bs-icompany-purple);
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

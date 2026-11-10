@@ -255,8 +255,8 @@ export class TemplateProcessor {
 
       if (type === "text") {
         const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(value)
-        console.log("yo", isNumericOrDecimal, value)
-        return isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(value)) : value
+        return value
+        // return isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(value)) : value
       }
 
       if (type === "date") {

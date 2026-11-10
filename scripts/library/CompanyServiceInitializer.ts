@@ -34,6 +34,8 @@ export class CompanyServiceInitializer<T> {
     let filter = new Filter()
     filter.companyId = this.companyId
     filter.statuses = [
+      StatusConstants.DRAFT,
+      StatusConstants.PENDING,
       StatusConstants.PAID,
       StatusConstants.SUBMITTED,
       StatusConstants.APPROVED,
@@ -41,6 +43,7 @@ export class CompanyServiceInitializer<T> {
       StatusConstants.NAME_REJECTED,
       StatusConstants.RESPONDED,
       StatusConstants.ONGOING,
+      StatusConstants.COMPLETED,
     ]
     filter.orderBy = "paid_at"
     filter.sortOrder = "desc"

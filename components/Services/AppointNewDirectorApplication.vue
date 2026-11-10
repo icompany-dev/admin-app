@@ -43,10 +43,37 @@
           <template #nodeOptions>
             <button
               class="btn btn-pill btn-primary"
+              :class="{ 'is-loading': controller.isGeneratingReso.value }"
+              :disabled="controller.isDcrGenerated || controller.isGeneratingReso.value"
               @click="controller.onDownloadClicked()"
             >
               {{ controller.downloadLabel }}
             </button>
+            <div
+              v-if="controller.isDcrGenerated"
+              class="actions"
+            >
+              <span
+                class="action-link download"
+                @click="controller.onDownloadGeneratedDcr()"
+              >
+                <i
+                  class="fa-regular"
+                  :class="controller.isDownloadingDcr.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'"
+                />
+                {{ controller.generatedDcrLabel }}
+              </span>
+              <span
+                class="action-link remove"
+                @click="controller.onRemoveDcrClicked()"
+              >
+                <i
+                  class="fa-regular fa-spinner fa-spin"
+                  v-if="controller.isRemovingDcr.value"
+                />
+                {{ controller.removeDcrLabel }}
+              </span>
+            </div>
           </template>
           <template #nodeActions>
             <button
@@ -117,9 +144,19 @@
             >
               {{ controller.uploadLabel }}
             </button>
+            <span v-if="!controller.isSection58Uploaded">
+              <br />
+              <small>e.g. Section 58</small>
+            </span>
             <div v-if="controller.isSection58Uploaded">
-              <span class="action-link download">
-                <i class="fa-regular fa-cloud-arrow-up" />
+              <span
+                class="action-link download"
+                @click="controller.onDownloadSection58()"
+              >
+                <i
+                  class="fa-regular"
+                  :class="controller.isDownloadingSection58.value ? 'fa-spinner fa-spin' : 'fa-cloud-arrow-up'"
+                />
                 {{ controller.section58Label }}
               </span>
             </div>
@@ -207,6 +244,13 @@
       controller.setUploadDocumentRef(newVal)
     },
     { immediate: true }
+  )
+
+  watch(
+    () => props.isGenerating,
+    (newVal) => {
+      controller.setIsGeneratingReso(newVal)
+    }
   )
 
   defineExpose({

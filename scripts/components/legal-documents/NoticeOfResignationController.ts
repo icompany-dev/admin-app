@@ -34,8 +34,6 @@ export class NoticeOfResignationController extends SdnBhdLegalDocumentController
 
   emitEvents: any | null = null
 
-  documentRef: any | null = null
-
   constructor(
     companyId: string,
     directorId: string,
@@ -54,10 +52,6 @@ export class NoticeOfResignationController extends SdnBhdLegalDocumentController
 
   async setUser(): Promise<void> {
     this.user.value = await CurrentUser.get()
-  }
-
-  setDocumentRef(documentRef: any): void {
-    this.documentRef = documentRef
   }
 
   override setIsInPreviewMode(isInPreviewMode: boolean): void {
@@ -120,10 +114,8 @@ export class NoticeOfResignationController extends SdnBhdLegalDocumentController
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error: Error = new Error(
-          Error.ERROR_TYPE_API,
-          "Unable to fetch details of application. Please refresh the page and try again."
-        )
+        let error: Error = new Error()
+        error.setForFetch()
         error.handle()
       }
     }
@@ -144,10 +136,8 @@ export class NoticeOfResignationController extends SdnBhdLegalDocumentController
       if (e instanceof Error) {
         e.handle()
       } else {
-        let error: Error = new Error(
-          Error.ERROR_TYPE_API,
-          "Unable to fetch details of director. Please refresh the page and try again."
-        )
+        let error: Error = new Error()
+        error.setForFetch()
         error.handle()
       }
     }
@@ -191,7 +181,8 @@ export class NoticeOfResignationController extends SdnBhdLegalDocumentController
       return []
     }
 
-    return await PdfPaperUtil.getPdfElements(this.documentRef as HTMLElement)
+    let pages = await PdfPaperUtil.getPdfElements(this.documentRef as HTMLElement)
+    return pages
   }
 
   getData(): CompanyDirectorResignation {

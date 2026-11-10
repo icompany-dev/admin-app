@@ -149,6 +149,22 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
+  async function generateMagicLink(userId: string): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = await $repositories.users.generateMagicLink(userId)
+      return response
+    } catch (e: any) {
+      error.value = e.message || `Failed to Generate magic Link`
+      console.error(`Error to Generate magic Link`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     users,
     user,
@@ -163,5 +179,6 @@ export const useUserStore = defineStore("user", () => {
     fetchRepresentative,
     fetchDirectorToCompany,
     fetchRoles,
+    generateMagicLink,
   }
 })

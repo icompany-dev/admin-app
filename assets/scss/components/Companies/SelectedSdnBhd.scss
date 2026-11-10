@@ -13,42 +13,40 @@
       width: 100%;
       display: flex;
       flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 20px;
+      justify-content: space-between;
+      align-items: flex-start;
 
-      .logo {
-        width: 80px;
-        height: 80px;
-        background-color: var(--bs-white);
-        border-radius: 5px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        img {
-          width: 70px;
-          height: auto;
-          aspect-ratio: 1/1;
-          object-fit: contain;
-        }
-
-        &.no-logo {
-          img {
-            opacity: 0.5;
-            filter: grayscale(1);
-          }
-        }
-      }
-
-      .name-registration-numbers-actions {
+      .name-registration-numbers-logo {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-start;
-        width: calc(100% - 130px);
+        justify-content: flex-start;
+        align-items: center;
+        gap: 20px;
 
+        .logo {
+          width: 80px;
+          height: 80px;
+          background-color: var(--bs-white);
+          border-radius: 5px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          img {
+            width: 70px;
+            height: auto;
+            aspect-ratio: 1/1;
+            object-fit: contain;
+          }
+
+          &.no-logo {
+            img {
+              opacity: 0.5;
+              filter: grayscale(1);
+            }
+          }
+        }
 
         .name-registration-number {
           .company-name {
@@ -70,64 +68,64 @@
             }
           }
         }
+      }
 
-        .actions-button-options {
-          position: relative;
+      .actions-button-options {
+        position: relative;
 
-          .btn-pill {
-            &.selected {
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: space-between;
+        .btn-pill {
+          &.selected {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
 
-              .label {
-                width: calc(100% - 20px);
-                display: inline-block;
-                text-align: center;
-              }
+            .label {
+              width: calc(100% - 20px);
+              display: inline-block;
+              text-align: center;
+            }
 
-              .fa-caret-down {
-                cursor: pointer;
-                transition: all 0.7s ease;
+            .fa-caret-down {
+              cursor: pointer;
+              transition: all 0.7s ease;
 
-                &.rotate {
-                  transform: rotate(-180deg);
-                }
+              &.rotate {
+                transform: rotate(-180deg);
               }
             }
           }
+        }
 
-          .options {
-            position: absolute;
-            top: calc(100% + 5px);
-            left: 0;
-            transform: scaleY(0);
-            opacity: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.7s ease;
-            transform-origin: top center;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 5px;
+        .options {
+          position: absolute;
+          top: calc(100% + 5px);
+          left: 0;
+          transform: scaleY(0);
+          opacity: 0;
+          max-height: 0;
+          overflow: hidden;
+          transition: all 0.7s ease;
+          transform-origin: top center;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 5px;
 
-            &.show {
-              opacity: 1;
-              transform: scaleY(1);
-              max-height: fit-content;
-            }
+          &.show {
+            opacity: 1;
+            transform: scaleY(1);
+            max-height: fit-content;
+          }
 
-            .btn-submit {
-              &.invert {
-                background-color: var(--bs-white);
+          .btn-submit {
+            &.invert {
+              background-color: var(--bs-white);
 
-                &:hover {
-                  background-color: var(--btn-submit-bg-color);
-                  color: var(--btn-submit-color);
-                }
+              &:hover {
+                background-color: var(--btn-submit-bg-color);
+                color: var(--btn-submit-color);
               }
             }
           }
@@ -141,8 +139,34 @@
       width: 100%;
       display: flex;
       flex-direction: row;
-      justify-content: space-evenly;
+      justify-content: flex-start;
       align-items: center;
+      gap: 20px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: transparent transparent;
+
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background: transparent;
+        border-radius: 10px;
+        transition: background 0.3s ease;
+      }
+
+      &:hover {
+        &::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.2); // Visible thumb
+        }
+
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+      }
 
       .page-tab {
         font-size: 1.2rem;
@@ -151,6 +175,7 @@
         padding-bottom: 10px;
         border-bottom: 4px solid transparent;
         transition: all 0.7s ease;
+        min-width: 180px;
 
         &.selected {
           font-weight: 600;
@@ -186,6 +211,23 @@
   &.is-showing-documents {
     .company-details {
       width: calc(60% - 25px);
+    }
+  }
+
+  @media (max-width: 500px) {
+    .name-logo {
+      flex-direction: column !important;
+      justify-content: flex-start;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .page-tabs {
+      flex-direction: column !important;
+
+      .page-tab {
+        width: 100%;
+      }
     }
   }
 }

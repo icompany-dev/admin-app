@@ -52,7 +52,7 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
     this.bankId.value = bankId
 
     this.signatureStartOnPage.value = 3
-    this.maxSignatureOnFirstPage.value = 0
+    this.maxSignatureOnFirstPage.value = 2
     this.maxSignatureOnOtherPages.value = 6
 
     this.initializeResolution(applicationId, companyId)
@@ -362,9 +362,9 @@ export class DcrBankAccountOpeningMaybankController extends OpenBankAccountResol
 
     const inAccordance = this.application.value?.company?.hasConstitution
       ? `COMPANY'S CONSTITUTION`
-      : `PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016.`
+      : `PARAGRAPH 15 OF THE THIRD SCHEDULE OF THE COMPANIES ACT 2016`
 
-    return `DIRECTORS' RESOLUTIONS IN WRITING PASSED ON ${resolutionDate} in accordance with ${inAccordance} – cont’d`
+    return `DIRECTORS' RESOLUTIONS IN WRITING PASSED ON ${resolutionDate.toUpperCase()} IN ACCORDANCE WITH ${inAccordance.toUpperCase()} – Cont’d`
   }
 
   get documentDate(): string {

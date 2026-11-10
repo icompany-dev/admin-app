@@ -48,7 +48,7 @@ export class PdfPaperUtil {
       const textInputs = paper.querySelectorAll<HTMLInputElement>('input[type="text"]')
       textInputs.forEach((input) => {
         const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(input.value)
-        const value = isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(input.value)) : input.value
+        const value = input.value //isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(input.value)) : input.value
         const textNode = document.createElement("span")
         textNode.className = input.className
         textNode.textContent = value

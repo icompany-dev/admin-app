@@ -23,6 +23,9 @@ export abstract class Application implements IApplication {
   updatedAt: string = ""
   deletedAt: string = ""
 
+  documentDate: string = ""
+  locationId: string = ""
+
   // this is for UI purposes
   // We need this for linkage purposes. eg. Transfer of Shares & Register of Transfer
   relatedApplicationId: string | null = null
@@ -47,6 +50,9 @@ export abstract class Application implements IApplication {
     this.createdAt = data.created_at ?? ""
     this.updatedAt = data.updated_at ?? ""
     this.deletedAt = data.deleted_at ?? ""
+
+    this.documentDate = data.document_date
+    this.locationId = data.location_id
   }
 
   protected clone(data: Application): void {
@@ -65,6 +71,8 @@ export abstract class Application implements IApplication {
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
     this.deletedAt = data.deletedAt
+    this.documentDate = data.documentDate
+    this.locationId = data.locationId
   }
 
   async submit(repository: IRepositoryStore): Promise<void> {

@@ -22,7 +22,7 @@ export class StringUtil {
       return false
     }
 
-    return stringA?.toLowerCase().includes(stringB?.toLowerCase())
+    return stringA?.trim().toLowerCase().includes(stringB?.trim().toLowerCase())
   }
 
   static inArray(needle: string, haystack: string[]): boolean {

@@ -133,6 +133,12 @@ export class PageSidebar {
     "services/appoint-director-new",
     false
   )
+  static resignDirector: Sidebar = new Sidebar(
+    "Resignation of Director",
+    "Perletakan Jawatan Pengarah",
+    "services/resign-director",
+    false
+  )
   static transferOfShares: Sidebar = new Sidebar(
     "Transfer of Shares",
     "Pindah Saham",
@@ -169,6 +175,12 @@ export class PageSidebar {
     "services/appointment-of-auditor",
     false
   )
+  static taxAgentAppointment: Sidebar = new Sidebar(
+    "Appointment of Tax Agent",
+    "Perlantikan Tax Agent",
+    "services/appointment-of-tax-agent",
+    false
+  )
   static paymentToDirectors: Sidebar = new Sidebar(
     "Payment to Directors",
     "Bayaran ke Pengarah",
@@ -182,6 +194,7 @@ export class PageSidebar {
     this.changeAddress,
     this.openBankAccount,
     this.appointDirector,
+    this.resignDirector,
     this.paymentToDirectors,
     this.transferOfShares,
     this.allotNewShares,
@@ -189,6 +202,7 @@ export class PageSidebar {
     this.declareDividends,
     this.changeBankSignatories,
     this.auditorAppointment,
+    this.taxAgentAppointment,
     this.switchOut,
   ])
 

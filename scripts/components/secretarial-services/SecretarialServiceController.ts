@@ -128,6 +128,7 @@ export abstract class SecretarialServiceController<T, R> {
       })
 
       let uploadedFile = new UploadedFile()
+      uploadedFile.name = generateDocumentDetails.filename
       await uploadedFile.uploadFile(pdfFile, useFileStore())
 
       let form = new Form()
@@ -155,6 +156,7 @@ export abstract class SecretarialServiceController<T, R> {
 
     props.canCompleteService = this.canCompleteService.value
     props.isDownloadCompleted = !this.isDownloading.value
+    props.isGenerating = this.isGenerating.value
 
     return props
   }

@@ -50,4 +50,13 @@
     justify-content: flex-start;
     align-items: flex-start;
   }
+
+  .actions {
+    width: 100%;
+    text-align: left;
+
+    .remove {
+      color: var(--bs-danger);
+    }
+  }
 }

@@ -66,6 +66,7 @@
   import AppointManager from "./AppointManager.vue"
   import AppointmentOfDirector from "./AppointmentOfDirector.vue"
   import AppointmentOfAuditor from "./AppointmentOfAuditor.vue"
+  import AppointmentOfTaxAgent from "./AppointmentOfTaxAgent.vue"
   import AppointResponsiblePersonForFinancialStatement from "./AppointResponsiblePersonForFinancialStatement.vue"
   import AuditCirculation from "./AuditCirculation.vue"
   import AuditExtensionOfTime from "./AuditExtensionOfTime.vue"
@@ -149,6 +150,7 @@
     [CompanyConstants.TARGET_APPLICATION_SWITCH_RESO]: NewSwitch,
     [CompanyConstants.TARGET_APPOINT_JOINT_COSEC]: AppointJointCompanySecretary,
     [CompanyConstants.TARGET_AUDITOR_APPOINTMENT]: AppointmentOfAuditor,
+    [CompanyConstants.TARGET_TAX_AGENT_APPOINTMENT]: AppointmentOfTaxAgent,
     [CompanyConstants.TARGET_APPLICATION_SWITCH]: NewSwitch,
     [CompanyConstants.TARGET_AUDIT_CIRCULATION]: AuditCirculation,
     [CompanyConstants.TARGET_AUDIT_EXTENSION_OF_TIME]: AuditExtensionOfTime,

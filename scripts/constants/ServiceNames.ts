@@ -174,6 +174,13 @@ export class ServiceNames {
     "appointment-of-auditor",
     "compliance"
   )
+  static taxAgentAppointment: ServiceName = new ServiceName(
+    "Appointment of Tax Agent",
+    "Perlantikan Tax Agent",
+    "company_tax_agent_appointment",
+    "appointment-of-tax-agent",
+    "compliance"
+  )
   static customResolution: ServiceName = new ServiceName(
     "Draft Resolution",
     "Resolusi Draf",
@@ -309,6 +316,7 @@ export class ServiceNames {
     this.auditCirculation,
     this.auditEot,
     this.auditorAppointment,
+    this.taxAgentAppointment,
     this.customResolution,
     this.setFinancialYearEnd,
     this.managementAccount,

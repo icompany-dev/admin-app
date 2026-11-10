@@ -23,11 +23,51 @@
             v-model="controller.documentDate.value"
           />
         </div>
-        <p>
+        <div class="addresses">
           The Directors,
           <br />
           <b>{{ controller.companyName() }}</b>
-        </p>
+          <br />
+          <template v-if="!controller.isPrinting.value">
+            <div
+              class="searchable-dropdown"
+              :class="{ 'menu-showing': controller.isShowAddressOptions.value }"
+            >
+              <div
+                class="dropdown selected"
+                :class="{ 'menu-showing': controller.isShowAddressOptions.value }"
+                v-keyboard-click
+                @click="controller.onAddressOptionClicked()"
+              >
+                <span
+                  class="selected-address"
+                  v-html="controller.selectedAddress"
+                />
+                <i
+                  class="fa-solid fa-caret-down"
+                  :class="{ rotate: controller.isShowAddressOptions.value }"
+                />
+              </div>
+              <div
+                class="dropdown-menu"
+                :class="{ show: controller.isShowAddressOptions.value, 'no-selection': controller.isAddressEmpty }"
+              >
+                <div
+                  class="dropdown-item"
+                  :class="{ selected: address.isSelected }"
+                  v-for="(address, i) in controller.locationOptions"
+                  @click="controller.onSelectAddress(address.id as string)"
+                >
+                  <span v-html="address.label" />
+                </div>
+              </div>
+            </div>
+          </template>
+          <span
+            v-if="controller.isPrinting.value"
+            v-html="controller.selectedAddress"
+          />
+        </div>
         <p>Dear Sirs,</p>
         <p>
           <u><b>RESIGNATION AS COMPANY SECRETARY</b></u>

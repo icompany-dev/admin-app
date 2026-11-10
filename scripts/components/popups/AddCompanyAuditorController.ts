@@ -18,6 +18,14 @@ export class AddCompanyAuditorController extends BasePopupController {
   companyId: Ref<string> = ref<string>("")
   email: Ref<string> = ref<string>("")
 
+  name: Ref<string> = ref<string>("")
+  phone: Ref<string> = ref<string>("")
+  license: Ref<string> = ref<string>("")
+  password: Ref<string> = ref<string>("iCompany2026!!")
+
+  isSendInvitation: Ref<boolean> = ref<boolean>(false)
+  isNotifyDirectors: Ref<boolean> = ref<boolean>(false)
+
   isGrantAccess: Ref<boolean> = ref<boolean>(false)
   isSubmitting: Ref<boolean> = ref<boolean>(false)
 
@@ -41,6 +49,11 @@ export class AddCompanyAuditorController extends BasePopupController {
 
     this.companyAuditor.value = new CompanyAuditor(props.auditor)
     this.companyAuditor.value.companyId = this.companyId.value
+
+    this.name.value = this.companyAuditor.value.auditorCompanyName
+    this.email.value = this.companyAuditor.value.auditorEmail
+    this.phone.value = this.companyAuditor.value.auditorPhone
+    this.license.value = this.companyAuditor.value.auditorLicense
 
     await this.fetchAuditorAccessRole()
   }
@@ -153,48 +166,30 @@ export class AddCompanyAuditorController extends BasePopupController {
 
   async grantAccess(): Promise<void> {
     try {
-      // create user account with some random password
-      let userRepository = useUserStore()
-      let user = await userRepository.fetchByEmail(this.email.value)
+      let repository = useUserInvitationStore()
 
-      if (!user) {
-        let auth = useAuthStore()
-        let success = await auth.register({
-          email: this.email.value,
-          password: "iCompany2026!!",
-          passwordConfirmation: "iCompany2026!!",
-        })
+      await repository.adminGrantAccess(this.requestPayload)
 
-        if (!success) {
-          return //
+      let toastTitle = this.language.isMalay()
+        ? `Akses diberikan kepada ${this.name.value}.`
+        : `New Access is Granted to ${this.name.value}.`
+      let toastMessage = ""
+      if (this.isSendInvitation.value || this.isNotifyDirectors.value) {
+        let emailTo: string[] = []
+        if (this.isSendInvitation.value) {
+          emailTo.push(this.name.value)
         }
 
-        user = await userRepository.fetchByEmail(this.email.value)
-
-        if (!user) {
-          return
+        if (this.isNotifyDirectors.value) {
+          emailTo.push(this.language.isMalay() ? "Pengarah" : "Directors")
         }
+
+        let names = StringUtil.oxfordJoin("&", emailTo)
+        toastMessage = this.language.isMalay() ? `Emel telah dihantar ke ${names}.` : `Email has been sent to ${names}.`
       }
 
-      if (!user?.detail) {
-        return
-      }
-
-      if (StringUtil.isNullOrEmpty(user.detail.identification)) {
-        user.name = this.companyAuditor.value.auditorCompanyName.toUpperCase()
-        user.phone = this.companyAuditor.value.auditorPhone
-        user.detail.identification = this.companyAuditor.value.auditorLicense
-        user.detail.identificationType = "ic" //leave it as it is
-        await user.update(userRepository)
-      }
-
-      let userInvitation = new UserInvitation()
-      userInvitation.companyId = this.companyId.value
-      userInvitation.name = this.companyAuditor.value.auditorContactPerson
-      userInvitation.email = this.email.value
-      userInvitation.accessRoleId = this.auditorAccessRole.value.id
-
-      await userInvitation.create(useUserInvitationStore())
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
     } catch (e) {
       console.error(e)
 
@@ -219,6 +214,18 @@ export class AddCompanyAuditorController extends BasePopupController {
     this.companyAuditor.value.auditorLicense = auditorPartner.license
     this.companyAuditor.value.auditorEmail = auditorPartner.companyEmail
     this.companyAuditor.value.auditorPhone = auditorPartner.companyPhone
+
+    this.name.value = this.companyAuditor.value.auditorCompanyName
+    this.email.value = this.companyAuditor.value.auditorEmail
+    this.phone.value = this.companyAuditor.value.auditorPhone
+    this.license.value = this.companyAuditor.value.auditorLicense
+  }
+
+  onDataChanged(): void {
+    this.companyAuditor.value.auditorCompanyName = this.name.value
+    this.companyAuditor.value.auditorEmail = this.email.value
+    this.companyAuditor.value.auditorPhone = this.phone.value
+    this.companyAuditor.value.auditorLicense = this.license.value
   }
 
   onSearch(searchText: string): void {
@@ -277,6 +284,10 @@ export class AddCompanyAuditorController extends BasePopupController {
     return this.language.isMalay() ? "No. Telefon Bimbit" : "Mobile Number"
   }
 
+  get auditorPasswordLabel(): string {
+    return this.language.isMalay() ? "Kata Kunci" : "Password"
+  }
+
   get auditorContactPersonLabel(): string {
     return this.language.isMalay() ? "Nama Orang boleh Dihubungi" : "Name of Contact Person"
   }
@@ -320,5 +331,30 @@ export class AddCompanyAuditorController extends BasePopupController {
     }
 
     return auditor.companyName
+  }
+
+  get sendInvitationLabel(): string {
+    return this.language.isMalay() ? "Hantar Notis melalui Emel & WhatsApp" : "Send Notice through Email & WhatsApp"
+  }
+
+  get notifyDirectorsLabel(): string {
+    return this.language.isMalay()
+      ? "Maklumkan kepada Pengarah melalui Emel & WhatsApp"
+      : "Notify Directors through Email & WhatsApp"
+  }
+
+  get requestPayload(): object {
+    return {
+      email: this.email.value,
+      access_role_id: this.auditorAccessRole.value.id,
+      company_id: this.companyId.value,
+      password: this.password.value,
+      name: this.name.value.toUpperCase(),
+      phone: this.phone.value,
+      is_require_ekyc: false,
+      license: this.license.value,
+      send_out_invitation: this.isSendInvitation.value,
+      notify_directors: this.isNotifyDirectors.value,
+    }
   }
 }

@@ -131,7 +131,15 @@
             <tr>
               <td colspan="2">
                 Date of Declaration:
-                <b>{{ controller.declarationDate }}</b>
+                <input
+                  type="date"
+                  v-model="controller.documentDate.value"
+                  class="form-control in-resolution"
+                  v-if="!controller.isPrinting.value"
+                />
+                <span v-if="controller.isPrinting.value">
+                  <b>{{ controller.declarationDate }}</b>
+                </span>
               </td>
             </tr>
           </tbody>
