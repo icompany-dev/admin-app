@@ -100,7 +100,6 @@ export class PaymentNotice {
       !StringUtil.isNullOrEmpty(this.entityType) &&
       !StringUtil.isNullOrEmpty(this.entityId) &&
       !StringUtil.isNullOrEmpty(this.servicePricingId) &&
-      !StringUtil.isNullOrEmpty(this.deadline) &&
       !StringUtil.isNullOrEmpty(this.target) &&
       !StringUtil.isNullOrEmpty(this.targetId)
     )

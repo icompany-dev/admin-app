@@ -43,6 +43,8 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.entityId.value = props.entityId || ""
     this.target.value = props.target || ""
     this.targetId.value = props.targetId || ""
+    this.billingInfo.value = props.billingInfo
+    this.deliveryInfo.value = props.deliveryInfo
   }
 
   async fetchServicePricings(): Promise<void> {
@@ -160,7 +162,7 @@ export class SendPaymentNoticeController extends BasePopupController {
 
   get paymentCartItem(): PaymentCartItem {
     let item = new PaymentCartItem()
-    item.target = this.target.value
+    item.targetType = this.target.value
     item.targetId = this.targetId.value
     item.servicePricingId = this.selectedPricingId.value
     item.servicePricing = this.selectedServicePricing.value

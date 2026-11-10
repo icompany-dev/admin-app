@@ -23,6 +23,14 @@
             </option>
           </select>
         </div>
+        <div class="form-check">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            v-model="controller.isNotify.value"
+          />
+          <label>Notify via email and WhatsApp</label>
+        </div>
       </template>
       <template #actionButtons>
         <button
