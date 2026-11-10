@@ -22,6 +22,8 @@ export class ResolutionSignaturesController {
     this.maxSignatureOnOtherPages.value = maxSignatureOnOtherPages
     this.signatureStartPage.value = signatureStartPage
     this.documentDate.value = documentDate
+
+    console.log(this.documentDate.value, "doc date")
   }
 
   getSignatureOnPage(page: number): SignatureItem[] {

@@ -12,8 +12,6 @@ export class LetterResignationSecretaryController extends SdnBhdLegalDocumentCon
 
   additionalCssClass: string = "letter-resign-cosec legal-document"
 
-  isPrinting: Ref<boolean> = ref<boolean>(false)
-
   documentDate: Ref<string | null> = ref<string | null>(null)
 
   constructor(companyId: string, emitEvents: any) {

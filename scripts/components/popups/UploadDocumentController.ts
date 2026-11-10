@@ -253,6 +253,19 @@ export class UploadDocumentController extends BasePopupController {
     uploadedFile.name = target.value
   }
 
+  onNoOfPagesChanged(form: Form): void {
+    if (form.noOfPages <= 0) {
+      let error = new Error()
+      error.title = this.language.isMalay()
+        ? "Jumlah muka surat mesti sekurang-kurangnya 1."
+        : "No of Pages must be at least 1."
+      error.type = Error.ERROR_TYPE_API
+      error.handle()
+
+      form.noOfPages = 1
+    }
+  }
+
   onRemove(index: number): void {
     this.forms.value.splice(index, 1)
     this.uploadedFiles.value.splice(index, 1)

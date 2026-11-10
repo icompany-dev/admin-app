@@ -8,18 +8,28 @@ import type { IRepositoryStore } from "~/scripts/models/IRepositoryStore"
 import { PropsSecretarialServices } from "~/scripts/props/PropsSecretarialServices"
 import type { Company } from "~/scripts/models/Company"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import { PropsCreateNewApplication } from "~/scripts/props/PropsCreateNewApplication"
+import type { Application } from "~/scripts/models/Application"
+import { Toast } from "~/scripts/library/Toast"
 
 export abstract class SecretarialServicesController<T> {
   tableDataFetcher = ref<TableDataFetcher<T> | null>(null)
+  repository: Ref<IRepositoryStore | null> = ref<IRepositoryStore | null>(null)
 
   emitEvents: any | null = null
 
   searchText: Ref<string | null> = ref<string | null>(null)
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
+  isShowPaidOnly: Ref<boolean> = ref<boolean>(true)
+
+  isShowDetails: Ref<boolean> = ref<boolean>(true)
 
   createDocumentRequestRef: any | null = null
+  confirmToDeleteRef: any | null = null
 
   isLoading: Ref<boolean> = ref<boolean>(false)
+
+  applicationIdToRemove: Ref<string> = ref<string>("")
 
   itemClassType: new (data: any) => T
 
@@ -38,13 +48,19 @@ export abstract class SecretarialServicesController<T> {
     this.emitEvents = emitEvents
 
     this.setDataFromProps(props)
+    this.repository.value = repository
   }
 
   async setDataFromProps(props: PropsSecretarialServices): Promise<void> {
     this.searchText.value = props.searchText
     this.isIncludeDemo.value = props.isIncludeDemo
+    this.isShowPaidOnly.value = props.isShowPaidOnly
 
     await this.init()
+  }
+
+  setConfirmToDeleteRef(confirmToDeleteRef: any): void {
+    this.confirmToDeleteRef = confirmToDeleteRef
   }
 
   async init(): Promise<void> {
@@ -78,6 +94,40 @@ export abstract class SecretarialServicesController<T> {
     //
   }
 
+  onRemoveClicked(application: any): void {
+    if (!this.repository.value || !this.confirmToDeleteRef) {
+      return
+    }
+
+    this.confirmToDeleteRef.show()
+
+    this.applicationIdToRemove.value = application.id
+  }
+
+  async onProceedRemove(): Promise<void> {
+    if (!this.repository.value) {
+      return
+    }
+
+    try {
+      await this.repository.value.remove(this.applicationIdToRemove.value)
+
+      this.tableDataFetcher.value?.fetchData()
+
+      let toastTitle = this.language.isMalay() ? "Permohonan telah dipadamkan." : "Application is Removed"
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    }
+  }
+
   //getters
   get filter(): Filter {
     let filter = new Filter()
@@ -87,9 +137,7 @@ export abstract class SecretarialServicesController<T> {
     filter.orderBy = "created_at"
     filter.includeTestAccount = this.isIncludeDemo.value
     filter.statuses = [
-      // StatusConstants.DRAFT,
       StatusConstants.READY,
-      // StatusConstants.PENDING,
       StatusConstants.PAID,
       StatusConstants.CONFIRMED,
       StatusConstants.NAME_REJECTED,
@@ -101,6 +149,11 @@ export abstract class SecretarialServicesController<T> {
       StatusConstants.COMPLETED,
       StatusConstants.CANCELLED,
     ]
+
+    if (!this.isShowPaidOnly.value) {
+      filter.statuses.push(StatusConstants.DRAFT)
+      filter.statuses.push(StatusConstants.PENDING)
+    }
 
     if (!StringUtil.isNullOrEmpty(this.searchText.value)) {
       filter.searchText = this.searchText.value
@@ -137,11 +190,24 @@ export abstract class SecretarialServicesController<T> {
     return this.language.isMalay() ? "Lihat" : "View"
   }
 
+  get removeApplicationLabel(): string {
+    return this.language.isMalay() ? "Buang" : "Remove"
+  }
+
   get createLabel(): string {
     return this.language.isMalay() ? "+ Tambah" : "+ Create"
   }
 
   get uploadDocumentsProps(): PropsUploadDocument {
     return new PropsUploadDocument("")
+  }
+
+  get addApplicationProps(): PropsCreateNewApplication {
+    console.log("repository0", this.repository.value)
+    return new PropsCreateNewApplication(this.repository.value)
+  }
+
+  get itemToRemoveName(): string {
+    return this.language.isMalay() ? "Permohonan" : "Application"
   }
 }

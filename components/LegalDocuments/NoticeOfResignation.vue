@@ -1,9 +1,9 @@
 <template>
-  <div id="legal-document-notice-of-resignation">
-    <div
-      class="paper-wrapper"
-      ref="documentRef"
-    >
+  <div
+    id="legal-document-notice-of-resignation"
+    ref="documentRef"
+  >
+    <div class="paper-wrapper">
       <div
         class="paper print legal-document notice-of-resignation"
         :class="controller.paperOrientation"
@@ -168,6 +168,7 @@
     getData: controller.getData.bind(controller),
     getLetterPdfElements: controller.getLetterPdfElements.bind(controller),
     totalPages: controller.totalPages.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

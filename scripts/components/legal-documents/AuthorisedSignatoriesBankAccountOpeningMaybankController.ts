@@ -27,6 +27,7 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
   directors = ref<Director[]>([])
   directorDetails = ref<string[]>([])
   signatories = ref<CompanyBankSignatory[]>([])
+  signatureItems = ref<SignatureItem[]>([])
   signatureItem = ref<SignatureItem>(new SignatureItem("", false, false, false, "", "", "", false))
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
@@ -117,9 +118,20 @@ export class AuthorisedSignatoriesBankAccountOpeningMaybankController extends Sd
       this.directors.value = response.map((d: Director) => {
         return new Director(d)
       })
+
+      this.signatureItems.value = this.directors.value.map((x) => {
+        return new SignatureItem(null, false, false, false, x.name, x.email, "Director", false)
+      })
     } catch (e) {
       console.error("Failed to fetch directors:", e)
     }
+  }
+
+  signatureTitle(): string {
+    const typeOfSignatures = "Director"
+
+    const title = this.signatureItems.value.length > 1 ? "Board of" : "Sole"
+    return this.signatureItems.value.length > 1 ? `${title} ${typeOfSignatures}s` : `${title} ${typeOfSignatures}`
   }
 
   async fetchApplication(id: string): Promise<void> {

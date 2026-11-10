@@ -747,20 +747,22 @@ export class ApplicationController {
         this.application.value.metadata = {}
       }
 
-      switch (this.targetForDocumentUpload.value) {
-        case "superform":
-          this.application.value.metadata.superform = files[0].id
-          break
-        case "coi":
-          this.application.value.metadata.certificate_of_incorporation = files[0].id
-          break
-        case "notification_of_name_reservation":
-          this.application.value.metadata.notification_of_name_reservation = files[0].id
-          break
-        case "section_58":
-          this.application.value.metadata.section_58 = files[0].id
-          break
-      }
+      this.application.value.metadata.section_58 = files[0].id
+
+      // switch (this.targetForDocumentUpload.value) {
+      //   case "superform":
+      //     this.application.value.metadata.superform = files[0].id
+      //     break
+      //   case "coi":
+      //     this.application.value.metadata.certificate_of_incorporation = files[0].id
+      //     break
+      //   case "notification_of_name_reservation":
+      //     this.application.value.metadata.notification_of_name_reservation = files[0].id
+      //     break
+      //   case "section_58":
+
+      //     break
+      // }
 
       await this.application.value.updateMetadata(useApplicationSwitchStore())
     } catch (e) {
@@ -1637,11 +1639,11 @@ export class ApplicationController {
   }
 
   get isSection58Uploaded(): boolean {
-    return !!this.application.value.metadata.section58
+    return !!this.application.value.metadata.section_58
   }
 
   get downloadDocumentSection58Label(): string {
-    return this.language.isMalay() ? "Seksyen 58" : "Section 58"
+    return "Section 58 - Appointment of New Secretary"
   }
 
   get uploadDocumentProps(): PropsUploadDocument {

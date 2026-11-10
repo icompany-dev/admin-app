@@ -50,6 +50,7 @@ export class SelectedSdnBhdController {
 
   spineRef: any | null = null
   generateAuditExemptionCertificateRef: any | null = null
+  generateResignationAndAppointmentOfCosecRef: any | null = null
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
   isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
@@ -88,6 +89,10 @@ export class SelectedSdnBhdController {
 
   setGenerateAuditExemptionCertificateRef(val: any): void {
     this.generateAuditExemptionCertificateRef = val
+  }
+
+  setGenerateResignationAndAppointmentOfCosecRef(val: any): void {
+    this.generateResignationAndAppointmentOfCosecRef = val
   }
 
   setApplicationRefs(index: number, ref: any): void {
@@ -315,6 +320,14 @@ export class SelectedSdnBhdController {
     this.generateAuditExemptionCertificateRef.show()
   }
 
+  onOpenGenerateResignationAndAppointmentOfCosec(): void {
+    if (!this.generateResignationAndAppointmentOfCosecRef) {
+      return
+    }
+
+    this.generateResignationAndAppointmentOfCosecRef.show()
+  }
+
   onApplicationClicked(selectedService: string): void {
     this.selectedService.value = selectedService
     this.isShowApplicationDocuments.value = true
@@ -478,9 +491,7 @@ export class SelectedSdnBhdController {
   }
 
   get annualReturn(): string {
-    return this.language.isMalay()
-      ? `Penyata Tahunan untuk ${this.yearToLodge}`
-      : `Annual Return for ${this.yearToLodge}`
+    return this.language.isMalay() ? `Penyata Tahunan` : `Annual Return`
   }
 
   get financialStatement(): string {

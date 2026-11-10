@@ -5,6 +5,9 @@ import { CompanyConstants } from "~/scripts/constants/Company"
 import { ServiceName, ServiceNames } from "../constants/ServiceNames"
 import { StringUtil } from "../utils/String"
 import { PropsSecretarialServices } from "../props/PropsSecretarialServices"
+import type { IRepositoryStore } from "../models/IRepositoryStore"
+import { SecretarialServiceUtil } from "../utils/SecretarialServices"
+import { PropsCreateNewApplication } from "../props/PropsCreateNewApplication"
 
 export class PageSdnBhdSecretarialServicesController extends PageController {
   targetName: Ref<string> = ref<string>("")
@@ -12,6 +15,9 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   searchText: Ref<string> = ref<string>("")
   sortOrder: Ref<string> = ref<string>("asc")
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
+  isShowPaidOnly: Ref<boolean> = ref<boolean>(true)
+
+  applicationsRef: any | null = null
 
   route = useRoute()
 
@@ -22,6 +28,10 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
     super(title, description, "Secretarial Services")
 
     this.setTitleDescription()
+  }
+
+  setApplicationsRef(applicationsRef: any): void {
+    this.applicationsRef = applicationsRef
   }
 
   onSearchInput(searchInput: string): void {
@@ -36,6 +46,11 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
 
     if (data.orderColumn === "Show Demo") {
       this.isIncludeDemo.value = data.sortOrder ? true : false
+      return
+    }
+
+    if (data.orderColumn === "Show Paid Only") {
+      this.isShowPaidOnly.value = data.sortOrder ? true : false
       return
     }
   }
@@ -199,6 +214,12 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
     //
   }
 
+  onProceedCreateApplication(): void {
+    if (this.applicationsRef) {
+      this.applicationsRef.init()
+    }
+  }
+
   get serviceName(): string {
     return Array.isArray(this.route.params.service_name)
       ? this.route.params.service_name[0]
@@ -214,7 +235,11 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   }
 
   get propsDataOrders(): PropsDataOrders[] {
-    return [new PropsDataOrders(this.sortOrderLabel, "asc"), new PropsDataOrders("Show Demo", "false")]
+    return [
+      new PropsDataOrders(this.sortOrderLabel, "asc"),
+      new PropsDataOrders("Show Demo", "false"),
+      new PropsDataOrders("Show Paid Only", "true"),
+    ]
   }
 
   get tableFilterProps(): PropsTableFilter {
@@ -230,6 +255,19 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   }
 
   get secretarialServicesProps(): PropsSecretarialServices {
-    return new PropsSecretarialServices(this.searchText.value, this.isIncludeDemo.value, this.targetName.value)
+    return new PropsSecretarialServices(
+      this.searchText.value,
+      this.isIncludeDemo.value,
+      this.isShowPaidOnly.value,
+      this.targetName.value
+    )
+  }
+
+  get repositoryByTarget(): IRepositoryStore | null {
+    return SecretarialServiceUtil.getRepositoryByTarget(this.targetName.value)
+  }
+
+  get createNewApplicationProps(): PropsCreateNewApplication {
+    return new PropsCreateNewApplication(this.repositoryByTarget)
   }
 }

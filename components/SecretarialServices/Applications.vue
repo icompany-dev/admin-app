@@ -18,18 +18,10 @@
         :title="controller.noRecordTitle"
         :subtitle="controller.noRecordSubtitle"
       />
-      <!-- <button
-        v-if="props.target === CompanyConstants.TARGET_DOCUMENT_REQUEST"
-        class="btn btn-submit"
-        @click="controller.onCreateClicked()"
-      >
-        {{ controller.createLabel }}
-      </button> -->
       <div
         class="application"
         v-for="(application, i) in controller.tableDataFetcher.value?.data"
         :key="i"
-        @click="controller.onApplicationClicked(application)"
       >
         <div class="application-details">
           <div class="application-information">
@@ -40,6 +32,7 @@
               {{ controller.companyName(application) }}
             </div>
             <div
+              v-if="controller.isShowDetails.value"
               class="app-info"
               v-html="controller.applicationDetails(application)"
             />
@@ -55,8 +48,17 @@
           </div>
         </div>
         <div class="application-actions">
-          <button class="btn btn-submit btn-pill">
+          <button
+            class="btn btn-submit btn-pill"
+            @click="controller.onApplicationClicked(application)"
+          >
             {{ controller.viewApplicationLabel }}
+          </button>
+          <button
+            class="btn btn-danger btn-pill"
+            @click="controller.onRemoveClicked(application)"
+          >
+            {{ controller.removeApplicationLabel }}
           </button>
         </div>
       </div>
@@ -65,10 +67,16 @@
       ref="createDocumentRequestRef"
       v-bind="controller.uploadDocumentsProps"
     />
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :remove-item-name="controller.itemToRemoveName"
+      @proceed="controller.onProceedRemove()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
   import CreateDocumentRequest from "../Popups/CreateDocumentRequest.vue"
@@ -86,6 +94,7 @@
   import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
   import { PaymentToDirectorsController } from "~/scripts/components/secretarial-services/PaymentToDirectorsController"
   import { PurchaseAssetsController } from "~/scripts/components/secretarial-services/PurchaseAssetsController"
+  import { ResignationOfDirectorsController } from "~/scripts/components/secretarial-services/ResignationOfDirectorsController"
   import { SecretarialServicesController } from "~/scripts/components/secretarial-services/SecretarialServicesController"
   import { SwitchOutsController } from "~/scripts/components/secretarial-services/SwitchOutsController"
   import { TransferOfSharesController } from "~/scripts/components/secretarial-services/TransferOfSharesController"
@@ -99,6 +108,7 @@
   const emit = defineEmits([])
 
   const createDocumentRequestRef = ref(null)
+  const confirmToDeleteRef = ref(null)
 
   let controller: SecretarialServicesController<Application> = new ApplicationsController(props, emit)
 
@@ -151,6 +161,9 @@
     case CompanyConstants.TARGET_SWITCH_OUT:
       controller = new SwitchOutsController(props, emit)
       break
+    case CompanyConstants.TARGET_DIRECTOR_RESIGNATION:
+      controller = new ResignationOfDirectorsController(props, emit)
+      break
   }
 
   watch(
@@ -168,6 +181,18 @@
     },
     { immediate: true }
   )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    init: controller.init.bind(controller),
+  })
 </script>
 
 <style lang="scss">

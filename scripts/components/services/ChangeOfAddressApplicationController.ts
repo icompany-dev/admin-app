@@ -141,7 +141,9 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   async onUploadedDocument(): Promise<void> {
+    this.isDownloadingPd2.value = true
     await this.uploadedDocumentChecker.value.fetchDocuments()
+    this.isDownloadingPd2.value = false
   }
 
   async onDownloadSection28Clicked(): Promise<void> {
@@ -339,12 +341,52 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     return false
   }
 
-  get AddressReservationLabel(): string {
-    return this.language.isMalay() ? "Permohonan Tempahan Nama" : "Application of Address Reservation"
+  get isAddressCompleted(): boolean {
+    return !StringUtil.isNullOrEmpty(this.application.value?.businessAddressLocation?.addressLine1 ?? "")
   }
 
-  get AddressReservationSublabel(): string {
-    return this.language.isMalay() ? "Seksyen 27 Akta Syarikat 2016" : "Section 27 of the Act"
+  get addressLine1(): string {
+    return this.application.value?.businessAddressLocation?.addressLine1 ?? "(Address Incomplete)"
+  }
+
+  get hasAddressLine2(): boolean {
+    return !StringUtil.isNullOrEmpty(this.application.value?.businessAddressLocation?.addressLine2 ?? "")
+  }
+
+  get addressLine2(): string {
+    if (StringUtil.isNullOrEmpty(this.application.value?.businessAddressLocation?.addressLine2 ?? "")) {
+      return "(No Address Line 2)"
+    }
+
+    return this.application.value?.businessAddressLocation?.addressLine2 ?? "(No Address Line 2)"
+  }
+
+  get hasAddressLine3(): boolean {
+    return !StringUtil.isNullOrEmpty(this.application.value?.businessAddressLocation?.addressLine3 ?? "")
+  }
+
+  get addressLine3(): string {
+    if (StringUtil.isNullOrEmpty(this.application.value?.businessAddressLocation?.addressLine3 ?? "")) {
+      return "(No Address Line 3)"
+    }
+
+    return this.application.value?.businessAddressLocation?.addressLine3 ?? "(No Address Line 3)"
+  }
+
+  get postcode(): string {
+    return this.application.value?.businessAddressLocation?.postcode ?? ""
+  }
+
+  get cityName(): string {
+    return this.application.value?.businessAddressLocation?.city?.name ?? ""
+  }
+
+  get stateName(): string {
+    return this.application.value?.businessAddressLocation?.state?.name ?? ""
+  }
+
+  get countryName(): string {
+    return this.application.value?.businessAddressLocation?.country?.name ?? ""
   }
 
   get AddressReservationNodeProps(): PropsServiceApplicationNode {

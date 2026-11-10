@@ -6,6 +6,7 @@
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
+      @resolutionDate="controller.onDocumentDateUpdated($event)"
     >
       <template #page1>
         <div

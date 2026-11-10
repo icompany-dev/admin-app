@@ -28,7 +28,8 @@
             <input
               type="text"
               class="form-control"
-              v-model="controller.companyAuditor.value.auditorCompanyName"
+              v-model="controller.name.value"
+              @change="controller.onDataChanged()"
             />
           </div>
           <div class="form-group">
@@ -36,7 +37,8 @@
             <input
               type="text"
               class="form-control"
-              v-model="controller.companyAuditor.value.auditorLicense"
+              v-model="controller.license.value"
+              @change="controller.onDataChanged()"
             />
           </div>
           <div class="form-group">
@@ -53,6 +55,7 @@
               type="text"
               class="form-control email"
               v-model="controller.email.value"
+              @change="controller.onDataChanged()"
             />
           </div>
           <div class="form-group">
@@ -60,7 +63,16 @@
             <input
               type="text"
               class="form-control"
-              v-model="controller.companyAuditor.value.auditorPhone"
+              v-model="controller.phone.value"
+              @change="controller.onDataChanged()"
+            />
+          </div>
+          <div class="form-group">
+            <label>{{ controller.auditorPasswordLabel }}</label>
+            <input
+              type="text"
+              class="form-control email"
+              v-model="controller.password.value"
             />
           </div>
           <div class="form-group">
@@ -79,6 +91,22 @@
               v-model="controller.isGrantAccess.value"
             />
             <span>{{ controller.grantAccessLabel }}</span>
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              v-model="controller.isSendInvitation.value"
+            />
+            <span>{{ controller.sendInvitationLabel }}</span>
+          </div>
+          <div class="form-check">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              v-model="controller.isNotifyDirectors.value"
+            />
+            <span>{{ controller.notifyDirectorsLabel }}</span>
           </div>
         </div>
       </template>

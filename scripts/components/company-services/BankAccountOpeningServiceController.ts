@@ -138,7 +138,8 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
         StatusConstants.READY,
         StatusConstants.SHIPPED,
         StatusConstants.SUBMITTED,
-        StatusConstants.APPROVED
+        StatusConstants.APPROVED,
+        StatusConstants.COMPLETED
       )
 
       let response = await this.repository.fetchAll(filter)
@@ -1738,6 +1739,7 @@ export class BankAccountOpeningServiceController extends CompanyServiceControlle
     )
 
     props.isShowTag = false
+    props.isShowCompanyAddress = true
 
     return props
   }

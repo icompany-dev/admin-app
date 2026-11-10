@@ -90,6 +90,7 @@
                       type="number"
                       class="form-control"
                       v-model="form.noOfPages"
+                      @change="controller.onNoOfPagesChanged(form)"
                     />
                   </td>
                   <td>

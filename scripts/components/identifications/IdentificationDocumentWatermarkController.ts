@@ -106,6 +106,7 @@ export class IdentificationDocumentWatermarkController {
     }
 
     const pdf = await this.loadPdf()
+    await nextTick()
 
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
       const canvas = this.pageCanvases[pageNumber]

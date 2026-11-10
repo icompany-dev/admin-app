@@ -16,9 +16,12 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { DocumentTemplate } from "~/scripts/models/DocumentTemplate"
 import { TemplateProcessor } from "~/scripts/library/TemplateProcessor"
+import { Location } from "~/scripts/models/Location"
+import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 
 export abstract class ResolutionController<T> {
   companyId: Ref<string> = ref<string>("")
+  company: Ref<Company> = ref<Company>(new Company())
   applicationId: Ref<string | null> = ref<string | null>(null)
   application = ref<T | null>(null)
   applicationClassType: new (data: any) => T
@@ -176,6 +179,14 @@ export abstract class ResolutionController<T> {
     return this.application.value.company.registrationNumberNew
   }
 
+  companyAddressMultiline(): string {
+    if (!this.application.value?.company) {
+      return ""
+    }
+
+    return this.application.value.company.businessAddressLocation.getMultilineAddress() ?? ""
+  }
+
   resolutionTitle(): string {
     let title = ""
     if (this.isDcr.value) {
@@ -292,6 +303,17 @@ export abstract class ResolutionController<T> {
     }
   }
 
+  onDocumentDateUpdated(event: Event): void {
+    if (!this.application.value) {
+      return
+    }
+
+    let target = event.target as HTMLInputElement
+
+    this.application.value.documentDate = target.value
+    this.emitEvents("applicationUpdated")
+  }
+
   haveAllSigned(): boolean {
     return this.signatureItems.value.every((si: SignatureItem) => {
       return si.hasSigned
@@ -299,8 +321,17 @@ export abstract class ResolutionController<T> {
   }
 
   resolutionDate(): string {
-    if (!this.application.value || this.application.value.signatureGroups.length <= 0 || !this.haveAllSigned()) {
+    if (
+      !this.application.value ||
+      StringUtil.isNullOrEmpty(this.application.value.documentDate) ||
+      this.application.value.signatureGroups.length <= 0 ||
+      !this.haveAllSigned()
+    ) {
       return "To be determined"
+    }
+
+    if (!StringUtil.isNullOrEmpty(this.application.value.documentDate)) {
+      return this.dayjs(this.application.value.documentDate).format("YYYY-MM-DD")
     }
 
     const latestDate = this.application.value.signatureGroups
@@ -413,6 +444,10 @@ export abstract class ResolutionController<T> {
       return ""
     }
 
+    if (!StringUtil.isNullOrEmpty(this.application.value.documentDate)) {
+      return this.application.value.documentDate
+    }
+
     let orderedSignatureGroup = ObjectUtil.sort<SignatureGroup>(
       this.application.value.signatureGroups,
       "createdAt",
@@ -427,6 +462,24 @@ export abstract class ResolutionController<T> {
     let dayjs = useDayjs()
 
     return dayjs(lastSignatureReceived.createdAt).format("YYYY-MM-DD")
+  }
+
+  get companyAddressOptions(): Location[] {
+    let addresses: Location[] = []
+
+    if (this.company.value.businessAddressLocation !== null) {
+      addresses.push(this.company.value.businessAddressLocation)
+    }
+
+    if (this.company.value.registeredAddressLocation !== null) {
+      addresses.push(this.company.value.registeredAddressLocation)
+    }
+
+    this.company.value.branches.forEach((b: CompanyBranch) => {
+      addresses.push(b.location)
+    })
+
+    return addresses
   }
 
   get resolutionProps() {

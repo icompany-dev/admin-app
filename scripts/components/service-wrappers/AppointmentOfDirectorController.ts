@@ -64,6 +64,46 @@ export class AppointmentOfDirectorController
     this.showMcrFirst.value = !this.showMcrFirst.value
   }
 
+  async onDataUpdated(): Promise<void> {
+    if (this.isUpdating.value) {
+      setTimeout(() => {
+        this.onDataUpdated()
+      }, 1000)
+
+      return
+    }
+
+    try {
+      this.isUpdating.value = true
+
+      if (this.dcrRef) {
+        let updatedData = this.dcrRef.getApplication()
+        this.application = new CompanyDirectorAppointment(updatedData)
+        this.application.id = this.applicationId ?? ""
+      } else {
+        let updatedData = this.mcrRef.getApplication()
+        this.application = new CompanyDirectorAppointment(updatedData)
+        this.application.id = this.applicationId ?? ""
+      }
+
+      await this.onUpdate()
+
+      this.emitEvents("applicationUpdated", this.application)
+
+      this.isUpdated.value = true
+
+      setTimeout(() => {
+        this.isUpdated.value = false
+        this.isUpdating.value = false
+      }, 1000)
+    } catch {
+      //error
+      this.isUpdating.value = false
+    } finally {
+      //
+    }
+  }
+
   // async onSigned(signatureData: string): Promise<void> {
   //   this.signatureFile.value = signatureData
 

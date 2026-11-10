@@ -15,6 +15,15 @@
           :class="controller.userDetail.value.identificationType === 'passport' ? 'fa-passport' : 'fa-address-card'"
         />
       </span>
+
+      <span
+        style="margin-left: 5px"
+        class="action-link"
+        @click="controller.onGenerateMagicLink()"
+        title="MAGIC LINK: Open User Account."
+      >
+        <i class="fa-regular fa-link"></i>
+      </span>
       <CopyValue :value="controller.name" />
     </div>
     <div class="human-detail">

@@ -12,6 +12,8 @@ import { EmitMessages } from "~/scripts/constants/EmitMessages"
 import { ViewMode } from "~/scripts/constants/ViewMode"
 import { MakePayment } from "~/scripts/library/MakePayment"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
+import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 
 export class ResignationOfDirectorServiceController extends CompanyServiceController<CompanyDirectorResignation> {
   companyDirectorResignation = ref<CompanyDirectorResignation>(new CompanyDirectorResignation())
@@ -29,8 +31,8 @@ export class ResignationOfDirectorServiceController extends CompanyServiceContro
     this.initializeData()
   }
 
-  setLetterRef(dcrRef: any): void {
-    this.dcrRef = dcrRef
+  setLetterRef(letterRef: any): void {
+    this.letterRef = letterRef
   }
 
   async initializeData(): Promise<void> {
@@ -111,8 +113,7 @@ export class ResignationOfDirectorServiceController extends CompanyServiceContro
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchOngoing()
+        let errorMessage: Error = new Error()
         errorMessage.handle()
       }
     }
@@ -141,8 +142,8 @@ export class ResignationOfDirectorServiceController extends CompanyServiceContro
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForFetchLatest()
+        let errorMessage: Error = new Error()
+        errorMessage.setForFetch()
         errorMessage.handle()
       }
     }
@@ -196,8 +197,8 @@ export class ResignationOfDirectorServiceController extends CompanyServiceContro
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
-        errorMessage.setForMakePayment()
+        let errorMessage: Error = new Error()
+        errorMessage.setForCUD()
         errorMessage.handle()
       }
     } finally {
@@ -387,17 +388,16 @@ export class ResignationOfDirectorServiceController extends CompanyServiceContro
   }
 
   override handleDisplayedPage(): void {
-    let page = this.currentPage.value
-    let allDocuments = document.querySelectorAll(".paper-wrapper")
-    if (allDocuments.length > 0) {
-      let pageNoToHide = page === 1 ? 1 : 0
-      let pageToHide = allDocuments[pageNoToHide] as HTMLElement
-      pageToHide.style.display = "none"
-
-      let pageNoToShow = page - 1
-      let pageToShow = allDocuments[pageNoToShow] as HTMLElement
-      pageToShow.style.display = "block"
-    }
+    // let page = this.currentPage.value
+    // let allDocuments = document.querySelectorAll(".paper-wrapper")
+    // if (allDocuments.length > 0) {
+    //   let pageNoToHide = page === 1 ? 1 : 0
+    //   let pageToHide = allDocuments[pageNoToHide] as HTMLElement
+    //   pageToHide.style.display = "none"
+    //   let pageNoToShow = page - 1
+    //   let pageToShow = allDocuments[pageNoToShow] as HTMLElement
+    //   pageToShow.style.display = "block"
+    // }
   }
 
   get serviceWrapperProps() {
@@ -454,5 +454,45 @@ export class ResignationOfDirectorServiceController extends CompanyServiceContro
       this.isInPreviewMode.value,
       false
     )
+  }
+
+  override async onDownloadClicked(): Promise<void> {
+    let pages: HTMLElement[] = []
+    let letterPages: HTMLElement[] = []
+
+    if (this.letterRef) {
+      letterPages = await this.letterRef.getLetterPdfElements()
+      pages = pages.concat(letterPages)
+    }
+
+    if (pages.length <= 0) {
+      return
+    }
+
+    await PdfPaperUtil.generatePdfFile(
+      pages,
+      20,
+      "Letter - Resignation of Director.pdf",
+      PaperSize.A4,
+      PaperOrientation.Portrait
+    )
+  }
+
+  override async onGenerateBlob(filename: string): Promise<Blob | null> {
+    let pages: HTMLElement[] = []
+
+    if (this.letterRef) {
+      let letterPages = await this.letterRef.getPdfPages()
+      pages = pages.concat(letterPages)
+    }
+
+    if (pages.length <= 0) {
+      return null
+    }
+
+    filename = "Letter - Resignation of Director.pdf"
+    let blob = await PdfPaperUtil.getPdfBlob(pages, 19, filename, PaperSize.A4, PaperOrientation.Portrait)
+
+    return blob
   }
 }

@@ -15,11 +15,13 @@
       <div class="node-content">
         <slot name="nodeContent" />
       </div>
-      <div class="node-options">
-        <slot name="nodeOptions" />
-      </div>
-      <div class="node-actions">
-        <slot name="nodeActions" />
+      <div class="node-options-actions">
+        <div class="node-options">
+          <slot name="nodeOptions" />
+        </div>
+        <div class="node-actions">
+          <slot name="nodeActions" />
+        </div>
       </div>
     </div>
   </div>

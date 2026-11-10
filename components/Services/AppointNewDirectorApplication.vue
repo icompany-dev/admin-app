@@ -144,6 +144,10 @@
             >
               {{ controller.uploadLabel }}
             </button>
+            <span v-if="!controller.isSection58Uploaded">
+              <br />
+              <small>e.g. Section 58</small>
+            </span>
             <div v-if="controller.isSection58Uploaded">
               <span
                 class="action-link download"

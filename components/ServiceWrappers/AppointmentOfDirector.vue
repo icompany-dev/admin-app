@@ -18,6 +18,7 @@
         <DcrAppointmentOfDirector
           ref="dcrRef"
           v-bind="controller.resolutionDocumentProps"
+          @application-updated="controller.onDataUpdated()"
         />
         <McrAppointmentOfDirector
           ref="mcrRef"
@@ -26,6 +27,23 @@
         />
       </TransitionGroup>
     </div>
+    <Teleport to="body">
+      <Transition name="slide-left">
+        <div
+          class="document-auto-saved"
+          v-if="controller.isUpdating.value"
+        >
+          <i
+            class="fa-regular fa-spin fa-spinner"
+            v-if="!controller.isUpdated.value"
+          ></i>
+          <div class="label-details">
+            <div class="label">{{ controller.updatingLabel }}</div>
+            <div class="sublabel">{{ controller.updatingSublabel }}</div>
+          </div>
+        </div>
+      </Transition>
+    </Teleport>
     <ActionTray :actions="controller.actionTrayElements.value" />
   </div>
 </template>

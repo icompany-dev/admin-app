@@ -15,6 +15,7 @@ import { OnlineBanking } from "~/scripts/types/banks/OnlineBanking"
 import type { IPropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 import { PropsResolution } from "~/scripts/props/PropsResolution"
 import type { SignatureItem } from "~/scripts/types/SignatureItem"
+import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import type { State } from "~/scripts/models/Location"
 
 export class DcrBankAccountOpeningBankIslamController extends ResolutionController<CompanyBankAccountOpening> {
@@ -28,7 +29,6 @@ export class DcrBankAccountOpeningBankIslamController extends ResolutionControll
   signatories = ref<CompanyBankSignatory[]>([])
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
-  resolutionContent = ref<string>("")
   originalContent = ref<string>("")
 
   private documentTemplateId: string = "42c51e54-7c05-4dd6-89d0-fd8019628f56"
@@ -60,6 +60,10 @@ export class DcrBankAccountOpeningBankIslamController extends ResolutionControll
       props.watermarkText,
       emitEvents
     )
+
+    this.signatureStartOnPage.value = 2
+    this.maxSignatureOnFirstPage.value = 2
+    this.maxSignatureOnOtherPages.value = 6
   }
 
   async otherDataInitiation(): Promise<void> {
@@ -197,6 +201,37 @@ export class DcrBankAccountOpeningBankIslamController extends ResolutionControll
   setContent(): void {
     this.updateMaxSignatureOnFirstPage()
     this.resolutionContent.value = this.getContent()
+  }
+
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    // Capture the selected online banking roles before rebuilding
+    const container = this.resolutionContentRef as HTMLElement | null
+
+    container?.querySelectorAll<HTMLSelectElement>(".online-banking-role").forEach((select) => {
+      const index = Number(select.id.replace("online-banking-role-", ""))
+      const person = this.onlineAccessPersons.value[index]
+
+      if (person) {
+        person.role = select.value
+      }
+    })
+
+    this.isGettingPdfPages.value = true
+
+    try {
+      this.setContent()
+      await nextTick()
+
+      return await PdfPaperUtil.getPdfElements(this.documentRef)
+    } finally {
+      this.isGettingPdfPages.value = false
+      this.setContent()
+      await nextTick()
+    }
   }
 
   getPlaceholder(text: string): string {
@@ -386,9 +421,9 @@ export class DcrBankAccountOpeningBankIslamController extends ResolutionControll
       return `
         <tr>
           <td>${!StringUtil.isNullOrEmpty(item?.name) ? item.name : ""}</td>
-          <td>${!StringUtil.isNullOrEmpty(item?.identification) ? item?.identification : ""}</td>
+          <td>${item?.identification || item?.id || ""}</td>
           <td class="signature-cell"></td>
-          <td>${!StringUtil.isNullOrEmpty(role) ? role : ""}</td>
+          <td>${!StringUtil.isNullOrEmpty(role) ? role.toUpperCase() : ""}</td>
         </tr>
       `
     }
@@ -1038,7 +1073,8 @@ export class DcrBankAccountOpeningBankIslamController extends ResolutionControll
       this.isUsingTemplate.value, //isUsingTemplate
       this.isLoading.value, //isLoading
       true,
-      "Wet Ink Required"
+      "Wet Ink Required",
+      this.companyAddressMultiline()
     )
   }
 }

@@ -5,6 +5,7 @@
   >
     <Resolution
       v-bind="controller.resolutionPropsForBank"
+      :additional-css-class="'dcr-bank-account-opening-bank-islam'"
       @signed="emit('signed', $event)"
     >
       <template #page1>
