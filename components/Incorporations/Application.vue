@@ -16,185 +16,193 @@
           @paymentNodeSelected="controller.onPaymentStepClicked()"
         >
           <template #application>
-            <ApplicationNode
-              v-for="(nameOption, index) in controller.nameOptions"
-              v-bind="controller.nameReservationApplicationNodeProps(nameOption)"
-              @click="controller.onNameReservationStepClicked(nameOption)"
-            >
+            <ApplicationNode v-bind="controller.nameReservationNodeProps">
               <template #nodeContent>
                 <div class="application-container">
                   <div class="node-title">{{ controller.nameReservationLabel }}</div>
                   <div class="node-subtitle">({{ controller.nameReservationSublabel }})</div>
                   <div class="application-details">
-                    <div class="proposed-name-details">
-                      <span class="application-label">
-                        {{ controller.proposedNamesLabel }}
-                      </span>
-                      &nbsp;
-                      <template v-if="!controller.isEditProposedNameAt(index)">
-                        <span
-                          class="propose-name"
-                          v-html="nameOption"
-                        />
-                      </template>
-                      <template v-if="controller.isEditProposedNameAt(index)">
-                        <input
-                          type="text"
-                          class="form-control"
-                          v-model="controller.newProposedName.value"
-                        />
-                      </template>
-                      <div class="actions-clickable">
-                        <span
-                          class="clickable edit"
-                          @click="controller.onEditProposedNameClicked(index)"
-                          v-if="!controller.isEditProposedNameAt(index)"
-                        >
-                          <i class="fa-regular fa-edit" />
-                        </span>
-                        <span
-                          class="clickable save"
-                          @click="controller.onSaveEditProposedName()"
-                          v-if="controller.isEditProposedNameAt(index) && !controller.isEditingProposedName.value"
-                        >
-                          <i class="fa-regular fa-save" />
-                        </span>
-                        <span
-                          class="clickable cancel"
-                          @click="controller.onCancelEditProposedNameClicked()"
-                          v-if="controller.isEditProposedNameAt(index) && !controller.isEditingProposedName.value"
-                        >
-                          <i class="fa-regular fa-xmark" />
-                        </span>
-                        <span
-                          class="clickable edit"
-                          v-if="controller.isEditingProposedNameAt(index)"
-                        >
-                          <i class="fa-regular fa-spinner fa-spin" />
-                        </span>
-                      </div>
-                      <CopyValue :value="nameOption" />
-                    </div>
-                  </div>
-                  <Transition name="fade">
-                    <div
-                      v-if="controller.isShowCrsView.value"
-                      class="application-details"
-                    >
-                      <b>{{ controller.nameDescriptionLabel }}</b>
+                    <div class="proposed-names">
                       <div
-                        class="name-description-details"
-                        v-if="controller.selectedNameDescription !== '-'"
+                        class="proposed-name"
+                        :class="{ selected: controller.isSelectingNameReservationFor(nameOption) }"
+                        v-for="(nameOption, index) in controller.nameOptions"
+                        @click="controller.onNameReservationStepClicked(nameOption)"
                       >
-                        {{ controller.selectedNameDescription }}
-                      </div>
-                      <div class="name-description-ai">
-                        <div class="ai-suggested">
-                          {{ controller.aiSuggestedNameDescription }}
-                          <CopyValue :value="controller.aiSuggestedNameDescription" />
+                        <div class="proposed-name-details">
+                          <span class="application-label">#{{ index + 1 }} {{ controller.proposedNamesLabel }}</span>
+                          <div class="proposed-name-details-name">
+                            <template v-if="!controller.isEditProposedNameAt(index)">
+                              <span
+                                class="propose-name"
+                                v-html="nameOption"
+                              />
+                            </template>
+                            <template v-if="controller.isEditProposedNameAt(index)">
+                              <input
+                                type="text"
+                                class="form-control"
+                                v-model="controller.newProposedName.value"
+                              />
+                            </template>
+                            <div class="actions-clickable">
+                              <span
+                                class="clickable edit"
+                                @click="controller.onEditProposedNameClicked(index)"
+                                v-if="!controller.isEditProposedNameAt(index)"
+                              >
+                                <i class="fa-regular fa-edit" />
+                              </span>
+                              <span
+                                class="clickable save"
+                                @click="controller.onSaveEditProposedName()"
+                                v-if="controller.isEditProposedNameAt(index) && !controller.isEditingProposedName.value"
+                              >
+                                <i class="fa-regular fa-save" />
+                              </span>
+                              <span
+                                class="clickable cancel"
+                                @click="controller.onCancelEditProposedNameClicked()"
+                                v-if="controller.isEditProposedNameAt(index) && !controller.isEditingProposedName.value"
+                              >
+                                <i class="fa-regular fa-xmark" />
+                              </span>
+                              <span
+                                class="clickable edit"
+                                v-if="controller.isEditingProposedNameAt(index)"
+                              >
+                                <i class="fa-regular fa-spinner fa-spin" />
+                              </span>
+                            </div>
+                            <CopyValue :value="nameOption" />
+                          </div>
                         </div>
-                        <button
-                          class="btn btn-primary"
-                          @click="controller.onRunAskSairaForNameDescription(nameOption)"
-                        >
-                          <i
-                            class="fa-solid"
-                            :class="
-                              controller.businessNameDescriptionAI.value.isProcessing
-                                ? 'fa-spinner fa-spin'
-                                : 'fa-sparkle'
-                            "
-                          />
-                          Ask SAIRA
-                        </button>
-                      </div>
-                      <b>{{ controller.msicCodeLabel }}</b>
-                      <div class="application-details-msic-codes">
-                        <div
-                          v-for="(msicCodeAssign, i) in controller.application.value.msicCodeAssigns"
-                          class="application-details-msic-code"
-                        >
-                          {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
-                          <CopyValue :value="msicCodeAssign.msicCode.code" />
+                        <Transition name="fade">
+                          <div
+                            v-if="controller.isShowCrsView.value"
+                            class="application-details"
+                          >
+                            <b>{{ controller.nameDescriptionLabel }}</b>
+                            <div
+                              class="name-description-details"
+                              v-if="controller.selectedNameDescription !== '-'"
+                            >
+                              {{ controller.selectedNameDescription }}
+                            </div>
+                            <div class="name-description-ai">
+                              <div class="ai-suggested">
+                                {{ controller.aiSuggestedNameDescription }}
+                                <CopyValue :value="controller.aiSuggestedNameDescription" />
+                              </div>
+                              <button
+                                class="btn btn-primary"
+                                @click="controller.onRunAskSairaForNameDescription(nameOption)"
+                              >
+                                <i
+                                  class="fa-solid"
+                                  :class="
+                                    controller.businessNameDescriptionAI.value.isProcessing
+                                      ? 'fa-spinner fa-spin'
+                                      : 'fa-sparkle'
+                                  "
+                                />
+                                Ask SAIRA
+                              </button>
+                            </div>
+                            <b>{{ controller.msicCodeLabel }}</b>
+                            <div class="application-details-msic-codes">
+                              <div
+                                v-for="(msicCodeAssign, i) in controller.application.value.msicCodeAssigns"
+                                class="application-details-msic-code"
+                              >
+                                {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
+                                <CopyValue :value="msicCodeAssign.msicCode.code" />
+                              </div>
+                            </div>
+                            <b>{{ controller.applicantLabel }}</b>
+                            <UserDetail v-bind="controller.promoterPropsUserDetail" />
+                          </div>
+                        </Transition>
+                        <div class="name-action-buttons">
+                          <div class="name-action-button">
+                            <button
+                              class="btn btn-pill btn-primary"
+                              :class="{ 'is-loading': controller.isUploadingSection27.value }"
+                              @click="controller.onUploadDocumentClicked('notification_of_name_reservation')"
+                            >
+                              {{ controller.uploadSection27Label }}
+                            </button>
+                            <span
+                              class="action-link download"
+                              v-if="controller.isSection27Uploaded"
+                              @click="controller.onDownloadSection27Clicked()"
+                            >
+                              <i class="fa-regular fa-cloud-arrow-down"></i>
+                              {{ controller.downloadDocumentSection27Label }}
+                            </span>
+                          </div>
+                          <div class="name-action-button">
+                            <div class="actions-button-options">
+                              <div
+                                class="btn btn-pill btn-submit selected"
+                                :class="{
+                                  'is-loading': controller.isUpdatingSection27.value,
+                                  single: !controller.hasNextStepsForSection27,
+                                }"
+                                @click="controller.onShowSection27ActionClicked(nameOption)"
+                              >
+                                <span class="label">{{ controller.section27ActionLabel }}</span>
+                                <i
+                                  v-if="controller.hasNextStepsForSection27"
+                                  class="fa-solid fa-caret-down"
+                                  :class="{ rotate: controller.isShowingNameReservationsOptionFor(nameOption) }"
+                                ></i>
+                              </div>
+                              <div
+                                class="options"
+                                :class="{ show: controller.isShowingNameReservationsOptionFor(nameOption) }"
+                              >
+                                <button
+                                  class="btn btn-pill btn-submit"
+                                  @click="controller.onSubmitNameReservation(nameOption)"
+                                >
+                                  {{ controller.submitSection27ApplicationLabel }}
+                                </button>
+                                <button
+                                  class="btn btn-pill btn-submit"
+                                  @click="controller.onQueryNameReservation(nameOption)"
+                                >
+                                  {{ controller.querySection27ApplicationLabel }}
+                                </button>
+                                <button
+                                  class="btn btn-pill btn-submit"
+                                  @click="controller.onSubmitNameReservation(nameOption)"
+                                >
+                                  {{ controller.resubmitSection27ApplicationLabel }}
+                                </button>
+                                <button
+                                  class="btn btn-pill btn-submit"
+                                  @click="controller.onApproveNameReservation(nameOption)"
+                                >
+                                  {{ controller.approvedSection27Label }}
+                                </button>
+                                <button
+                                  class="btn btn-pill btn-submit"
+                                  @click="controller.onNameReservationRejectedClicked(nameOption)"
+                                >
+                                  {{ controller.rejectedSection27Label }}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <b>{{ controller.applicantLabel }}</b>
-                      <UserDetail v-bind="controller.promoterPropsUserDetail" />
                     </div>
-                  </Transition>
-                </div>
-              </template>
-              <template #nodeOptions>
-                <button
-                  class="btn btn-pill btn-primary"
-                  :class="{ 'is-loading': controller.isUploadingSection27.value }"
-                  @click="controller.onUploadDocumentClicked('notification_of_name_reservation')"
-                >
-                  {{ controller.uploadSection27Label }}
-                </button>
-                <span
-                  class="action-link download"
-                  v-if="controller.isSection27Uploaded"
-                  @click="controller.onDownloadSection27Clicked()"
-                >
-                  <i class="fa-regular fa-cloud-arrow-down"></i>
-                  {{ controller.downloadDocumentSection27Label }}
-                </span>
-              </template>
-              <template #nodeActions>
-                <div class="actions-button-options">
-                  <div
-                    class="btn btn-pill btn-submit selected"
-                    :class="{
-                      'is-loading': controller.isUpdatingSection27.value,
-                      single: !controller.hasNextStepsForSection27,
-                    }"
-                    @click="controller.onShowSection27ActionClicked(nameOption)"
-                  >
-                    <span class="label">{{ controller.section27ActionLabel }}</span>
-                    <i
-                      v-if="controller.hasNextStepsForSection27"
-                      class="fa-solid fa-caret-down"
-                      :class="{ rotate: controller.isShowingNameReservationsOptionFor(nameOption) }"
-                    ></i>
-                  </div>
-                  <div
-                    class="options"
-                    :class="{ show: controller.isShowingNameReservationsOptionFor(nameOption) }"
-                  >
-                    <button
-                      class="btn btn-pill btn-submit"
-                      @click="controller.onSubmitNameReservation(nameOption)"
-                    >
-                      {{ controller.submitSection27ApplicationLabel }}
-                    </button>
-                    <button
-                      class="btn btn-pill btn-submit"
-                      @click="controller.onQueryNameReservation(nameOption)"
-                    >
-                      {{ controller.querySection27ApplicationLabel }}
-                    </button>
-                    <button
-                      class="btn btn-pill btn-submit"
-                      @click="controller.onSubmitNameReservation(nameOption)"
-                    >
-                      {{ controller.resubmitSection27ApplicationLabel }}
-                    </button>
-                    <button
-                      class="btn btn-pill btn-submit"
-                      @click="controller.onApproveNameReservation(nameOption)"
-                    >
-                      {{ controller.approvedSection27Label }}
-                    </button>
-                    <button
-                      class="btn btn-pill btn-submit"
-                      @click="controller.onNameReservationRejectedClicked(nameOption)"
-                    >
-                      {{ controller.rejectedSection27Label }}
-                    </button>
                   </div>
                 </div>
               </template>
+              <template #nodeOptions></template>
+              <template #nodeActions></template>
             </ApplicationNode>
             <ApplicationNode
               v-bind="controller.registrationNodeProps"
@@ -439,21 +447,6 @@
                           @click="controller.onGenerate236Clicked()"
                         />
                       </li>
-                      <!-- <li>
-                        <span class="document-label">
-                          {{ controller.corporateProfileLabel }}
-                        </span>
-                        <i
-                          class="fa-solid fa-circle-check document-icon success"
-                          v-if="controller.hasPurchasedCorporateProfile"
-                          @click="controller.onDownloadCorporateProfile()"
-                        />
-                        <i
-                          class="fa-solid fa-circle-dollar document-icon info"
-                          v-if="!controller.hasPurchasedCorporateProfile"
-                          @click="controller.onPurchaseCorporateProfile()"
-                        />
-                      </li> -->
                     </ol>
                     <template v-if="controller.hasOtherRequirements">
                       <br />

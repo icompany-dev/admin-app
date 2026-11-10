@@ -433,11 +433,25 @@ export class ApplicationController {
   }
 
   // Name Reservation Step
+  onNameReservationClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowSection27.value = true
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
+
+    console.log("this step called?")
+  }
+
   onNameReservationStepClicked(name: string): void {
     this.resetAllDocumentValues()
     this.isShowSection27.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
     this.selectedNameReservationApplication.value = name
+
+    console.log("step called?")
+  }
+
+  isSelectingNameReservationFor(name: string): boolean {
+    return this.isShowSection27.value && this.selectedNameReservationApplication.value === name
   }
 
   isShowingNameReservationsOptionFor(name: string): boolean {
