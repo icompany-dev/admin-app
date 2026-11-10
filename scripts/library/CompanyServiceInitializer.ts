@@ -43,6 +43,7 @@ export class CompanyServiceInitializer<T> {
       StatusConstants.NAME_REJECTED,
       StatusConstants.RESPONDED,
       StatusConstants.ONGOING,
+      StatusConstants.COMPLETED,
     ]
     filter.orderBy = "paid_at"
     filter.sortOrder = "desc"
