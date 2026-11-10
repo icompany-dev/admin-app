@@ -38,6 +38,8 @@
           <b>Status:</b>
           {{ controller.getStatusOfSubmission(financialPeriod) }}
           <br />
+          <b>Payment:</b>
+          {{ controller.getLodgementPaymentStatus(financialPeriod) }}
         </div>
         <Transition name="fade">
           <div
