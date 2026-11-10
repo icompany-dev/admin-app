@@ -164,31 +164,31 @@
                   >
                     <button
                       class="btn btn-pill btn-submit"
-                      @click="controller.onSubmitNameReservation()"
+                      @click="controller.onSubmitNameReservation(nameOption)"
                     >
                       {{ controller.submitSection27ApplicationLabel }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      @click="controller.onQueryNameReservation()"
+                      @click="controller.onQueryNameReservation(nameOption)"
                     >
                       {{ controller.querySection27ApplicationLabel }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      @click="controller.onSubmitNameReservation()"
+                      @click="controller.onSubmitNameReservation(nameOption)"
                     >
                       {{ controller.resubmitSection27ApplicationLabel }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      @click="controller.onApproveNameReservation()"
+                      @click="controller.onApproveNameReservation(nameOption)"
                     >
                       {{ controller.approvedSection27Label }}
                     </button>
                     <button
                       class="btn btn-pill btn-submit"
-                      @click="controller.onNameReservationRejectedClicked()"
+                      @click="controller.onNameReservationRejectedClicked(nameOption)"
                     >
                       {{ controller.rejectedSection27Label }}
                     </button>
