@@ -40,6 +40,18 @@
           <br />
           <b>Payment:</b>
           {{ controller.getLodgementPaymentStatus(financialPeriod) }}
+          <template v-if="!controller.isPaid(financialPeriod)">
+            <br />
+            <br />
+            <button
+              class="btn btn-pill btn-submit invert"
+              :class="{ 'is-loading': controller.isAskingForPaymentFor(financialPeriod) }"
+              :disabled="controller.isAskingForPaymentFor(financialPeriod)"
+              @click="controller.onPaymentOrderClicked(financialPeriod)"
+            >
+              + Payment Order
+            </button>
+          </template>
         </div>
         <Transition name="fade">
           <div
@@ -155,6 +167,10 @@
         </Transition>
       </div>
     </div>
+    <SendPaymentNotice
+      ref="sendPaymentNoticeRef"
+      v-bind="controller.sendPaymentNoticeProps"
+    />
   </div>
 </template>
 
@@ -163,6 +179,7 @@
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import PdfViewer from "../DocumentViewers/PdfViewer.vue"
+  import SendPaymentNotice from "../Popups/SendPaymentNotice.vue"
   import UnauditedFinancialStatement from "@/components/LegalDocuments/UnauditedFinancialStatement.vue"
   import { SubmissionsController } from "~/scripts/components/financial-statements/SubmissionsController"
   import type { IPropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
@@ -170,6 +187,8 @@
   const props = defineProps<IPropsFinancialStatementSubmissions>()
 
   const emit = defineEmits([])
+
+  const sendPaymentNoticeRef = ref(null)
 
   const controller = new SubmissionsController(props, emit)
 
@@ -179,6 +198,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    sendPaymentNoticeRef,
+    (newVal) => {
+      controller.setSendPaymentNoticeRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

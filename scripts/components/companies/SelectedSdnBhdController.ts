@@ -642,6 +642,7 @@ export class SelectedSdnBhdController {
   get financialStatementSubmissionsProp(): PropsFinancialStatementSubmissions {
     return new PropsFinancialStatementSubmissions(
       this.company.value.id,
+      this.company.value,
       this.company.value.name,
       this.company.value.createdAt,
       null,
