@@ -10,4 +10,13 @@ export class PaymentNoticeRepository extends Repository<PaymentNotice> {
   ) {
     super(resourceUrl, singleResourceUrl, baseUrl, getAuthToken, PaymentNotice)
   }
+
+  async notify(id: string): Promise<any> {
+    try {
+      const response = this.post(`${this.singleResourceUrl}/notify/${id}`, {})
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

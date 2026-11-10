@@ -18,6 +18,19 @@ export const usePaymentNoticeStore = defineStore("paymentNotice", () => {
     error: error,
   })
 
+  async function notify(id: string): Promise<any> {
+    try {
+      isLoading.value = true
+      const response = await $repositories.paymentNotices.notify(id)
+      return response
+    } catch (err: any) {
+      error.value = err.message || "An error occurred while notifying."
+      throw err
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalPaymentNotices = computed(() => paymentNotices.value.length)
 
   return {
@@ -26,6 +39,7 @@ export const usePaymentNoticeStore = defineStore("paymentNotice", () => {
     isLoading,
     error,
     totalPaymentNotices,
-    ...crudActions
+    ...crudActions,
+    notify,
   }
 })

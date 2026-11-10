@@ -158,4 +158,14 @@ export class PaymentNotice {
 
     return response
   }
+
+  async notify(repository: ReturnType<typeof usePaymentNoticeStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.notify(this.id)
+  }
 }
