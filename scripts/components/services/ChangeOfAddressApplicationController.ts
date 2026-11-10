@@ -141,7 +141,9 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   async onUploadedDocument(): Promise<void> {
+    this.isDownloadingPd2.value = true
     await this.uploadedDocumentChecker.value.fetchDocuments()
+    this.isDownloadingPd2.value = false
   }
 
   async onDownloadSection28Clicked(): Promise<void> {
