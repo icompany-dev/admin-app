@@ -438,7 +438,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   get isRegistrationOfAddressSubmitted(): boolean {
-    return this.application.value?.status === StatusConstants.SUBMITTED
+    return this.application.value?.status === StatusConstants.SUBMITTED || this.isPD2Uploaded
   }
 
   get registrationOfAddressChangeProps(): PropsServiceApplicationNode {
@@ -454,7 +454,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   get completeApplicationProps(): PropsServiceApplicationNode {
-    let props = new PropsServiceApplicationNode(false, false, this.isShowComplete.value)
+    let props = new PropsServiceApplicationNode(this.isRegistrationOfAddressSubmitted, false, this.isShowComplete.value)
 
     props.isLastNode = true
 
@@ -474,7 +474,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
       return false
     }
 
-    return this.application.value.status === StatusConstants.PAID && this.isApprovalReceived
+    return this.application.value.status === StatusConstants.PAID
   }
 
   get hasSubmittedToSSM(): boolean {
