@@ -308,6 +308,8 @@ export class ApplicationController {
     this.isShowRegistration.value = false
     this.isShowCompletion.value = false
 
+    this.selectedNameReservationApplication.value = ""
+
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
 
@@ -1961,7 +1963,7 @@ export class ApplicationController {
   }
 
   get generateSection236Label(): string {
-    return this.language.isMalay() ? "Seksyen 236(2)" : "Section 236(2)"
+    return this.language.isMalay() ? "Seksyen 236(3)" : "Section 236(3)"
   }
 
   get corporateProfileLabel(): string {
