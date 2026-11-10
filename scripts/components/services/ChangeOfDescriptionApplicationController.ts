@@ -382,7 +382,7 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
   // }
 
   get isRegistrationOfDescriptionSubmitted(): boolean {
-    return this.application.value?.status === StatusConstants.SUBMITTED
+    return this.application.value?.status === StatusConstants.SUBMITTED || this.isPD2Uploaded
   }
 
   get registrationOfDescriptionChangeProps(): PropsServiceApplicationNode {
@@ -398,7 +398,11 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
   }
 
   get completeApplicationProps(): PropsServiceApplicationNode {
-    let props = new PropsServiceApplicationNode(false, false, this.isShowComplete.value)
+    let props = new PropsServiceApplicationNode(
+      this.isRegistrationOfDescriptionSubmitted,
+      false,
+      this.isShowComplete.value
+    )
 
     props.isLastNode = true
 
@@ -418,7 +422,7 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
       return false
     }
 
-    return this.application.value.status === StatusConstants.PAID && this.isApprovalReceived
+    return this.application.value.status === StatusConstants.PAID
   }
 
   get hasSubmittedToSSM(): boolean {
