@@ -654,6 +654,9 @@ export class ApplicationController {
       this.applicationNameReservation.value.clone(data)
 
       await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
+
+      this.application.value.nameReservationApplications.push(this.applicationNameReservation.value)
+
       await this.fetchApplication()
 
       let toastTitle = this.language.isMalay()
@@ -707,6 +710,16 @@ export class ApplicationController {
       this.applicationNameReservation.value.clone(data)
 
       await this.applicationNameReservation.value.queried(useApplicationNameReservationStore())
+
+      let matchedApplication = this.application.value.nameReservationApplications.find(
+        (anr: ApplicationNameReservation) => {
+          return anr.id === this.applicationNameReservation.value.id
+        }
+      )
+      if (matchedApplication) {
+        matchedApplication.clone(this.applicationNameReservation.value)
+      }
+
       await this.fetchApplication()
 
       let toastTitle = this.language.isMalay()
@@ -793,26 +806,40 @@ export class ApplicationController {
   }
 
   async onProceedApproveReservation(nameReservation: NameReservationVariant): Promise<void> {
-    console.log("name", nameReservation)
-    if (!this.latestSection27Application) {
-      console.log("here??")
-      return
-    }
-
-    let application = this.latestSection27Application
-
-    application.name = nameReservation.name
-
     try {
-      let data = {
-        name: application.name,
-      }
-      let repository = useApplicationNameReservationStore()
-      await repository.update(application.id, data)
+      this.application.value.nameSelected = nameReservation
 
-      await application.approve(useApplicationNameReservationStore())
+      if (this.latestSection27Application) {
+        let application = this.latestSection27Application
+
+        application.name = nameReservation.name
+        let data = {
+          name: application.name,
+        }
+
+        let repository = useApplicationNameReservationStore()
+        await repository.update(application.id, data)
+        await application.approve(useApplicationNameReservationStore())
+      } else {
+        let data = {
+          name_selected: nameReservation.name,
+          name_type_selected: nameReservation.nameType,
+        }
+
+        let repository = useApplicationIncorporateStore()
+        await repository.update(this.application.value.id, data)
+      }
 
       await this.fetchApplication()
+
+      let toastTitle = this.language.isMalay()
+        ? "Cadangan nama yang diluluskan telah direkod."
+        : "The Approved Proposed Name is recorded."
+      let toastMessage = this.language.isMalay()
+        ? "Pemohon akan diberitahu melalui emel dan WhatsApp."
+        : "The applicant will be informed via Email and WhatsApp."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -865,8 +892,8 @@ export class ApplicationController {
         ? "Maklumat baharu telah dikemaskini."
         : "Your changes have been recorded."
       let toastMessage = this.language.isMalay()
-        ? "Teruskan dengan Seksyen 236(3) dan Profil Korporat."
-        : "Proceed with generation of Section 236(3) and purchase of Corporate Profile."
+        ? "Teruskan dengan Seksyen 236(3)."
+        : "Proceed with generation of Section 236(3)."
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
     } catch (e) {
