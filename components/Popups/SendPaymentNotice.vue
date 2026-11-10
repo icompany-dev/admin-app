@@ -14,17 +14,14 @@
             v-model="controller.selectedPricingId.value"
             @change="controller.onServicePricingSelected()"
           >
-            <option disabled>
-              Select One
-            </option>
+            <option disabled>Select One</option>
             <option
-              v-for="(option, index) in controller.servicePricingOptions"
+              v-for="(option, index) in controller.pricingOptions"
               :value="option.value"
             >
               {{ option.label }}
             </option>
           </select>
-        </div>
         </div>
       </template>
       <template #actionButtons>

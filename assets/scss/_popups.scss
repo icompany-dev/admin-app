@@ -119,6 +119,7 @@
           padding: 5px;
           border-radius: 5px;
           border: 1px solid var(--form-control-border-color);
+          max-width: 100%;
 
           &::placeholder {
             color: var(--bs-gray-500);

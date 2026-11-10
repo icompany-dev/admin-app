@@ -34,6 +34,8 @@ export class SendPaymentNoticeController extends BasePopupController {
     super(emitEvents)
 
     this.setDataFromProps(props)
+
+    this.fetchServicePricings()
   }
 
   setDataFromProps(props: PropsSendPaymentNotice): void {
