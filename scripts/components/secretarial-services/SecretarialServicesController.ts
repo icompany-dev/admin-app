@@ -152,7 +152,7 @@ export abstract class SecretarialServicesController<T> {
 
   get sendPaymentNoticeProps(): PropsSendPaymentNotice {
     return new PropsSendPaymentNotice(
-      "company",
+      "Company",
       this.selectedApplicationForPayment.value?.companyId ?? "",
       this.target.value,
       this.selectedApplicationForPayment.value?.id ?? "",
@@ -240,7 +240,6 @@ export abstract class SecretarialServicesController<T> {
   }
 
   get addApplicationProps(): PropsCreateNewApplication {
-    console.log("repository0", this.repository.value)
     return new PropsCreateNewApplication(this.repository.value)
   }
 
