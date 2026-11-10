@@ -25,6 +25,41 @@
                 <b>{{ controller.latestSignatureLabel }} :</b>
                 {{ controller.lastSignatureDate }}
               </div>
+              <div class="application-details">
+                <br />
+                <b>New Business Address:</b>
+                <br />
+                <template v-if="controller.isAddressCompleted">
+                  {{ controller.addressLine1 }}
+                  <CopyValue :value="controller.addressLine1" />
+                  <br />
+                  <span :class="{ placeholder: !controller.hasAddressLine2 }">{{ controller.addressLine2 }}</span>
+                  <CopyValue
+                    :value="controller.addressLine2"
+                    v-if="controller.hasAddressLine2"
+                  />
+                  <br />
+                  <span :class="{ placeholder: !controller.hasAddressLine3 }">{{ controller.addressLine3 }}</span>
+                  <CopyValue
+                    :value="controller.addressLine3"
+                    v-if="controller.hasAddressLine3"
+                  />
+                  <br />
+                  {{ controller.postcode }}
+                  <CopyValue :value="controller.postcode" />
+                  <br />
+                  {{ controller.cityName }}
+                  <CopyValue :value="controller.cityName" />
+                  <br />
+                  {{ controller.stateName }}
+                  <CopyValue :value="controller.stateName" />
+                  <br />
+                  {{ controller.countryName }}
+                  <CopyValue :value="controller.countryName" />
+                </template>
+                <template v-if="!controller.isAddressCompleted">Address is incomplete.</template>
+                <br />
+              </div>
             </div>
           </template>
           <template #nodeOptions>
@@ -165,6 +200,7 @@
 
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"
