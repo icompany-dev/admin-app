@@ -108,6 +108,8 @@ export class SendPaymentNoticeController extends BasePopupController {
       }
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
+
+      this.hide()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
