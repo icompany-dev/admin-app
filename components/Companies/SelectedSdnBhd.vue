@@ -20,6 +20,14 @@
               <div class="company-name">
                 {{ controller.company.value.getFullName() }}
                 <CopyValue :value="controller.company.value.getFullName()" />
+                &nbsp;
+                <a
+                  :href="controller.companyDashboardUrl"
+                  target="_blank"
+                  title="Go to Sdn Bhd Dashboard"
+                >
+                  <i class="fa-regular fa-link" />
+                </a>
               </div>
               <div class="registration-numbers">
                 {{ controller.company.value.registrationNumberNew }}

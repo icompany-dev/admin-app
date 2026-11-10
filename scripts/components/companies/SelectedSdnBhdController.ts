@@ -449,6 +449,10 @@ export class SelectedSdnBhdController {
     }
   }
 
+  get companyDashboardUrl(): string {
+    return `https://cosec.icompany.my/sdnbhd/${this.companyId.value}`
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
