@@ -1,3 +1,6 @@
+import { StringUtil } from "../utils/String"
+import { Error } from "../library/Error"
+
 export class PaymentNotice {
   id: string = ""
   entityType: string = ""
@@ -90,5 +93,69 @@ export class PaymentNotice {
       acknowledged_at: this.acknowledgedAt,
       acknowledged_by: this.acknowledgedBy,
     }
+  }
+
+  canSubmit(): boolean {
+    return (
+      !StringUtil.isNullOrEmpty(this.entityType) &&
+      !StringUtil.isNullOrEmpty(this.entityId) &&
+      !StringUtil.isNullOrEmpty(this.servicePricingId) &&
+      !StringUtil.isNullOrEmpty(this.deadline) &&
+      !StringUtil.isNullOrEmpty(this.target) &&
+      !StringUtil.isNullOrEmpty(this.targetId)
+    )
+  }
+
+  async create(repository: ReturnType<typeof usePaymentNoticeStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    const response = await repository.create(data)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async update(repository: ReturnType<typeof usePaymentNoticeStore>): Promise<void> {
+    if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    const response = await repository.update(this.id, data)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async remove(repository: ReturnType<typeof usePaymentNoticeStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.remove(this.id)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    return response
   }
 }
