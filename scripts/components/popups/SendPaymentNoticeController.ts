@@ -30,6 +30,8 @@ export class SendPaymentNoticeController extends BasePopupController {
   isNotify: Ref<boolean> = ref<boolean>(false)
   isSubmitting: Ref<boolean> = ref<boolean>(false)
 
+  searchText: Ref<string> = ref<string>("")
+
   constructor(props: PropsSendPaymentNotice, emitEvents: any) {
     super(emitEvents)
 
@@ -71,13 +73,18 @@ export class SendPaymentNoticeController extends BasePopupController {
     }
   }
 
-  onServicePricingSelected(): void {
+  onServicePricingSelected(selectedId: string): void {
+    this.selectedPricingId.value = selectedId
     let selectedPricing = this.servicePricings.value.find(
       (pricing: ServicePricing) => pricing.id === this.selectedPricingId.value
     )
     if (selectedPricing) {
       this.selectedServicePricing.value = selectedPricing
     }
+  }
+
+  onSearchPrice(searchText: string): void {
+    this.searchText.value = searchText
   }
 
   async onProceedClicked(): Promise<void> {
@@ -144,10 +151,18 @@ export class SendPaymentNoticeController extends BasePopupController {
       return [new SelectOption("", "", "Loading...", true, false)]
     }
 
-    return this.servicePricings.value.map((pricing: ServicePricing) => {
-      let price = Number(pricing.baseGrandTotal ?? 0) + Number(pricing.config.handlingFees ?? 0)
-      return new SelectOption(pricing.id, pricing.id, `${pricing.serviceName} - RM${price.toFixed(2)}`, false, false)
-    })
+    return this.servicePricings.value
+      .filter((pricing: ServicePricing) => {
+        if (StringUtil.isNullOrEmpty(this.searchText.value)) {
+          return true
+        }
+
+        return StringUtil.contains(pricing.serviceName, this.searchText.value)
+      })
+      .map((pricing: ServicePricing) => {
+        let price = Number(pricing.baseGrandTotal ?? 0) + Number(pricing.config.handlingFees ?? 0)
+        return new SelectOption(pricing.id, pricing.id, `${pricing.serviceName} - RM${price.toFixed(2)}`, false, false)
+      })
   }
 
   get paymentNotice(): PaymentNotice {
@@ -198,5 +213,17 @@ export class SendPaymentNoticeController extends BasePopupController {
       this.paymentCart.canSubmit() &&
       this.paymentNotice.canSubmit()
     )
+  }
+
+  get selectedPricingName(): string {
+    let matching = this.pricingOptions.find((opt: SelectOption) => {
+      return opt.value === this.selectedPricingId.value
+    })
+
+    if (!matching) {
+      return this.language.isMalay() ? "Pilih Harga" : "Select Pricing"
+    }
+
+    return matching.label
   }
 }

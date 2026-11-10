@@ -21,6 +21,7 @@
       text-overflow: ellipsis;
       text-wrap: nowrap;
       overflow: hidden;
+      width: calc(100% - 30px) !important;
     }
 
     .fa-caret-down {

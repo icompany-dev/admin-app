@@ -9,7 +9,17 @@
           {{ controller.pricingLabel }}
         </div>
         <div class="form-group">
-          <select
+          <SearchableDropdown
+            :options="controller.pricingOptions"
+            :selectedItemName="controller.selectedPricingName"
+            :placeholder="'Select One'"
+            :labelKey="'label'"
+            :valueKey="'value'"
+            :isSearchable="true"
+            @search="controller.onSearchPrice($event)"
+            @selected="controller.onServicePricingSelected($event)"
+          />
+          <!-- <select
             class="form-control"
             v-model="controller.selectedPricingId.value"
             @change="controller.onServicePricingSelected()"
@@ -21,7 +31,7 @@
             >
               {{ option.label }}
             </option>
-          </select>
+          </select> -->
         </div>
         <div class="form-check">
           <input
@@ -54,6 +64,7 @@
 
 <script lang="ts" setup>
   import Popup from "./Popup.vue"
+  import SearchableDropdown from "../Forms/SearchableDropdown.vue"
   import { SendPaymentNoticeController } from "~/scripts/components/popups/SendPaymentNoticeController"
   import type { IPropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNotice"
 
