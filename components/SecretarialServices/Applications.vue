@@ -60,6 +60,12 @@
           >
             {{ controller.removeApplicationLabel }}
           </button>
+          <button
+            class="btn btn-primary btn-pill"
+            @click="controller.onSendPaymentNoticeClicked(application)"
+          >
+            {{ controller.askPaymentApplicationLabel }}
+          </button>
         </div>
       </div>
     </div>
@@ -72,6 +78,10 @@
       :remove-item-name="controller.itemToRemoveName"
       @proceed="controller.onProceedRemove()"
     />
+    <SendPaymentNotice
+      ref="sendPaymentNoticeRef"
+      v-bind="controller.sendPaymentNoticeProps"
+    />
   </div>
 </template>
 
@@ -80,6 +90,7 @@
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
   import CreateDocumentRequest from "../Popups/CreateDocumentRequest.vue"
+  import SendPaymentNotice from "../Popups/SendPaymentNotice.vue"
   import { AllotNewSharesController } from "~/scripts/components/secretarial-services/AllotNewSharesController"
   import { ApplicationsController } from "~/scripts/components/secretarial-services/ApplicationsController"
   import { AppointAuditorsController } from "~/scripts/components/secretarial-services/AppointAuditorsController"
@@ -109,6 +120,7 @@
 
   const createDocumentRequestRef = ref(null)
   const confirmToDeleteRef = ref(null)
+  const sendPaymentNoticeRef = ref(null)
 
   let controller: SecretarialServicesController<Application> = new ApplicationsController(props, emit)
 
@@ -186,6 +198,14 @@
     confirmToDeleteRef,
     (newVal) => {
       controller.setConfirmToDeleteRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    sendPaymentNoticeRef,
+    (newVal) => {
+      controller.setSendPaymentNoticeRef(newVal)
     },
     { immediate: true }
   )

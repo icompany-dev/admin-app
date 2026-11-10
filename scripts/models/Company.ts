@@ -11,6 +11,7 @@ import { CompanyBranch } from "./CompanyBranch"
 import { Error } from "~/scripts/library/Error"
 import { StringUtil } from "../utils/String"
 import { Tag } from "./Tag"
+import { DeliveryInfo } from "./DeliveryInfo"
 
 export class Company implements IModel<Company> {
   id: string = ""
@@ -239,6 +240,8 @@ export class Company implements IModel<Company> {
   billingInfo(): BillingInfo {
     let billingInfo = new BillingInfo()
     billingInfo.name = this.getFullName().toUpperCase()
+    billingInfo.email = "-"
+    billingInfo.phone = "-"
     let address = this.businessAddressLocation
     billingInfo.addressLine1 = address?.addressLine1 ?? "-"
     billingInfo.addressLine2 = address?.addressLine2 ?? "-"
@@ -248,6 +251,22 @@ export class Company implements IModel<Company> {
     billingInfo.addressCountry = address?.country?.name ?? "Malaysia"
 
     return billingInfo
+  }
+
+  deliveryInfo(): DeliveryInfo {
+    let deliveryInfo = new DeliveryInfo()
+    deliveryInfo.name = this.getFullName().toUpperCase()
+    deliveryInfo.email = "-"
+    deliveryInfo.phone = "-"
+    let address = this.businessAddressLocation
+    deliveryInfo.addressLine1 = address?.addressLine1 ?? "-"
+    deliveryInfo.addressLine2 = address?.addressLine2 ?? "-"
+    deliveryInfo.addressPostcode = address?.postcode ?? "40400"
+    deliveryInfo.addressCity = address?.city?.name ?? "-"
+    deliveryInfo.addressState = address?.state?.name ?? "-"
+    deliveryInfo.addressCountry = address?.country?.name ?? "Malaysia"
+
+    return deliveryInfo
   }
 
   getAddress(): string {

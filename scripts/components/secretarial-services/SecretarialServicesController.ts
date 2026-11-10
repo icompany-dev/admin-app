@@ -11,6 +11,10 @@ import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { PropsCreateNewApplication } from "~/scripts/props/PropsCreateNewApplication"
 import type { Application } from "~/scripts/models/Application"
 import { Toast } from "~/scripts/library/Toast"
+import type { st } from "vue-router/dist/router-CWoNjPRp.mjs"
+import { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNotice"
+import { BillingInfo } from "~/scripts/models/BillingInfo"
+import { DeliveryInfo } from "~/scripts/models/DeliveryInfo"
 
 export abstract class SecretarialServicesController<T> {
   tableDataFetcher = ref<TableDataFetcher<T> | null>(null)
@@ -32,6 +36,11 @@ export abstract class SecretarialServicesController<T> {
   applicationIdToRemove: Ref<string> = ref<string>("")
 
   itemClassType: new (data: any) => T
+
+  target: Ref<string> = ref<string>("")
+  selectedApplicationForPayment = ref<Application | null>(null)
+
+  sendPaymentNoticeRef: any | null = null
 
   language = useLanguage()
   router = useRouter()
@@ -55,6 +64,7 @@ export abstract class SecretarialServicesController<T> {
     this.searchText.value = props.searchText
     this.isIncludeDemo.value = props.isIncludeDemo
     this.isShowPaidOnly.value = props.isShowPaidOnly
+    this.target.value = props.target
 
     await this.init()
   }
@@ -79,6 +89,10 @@ export abstract class SecretarialServicesController<T> {
   abstract applicationStatusClass(application: any): string
   abstract applicationStatus(application: any): string
   abstract company(application: any): Company
+
+  setSendPaymentNoticeRef(sendPaymentNoticeRef: any): void {
+    this.sendPaymentNoticeRef = sendPaymentNoticeRef
+  }
 
   setCreateDocumentRequestRef(createDocumentRequestRef: any): void {
     this.createDocumentRequestRef = createDocumentRequestRef
@@ -126,6 +140,25 @@ export abstract class SecretarialServicesController<T> {
         error.handle()
       }
     }
+  }
+
+  onSendPaymentNoticeClicked(application: any): void {
+    this.selectedApplicationForPayment.value = application
+
+    if (this.sendPaymentNoticeRef) {
+      this.sendPaymentNoticeRef.show()
+    }
+  }
+
+  get sendPaymentNoticeProps(): PropsSendPaymentNotice {
+    return new PropsSendPaymentNotice(
+      "Company",
+      this.selectedApplicationForPayment.value?.companyId ?? "",
+      this.target.value,
+      this.selectedApplicationForPayment.value?.id ?? "",
+      this.selectedApplicationForPayment.value?.company?.billingInfo() ?? new BillingInfo(),
+      this.selectedApplicationForPayment.value?.company?.deliveryInfo() ?? new DeliveryInfo()
+    )
   }
 
   //getters
@@ -194,6 +227,10 @@ export abstract class SecretarialServicesController<T> {
     return this.language.isMalay() ? "Buang" : "Remove"
   }
 
+  get askPaymentApplicationLabel(): string {
+    return this.language.isMalay() ? "+ Payment Order" : "+ Payment Order"
+  }
+
   get createLabel(): string {
     return this.language.isMalay() ? "+ Tambah" : "+ Create"
   }
@@ -203,7 +240,6 @@ export abstract class SecretarialServicesController<T> {
   }
 
   get addApplicationProps(): PropsCreateNewApplication {
-    console.log("repository0", this.repository.value)
     return new PropsCreateNewApplication(this.repository.value)
   }
 

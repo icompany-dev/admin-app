@@ -164,6 +164,7 @@ import { MyDataNameSearchRepository } from "~/scripts/repositories/MyDataNameSea
 import { NotificationRepository } from "~/scripts/repositories/NotificationRepository"
 import { OrderRepository } from "~/scripts/repositories/OrderRepository"
 import { PaymentCartRepository } from "~/scripts/repositories/PaymentCartRepository"
+import { PaymentNoticeRepository } from "~/scripts/repositories/PaymentNoticeRepository"
 import { PaymentOrderRepository } from "~/scripts/repositories/PaymentOrderRepository"
 import { PostcodeRepository } from "~/scripts/repositories/PostcodeRepository"
 import { ProductRepository } from "~/scripts/repositories/ProductRepository"
@@ -357,6 +358,7 @@ interface Repositories {
   notifications: NotificationRepository
   orders: OrderRepository
   paymentCarts: PaymentCartRepository
+  paymentNotices: PaymentNoticeRepository
   paymentOrders: PaymentOrderRepository
   postcodes: PostcodeRepository
   products: ProductRepository
@@ -516,12 +518,10 @@ export default defineNuxtPlugin((nuxtApp) => {
       "company/annual-return",
       config.public.apiBaseUrl,
       getAuthToken),
-    companyAppointmentOfTaxAgents: new CompanyAppointmentOfTaxAgentRepository(
-      "company/appoint-tax-agents",
+    companyAppointmentOfTaxAgents: new CompanyAppointmentOfTaxAgentRepository("company/appoint-tax-agents",
       "company/appoint-tax-agent",
       config.public.apiBaseUrl,
-      getAuthToken
-    ),
+      getAuthToken),
     companyAssetPurchases: new CompanyAssetPurchaseRepository("company/asset-purchases",
       "company/asset-purchase",
       config.public.apiBaseUrl,
@@ -1060,6 +1060,12 @@ export default defineNuxtPlugin((nuxtApp) => {
       "payment/cart",
       config.public.apiBaseUrl,
       getAuthToken),
+    paymentNotices: new PaymentNoticeRepository(
+      "notices/payments",
+      "notices/payment",
+      config.public.apiBaseUrl,
+      getAuthToken
+    ),
     paymentOrders: new PaymentOrderRepository("payment/orders",
       "payment/order",
       config.public.apiBaseUrl,
@@ -1330,6 +1336,7 @@ declare module "#app" {
       notifications: import("~/scripts/repositories/NotificationRepository").NotificationRepository
       orders: import("~/scripts/repositories/OrderRepository").OrderRepository
       paymentCarts: import("~/scripts/repositories/PaymentCartRepository").PaymentCartRepository
+      paymentNotices: import("~/scripts/repositories/PaymentNoticeRepository").PaymentNoticeRepository
       paymentOrders: import("~/scripts/repositories/PaymentOrderRepository").PaymentOrderRepository
       postcodes: import("~/scripts/repositories/PostcodeRepository").PostcodeRepository
       products: import("~/scripts/repositories/ProductRepository").ProductRepository
@@ -1527,6 +1534,7 @@ declare module "pinia" {
       notifications: import("~/scripts/repositories/NotificationRepository").NotificationRepository
       orders: import("~/scripts/repositories/OrderRepository").OrderRepository
       paymentCarts: import("~/scripts/repositories/PaymentCartRepository").PaymentCartRepository
+      paymentNotices: import("~/scripts/repositories/PaymentNoticeRepository").PaymentNoticeRepository
       paymentOrders: import("~/scripts/repositories/PaymentOrderRepository").PaymentOrderRepository
       postcodes: import("~/scripts/repositories/PostcodeRepository").PostcodeRepository
       products: import("~/scripts/repositories/ProductRepository").ProductRepository
