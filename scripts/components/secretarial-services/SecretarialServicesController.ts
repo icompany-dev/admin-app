@@ -154,6 +154,7 @@ export abstract class SecretarialServicesController<T> {
     return new PropsSendPaymentNotice(
       "Company",
       this.selectedApplicationForPayment.value?.companyId ?? "",
+      this.selectedApplicationForPayment.value?.company?.getFullName() ?? "",
       this.target.value,
       this.selectedApplicationForPayment.value?.id ?? "",
       this.selectedApplicationForPayment.value?.company?.billingInfo() ?? new BillingInfo(),

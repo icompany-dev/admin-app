@@ -5,9 +5,11 @@
       v-bind="controller.popupProps"
     >
       <template #content>
-        <div class="action">
-          {{ controller.pricingLabel }}
-        </div>
+        <div
+          class="action"
+          v-html="controller.content"
+        />
+        <br />
         <div class="form-group">
           <SearchableDropdown
             :options="controller.pricingOptions"
@@ -19,19 +21,6 @@
             @search="controller.onSearchPrice($event)"
             @selected="controller.onServicePricingSelected($event)"
           />
-          <!-- <select
-            class="form-control"
-            v-model="controller.selectedPricingId.value"
-            @change="controller.onServicePricingSelected()"
-          >
-            <option disabled>Select One</option>
-            <option
-              v-for="(option, index) in controller.pricingOptions"
-              :value="option.value"
-            >
-              {{ option.label }}
-            </option>
-          </select> -->
         </div>
         <div class="form-check">
           <input

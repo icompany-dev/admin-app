@@ -17,6 +17,7 @@ import type { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNot
 export class SendPaymentNoticeController extends BasePopupController {
   entityType: Ref<string> = ref<string>("")
   entityId: Ref<string> = ref<string>("")
+  entityName: Ref<string> = ref<string>("")
   target: Ref<string> = ref<string>("")
   targetId: Ref<string> = ref<string>("")
   billingInfo: Ref<BillingInfo> = ref<BillingInfo>(new BillingInfo())
@@ -32,6 +33,8 @@ export class SendPaymentNoticeController extends BasePopupController {
 
   searchText: Ref<string> = ref<string>("")
 
+  newServicePricing: Ref<ServicePricing> = ref<ServicePricing>(new ServicePricing())
+
   constructor(props: PropsSendPaymentNotice, emitEvents: any) {
     super(emitEvents)
 
@@ -43,6 +46,7 @@ export class SendPaymentNoticeController extends BasePopupController {
   setDataFromProps(props: PropsSendPaymentNotice): void {
     this.entityType.value = props.entityType || ""
     this.entityId.value = props.entityId || ""
+    this.entityName.value = props.entityName || ""
     this.target.value = props.target || ""
     this.targetId.value = props.targetId || ""
     this.billingInfo.value = props.billingInfo
@@ -138,6 +142,14 @@ export class SendPaymentNoticeController extends BasePopupController {
     return this.language.isMalay() ? "Buat Arahan Bayaran" : "Create Payment Order"
   }
 
+  get content(): string {
+    if (this.language.isMalay()) {
+      return `Sila pilih pilihan harga untuk<br><b>${this.entityName.value}</b><br>untuk buat arahan bayaran.`
+    }
+
+    return `Please select a pricing option for<br><b>${this.entityName.value}</b><br>to create a payment order.`
+  }
+
   get pricingLabel(): string {
     return this.language.isMalay() ? "Pilih Pilihan Harga" : "Select Pricing Option"
   }
@@ -225,5 +237,9 @@ export class SendPaymentNoticeController extends BasePopupController {
     }
 
     return matching.label
+  }
+
+  get canCreateNewPricing(): boolean {
+    return this.target.value === "Company" || this.target.value === "User"
   }
 }
