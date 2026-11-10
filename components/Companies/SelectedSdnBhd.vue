@@ -106,6 +106,13 @@
               >
                 Generate Audit Exemption Certificate
               </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
+                @click="controller.onAskPaymentClicked()"
+              >
+                {{ controller.paymentOrder }}
+              </button>
             </div>
           </div>
         </div>
@@ -215,6 +222,10 @@
         ref="generateResignationAndAppointmentOfCosecRef"
         :company-id="controller.companyId.value"
       />
+      <SendPaymentNotice
+        ref="sendPaymentNoticeRef"
+        v-bind="controller.sendPaymentNoticeProps"
+      />
     </template>
   </div>
 </template>
@@ -235,6 +246,7 @@
   import SdnBhdSpine from "@/components/LegalDocuments/SdnBhdSpine.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
+  import SendPaymentNotice from "../Popups/SendPaymentNotice.vue"
   import FinancialStatementSubmissions from "@/components/FinancialStatements/Submissions.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
@@ -252,6 +264,7 @@
   const spineRef = ref(null)
   const generateAuditExemptionCertificateRef = ref(null)
   const generateResignationAndAppointmentOfCosecRef = ref(null)
+  const sendPaymentNoticeRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -306,6 +319,14 @@
     generateResignationAndAppointmentOfCosecRef,
     (newVal) => {
       controller.setGenerateResignationAndAppointmentOfCosecRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    sendPaymentNoticeRef,
+    (newVal) => {
+      controller.setSendPaymentNoticeRef(newVal)
     },
     { immediate: true }
   )

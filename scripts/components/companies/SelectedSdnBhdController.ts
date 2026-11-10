@@ -9,6 +9,7 @@ import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturn
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
+import { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNotice"
 import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
@@ -51,6 +52,8 @@ export class SelectedSdnBhdController {
   spineRef: any | null = null
   generateAuditExemptionCertificateRef: any | null = null
   generateResignationAndAppointmentOfCosecRef: any | null = null
+  sendPaymentNoticeRef: any | null = null
+
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
   isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
@@ -97,6 +100,10 @@ export class SelectedSdnBhdController {
 
   setApplicationRefs(index: number, ref: any): void {
     this.applicationRefs[index] = ref
+  }
+
+  setSendPaymentNoticeRef(sendPaymentNoticeRef: any): void {
+    this.sendPaymentNoticeRef = sendPaymentNoticeRef
   }
 
   async fetchCompany(): Promise<void> {
@@ -434,6 +441,14 @@ export class SelectedSdnBhdController {
     this.annualReturnYear.value = yearToLodge
   }
 
+  onAskPaymentClicked(): void {
+    this.isShowOptions.value = false
+
+    if (this.sendPaymentNoticeRef) {
+      this.sendPaymentNoticeRef.show()
+    }
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -472,6 +487,10 @@ export class SelectedSdnBhdController {
 
   get auditExemption(): string {
     return this.language.isMalay() ? "Switched Out" : "Switched Out"
+  }
+
+  get paymentOrder(): string {
+    return this.language.isMalay() ? "+ Payment Order" : "+ Payment Order"
   }
 
   get overview(): string {
@@ -624,6 +643,18 @@ export class SelectedSdnBhdController {
       null,
       false,
       false
+    )
+  }
+
+  get sendPaymentNoticeProps(): PropsSendPaymentNotice {
+    return new PropsSendPaymentNotice(
+      "Company",
+      this.company.value.id,
+      this.company.value.getFullName(),
+      "company",
+      this.company.value.id,
+      this.company.value.billingInfo(),
+      this.company.value.deliveryInfo()
     )
   }
 }
