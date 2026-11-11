@@ -114,12 +114,16 @@
         </tbody>
       </table>
     </div>
-    <ReceiptInvoice
-      ref="receiptRef"
-      :payment-order="controller.paymentOrderForReceipt.value"
-      :payment-order-id="controller.paymentOrderIdForReceipt.value ?? ''"
-      @downloaded="controller.onReceiptDownloaded()"
-    />
+    <Teleport to="body">
+      <div class="transaction-page-receipt-container">
+        <ReceiptInvoice
+          ref="receiptRef"
+          :payment-order="controller.paymentOrderForReceipt.value"
+          :payment-order-id="controller.paymentOrderIdForReceipt.value ?? ''"
+          @downloaded="controller.onReceiptDownloaded()"
+        />
+      </div>
+    </Teleport>
   </div>
 </template>
 

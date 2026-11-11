@@ -28,16 +28,19 @@
       />
     </div>
 
-    <ReceiptInvoice
-      ref="receiptRef"
-      :payment-order="controller.paymentOrderForReceipt.value"
-      :payment-order-id="controller.paymentOrderIdForReceipt.value ?? ''"
-    />
-
-    <ActionTray
-      ref="actionTrayRef"
-      :actions="controller.actionTrayElements.value"
-    />
+    <Teleport to="body">
+      <ActionTray
+        ref="actionTrayRef"
+        :actions="controller.actionTray"
+      />
+      <div class="transaction-page-receipt-container">
+        <ReceiptInvoice
+          ref="receiptRef"
+          :payment-order="controller.paymentOrderForReceipt.value"
+          :payment-order-id="controller.paymentOrderIdForReceipt.value ?? ''"
+        />
+      </div>
+    </Teleport>
   </div>
 </template>
 

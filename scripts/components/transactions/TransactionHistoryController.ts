@@ -50,6 +50,8 @@ export class TransactionHistoryController {
   hasArchivedData = ref<boolean>(false)
   hasAccessToArchivedData = ref<boolean>(false)
 
+  isGeneratingDocuments = ref<boolean>(false)
+
   paymentOrderForReceipt = ref<PaymentOrder>(new PaymentOrder())
   paymentOrderIdForReceipt = ref<string | null>(null)
 
@@ -68,7 +70,8 @@ export class TransactionHistoryController {
   }
 
   async init(): Promise<void> {
-    await Promise.all([this.checkHasArchivedTransactions(), this.checkHasAccessToArchivedTransactions()])
+    this.hasAccessToArchivedData.value = true
+    await this.checkHasArchivedTransactions()
 
     this.setupYears()
     this.setTrayActions()
@@ -90,7 +93,12 @@ export class TransactionHistoryController {
   setTrayActions(): void {
     let actionDropDownElement = new ActionTrayDropdown(
       "share-dropdown",
-      { label: new ActionTrayLabel("Action", "Action") },
+      {
+        label: new ActionTrayLabel("Action", "Action"),
+        isDisabled: this.isGeneratingDocuments.value,
+        iconClass: this.isGeneratingDocuments.value ? "fa-solid fa-spinner fa-spin" : "",
+        isIconStart: true,
+      },
       [
         new ActionTrayElement("download-all", this.onDownloadAllSelected.bind(this), {
           label: new ActionTrayLabel("Download", "Download"),
@@ -281,7 +289,7 @@ export class TransactionHistoryController {
   }
 
   isShareDropdownOpen(): boolean {
-    return this.totalTransactionSelected.value > 0
+    return this.totalTransactionSelected.value > 0 && !this.isGeneratingDocuments.value
   }
 
   sortTransactionHistories(histories: TransactionHistory[]): TransactionHistory[] {
@@ -377,10 +385,11 @@ export class TransactionHistoryController {
   async onDownloadAllSelected(): Promise<void> {
     const histories = this.getAllSelectedHistories()
 
-    if (!histories.length) {
+    if (!histories.length || this.isGeneratingDocuments.value) {
       return
     }
 
+    this.isGeneratingDocuments.value = true
     const files: any[] = []
 
     try {
@@ -404,6 +413,8 @@ export class TransactionHistoryController {
         errorMessage.setForDocumentDownload()
         errorMessage.handle()
       }
+    } finally {
+      this.isGeneratingDocuments.value = false
     }
   }
 
@@ -414,10 +425,11 @@ export class TransactionHistoryController {
   async onPrintAllSelected(): Promise<void> {
     const histories = this.getAllSelectedHistories()
 
-    if (!histories.length) {
+    if (!histories.length || this.isGeneratingDocuments.value) {
       return
     }
 
+    this.isGeneratingDocuments.value = true
     let pages: any[] = []
 
     const printWindow = window.open("", "_blank")
@@ -460,6 +472,8 @@ export class TransactionHistoryController {
         errorMessage.setForDocumentPrint()
         errorMessage.handle()
       }
+    } finally {
+      this.isGeneratingDocuments.value = false
     }
   }
 
@@ -539,5 +553,80 @@ export class TransactionHistoryController {
 
   loaderSublabel(): string {
     return this.language.isMalay() ? "Transaksi" : "Past Transactions"
+  }
+
+  get actionTray(): ActionTrayElement[] {
+    let actionDropDownElement = new ActionTrayDropdown(
+      "share-dropdown",
+      {
+        label: new ActionTrayLabel("Action", "Action"),
+        isDisabled: this.isGeneratingDocuments.value,
+        iconClass: this.isGeneratingDocuments.value ? "fa-solid fa-spinner fa-spin" : "",
+        isIconStart: this.isGeneratingDocuments.value,
+      },
+      [
+        new ActionTrayElement("download-all", this.onDownloadAllSelected.bind(this), {
+          label: new ActionTrayLabel("Download", "Download"),
+          subLabel: new ActionTrayLabel("Selected Item", "Selected Item"),
+          isDisabled: this.isActionDisabled(),
+        }),
+
+        new ActionTrayElement("print-all", this.onPrintAllSelected.bind(this), {
+          label: new ActionTrayLabel("Print", "Print"),
+          subLabel: new ActionTrayLabel("Selected Item", "Selected Item"),
+          isDisabled: this.isActionDisabled(),
+        }),
+
+        new ActionTrayElement("email-all", this.onEmailAllSelected.bind(this), {
+          label: new ActionTrayLabel("Email", "Email"),
+          subLabel: new ActionTrayLabel("Selected Item", "Selected Item"),
+          isDisabled: this.isActionDisabled(),
+        }),
+      ],
+      this.isShareDropdownOpen()
+    )
+    actionDropDownElement.isDefaultOpen = this.isShareDropdownOpen()
+
+    return [
+      // new ActionTrayElement("back", this.onGoToPreviousPage.bind(this), {
+      //   label: new ActionTrayLabel("Back", "Back"),
+      //   isHidden: this.isBackActionHidden(),
+      //   isIconStart: true,
+      //   iconClass: "icon-large icon-primary fa-solid fa-circle-arrow-left",
+      // }),
+
+      new ActionTrayElement("search", this.onSearchTransactionHistory.bind(this), {
+        label: new ActionTrayLabel("Search", "Search"),
+        isSearchElement: true,
+        isVisibleOnSearch: true,
+      }),
+
+      actionDropDownElement,
+
+      new ActionTrayDropdown(
+        "more-dropdown",
+        {
+          iconClass: "fa-solid fa-ellipsis",
+          isIconOnly: true,
+        },
+        [
+          new ActionTrayElement("sort", this.onSelectSortBy.bind(this), {
+            label: new ActionTrayLabel("Sort By:", "Sort By:"),
+            isSelectElement: true,
+            selectedElementValue: this.sortBy.value,
+            selectElementOptions: [
+              new SelectOption(TransactionConstants.LABEL_PAY_DATE, TransactionConstants.LABEL_PAY_DATE, "Most Recent"),
+              new SelectOption(TransactionConstants.LABEL_NAME, TransactionConstants.LABEL_NAME, "Company Name"),
+              new SelectOption(
+                TransactionConstants.LABEL_PAY_FOR,
+                TransactionConstants.LABEL_PAY_FOR,
+                "Product/Service"
+              ),
+              new SelectOption(TransactionConstants.LABEL_REF_NO, TransactionConstants.LABEL_REF_NO, "Alphabetical"),
+            ],
+          }),
+        ]
+      ),
+    ]
   }
 }
