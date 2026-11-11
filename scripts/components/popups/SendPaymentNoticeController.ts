@@ -115,6 +115,30 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   onSetCustomPricingChanged(): void {
+    if (!StringUtil.isNullOrEmpty(this.selectedPricingId.value)) {
+      this.newServicePricing.value = new ServicePricing(this.selectedServicePricing.value)
+
+      if (this.newServicePricing.value.breakdowns.length === 0) {
+        let newBreakdown = new ServicePricingBreakdown()
+        newBreakdown.itemName = this.newServicePricing.value.serviceName
+        this.newServicePricing.value.breakdowns.push(newBreakdown)
+      }
+
+      this.newServicePricing.value.breakdowns.forEach((spb: ServicePricingBreakdown) => {
+        spb.id = ""
+        spb.servicePricingId = ""
+      })
+
+      this.newServicePricing.value.mandatoryServices.forEach((spm: ServicePricingMandatory) => {
+        spm.id = ""
+        spm.servicePricingId = ""
+      })
+
+      this.newServicePricing.value.optionals = []
+
+      return
+    }
+
     this.newServicePricing.value = new ServicePricing()
     this.newServicePricing.value.breakdowns = [new ServicePricingBreakdown()]
 
@@ -422,9 +446,9 @@ export class SendPaymentNoticeController extends BasePopupController {
       this.newServicePricing.value.baseGrandTotal =
         totalBreakdowns +
         totalMandatories +
-        this.newServicePricing.value.config.cosecServiceFee +
-        this.newServicePricing.value.config.digitalServiceFee +
-        this.newServicePricing.value.config.handlingFees
+        Number(this.newServicePricing.value.config.cosecServiceFee) +
+        Number(this.newServicePricing.value.config.digitalServiceFee) +
+        Number(this.newServicePricing.value.config.handlingFees)
 
       return NumberUtil.currency(this.newServicePricing.value.baseGrandTotal)
     }

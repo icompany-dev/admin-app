@@ -48,7 +48,7 @@
                         v-model="controller.isCustomPricing.value"
                         @change="controller.onSetCustomPricingChanged()"
                       />
-                      <span>Set Custom Pricing</span>
+                      <span>Customize Pricing</span>
                     </div>
                   </div>
                   <div class="service-pricing-details">
