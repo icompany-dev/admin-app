@@ -169,6 +169,10 @@ export class ServicePricing implements IModel<ServicePricing> {
     }
   }
 
+  canSubmit(): boolean {
+    return true
+  }
+
   description() {
     let breakdownNames = this.breakdowns.map((bd: ServicePricingBreakdown) => {
       return bd.itemName

@@ -13,6 +13,9 @@ import { BillingInfo } from "~/scripts/models/BillingInfo"
 import { DeliveryInfo } from "~/scripts/models/DeliveryInfo"
 import { Toast } from "~/scripts/library/Toast"
 import type { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNotice"
+import { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
+import { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
+import { NumberUtil } from "~/scripts/utils/Number"
 
 export class SendPaymentNoticeController extends BasePopupController {
   entityType: Ref<string> = ref<string>("")
@@ -29,11 +32,15 @@ export class SendPaymentNoticeController extends BasePopupController {
   servicePricings: Ref<ServicePricing[]> = ref<ServicePricing[]>([])
 
   isNotify: Ref<boolean> = ref<boolean>(false)
+  isCustomPricing: Ref<boolean> = ref<boolean>(false)
   isSubmitting: Ref<boolean> = ref<boolean>(false)
 
   searchText: Ref<string> = ref<string>("")
+  searchTexts: Ref<string[]> = ref<string[]>([])
 
   newServicePricing: Ref<ServicePricing> = ref<ServicePricing>(new ServicePricing())
+
+  isShowDrawer: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: PropsSendPaymentNotice, emitEvents: any) {
     super(emitEvents)
@@ -41,6 +48,21 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.setDataFromProps(props)
 
     this.fetchServicePricings()
+  }
+
+  override show(): void {
+    this.isShowDrawer.value = true
+    this.newServicePricing.value = new ServicePricing()
+    this.isCustomPricing.value = false
+    this.selectedPricingId.value = ""
+    this.selectedServicePricing.value = new ServicePricing()
+    this.searchText.value = ""
+    this.searchTexts.value = []
+  }
+
+  override hide(): void {
+    this.isShowDrawer.value = false
+    this.newServicePricing.value = new ServicePricing()
   }
 
   setDataFromProps(props: PropsSendPaymentNotice): void {
@@ -89,6 +111,94 @@ export class SendPaymentNoticeController extends BasePopupController {
 
   onSearchPrice(searchText: string): void {
     this.searchText.value = searchText
+  }
+
+  onSetCustomPricingChanged(): void {
+    this.newServicePricing.value = new ServicePricing()
+    this.newServicePricing.value.breakdowns = [new ServicePricingBreakdown()]
+
+    this.selectedPricingId.value = ""
+    this.selectedServicePricing.value = new ServicePricing()
+  }
+
+  onAddBreakdown(): void {
+    this.newServicePricing.value.breakdowns.push(new ServicePricingBreakdown())
+  }
+
+  onRemoveBreakdown(index: number): void {
+    this.newServicePricing.value.breakdowns.splice(index, 1)
+  }
+
+  onAddMandatory(): void {
+    this.newServicePricing.value.mandatoryServices.push(new ServicePricingMandatory())
+    this.searchTexts.value.push("")
+  }
+
+  onRemoveMandatory(index: number): void {
+    this.newServicePricing.value.mandatoryServices.splice(index, 1)
+    this.searchTexts.value.splice(index, 1)
+  }
+
+  onSearchMandatory(searchText: string, index: number): void {
+    this.searchTexts.value[index] = searchText
+  }
+
+  getMandatoryPricingOptions(index: number): SelectOption[] {
+    let searchText = this.searchTexts.value[index]
+    let options: SelectOption[] = []
+
+    if (this.isFetchingServicePricings.value) {
+      options.push(new SelectOption("", "", "Loading...", true, false))
+      return options
+    }
+
+    options = this.servicePricings.value
+      .filter((pricing: ServicePricing) => {
+        if (StringUtil.isNullOrEmpty(searchText)) {
+          return true
+        }
+
+        return StringUtil.contains(pricing.serviceName, searchText)
+      })
+      .map((pricing: ServicePricing) => {
+        let price = Number(pricing.baseGrandTotal ?? 0) + Number(pricing.config.handlingFees ?? 0)
+        return new SelectOption(pricing.id, pricing.id, `${pricing.serviceName} - RM${price.toFixed(2)}`, false, false)
+      })
+
+    return options
+  }
+
+  onMandatoryPricingSelected(selectedId: string, index: number): void {
+    let selectedPricing = this.servicePricings.value.find((pricing: ServicePricing) => pricing.id === selectedId)
+    if (selectedPricing) {
+      this.newServicePricing.value.mandatoryServices[index].mandatoryServiceId = selectedPricing.id
+      this.newServicePricing.value.mandatoryServices[index].mandatoryServicePrice = selectedPricing
+      this.newServicePricing.value.mandatoryServices[index].basePrice =
+        Number(selectedPricing.baseGrandTotal ?? 0) + Number(selectedPricing.config.handlingFees ?? 0)
+    }
+  }
+
+  getMandatoryPricingName(index: number): string {
+    if (this.isFetchingServicePricings.value) {
+      return "Loading ..."
+    }
+
+    let mandatory = this.newServicePricing.value.mandatoryServices[index]
+    if (!mandatory.mandatoryServicePrice || StringUtil.isNullOrEmpty(mandatory.mandatoryServicePrice.serviceName)) {
+      return this.language.isMalay() ? "Pilih Harga" : "Select Pricing"
+    }
+
+    return mandatory.mandatoryServicePrice.serviceName
+  }
+
+  onPriceChange(price: string | number): void {
+    if (typeof price == "string") {
+      price = Number(price)
+    }
+
+    if (price < 0) {
+      price = 0
+    }
   }
 
   async onProceedClicked(): Promise<void> {
@@ -218,8 +328,15 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   get canProceed(): boolean {
+    if (!this.isCustomPricing.value && StringUtil.isNullOrEmpty(this.selectedPricingId.value)) {
+      return false
+    }
+
+    if (this.isCustomPricing.value && !this.newServicePricing.value.canSubmit()) {
+      return false
+    }
+
     return (
-      !StringUtil.isNullOrEmpty(this.selectedPricingId.value) &&
       !this.isFetchingServicePricings.value &&
       !this.isSubmitting.value &&
       this.paymentCart.canSubmit() &&
@@ -241,5 +358,36 @@ export class SendPaymentNoticeController extends BasePopupController {
 
   get canCreateNewPricing(): boolean {
     return this.target.value === "Company" || this.target.value === "User"
+  }
+
+  get selectedServicePricingBreakdowns(): ServicePricingBreakdown[] {
+    return this.selectedServicePricing.value.breakdowns.filter((breakdown: ServicePricingBreakdown) => {
+      return breakdown.price > 0
+    })
+  }
+
+  get selectedServicePricingMandatories(): ServicePricingMandatory[] {
+    return this.selectedServicePricing.value.mandatoryServices
+  }
+
+  get paymentOrderTotal(): string {
+    if (this.isCustomPricing.value) {
+      let totalBreakdowns = this.newServicePricing.value.breakdowns.reduce((a, b) => {
+        return a + Number(b.price)
+      }, 0)
+      let totalMandatories = this.newServicePricing.value.mandatoryServices.reduce((a, b) => {
+        return a + Number(b.basePrice)
+      }, 0)
+      this.newServicePricing.value.baseGrandTotal =
+        totalBreakdowns +
+        totalMandatories +
+        this.newServicePricing.value.config.cosecServiceFee +
+        this.newServicePricing.value.config.digitalServiceFee +
+        this.newServicePricing.value.config.handlingFees
+
+      return NumberUtil.currency(this.newServicePricing.value.baseGrandTotal)
+    }
+
+    return NumberUtil.currency(this.cartTotal)
   }
 }
