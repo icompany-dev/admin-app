@@ -8,7 +8,7 @@ import { DeliveryInfo } from "~/scripts/models/DeliveryInfo"
 import { PaymentCart } from "~/scripts/models/PaymentCart"
 import { PaymentCartItem } from "~/scripts/models/PaymentCartItem"
 import { PaymentOrder } from "~/scripts/models/PaymentOrder"
-import type { TransactionHistory } from "~/scripts/models/TransactionHistory"
+import { TransactionHistory } from "~/scripts/models/TransactionHistory"
 import { UserArchiveAccess } from "~/scripts/models/UserArchiveAccess"
 import { Transaction } from "~/scripts/types/Transaction"
 import { CurrentUser } from "~/scripts/utils/CurrentUser"
@@ -106,6 +106,15 @@ export class TransactionYearController {
 
   setYear(year: number): void {
     this.year.value = year
+  }
+
+  getTransactionHistory(transaction: Transaction): TransactionHistory {
+    let transactionHistory =
+      this.transactionHistories.value.find((t: TransactionHistory) => {
+        return t.refNo === transaction.referenceNumber
+      }) ?? null
+
+    return transactionHistory ?? new TransactionHistory()
   }
 
   getSelectedTransactionHistories(): TransactionHistory[] {

@@ -84,6 +84,7 @@
           >
             <Transaction
               :transaction="transaction"
+              :transaction-history="controller.getTransactionHistory(transaction)"
               @selected="emit('selected')"
             />
           </template>
