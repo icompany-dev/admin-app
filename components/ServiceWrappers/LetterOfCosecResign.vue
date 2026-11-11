@@ -22,7 +22,10 @@
         />
       </TransitionGroup>
     </div>
-    <ActionTray :actions="controller.actionTrayElements.value" />
+    <ActionTray
+      :actions="controller.actionTrayElements.value"
+      v-if="props.isShowActionTray"
+    />
   </div>
 </template>
 
@@ -48,6 +51,10 @@
       default: false,
     },
     isInPreviewMode: {
+      type: Boolean,
+      default: true,
+    },
+    isShowActionTray: {
       type: Boolean,
       default: true,
     },
@@ -89,6 +96,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

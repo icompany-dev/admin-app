@@ -118,6 +118,16 @@ export class LetterOfCosecResignController
     this.emitEvents("back")
   }
 
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.letterRef) {
+      return []
+    }
+
+    let letterPages = await this.letterRef.getPdfPages()
+
+    return letterPages
+  }
+
   override async onDownloadClicked(): Promise<void> {
     if (this.isDownloading.value) {
       return

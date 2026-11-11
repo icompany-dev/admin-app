@@ -1,7 +1,5 @@
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
-import { CompanyConstants } from "~/scripts/constants/Company"
-import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 import { File as UploadedFile } from "~/scripts/models/File"
 import { Form } from "~/scripts/models/Form"
 import { Toast } from "~/scripts/library/Toast"

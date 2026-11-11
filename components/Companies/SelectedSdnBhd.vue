@@ -103,6 +103,13 @@
 
               <button
                 class="btn btn-pill btn-submit invert"
+                @click="controller.onGenerateLetterCosecResignClicked()"
+              >
+                Generate Resignation of Company Secretary
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
                 @click="controller.onOpenGenerateResignationAndAppointmentOfCosec()"
               >
                 Resign & Appoint Cosec
@@ -110,16 +117,16 @@
 
               <button
                 class="btn btn-pill btn-submit invert"
-                @click="controller.onOpenGenerateAuditExemptionCertificate()"
+                @click="controller.onGenerateSection236Clicked()"
               >
-                Generate Audit Exemption Certificate
+                Generate Consent to Act as Company Secretary
               </button>
 
               <button
                 class="btn btn-pill btn-submit invert"
-                @click="controller.onGenerateSection236Clicked()"
+                @click="controller.onOpenGenerateAuditExemptionCertificate()"
               >
-                Generate Consent to Act as Company Secretary
+                Generate Audit Exemption Certificate
               </button>
 
               <button
@@ -244,6 +251,10 @@
         :registration-number-new="controller.company.value.registrationNumberNew"
         :registration-number-old="controller.company.value.registrationNumberOld"
       />
+      <LetterCosecResign
+        ref="letterCosecResignRef"
+        :company-id="controller.companyId.value"
+      />
       <SendPaymentNotice
         ref="sendPaymentNoticeRef"
         v-bind="controller.sendPaymentNoticeProps"
@@ -260,6 +271,7 @@
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import CopyValue from "@/components/Buttons/CopyValue.vue"
   import Documents from "./Documents.vue"
+  import LetterCosecResign from "../QuickGenerate/LetterCosecResign.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Overview from "@/components/Companies/Overview.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
@@ -289,6 +301,7 @@
   const generateResignationAndAppointmentOfCosecRef = ref(null)
   const sendPaymentNoticeRef = ref(null)
   const section236ThreeRef = ref(null)
+  const letterCosecResignRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -359,6 +372,14 @@
     section236ThreeRef,
     (newVal) => {
       controller.setSection236ThreeRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    letterCosecResignRef,
+    (newVal) => {
+      controller.setLetterCosecResignRef(newVal)
     },
     { immediate: true }
   )
