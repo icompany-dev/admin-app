@@ -117,6 +117,9 @@ export class SendPaymentNoticeController extends BasePopupController {
   onSetCustomPricingChanged(): void {
     if (!StringUtil.isNullOrEmpty(this.selectedPricingId.value)) {
       this.newServicePricing.value = new ServicePricing(this.selectedServicePricing.value)
+      this.newServicePricing.value.isCustom = true
+      this.newServicePricing.value.isDefault = false
+      this.newServicePricing.value.serviceTarget = ""
 
       if (this.newServicePricing.value.breakdowns.length === 0) {
         let newBreakdown = new ServicePricingBreakdown()

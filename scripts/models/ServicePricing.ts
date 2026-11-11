@@ -38,6 +38,7 @@ export class ServicePricing implements IModel<ServicePricing> {
 
   //display purposes?
   isThirdPartyService: boolean = false
+  isCustom: boolean = false
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -167,6 +168,7 @@ export class ServicePricing implements IModel<ServicePricing> {
       discount: this.discount.getRequestBody(),
       base_grand_total: this.baseGrandTotal,
       status: this.status,
+      is_custom: this.isCustom,
     }
   }
 
