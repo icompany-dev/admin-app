@@ -54,6 +54,7 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.isShowDrawer.value = true
     this.newServicePricing.value = new ServicePricing()
     this.isCustomPricing.value = false
+    this.isNotify.value = false
     this.selectedPricingId.value = ""
     this.selectedServicePricing.value = new ServicePricing()
     this.searchText.value = ""
@@ -201,6 +202,33 @@ export class SendPaymentNoticeController extends BasePopupController {
     }
   }
 
+  onCosecServiceFeeChanged(): void {
+    this.newServicePricing.value.config.cosecServiceFee = Number(this.newServicePricing.value.config.cosecServiceFee)
+    if (this.newServicePricing.value.config.cosecServiceFee < 0) {
+      this.newServicePricing.value.config.cosecServiceFee = 0
+    }
+    this.newServicePricing.value.config.isCosecServiceFeeMandatory =
+      this.newServicePricing.value.config.cosecServiceFee > 0
+  }
+
+  onDigitalServiceFeeChanged(): void {
+    this.newServicePricing.value.config.digitalServiceFee = Number(
+      this.newServicePricing.value.config.digitalServiceFee
+    )
+    if (this.newServicePricing.value.config.digitalServiceFee < 0) {
+      this.newServicePricing.value.config.digitalServiceFee = 0
+    }
+    this.newServicePricing.value.config.isDsfMandatory = this.newServicePricing.value.config.digitalServiceFee > 0
+  }
+
+  onHandlingFeesChanged(): void {
+    this.newServicePricing.value.config.handlingFees = Number(this.newServicePricing.value.config.handlingFees)
+    if (this.newServicePricing.value.config.handlingFees < 0) {
+      this.newServicePricing.value.config.handlingFees = 0
+    }
+    this.newServicePricing.value.config.isDsfMandatory = this.newServicePricing.value.config.handlingFees > 0
+  }
+
   async onProceedClicked(): Promise<void> {
     if (this.isSubmitting.value) {
       return
@@ -208,6 +236,10 @@ export class SendPaymentNoticeController extends BasePopupController {
 
     try {
       this.isSubmitting.value = true
+
+      if (this.isCustomPricing.value) {
+        await this.newServicePricing.value.create(useServicePricingStore())
+      }
 
       // 1. Create payment cart
       let cart = this.paymentCart
@@ -291,10 +323,14 @@ export class SendPaymentNoticeController extends BasePopupController {
     let notice = new PaymentNotice()
     notice.entityType = this.entityType.value
     notice.entityId = this.entityId.value
-    notice.servicePricingId = this.selectedPricingId.value
     notice.target = this.target.value
     notice.targetId = this.targetId.value
-    notice.servicePricingId = this.selectedPricingId.value
+
+    if (this.isCustomPricing.value) {
+      notice.servicePricingId = this.newServicePricing.value.id
+    } else {
+      notice.servicePricingId = this.selectedPricingId.value
+    }
 
     return notice
   }
@@ -303,8 +339,14 @@ export class SendPaymentNoticeController extends BasePopupController {
     let item = new PaymentCartItem()
     item.targetType = this.target.value
     item.targetId = this.targetId.value
-    item.servicePricingId = this.selectedPricingId.value
-    item.servicePricing = this.selectedServicePricing.value
+
+    if (this.isCustomPricing.value) {
+      item.servicePricingId = this.newServicePricing.value.id
+      item.servicePricing = this.newServicePricing.value
+    } else {
+      item.servicePricingId = this.selectedPricingId.value
+      item.servicePricing = this.selectedServicePricing.value
+    }
 
     item.setSubtotal()
     return item
@@ -328,17 +370,16 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   get canProceed(): boolean {
-    if (!this.isCustomPricing.value && StringUtil.isNullOrEmpty(this.selectedPricingId.value)) {
-      return false
-    }
-
-    if (this.isCustomPricing.value && !this.newServicePricing.value.canSubmit()) {
-      return false
+    if (this.isCustomPricing.value) {
+      return (
+        !this.isFetchingServicePricings.value && !this.isSubmitting.value && this.newServicePricing.value.canSubmit()
+      )
     }
 
     return (
       !this.isFetchingServicePricings.value &&
       !this.isSubmitting.value &&
+      !StringUtil.isNullOrEmpty(this.selectedPricingId.value) &&
       this.paymentCart.canSubmit() &&
       this.paymentNotice.canSubmit()
     )

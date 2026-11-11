@@ -35,7 +35,7 @@
                     <Transition name="fade">
                       <input
                         v-if="controller.isCustomPricing.value"
-                        type="number"
+                        type="text"
                         class="form-control"
                         v-model="controller.newServicePricing.value.serviceName"
                         placeholder="Name"
@@ -182,9 +182,7 @@
                             type="number"
                             class="form-control"
                             v-model="controller.newServicePricing.value.config.cosecServiceFee"
-                            @change="
-                              controller.onPriceChange(controller.newServicePricing.value.config.cosecServiceFee)
-                            "
+                            @change="controller.onCosecServiceFeeChanged()"
                           />
                         </div>
                       </div>
@@ -195,9 +193,7 @@
                             type="number"
                             class="form-control"
                             v-model="controller.newServicePricing.value.config.digitalServiceFee"
-                            @change="
-                              controller.onPriceChange(controller.newServicePricing.value.config.digitalServiceFee)
-                            "
+                            @change="controller.onDigitalServiceFeeChanged()"
                           />
                         </div>
                       </div>
@@ -208,7 +204,7 @@
                             type="number"
                             class="form-control"
                             v-model="controller.newServicePricing.value.config.handlingFees"
-                            @change="controller.onPriceChange(controller.newServicePricing.value.config.handlingFees)"
+                            @change="controller.onHandlingFeesChanged()"
                           />
                         </div>
                       </div>
