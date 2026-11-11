@@ -16,6 +16,7 @@ import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { SelectOption } from "~/scripts/types/SelectOption"
+import { StringUtil } from "~/scripts/utils/String"
 
 export class TransactionHistoryController {
   dayjs = useDayjs()
@@ -71,7 +72,8 @@ export class TransactionHistoryController {
 
   async init(): Promise<void> {
     this.hasAccessToArchivedData.value = true
-    await this.checkHasArchivedTransactions()
+    this.hasArchivedData.value = true
+    // await this.checkHasArchivedTransactions()
 
     this.setupYears()
     this.setTrayActions()
@@ -252,9 +254,13 @@ export class TransactionHistoryController {
     filter.statuses.push(StatusConstants.PAID)
     filter.searchText = this.searchText.value ?? ""
     const response = await this.transactionRepository.fetchTransactionHistory(filter, year)
-    const histories = response.data.map((d: any) => {
-      return new TransactionHistory(d)
-    })
+    const histories = response.data
+      .map((d: any) => {
+        return new TransactionHistory(d)
+      })
+      .filter((t: TransactionHistory) => {
+        return !StringUtil.contains(t.payee, "lorem ipsum")
+      })
     const sortedHistories = this.sortTransactionHistories(histories)
     return sortedHistories
   }
@@ -357,7 +363,20 @@ export class TransactionHistoryController {
   }
 
   getTransactionHistories(year: number): TransactionHistory[] {
-    return this.transactionHistoriesByYear.value[year] ?? []
+    let transactions = this.transactionHistoriesByYear.value[year] ?? []
+
+    if (StringUtil.isNullOrEmpty(this.searchText.value)) {
+      return transactions
+    }
+
+    return transactions.filter((t: TransactionHistory) => {
+      let paymentFor = t.services.join(" ")
+      return (
+        StringUtil.contains(t.payee, this.searchText.value) ||
+        StringUtil.contains(paymentFor, this.searchText.value) ||
+        StringUtil.contains(t.refNo, this.searchText.value)
+      )
+    })
   }
 
   isYearEmpty(year: number): boolean {
@@ -479,12 +498,15 @@ export class TransactionHistoryController {
 
   async onSearchTransactionHistory(param?: ActionTrayElementParams): Promise<void> {
     if (!param) {
+      this.searchText.value = ""
+      // await this.setupYears()
+
       return
     }
 
     this.searchText.value = param.outcome
-    await this.setupYears()
-    this.setTrayActions()
+    // await this.setupYears()
+    // this.setTrayActions()
   }
 
   sortTransactions(): void {

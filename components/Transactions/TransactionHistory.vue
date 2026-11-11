@@ -32,6 +32,7 @@
       <ActionTray
         ref="actionTrayRef"
         :actions="controller.actionTray"
+        @on-close-search="controller.onSearchTransactionHistory()"
       />
       <div class="transaction-page-receipt-container">
         <ReceiptInvoice
