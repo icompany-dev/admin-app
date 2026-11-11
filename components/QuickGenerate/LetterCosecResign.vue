@@ -4,7 +4,7 @@
       <Transition name="nric-drawer">
         <div
           v-if="controller.isShowing.value"
-          class="nric-display-drawer"
+          class="nric-display-drawer cosec-resign-drawer"
           @click.self="controller.hide()"
         >
           <div class="nric-document-content">
@@ -12,10 +12,37 @@
               ref="documentRef"
               :company-id="controller.companyId.value"
               :is-show-action-tray="false"
+              :director-id="controller.selectedDirectorId.value"
             />
           </div>
 
           <div class="nric-document-editor">
+            <fieldset :disabled="controller.isGenerating.value">
+              <div class="nric-document-editor-input-wrapper">
+                <div class="label">Select Director:</div>
+                <select
+                  v-model="controller.selectedDirectorId.value"
+                  class="form-control"
+                  :disabled="controller.isFetchingDirectors.value"
+                >
+                  <option
+                    disabled
+                    value=""
+                  >
+                    {{ controller.isFetchingDirectors.value ? "Loading directors..." : "Select Director" }}
+                  </option>
+
+                  <option
+                    v-for="director in controller.directors.value"
+                    :key="director.id"
+                    :value="director.id"
+                  >
+                    {{ director.name }}
+                  </option>
+                </select>
+              </div>
+            </fieldset>
+
             <div class="action-buttons">
               <button
                 type="button"

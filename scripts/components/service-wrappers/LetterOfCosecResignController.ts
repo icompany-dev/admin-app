@@ -11,6 +11,7 @@ import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument
 import { StatusConstants } from "~/scripts/constants/Status"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
+import { Secretary } from "~/scripts/types/Secretary"
 
 export class LetterOfCosecResignController
   extends ServiceController
@@ -24,6 +25,8 @@ export class LetterOfCosecResignController
   showMcrFirst = ref<boolean>(false)
 
   letterRef: any | null = null
+
+  selectedSecretary: Ref<Secretary | null> = ref<Secretary | null>(null)
 
   constructor(
     companyId: string,
@@ -62,6 +65,10 @@ export class LetterOfCosecResignController
     if (!this.companyRepository.error) {
       this.application.value.company = new Company(response)
     }
+  }
+
+  onSecretarySelected(secretary: Secretary): void {
+    this.selectedSecretary.value = secretary
   }
 
   onShowMcrFirstClicked(): void {
@@ -126,6 +133,16 @@ export class LetterOfCosecResignController
     let letterPages = await this.letterRef.getPdfPages()
 
     return letterPages
+  }
+
+  async getDcrPages(): Promise<HTMLElement[]> {
+    if (!this.dcrRef) {
+      return []
+    }
+
+    let dcrPages = await this.dcrRef.getPdfPages()
+
+    return dcrPages
   }
 
   override async onDownloadClicked(): Promise<void> {
@@ -230,5 +247,17 @@ export class LetterOfCosecResignController
       this.isInPreviewMode.value,
       false
     )
+  }
+
+  get secretaryName(): string {
+    return this.selectedSecretary.value?.name ?? ""
+  }
+
+  get secretaryNric(): string {
+    return this.selectedSecretary.value?.nric ?? ""
+  }
+
+  get secretaryPcNumber(): string {
+    return this.selectedSecretary.value?.certificate ?? ""
   }
 }

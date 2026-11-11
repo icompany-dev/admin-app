@@ -78,6 +78,7 @@
             v-if="!controller.isPrinting.value"
             class="form-control in-resolution"
             v-model="controller.selectedSecretaryNric.value"
+            @change="emit('cosecSelected', controller.selectedSecretary)"
           >
             <option
               v-for="(secretary, i) in controller.secretaryOptions"
@@ -122,7 +123,7 @@
     },
   })
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["cosecSelected"])
 
   const documentRef = ref(null)
 

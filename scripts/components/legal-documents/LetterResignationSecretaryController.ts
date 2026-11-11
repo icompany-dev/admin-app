@@ -21,6 +21,8 @@ export class LetterResignationSecretaryController extends SdnBhdLegalDocumentCon
 
     let dayjs = useDayjs()
     this.documentDate.value = dayjs().format("YYYY-MM-DD")
+
+    this.emitEvents("cosecSelected", this.selectedSecretary)
   }
 
   override async getPdfPages(): Promise<HTMLElement[]> {

@@ -139,8 +139,6 @@
 
 <script setup lang="ts">
   import Paper from "@/components/Papers/Paper.vue"
-  import InputGroupText from "../Forms/InputGroupText.vue"
-  import InputGroupDualField from "../Forms/InputGroupDualField.vue"
   import Signature from "../Signatures/Signature.vue"
   import { DcrAppointmentOfNewCompanySecretaryController } from "~/scripts/components/resolutions/DcrAppointmentOfNewCompanySecretaryController"
   import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
