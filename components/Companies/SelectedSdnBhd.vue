@@ -117,6 +117,13 @@
 
               <button
                 class="btn btn-pill btn-submit invert"
+                @click="controller.onGenerateSection236Clicked()"
+              >
+                Generate Consent to Act as Company Secretary
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
                 @click="controller.onAskPaymentClicked()"
               >
                 {{ controller.paymentOrder }}
@@ -230,6 +237,13 @@
         ref="generateResignationAndAppointmentOfCosecRef"
         :company-id="controller.companyId.value"
       />
+      <Section236Three
+        ref="section236ThreeRef"
+        :company-id="controller.companyId.value"
+        :company-name="controller.company.value.getFullName()"
+        :registration-number-new="controller.company.value.registrationNumberNew"
+        :registration-number-old="controller.company.value.registrationNumberOld"
+      />
       <SendPaymentNotice
         ref="sendPaymentNoticeRef"
         v-bind="controller.sendPaymentNoticeProps"
@@ -252,6 +266,7 @@
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import RolesAccesses from "./RolesAccesses.vue"
   import SdnBhdSpine from "@/components/LegalDocuments/SdnBhdSpine.vue"
+  import Section236Three from "../QuickGenerate/Section236Three.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
   import SendPaymentNotice from "../Popups/SendPaymentNotice.vue"
@@ -273,6 +288,7 @@
   const generateAuditExemptionCertificateRef = ref(null)
   const generateResignationAndAppointmentOfCosecRef = ref(null)
   const sendPaymentNoticeRef = ref(null)
+  const section236ThreeRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -335,6 +351,14 @@
     sendPaymentNoticeRef,
     (newVal) => {
       controller.setSendPaymentNoticeRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    section236ThreeRef,
+    (newVal) => {
+      controller.setSection236ThreeRef(newVal)
     },
     { immediate: true }
   )

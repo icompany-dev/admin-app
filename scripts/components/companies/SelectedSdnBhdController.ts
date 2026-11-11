@@ -53,6 +53,7 @@ export class SelectedSdnBhdController {
   generateAuditExemptionCertificateRef: any | null = null
   generateResignationAndAppointmentOfCosecRef: any | null = null
   sendPaymentNoticeRef: any | null = null
+  section236ThreeRef: any | null = null
 
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
@@ -104,6 +105,10 @@ export class SelectedSdnBhdController {
 
   setSendPaymentNoticeRef(sendPaymentNoticeRef: any): void {
     this.sendPaymentNoticeRef = sendPaymentNoticeRef
+  }
+
+  setSection236ThreeRef(section236ThreeRef: any): void {
+    this.section236ThreeRef = section236ThreeRef
   }
 
   async fetchCompany(): Promise<void> {
@@ -446,6 +451,13 @@ export class SelectedSdnBhdController {
 
     if (this.sendPaymentNoticeRef) {
       this.sendPaymentNoticeRef.show()
+    }
+  }
+
+  onGenerateSection236Clicked(): void {
+    this.isShowOptions.value = false
+    if (this.section236ThreeRef) {
+      this.section236ThreeRef.show()
     }
   }
 

@@ -5,6 +5,8 @@ import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
+import { File as UploadedFile } from "~/scripts/models/File"
+import { Form } from "~/scripts/models/Form"
 
 export class Section236ThreeController {
   companyName: Ref<string> = ref<string>("")
@@ -59,10 +61,20 @@ export class Section236ThreeController {
     await PdfPaperUtil.generatePdfFile(
       pages,
       20,
-      `${this.companyName.value} Section 236(2).pdf`,
+      `Section 236(3) - Consent to Act As Company Secretary.pdf`,
       PaperSize.A4,
       PaperOrientation.Portrait
     )
+  }
+
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    let pages = await this.documentRef.getPdfPages()
+
+    return pages
   }
 
   onBackClicked(): void {
