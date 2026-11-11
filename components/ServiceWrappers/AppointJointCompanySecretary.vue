@@ -18,10 +18,18 @@
         <DcrAppointmentOfJointCompanySecretary
           ref="dcrRef"
           :company-id="controller.companyId"
+          :selectedDirectorId="props.selectedDirectorId"
+          :secretaryName="props.secretaryName"
+          :secretaryIc="props.secretaryIc"
+          :secretaryLicense="props.secretaryLicense"
+          :secretaryCertificate="props.secretaryCertificate"
         />
       </TransitionGroup>
     </div>
-    <ActionTray :actions="controller.actionTrayElements.value" />
+    <ActionTray
+      :actions="controller.actionTrayElements.value"
+      v-if="props.isShowActionTray"
+    />
   </div>
 </template>
 
@@ -42,6 +50,30 @@
     isDocumentEnlarged: {
       type: Boolean,
       default: false,
+    },
+    isShowActionTray: {
+      type: Boolean,
+      default: true,
+    },
+    selectedDirectorId: {
+      type: String,
+      default: "",
+    },
+    secretaryName: {
+      type: String,
+      default: "",
+    },
+    secretaryIc: {
+      type: String,
+      default: "",
+    },
+    secretaryLicense: {
+      type: String,
+      default: "",
+    },
+    secretaryCertificate: {
+      type: String,
+      default: "",
     },
   })
 
@@ -67,6 +99,10 @@
       }
     }
   )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

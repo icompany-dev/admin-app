@@ -21,6 +21,12 @@ export class DcrAppointmentOfJointCompanySecretaryController {
 
   documentRef: any | null = null
 
+  selectedDirectorId: Ref<string> = ref<string>("")
+  secretaryName: Ref<string> = ref<string>("")
+  secretaryIc: Ref<string> = ref<string>("")
+  secretaryLicense: Ref<string> = ref<string>("")
+  secretaryCertificate: Ref<string> = ref<string>("")
+
   companySecretaryId: string = "d76d3a2f-a5e9-11f1-a76b-42010a8c0003" //hard code for now
 
   resolutionDate: Ref<string> = ref<string>("")
@@ -48,6 +54,26 @@ export class DcrAppointmentOfJointCompanySecretaryController {
     } finally {
       this.isLoading.value = false
     }
+  }
+
+  setSelectedDirectorId(selectedDirectorId: string): void {
+    this.selectedDirectorId.value = selectedDirectorId
+  }
+
+  setSecretaryName(secretaryName: string): void {
+    this.secretaryName.value = secretaryName
+  }
+
+  setSecretaryIc(secretaryIc: string): void {
+    this.secretaryIc.value = secretaryIc
+  }
+
+  setSecretaryLicense(secretaryLicense: string): void {
+    this.secretaryLicense.value = secretaryLicense
+  }
+
+  setSecretaryCertificate(secretaryCertificate: string): void {
+    this.secretaryCertificate.value = secretaryCertificate
   }
 
   setDocumentRef(documentRef: any | null): void {
@@ -166,10 +192,21 @@ export class DcrAppointmentOfJointCompanySecretaryController {
     let items: SignatureItem[] = []
 
     let sortedSignatures = ObjectUtil.sort<SignatureGroup>(this.signatureGroups.value, "createdAt", "desc")
-    let firstSignature = sortedSignatures[0]
+    let firstSignature: SignatureGroup | null = sortedSignatures[0] ?? null
     let director = this.directors.value.find((d: Director) => {
       return d.id === firstSignature?.group?.id
     })
+
+    if (!StringUtil.isNullOrEmpty(this.selectedDirectorId.value)) {
+      firstSignature =
+        sortedSignatures.find((sg: SignatureGroup) => {
+          return sg.group?.id === this.selectedDirectorId.value && sg.group.target === "director"
+        }) ?? null
+
+      director = this.directors.value.find((d: Director) => {
+        return d.id === this.selectedDirectorId.value
+      })
+    }
 
     if (firstSignature && director) {
       items.push(
@@ -216,18 +253,34 @@ export class DcrAppointmentOfJointCompanySecretaryController {
   }
 
   get newCosecName(): string {
+    if (!StringUtil.isNullOrEmpty(this.secretaryName.value)) {
+      return this.secretaryName.value
+    }
+
     return SecretaryInformation.SECRETARY_NAME_LIST[0].name
   }
 
   get newCosecNric(): string {
+    if (!StringUtil.isNullOrEmpty(this.secretaryIc.value)) {
+      return this.secretaryIc.value
+    }
+
     return SecretaryInformation.SECRETARY_NAME_LIST[0].nric
   }
 
   get newCosecLicense(): string {
+    if (!StringUtil.isNullOrEmpty(this.secretaryLicense.value)) {
+      return this.secretaryLicense.value
+    }
+
     return SecretaryInformation.SECRETARY_NAME_LIST[0].license
   }
 
   get newCosecCertificate(): string {
+    if (!StringUtil.isNullOrEmpty(this.secretaryCertificate.value)) {
+      return this.secretaryCertificate.value
+    }
+
     return SecretaryInformation.SECRETARY_NAME_LIST[0].certificate
   }
 

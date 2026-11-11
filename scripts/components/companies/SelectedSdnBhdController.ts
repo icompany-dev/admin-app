@@ -55,6 +55,7 @@ export class SelectedSdnBhdController {
   sendPaymentNoticeRef: any | null = null
   section236ThreeRef: any | null = null
   letterCosecResignRef: any | null = null
+  appointCosecRef: any | null = null
 
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
@@ -114,6 +115,10 @@ export class SelectedSdnBhdController {
 
   setLetterCosecResignRef(letterCosecResignRef: any): void {
     this.letterCosecResignRef = letterCosecResignRef
+  }
+
+  setAppointCosecRef(appointCosecRef: any): void {
+    this.appointCosecRef = appointCosecRef
   }
 
   async fetchCompany(): Promise<void> {
@@ -470,6 +475,13 @@ export class SelectedSdnBhdController {
     this.isShowOptions.value = false
     if (this.letterCosecResignRef) {
       this.letterCosecResignRef.show()
+    }
+  }
+
+  onGenerateAppointCosecClicked(): void {
+    this.isShowOptions.value = false
+    if (this.appointCosecRef) {
+      this.appointCosecRef.show()
     }
   }
 

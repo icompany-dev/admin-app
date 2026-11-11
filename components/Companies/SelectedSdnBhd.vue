@@ -103,6 +103,13 @@
 
               <button
                 class="btn btn-pill btn-submit invert"
+                @click="controller.onGenerateAppointCosecClicked()"
+              >
+                Generate Appointment of Company Secretary
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
                 @click="controller.onGenerateLetterCosecResignClicked()"
               >
                 Generate Resignation of Company Secretary
@@ -255,6 +262,10 @@
         ref="letterCosecResignRef"
         :company-id="controller.companyId.value"
       />
+      <AppointCosec
+        ref="appointCosecRef"
+        :company-id="controller.companyId.value"
+      />
       <SendPaymentNotice
         ref="sendPaymentNoticeRef"
         v-bind="controller.sendPaymentNoticeProps"
@@ -265,6 +276,7 @@
 
 <script lang="ts" setup>
   import AnnualReturn from "./AnnualReturn.vue"
+  import AppointCosec from "../QuickGenerate/AppointCosec.vue"
   import BankAccountOpeningService from "@/components/CompanyServices/BankAccountOpeningService.vue"
   import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
   import ChangeOfBusinessBranchService from "@/components/CompanyServices/ChangeOfBusinessBranchService.vue"
@@ -302,6 +314,7 @@
   const sendPaymentNoticeRef = ref(null)
   const section236ThreeRef = ref(null)
   const letterCosecResignRef = ref(null)
+  const appointCosecRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -380,6 +393,14 @@
     letterCosecResignRef,
     (newVal) => {
       controller.setLetterCosecResignRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    appointCosecRef,
+    (newVal) => {
+      controller.setAppointCosecRef(newVal)
     },
     { immediate: true }
   )

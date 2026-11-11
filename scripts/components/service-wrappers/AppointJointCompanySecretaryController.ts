@@ -154,6 +154,16 @@ export class AppointJointCompanySecretaryController
         `
   }
 
+  async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.dcrRef) {
+      return []
+    }
+
+    let pages = await this.dcrRef.getPdfPages()
+
+    return pages
+  }
+
   get isDraft(): boolean {
     return this.applicationRef.value.signatureGroups.length <= 0
   }
