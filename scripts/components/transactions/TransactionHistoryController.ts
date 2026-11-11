@@ -31,7 +31,7 @@ export class TransactionHistoryController {
   firstRecordYear: number = 2023 //This is const and cannot change
 
   sortBy: Ref<string> = ref<string>(TransactionConstants.LABEL_PAY_DATE)
-  orderBy: Ref<string> = ref<string>(SortConstants.ORDER_ASC)
+  orderBy: Ref<string> = ref<string>(SortConstants.ORDER_DESC)
 
   currentYear = ref<number>(0)
   previousYear = ref<number>(0)
