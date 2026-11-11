@@ -73,6 +73,10 @@
       .actions-button-options {
         position: relative;
 
+        .btn {
+          width: 200px;
+        }
+
         .btn-pill {
           &.selected {
             display: flex;
