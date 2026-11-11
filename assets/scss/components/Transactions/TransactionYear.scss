@@ -83,39 +83,39 @@
               background-color: var(--transactions-year-hover-bg-color);
               font-weight: 600;
             }
+          }
 
-            .transaction-description {
-              width: 100%;
-              display: flex;
-              flex-direction: row;
-              justify-content: space-between;
-              align-items: flex-start;
-              height: 1rem;
-              transition: all 0.7s ease;
+          .transaction-description {
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            height: 1rem;
+            transition: all 0.7s ease;
 
-              .descriptions {
-                width: 90%;
+            .descriptions {
+              width: 90%;
 
-                span {
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  text-wrap: nowrap;
-                  transition: all 0.7s ease;
-                  line-height: 1.2rem;
+              span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-wrap: nowrap;
+                transition: all 0.7s ease;
+                line-height: 1.2rem;
 
-                  &.hidden {
-                    opacity: 0;
-                  }
+                &.hidden {
+                  opacity: 0;
                 }
               }
+            }
 
-              .toggle {
-                cursor: pointer;
-              }
+            .toggle {
+              cursor: pointer;
+            }
 
-              &.expanded {
-                height: fit-content;
-              }
+            &.expanded {
+              height: fit-content;
             }
           }
 
