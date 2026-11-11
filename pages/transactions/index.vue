@@ -2,12 +2,12 @@
   <div id="page-transactions">
     <div class="page-header">
       <BreadCrumb v-bind="pageController.breadCrumbProps" />
-      <TableFilters
+      <!-- <TableFilters
         v-bind="pageController.tableFilterProps"
         @search="pageController.onSearchInput($event)"
         @order="pageController.onSortOrderChanged($event)"
         @clearSearch="pageController.onSearchInput('')"
-      />
+      /> -->
     </div>
 
     <div class="all-transactions">

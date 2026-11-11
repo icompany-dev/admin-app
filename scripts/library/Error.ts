@@ -214,4 +214,38 @@ export class Error {
 
     this.type = Error.ERROR_TYPE_DATA
   }
+
+  setForDocumentPrint(): void {
+    this.title = this.isMalay ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.message = this.isMalay
+      ? "Kami tidak berjaya jana dokumen untuk dicetak. Sila cuba sekali lagi."
+      : "We are unable to generate the document to print. Please try again."
+
+    this.type = Error.ERROR_TYPE_API
+  }
+
+  setForMakePayment(): void {
+    this.title = this.isMalay ? "Maklumat anda diperlukan" : "Your information is required"
+    this.message = this.isMalay ? "Sila lengkapkan semua maklumat." : "Please complete the required information."
+
+    this.type = Error.ERROR_TYPE_API
+  }
+
+  setForGenerateReceipt(): void {
+    this.title = this.isMalay ? "Tiada maklumat untuk Sdn Bhd anda" : "No information found for your Sdn Bhd"
+    this.message = this.isMalay
+      ? "Kami tidak dapat memaut resit anda. Sila cuba lagi."
+      : "We are unable to retrieve your receipt. Please try again."
+
+    this.type = Error.ERROR_TYPE_API
+  }
+
+  setForFetchCustom(nameOfDataEn: string, nameOfDataBm: string): void {
+    this.title = this.isMalay ? "Tiada maklumat untuk Sdn Bhd anda" : "Information not available for your Sdn Bhd"
+    this.message = this.isMalay
+      ? `Kami tidak berjaya memaut ${nameOfDataBm}. Sila muat semula muka ini.`
+      : `We are unable to fetch ${nameOfDataEn}. Please refresh this page and try again.`
+
+    this.type = Error.ERROR_TYPE_API
+  }
 }

@@ -2,8 +2,10 @@ import { ActionTrayElement, type IActionTrayElementOptions } from "./ActionTrayE
 
 export class ActionTrayDropdown extends ActionTrayElement {
   isOpen: boolean = false
+  isDefaultOpen: boolean = false
+  hasOpenOnce: boolean = false
   actions: ActionTrayElement[] = []
-  
+
   constructor(
     id: string,
     options: Partial<IActionTrayElementOptions> = {},
@@ -14,6 +16,13 @@ export class ActionTrayDropdown extends ActionTrayElement {
     this.setCta(this.toggle) // Only update Cta after super is constructed
     this.actions = actions
     this.isOpen = isOpen
+
+    if (this.isOpen) {
+      this.hasOpenOnce = false
+      setTimeout(() => {
+        this.hasOpenOnce = true
+      }, 100)
+    }
   }
 
   toggle(): void {
