@@ -205,4 +205,52 @@
     border-radius: 5px;
     background-color: var(--bs-white);
   }
+
+  .annual-return-bell {
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+    margin-left: 8px;
+    color: var(--bs-icompany-orange-dark);
+  }
+
+  .annual-return-compliance {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 20px;
+    width: 100%;
+
+    .compliance {
+      width: 150px;
+
+      .label {
+        font-weight: 600;
+      }
+
+      ul,
+      ol {
+        margin: 5px 0;
+        padding-left: 15px;
+
+        li {
+          padding-bottom: 3px;
+
+          .text-danger {
+            color: var(--bs-danger) !important;
+          }
+
+          .text-warning {
+            color: var(--bs-icompany-orange) !important;
+          }
+
+          .text-success {
+            color: var(--bs-icompany-green) !important;
+          }
+        }
+      }
+    }
+  }
 }
