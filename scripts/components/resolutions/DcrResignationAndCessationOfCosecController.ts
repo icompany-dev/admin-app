@@ -13,15 +13,20 @@ export class DcrResignationAndCessationOfCosecController {
   isLoading = ref<boolean>(true)
   errorMessage = ref<string>("")
 
+  directors = ref<Director[]>([])
+  selectedDirectorIds = ref<string[]>([])
+  signatureGroups = ref<SignatureGroup[]>([])
+
   documentRef: HTMLElement | null = null
   private loadVersion = 0
 
-  async load(companyId: string, directorId: string): Promise<void> {
+  async load(companyId: string): Promise<void> {
     const version = ++this.loadVersion
 
     this.isLoading.value = true
     this.errorMessage.value = ""
     this.signatureItems.value = []
+    this.signatureGroups.value = []
 
     try {
       if (!companyId) {
@@ -29,56 +34,32 @@ export class DcrResignationAndCessationOfCosecController {
       }
 
       const companyRepository = useCompanyStore()
-      const companyResponse = await companyRepository.fetch(companyId)
+      const signatureRepository = useSignatureStore()
+
+      const [companyResponse, signatureResponse] = await Promise.all([
+        companyRepository.fetch(companyId),
+        signatureRepository.fetchByGroup(companyId, "director"),
+      ])
+
+      if (version !== this.loadVersion) {
+        return
+      }
 
       if (companyRepository.error || !companyResponse) {
         throw new Error("Unable to load company details.")
       }
 
-      if (version !== this.loadVersion) return
-
       this.company.value = new Company(companyResponse)
 
-      if (!directorId) {
+      this.signatureGroups.value = (signatureResponse ?? []).map((item: any) => {
+        return new SignatureGroup(item)
+      })
+
+      this.updateSignatureItems()
+    } catch (error) {
+      if (version !== this.loadVersion) {
         return
       }
-
-      const directorRepository = useDirectorStore()
-      const directorResponse = await directorRepository.fetch(directorId)
-
-      if (directorRepository.error || !directorResponse) {
-        throw new Error("Unable to load the selected director.")
-      }
-
-      const signatureResponse = await useSignatureStore().fetchByGroup(companyId, "director")
-
-      if (version !== this.loadVersion) return
-
-      const director = new Director(directorResponse)
-      director.name = director.name?.trim() || directorResponse.user?.name || ""
-
-      const signatureGroups = (signatureResponse ?? []).map((item: any) => new SignatureGroup(item))
-
-      const signatureGroup = signatureGroups.find(
-        (item: SignatureGroup) => item.group?.target === "director" && item.group?.id === directorId
-      )
-
-      const signatureUrl = signatureGroup?.signature?.url ?? null
-
-      this.signatureItems.value = [
-        new SignatureItem(
-          signatureUrl,
-          signatureUrl !== null,
-          false,
-          false,
-          director.name,
-          director.email ?? "",
-          "Director",
-          false
-        ),
-      ]
-    } catch (error) {
-      if (version !== this.loadVersion) return
 
       this.errorMessage.value = error instanceof Error ? error.message : "Unable to prepare the document."
 
@@ -106,41 +87,95 @@ export class DcrResignationAndCessationOfCosecController {
     return `DIRECTORS' RESOLUTION IN WRITING PURSUANT TO ${basis}`
   }
 
+  setSelectedDirectors(directors: Director[], directorIds: string[]): void {
+    this.directors.value = directors
+    this.selectedDirectorIds.value = [...directorIds]
+
+    this.updateSignatureItems()
+  }
+
+  updateSignatureItems(): void {
+    const selectedIds = new Set(this.selectedDirectorIds.value)
+
+    this.signatureItems.value = this.directors.value
+      .filter((director: Director) => {
+        return selectedIds.has(director.id)
+      })
+      .map((director: Director) => {
+        const signatureGroup = this.signatureGroups.value.find((item: SignatureGroup) => {
+          return item.group?.target === "director" && item.group?.id === director.id
+        })
+
+        const signatureUrl = signatureGroup?.signature?.url ?? null
+
+        const directorName = director.name?.trim() || director.user?.name || ""
+
+        return new SignatureItem(
+          signatureUrl,
+          signatureUrl !== null,
+          false,
+          false,
+          directorName,
+          director.email ?? "",
+          "Director",
+          false
+        )
+      })
+  }
+
   get resolutionProps(): PropsResolution {
+    const maxSignatureOnFirstPage = 2
+    const maxSignatureOnOtherPages = 4
+
+    const signatureCount = this.signatureItems.value.length
+
+    const remainingSignatures = Math.max(0, signatureCount - maxSignatureOnFirstPage)
+
+    const totalPages = 1 + Math.ceil(remainingSignatures / maxSignatureOnOtherPages)
+
+    const signatureTitle = this.directors.value.length > 1 ? "Board of Directors" : "Sole Director"
+
     return new PropsResolution(
       this.company.value.getFullName(),
       this.company.value.registrationNumberOld,
       this.company.value.registrationNumberNew,
       this.resolutionTitle(),
       "RESIGNATION AND APPOINTMENT OF COMPANY SECRETARY",
-      "Director",
+      signatureTitle,
       this.signatureItems.value,
       this.documentDate.value,
-      1, // Total pages
-      1, // Signature starts on page
-      1, // Signatures on first page
-      1, // Signatures on other pages
-      false, // Has accompanying document
-      true, // Is DCR
-      false, // Show watermark
+      totalPages,
+      1,
+      maxSignatureOnFirstPage,
+      maxSignatureOnOtherPages,
+      false,
+      true,
+      false,
       "PREVIEW",
-      [], // Content pages
-      false, // Is using template
+      [],
+      false,
       this.isLoading.value,
-      false, // Is signature tinted
-      "", // Signature tint label
-      "" // Company address; blank to match the original DCR
+      false,
+      "",
+      ""
     )
   }
 
   async getPdfPages(): Promise<HTMLElement[]> {
-    if (
-      this.isLoading.value ||
-      this.errorMessage.value ||
-      !this.documentRef ||
-      this.signatureItems.value.length === 0
-    ) {
-      throw new Error("Select a director and wait for the document to finish loading.")
+    if (this.isLoading.value) {
+      throw new Error("Wait for the document to finish loading.")
+    }
+
+    if (this.errorMessage.value) {
+      throw new Error(this.errorMessage.value)
+    }
+
+    if (!this.documentRef) {
+      throw new Error("Document is not available.")
+    }
+
+    if (this.signatureItems.value.length === 0) {
+      throw new Error("Select at least one director.")
     }
 
     await nextTick()

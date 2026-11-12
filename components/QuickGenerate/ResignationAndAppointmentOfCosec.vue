@@ -12,7 +12,8 @@
               :key="props.companyId"
               ref="documentRef"
               :company-id="props.companyId"
-              :director-id="directorId"
+              :directors="directors"
+              :director-ids="selectedDirectorIds"
               :resigning-secretary-name="resigningSecretaryName"
               :resigning-secretary-identification="resigningSecretaryIdentification"
               :resigning-secretary-practising-certificate-number="resigningSecretaryPractisingCertificateNumber"
@@ -25,27 +26,32 @@
           <div class="nric-document-editor">
             <fieldset :disabled="isDownloading">
               <div class="nric-document-editor-input-wrapper">
-                <div class="label">Select Director:</div>
-                <select
-                  v-model="directorId"
-                  class="form-control"
-                  :disabled="isLoadingDirectors"
-                >
-                  <option
-                    disabled
-                    value=""
-                  >
-                    {{ isLoadingDirectors ? "Loading directors..." : "Select Director" }}
-                  </option>
+                <div class="label">Select Directors:</div>
 
-                  <option
+                <div v-if="isLoadingDirectors">Loading directors...</div>
+
+                <div v-else>
+                  <div
                     v-for="director in directors"
                     :key="director.id"
-                    :value="director.id"
+                    class="form-check"
                   >
-                    {{ director.name }}
-                  </option>
-                </select>
+                    <input
+                      :id="`director-${director.id}`"
+                      v-model="selectedDirectorIds"
+                      class="form-check-input"
+                      type="checkbox"
+                      :value="director.id"
+                    />
+
+                    <label
+                      class="form-check-label"
+                      :for="`director-${director.id}`"
+                    >
+                      {{ director.name }}
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div class="nric-document-editor-input-wrapper">
@@ -160,7 +166,7 @@
     isLoadingDirectors,
     errorMessage,
     directors,
-    directorId,
+    selectedDirectorIds,
     resigningSecretaryName,
     resigningSecretaryIdentification,
     resigningSecretaryPractisingCertificateNumber,

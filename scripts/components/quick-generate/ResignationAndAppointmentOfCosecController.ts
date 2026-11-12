@@ -18,7 +18,7 @@ export class ResignationAndAppointmentOfCosecController {
   errorMessage = ref("")
 
   directors = ref<Director[]>([])
-  directorId = ref("")
+  selectedDirectorIds = ref<string[]>([])
 
   resigningSecretaryName = ref("NUR ASHIKIN BINTI SHAHARUDDIN")
   resigningSecretaryIdentification = ref("941024-04-5428")
@@ -41,7 +41,7 @@ export class ResignationAndAppointmentOfCosecController {
       !!this.documentRef.value &&
       !this.documentRef.value.isLoading &&
       !this.documentRef.value.errorMessage &&
-      !!this.directorId.value
+      this.selectedDirectorIds.value.length > 0
     )
   }
 
@@ -59,7 +59,7 @@ export class ResignationAndAppointmentOfCosecController {
     this.isLoadingDirectors.value = true
     this.errorMessage.value = ""
     this.directors.value = []
-    this.directorId.value = ""
+    this.selectedDirectorIds.value = []
 
     try {
       if (!this.companyId.value) {
@@ -69,23 +69,31 @@ export class ResignationAndAppointmentOfCosecController {
       const repository = useDirectorStore()
       const response = await repository.fetchAllForCompany(this.companyId.value)
 
+      if (version !== this.directorsLoadVersion) {
+        return
+      }
+
       if (repository.error) {
         throw new Error("Unable to load directors.")
       }
 
-      if (version !== this.directorsLoadVersion) return
-
       this.directors.value = (response ?? []).map((item: any) => new Director(item))
 
-      if (this.directors.value.length === 1) {
-        this.directorId.value = this.directors.value[0].id
-      }
+      this.selectedDirectorIds.value = this.directors.value
+        .filter((director: Director) => {
+          return !!director.id
+        })
+        .map((director: Director) => {
+          return director.id
+        })
 
       if (this.directors.value.length === 0) {
         this.errorMessage.value = "No directors found for this company."
       }
     } catch (error) {
-      if (version !== this.directorsLoadVersion) return
+      if (version !== this.directorsLoadVersion) {
+        return
+      }
 
       this.errorMessage.value = error instanceof Error ? error.message : "Unable to load directors."
 
