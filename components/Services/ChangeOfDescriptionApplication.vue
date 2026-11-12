@@ -26,6 +26,10 @@
                 {{ controller.lastSignatureDate }}
               </div>
             </div>
+            <div class="application-details">
+              <span v-html="controller.businessDescription" />
+              <CopyValue :value="controller.businessDescription" />
+            </div>
           </template>
           <template #nodeOptions>
             <button
@@ -91,7 +95,8 @@
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
-              :disabled="!controller.canSubmitToSSM"
+              :class="{ 'is-loading': controller.isUpdatingPd2.value }"
+              :disabled="controller.isUpdatingPd2.value"
               @click="controller.onSubmitToSSMClicked()"
             >
               {{ controller.registrationOfDescriptionButtonLabel }}
@@ -135,6 +140,7 @@
 
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"

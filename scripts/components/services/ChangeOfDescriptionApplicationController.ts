@@ -184,7 +184,7 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
   async onSubmitToSSMClicked(): Promise<void> {
     this.isShowPd2Actions.value = false
 
-    if (!this.isDescriptionReservationApproved || this.isUpdatingPd2.value || !this.application.value) {
+    if (this.isUpdatingPd2.value || !this.application.value) {
       return
     }
 
@@ -303,6 +303,10 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
     return this.language.isMalay() ? "Pengarah & Pemegang Saham" : "Director & Shareholders"
   }
 
+  get businessDescription(): string {
+    return this.application.value?.businessDescription ?? "(Incomplete)"
+  }
+
   get approvalLabel(): string {
     return this.language.isMalay() ? "Persetujuan dari Pengarah" : "Approval from Directors"
   }
@@ -312,26 +316,6 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
       !this.isDirectorSignatureCompleted,
       this.isDirectorSignatureCompleted,
       this.isShowResolutions.value
-    )
-  }
-
-  get isDescriptionReservationApproved(): boolean {
-    return false
-  }
-
-  get DescriptionReservationLabel(): string {
-    return this.language.isMalay() ? "Permohonan Tempahan Nama" : "Application of Description Reservation"
-  }
-
-  get DescriptionReservationSublabel(): string {
-    return this.language.isMalay() ? "Seksyen 27 Akta Syarikat 2016" : "Section 27 of the Act"
-  }
-
-  get DescriptionReservationNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(
-      this.isShareholderSignatureCompleted,
-      this.isDescriptionReservationApproved,
-      this.isShowSection27.value
     )
   }
 
@@ -349,30 +333,6 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
     }
 
     return this.concluded
-  }
-
-  get proposedDescriptionsLabel(): string {
-    return this.language.isMalay() ? "Nama yang Dicadangkan" : "Proposed Descriptions"
-  }
-
-  get submitSection27ApplicationLabel(): string {
-    return this.language.isMalay() ? "Hantar" : "Submit"
-  }
-
-  get approvedSection27Label(): string {
-    return this.language.isMalay() ? "Lulus" : "Approved"
-  }
-
-  get rejectedSection27Label(): string {
-    return this.language.isMalay() ? "Ditolak" : "Rejected"
-  }
-
-  get uploadSection27Label(): string {
-    return this.language.isMalay() ? "Muat Naik" : "Upload"
-  }
-
-  get downloadDocumentSection27Label(): string {
-    return this.language.isMalay() ? "Seksyen 27" : "Section 27"
   }
 
   get isRegistrationOfDescriptionSubmitted(): boolean {
