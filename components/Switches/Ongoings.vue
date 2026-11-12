@@ -62,13 +62,25 @@
           >
             {{ controller.viewApplicationLabel }}
           </button>
+          <button
+            class="btn btn-danger btn-pill"
+            @click="controller.onRemoveClicked(application)"
+          >
+            {{ controller.removeApplicationLabel }}
+          </button>
         </div>
       </div>
     </div>
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :remove-item-name="controller.itemToRemoveName"
+      @proceed="controller.onProceedRemove()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "@/components/Placeholders/NoRecord.vue"
   import { OngoingsController } from "~/scripts/components/switches/OngoingsController"
@@ -78,6 +90,8 @@
 
   const emit = defineEmits([])
 
+  const confirmToDeleteRef = ref(null)
+
   const controller = new OngoingsController(props, emit)
 
   watch(
@@ -86,6 +100,14 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 
