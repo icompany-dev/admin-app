@@ -272,10 +272,10 @@ export class SendPaymentNoticeController extends BasePopupController {
       await notice.create(usePaymentNoticeStore())
 
       let cart = this.paymentCart
-      // cart.items.forEach((pci) => {
-      //   pci.targetType = "PaymentNotice"
-      //   pci.targetId = notice.id
-      // })
+      cart.items.forEach((pci) => {
+        pci.targetType = "PaymentNotice"
+        pci.targetId = notice.id
+      })
       await cart.create(usePaymentCartStore())
 
       if (this.isNotify.value) {

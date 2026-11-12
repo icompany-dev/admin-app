@@ -698,7 +698,7 @@ export class SelectedSdnBhdController {
       "Company",
       this.company.value.id,
       this.company.value.getFullName(),
-      "company",
+      "Company",
       this.company.value.id,
       this.company.value.billingInfo(),
       this.company.value.deliveryInfo()
