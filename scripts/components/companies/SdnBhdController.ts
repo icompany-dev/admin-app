@@ -244,7 +244,7 @@ export class SdnBhdController {
 
   get subscriptionExpiryDate(): string {
     if (this.subscriptionStatus === "active") {
-      return this.company.value.subscriptionExpiryDate()
+      return `Due ${this.company.value.subscriptionExpiryDate()}`
     }
 
     return `${StringUtil.capitalize(this.subscriptionStatus)} on ${this.company.value.subscriptionExpiryDate()}`

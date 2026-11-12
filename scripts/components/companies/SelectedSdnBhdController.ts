@@ -704,4 +704,16 @@ export class SelectedSdnBhdController {
       this.company.value.deliveryInfo()
     )
   }
+
+  get subscriptionExpiryDate(): string {
+    if (this.subscriptionStatus === "active") {
+      return `Due ${this.company.value.subscriptionExpiryDate()}`
+    }
+
+    return `${StringUtil.capitalize(this.subscriptionStatus)} on ${this.company.value.subscriptionExpiryDate()}`
+  }
+
+  get subscriptionStatus(): string {
+    return this.company.value.subscriptionStatus()
+  }
 }

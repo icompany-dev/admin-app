@@ -66,6 +66,18 @@
             #buttons-copy-value {
               padding-left: 0px;
             }
+
+            .subscription-status {
+              &.expiring {
+                font-weight: 600;
+                color: var(--bs-icompany-orange);
+              }
+
+              &.expired {
+                font-weight: 600;
+                color: var(--bs-danger);
+              }
+            }
           }
         }
       }

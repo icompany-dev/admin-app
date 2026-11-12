@@ -38,6 +38,15 @@
                 <br />
                 <b>{{ controller.incorporationDateLabel }}</b>
                 : {{ controller.incorporationDate }}
+                <br />
+                <b>Subscription Status</b>
+                :
+                <span
+                  class="subscription-status"
+                  :class="controller.subscriptionStatus"
+                >
+                  {{ controller.subscriptionExpiryDate }}
+                </span>
               </div>
             </div>
           </div>
