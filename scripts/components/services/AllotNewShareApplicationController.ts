@@ -390,14 +390,14 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
         ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
         : "Application is Completed. The Company Shares has been updated."
       let toastMessage = this.language.isMalay()
-        ? "Anda akan dibawa ke muka Sdn Bhd."
-        : "You will be redirected to the Sdn Bhd page."
+        ? "Pengarah dan Pemegang Saham telah diberitahu melalui emel dan WhatsApp."
+        : "The Directors and Shareholders are informed via email and WhatsApp."
 
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
 
       let router = useRouter()
-      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+      router.push({ path: `/services/allotment-of-shares` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()
@@ -701,10 +701,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
       return false
     }
 
-    return (
-      this.application.value.status === StatusConstants.CONVERTED ||
-      this.application.value.status === StatusConstants.COMPLETED
-    )
+    return this.application.value.status === StatusConstants.CONVERTED
   }
 
   get applicationCompletedLabel(): string {

@@ -247,6 +247,7 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
       return
     }
     try {
+      this.isCompleting.value = true
       let repository = useCompanyStore()
       await repository.postService(this.target.value, this.application.value.id)
 
@@ -258,14 +259,14 @@ export class AppointNewDirectorApplicationController extends ApplicationControll
         ? "Permohonan telah Selesai. Pengarah Baharu telah ditambah ke Syarikat."
         : "Application is Completed. The new Director has been added to the Company."
       let toastMessage = this.language.isMalay()
-        ? "Anda akan dibawa ke muka Sdn Bhd."
-        : "You will be redirected to the Sdn Bhd page."
+        ? "Pengarah dan Pemegang Saham telah diberitahu melalui emel dan WhatsApp."
+        : "The Directors and Shareholders are informed via email and WhatsApp."
 
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
 
       let router = useRouter()
-      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+      router.push({ path: `/services/appoint-director-new` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()

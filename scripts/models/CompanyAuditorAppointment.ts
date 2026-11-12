@@ -58,6 +58,10 @@ export class CompanyAuditorAppointment
       this.auditorNameLicense = `${this.auditorPartner.companyName.toUpperCase()} (${this.auditorPartner.license})`
       this.auditorAddress = this.auditorPartner.companyLocation.getMultilineAddress()
       this.greeting = `MESSRS ${this.auditorPartner.companyName.toUpperCase()}`
+    } else {
+      this.auditorNameLicense = `${this.auditorInvitation.companyName.toUpperCase()}`
+      this.greeting = `MESSRS ${this.auditorInvitation.companyName.toUpperCase()}`
+      this.auditorAddress = ""
     }
   }
 
@@ -114,7 +118,7 @@ export class CompanyAuditorAppointment
 
   async create(repository: ReturnType<typeof useCompanyAuditorAppointmentStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -122,7 +126,7 @@ export class CompanyAuditorAppointment
     let data = this.getRequestBody()
     const response = await repository.create(data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -132,7 +136,7 @@ export class CompanyAuditorAppointment
 
   async update(repository: ReturnType<typeof useCompanyAuditorAppointmentStore>): Promise<void> {
     if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -140,7 +144,7 @@ export class CompanyAuditorAppointment
     let data = this.getRequestBody()
     const response = await repository.update(this.id, data)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -150,14 +154,14 @@ export class CompanyAuditorAppointment
 
   async remove(repository: ReturnType<typeof useCompanyAuditorAppointmentStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     const response = await repository.remove(this.id)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -178,7 +182,7 @@ export class CompanyAuditorAppointment
 
     const user = await repository.fetch(userId)
     if (repository.error) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForFetch()
       throw error
     }

@@ -6,25 +6,15 @@ import { StatusConstants } from "~/scripts/constants/Status"
 import { Toast } from "~/scripts/library/Toast"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { StringUtil } from "~/scripts/utils/String"
-import { ObjectUtil } from "~/scripts/utils/Object"
-import { File } from "~/scripts/models/File"
-import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import { CompanyAuditorAppointment } from "~/scripts/models/CompanyAuditorAppointment"
 import { Bank } from "~/scripts/models/Bank"
-import { Filter } from "~/scripts/library/Filter"
-import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
-import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderItemMandatory"
 import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
 import { AuditorInvitation } from "~/scripts/models/AuditorInvitation"
 import { PropsInvitationDetail } from "~/scripts/props/PropsInvitationDetail"
-import { GenerateDocumentDetails } from "~/scripts/types/GenerateDocumentDetails"
-import type { SignatureGroup } from "~/scripts/models/SignatureGroup"
 
 export class AppointNewAuditorApplicationController extends ApplicationController<CompanyAuditorAppointment> {
   resolutionsRef: any | null = null
-
-  banks: Ref<Bank[]> = ref<Bank[]>([])
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowShipped: Ref<boolean> = ref<boolean>(false)
@@ -135,10 +125,12 @@ export class AppointNewAuditorApplicationController extends ApplicationControlle
   }
 
   async proceedCompleteService(): Promise<void> {
-    if (!this.application.value) {
+    if (!this.application.value || this.isCompleting.value) {
       return
     }
     try {
+      this.isCompleting.value = true
+
       let repository = useCompanyStore()
       await repository.postService(this.target.value, this.application.value.id)
 
@@ -150,14 +142,14 @@ export class AppointNewAuditorApplicationController extends ApplicationControlle
         ? "Permohonan telah Selesai. Pengarah Baharu telah ditambah ke Syarikat."
         : "Application is Completed. The new Auditor has been added to the Company."
       let toastMessage = this.language.isMalay()
-        ? "Anda akan dibawa ke muka Sdn Bhd."
-        : "You will be redirected to the Sdn Bhd page."
+        ? "Pengarah dan Pemegang Saham telah diberitahu melalui emel dan WhatsApp."
+        : "The Directors and Shareholders are informed via email and WhatsApp."
 
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
 
       let router = useRouter()
-      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+      router.push({ path: `/services/appointment-of-auditor` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()
@@ -176,10 +168,6 @@ export class AppointNewAuditorApplicationController extends ApplicationControlle
   }
 
   //getters
-  // get auditorInvitations(): AuditorInvitation[] {
-  //   return this.application.value?.auditorInvitations ?? []
-  // }
-
   get serviceName(): string {
     return this.language.isMalay() ? "Lantik Pengarah Baharu" : "Appoint New Auditor"
   }

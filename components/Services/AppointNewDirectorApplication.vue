@@ -164,6 +164,8 @@
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isCompleting.value }"
+              :disabled="controller.isCompleting.value"
               @click="controller.onCompleteClicked()"
             >
               {{ controller.markCompletedLabel }}
