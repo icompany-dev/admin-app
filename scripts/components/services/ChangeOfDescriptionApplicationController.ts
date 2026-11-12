@@ -6,10 +6,6 @@ import { Error } from "~/scripts/library/Error"
 import { StatusConstants } from "~/scripts/constants/Status"
 import { Toast } from "~/scripts/library/Toast"
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
-import { StringUtil } from "~/scripts/utils/String"
-import { ObjectUtil } from "~/scripts/utils/Object"
-import { File } from "~/scripts/models/File"
-import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 
@@ -217,10 +213,6 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
   }
 
   onShowCompleteActions(): void {
-    // if (!this.isCONUploaded) {
-    //   return
-    // }
-
     this.isShowCompletedActions.value = !this.isShowCompletedActions.value
   }
 
@@ -235,7 +227,11 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
 
       let targetId = this.application.value?.id ?? ""
       let repository = useCompanyStore()
-      await repository.postService(CompanyConstants.TARGET_AMENDMENT_DESCRIPTION, targetId, true)
+      await repository.postService(
+        CompanyConstants.TARGET_AMENDMENT_DESCRIPTION,
+        targetId,
+        this.isNotifyOnComplete.value
+      )
 
       if (repository.error !== null) {
         throw repository.error
