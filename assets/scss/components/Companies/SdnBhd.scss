@@ -54,6 +54,18 @@
       .registration-numbers {
         font-weight: normal;
         font-size: 1.1rem;
+
+        .subscription-status {
+          &.expiring {
+            font-weight: 600;
+            color: var(--bs-icompany-orange);
+          }
+
+          &.expired {
+            font-weight: 600;
+            color: var(--bs-danger);
+          }
+        }
       }
     }
 

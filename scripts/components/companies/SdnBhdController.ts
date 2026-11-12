@@ -241,4 +241,16 @@ export class SdnBhdController {
   get tooltip(): string {
     return this.language.isMalay() ? "Buka di Tab Baharu" : "Open in New Tab"
   }
+
+  get subscriptionExpiryDate(): string {
+    if (this.subscriptionStatus === "active") {
+      return this.company.value.subscriptionExpiryDate()
+    }
+
+    return `${StringUtil.capitalize(this.subscriptionStatus)} on ${this.company.value.subscriptionExpiryDate()}`
+  }
+
+  get subscriptionStatus(): string {
+    return this.company.value.subscriptionStatus()
+  }
 }
