@@ -18,8 +18,8 @@
             </div>
             <div class="name-registration-number">
               <div class="company-name">
-                {{ controller.company.value.getFullName() }}
-                <CopyValue :value="controller.company.value.getFullName()" />
+                {{ controller.companyName }}
+                <CopyValue :value="controller.companyName" />
                 &nbsp;
                 <a
                   :href="controller.companyDashboardUrl"

@@ -485,6 +485,12 @@ export class SelectedSdnBhdController {
     }
   }
 
+  get companyName(): string {
+    let companyName = this.company.value.getFullName()
+    companyName = companyName.replace("SDN BHD", "SDN. BHD.")
+    return companyName
+  }
+
   get companyDashboardUrl(): string {
     return `https://cosec.icompany.my/sdnbhd/${this.companyId.value}`
   }
