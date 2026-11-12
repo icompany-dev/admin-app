@@ -1,6 +1,10 @@
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
+import type { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
+import type { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
+import type { ServicePricingOptional } from "~/scripts/models/ServicePricingOptional"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
+import { PricingDetail } from "~/scripts/types/pricings/PricingDetail"
 import { NumberUtil } from "~/scripts/utils/Number"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -40,6 +44,65 @@ export class AllController {
     return NumberUtil.currency(total)
   }
 
+  getPricingDetails(servicePricing: ServicePricing): PricingDetail[] {
+    let details: PricingDetail[] = []
+
+    servicePricing.breakdowns.forEach((spb: ServicePricingBreakdown) => {
+      details.push(new PricingDetail(spb.itemName, spb.price))
+    })
+
+    servicePricing.mandatoryServices.forEach((spm: ServicePricingMandatory) => {
+      details.push(
+        new PricingDetail(
+          spm.mandatoryServicePrice.serviceName,
+          spm.basePrice ?? spm.mandatoryServicePrice.baseGrandTotal
+        )
+      )
+    })
+
+    return details
+  }
+
+  getPricingOptionalDetails(servicePricing: ServicePricing): PricingDetail[] {
+    let details: PricingDetail[] = []
+
+    servicePricing.optionals.forEach((spo: ServicePricingOptional) => {
+      details.push(new PricingDetail(spo.optionalServicePrice.serviceName, spo.optionalServicePrice.baseGrandTotal))
+    })
+
+    return details
+  }
+
+  getConfigurationDetails(servicePricing: ServicePricing): PricingDetail[] {
+    let details: PricingDetail[] = [
+      new PricingDetail("Cosec Service Fee", servicePricing.config.cosecServiceFee),
+      new PricingDetail("Digital Service Fee", servicePricing.config.digitalServiceFee),
+      new PricingDetail("Handling Fees", servicePricing.config.handlingFees),
+    ]
+
+    return details
+  }
+
+  hasPricingDetails(servicePricing: ServicePricing): boolean {
+    return this.getPricingDetails(servicePricing).length > 0
+  }
+
+  hasPricingOptionalDetails(servicePricing: ServicePricing): boolean {
+    return this.getPricingOptionalDetails(servicePricing).length > 0
+  }
+
+  hasPricingConfigurations(servicePricing: ServicePricing): boolean {
+    return this.getConfigurationDetails(servicePricing).length > 0
+  }
+
+  hasPricingBreakdowns(servicePricing: ServicePricing): boolean {
+    return (
+      this.hasPricingDetails(servicePricing) ||
+      this.hasPricingOptionalDetails(servicePricing) ||
+      this.hasPricingConfigurations(servicePricing)
+    )
+  }
+
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
   }
@@ -72,5 +135,9 @@ export class AllController {
 
   get removeButtonLabel(): string {
     return this.language.isMalay() ? "Padam" : "Remove"
+  }
+
+  get grandTotalLabel(): string {
+    return this.language.isMalay() ? "Jumlah Keseluruhan" : "Grand Total"
   }
 }

@@ -20,7 +20,46 @@
             <div class="service-name">
               {{ pricing.serviceName }}
             </div>
-            <div class="service-price">RM {{ controller.getGrandTotal(pricing) }}</div>
+            <div class="service-price">
+              {{ controller.grandTotalLabel }}: RM {{ controller.getGrandTotal(pricing) }}
+            </div>
+            <div
+              class="service-price-details"
+              v-if="controller.hasPricingBreakdowns(pricing)"
+            >
+              <div class="service-price-detail">
+                <div class="item"></div>
+                <div class="price"><b>RM</b></div>
+              </div>
+              <div
+                class="service-price-detail"
+                v-for="(detail, index) in controller.getPricingDetails(pricing)"
+              >
+                <div class="item">{{ detail.name }}</div>
+                <div class="price">{{ detail.formattedPrice }}</div>
+              </div>
+              <div
+                class="optional-title"
+                v-if="controller.hasPricingOptionalDetails(pricing)"
+              >
+                <b>Other Requirements / Optionals</b>
+              </div>
+              <div
+                class="service-price-detail optional"
+                v-for="(detail, index) in controller.getPricingOptionalDetails(pricing)"
+              >
+                <div class="item">{{ detail.name }}</div>
+                <div class="price">{{ detail.formattedPrice }}</div>
+              </div>
+              <div
+                class="service-price-configuration"
+                v-for="(detail, index) in controller.getConfigurationDetails(pricing)"
+                :class="{ first: index === 0 && controller.hasPricingDetails(pricing) }"
+              >
+                <div class="item">{{ detail.name }}</div>
+                <div class="price">{{ detail.formattedPrice }}</div>
+              </div>
+            </div>
           </div>
           <div class="action-buttons">
             <button class="btn btn-submit btn-pill">View</button>
