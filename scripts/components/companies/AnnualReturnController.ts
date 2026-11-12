@@ -346,7 +346,8 @@ ${detailsOfBO.join("\n")}
       if (!StringUtil.isNullOrEmpty(this.companyAnnualReturnRequest.value.id)) {
         await repository.postService(
           CompanyConstants.TARGET_LODGE_ANNUAL_RETURN,
-          this.companyAnnualReturnRequest.value.id
+          this.companyAnnualReturnRequest.value.id,
+          true
         )
       }
 

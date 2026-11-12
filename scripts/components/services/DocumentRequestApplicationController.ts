@@ -174,7 +174,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
       let repository = useCompanyDocumentRequestStore()
       this.application.value.status = StatusConstants.COMPLETED
 
-      await repository.complete(this.application.value.id)
+      await repository.complete(this.application.value.id, true)
 
       let toastTitle = this.language.isMalay() ? "Permohonan ini selesai" : "You have completed this application"
       let toastMessage = this.language.isMalay()

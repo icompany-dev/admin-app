@@ -151,9 +151,11 @@ export class Repository<T> implements IRepositoryOptions {
     }
   }
 
-  async complete<T>(id: any): Promise<T> {
+  async complete<T>(id: any, isNotifyUser: boolean): Promise<T> {
     try {
-      const response = await this.post<any>(`${this.singleResourceUrl}/complete/${id}`, {})
+      const response = await this.post<any>(`${this.singleResourceUrl}/complete/${id}`, {
+        is_notify_user: isNotifyUser,
+      })
       return response
     } catch (error) {
       throw error

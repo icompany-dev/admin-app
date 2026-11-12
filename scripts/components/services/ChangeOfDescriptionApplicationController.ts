@@ -235,7 +235,7 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
 
       let targetId = this.application.value?.id ?? ""
       let repository = useCompanyStore()
-      await repository.postService(CompanyConstants.TARGET_AMENDMENT_DESCRIPTION, targetId)
+      await repository.postService(CompanyConstants.TARGET_AMENDMENT_DESCRIPTION, targetId, true)
 
       if (repository.error !== null) {
         throw repository.error

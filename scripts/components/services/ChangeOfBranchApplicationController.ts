@@ -202,7 +202,7 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
 
       let targetId = this.application.value?.id ?? ""
       let repository = useCompanyStore()
-      await repository.postService(CompanyConstants.TARGET_AMENDMENT_BRANCH, targetId)
+      await repository.postService(CompanyConstants.TARGET_AMENDMENT_BRANCH, targetId, true)
 
       if (repository.error !== null) {
         throw repository.error

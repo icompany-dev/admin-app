@@ -380,7 +380,7 @@ export class AllotNewShareApplicationController extends ApplicationController<Co
     try {
       this.isCompleting.value = true
       let repository = useCompanyStore()
-      await repository.postService(this.target.value, this.application.value.id)
+      await repository.postService(this.target.value, this.application.value.id, true)
 
       if (repository.error !== null) {
         throw repository.error

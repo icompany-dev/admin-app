@@ -112,7 +112,7 @@ export abstract class Application implements IApplication {
       throw error
     }
 
-    await repository.complete(this.id)
+    await repository.complete(this.id, true)
     if (repository.error) {
       let error: Error = new Error()
       error.setForCUD()

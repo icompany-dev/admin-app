@@ -109,12 +109,12 @@ export const useCompanyStore = defineStore("company", () => {
     }
   }
 
-  async function postService(targetType: string, targetId: string): Promise<any> {
+  async function postService(targetType: string, targetId: string, isNotifyUser: boolean): Promise<any> {
     isLoading.value = true
     error.value = null
 
     try {
-      const response: any = await $repositories.companies.postService(targetType, targetId)
+      const response: any = await $repositories.companies.postService(targetType, targetId, isNotifyUser)
       return response
     } catch (e: any) {
       error.value = `Unable to update company. ${e}`
