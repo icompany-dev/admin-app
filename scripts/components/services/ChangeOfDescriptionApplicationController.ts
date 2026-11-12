@@ -11,6 +11,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 
 export class ChangeOfDescriptionApplicationController extends ApplicationController<CompanyAmendmentDescription> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -232,10 +233,26 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
       this.isCompleting.value = true
       let companyId = this.application.value?.companyId
 
-      await this.application.value?.complete(useCompanyAmendmentDescriptionStore())
+      let targetId = this.application.value?.id ?? ""
+      let repository = useCompanyStore()
+      await repository.postService(CompanyConstants.TARGET_AMENDMENT_DESCRIPTION, targetId)
+
+      if (repository.error !== null) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Permohonan telah Selesai. Perihal Perniagaan telah dikemaskini."
+        : "Application is Completed. The Business Nature is updated."
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahu melalui emel dan WhatsApp."
+        : "Directors are notified via Email and WhatsApp."
+
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
 
       let router = useRouter()
-      router.push({ path: `/sdnbhds/${companyId}` })
+      router.push({ path: `/services/change-business-description` })
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -338,18 +355,6 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
     return this.language.isMalay() ? "Nama yang Dicadangkan" : "Proposed Descriptions"
   }
 
-  // get hasNextStepsForSection27(): boolean {
-  //   return this.canSubmitSection27 || this.canUpdateSection27
-  // }
-
-  // get canSubmitSection27(): boolean {
-  //   return !this.latestSection27Application || this.latestSection27Application.status === StatusConstants.REJECTED
-  // }
-
-  // get canUpdateSection27(): boolean {
-  //   return this.latestSection27Application !== null && this.latestSection27Application.status === StatusConstants.PAID
-  // }
-
   get submitSection27ApplicationLabel(): string {
     return this.language.isMalay() ? "Hantar" : "Submit"
   }
@@ -363,23 +368,12 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
   }
 
   get uploadSection27Label(): string {
-    // if (this.isSection27Uploaded) {
-    //   return this.language.isMalay() ? "Muat Naik Semula" : "Upload Again"
-    // }
-
     return this.language.isMalay() ? "Muat Naik" : "Upload"
   }
 
   get downloadDocumentSection27Label(): string {
     return this.language.isMalay() ? "Seksyen 27" : "Section 27"
   }
-
-  // get DescriptionReservationRejectedProps(): PropsDescriptionReservationRejected {
-  //   return new PropsDescriptionReservationRejected(
-  //     this.application.value?.company?.getFullDescription() ?? "Company",
-  //     this.latestSection27Application?.proposedDescription ?? "PROPOSED Description"
-  //   )
-  // }
 
   get isRegistrationOfDescriptionSubmitted(): boolean {
     return this.application.value?.status === StatusConstants.SUBMITTED || this.isPD2Uploaded
@@ -493,15 +487,25 @@ export class ChangeOfDescriptionApplicationController extends ApplicationControl
   // document checkers
   get isPD2Uploaded(): boolean {
     return this.uploadedDocumentChecker.value.isDocumentUploaded(
-      DocumentTargets.TARGET_PD2,
-      this.application.value?.createdAt ?? ""
+      DocumentTargets.TARGET_AMENDMENT_DESCRIPTION_PD2,
+      this.application.value?.paidAt ?? ""
     )
   }
 
-  // get isCONUploaded(): boolean {
-  //   return this.uploadedDocumentChecker.value.isDocumentUploaded(
-  //     DocumentTargets.TARGET_AMENDMENT_DESCRIPTION_SECTION28,
-  //     this.application.value?.createdAt ?? ""
-  //   )
-  // }
+  get pd2FileLabel(): string {
+    return this.uplaodedPD2?.documentName ?? "-"
+  }
+
+  get uplaodedPD2(): CompanyDocument | null {
+    if (!this.isPD2Uploaded) {
+      return null
+    }
+
+    let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_AMENDMENT_DESCRIPTION_PD2,
+      this.application.value?.paidAt ?? ""
+    )
+
+    return companyDocument ?? null
+  }
 }

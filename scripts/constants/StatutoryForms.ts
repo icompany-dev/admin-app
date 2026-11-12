@@ -72,4 +72,6 @@ export enum StatutoryFormKeywords {
   Constitution = "Constitution",
   SetFye = "Financial Year End",
   AppointNewDirector = "Section 58 - Appoint New Director, Section 58 - Appointment of New Director",
+  Pd2ChangeNature = "PD2 - Change of Business Nature, PD2 - Change Business Nature",
+  Pd2ChangeBranch = "PD2 - Change of Business Branch, PD2 - Add Business Branch",
 }

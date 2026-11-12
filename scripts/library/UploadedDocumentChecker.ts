@@ -85,6 +85,8 @@ export class UploadedDocumentChecker {
         return StatutoryFormKeywords.ChangeOfBranch
       case DocumentTargets.TARGET_AMENDMENT_BRANCH_RESOLUTIONS:
         return StatutoryFormKeywords.ChangeOfBranch
+      case DocumentTargets.TARGET_AMENDMENT_BRANCH_PD2:
+        return StatutoryFormKeywords.Pd2ChangeBranch
       case DocumentTargets.TARGET_AMENDMENT_CONSTITUTION:
         return StatutoryFormKeywords.Constitution
       case DocumentTargets.TARGET_AMENDMENT_CONSTITUTION_RESOLUTIONS:
@@ -93,6 +95,8 @@ export class UploadedDocumentChecker {
         return StatutoryFormKeywords.ChangeOfDescription
       case DocumentTargets.TARGET_AMENDMENT_DESCRIPTION_RESOLUTIONS:
         return StatutoryFormKeywords.ChangeOfDescription
+      case DocumentTargets.TARGET_AMENDMENT_DESCRIPTION_PD2:
+        return StatutoryFormKeywords.Pd2ChangeNature
       case DocumentTargets.TARGET_AMENDMENT_NAME:
         return StatutoryFormKeywords.ChangeOfName
       case DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS:

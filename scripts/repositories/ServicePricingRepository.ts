@@ -13,7 +13,7 @@ export class ServicePricingRepository extends Repository<ServicePricing> {
 
   async fetchDefault(serviceTarget: string): Promise<any> {
     try {
-      const response = this.get<any>(`${this.singleResourceUrl}/default?target=${serviceTarget}`)
+      const response = this.get<any>(`api/price/default?target=${serviceTarget}`)
       return response
     } catch (error) {
       throw error

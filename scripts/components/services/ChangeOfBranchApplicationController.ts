@@ -11,6 +11,7 @@ import { ObjectUtil } from "~/scripts/utils/Object"
 import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 
 export class ChangeOfBranchApplicationController extends ApplicationController<CompanyAmendmentBranch> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -150,7 +151,6 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
     this.isShowSection27.value = false
     this.isShowPD2.value = false
     this.isShowComplete.value = true
-    // this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_BRANCH_SECTION28)
   }
 
   onShowRegistrationActions(): void {
@@ -200,8 +200,26 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
     try {
       this.isCompleting.value = true
 
-      await this.application.value?.complete(useCompanyAmendmentBranchStore())
-      await this.fetchOngoing()
+      let targetId = this.application.value?.id ?? ""
+      let repository = useCompanyStore()
+      await repository.postService(CompanyConstants.TARGET_AMENDMENT_BRANCH, targetId)
+
+      if (repository.error !== null) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Permohonan telah Selesai. Cawangan Perniagaan telah dikemaskini."
+        : "Application is Completed. The Business Branch is updated."
+      let toastMessage = this.language.isMalay()
+        ? "Pengarah telah diberitahu melalui emel dan WhatsApp."
+        : "Directors are notified via Email and WhatsApp."
+
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      let router = useRouter()
+      router.push({ path: `/services/change-business-branch` })
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -281,23 +299,27 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
   }
 
   get isRegistrationOfBranchSubmitted(): boolean {
-    return this.application.value?.status === StatusConstants.SUBMITTED
+    return this.application.value?.status === StatusConstants.SUBMITTED || this.isPD2Uploaded
   }
 
   get registrationOfBranchChangeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(
-      this.isApprovalReceived,
-      this.isRegistrationOfBranchSubmitted,
-      this.isShowPD2.value
-    )
+    return new PropsServiceApplicationNode(this.hasPaid, this.isRegistrationOfBranchSubmitted, this.isShowPD2.value)
   }
 
   get completeApplicationProps(): PropsServiceApplicationNode {
-    let props = new PropsServiceApplicationNode(false, false, this.isShowComplete.value)
+    let props = new PropsServiceApplicationNode(
+      this.isRegistrationOfBranchSubmitted,
+      this.isApplicationCompleted,
+      this.isShowComplete.value
+    )
 
     props.isLastNode = true
 
     return props
+  }
+
+  get isApplicationCompleted(): boolean {
+    return this.application.value?.status === StatusConstants.CONVERTED
   }
 
   get pd2Label(): string {
@@ -363,5 +385,30 @@ export class ChangeOfBranchApplicationController extends ApplicationController<C
 
   get completeActionLabel(): string {
     return this.language.isMalay() ? "Selesai" : "Complete"
+  }
+
+  // document checkers
+  get isPD2Uploaded(): boolean {
+    return this.uploadedDocumentChecker.value.isDocumentUploaded(
+      DocumentTargets.TARGET_AMENDMENT_BRANCH_PD2,
+      this.application.value?.paidAt ?? ""
+    )
+  }
+
+  get pd2FileLabel(): string {
+    return this.uplaodedPD2?.documentName ?? "-"
+  }
+
+  get uplaodedPD2(): CompanyDocument | null {
+    if (!this.isPD2Uploaded) {
+      return null
+    }
+
+    let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
+      DocumentTargets.TARGET_AMENDMENT_BRANCH_PD2,
+      this.application.value?.paidAt ?? ""
+    )
+
+    return companyDocument ?? null
   }
 }
