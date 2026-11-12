@@ -437,8 +437,6 @@ export class ApplicationController {
     this.resetAllDocumentValues()
     this.isShowSection27.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
-
-    console.log("this step called?")
   }
 
   onNameReservationStepClicked(name: string): void {
@@ -446,8 +444,6 @@ export class ApplicationController {
     this.isShowSection27.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
     this.selectedNameReservationApplication.value = name
-
-    console.log("step called?")
   }
 
   isSelectingNameReservationFor(name: string): boolean {
