@@ -41,15 +41,13 @@
                         placeholder="Name"
                       />
                     </Transition>
-                    <div class="form-check">
-                      <input
-                        type="checkbox"
-                        class="form-check-input"
-                        v-model="controller.isCustomPricing.value"
-                        @change="controller.onSetCustomPricingChanged()"
-                      />
-                      <span>Customize Pricing</span>
-                    </div>
+                    <button
+                      class="btn invert"
+                      :class="!controller.isCustomPricing.value ? 'btn-submit' : 'btn-primary'"
+                      @click="controller.onEditPricingClicked()"
+                    >
+                      {{ controller.editLabel }}
+                    </button>
                   </div>
                   <div class="service-pricing-details">
                     <div class="service-pricing-detail">

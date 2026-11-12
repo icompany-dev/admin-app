@@ -114,7 +114,9 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.searchText.value = searchText
   }
 
-  onSetCustomPricingChanged(): void {
+  onEditPricingClicked(): void {
+    this.isCustomPricing.value = !this.isCustomPricing.value
+
     if (!StringUtil.isNullOrEmpty(this.selectedPricingId.value)) {
       this.newServicePricing.value = new ServicePricing(this.selectedServicePricing.value)
       this.newServicePricing.value.isCustom = true
@@ -460,5 +462,13 @@ export class SendPaymentNoticeController extends BasePopupController {
     }
 
     return NumberUtil.currency(this.cartTotal)
+  }
+
+  get editLabel(): string {
+    if (this.language.isMalay()) {
+      return this.isCustomPricing.value ? "Batal" : "Kemas Kini"
+    }
+
+    return this.isCustomPricing.value ? "Cancel Edit" : "Edit"
   }
 }
