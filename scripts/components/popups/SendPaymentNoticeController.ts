@@ -42,6 +42,8 @@ export class SendPaymentNoticeController extends BasePopupController {
 
   isShowDrawer: Ref<boolean> = ref<boolean>(false)
 
+  discountAmount: Ref<number> = ref<number>(0)
+
   constructor(props: PropsSendPaymentNotice, emitEvents: any) {
     super(emitEvents)
 
@@ -371,6 +373,7 @@ export class SendPaymentNoticeController extends BasePopupController {
     let item = new PaymentCartItem()
     item.targetType = this.target.value
     item.targetId = this.targetId.value
+    item.discountAmount = this.discountAmount.value
 
     if (this.isCustomPricing.value) {
       item.servicePricingId = this.newServicePricing.value.id

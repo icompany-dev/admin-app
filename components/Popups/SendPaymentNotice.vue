@@ -207,6 +207,17 @@
                         </div>
                       </div>
                     </template>
+                    <div class="service-pricing-detail discount-row">
+                      <div class="label">Discount</div>
+                      <div class="price">
+                        <input
+                          type="number"
+                          class="form-control"
+                          v-model="controller.discountAmount.value"
+                          placeholder="Discount Amount"
+                        />
+                      </div>
+                    </div>
                     <div class="service-pricing-detail total-row">
                       <div class="label">Total</div>
                       <div class="price">
