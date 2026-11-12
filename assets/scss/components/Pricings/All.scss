@@ -1,3 +1,55 @@
 #pricings-all {
-  // Styles go here
+  margin-top: 50px;
+
+  .pricings {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    .pricing {
+      width: calc(100% - 20px);
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      transition: all 0.5s ease;
+
+      .name-price {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+
+        .service-name {
+          font-size: 1.5rem;
+          font-weight: 600;
+          line-height: 1.8rem;
+          cursor: pointer;
+        }
+
+        .service-price {
+          font-size: 1.1rem;
+          font-weight: 600;
+          line-height: 1.3rem;
+        }
+      }
+
+      .action-buttons {
+        justify-content: flex-start;
+      }
+
+      &:hover {
+        width: calc(100% - 40px);
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+    }
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id="age-control-panel-pricings">
+  <div id="page-control-panel-pricings">
     <div class="page-header">
       <BreadCrumb v-bind="pageController.breadCrumbProps" />
       <TableFilters
@@ -29,5 +29,5 @@
 </script>
 
 <style lang="scss">
-  @use "~/assets/scss/pages/control-panels/Pricings" as *;
+  @use "~/assets/scss/pages/ControlPanels/Pricings" as *;
 </style>
