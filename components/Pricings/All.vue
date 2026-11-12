@@ -28,6 +28,10 @@
           </div>
         </div>
       </div>
+      <TablePagination
+        v-bind="controller.tablePaginationProps"
+        @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
+      />
     </div>
   </div>
 </template>
@@ -35,6 +39,7 @@
 <script lang="ts" setup>
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
+  import TablePagination from "~/components/Paginations/TablePagination.vue"
   import { AllController } from "~/scripts/components/pricings/AllController"
   import { NumberUtil } from "~/scripts/utils/Number"
 
