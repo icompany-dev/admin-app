@@ -50,10 +50,30 @@
                   />
                 </div>
                 <div class="email-content">
-                  <textarea
-                    class="form-control"
-                    v-model="controller.adminEmail.value.content"
-                  />
+                  <div class="company-logo">
+                    <img
+                      src="https://icompany-public.s3.ap-southeast-1.amazonaws.com/public/landing-res/logos/icompany_long.png"
+                    />
+                  </div>
+                  <div class="email-content-input">
+                    <textarea
+                      class="form-control"
+                      v-model="controller.adminEmail.value.content"
+                    />
+                  </div>
+                  <div class="email-sign-off">
+                    <b>Best wishes,</b>
+                    <br />
+                    iCompany Malaysia
+                  </div>
+                  <div class="email-footer">
+                    This is a system-generated email from iCompany Systems.
+                    <br />
+                    All actions are initiated by the authorised User (Director, Shareholder, or Corporate
+                    Representative, where applicable) under
+                    <br />
+                    the Companies Act 2016.
+                  </div>
                 </div>
               </div>
               <div class="drawer-footer">
