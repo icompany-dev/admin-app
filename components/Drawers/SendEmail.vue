@@ -92,6 +92,25 @@
                     multiple="true"
                     @change="controller.handleFileSelected($event)"
                   />
+                  <div
+                    class="selected-files"
+                    v-if="controller.files.value.length > 0"
+                  >
+                    <div
+                      class="selected-file"
+                      v-for="(file, i) in controller.files.value"
+                    >
+                      <i
+                        class="fa-solid fa-circle-xmark remove"
+                        @click="controller.removeAttachment(i)"
+                      />
+                      <i
+                        class="fa-regular document-icon"
+                        :class="file.type !== 'application/pdf' ? 'fa-image' : 'fa-file-pdf'"
+                      />
+                      <div class="filename">{{ file.name }}</div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="drawer-footer">

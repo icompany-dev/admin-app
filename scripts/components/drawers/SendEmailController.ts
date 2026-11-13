@@ -160,6 +160,10 @@ export class SendEmailController extends BaseDrawerController {
     }
   }
 
+  removeAttachment(index: number): void {
+    this.files.value.splice(index, 1)
+  }
+
   // recipients
   onRecipientCommaKey(event: KeyboardEvent): void {
     if (event.key !== ",") {

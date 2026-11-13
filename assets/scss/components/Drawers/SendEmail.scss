@@ -176,6 +176,50 @@
               }
             }
           }
+
+          .selected-files {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+
+            .selected-file {
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              align-items: center;
+              gap: 5px;
+              position: relative;
+              background-color: var(--bs-gray-200);
+              border: solid 2px var(--bs-gray-500);
+              padding: 5px;
+              max-width: 200px;
+
+              .remove {
+                color: var(--bs-danger);
+                cursor: pointer;
+                font-size: 20px;
+                top: -5px;
+                right: -10px;
+                position: absolute;
+              }
+
+              .document-icon {
+                font-size: 24px;
+                opacity: 0.8;
+              }
+
+              .filename {
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-wrap: nowrap;
+              }
+            }
+          }
         }
 
         .hidden {
