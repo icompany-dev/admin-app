@@ -46,7 +46,19 @@ export class AdminEmail {
   }
 
   canSubmit(): boolean {
-    return this.recipients.length > 0 && !StringUtil.isNullOrEmpty(this.subject)
+    if (this.fileAttachments.length > 0) {
+      let canSubmit = this.fileAttachments.every((d: EmailAttachment) => {
+        return d.canSubmit()
+      })
+
+      if (!canSubmit) {
+        return false
+      }
+    }
+
+    return (
+      this.recipients.length > 0 && !StringUtil.isNullOrEmpty(this.subject) && !StringUtil.isNullOrEmpty(this.content)
+    )
   }
 
   async sendEmail(repository: ReturnType<typeof useAdminEmailStore>): Promise<void> {

@@ -151,6 +151,13 @@
               >
                 {{ controller.paymentOrder }}
               </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
+                @click="controller.onSendEmailClicked()"
+              >
+                Send Email
+              </button>
             </div>
           </div>
         </div>
@@ -279,6 +286,10 @@
         ref="sendPaymentNoticeRef"
         v-bind="controller.sendPaymentNoticeProps"
       />
+      <SendEmail
+        ref="sendEmailRef"
+        v-bind="controller.sendEmailProps"
+      />
     </template>
   </div>
 </template>
@@ -302,6 +313,7 @@
   import Section236Three from "../QuickGenerate/Section236Three.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
+  import SendEmail from "../Drawers/SendEmail.vue"
   import SendPaymentNotice from "../Popups/SendPaymentNotice.vue"
   import FinancialStatementSubmissions from "@/components/FinancialStatements/Submissions.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
@@ -324,6 +336,7 @@
   const section236ThreeRef = ref(null)
   const letterCosecResignRef = ref(null)
   const appointCosecRef = ref(null)
+  const sendEmailRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -410,6 +423,14 @@
     appointCosecRef,
     (newVal) => {
       controller.setAppointCosecRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    sendEmailRef,
+    (newVal) => {
+      controller.setSendEmailRef(newVal)
     },
     { immediate: true }
   )

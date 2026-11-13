@@ -38,5 +38,25 @@
       font-size: 1.2rem;
       font-weight: 600;
     }
+
+    .drawer-content {
+      height: calc(100% - 150px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: stretch;
+
+      .drawer-footer {
+        padding-top: 50px;
+
+        .cta {
+          width: 100%;
+          text-align: center;
+          margin-bottom: 10px;
+          font-size: 1.5rem;
+          font-weight: 600;
+        }
+      }
+    }
   }
 }

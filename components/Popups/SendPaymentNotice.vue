@@ -4,6 +4,7 @@
       <div
         class="drawer drawer-payment-notice"
         :class="{ show: controller.isShowDrawer.value }"
+        @click.self="controller.hide()"
       >
         <Transition name="slide-left-leave-right">
           <div

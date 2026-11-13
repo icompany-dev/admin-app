@@ -32,7 +32,7 @@ export class AwsFileUploader {
       const response = await this.s3Client.send(command)
       return true
     } catch (e: any) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForUploadFileToAws()
       errorMessage.handle()
       return false

@@ -9,6 +9,7 @@ import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturn
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
+import { PropsSendEmail } from "~/scripts/props/PropsSendEmail"
 import { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNotice"
 import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
@@ -56,6 +57,7 @@ export class SelectedSdnBhdController {
   section236ThreeRef: any | null = null
   letterCosecResignRef: any | null = null
   appointCosecRef: any | null = null
+  sendEmailRef: any | null = null
 
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
@@ -119,6 +121,10 @@ export class SelectedSdnBhdController {
 
   setAppointCosecRef(appointCosecRef: any): void {
     this.appointCosecRef = appointCosecRef
+  }
+
+  setSendEmailRef(sendEmailRef: any): void {
+    this.sendEmailRef = sendEmailRef
   }
 
   async fetchCompany(): Promise<void> {
@@ -485,6 +491,13 @@ export class SelectedSdnBhdController {
     }
   }
 
+  onSendEmailClicked(): void {
+    this.isShowOptions.value = false
+    if (this.sendEmailRef) {
+      this.sendEmailRef.show()
+    }
+  }
+
   get companyName(): string {
     let companyName = this.company.value.getFullName()
     companyName = companyName.replace("SDN BHD", "SDN. BHD.")
@@ -715,5 +728,9 @@ export class SelectedSdnBhdController {
 
   get subscriptionStatus(): string {
     return this.company.value.subscriptionStatus()
+  }
+
+  get sendEmailProps(): PropsSendEmail {
+    return new PropsSendEmail([], "", "", [])
   }
 }
