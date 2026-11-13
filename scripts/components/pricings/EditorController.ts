@@ -276,7 +276,13 @@ export class EditorController {
         ? "Kemas Kini"
         : "Edit"
 
-    return this.language.isMalay() ? `${action} Harga` : `${action} Pricing`
+    let serviceName = StringUtil.isNullOrEmpty(this.servicePricing.value.serviceName)
+      ? this.language.isMalay()
+        ? "Harga"
+        : "Pricing"
+      : this.servicePricing.value.serviceName
+
+    return `${action} ${serviceName}`
   }
 
   get proceedLabel(): string {

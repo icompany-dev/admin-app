@@ -56,6 +56,14 @@
           border: solid 1px var(--bs-gray-500);
           border-radius: 5px;
           margin-bottom: 5px;
+
+          .dropdown-menu {
+            border: solid 1px var(--bs-gray-500) !important;
+
+            .form-control {
+              width: calc(100% - 20px) !important;
+            }
+          }
         }
 
         .service-pricing {
