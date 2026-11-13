@@ -120,6 +120,14 @@ export class AllController {
     }
   }
 
+  addNewPricing(): void {
+    this.servicePricingForEditor.value = new ServicePricing()
+
+    if (this.editorRef) {
+      this.editorRef.show()
+    }
+  }
+
   async onPricingUpdated(): Promise<void> {
     await this.tableDataFetcher.value.fetchData()
   }

@@ -7,5 +7,25 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
+    .items {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .add-icon {
+      font-size: 30px;
+      opacity: 0.5;
+      transition: all 0.7s ease;
+      cursor: pointer;
+      color: var(--bs-icompany-purple);
+
+      &:hover {
+        opacity: 1;
+      }
+    }
   }
 }

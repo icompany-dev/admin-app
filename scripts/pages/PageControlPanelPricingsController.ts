@@ -6,11 +6,17 @@ export class PageControlPanelPricingsController extends PageController {
   searchText: Ref<string> = ref<string>("")
   sortOrder: Ref<string> = ref<string>("asc")
 
+  allRef: any | null = null
+
   constructor() {
     let title: string = "Pricings Control - iCompany Malaysia"
     let description: string = "Manage Pricings"
 
     super(title, description, "Pricings")
+  }
+
+  setAllRef(allRef: any): void {
+    this.allRef = allRef
   }
 
   onSearchInput(searchInput: string): void {
@@ -21,6 +27,12 @@ export class PageControlPanelPricingsController extends PageController {
     if (data.orderColumn === this.sortOrderLabel) {
       this.sortOrder.value = data.sortOrder ? "desc" : "asc"
       return
+    }
+  }
+
+  onAddNewClicked(): void {
+    if (this.allRef) {
+      this.allRef.addNewPricing()
     }
   }
 

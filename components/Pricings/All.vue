@@ -79,6 +79,7 @@
       <Editor
         v-bind="controller.editorProps"
         ref="editorRef"
+        @updated="controller.onPricingUpdated()"
       />
     </div>
   </div>
@@ -130,6 +131,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    addNewPricing: controller.addNewPricing.bind(controller),
+  })
 </script>
 
 <style lang="scss">

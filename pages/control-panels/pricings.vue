@@ -2,14 +2,23 @@
   <div id="page-control-panel-pricings">
     <div class="page-header">
       <BreadCrumb v-bind="pageController.breadCrumbProps" />
-      <TableFilters
-        v-bind="pageController.tableFilterProps"
-        @search="pageController.onSearchInput($event)"
-        @order="pageController.onSortOrderChanged($event)"
-        @clearSearch="pageController.onSearchInput('')"
-      />
+      <div class="items">
+        <TableFilters
+          v-bind="pageController.tableFilterProps"
+          @search="pageController.onSearchInput($event)"
+          @order="pageController.onSortOrderChanged($event)"
+          @clearSearch="pageController.onSearchInput('')"
+        />
+        <div
+          class="add-icon"
+          @click="pageController.onAddNewClicked()"
+        >
+          <i class="fa-solid fa-circle-plus" />
+        </div>
+      </div>
     </div>
     <All
+      ref="allRef"
       :search-text="pageController.searchText.value"
       :sort-order="pageController.sortOrder.value"
     />
@@ -23,9 +32,20 @@
   import { PageControlPanelPricingsController } from "~/scripts/pages/PageControlPanelPricingsController"
 
   const props = defineProps({})
+
   const emit = defineEmits([])
 
+  const allRef = ref(null)
+
   const pageController = new PageControlPanelPricingsController()
+
+  watch(
+    allRef,
+    (newVal) => {
+      pageController.setAllRef(newVal)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style lang="scss">
