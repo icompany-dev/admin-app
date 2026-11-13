@@ -78,7 +78,7 @@
             gap: 10px;
 
             .label {
-              width: 70%;
+              width: 60%;
               text-transform: none;
 
               .form-control {
@@ -90,6 +90,7 @@
               display: inline-block;
               margin-left: 5px;
               cursor: pointer;
+              width: 18%;
 
               &.remove {
                 color: var(--bs-danger);
@@ -116,23 +117,38 @@
               }
             }
 
-            &.discount-row {
+            &.total-row {
               border-top: 1px solid var(--bs-gray-500);
               padding-top: 5px;
 
               .label {
                 text-transform: uppercase;
+                font-weight: 600;
                 text-align: right;
+                width: 80%;
               }
             }
 
-            &.total-row {
+            &.other-requirement {
+              width: calc(100% - 200px);
+
               .label {
-                text-transform: uppercase;
-                font-weight: 600;
-                text-align: right;
+                width: calc(60% + 120px);
+              }
+
+              .clickable {
+                width: fit-content;
+              }
+
+              &.last-child {
+                padding-bottom: 10px;
               }
             }
+          }
+
+          .other-requirement-title {
+            font-weight: 600;
+            padding-top: 20px;
           }
 
           .divider {

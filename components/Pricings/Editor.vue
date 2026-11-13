@@ -83,6 +83,42 @@
                       Add Existing Service
                     </button>
                   </div>
+                  <div class="other-requirement-title">Other Requirements (Optional)</div>
+                  <div
+                    class="service-pricing-detail other-requirement"
+                    :class="{ 'last-child': index === controller.servicePricing.value.optionals.length - 1 }"
+                    v-for="(optional, index) in controller.servicePricing.value.optionals"
+                  >
+                    <div class="label">
+                      <SearchableDropdown
+                        :options="controller.getOptionalPricingOptions(index)"
+                        :selectedItemName="controller.getSelectedOptionalItemName(optional)"
+                        :placeholder="'Select One'"
+                        :labelKey="'label'"
+                        :valueKey="'value'"
+                        :isSearchable="true"
+                        @search="controller.onSeearchOptional($event, index)"
+                        @selected="controller.onOptionalPricingSelected($event, index)"
+                      />
+                    </div>
+                    <span
+                      class="clickable remove"
+                      @click="controller.removeOptional(optional, index)"
+                    >
+                      <i class="fa-regular fa-trash-alt"></i>
+                    </span>
+                    <div class="price">
+                      {{ controller.getOptionalBasePrice(optional) }}
+                    </div>
+                  </div>
+                  <div class="item-detail-button">
+                    <button
+                      class="btn btn-submit invert"
+                      @click="controller.addMandatory()"
+                    >
+                      Add Other Requirements
+                    </button>
+                  </div>
                   <div class="service-pricing-detail config-row">
                     <div class="label">Cosec Service Fee</div>
                     <div class="price">
@@ -114,6 +150,12 @@
                         v-model="controller.servicePricing.value.config.handlingFees"
                         @change="controller.onHandlingFeesChanged()"
                       />
+                    </div>
+                  </div>
+                  <div class="service-pricing-detail total-row">
+                    <div class="label">Total</div>
+                    <div class="price">
+                      {{ controller.pricingTotal }}
                     </div>
                   </div>
                 </div>

@@ -200,6 +200,13 @@ export class EditorController {
     this.servicePricing.value.optionals[index].optionalServicePrice = new ServicePricing(servicePricing)
   }
 
+  getOptionalBasePrice(optional: ServicePricingOptional): string {
+    let price =
+      Number(optional.optionalServicePrice.baseGrandTotal) + Number(optional.optionalServicePrice.config.handlingFees)
+
+    return NumberUtil.currency(price)
+  }
+
   onCosecServiceFeeChanged(): void {
     this.servicePricing.value.config.cosecServiceFee = Number(this.servicePricing.value.config.cosecServiceFee)
     if (this.servicePricing.value.config.cosecServiceFee < 0) {
@@ -236,6 +243,8 @@ export class EditorController {
 
     try {
       this.isSubmitting.value = true
+
+      this.servicePricing.value.baseGrandTotal = this.baseGrandTotal
 
       let toastTitle = this.language.isMalay() ? "Harga baharu telah ditambah." : "New Pricing is added."
       if (StringUtil.isNullOrEmpty(this.servicePricing.value.id)) {
@@ -284,5 +293,27 @@ export class EditorController {
 
   get canProceed(): boolean {
     return this.servicePricing.value.canSubmit()
+  }
+
+  get baseGrandTotal(): number {
+    let totalBreakdowns = this.servicePricing.value.breakdowns.reduce((a, b) => {
+      return a + Number(b.price)
+    }, 0)
+    let totalMandatories = this.servicePricing.value.mandatoryServices.reduce((a, b) => {
+      return a + Number(b.basePrice)
+    }, 0)
+    let baseGrandTotal =
+      totalBreakdowns +
+      totalMandatories +
+      Number(this.servicePricing.value.config.cosecServiceFee) +
+      Number(this.servicePricing.value.config.digitalServiceFee)
+
+    return baseGrandTotal
+  }
+
+  get pricingTotal(): string {
+    let total = this.baseGrandTotal + Number(this.servicePricing.value.config.handlingFees)
+
+    return NumberUtil.currency(total)
   }
 }
