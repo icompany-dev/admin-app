@@ -92,8 +92,10 @@
         }
 
         .email-content {
+          margin-top: 10px;
+          margin-bottom: 10px;
           width: 100%;
-          max-width: 400px;
+          max-width: 600px;
           display: flex;
           flex-direction: column;
           justify-content: flex-start;
@@ -110,6 +112,11 @@
           .email-content-input {
             width: 100%;
             min-height: 300px;
+            max-height: 500px;
+
+            textarea {
+              max-height: 500px;
+            }
           }
 
           .email-sign-off {
@@ -124,46 +131,55 @@
           }
         }
 
-        .drop-zone {
-          width: calc(100% - 24px);
-          height: 200px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          gap: 10px;
-          border-radius: 5px;
-          border: 1px dashed var(--bs-icompany-purple);
-          transition: all 1s ease;
-          cursor: pointer;
+        .attachments {
+          width: 100%;
 
-          .icon {
-            font-size: 5rem;
-            color: var(--bs-icompany-purple);
-            opacity: 0.5;
+          .drop-zone {
+            margin-top: 20px;
+            width: calc(100% - 24px);
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border-radius: 5px;
+            border: 1px dashed var(--bs-icompany-purple);
             transition: all 1s ease;
-          }
-
-          &.drag-enter,
-          &:hover {
-            border-radius: 10px;
-            border-width: 3px;
-            border-color: var(--bs-icompany-purple-light);
+            cursor: pointer;
 
             .icon {
-              opacity: 1;
+              font-size: 5rem;
+              color: var(--bs-icompany-purple);
+              opacity: 0.5;
+              transition: all 1s ease;
+            }
+
+            &.drag-enter,
+            &:hover {
+              border-radius: 10px;
+              border-width: 3px;
+              border-color: var(--bs-icompany-purple-light);
+
+              .icon {
+                opacity: 1;
+              }
+            }
+
+            &.collapsed {
+              height: 50px;
+              flex-direction: row;
+              gap: 50px;
+
+              .icon {
+                font-size: 2rem;
+              }
             }
           }
+        }
 
-          &.collapsed {
-            height: 50px;
-            flex-direction: row;
-            gap: 50px;
-
-            .icon {
-              font-size: 2rem;
-            }
-          }
+        .hidden {
+          display: none;
         }
       }
     }

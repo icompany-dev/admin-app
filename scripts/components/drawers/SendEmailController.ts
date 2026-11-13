@@ -286,4 +286,14 @@ export class SendEmailController extends BaseDrawerController {
       return f.size <= this.maxSize
     })
   }
+
+  get anyFileAdded(): boolean {
+    return this.files.value.length > 0
+  }
+
+  get instructions(): string {
+    return this.language.isMalay()
+      ? "Letakkan fail anda di sini atau klik untuk layar."
+      : "Drop your files here or click to browse."
+  }
 }

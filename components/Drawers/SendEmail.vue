@@ -75,6 +75,24 @@
                     the Companies Act 2016.
                   </div>
                 </div>
+                <div class="attachments">
+                  <div
+                    ref="dropZoneRef"
+                    class="drop-zone"
+                    :class="{ collapsed: controller.anyFileAdded, 'drag-enter': controller.isDragEnter.value }"
+                    @click="controller.onUploadClicked()"
+                  >
+                    <i class="fa-regular fa-cloud-arrow-up icon"></i>
+                    <span v-html="controller.instructions" />
+                  </div>
+                  <input
+                    type="file"
+                    ref="fileInputRef"
+                    class="hidden"
+                    multiple="true"
+                    @change="controller.handleFileSelected($event)"
+                  />
+                </div>
               </div>
               <div class="drawer-footer">
                 <div class="cta">
@@ -113,6 +131,10 @@
 
   const emit = defineEmits([])
 
+  const dropZoneRef = ref(null)
+
+  const fileInputRef = ref(null)
+
   const controller = new SendEmailController(props, emit)
 
   watch(
@@ -121,6 +143,22 @@
       controller.setDataFromProps(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    dropZoneRef,
+    (newVal) => {
+      controller.setDropZoneRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    fileInputRef,
+    (newVal) => {
+      controller.setFileInputRef(newVal)
+    },
+    { immediate: true }
   )
 
   defineExpose({
