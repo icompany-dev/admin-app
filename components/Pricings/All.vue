@@ -68,7 +68,12 @@
             >
               View
             </button>
-            <button class="btn btn-danger btn-pill">Remove</button>
+            <button
+              class="btn btn-danger btn-pill"
+              @click="controller.onRemoveClicked(pricing)"
+            >
+              Remove
+            </button>
           </div>
         </div>
       </div>
@@ -81,11 +86,17 @@
         ref="editorRef"
         @updated="controller.onPricingUpdated()"
       />
+      <ConfirmToDelete
+        :remove-item-name="controller.itemToRemoveName"
+        ref="confirmToDeleteRef"
+        @proceed="controller.onProceedRemove()"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import Editor from "./Editor.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
@@ -107,6 +118,7 @@
   const emit = defineEmits([])
 
   const editorRef = ref(null)
+  const confirmToDeleteRef = ref(null)
 
   const controller = new AllController(emit)
 
@@ -128,6 +140,14 @@
     editorRef,
     (newVal) => {
       controller.setEditorRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
     },
     { immediate: true }
   )

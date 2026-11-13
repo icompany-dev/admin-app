@@ -1,4 +1,6 @@
+import { Error } from "~/scripts/library/Error"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
+import { Toast } from "~/scripts/library/Toast"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
 import type { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
 import type { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
@@ -19,8 +21,12 @@ export class AllController {
   language = useLanguage()
 
   servicePricingForEditor: Ref<ServicePricing> = ref<ServicePricing>(new ServicePricing())
+  servicePricingIdToRemove: Ref<string> = ref<string>("")
 
   editorRef: any | null = null
+  confirmToDeleteRef: any | null = null
+
+  isRemoving: Ref<boolean> = ref<boolean>(false)
 
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
@@ -46,6 +52,10 @@ export class AllController {
 
   setEditorRef(editorRef: any): void {
     this.editorRef = editorRef
+  }
+
+  setConfirmToDeleteRef(confirmToDeleteRef: any): void {
+    this.confirmToDeleteRef = confirmToDeleteRef
   }
 
   getGrandTotal(servicePricing: ServicePricing): string {
@@ -132,6 +142,47 @@ export class AllController {
     await this.tableDataFetcher.value.fetchData()
   }
 
+  onRemoveClicked(servicePricing: ServicePricing): void {
+    this.servicePricingIdToRemove.value = servicePricing.id
+
+    if (this.confirmToDeleteRef) {
+      this.confirmToDeleteRef.show()
+    }
+  }
+
+  async onProceedRemove(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.servicePricingIdToRemove.value) || this.isRemoving.value) {
+      return
+    }
+
+    try {
+      this.isRemoving.value = true
+
+      let repository = useServicePricingStore()
+      await repository.remove(this.servicePricingIdToRemove.value)
+
+      let toastTitle = this.language.isMalay() ? "Harga telah dipadamkan." : "The Pricing is removed."
+      let toastMessage = this.language.isMalay()
+        ? "Sila tunggu sebentar sementara kami muat semula senarai ini."
+        : "Please wait while we refresh the list."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+
+      this.tableDataFetcher.value.fetchData()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.servicePricingIdToRemove.value = ""
+      this.isRemoving.value = false
+    }
+  }
+
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
   }
@@ -172,5 +223,9 @@ export class AllController {
 
   get editorProps(): PropsServicePricingEditor {
     return new PropsServicePricingEditor(this.servicePricingForEditor.value)
+  }
+
+  get itemToRemoveName(): string {
+    return this.language.isMalay() ? "Harga" : "Pricing"
   }
 }

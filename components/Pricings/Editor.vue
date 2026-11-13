@@ -114,7 +114,7 @@
                   <div class="item-detail-button">
                     <button
                       class="btn btn-submit invert"
-                      @click="controller.addMandatory()"
+                      @click="controller.addOptional()"
                     >
                       Add Other Requirements
                     </button>

@@ -126,6 +126,13 @@ export class EditorController {
   }
 
   getSelectedMandatoryItemName(mandatoryPricing: ServicePricingMandatory): string {
+    if (
+      StringUtil.isNullOrEmpty(mandatoryPricing.mandatoryServiceId) ||
+      StringUtil.isNullOrEmpty(mandatoryPricing.mandatoryServicePrice.serviceName)
+    ) {
+      return this.language.isMalay() ? "Pilih Satu" : "Select One"
+    }
+
     return mandatoryPricing.mandatoryServicePrice.serviceName
   }
 
@@ -184,6 +191,13 @@ export class EditorController {
   }
 
   getSelectedOptionalItemName(optionalPricing: ServicePricingOptional): string {
+    if (
+      StringUtil.isNullOrEmpty(optionalPricing.optionalServiceId) ||
+      StringUtil.isNullOrEmpty(optionalPricing.optionalServicePrice.serviceName)
+    ) {
+      return this.language.isMalay() ? "Pilih Satu" : "Select One"
+    }
+
     return optionalPricing.optionalServicePrice.serviceName
   }
 
