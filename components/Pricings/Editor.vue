@@ -152,6 +152,81 @@
                       />
                     </div>
                   </div>
+                  <div class="ctc-method-title">CTC Request Configurations</div>
+                  <div class="service-pricing-detail ctc-options">
+                    <div class="label">
+                      <div class="form-check">
+                        <input
+                          type="checkbox"
+                          class="form-check"
+                          v-model="controller.servicePricing.value.ctcConfig.isCosecAvailablePerPage"
+                        />
+                        Cosec CTC (per page)
+                      </div>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.ctcConfig.cosecPerPagePrice"
+                        :disabled="!controller.servicePricing.value.ctcConfig.isCosecAvailablePerPage"
+                      />
+                    </div>
+                  </div>
+                  <div class="service-pricing-detail ctc-options">
+                    <div class="label">
+                      <div class="form-check">
+                        <input
+                          type="checkbox"
+                          class="form-check"
+                          v-model="controller.servicePricing.value.ctcConfig.isSsmAvailablePerApplication"
+                        />
+                        Enable SSM CTC (per application)
+                      </div>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.ctcConfig.ssmPerApplicationPrice"
+                        :disabled="!controller.servicePricing.value.ctcConfig.isSsmAvailablePerApplication"
+                      />
+                    </div>
+                  </div>
+                  <div class="delivery-method-title">Delivery Methods</div>
+                  <div class="service-pricing-detail delivery-options">
+                    <div class="label">
+                      <div class="form-check">
+                        <input
+                          type="checkbox"
+                          class="form-check"
+                          v-model="controller.servicePricing.value.deliveryConfig.canThirdPartyDeliveryPartner"
+                        />
+                        Allow Reverse Pickup (Lalamove / Grab)
+                      </div>
+                      <div class="price"></div>
+                    </div>
+                  </div>
+                  <div class="service-pricing-detail delivery-options">
+                    <div class="label">
+                      <div class="form-check">
+                        <input
+                          type="checkbox"
+                          class="form-check"
+                          v-model="controller.servicePricing.value.deliveryConfig.canCourier"
+                        />
+                        Enable Delivery via Courier (PosLoaju)
+                      </div>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.deliveryConfig.courierPrice"
+                        :disabled="!controller.servicePricing.value.deliveryConfig.canCourier"
+                      />
+                    </div>
+                  </div>
                   <div class="service-pricing-detail total-row">
                     <div class="label">Total</div>
                     <div class="price">
