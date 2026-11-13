@@ -1,3 +1,4 @@
+import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
 
 export class AdminEmail {
@@ -46,6 +47,22 @@ export class AdminEmail {
 
   canSubmit(): boolean {
     return this.recipients.length > 0 && !StringUtil.isNullOrEmpty(this.subject)
+  }
+
+  async sendEmail(repository: ReturnType<typeof useAdminEmailStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error = new Error()
+      error.setForIncompleteData()
+      error.message = "Ensure that there is at least one recipient, the Subject and Content cannot be empty."
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    await repository.sendEmail(data)
+
+    if (repository.error !== null) {
+      throw repository.error
+    }
   }
 }
 

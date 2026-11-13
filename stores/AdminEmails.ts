@@ -43,5 +43,6 @@ export const useAdminEmailStore = defineStore("adminEmail", () => {
     error,
     totalAdminEmails,
     // ...crudActions
+    sendEmail,
   }
 })
