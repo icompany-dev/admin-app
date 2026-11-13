@@ -126,6 +126,10 @@ export class EditorController {
   }
 
   getSelectedMandatoryItemName(mandatoryPricing: ServicePricingMandatory): string {
+    if (this.isFetchingPricings.value) {
+      return "Loading..."
+    }
+
     if (
       StringUtil.isNullOrEmpty(mandatoryPricing.mandatoryServiceId) ||
       StringUtil.isNullOrEmpty(mandatoryPricing.mandatoryServicePrice.serviceName)
@@ -191,6 +195,10 @@ export class EditorController {
   }
 
   getSelectedOptionalItemName(optionalPricing: ServicePricingOptional): string {
+    if (this.isFetchingPricings.value) {
+      return "Loading..."
+    }
+
     if (
       StringUtil.isNullOrEmpty(optionalPricing.optionalServiceId) ||
       StringUtil.isNullOrEmpty(optionalPricing.optionalServicePrice.serviceName)
