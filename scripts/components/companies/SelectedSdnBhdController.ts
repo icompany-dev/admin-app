@@ -695,10 +695,10 @@ export class SelectedSdnBhdController {
 
   get sendPaymentNoticeProps(): PropsSendPaymentNotice {
     return new PropsSendPaymentNotice(
-      "Company",
+      "company",
       this.company.value.id,
       this.company.value.getFullName(),
-      "Company",
+      "company",
       this.company.value.id,
       this.company.value.billingInfo(),
       this.company.value.deliveryInfo()
