@@ -114,8 +114,8 @@
             min-height: 300px;
             max-height: 500px;
 
-            textarea {
-              max-height: 500px;
+            .quill-editor {
+              height: calc(100% - 50px);
             }
           }
 

@@ -111,6 +111,9 @@ export default defineNuxtConfig({
 
   vite: {
     devBundler: "legacy", // This bypasses the buggy IPC socket path
+    optimizeDeps: {
+      include: ["quill"],
+    },
   },
 
   devServer: {

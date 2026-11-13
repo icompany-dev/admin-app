@@ -164,6 +164,10 @@ export class SendEmailController extends BaseDrawerController {
     this.files.value.splice(index, 1)
   }
 
+  updateEditorContent(rawHtml: string): void {
+    this.adminEmail.value.content = rawHtml //need to clean before submit
+  }
+
   // recipients
   onRecipientCommaKey(event: KeyboardEvent): void {
     if (event.key !== ",") {
@@ -217,7 +221,7 @@ export class SendEmailController extends BaseDrawerController {
         let fileAttachment = new EmailAttachment()
         fileAttachment.url = uploadedFile.url
         fileAttachment.fileName = f.name
-        fileAttachment.mimeType = uploadedFile.mimeType
+        fileAttachment.mimeType = f.type
         fileAttachments.push(fileAttachment)
       })
     })
@@ -239,6 +243,8 @@ export class SendEmailController extends BaseDrawerController {
 
       if (this.files.value.length > 0) {
         await this.prepareAttachments()
+
+        console.log("attachments", this.adminEmail.value.fileAttachments)
       }
 
       if (!this.canProceed) {
@@ -265,6 +271,7 @@ export class SendEmailController extends BaseDrawerController {
 
       this.hide()
     } catch (e) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {

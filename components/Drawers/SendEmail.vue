@@ -56,10 +56,13 @@
                     />
                   </div>
                   <div class="email-content-input">
-                    <textarea
+                    <div class="quill-editor">
+                      <div ref="editorNode"></div>
+                    </div>
+                    <!-- <textarea
                       class="form-control"
                       v-model="controller.adminEmail.value.content"
-                    />
+                    /> -->
                   </div>
                   <div class="email-sign-off">
                     <b>Best wishes,</b>
@@ -143,8 +146,11 @@
 </template>
 
 <script lang="ts" setup>
+  import "quill/dist/quill.snow.css"
+  import type Quill from "quill"
   import { SendEmailController } from "~/scripts/components/drawers/SendEmailController"
   import type { IPropsSendEmail } from "~/scripts/props/PropsSendEmail"
+  import { StringUtil } from "~/scripts/utils/String"
 
   const props = defineProps<IPropsSendEmail>()
 
@@ -179,6 +185,85 @@
     },
     { immediate: true }
   )
+
+  //Quill Editor has to be placed here
+  const editorNode = ref<HTMLElement | null>(null)
+  let quillInstance: Quill | null = null
+  const customFontSizes = ["12px", "14px", "16px", "18px", "24px", "32px", "48px"]
+  const customFonts = ["Arial", "Georgia", "Courier-New", "Times-New-Roman"]
+
+  const initQuill = async (el: HTMLElement) => {
+    if (quillInstance) return
+
+    const [{ default: QuillClass }] = await Promise.all([import("quill")])
+
+    const SizeStyle = QuillClass.import("attributors/style/size") as any
+    SizeStyle.whitelist = customFontSizes
+    QuillClass.register(SizeStyle, true)
+
+    const FontStyle = QuillClass.import("attributors/style/font") as any
+    FontStyle.whitelist = customFonts.map((f: string) => f.toLowerCase().replace(/ /g, "-"))
+    QuillClass.register(FontStyle, true)
+
+    quillInstance = new QuillClass(el, {
+      theme: "snow",
+      placeholder: "Content of your email here...",
+      modules: {
+        table: false,
+        toolbar: [
+          [{ header: [1, 2, 3, false] }],
+          ["bold", "italic", "underline"],
+          [{ list: "ordered" }, { list: "bullet" }],
+          [{ indent: "-1" }, { indent: "+1" }],
+          [{ script: "sub" }, { script: "super" }],
+          [{ align: [] }],
+        ],
+        keyboard: {
+          bindings: {
+            shiftEnter: {
+              key: "Enter",
+              shiftKey: true,
+              handler: (range: { index: number; length: number }) => {
+                if (quillInstance) {
+                  quillInstance.insertEmbed(range.index, "softbreak", true, "user")
+                  quillInstance.setSelection(range.index + 1, "silent")
+                }
+                return false
+              },
+            },
+          },
+        },
+      },
+    })
+
+    if (StringUtil.isNullOrEmpty(controller.adminEmail.value.content)) {
+      quillInstance.root.innerHTML = ""
+    } else {
+      quillInstance.root.innerHTML = controller.adminEmail.value.content
+    }
+
+    quillInstance.on("text-change", () => {
+      if (!quillInstance) return
+
+      const tableModule = quillInstance.getModule("table-better") as any
+      if (tableModule) {
+        tableModule.hideTools()
+      }
+
+      const rawHTML = quillInstance.getSemanticHTML?.() || quillInstance.root.innerHTML
+      controller.updateEditorContent(rawHTML)
+    })
+  }
+
+  watch(editorNode, async (newEl) => {
+    if (newEl) {
+      await initQuill(newEl)
+    } else if (quillInstance) {
+      // Clean up when v-if destroys the DOM node on drawer close
+      quillInstance.off("text-change")
+      quillInstance = null
+    }
+  })
 
   defineExpose({
     show: controller.show.bind(controller),
