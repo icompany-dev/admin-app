@@ -3,6 +3,7 @@ import { ServicePricing } from "~/scripts/models/ServicePricing"
 import type { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
 import type { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
 import type { ServicePricingOptional } from "~/scripts/models/ServicePricingOptional"
+import { PropsServicePricingEditor } from "~/scripts/props/PropsServicePricingEditor"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
 import { PricingDetail } from "~/scripts/types/pricings/PricingDetail"
 import { NumberUtil } from "~/scripts/utils/Number"
@@ -16,6 +17,10 @@ export class AllController {
   emitEvents: any | null = null
 
   language = useLanguage()
+
+  servicePricingForEditor: Ref<ServicePricing> = ref<ServicePricing>(new ServicePricing())
+
+  editorRef: any | null = null
 
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
@@ -37,6 +42,10 @@ export class AllController {
   async setSortOrder(sortOrder: string): Promise<void> {
     this.tableDataFetcher.value.filter.sortOrder = sortOrder
     await this.tableDataFetcher.value.fetchData()
+  }
+
+  setEditorRef(editorRef: any): void {
+    this.editorRef = editorRef
   }
 
   getGrandTotal(servicePricing: ServicePricing): string {
@@ -103,6 +112,18 @@ export class AllController {
     )
   }
 
+  onViewClicked(servicePricing: ServicePricing): void {
+    this.servicePricingForEditor.value = new ServicePricing(servicePricing)
+
+    if (this.editorRef) {
+      this.editorRef.show()
+    }
+  }
+
+  async onPricingUpdated(): Promise<void> {
+    await this.tableDataFetcher.value.fetchData()
+  }
+
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
   }
@@ -139,5 +160,9 @@ export class AllController {
 
   get grandTotalLabel(): string {
     return this.language.isMalay() ? "Jumlah Keseluruhan" : "Grand Total"
+  }
+
+  get editorProps(): PropsServicePricingEditor {
+    return new PropsServicePricingEditor(this.servicePricingForEditor.value)
   }
 }

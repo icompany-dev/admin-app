@@ -66,6 +66,54 @@ export const useServicePricingStore = defineStore("servicePricing", () => {
     }
   }
 
+  async function removeBreakdown(breakdownId: string): Promise<ServicePricing | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.servicePricings.removeBreakdown(breakdownId)
+      return response.data ?? null
+    } catch (e: any) {
+      error.value = e.message || `Failed to fetch price for target`
+      console.error(`Error to fetch price for target`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function removeMandatory(mandatoryId: string): Promise<ServicePricing | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.servicePricings.removeMandatory(mandatoryId)
+      return response.data ?? null
+    } catch (e: any) {
+      error.value = e.message || `Failed to fetch price for target`
+      console.error(`Error to fetch price for target`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function removeOptional(optionalId: string): Promise<ServicePricing | null> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response: any = await $repositories.servicePricings.removeOptional(optionalId)
+      return response.data ?? null
+    } catch (e: any) {
+      error.value = e.message || `Failed to fetch price for target`
+      console.error(`Error to fetch price for target`, e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalServicePricings = computed(() => servicePricings.value.length)
 
   return {
@@ -78,5 +126,8 @@ export const useServicePricingStore = defineStore("servicePricing", () => {
     fetchDefault,
     fetchByName,
     fetchForTarget,
+    removeBreakdown,
+    removeMandatory,
+    removeOptional,
   }
 })

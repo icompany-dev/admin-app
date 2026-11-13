@@ -62,7 +62,12 @@
             </div>
           </div>
           <div class="action-buttons">
-            <button class="btn btn-submit btn-pill">View</button>
+            <button
+              class="btn btn-submit btn-pill"
+              @click="controller.onViewClicked(pricing)"
+            >
+              View
+            </button>
             <button class="btn btn-danger btn-pill">Remove</button>
           </div>
         </div>
@@ -71,11 +76,16 @@
         v-bind="controller.tablePaginationProps"
         @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
       />
+      <Editor
+        v-bind="controller.editorProps"
+        ref="editorRef"
+      />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import Editor from "./Editor.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
@@ -95,6 +105,8 @@
 
   const emit = defineEmits([])
 
+  const editorRef = ref(null)
+
   const controller = new AllController(emit)
 
   watch(
@@ -109,6 +121,14 @@
     (newVal) => {
       controller.setSortOrder(newVal)
     }
+  )
+
+  watch(
+    editorRef,
+    (newVal) => {
+      controller.setEditorRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

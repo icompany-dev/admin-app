@@ -22,7 +22,7 @@ export class ServicePricingRepository extends Repository<ServicePricing> {
 
   async fetchByName(serviceName: string): Promise<any> {
     try {
-      const response = this.get<any>(`${this.singleResourceUrl}/by-name?service_name=${serviceName}`)
+      const response = this.get<any>(`api/price/by-name?service_name=${serviceName}`)
       return response
     } catch (error) {
       throw error
@@ -31,7 +31,34 @@ export class ServicePricingRepository extends Repository<ServicePricing> {
 
   async fetchForTarget(targetType: string, targetId: string): Promise<any> {
     try {
-      const response = this.get<any>(`${this.singleResourceUrl}/for-target?target=${targetType}&target_id=${targetId}`)
+      const response = this.get<any>(`api/price/for-target?target=${targetType}&target_id=${targetId}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async removeBreakdown(breakdownId: string): Promise<any> {
+    try {
+      const response = this.post<any>(`${this.singleResourceUrl}/breakdown/delete/${breakdownId}`, {})
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async removeMandatory(mandatoryId: string): Promise<any> {
+    try {
+      const response = this.post<any>(`${this.singleResourceUrl}/mandatory/delete/${mandatoryId}`, {})
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async removeOptional(optionalId: string): Promise<any> {
+    try {
+      const response = this.post<any>(`${this.singleResourceUrl}/optional/delete/${optionalId}`, {})
       return response
     } catch (error) {
       throw error
