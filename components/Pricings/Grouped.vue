@@ -22,51 +22,62 @@
                   />
                 </div>
                 <div class="group-items">
+                  <div class="group-item">
+                    <div class="remove"></div>
+                    <div class="name"><b>Items</b></div>
+                    <div class="price"><b>RM</b></div>
+                  </div>
                   <div
                     class="group-item"
                     v-for="(labelItem, x) in controller.existingLabelItems.value"
                   >
-                    <div class="name">
-                      {{ controller.getServicePricingName(labelItem) }}
-                    </div>
-                    <div class="price">
-                      {{ controller.getServicePricingPrice(labelItem) }}
-                    </div>
                     <div class="remove">
                       <span
-                        class="clickable remove"
+                        class="clickable"
                         @click="controller.onRemoveLabelItem(labelItem)"
                       >
                         <i class="fa-regular fa-trash-alt" />
                       </span>
                     </div>
-                  </div>
-                  <div
-                    class="group-item"
-                    v-for="(newLabelItem, i) in controller.labelItems.value"
-                  >
                     <div class="name">
-                      <SearchableDropdown
-                        :options="controller.getPricingOptions(i)"
-                        :selected-item-name="controller.getSelectedServicePricingName(i)"
-                        :label-key="'label'"
-                        :value-key="'value'"
-                        @selected="controller.onSelectedPricingId($event, i)"
-                        @search="controller.onSearch($event, i)"
+                      <Pricing
+                        :service-pricing="controller.getServicePricing(labelItem)"
+                        :is-show-service-name="true"
                       />
                     </div>
                     <div class="price">
-                      {{ controller.getSelectedServicePricingPrice(i) }}
-                    </div>
-                    <div class="remove">
-                      <span
-                        class="clickable remove"
-                        @click="controller.onRemoveFromAddToTheme(i)"
-                      >
-                        <i class="fa-regular fa-trash-alt" />
-                      </span>
+                      {{ controller.getServicePricingPrice(labelItem) }}
                     </div>
                   </div>
+                  <template v-for="(newLabelItem, i) in controller.labelItems.value">
+                    <div class="group-item">
+                      <div class="remove">
+                        <span
+                          class="clickable"
+                          @click="controller.onRemoveFromAddToTheme(i)"
+                        >
+                          <i class="fa-regular fa-trash-alt" />
+                        </span>
+                      </div>
+                      <div class="name">
+                        <SearchableDropdown
+                          :options="controller.getPricingOptions(i)"
+                          :selected-item-name="controller.getSelectedServicePricingName(i)"
+                          :label-key="'label'"
+                          :value-key="'value'"
+                          @selected="controller.onSelectedPricingId($event, i)"
+                          @search="controller.onSearch($event, i)"
+                        />
+
+                        <template v-if="controller.getSelectedPricingFor(i)">
+                          <Pricing v-bind="controller.getPropsPricingFor(i)" />
+                        </template>
+                      </div>
+                      <div class="price">
+                        {{ controller.getSelectedServicePricingPrice(i) }}
+                      </div>
+                    </div>
+                  </template>
                 </div>
                 <div class="add-items">
                   <button
@@ -74,6 +85,12 @@
                     @click="controller.onAddPricingClicked()"
                   >
                     + Add Item
+                  </button>
+                  <button
+                    class="btn btn-submit invert"
+                    @click="controller.onAddNew()"
+                  >
+                    Create New Pricing
                   </button>
                 </div>
               </div>
@@ -113,13 +130,14 @@
 
 <script lang="ts" setup>
   import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
+  import Pricing from "./Pricing.vue"
   import SearchableDropdown from "../Forms/SearchableDropdown.vue"
   import { GroupedController } from "~/scripts/components/pricings/GroupedController"
   import type { IPropsGroupedServicePricing } from "~/scripts/props/PropsGroupedServicePricing"
 
   const props = defineProps<IPropsGroupedServicePricing>()
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["add-pricing", "hide", "labelUpdated"])
 
   const confirmToDeleteRef = ref(null)
 

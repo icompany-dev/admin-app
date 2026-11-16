@@ -132,6 +132,7 @@ export class AllController {
             return
           }
 
+          this.labels.value.push(d)
           this.labelAndPricings.value[d.id] = items
         })
       })
@@ -234,8 +235,26 @@ export class AllController {
     }
   }
 
-  async onPricingUpdated(): Promise<void> {
-    await this.tableDataFetcher.value.fetchData()
+  async onPricingUpdated(newServicePricing: ServicePricing): Promise<void> {
+    if (this.isAddingItemsToLabel.value) {
+      if (this.groupedThemeRef) {
+        this.groupedThemeRef.show()
+      }
+    }
+
+    this.tableDataFetcher.value.data.push(newServicePricing)
+    // NOTE: We skip fetch to speed up process
+    // await this.tableDataFetcher.value.fetchData()
+  }
+
+  onLabelUpdated(label: Label): void {
+    this.labels.value.forEach((l: Label) => {
+      if (l.id !== label.id) {
+        return
+      }
+
+      l.name = label.name
+    })
   }
 
   onRemoveClicked(servicePricing: ServicePricing): void {
@@ -369,7 +388,7 @@ export class AllController {
 
   onAddPricingClicked(label: Label): void {
     this.labelToAddItemsTo.value = new Label(label)
-
+    this.isAddingItemsToLabel.value = true
     if (this.groupedThemeRef) {
       this.groupedThemeRef.show()
     }

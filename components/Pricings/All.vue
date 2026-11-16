@@ -19,7 +19,7 @@
           <div class="label-title">
             {{ label.name }}
           </div>
-          <Transition name="fade">
+          <!-- <Transition name="fade">
             <div
               class="expanded-details"
               v-if="controller.isLabelExpanded(label)"
@@ -47,7 +47,7 @@
                 + Add Pricing
               </div>
             </div>
-          </Transition>
+          </Transition> -->
           <div class="action-buttons">
             <button
               class="btn btn-danger"
@@ -56,11 +56,17 @@
               Remove
             </button>
             <button
+              class="btn btn-submit"
+              @click="controller.onAddPricingClicked(label)"
+            >
+              Add Items
+            </button>
+            <!-- <button
               class="btn btn-primary"
               @click="controller.onLabelClicked(label)"
             >
               {{ controller.isLabelExpanded(label) ? "Hide" : "Show" }} Details
-            </button>
+            </button> -->
           </div>
         </div>
         <div
@@ -174,7 +180,7 @@
       <Editor
         v-bind="controller.editorProps"
         ref="editorRef"
-        @updated="controller.onPricingUpdated()"
+        @updated="controller.onPricingUpdated($event)"
       />
       <ConfirmToDelete
         :remove-item-name="controller.itemToRemoveName"
@@ -189,6 +195,9 @@
       <Grouped
         ref="groupedThemeRef"
         v-bind="controller.groupedServicePricingProps"
+        @add-pricing="controller.addNewPricing()"
+        @hide="controller.onCancelAddPricingClicked()"
+        @label-updated="controller.onLabelUpdated($event)"
       />
     </div>
   </div>

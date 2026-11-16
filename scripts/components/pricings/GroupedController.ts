@@ -4,6 +4,7 @@ import { Label } from "~/scripts/models/Label"
 import { LabelItem } from "~/scripts/models/LabelItem"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
 import type { PropsGroupedServicePricing } from "~/scripts/props/PropsGroupedServicePricing"
+import { PropsPricing } from "~/scripts/props/PropsPricing"
 import { SelectOption } from "~/scripts/types/SelectOption"
 import { NumberUtil } from "~/scripts/utils/Number"
 import { StringUtil } from "~/scripts/utils/String"
@@ -37,7 +38,9 @@ export class GroupedController {
 
   setDataFromProps(props: PropsGroupedServicePricing): void {
     this.label.value = new Label(props.label)
-
+    this.existingLabelItems.value = props.labelItems.map((li: LabelItem) => {
+      return new LabelItem(li)
+    })
     this.allServicePricings.value = props.allPricings.map((sp: ServicePricing) => {
       return new ServicePricing(sp)
     })
@@ -62,6 +65,13 @@ export class GroupedController {
     this.isSubmittingNewItemsToLabel.value = false
 
     this.isShowing.value = false
+
+    this.emitEvents("hide")
+  }
+
+  onAddNew(): void {
+    this.hide()
+    this.emitEvents("add-pricing")
   }
 
   onCancelClicked(): void {
@@ -75,6 +85,8 @@ export class GroupedController {
 
     try {
       this.isSubmittingNewItemsToLabel.value = true
+
+      await this.label.value.update(useLabelStore())
 
       let promises = this.labelItems.value.map((li: LabelItem) => {
         return li.addItem(useLabelStore())
@@ -91,11 +103,14 @@ export class GroupedController {
         toastTitle = this.language.isMalay() ? "Item ditambah ke Tema." : `The ${itemsString} added to the Theme.`
         toastMessage = this.language.isMalay() ? "" : ""
       } else {
-        toastTitle = this.language.isMalay() ? "Tiada perubahan yang dilakukan," : "No Changes were made."
+        toastTitle = this.language.isMalay() ? "Maklumat telah dikemaskini." : "Your changes is recorded."
       }
 
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
+
+      this.emitEvents("labelUpdated", this.label.value)
+
       this.hide()
     } catch (e) {
       if (e instanceof Error) {
@@ -115,7 +130,7 @@ export class GroupedController {
     newItem.label = new Label(this.label.value)
     newItem.labelId = this.label.value.id
     newItem.targetType = "service_pricing"
-    this.labelItems.value.push(new LabelItem())
+    this.labelItems.value.push(newItem)
     this.searchTexts.value.push("")
   }
 
@@ -181,6 +196,26 @@ export class GroupedController {
     }
 
     return NumberUtil.currency(Number(servicePricing.baseGrandTotal) + Number(servicePricing.config.handlingFees))
+  }
+
+  getSelectedPricingFor(index: number): ServicePricing | null {
+    let labelItem = this.labelItems.value[index] ?? null
+    if (!labelItem || StringUtil.isNullOrEmpty(labelItem.targetId)) {
+      return null
+    }
+
+    let servicePricing =
+      this.allServicePricings.value.find((sp: ServicePricing) => {
+        return sp.id === labelItem.targetId
+      }) ?? null
+
+    return servicePricing
+  }
+
+  getPropsPricingFor(index: number): PropsPricing {
+    let servicePricing = this.getSelectedPricingFor(index)
+
+    return new PropsPricing(servicePricing ?? new ServicePricing(), false)
   }
 
   onRemoveLabelItem(labelItem: LabelItem): void {
@@ -259,7 +294,7 @@ export class GroupedController {
   }
 
   get heading(): string {
-    return this.language.isMalay() ? `Item di dalam ${this.label.value.name}` : `Items in ${this.label.value.name}`
+    return this.label.value.name
   }
 
   get cta(): string {
