@@ -124,8 +124,8 @@ export class DcrResignationAndCessationOfCosecController {
   }
 
   get resolutionProps(): PropsResolution {
-    const maxSignatureOnFirstPage = 2
-    const maxSignatureOnOtherPages = 4
+    const maxSignatureOnFirstPage = 4
+    const maxSignatureOnOtherPages = 6
 
     const signatureCount = this.signatureItems.value.length
 
