@@ -8,15 +8,18 @@ import { ServicePricing } from "~/scripts/models/ServicePricing"
 import type { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
 import type { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
 import type { ServicePricingOptional } from "~/scripts/models/ServicePricingOptional"
+import { PropsGroupedServicePricing } from "~/scripts/props/PropsGroupedServicePricing"
 import { PropsServicePricingEditor } from "~/scripts/props/PropsServicePricingEditor"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
+import { SelectOption } from "~/scripts/types/SelectOption"
 import { PricingDetail } from "~/scripts/types/pricings/PricingDetail"
 import { NumberUtil } from "~/scripts/utils/Number"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class AllController {
   labels: Ref<Label[]> = ref<Label[]>([])
-  labelAndPricings: Ref<Record<string, ServicePricing[]>> = ref<Record<string, ServicePricing[]>>({})
+  labelAndItems: Ref<Record<string, LabelItem[]>> = ref<Record<string, LabelItem[]>>({})
+  labelAndPricings: Ref<Record<string, LabelItem[]>> = ref<Record<string, LabelItem[]>>({})
 
   tableDataFetcher = ref<TableDataFetcher<ServicePricing>>(
     new TableDataFetcher(ServicePricing, useServicePricingStore())
@@ -32,6 +35,7 @@ export class AllController {
   editorRef: any | null = null
   confirmToDeleteRef: any | null = null
   confirmToDeleteLabelRef: any | null = null
+  groupedThemeRef: any | null = null
 
   isFetchingLabels: Ref<boolean> = ref<boolean>(false)
   isRemoving: Ref<boolean> = ref<boolean>(false)
@@ -42,6 +46,12 @@ export class AllController {
   isSubmittingNewLabel: Ref<boolean> = ref<boolean>(false)
   newLabel: Ref<Label> = ref<Label>(new Label())
   labelToDelete: Ref<Label> = ref<Label>(new Label())
+
+  //new label items
+  labelToAddItemsTo: Ref<Label> = ref<Label>(new Label())
+  isAddingItemsToLabel: Ref<boolean> = ref<boolean>(false)
+  labelItems: Ref<LabelItem[]> = ref<LabelItem[]>([])
+  isSubmittingNewItemsToLabel: Ref<boolean> = ref<boolean>(false)
 
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
@@ -77,6 +87,10 @@ export class AllController {
 
   setConfirmToDeleteLabelRef(confirmToDeleteLabelRef: any): void {
     this.confirmToDeleteLabelRef = confirmToDeleteLabelRef
+  }
+
+  setGroupedThemeRef(groupedThemeRef: any): void {
+    this.groupedThemeRef = groupedThemeRef
   }
 
   async fetchLabels(): Promise<void> {
@@ -131,7 +145,13 @@ export class AllController {
   }
 
   getPricingsUnderLabel(label: Label): ServicePricing[] {
-    return this.labelAndPricings.value[label.id] ?? []
+    let labelItems = this.labelAndPricings.value[label.id] ?? []
+
+    return this.tableDataFetcher.value.data.filter((sp: ServicePricing) => {
+      return labelItems.some((li: LabelItem) => {
+        return li.targetId === sp.id
+      })
+    })
   }
 
   getGrandTotal(servicePricing: ServicePricing): string {
@@ -343,6 +363,97 @@ export class AllController {
     return this.selectedLabelIdToExpand.value === label.id
   }
 
+  isAddingPricing(label: Label): boolean {
+    return this.labelToAddItemsTo.value.id === label.id
+  }
+
+  onAddPricingClicked(label: Label): void {
+    this.labelToAddItemsTo.value = new Label(label)
+
+    if (this.groupedThemeRef) {
+      this.groupedThemeRef.show()
+    }
+    // if (!this.isAddingItemsToLabel.value || this.labelToAddItemsTo.value.id !== label.id) {
+    //   this.labelToAddItemsTo.value = new Label(label)
+    //   this.labelItems.value = []
+    //   this.isAddingItemsToLabel.value = true
+    //   this.isSubmittingNewItemsToLabel.value = false
+    // }
+
+    // this.labelItems.value.push(new LabelItem())
+  }
+
+  onCancelAddPricingClicked(): void {
+    this.labelToAddItemsTo.value = new Label()
+    this.labelItems.value = []
+    this.isAddingItemsToLabel.value = false
+    this.isSubmittingNewItemsToLabel.value = false
+  }
+
+  onSelectedServicePricingForLabelItem(selectedServicePricingId: string, index: number): void {
+    let labelItem = this.labelItems.value[index] ?? null
+    if (!labelItem) {
+      return
+    }
+
+    let servicePricing = this.tableDataFetcher.value.data.find((sp: ServicePricing) => {
+      return sp.id === selectedServicePricingId
+    })
+
+    if (!servicePricing) {
+      return
+    }
+
+    labelItem.labelId = this.labelToAddItemsTo.value.id
+    labelItem.targetType = "service_pricing"
+    labelItem.targetId = servicePricing.id
+  }
+
+  onRemoveServicePricingFromLabelItem(index: number): void {
+    this.labelItems.value.splice(index, 1)
+  }
+
+  getSelectedPricingNameForLabelItem(index: number): string {
+    let labelItem = this.labelItems.value[index] ?? null
+    if (!labelItem) {
+      return "Select One"
+    }
+
+    let servicePricing = this.tableDataFetcher.value.data.find((sp: ServicePricing) => {
+      return sp.id === labelItem.targetId
+    })
+
+    return servicePricing?.serviceName ?? "Select Name"
+  }
+
+  getSelectedPricingPriceForLabelItem(index: number): string {
+    let labelItem = this.labelItems.value[index] ?? null
+    if (!labelItem) {
+      return "0.00"
+    }
+
+    let servicePricing =
+      this.tableDataFetcher.value.data.find((sp: ServicePricing) => {
+        return sp.id === labelItem.targetId
+      }) ?? null
+
+    if (!servicePricing) {
+      return "0.00"
+    }
+
+    return NumberUtil.currency(Number(servicePricing.baseGrandTotal) + Number(servicePricing.config.handlingFees))
+  }
+
+  onRemoveLabelItem(): void {
+    // need confirm delete
+  }
+
+  get servicePricingOptions(): SelectOption[] {
+    return this.tableDataFetcher.value.data.map((sp: ServicePricing) => {
+      return new SelectOption(sp.id, sp.id, sp.serviceName)
+    })
+  }
+
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
   }
@@ -395,5 +506,11 @@ export class AllController {
 
   get isRetrievingData(): boolean {
     return this.isFetchingLabels.value || this.tableDataFetcher.value.isLoading
+  }
+
+  get groupedServicePricingProps(): PropsGroupedServicePricing {
+    let labelItems = this.labelAndPricings.value[this.labelToAddItemsTo.value.id] ?? []
+
+    return new PropsGroupedServicePricing(this.labelToAddItemsTo.value, labelItems, this.tableDataFetcher.value.data)
   }
 }

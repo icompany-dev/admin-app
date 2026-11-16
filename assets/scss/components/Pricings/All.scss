@@ -7,6 +7,7 @@
     justify-content: flex-start;
     align-items: stretch;
     gap: 20px;
+    width: 100%;
 
     .pricing {
       width: calc(100% - 20px);
@@ -66,12 +67,24 @@
             text-wrap: nowrap;
           }
 
+          .searchable-dropdown {
+            width: 60%;
+          }
+
           .price {
             text-align: right;
           }
 
           &.optional {
             width: 80%;
+          }
+
+          .form-control {
+            width: 60%;
+          }
+
+          &:has(.searchable-dropdown) {
+            align-items: centers;
           }
         }
 
@@ -109,11 +122,23 @@
         justify-content: flex-start;
       }
 
-      &:hover {
-        width: calc(100% - 40px);
-        padding: 20px;
-        background-color: rgba(255, 255, 255, 0.3);
+      // &:hover {
+      //   width: calc(100% - 40px);
+      //   padding: 20px;
+      //   background-color: rgba(255, 255, 255, 0.3);
+      // }
+    }
+  }
+
+  #forms-searchable-dropdown {
+    .dropdown-menu {
+      &.show {
+        z-index: 99 !important;
       }
+    }
+
+    .label {
+      padding: 5px;
     }
   }
 

@@ -24,20 +24,28 @@
               class="expanded-details"
               v-if="controller.isLabelExpanded(label)"
             >
-              <div class="pricings">
-                <div
-                  class="pricing"
-                  v-for="(price, i) in controller.getPricingsUnderLabel(label)"
-                >
+              <div
+                class="pricings"
+                v-if="controller.getPricingsUnderLabel(label).length > 0"
+              >
+                <div class="pricing">
                   <div class="service-price-details">
-                    <div class="service-price-detail">
+                    <div
+                      class="service-price-detail"
+                      v-for="(price, i) in controller.getPricingsUnderLabel(label)"
+                    >
                       <div class="item">{{ price.serviceName }}</div>
                       <div class="price">{{ price.serviceName }}</div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="add-to-theme">+ Add Pricing</div>
+              <div
+                class="add-to-theme"
+                @click="controller.onAddPricingClicked(label)"
+              >
+                + Add Pricing
+              </div>
             </div>
           </Transition>
           <div class="action-buttons">
@@ -178,6 +186,10 @@
         ref="confirmToDeleteLabelRef"
         @proceed="controller.onProceedRemoveLabel()"
       />
+      <Grouped
+        ref="groupedThemeRef"
+        v-bind="controller.groupedServicePricingProps"
+      />
     </div>
   </div>
 </template>
@@ -185,8 +197,10 @@
 <script lang="ts" setup>
   import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import Editor from "./Editor.vue"
+  import Grouped from "./Grouped.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
+  import SearchableDropdown from "../Forms/SearchableDropdown.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
   import { AllController } from "~/scripts/components/pricings/AllController"
   import { NumberUtil } from "~/scripts/utils/Number"
@@ -207,6 +221,7 @@
   const editorRef = ref(null)
   const confirmToDeleteRef = ref(null)
   const confirmToDeleteLabelRef = ref(null)
+  const groupedThemeRef = ref(null)
 
   const controller = new AllController(emit)
 
@@ -244,6 +259,14 @@
     confirmToDeleteLabelRef,
     (newVal) => {
       controller.setConfirmToDeleteLabelRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    groupedThemeRef,
+    (newVal) => {
+      controller.setGroupedThemeRef(newVal)
     },
     { immediate: true }
   )
