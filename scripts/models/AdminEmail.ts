@@ -6,6 +6,7 @@ export class AdminEmail {
   subject: string = ""
   content: string = ""
   fileAttachments: EmailAttachment[] = []
+  signOff: string = "<b>Best Wishes</b><br>iCompany Team"
 
   constructor(data: any | null = null) {
     //
@@ -21,6 +22,7 @@ export class AdminEmail {
             return new EmailAttachment(d)
           })
         : []
+    this.signOff = data.sign_off ?? ""
   }
 
   clone(data: AdminEmail): void {
@@ -30,6 +32,7 @@ export class AdminEmail {
     this.fileAttachments = data.fileAttachments.map((d: any) => {
       return new EmailAttachment(d)
     })
+    this.signOff = data.signOff
   }
 
   getRequestBody(): object {
@@ -40,6 +43,7 @@ export class AdminEmail {
       file_details: this.fileAttachments.map((d: EmailAttachment) => {
         return d.getRequestBody()
       }),
+      sign_off: this.signOff,
     }
 
     return data
