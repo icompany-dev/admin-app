@@ -2024,11 +2024,11 @@ export class ApplicationController {
   }
 
   get submittedNameReservationLabel(): string {
-    return this.language.isMalay() ? "Nama yang Ditempah" : "Reserved Name"
+    return this.language.isMalay() ? "Kelulusan Tempahan Nama" : "Approval of Name Reservation"
   }
 
   get submittedNameReservationSublabel(): string {
-    return this.language.isMalay() ? "Nama Terkini yang Ditempah di SSM" : "Latest Name Reserved with SSM"
+    return this.language.isMalay() ? "Status Tempahan Nama di SSM" : "Status of Name Reserved with SSM"
   }
 
   get submittedNameReservationDetails(): string {
