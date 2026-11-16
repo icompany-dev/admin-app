@@ -307,6 +307,7 @@ export class ApplicationController {
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
     this.isShowSection27.value = false
+    this.isShowNameReservation.value = false
     this.isShowRegistration.value = false
     this.isShowCompletion.value = false
 
