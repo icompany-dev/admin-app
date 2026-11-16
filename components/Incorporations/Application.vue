@@ -165,12 +165,14 @@
               @click="controller.onNameReservationDetailStepClicked()"
             >
               <template #nodeContent>
-                <div class="node-title">{{ controller.submittedNameReservationLabel }}</div>
-                <div class="node-subtitle">{{ controller.submittedNameReservationSublabel }}</div>
-                <div
-                  class="application-details"
-                  v-html="controller.submittedNameReservationDetails"
-                />
+                <div class="application-container">
+                  <div class="node-title">{{ controller.submittedNameReservationLabel }}</div>
+                  <div class="node-subtitle">{{ controller.submittedNameReservationSublabel }}</div>
+                  <div
+                    class="application-details"
+                    v-html="controller.submittedNameReservationDetails"
+                  />
+                </div>
               </template>
               <template #nodeOptions></template>
               <template #nodeActions>
