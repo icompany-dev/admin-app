@@ -1,3 +1,4 @@
+import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
 
 export class Label {
@@ -51,5 +52,48 @@ export class Label {
 
   canSubmit(): boolean {
     return !StringUtil.isNullOrEmpty(this.name)
+  }
+
+  async create(repository: ReturnType<typeof useLabelStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let response = await repository.create(this.getRequestBody())
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.clone(response)
+  }
+
+  async update(repository: ReturnType<typeof useLabelStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id) || !this.canSubmit()) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let response = await repository.update(this.id, this.getRequestBody())
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.clone(response)
+  }
+
+  async remove(repository: ReturnType<typeof useLabelStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let response = await repository.remove(this.id)
+    if (repository.error !== null) {
+      throw repository.error
+    }
   }
 }

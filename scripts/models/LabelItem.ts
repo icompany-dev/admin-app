@@ -1,5 +1,6 @@
 import { StringUtil } from "../utils/String"
 import { Label } from "./Label"
+import { Error } from "../library/Error"
 
 export class LabelItem {
   id: string = ""
@@ -65,5 +66,29 @@ export class LabelItem {
       !StringUtil.isNullOrEmpty(this.targetId) &&
       !StringUtil.isNullOrEmpty(this.label.name)
     )
+  }
+
+  async addItem(repository: ReturnType<typeof useLabelStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    let response = await repository.addItem(data)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async deleteItem(repository: ReturnType<typeof useLabelStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      return
+    }
+
+    await repository.deleteItem(this.id)
   }
 }
