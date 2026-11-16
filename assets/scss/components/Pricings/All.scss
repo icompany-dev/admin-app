@@ -150,6 +150,10 @@
         }
       }
 
+      .action-buttons {
+        justify-content: flex-start;
+      }
+
       &.empty {
         border: 1px dashed var(--bs-gray-600);
         cursor: pointer;

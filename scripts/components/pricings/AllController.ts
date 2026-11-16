@@ -31,6 +31,7 @@ export class AllController {
 
   editorRef: any | null = null
   confirmToDeleteRef: any | null = null
+  confirmToDeleteLabelRef: any | null = null
 
   isFetchingLabels: Ref<boolean> = ref<boolean>(false)
   isRemoving: Ref<boolean> = ref<boolean>(false)
@@ -40,6 +41,7 @@ export class AllController {
   isAddingNewLabel: Ref<boolean> = ref<boolean>(false)
   isSubmittingNewLabel: Ref<boolean> = ref<boolean>(false)
   newLabel: Ref<Label> = ref<Label>(new Label())
+  labelToDelete: Ref<Label> = ref<Label>(new Label())
 
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
@@ -71,6 +73,10 @@ export class AllController {
 
   setConfirmToDeleteRef(confirmToDeleteRef: any): void {
     this.confirmToDeleteRef = confirmToDeleteRef
+  }
+
+  setConfirmToDeleteLabelRef(confirmToDeleteLabelRef: any): void {
+    this.confirmToDeleteLabelRef = confirmToDeleteLabelRef
   }
 
   async fetchLabels(): Promise<void> {
@@ -122,6 +128,10 @@ export class AllController {
     } finally {
       this.isFetchingLabels.value = false
     }
+  }
+
+  getPricingsUnderLabel(label: Label): ServicePricing[] {
+    return this.labelAndPricings.value[label.id] ?? []
   }
 
   getGrandTotal(servicePricing: ServicePricing): string {
@@ -277,6 +287,9 @@ export class AllController {
         : "You can add items to the Theme."
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
+
+      this.isAddingNewLabel.value = false
+      this.newLabel.value = new Label()
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -290,7 +303,39 @@ export class AllController {
     }
   }
 
+  onRemoveLabel(label: Label): void {
+    this.labelToDelete.value = new Label(label)
+
+    if (this.confirmToDeleteLabelRef) {
+      this.confirmToDeleteLabelRef.show()
+    }
+  }
+
+  async onProceedRemoveLabel(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.labelToDelete.value.id)) {
+      return
+    }
+
+    try {
+      this.labels.value = this.labels.value.filter((l: Label) => {
+        return l.id !== this.labelToDelete.value.id
+      })
+
+      await this.labelToDelete.value.remove(useLabelStore())
+
+      let toastTitle = this.language.isMalay() ? "Tema telah dipadamkan." : "The Theme is removed."
+      let toastMessage = this.language.isMalay() ? "" : ""
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {}
+  }
+
   onLabelClicked(label: Label): void {
+    if (this.isLabelExpanded(label)) {
+      this.selectedLabelIdToExpand.value = ""
+      return
+    }
+
     this.selectedLabelIdToExpand.value = label.id
   }
 
@@ -342,6 +387,10 @@ export class AllController {
 
   get itemToRemoveName(): string {
     return this.language.isMalay() ? "Harga" : "Pricing"
+  }
+
+  get itemToRemoveLabelName(): string {
+    return this.language.isMalay() ? "Tema" : "Theme"
   }
 
   get isRetrievingData(): boolean {

@@ -15,7 +15,6 @@
         <div
           class="label"
           v-for="(label, i) in controller.labels.value"
-          @click="controller.onLabelClicked(label)"
         >
           <div class="label-title">
             {{ label.name }}
@@ -25,9 +24,36 @@
               class="expanded-details"
               v-if="controller.isLabelExpanded(label)"
             >
-              // Items in the label
+              <div class="pricings">
+                <div
+                  class="pricing"
+                  v-for="(price, i) in controller.getPricingsUnderLabel(label)"
+                >
+                  <div class="service-price-details">
+                    <div class="service-price-detail">
+                      <div class="item">{{ price.serviceName }}</div>
+                      <div class="price">{{ price.serviceName }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="add-to-theme">+ Add Pricing</div>
             </div>
           </Transition>
+          <div class="action-buttons">
+            <button
+              class="btn btn-danger"
+              @click="controller.onRemoveLabel(label)"
+            >
+              Remove
+            </button>
+            <button
+              class="btn btn-primary"
+              @click="controller.onLabelClicked(label)"
+            >
+              {{ controller.isLabelExpanded(label) ? "Hide" : "Show" }} Details
+            </button>
+          </div>
         </div>
         <div
           class="label empty"
@@ -35,7 +61,12 @@
           @click.self="controller.onAddNewLabelClicked()"
         >
           <div class="label-title">
-            <span v-if="!controller.isAddingNewLabel.value">+ Create New Theme</span>
+            <span
+              v-if="!controller.isAddingNewLabel.value"
+              @click="controller.onAddNewLabelClicked()"
+            >
+              + Create New Theme
+            </span>
             <template v-if="controller.isAddingNewLabel.value">
               <span>New Theme :</span>
               <input
@@ -142,6 +173,11 @@
         ref="confirmToDeleteRef"
         @proceed="controller.onProceedRemove()"
       />
+      <ConfirmToDelete
+        :remove-item-name="controller.itemToRemoveLabelName"
+        ref="confirmToDeleteLabelRef"
+        @proceed="controller.onProceedRemoveLabel()"
+      />
     </div>
   </div>
 </template>
@@ -170,6 +206,7 @@
 
   const editorRef = ref(null)
   const confirmToDeleteRef = ref(null)
+  const confirmToDeleteLabelRef = ref(null)
 
   const controller = new AllController(emit)
 
@@ -199,6 +236,14 @@
     confirmToDeleteRef,
     (newVal) => {
       controller.setConfirmToDeleteRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    confirmToDeleteLabelRef,
+    (newVal) => {
+      controller.setConfirmToDeleteLabelRef(newVal)
     },
     { immediate: true }
   )
