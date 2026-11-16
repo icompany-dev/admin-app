@@ -116,4 +116,68 @@
       }
     }
   }
+
+  .labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    .label {
+      width: calc(100% - 40px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+      padding: 20px;
+      border-radius: 10px;
+      transition: all 0.5s ease;
+
+      &:hover {
+        width: calc(100% - 40px);
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .label-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+
+        span {
+          font-size: 1.2rem;
+        }
+      }
+
+      &.empty {
+        border: 1px dashed var(--bs-gray-600);
+        cursor: pointer;
+
+        .label-title {
+          color: var(--bs-gray-600);
+        }
+
+        .form-control {
+          width: calc(100% - 40px);
+          background-color: var(--bs-white);
+          padding: 4px 15px;
+          border: 1px solid var(--bs-gray-500);
+          text-align: left;
+          border-radius: 5px;
+        }
+
+        &.in-focus {
+          .label-title {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 10px;
+            color: var(--color-text-primary);
+          }
+        }
+      }
+    }
+  }
 }

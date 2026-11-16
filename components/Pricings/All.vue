@@ -1,18 +1,69 @@
 <template>
   <div id="pricings-all">
     <LoaderPrepare
-      v-if="controller.tableDataFetcher.value.isLoading"
+      v-if="controller.isRetrievingData"
       :label="controller.loaderLabel"
       :sublabel="controller.loaderSublabel"
     />
-    <div v-if="!controller.tableDataFetcher.value.isLoading">
-      <NoRecord
+    <div v-if="!controller.isRetrievingData">
+      <!-- <NoRecord
         v-if="controller.tableDataFetcher.value.data.length === 0"
         :title="controller.noRecordTitle"
         :subtitle="controller.noRecordSubtitle"
-      />
-      <div class="pricings">
+      /> -->
+      <div class="labels">
         <div
+          class="label"
+          v-for="(label, i) in controller.labels.value"
+          @click="controller.onLabelClicked(label)"
+        >
+          <div class="label-title">
+            {{ label.name }}
+          </div>
+          <Transition name="fade">
+            <div
+              class="expanded-details"
+              v-if="controller.isLabelExpanded(label)"
+            >
+              // Items in the label
+            </div>
+          </Transition>
+        </div>
+        <div
+          class="label empty"
+          :class="{ 'in-focus': controller.isAddingNewLabel.value }"
+          @click.self="controller.onAddNewLabelClicked()"
+        >
+          <div class="label-title">
+            <span v-if="!controller.isAddingNewLabel.value">+ Create New Theme</span>
+            <template v-if="controller.isAddingNewLabel.value">
+              <span>New Theme :</span>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Your New Theme"
+                v-model="controller.newLabel.value.name"
+              />
+              <div class="action-buttons">
+                <button
+                  class="btn btn-danger"
+                  @click="controller.onCancelAddNewLabel()"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="btn btn-submit"
+                  :disabled="!controller.newLabel.value.canSubmit()"
+                  :class="{ 'is-loading': controller.isSubmittingNewLabel.value }"
+                  @click="controller.onProceedAddNewLabel()"
+                >
+                  Create
+                </button>
+              </div>
+            </template>
+          </div>
+        </div>
+        <!-- <div
           class="pricing"
           v-for="(pricing, index) in controller.tableDataFetcher.value.data"
         >
@@ -75,12 +126,12 @@
               Remove
             </button>
           </div>
-        </div>
+        </div> -->
       </div>
-      <TablePagination
+      <!-- <TablePagination
         v-bind="controller.tablePaginationProps"
         @go-to-page="controller.tableDataFetcher.value.goToPage($event)"
-      />
+      /> -->
       <Editor
         v-bind="controller.editorProps"
         ref="editorRef"

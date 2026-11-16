@@ -1,6 +1,9 @@
 import { Error } from "~/scripts/library/Error"
+import { Filter } from "~/scripts/library/Filter"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
 import { Toast } from "~/scripts/library/Toast"
+import { Label } from "~/scripts/models/Label"
+import { LabelItem } from "~/scripts/models/LabelItem"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
 import type { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
 import type { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
@@ -12,6 +15,9 @@ import { NumberUtil } from "~/scripts/utils/Number"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class AllController {
+  labels: Ref<Label[]> = ref<Label[]>([])
+  labelAndPricings: Ref<Record<string, ServicePricing[]>> = ref<Record<string, ServicePricing[]>>({})
+
   tableDataFetcher = ref<TableDataFetcher<ServicePricing>>(
     new TableDataFetcher(ServicePricing, useServicePricingStore())
   )
@@ -26,28 +32,37 @@ export class AllController {
   editorRef: any | null = null
   confirmToDeleteRef: any | null = null
 
+  isFetchingLabels: Ref<boolean> = ref<boolean>(false)
   isRemoving: Ref<boolean> = ref<boolean>(false)
+
+  selectedLabelIdToExpand: Ref<string> = ref<string>("")
+
+  isAddingNewLabel: Ref<boolean> = ref<boolean>(false)
+  isSubmittingNewLabel: Ref<boolean> = ref<boolean>(false)
+  newLabel: Ref<Label> = ref<Label>(new Label())
 
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.tableDataFetcher.value.filter.take = 10
-    this.tableDataFetcher.value.filter.takeAll = false
+    this.tableDataFetcher.value.filter.takeAll = true
     this.tableDataFetcher.value.filter.orderBy = "service_name"
     this.tableDataFetcher.value.filter.sortOrder = "asc"
     this.tableDataFetcher.value.filter.includeTestAccount = true
 
     this.tableDataFetcher.value.fetchData()
+
+    this.fetchLabels()
   }
 
   async setSearch(searchText: string): Promise<void> {
     this.tableDataFetcher.value.filter.searchText = searchText
-    await this.tableDataFetcher.value.fetchData()
+    // await this.tableDataFetcher.value.fetchData()
   }
 
   async setSortOrder(sortOrder: string): Promise<void> {
     this.tableDataFetcher.value.filter.sortOrder = sortOrder
-    await this.tableDataFetcher.value.fetchData()
+    // await this.tableDataFetcher.value.fetchData()
   }
 
   setEditorRef(editorRef: any): void {
@@ -56,6 +71,57 @@ export class AllController {
 
   setConfirmToDeleteRef(confirmToDeleteRef: any): void {
     this.confirmToDeleteRef = confirmToDeleteRef
+  }
+
+  async fetchLabels(): Promise<void> {
+    if (this.isFetchingLabels.value) {
+      return
+    }
+
+    this.labels.value = []
+
+    this.isFetchingLabels.value = true
+
+    try {
+      let repository = useLabelStore()
+      let filter = new Filter()
+      filter.takeAll = true
+      let response = await repository.fetchAll(filter)
+
+      let unclassifiedLabels = response.data.map((d: any) => {
+        return new Label(d)
+      })
+
+      let promises = unclassifiedLabels.map((d: Label) => {
+        return repository.fetchItemsForLabel(d.id).then((r) => {
+          if (!r.data || r.data.length <= 0) {
+            this.labels.value.push(d)
+            this.labelAndPricings.value[d.id] = []
+            return
+          }
+
+          let items = r.data
+            .map((t: any) => {
+              return new LabelItem(t)
+            })
+            .filter((item: LabelItem) => {
+              return item.targetType === "service_pricing" || item.targetType === "ServicePricing"
+            })
+
+          if (items.length <= 0) {
+            return
+          }
+
+          this.labelAndPricings.value[d.id] = items
+        })
+      })
+
+      await Promise.all(promises)
+    } catch (e) {
+      //
+    } finally {
+      this.isFetchingLabels.value = false
+    }
   }
 
   getGrandTotal(servicePricing: ServicePricing): string {
@@ -183,6 +249,55 @@ export class AllController {
     }
   }
 
+  onAddNewLabelClicked(): void {
+    this.newLabel.value = new Label()
+    this.isAddingNewLabel.value = true
+  }
+
+  onCancelAddNewLabel(): void {
+    this.isAddingNewLabel.value = false
+    this.newLabel.value = new Label()
+  }
+
+  async onProceedAddNewLabel(): Promise<void> {
+    if (this.isSubmittingNewLabel.value) {
+      return
+    }
+
+    this.isSubmittingNewLabel.value = true
+    try {
+      await this.newLabel.value.create(useLabelStore())
+
+      this.labels.value.push(new Label(this.newLabel.value))
+      this.labelAndPricings.value[this.newLabel.value.id] = []
+
+      let toastTitle = this.language.isMalay() ? "Tema Baharu telah ditambah." : "The New Theme is added."
+      let toastMessage = this.language.isMalay()
+        ? "Anda boleh tambah item ke dalam Tema baharu."
+        : "You can add items to the Theme."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isSubmittingNewLabel.value = false
+    }
+  }
+
+  onLabelClicked(label: Label): void {
+    this.selectedLabelIdToExpand.value = label.id
+  }
+
+  isLabelExpanded(label: Label): boolean {
+    return this.selectedLabelIdToExpand.value === label.id
+  }
+
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
   }
@@ -227,5 +342,9 @@ export class AllController {
 
   get itemToRemoveName(): string {
     return this.language.isMalay() ? "Harga" : "Pricing"
+  }
+
+  get isRetrievingData(): boolean {
+    return this.isFetchingLabels.value || this.tableDataFetcher.value.isLoading
   }
 }
