@@ -12,12 +12,14 @@ export class DocumentTargets {
 
   static TARGET_AMENDMENT_BRANCH: string = "company_amendment_branch"
   static TARGET_AMENDMENT_BRANCH_RESOLUTIONS: string = "company_amendment_branch_resolutions"
+  static TARGET_AMENDMENT_BRANCH_PD2: string = "company_amendment_branch_pd2"
 
   static TARGET_AMENDMENT_CONSTITUTION: string = "company_amendment_constitution"
   static TARGET_AMENDMENT_CONSTITUTION_RESOLUTIONS: string = "company_amendment_constitution_resolutions"
 
   static TARGET_AMENDMENT_DESCRIPTION: string = "company_amendment_description"
   static TARGET_AMENDMENT_DESCRIPTION_RESOLUTIONS: string = "company_amendment_description_resolutions"
+  static TARGET_AMENDMENT_DESCRIPTION_PD2: string = "company_amendment_description_pd2"
 
   static TARGET_AMENDMENT_NAME: string = "company_amendment_name"
   static TARGET_AMENDMENT_NAME_RESOLUTIONS: string = "company_amendment_name_resolutions"

@@ -142,58 +142,13 @@
                             </span>
                           </div>
                           <div class="name-action-button">
-                            <div class="actions-button-options">
-                              <div
-                                class="btn btn-pill btn-submit selected"
-                                :class="{
-                                  'is-loading': controller.isUpdatingSection27.value,
-                                  single: !controller.hasNextStepsForSection27,
-                                }"
-                                @click="controller.onShowSection27ActionClicked(nameOption)"
-                              >
-                                <span class="label">{{ controller.section27ActionLabel }}</span>
-                                <i
-                                  v-if="controller.hasNextStepsForSection27"
-                                  class="fa-solid fa-caret-down"
-                                  :class="{ rotate: controller.isShowingNameReservationsOptionFor(nameOption) }"
-                                ></i>
-                              </div>
-                              <div
-                                class="options"
-                                :class="{ show: controller.isShowingNameReservationsOptionFor(nameOption) }"
-                              >
-                                <button
-                                  class="btn btn-pill btn-submit"
-                                  @click="controller.onSubmitNameReservation(nameOption)"
-                                >
-                                  {{ controller.submitSection27ApplicationLabel }}
-                                </button>
-                                <button
-                                  class="btn btn-pill btn-submit"
-                                  @click="controller.onQueryNameReservation(nameOption)"
-                                >
-                                  {{ controller.querySection27ApplicationLabel }}
-                                </button>
-                                <button
-                                  class="btn btn-pill btn-submit"
-                                  @click="controller.onSubmitNameReservation(nameOption)"
-                                >
-                                  {{ controller.resubmitSection27ApplicationLabel }}
-                                </button>
-                                <button
-                                  class="btn btn-pill btn-submit"
-                                  @click="controller.onApproveNameReservation(nameOption)"
-                                >
-                                  {{ controller.approvedSection27Label }}
-                                </button>
-                                <button
-                                  class="btn btn-pill btn-submit"
-                                  @click="controller.onNameReservationRejectedClicked(nameOption)"
-                                >
-                                  {{ controller.rejectedSection27Label }}
-                                </button>
-                              </div>
-                            </div>
+                            <button
+                              class="btn btn-pill btn-submit"
+                              :disabled="controller.hasSubmittedNameReservation"
+                              @click="controller.onSubmitNameReservation(nameOption)"
+                            >
+                              {{ controller.submitSection27ApplicationLabel }}
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -203,6 +158,71 @@
               </template>
               <template #nodeOptions></template>
               <template #nodeActions></template>
+            </ApplicationNode>
+            <ApplicationNode
+              v-if="controller.hasSubmittedNameReservation"
+              v-bind="controller.submittedNameReservationNodeProps"
+              @click="controller.onNameReservationDetailStepClicked()"
+            >
+              <template #nodeContent>
+                <div class="application-container">
+                  <div class="node-title">{{ controller.submittedNameReservationLabel }}</div>
+                  <div class="node-subtitle">{{ controller.submittedNameReservationSublabel }}</div>
+                  <div
+                    class="application-details"
+                    v-html="controller.submittedNameReservationDetails"
+                  />
+                </div>
+              </template>
+              <template #nodeOptions></template>
+              <template #nodeActions>
+                <div class="actions-button-options">
+                  <div
+                    class="btn btn-pill btn-submit selected"
+                    :class="{
+                      'is-loading': controller.isUpdatingSection27.value,
+                      single: !controller.hasNextStepsForSection27,
+                    }"
+                    @click="controller.onShowSection27ActionClicked()"
+                  >
+                    <span class="label">{{ controller.section27ActionLabel }}</span>
+                    <i
+                      v-if="controller.hasNextStepsForSection27"
+                      class="fa-solid fa-caret-down"
+                      :class="{ rotate: controller.isShowSection27Actions.value }"
+                    ></i>
+                  </div>
+                  <div
+                    class="options"
+                    :class="{ show: controller.isShowSection27Actions.value }"
+                  >
+                    <button
+                      class="btn btn-pill btn-submit"
+                      @click="controller.onQueryNameReservation()"
+                    >
+                      {{ controller.querySection27ApplicationLabel }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      @click="controller.onResubmitNameReservation()"
+                    >
+                      {{ controller.resubmitSection27ApplicationLabel }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      @click="controller.onApproveNameReservation()"
+                    >
+                      {{ controller.approvedSection27Label }}
+                    </button>
+                    <button
+                      class="btn btn-pill btn-submit"
+                      @click="controller.onNameReservationRejectedClicked()"
+                    >
+                      {{ controller.rejectedSection27Label }}
+                    </button>
+                  </div>
+                </div>
+              </template>
             </ApplicationNode>
             <ApplicationNode
               v-bind="controller.registrationNodeProps"

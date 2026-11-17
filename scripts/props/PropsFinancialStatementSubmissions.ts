@@ -1,5 +1,8 @@
+import type { Company } from "../models/Company"
+
 export interface IPropsFinancialStatementSubmissions {
   companyId: string | null
+  company: Company
   searchText: string | null
   startDate: string | null
   endDate: string | null
@@ -9,6 +12,7 @@ export interface IPropsFinancialStatementSubmissions {
 
 export class PropsFinancialStatementSubmissions implements IPropsFinancialStatementSubmissions {
   companyId: string | null
+  company: Company
   searchText: string | null
   startDate: string | null
   endDate: string | null
@@ -17,6 +21,7 @@ export class PropsFinancialStatementSubmissions implements IPropsFinancialStatem
 
   constructor(
     companyId: string | null,
+    company: Company,
     searchText: string | null,
     startDate: string | null,
     endDate: string | null,
@@ -24,6 +29,7 @@ export class PropsFinancialStatementSubmissions implements IPropsFinancialStatem
     isShowPendingOnly: boolean
   ) {
     this.companyId = companyId
+    this.company = company
     this.searchText = searchText
     this.startDate = startDate
     this.endDate = endDate

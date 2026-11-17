@@ -22,6 +22,9 @@ import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import { User } from "~/scripts/models/User"
 import { City, Country, Location, PostcodeMapping, State } from "~/scripts/models/Location"
 import { CompanyFinancialPeriod } from "~/scripts/models/CompanyFinancialPeriod"
+import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
+import { PropsTags } from "~/scripts/props/PropsTags"
+import { AnnualReturnRecord } from "~/scripts/types/AnnualReturnRecord"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -962,5 +965,139 @@ ${detailsOfBO.join("\n")}
     return this.company.value.branches.every((cb: CompanyBranch) => {
       return !StringUtil.isNullOrEmpty(cb.id)
     })
+  }
+
+  get businessDescriptionLabel(): string {
+    return this.language.isMalay() ? "Keterangan Perniagaan" : "Business Description"
+  }
+
+  get businessDescription(): string {
+    return this.company.value.businessDescription?.toUpperCase() ?? ""
+  }
+
+  get msicCodesLabel(): string {
+    return this.language.isMalay() ? "Kod MSIC" : "MSIC Codes"
+  }
+
+  get msicCodeAssigns(): MsicCodeAssign[] {
+    return this.company.value.msicCodeAssigns ?? []
+  }
+
+  get tagsLabel(): string {
+    return this.language.isMalay() ? "Tag" : "Tags"
+  }
+
+  get tagsProps(): PropsTags {
+    return new PropsTags("company", this.company.value.id, this.company.value.tags ?? [])
+  }
+
+  get annualReturnLabel(): string {
+    return this.language.isMalay() ? "Penyata Tahunan" : "Annual Return"
+  }
+
+  get annualReturns(): AnnualReturnRecord[] {
+    if (!this.company.value.incorporatedAt) {
+      return []
+    }
+
+    let currentYear = this.dayjs().year()
+    let incorporatedAt = this.dayjs(this.company.value.incorporatedAt)
+    let firstAnnualReturn = this.dayjs(incorporatedAt).add(1, "year").year()
+    let endYear = Math.max(currentYear, firstAnnualReturn)
+
+    let annualReturns: AnnualReturnRecord[] = []
+    for (let annualReturnYear = firstAnnualReturn; annualReturnYear <= endYear; annualReturnYear++) {
+      let annualReturnDate = this.dayjs(incorporatedAt).year(annualReturnYear)
+      let lodgementDueDate = this.dayjs(incorporatedAt).year(annualReturnYear).add(30, "days")
+      let daysTillLodgment = this.dayjs().diff(lodgementDueDate, "days")
+
+      let record = new AnnualReturnRecord()
+      record.year = annualReturnYear
+      record.date = this.time.formatDateOnlyShort(annualReturnDate.format("YYYY-MM-DD"))
+      record.lodgementDueDate = this.time.formatDateOnlyShort(lodgementDueDate.format("YYYY-MM-DD"))
+      record.daysTillLodgment = daysTillLodgment
+      record.isIncoming = annualReturnYear === currentYear && Math.abs(daysTillLodgment) <= 28
+
+      let isOutstanding = this.compliance.value.annualReturnYearsToLodge.includes(annualReturnYear)
+      if (isOutstanding) {
+        if (daysTillLodgment > 0) {
+          record.isOverdue = true
+          record.isPaid = false
+          record.isLodged = false
+          record.noOfDaysOverDue = daysTillLodgment
+        } else {
+          record.isOverdue = false
+          record.isPaid = false
+          record.isLodged = false
+        }
+      } else {
+        record.isOverdue = false
+        record.isPaid = annualReturnYear <= currentYear
+        record.isLodged = daysTillLodgment >= 0
+        record.noOfDaysOverDue = 0
+      }
+
+      annualReturns.push(record)
+    }
+
+    return annualReturns
+  }
+
+  get pastAnnualReturnLabel(): string {
+    return this.language.isMalay() ? `${this.annualReturnLabel} Yang Lepas` : `Past ${this.annualReturnLabel}`
+  }
+
+  get currentAnnualReturnLabel(): string {
+    let currentYear = this.dayjs().year()
+
+    return this.language.isMalay()
+      ? `${this.annualReturnLabel} Untuk ${currentYear}`
+      : `${this.annualReturnLabel} For ${currentYear}`
+  }
+
+  get futureAnnualReturnLabel(): string {
+    return this.language.isMalay() ? `${this.annualReturnLabel} Akan Datang` : `Future ${this.annualReturnLabel}`
+  }
+
+  get annualReturnGroups(): { label: string; records: AnnualReturnRecord[] }[] {
+    let currentYear = this.dayjs().year()
+    let annualReturns = this.annualReturns
+
+    return [
+      {
+        label: this.pastAnnualReturnLabel,
+        records: annualReturns.filter((record: AnnualReturnRecord) => {
+          return record.year < currentYear
+        }),
+      },
+      {
+        label: this.currentAnnualReturnLabel,
+        records: annualReturns.filter((record: AnnualReturnRecord) => {
+          return record.year === currentYear
+        }),
+      },
+      {
+        label: this.futureAnnualReturnLabel,
+        records: annualReturns.filter((record: AnnualReturnRecord) => {
+          return record.year > currentYear
+        }),
+      },
+    ]
+  }
+
+  getAnnualReturnStatus(record: AnnualReturnRecord): string {
+    if (record.isOverdue) {
+      return "overdue"
+    }
+
+    if (!record.isLodged && record.isPaid) {
+      return "pending"
+    }
+
+    if (record.isLodged) {
+      return "lodged"
+    }
+
+    return ""
   }
 }

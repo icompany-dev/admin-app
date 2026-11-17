@@ -26,6 +26,10 @@
                 {{ controller.lastSignatureDate }}
               </div>
             </div>
+            <div class="application-details">
+              <span v-html="controller.businessDescription" />
+              <CopyValue :value="controller.businessDescription" />
+            </div>
           </template>
           <template #nodeOptions>
             <button
@@ -89,31 +93,14 @@
             </button>
           </template>
           <template #nodeActions>
-            <div class="actions-button-options">
-              <div
-                class="btn btn-pill btn-submit selected"
-                :class="{ 'is-loading': controller.isUpdatingPd2.value }"
-                @click="controller.onShowRegistrationActions()"
-              >
-                <span class="label">{{ controller.section28ActionLabel }}</span>
-                <i
-                  class="fa-solid fa-caret-down"
-                  :class="{ rotate: controller.isShowPd2Actions.value }"
-                ></i>
-              </div>
-              <div
-                class="options"
-                :class="{ show: controller.isShowPd2Actions.value }"
-              >
-                <button
-                  class="btn btn-pill btn-submit"
-                  :disabled="!controller.canSubmitToSSM"
-                  @click="controller.onSubmitToSSMClicked()"
-                >
-                  {{ controller.registrationOfDescriptionButtonLabel }}
-                </button>
-              </div>
-            </div>
+            <button
+              class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isUpdatingPd2.value }"
+              :disabled="controller.isUpdatingPd2.value"
+              @click="controller.onSubmitToSSMClicked()"
+            >
+              {{ controller.registrationOfDescriptionButtonLabel }}
+            </button>
           </template>
         </ApplicationNode>
         <ApplicationNode
@@ -153,6 +140,7 @@
 
 <script lang="ts" setup>
   import ApplicationNode from "./ApplicationNode.vue"
+  import CopyValue from "../Buttons/CopyValue.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"
   import PopupUploadDocument from "@/components/Popups/UploadDocument.vue"
   import ServiceApplication from "./ServiceApplication.vue"

@@ -18,8 +18,16 @@
             </div>
             <div class="name-registration-number">
               <div class="company-name">
-                {{ controller.company.value.getFullName() }}
-                <CopyValue :value="controller.company.value.getFullName()" />
+                {{ controller.companyName }}
+                <CopyValue :value="controller.companyName" />
+                &nbsp;
+                <a
+                  :href="controller.companyDashboardUrl"
+                  target="_blank"
+                  title="Go to Sdn Bhd Dashboard"
+                >
+                  <i class="fa-regular fa-link" />
+                </a>
               </div>
               <div class="registration-numbers">
                 {{ controller.company.value.registrationNumberNew }}
@@ -30,6 +38,15 @@
                 <br />
                 <b>{{ controller.incorporationDateLabel }}</b>
                 : {{ controller.incorporationDate }}
+                <br />
+                <b>Subscription Status</b>
+                :
+                <span
+                  class="subscription-status"
+                  :class="controller.subscriptionStatus"
+                >
+                  {{ controller.subscriptionExpiryDate }}
+                </span>
               </div>
             </div>
           </div>
@@ -95,6 +112,20 @@
 
               <button
                 class="btn btn-pill btn-submit invert"
+                @click="controller.onGenerateAppointCosecClicked()"
+              >
+                Generate Appointment of Company Secretary
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
+                @click="controller.onGenerateLetterCosecResignClicked()"
+              >
+                Generate Resignation of Company Secretary
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
                 @click="controller.onOpenGenerateResignationAndAppointmentOfCosec()"
               >
                 Resign & Appoint Cosec
@@ -102,9 +133,30 @@
 
               <button
                 class="btn btn-pill btn-submit invert"
+                @click="controller.onGenerateSection236Clicked()"
+              >
+                Generate Consent to Act as Company Secretary
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
                 @click="controller.onOpenGenerateAuditExemptionCertificate()"
               >
                 Generate Audit Exemption Certificate
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
+                @click="controller.onAskPaymentClicked()"
+              >
+                {{ controller.paymentOrder }}
+              </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
+                @click="controller.onSendEmailClicked()"
+              >
+                Send Email
               </button>
             </div>
           </div>
@@ -215,26 +267,54 @@
         ref="generateResignationAndAppointmentOfCosecRef"
         :company-id="controller.companyId.value"
       />
+      <Section236Three
+        ref="section236ThreeRef"
+        :company-id="controller.companyId.value"
+        :company-name="controller.company.value.getFullName()"
+        :registration-number-new="controller.company.value.registrationNumberNew"
+        :registration-number-old="controller.company.value.registrationNumberOld"
+      />
+      <LetterCosecResign
+        ref="letterCosecResignRef"
+        :company-id="controller.companyId.value"
+      />
+      <AppointCosec
+        ref="appointCosecRef"
+        :company-id="controller.companyId.value"
+      />
+      <SendPaymentNotice
+        ref="sendPaymentNoticeRef"
+        v-bind="controller.sendPaymentNoticeProps"
+      />
+      <SendEmail
+        ref="sendEmailRef"
+        v-bind="controller.sendEmailProps"
+      />
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
   import AnnualReturn from "./AnnualReturn.vue"
+  import AppointCosec from "../QuickGenerate/AppointCosec.vue"
   import BankAccountOpeningService from "@/components/CompanyServices/BankAccountOpeningService.vue"
   import ChangeOfAddressService from "@/components/CompanyServices/ChangeOfBusinessAddressService.vue"
   import ChangeOfBusinessBranchService from "@/components/CompanyServices/ChangeOfBusinessBranchService.vue"
   import ChangeOfNameService from "@/components/CompanyServices/ChangeOfNameService.vue"
   import CopyValue from "@/components/Buttons/CopyValue.vue"
   import Documents from "./Documents.vue"
+  import LetterCosecResign from "../QuickGenerate/LetterCosecResign.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Overview from "@/components/Companies/Overview.vue"
   import PracticeDirective2Service from "@/components/CompanyServices/PracticeDirective2Service.vue"
   import ReceiptInvoiceService from "@/components/CompanyServices/ReceiptInvoiceService.vue"
   import RolesAccesses from "./RolesAccesses.vue"
   import SdnBhdSpine from "@/components/LegalDocuments/SdnBhdSpine.vue"
+  import Section236Three from "../QuickGenerate/Section236Three.vue"
   import Section27Service from "@/components/CompanyServices/Section27Service.vue"
   import Section28Service from "@/components/CompanyServices/Section28Service.vue"
+  import SendEmail from "../Drawers/SendEmail.vue"
+  import SendPaymentNotice from "../Popups/SendPaymentNotice.vue"
   import FinancialStatementSubmissions from "@/components/FinancialStatements/Submissions.vue"
   import { SelectedSdnBhdController } from "~/scripts/components/companies/SelectedSdnBhdController"
   import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
@@ -252,6 +332,11 @@
   const spineRef = ref(null)
   const generateAuditExemptionCertificateRef = ref(null)
   const generateResignationAndAppointmentOfCosecRef = ref(null)
+  const sendPaymentNoticeRef = ref(null)
+  const section236ThreeRef = ref(null)
+  const letterCosecResignRef = ref(null)
+  const appointCosecRef = ref(null)
+  const sendEmailRef = ref(null)
 
   const controller = new SelectedSdnBhdController(props.companyId, emit)
 
@@ -306,6 +391,46 @@
     generateResignationAndAppointmentOfCosecRef,
     (newVal) => {
       controller.setGenerateResignationAndAppointmentOfCosecRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    sendPaymentNoticeRef,
+    (newVal) => {
+      controller.setSendPaymentNoticeRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    section236ThreeRef,
+    (newVal) => {
+      controller.setSection236ThreeRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    letterCosecResignRef,
+    (newVal) => {
+      controller.setLetterCosecResignRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    appointCosecRef,
+    (newVal) => {
+      controller.setAppointCosecRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    sendEmailRef,
+    (newVal) => {
+      controller.setSendEmailRef(newVal)
     },
     { immediate: true }
   )

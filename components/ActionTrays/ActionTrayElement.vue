@@ -2,19 +2,20 @@
   <div
     ref="actionTrayElementRef"
     class="action-tray-element"
-    v-if="!controller.element.isHidden"
+    v-if="!controller.element.value.isHidden"
   >
     <div
       v-if="!controller.isSearchOpen.value"
       class="action-cta"
       :class="{
-        disabled: controller.element.isDisabled,
-        'is-select-element': controller.element.isSelectElement,
+        disabled: controller.element.value.isDisabled,
+        'is-select-element': controller.element.value.isSelectElement,
       }"
+      v-keyboard-click
       @click="controller.onClick()"
     >
       <i
-        v-if="controller.element.isIconStart"
+        v-if="controller.element.value.isIconStart"
         class="action-tray-icon"
         :class="controller.getIconClass()"
       />
@@ -52,7 +53,7 @@
             :value="option.value"
             :selected="option.isSelected"
             :disabled="option.isDisabled"
-            v-for="option in controller.element.selectElementOptions"
+            v-for="option in controller.element.value.selectElementOptions"
           >
             {{ option.label }}
           </option>
@@ -60,7 +61,7 @@
       </div>
 
       <i
-        v-if="!controller.element.isIconStart"
+        v-if="!controller.element.value.isIconStart"
         class="action-tray-icon"
         :class="controller.getIconClass()"
       />
@@ -73,7 +74,7 @@
         <label class="switch switch-sm">
           <input
             type="checkbox"
-            v-model="controller.element.isActive"
+            v-model="controller.element.value.isActive"
             @change="controller.onSwitchChange()"
           />
           <span class="slider round" />
@@ -95,7 +96,7 @@
       >
         <ActionElement
           :action="dropdownElement"
-          @onClick="controller.element.close()"
+          @onClick="controller.element.value.close()"
         />
       </div>
     </div>
@@ -116,6 +117,7 @@
 
       <div
         class="action-search-close-button"
+        v-keyboard-click
         @click="controller.onSearchClose()"
         title="Close"
       >
@@ -159,12 +161,15 @@
     { immediate: true }
   )
 
+  // EventListener Section
+  const handleClickOutside = controller.handleClickOutside.bind(controller)
+
   onMounted(() => {
-    window.addEventListener("click", controller.handleClickOutside.bind(controller))
+    window.addEventListener("click", handleClickOutside)
   })
 
   onBeforeUnmount(() => {
-    window.removeEventListener("click", controller.handleClickOutside.bind(controller))
+    window.removeEventListener("click", handleClickOutside)
   })
 </script>
 

@@ -19,16 +19,29 @@
         <LetterResignationSecretary
           ref="letterRef"
           :company-id="controller.companyId"
+          @cosec-selected="controller.onSecretarySelected($event)"
+        />
+        <DcrResignationOfCosec
+          ref="dcrRef"
+          :company-id="controller.companyId"
+          :resigning-secretary-name="controller.secretaryName"
+          :resigning-secretary-identification="controller.secretaryNric"
+          :resigning-secretary-practising-certificate-number="controller.secretaryPcNumber"
+          :director-id="props.directorId"
         />
       </TransitionGroup>
     </div>
-    <ActionTray :actions="controller.actionTrayElements.value" />
+    <ActionTray
+      :actions="controller.actionTrayElements.value"
+      v-if="props.isShowActionTray"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import { LetterOfCosecResignController } from "~/scripts/components/service-wrappers/LetterOfCosecResignController"
   import ActionTray from "@/components/ActionTrays/ActionTray.vue"
+  import DcrResignationOfCosec from "../Resolutions/DcrResignationOfCosec.vue"
   import DcrChangeOfCompanySecretary from "../Resolutions/DcrChangeOfCompanySecretary.vue"
   import LetterResignationSecretary from "../LegalDocuments/LetterResignationSecretary.vue"
   import SwitchOutLetter from "@/components/LegalDocuments/SwitchOutLetter.vue"
@@ -50,6 +63,14 @@
     isInPreviewMode: {
       type: Boolean,
       default: true,
+    },
+    isShowActionTray: {
+      type: Boolean,
+      default: true,
+    },
+    directorId: {
+      type: String,
+      default: "",
     },
   })
 
@@ -89,6 +110,11 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+    getDcrPages: controller.getDcrPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

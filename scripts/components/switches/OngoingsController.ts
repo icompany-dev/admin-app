@@ -2,6 +2,7 @@ import { StatusConstants } from "~/scripts/constants/Status"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
+import { Toast } from "~/scripts/library/Toast"
 import { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
 import { PropsSwitchesOngoing } from "~/scripts/props/PropsSwitchesOngoing"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
@@ -20,6 +21,9 @@ export class OngoingsController {
 
   isLoading: Ref<boolean> = ref<boolean>(false)
 
+  confirmToDeleteRef: any | null = null
+  applicationIdToRemove: Ref<string> = ref<string>("")
+
   language = useLanguage()
 
   constructor(props: PropsSwitchesOngoing, emitEvents: any) {
@@ -32,6 +36,10 @@ export class OngoingsController {
     this.isIncludeDemo.value = props.isIncludeDemo
 
     await this.init()
+  }
+
+  setConfirmToDeleteRef(confirmToDeleteRef: any): void {
+    this.confirmToDeleteRef = confirmToDeleteRef
   }
 
   async init(): Promise<void> {
@@ -63,7 +71,7 @@ export class OngoingsController {
       case StatusConstants.DRAFT:
         return "draft"
       case StatusConstants.PAID:
-        return "info"
+        return "success"
       case StatusConstants.NAME_REJECTED:
         return "danger"
       case StatusConstants.APPROVED:
@@ -76,6 +84,37 @@ export class OngoingsController {
   onApplicationClicked(application: ApplicationSwitch): void {
     let router = useRouter()
     router.push({ path: `/switches/ongoings/${application.id}` })
+  }
+
+  onRemoveClicked(application: any): void {
+    if (!this.confirmToDeleteRef) {
+      return
+    }
+
+    this.confirmToDeleteRef.show()
+
+    this.applicationIdToRemove.value = application.id
+  }
+
+  async onProceedRemove(): Promise<void> {
+    try {
+      let repository = useApplicationSwitchStore()
+      await repository.remove(this.applicationIdToRemove.value)
+
+      this.tableDataFetcher.value?.fetchData()
+
+      let toastTitle = this.language.isMalay() ? "Permohonan telah dipadamkan." : "Application is Removed"
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    }
   }
 
   // getters
@@ -120,5 +159,13 @@ export class OngoingsController {
 
   get viewApplicationLabel(): string {
     return this.language.isMalay() ? "Lihat" : "View"
+  }
+
+  get itemToRemoveName(): string {
+    return this.language.isMalay() ? "Permohonan" : "Application"
+  }
+
+  get removeApplicationLabel(): string {
+    return this.language.isMalay() ? "Buang" : "Remove"
   }
 }

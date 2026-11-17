@@ -8,6 +8,7 @@ import { ServicePricingBreakdown } from "./ServicePricingBreakdown"
 import { ServicePricingMandatory } from "./ServicePricingMandatory"
 import { ServicePricingOptional } from "./ServicePricingOptional"
 import type { IModel } from "./IModel"
+import { Error } from "../library/Error"
 
 export class ServicePricing implements IModel<ServicePricing> {
   id: string = ""
@@ -37,6 +38,7 @@ export class ServicePricing implements IModel<ServicePricing> {
 
   //display purposes?
   isThirdPartyService: boolean = false
+  isCustom: boolean = false
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -166,7 +168,12 @@ export class ServicePricing implements IModel<ServicePricing> {
       discount: this.discount.getRequestBody(),
       base_grand_total: this.baseGrandTotal,
       status: this.status,
+      is_custom: this.isCustom,
     }
+  }
+
+  canSubmit(): boolean {
+    return !StringUtil.isNullOrEmpty(this.serviceName) && this.breakdowns.length > 0
   }
 
   description() {
@@ -188,5 +195,58 @@ export class ServicePricing implements IModel<ServicePricing> {
         .join("")}
       </ul>
     `
+  }
+
+  async create(repository: ReturnType<typeof useServicePricingStore>): Promise<void> {
+    if (!this.canSubmit()) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    const response = await repository.create(data)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async update(repository: ReturnType<typeof useServicePricingStore>): Promise<void> {
+    if (!this.canSubmit() || StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = this.getRequestBody()
+    const response = await repository.update(this.id, data)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    this.convertFromResponse(response)
+  }
+
+  async remove(repository: ReturnType<typeof useServicePricingStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    const response = await repository.remove(this.id)
+    if (repository.error) {
+      let error: Error = new Error()
+      error.setForCUD()
+      throw error
+    }
+
+    return response
   }
 }

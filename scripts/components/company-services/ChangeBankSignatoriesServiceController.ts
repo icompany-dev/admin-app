@@ -422,7 +422,7 @@ export class ChangeBankSignatoriesServiceController extends CompanyServiceContro
       this.isUpdatingStatus.value = true
 
       let repository = useCompanyChangeBankSignatoryStore()
-      await repository.complete(this.companyChangeBankSignatory.value.id)
+      await repository.complete(this.companyChangeBankSignatory.value.id, true)
 
       let toastTitle = this.language.isMalay()
         ? "Butiran Penandatangan Akaun Bank Sdn Bhd Anda telah dikemaskini."

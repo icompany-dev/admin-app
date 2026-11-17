@@ -35,6 +35,8 @@ export abstract class ApplicationController<Application> {
 
   isGeneratingReso: Ref<boolean> = ref<boolean>(false)
 
+  isNotifyOnComplete: Ref<boolean> = ref<boolean>(true)
+
   isShowApprovalTypeOptions: Ref<boolean> = ref<boolean>(false)
   selectedApprovalType: Ref<string> = ref<string>("director-member")
 

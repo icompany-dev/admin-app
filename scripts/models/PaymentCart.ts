@@ -97,6 +97,7 @@ export class PaymentCart implements IModel<PaymentCart> {
       items: this.items.map((item: PaymentCartItem) => {
         return item.getRequestBody()
       }),
+      can_delete: true, //the logic is handled in the backend to determine if the cart can be deleted or not
     }
   }
 

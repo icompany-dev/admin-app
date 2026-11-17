@@ -6,7 +6,7 @@ import { StringUtil } from "~/scripts/utils/String"
 
 export class ActionTrayElementController {
   language = useLanguage()
-  element: ActionTrayElement | any
+  element: Ref<ActionTrayElement | any> = ref<ActionTrayElement | any>(null)
   isSearchOpen: Ref<boolean> = ref<boolean>(false)
   searchQuery: Ref<string> = ref<string>("")
   optionSelected: Ref<string | number | null> = ref<string | number | null>(null)
@@ -25,33 +25,33 @@ export class ActionTrayElementController {
   }
 
   setAction(element: ActionTrayElement): void {
-    this.element = element
+    this.element.value = element
     this.optionSelected.value = element.selectedElementValue
   }
 
   onClick(): void {
-    if (this.element.isDisabled || this.element.isSelectElement) {
+    if (this.element.value.isDisabled || this.element.value.isSelectElement) {
       return
     }
 
-    if (this.element.isSearchElement) {
+    if (this.element.value.isSearchElement) {
       if (!this.isSearchOpen.value) {
         this.onSearchOpen()
         return
       }
 
-      this.element.run(new ActionTrayElementParams(this.element.id, this.searchQuery.value))
+      this.element.value.run(new ActionTrayElementParams(this.element.value.id, this.searchQuery.value))
       return
     }
 
-    if (this.element instanceof ActionTraySwitch) {
-      this.element.toggle()
-      this.element.run(new ActionTrayElementParams(this.element.id, this.element.isActive))
+    if (this.element.value instanceof ActionTraySwitch) {
+      this.element.value.toggle()
+      this.element.value.run(new ActionTrayElementParams(this.element.value.id, this.element.value.isActive))
       return
     }
 
-    this.element.run(new ActionTrayElementParams(this.element.id, ""))
-    if (this.element.isSearchElement) {
+    this.element.value.run(new ActionTrayElementParams(this.element.value.id, ""))
+    if (this.element.value.isSearchElement) {
       this.emitEvents("onSearch")
     } else {
       this.emitEvents("onClick")
@@ -59,12 +59,12 @@ export class ActionTrayElementController {
   }
 
   onSelectChanged(): void {
-    this.element.run(new ActionTrayElementParams(this.element.id, this.optionSelected.value))
+    this.element.value.run(new ActionTrayElementParams(this.element.value.id, this.optionSelected.value))
   }
 
   onSwitchChange(): void {
-    if (this.element instanceof ActionTraySwitch) {
-      this.element.run(new ActionTrayElementParams(this.element.id, this.element.isActive))
+    if (this.element.value instanceof ActionTraySwitch) {
+      this.element.value.run(new ActionTrayElementParams(this.element.value.id, this.element.value.isActive))
     }
   }
 
@@ -80,55 +80,51 @@ export class ActionTrayElementController {
   }
 
   hasSublabel(): boolean {
-    return this.element.subLabel.en !== "" && this.element.subLabel.bm !== ""
+    return this.element.value.subLabel.en !== "" && this.element.value.subLabel.bm !== ""
   }
 
   hasBadge(): boolean {
-    if (!this.element.badge) {
-      return false
-    }
-
-    return this.element.badge.en !== "" && this.element.badge.bm !== ""
+    return this.element.value.badge.en !== "" && this.element.value.badge.bm !== ""
   }
 
   isSwitchButtonVisible(): boolean {
-    return this.element instanceof ActionTraySwitch
+    return this.element.value instanceof ActionTraySwitch
   }
 
   isSelectVisible(): boolean {
-    if (this.element instanceof ActionTrayElement) {
-      return this.element.isSelectElement
+    if (this.element.value instanceof ActionTrayElement) {
+      return this.element.value.isSelectElement
     }
 
     return false
   }
 
   isDropdownVisible(): boolean {
-    if (this.element instanceof ActionTrayDropdown) {
-      return this.element.isOpen
+    if (this.element.value instanceof ActionTrayDropdown) {
+      return this.element.value.isOpen
     }
 
     return false
   }
 
   isLabelVisible(): boolean {
-    if (this.element instanceof ActionTrayDropdown) {
-      return !this.element.isIconOnly
+    if (this.element.value instanceof ActionTrayDropdown) {
+      return !this.element.value.isIconOnly
     }
 
     return true
   }
 
   getDropdownElements(): ActionTrayElement[] {
-    if (this.element instanceof ActionTrayDropdown) {
-      return this.element.actions
+    if (this.element.value instanceof ActionTrayDropdown) {
+      return this.element.value.actions
     }
 
     return []
   }
 
   getlabel(): string {
-    return this.language.isMalay() ? this.element.label.bm : this.element.label.en
+    return this.language.isMalay() ? this.element.value.label.bm : this.element.value.label.en
   }
 
   getSublabel(): string {
@@ -136,7 +132,7 @@ export class ActionTrayElementController {
       return ""
     }
 
-    return this.language.isMalay() ? this.element.subLabel.bm : this.element.subLabel.en
+    return this.language.isMalay() ? this.element.value.subLabel.bm : this.element.value.subLabel.en
   }
 
   getBadge(): string {
@@ -144,21 +140,21 @@ export class ActionTrayElementController {
       return ""
     }
 
-    return this.language.isMalay() ? this.element.badge.bm : this.element.badge.en
+    return this.language.isMalay() ? this.element.value.badge.bm : this.element.value.badge.en
   }
 
   getIconClass(): string {
-    if (this.element.isIconOnly) {
-      return `icon-only ${this.element.iconClass}`
+    if (this.element.value.isIconOnly) {
+      return `icon-only ${this.element.value.iconClass}`
     }
 
-    if (this.element instanceof ActionTrayDropdown) {
-      if (StringUtil.isNullOrEmpty(this.element.iconClass)) {
-        return this.element.isOpen ? "fa-solid fa-caret-up" : "fa-solid fa-caret-down"
+    if (this.element.value instanceof ActionTrayDropdown) {
+      if (StringUtil.isNullOrEmpty(this.element.value.iconClass)) {
+        return this.element.value.isOpen ? "fa-solid fa-caret-up" : "fa-solid fa-caret-down"
       }
     }
 
-    return this.element.iconClass
+    return this.element.value.iconClass
   }
 
   handleClickOutside(event: MouseEvent | TouchEvent): void {
@@ -170,8 +166,12 @@ export class ActionTrayElementController {
       return
     }
 
-    if (this.element instanceof ActionTrayDropdown) {
-      this.element.close()
+    if (this.element.value instanceof ActionTrayDropdown) {
+      if (this.element.value.isDefaultOpen && !this.element.value.hasOpenOnce) {
+        return
+      }
+
+      this.element.value.close()
     }
   }
 }

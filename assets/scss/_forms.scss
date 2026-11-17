@@ -312,7 +312,7 @@ textarea {
         min-width: 160px;
         max-height: 200px !important;
         overflow-y: auto;
-        background-color: var(--bs-white);
+        background-color: var(--bs-white) !important;
       }
     }
   }
@@ -381,7 +381,7 @@ textarea {
     }
 
     .dropdown-menu {
-      background-color: var(--bs-white);
+      background-color: var(--bs-white) !important;
       max-height: 300px !important;
       overflow-y: auto;
       display: flex;

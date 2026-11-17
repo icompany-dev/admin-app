@@ -28,7 +28,7 @@ export class UploadFileController extends BasePopupController {
   isUploading: Ref<boolean> = ref<boolean>(false)
   isDragEnter: Ref<boolean> = ref<boolean>(false)
 
-  maxSize: number = 2 * 1024 * 1024
+  maxSize: number = 10 * 1024 * 1024
 
   constructor(props: PropsUploadDocument, emitEvents: any) {
     super(emitEvents)

@@ -1,3 +1,4 @@
+import { CompanyConstants } from "~/scripts/constants/Company"
 import { DocumentTypes } from "~/scripts/constants/DocumentTypes"
 import { PaperOrientation, PaperSize } from "~/scripts/constants/Paper"
 import { Error } from "~/scripts/library/Error"
@@ -6,16 +7,20 @@ import { Ocr } from "~/scripts/library/Ocr"
 import { Company } from "~/scripts/models/Company"
 import { CompanyFinancialPeriod } from "~/scripts/models/CompanyFinancialPeriod"
 import { CompanyFinancialStatement, FinancialStatementData } from "~/scripts/models/CompanyFinancialStatement"
+import { CompanyFinancialStatementAuthorisedPerson } from "~/scripts/models/CompanyFinancialStatementAuthorisedPerson"
+import { CompanyFinancialStatementSetup } from "~/scripts/models/CompanyFinancialStatementSetup"
 import { File as UploadedFile } from "~/scripts/models/File"
 import { GeminiAiJobStatusResponse } from "~/scripts/models/GeminiAiJobStatusResponse"
 import type { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
 import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
+import { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNotice"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class SubmissionsController {
   companyId: Ref<string | null> = ref<string | null>(null)
+  company: Ref<Company> = ref<Company>(new Company())
   searchText: Ref<string | null> = ref<string | null>(null)
   startDate: Ref<string | null> = ref<string | null>(null)
   endDate: Ref<string | null> = ref<string | null>(null)
@@ -39,6 +44,7 @@ export class SubmissionsController {
 
   companyFinancialPeriods: Ref<CompanyFinancialPeriod[]> = ref<CompanyFinancialPeriod[]>([])
   companyFinancialStatements = ref<CompanyFinancialStatement[]>([])
+  companyFinancialStatementSetups = ref<CompanyFinancialStatementSetup[]>([])
 
   selectedFinancialPeriodId: Ref<string> = ref<string>("")
 
@@ -51,6 +57,13 @@ export class SubmissionsController {
   isOcrCompleted: Ref<boolean> = ref<boolean>(false)
   jobStatusResponses: Ref<GeminiAiJobStatusResponse[]> = ref<GeminiAiJobStatusResponse[]>([])
 
+  isAskingForPayment: Ref<boolean> = ref<boolean>(false)
+  selectedFinancialPeriodForPayment: Ref<CompanyFinancialPeriod> = ref<CompanyFinancialPeriod>(
+    new CompanyFinancialPeriod()
+  )
+
+  sendPaymentNoticeRef: any | null = null
+
   constructor(props: PropsFinancialStatementSubmissions, emitEvents: any) {
     this.emitEvents = emitEvents
 
@@ -59,6 +72,7 @@ export class SubmissionsController {
 
   async setDataFromProps(props: PropsFinancialStatementSubmissions): Promise<void> {
     this.companyId.value = props.companyId
+    this.company.value = new Company(props.company)
     this.searchText.value = props.searchText
     this.startDate.value = props.startDate
     this.endDate.value = props.endDate
@@ -70,6 +84,10 @@ export class SubmissionsController {
 
   setUfsRef(ufsRef: any): void {
     this.ufsRef = ufsRef
+  }
+
+  setSendPaymentNoticeRef(sendPaymentNoticeRef: any): void {
+    this.sendPaymentNoticeRef = sendPaymentNoticeRef
   }
 
   async init(): Promise<void> {
@@ -90,6 +108,8 @@ export class SubmissionsController {
         })
       })
 
+      promise.push(this.fetchAllFinancialStatementSetups())
+
       await Promise.all(promise)
     } catch (e) {
       if (e instanceof Error) {
@@ -103,6 +123,47 @@ export class SubmissionsController {
       }
     } finally {
       this.isLoading.value = false
+    }
+  }
+
+  async fetchAllFinancialStatementSetups(): Promise<void> {
+    try {
+      let repository = useCompanyFinancialStatementSetupStore()
+      let filter = new Filter()
+      filter.companyId = this.companyId.value
+      filter.takeAll = true
+      filter.sortOrder = "asc"
+      filter.orderBy = "created_at"
+
+      let response = await repository.fetchAll(filter)
+      this.companyFinancialStatementSetups.value = response.data.map((d: any) => {
+        return new CompanyFinancialStatementSetup(d)
+      })
+
+      let promises = this.companyFinancialStatementSetups.value
+        .filter((fs: any) => {
+          return !StringUtil.isNullOrEmpty(fs.authorisedPersonId)
+        })
+        .map((fs: any) => {
+          if (StringUtil.isNullOrEmpty(fs.authorisedPersonId)) {
+            return Promise.resolve()
+          }
+
+          let authorisedPersonRepository = useCompanyFinancialStatementAuthorisedPersonStore()
+          return authorisedPersonRepository.fetch(fs.authorisedPersonId ?? "").then((r) => {
+            if (r) {
+              fs.authorisedPerson = new CompanyFinancialStatementAuthorisedPerson(r)
+            }
+          })
+        })
+
+      if (promises.length > 0) {
+        await Promise.all(promises)
+      }
+    } catch (e) {
+      //
+    } finally {
+      //
     }
   }
 
@@ -141,6 +202,65 @@ export class SubmissionsController {
         return fs.financialPeriodId === financialPeriod.id
       }) ?? null
     )
+  }
+
+  getFinancialStatementSetup(financialPeriod: CompanyFinancialPeriod): CompanyFinancialStatementSetup | null {
+    if (this.companyFinancialStatementSetups.value.length <= 0) {
+      return null
+    }
+
+    let matched = this.companyFinancialStatementSetups.value.find((fs: any) => {
+      if (StringUtil.isNullOrEmpty(fs.authorisedPersonId) || fs.authorisedPerson === null) {
+        return false
+      }
+
+      return fs.authorisedPerson.financialPeriodId === financialPeriod.id
+    })
+
+    return matched ? new CompanyFinancialStatementSetup(matched) : null
+  }
+
+  getLodgementPaymentStatus(financialPeriod: CompanyFinancialPeriod): string {
+    let setup = this.getFinancialStatementSetup(financialPeriod)
+    if (setup) {
+      if (setup.status === "draft" || setup.status === "pending") {
+        return this.language.isMalay() ? "Menunggu Bayaran" : "Awaiting Payment"
+      }
+
+      let status = setup.status ?? "Pending"
+      if (!StringUtil.isNullOrEmpty(setup.paidAt)) {
+        let time = useLocalTime()
+        let paymentDate = time.formatDateTimeFull(setup.paidAt ?? "")
+
+        return this.language.isMalay() ? `Dibayar pada ${paymentDate}` : `Paid on ${paymentDate}`
+      }
+
+      return this.language.isMalay() ? "Menunggu Bayaran" : "Awaiting Payment"
+    }
+
+    let financialStatement = this.getFinancialStatement(financialPeriod)
+    if (StringUtil.isNullOrEmpty(financialStatement.id)) {
+      return this.language.isMalay() ? "Menunggu Bayaran" : "Awaiting Payment"
+    }
+
+    if (!StringUtil.isNullOrEmpty(financialStatement.paidAt)) {
+      let time = useLocalTime()
+      let paymentDate = time.formatDateTimeFull(financialStatement.paidAt ?? "")
+
+      return this.language.isMalay() ? `Dibayar pada ${paymentDate}` : `Paid on ${paymentDate}`
+    }
+
+    return this.language.isMalay() ? "Menunggu Bayaran" : "Awaiting Payment"
+  }
+
+  isPaid(financialPeriod: CompanyFinancialPeriod): boolean {
+    let setup = this.getFinancialStatementSetup(financialPeriod)
+    if (setup) {
+      return !StringUtil.isNullOrEmpty(setup.paidAt)
+    }
+
+    let financialStatement = this.getFinancialStatement(financialPeriod)
+    return !StringUtil.isNullOrEmpty(financialStatement.paidAt)
   }
 
   onFinancialPeriodClicked(financialPeriod: CompanyFinancialPeriod): void {
@@ -257,6 +377,31 @@ export class SubmissionsController {
 
   getIsShowGenerateUFSButton(financialPeriod: CompanyFinancialPeriod): boolean {
     return StringUtil.isNullOrEmpty(financialPeriod.financialStatementId) && !financialPeriod.isSubmittingAudited
+  }
+
+  async onPaymentOrderClicked(financialPeriod: CompanyFinancialPeriod): Promise<void> {
+    this.isAskingForPayment.value = true
+    this.selectedFinancialPeriodForPayment.value = new CompanyFinancialPeriod(financialPeriod)
+
+    let financialStatement = this.getFinancialStatement(financialPeriod)
+    if (StringUtil.isNullOrEmpty(financialStatement.id)) {
+      financialStatement.companyId = this.companyId.value ?? ""
+      financialStatement.financialPeriodId = financialPeriod.id
+      await financialStatement.create(useCompanyFinancialStatementStore())
+      this.companyFinancialStatements.value.push(financialStatement)
+    }
+
+    await nextTick()
+
+    if (this.sendPaymentNoticeRef) {
+      this.sendPaymentNoticeRef.show()
+    }
+
+    this.isAskingForPayment.value = false
+  }
+
+  isAskingForPaymentFor(financialPeriod: CompanyFinancialPeriod): boolean {
+    return this.isAskingForPayment.value && this.selectedFinancialPeriodForPayment.value.id === financialPeriod.id
   }
 
   async runOcr(financialPeriod: CompanyFinancialPeriod): Promise<void> {
@@ -552,5 +697,31 @@ export class SubmissionsController {
     return this.language.isMalay()
       ? "Ia akan dipaparkan di sini jika ada."
       : "It will be displayed here when it is available."
+  }
+
+  get sendPaymentNoticeProps(): PropsSendPaymentNotice {
+    let financialStatementSetup = this.getFinancialStatementSetup(this.selectedFinancialPeriodForPayment.value)
+    if (financialStatementSetup !== null) {
+      return new PropsSendPaymentNotice(
+        "Company",
+        this.companyId.value ?? "",
+        this.company.value.getFullName(),
+        "company_financial_statement_setup",
+        financialStatementSetup.id,
+        this.company.value.billingInfo(),
+        this.company.value.deliveryInfo()
+      )
+    }
+
+    let financialStatement = this.getFinancialStatement(this.selectedFinancialPeriodForPayment.value)
+    return new PropsSendPaymentNotice(
+      "Company",
+      this.companyId.value ?? "",
+      this.company.value.getFullName(),
+      "company_financial_statement",
+      financialStatement.id,
+      this.company.value.billingInfo(),
+      this.company.value.deliveryInfo()
+    )
   }
 }

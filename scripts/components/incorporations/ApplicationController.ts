@@ -106,6 +106,8 @@ export class ApplicationController {
   isShowProposedNames: Ref<boolean> = ref<boolean>(false)
   selectedProposedName: Ref<string> = ref<string>("")
 
+  isShowNameReservation: Ref<boolean> = ref<boolean>(false)
+
   isUploadingSection27: Ref<boolean> = ref<boolean>(false)
   isDownloadingSection27: Ref<boolean> = ref<boolean>(false)
   isShowSection27Actions: Ref<boolean> = ref<boolean>(false)
@@ -305,6 +307,7 @@ export class ApplicationController {
   resetAllDocumentValues(): void {
     this.isShowReceipt.value = false
     this.isShowSection27.value = false
+    this.isShowNameReservation.value = false
     this.isShowRegistration.value = false
     this.isShowCompletion.value = false
 
@@ -437,8 +440,6 @@ export class ApplicationController {
     this.resetAllDocumentValues()
     this.isShowSection27.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
-
-    console.log("this step called?")
   }
 
   onNameReservationStepClicked(name: string): void {
@@ -446,8 +447,6 @@ export class ApplicationController {
     this.isShowSection27.value = true
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
     this.selectedNameReservationApplication.value = name
-
-    console.log("step called?")
   }
 
   isSelectingNameReservationFor(name: string): boolean {
@@ -574,9 +573,8 @@ export class ApplicationController {
     }
   }
 
-  onShowSection27ActionClicked(name: string): void {
+  onShowSection27ActionClicked(): void {
     this.isShowSection27Actions.value = !this.isShowSection27Actions.value
-    this.selectedNameReservationApplication.value = name
   }
 
   async onDownloadSection27Clicked(): Promise<void> {
@@ -695,7 +693,7 @@ export class ApplicationController {
     }
   }
 
-  async onQueryNameReservation(nameOption: string): Promise<void> {
+  async onQueryNameReservation(): Promise<void> {
     this.isShowSection27Actions.value = false
 
     try {
@@ -705,19 +703,6 @@ export class ApplicationController {
 
       if (this.latestSection27Application) {
         this.applicationNameReservation.value = new ApplicationNameReservation(this.latestSection27Application)
-      } else {
-        this.applicationNameReservation.value = new ApplicationNameReservation()
-        this.applicationNameReservation.value.applicationIncorporateId = this.application.value.id
-        this.applicationNameReservation.value.name = nameOption
-          .replace("SDN BHD", "")
-          .replace("sdn bhd", "")
-          .replace("SDN. BHD.", "")
-          .replace("sdn. bhd.", "")
-        this.applicationNameReservation.value.nameType = "sdnbhd"
-        this.applicationNameReservation.value.status = "paid"
-        await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
-
-        this.application.value.nameReservationApplications.push(this.applicationNameReservation.value)
       }
 
       this.nameReservedQueriedPopup.show()
@@ -773,28 +758,48 @@ export class ApplicationController {
     }
   }
 
-  async onNameReservationRejectedClicked(nameOption: string): Promise<void> {
+  async onResubmitNameReservation(): Promise<void> {
     this.isShowSection27Actions.value = false
 
-    let matchedApplication = this.application.value.nameReservationApplications.find(
-      (anr: ApplicationNameReservation) => {
-        return anr.name === nameOption
-      }
-    )
-    if (!matchedApplication) {
-      this.applicationNameReservation.value = new ApplicationNameReservation()
-      this.applicationNameReservation.value.applicationIncorporateId = this.application.value.id
-      this.applicationNameReservation.value.name = nameOption
-        .replace("SDN BHD", "")
-        .replace("sdn bhd", "")
-        .replace("SDN. BHD.", "")
-        .replace("sdn. bhd.", "")
-      this.applicationNameReservation.value.nameType = "sdnbhd"
-      this.applicationNameReservation.value.status = "paid"
-      await this.applicationNameReservation.value.create(useApplicationNameReservationStore())
-
-      this.application.value.nameReservationApplications.push(this.applicationNameReservation.value)
+    if (this.isUpdatingSection27.value || !this.application.value || !this.latestSection27Application) {
+      return
     }
+
+    try {
+      this.applicationNameReservation.value = new ApplicationNameReservation(this.latestSection27Application)
+
+      if (!StringUtil.isNullOrEmpty(this.applicationNameReservation.value.id)) {
+        await this.applicationNameReservation.value.resubmitted(useApplicationNameReservationStore())
+
+        this.application.value.nameReservationApplications.forEach((nr: ApplicationNameReservation) => {
+          if (nr.id !== this.applicationNameReservation.value.id) {
+            return
+          }
+
+          nr.clone(this.applicationNameReservation.value)
+        })
+      }
+
+      let toastTitle = this.language.isMalay() ? "Maklumat telah dikemaskini." : "Your changes have been recorded."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      //
+    }
+  }
+
+  async onNameReservationRejectedClicked(): Promise<void> {
+    this.isShowSection27Actions.value = false
+
+    this.applicationNameReservation.value = new ApplicationNameReservation(this.latestSection27Application)
 
     if (this.nameReservationRejectedPopup) {
       this.nameReservationRejectedPopup.show()
@@ -828,7 +833,7 @@ export class ApplicationController {
     }
   }
 
-  async onApproveNameReservation(nameOption: string): Promise<void> {
+  async onApproveNameReservation(): Promise<void> {
     this.isShowSection27Actions.value = false
 
     if (this.isUpdatingSection27.value) {
@@ -847,7 +852,7 @@ export class ApplicationController {
         application.supportingDocumentId
       )
     } else {
-      this.selectedNameReservationForApproval.value = new NameReservationVariant(nameOption, "sdnbhd", null, null)
+      this.selectedNameReservationForApproval.value = new NameReservationVariant("", "sdnbhd", null, null)
     }
 
     await nextTick()
@@ -908,6 +913,90 @@ export class ApplicationController {
 
       this.selectedNameReservationForApproval.value = new NameReservationVariant("", "", null, null)
     }
+  }
+
+  hasNameReservationApplication(): boolean {
+    return this.nameReservations.length > 0
+  }
+
+  hasReservedName(name: string): boolean {
+    return this.section27Applications.some((nr: ApplicationNameReservation) => {
+      return nr.name === name
+    })
+  }
+
+  nameReservationFor(name: string): ApplicationNameReservation {
+    return (
+      this.section27Applications.find((nr: ApplicationNameReservation) => {
+        return nr.name === name
+      }) ?? new ApplicationNameReservation()
+    )
+  }
+
+  nameReservationSubmittedAt(name: string): string {
+    let nameReservation = this.nameReservationFor(name)
+    if (StringUtil.isNullOrEmpty(nameReservation.id)) {
+      return ""
+    }
+
+    let time = useLocalTime()
+    return time.formatDateOnlyFull(nameReservation.submittedAt)
+  }
+
+  isNameReservationQueried(name: string): boolean {
+    let nameReservation = this.nameReservationFor(name)
+    if (StringUtil.isNullOrEmpty(nameReservation.id)) {
+      return false
+    }
+
+    return (
+      !StringUtil.isNullOrEmpty(nameReservation.ssmQueryBm) || !StringUtil.isNullOrEmpty(nameReservation.ssmQueryEn)
+    )
+  }
+
+  nameReservationQueryDetails(name: string): string {
+    let nameReservation = this.nameReservationFor(name)
+    if (StringUtil.isNullOrEmpty(nameReservation.id)) {
+      return ""
+    }
+
+    return nameReservation.ssmQueryEn
+  }
+
+  nameReservationResubmittedAt(name: string): string {
+    let nameReservation = this.nameReservationFor(name)
+    if (StringUtil.isNullOrEmpty(nameReservation.id)) {
+      return ""
+    }
+
+    let time = useLocalTime()
+    return time.formatDateOnlyFull(nameReservation.resubmittedAt)
+  }
+
+  nameReservationResultAt(name: string): string {
+    let nameReservation = this.nameReservationFor(name)
+    if (StringUtil.isNullOrEmpty(nameReservation.resultAt)) {
+      return ""
+    }
+
+    let time = useLocalTime()
+    return time.formatDateOnlyFull(nameReservation.resultAt)
+  }
+
+  getResultDateLabel(name: string): string {
+    let nameReservation = this.nameReservationFor(name)
+    if (StringUtil.isNullOrEmpty(nameReservation.id)) {
+      return "Approved"
+    }
+
+    return nameReservation.ssmResult === "rejected" ? "Rejected" : "Approved"
+  }
+
+  onNameReservationDetailStepClicked(): void {
+    this.resetAllDocumentValues()
+    this.isShowNameReservation.value = true
+
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_INCORP_SECTION_27
   }
 
   // Registration Incorporation
@@ -1655,7 +1744,7 @@ export class ApplicationController {
   }
 
   get isNameReservationCompleted(): boolean {
-    return this.isNameApproved // TODO: Update
+    return this.hasSubmittedNameReservation || this.isRegistrationCompleted
   }
 
   get nameReservationLabel(): string {
@@ -1840,6 +1929,12 @@ export class ApplicationController {
       return []
     }
 
+    // let test = new ApplicationNameReservation()
+    // test.id = "1235345"
+    // test.name = this.application.value.name1.name
+    // test.submittedAt = "2026-11-16 10:00:00"
+    // return [test]
+
     let nameReservations = this.application.value.nameReservationApplications.map((nr: ApplicationNameReservation) => {
       return new ApplicationNameReservation(nr)
     })
@@ -1910,6 +2005,87 @@ export class ApplicationController {
       "Incorporation of New Sdn Bhd",
       this.latestSection27Application?.name ?? "PROPOSED NAME"
     )
+  }
+
+  get hasSubmittedNameReservation(): boolean {
+    return (
+      this.section27Applications.length > 0 &&
+      this.section27Applications.some((nr: ApplicationNameReservation) => {
+        return nr.ssmResult !== StatusConstants.REJECTED && nr.ssmResult !== StatusConstants.QUERIED
+      })
+    )
+  }
+
+  get submittedNameReservationNodeProps(): PropsServiceApplicationNode {
+    return new PropsServiceApplicationNode(
+      this.hasSubmittedNameReservation,
+      this.isNameApproved,
+      this.isShowNameReservation.value
+    )
+  }
+
+  get submittedNameReservationLabel(): string {
+    return this.language.isMalay() ? "Kelulusan Tempahan Nama" : "Approval of Name Reservation"
+  }
+
+  get submittedNameReservationSublabel(): string {
+    return this.language.isMalay() ? "Status Tempahan Nama di SSM" : "Status of Name Reserved with SSM"
+  }
+
+  get submittedNameReservationDetails(): string {
+    let nameReservation = this.latestSection27Application
+    if (!nameReservation) {
+      return ``
+    }
+
+    let time = useLocalTime()
+
+    let label = this.language.isMalay() ? "Dihantar pada" : "Submitted at"
+    let content = `
+      <b>${label} :</b> ${time.formatDateTimeFull(nameReservation.submittedAt)}
+    `
+
+    if (
+      !StringUtil.isNullOrEmpty(nameReservation.ssmQueryEn) ||
+      !StringUtil.isNullOrEmpty(nameReservation.ssmQueryBm)
+    ) {
+      let query =
+        !StringUtil.isNullOrEmpty(nameReservation.ssmQueryEn) && !this.language.isMalay()
+          ? nameReservation.ssmQueryEn
+          : nameReservation.ssmQueryBm
+
+      let queryLabel = this.language.isMalay() ? "Kueri" : "Query"
+      content = `${content}
+        <br>
+        <b>${queryLabel} :</b><br>${query}
+      `
+    }
+
+    if (!StringUtil.isNullOrEmpty(nameReservation.resubmittedAt)) {
+      let dateLabel = this.language.isMalay() ? "Dihantar Semula pada" : "Submitted at"
+      content = `${content}
+        <br>
+        <b>${dateLabel} :</b> ${time.formatDateTimeFull(nameReservation.resubmittedAt)}
+      `
+    }
+
+    if (nameReservation.status === "outcome") {
+      let applicationStatus =
+        nameReservation.ssmResult === "approved"
+          ? this.language.isMalay()
+            ? "Diluluskan pada"
+            : "Approved at"
+          : this.language.isMalay()
+            ? "Ditolak pada"
+            : "Rejected at"
+
+      content = `${content}
+        <br>
+        <b>${applicationStatus} :</b> ${time.formatDateOnlyFull(nameReservation.resultAt)}
+      `
+    }
+
+    return content
   }
 
   // registration of incoporation

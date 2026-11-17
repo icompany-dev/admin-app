@@ -1,0 +1,212 @@
+#pricings-all {
+  margin-top: 50px;
+
+  .pricings {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+
+    .pricing {
+      width: calc(100% - 20px);
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 20px;
+      padding: 10px;
+      border-radius: 10px;
+      transition: all 0.5s ease;
+
+      .name-price {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 5px;
+
+        .service-name {
+          font-size: 1.5rem;
+          font-weight: 600;
+          line-height: 1.8rem;
+          cursor: pointer;
+        }
+
+        .service-price {
+          font-size: 1.1rem;
+          font-weight: 600;
+          line-height: 1.3rem;
+        }
+      }
+
+      .service-price-details {
+        width: 60%;
+        padding: 20px;
+        background-color: var(--bs-gray-400);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        gap: 5px;
+
+        .service-price-detail {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+
+          .item {
+            max-width: 80%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-wrap: nowrap;
+          }
+
+          .searchable-dropdown {
+            width: 60%;
+          }
+
+          .price {
+            text-align: right;
+          }
+
+          &.optional {
+            width: 80%;
+          }
+
+          .form-control {
+            width: 60%;
+          }
+
+          &:has(.searchable-dropdown) {
+            align-items: centers;
+          }
+        }
+
+        .optional-title {
+          padding-top: 20px;
+        }
+
+        .service-price-configuration {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+
+          .item {
+            max-width: 70%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            text-wrap: nowrap;
+            font-weight: 600;
+          }
+
+          .price {
+            text-align: right;
+          }
+
+          &.first {
+            padding-top: 5px;
+            border-top: 1px solid var(--bs-gray-600);
+          }
+        }
+      }
+
+      .action-buttons {
+        justify-content: flex-start;
+      }
+
+      // &:hover {
+      //   width: calc(100% - 40px);
+      //   padding: 20px;
+      //   background-color: rgba(255, 255, 255, 0.3);
+      // }
+    }
+  }
+
+  #forms-searchable-dropdown {
+    .dropdown-menu {
+      &.show {
+        z-index: 99 !important;
+      }
+    }
+
+    .label {
+      padding: 5px;
+    }
+  }
+
+  .labels {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 20px;
+
+    .label {
+      width: calc(100% - 40px);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+      padding: 20px;
+      border-radius: 10px;
+      transition: all 0.5s ease;
+
+      &:hover {
+        width: calc(100% - 40px);
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .label-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+
+        span {
+          font-size: 1.2rem;
+        }
+      }
+
+      .action-buttons {
+        justify-content: flex-start;
+      }
+
+      &.empty {
+        border: 1px dashed var(--bs-gray-600);
+        cursor: pointer;
+
+        .label-title {
+          color: var(--bs-gray-600);
+        }
+
+        .form-control {
+          width: calc(100% - 40px);
+          background-color: var(--bs-white);
+          padding: 4px 15px;
+          border: 1px solid var(--bs-gray-500);
+          text-align: left;
+          border-radius: 5px;
+        }
+
+        &.in-focus {
+          .label-title {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+            gap: 10px;
+            color: var(--color-text-primary);
+          }
+        }
+      }
+    }
+  }
+}

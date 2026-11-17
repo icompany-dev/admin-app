@@ -349,23 +349,8 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
     try {
       this.isCompleting.value = true
-      // Generate all documents and put in Company Documents
-      this.emitEvents("convertToForms")
-      // let repository = useCompanyStore()
-      // await repository.postService(this.target.value, this.application.value.id)
-      // if (repository.error !== null) {
-      //   throw repository.error
-      // }
-      // let toastTitle = this.language.isMalay()
-      //   ? "Pemindahan Saham Syarikat telah selesai dan dikemaskinikan."
-      //   : "Your Transfer of Shares is completed and updated."
-      // let toastMessage = this.language.isMalay()
-      //   ? "Anda akan dibawa ke halaman Sdn Bhd."
-      //   : "You will be redirected to the Sdn Bhd page."
-      // let toast = new Toast(toastTitle, toastMessage)
-      // toast.success()
-      // let router = useRouter()
-      // router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+
+      this.onProceedPostCompleted()
     } catch (e) {
       let error = new Error()
       error.setForCUD()
@@ -381,20 +366,18 @@ export class TransferOfShareApplicationController extends ApplicationController<
 
     try {
       let repository = useCompanyStore()
-      await repository.postService(this.target.value, this.application.value.id)
+      await repository.postService(this.target.value, this.application.value.id, false)
       if (repository.error !== null) {
         throw repository.error
       }
       let toastTitle = this.language.isMalay()
         ? "Permohonan telah Selesai. Maklumat Saham Syarikat telah dikemaskini."
         : "Application is Completed. The Company Shares has been updated."
-      let toastMessage = this.language.isMalay()
-        ? "Anda akan dibawa ke muka Sdn Bhd."
-        : "You will be redirected to the Sdn Bhd page."
+      let toastMessage = ""
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
       let router = useRouter()
-      router.push({ path: `/sdnbhds/${this.application.value.companyId}` })
+      router.push({ path: `services/transfer-of-shares` })
     } catch (e) {
       let error = new Error()
       error.setForCUD()

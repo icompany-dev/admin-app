@@ -9,7 +9,7 @@ export interface IRepositoryStore {
   remove(id: string): Promise<any>
   submit(id: string): Promise<any>
   ship(id: string, trackingNumber: string, trackingUrl: string): Promise<any>
-  complete(id: string): Promise<any>
+  complete(id: string, isNotifyUser: boolean): Promise<any>
   ongoing(companyId: string): Promise<any>
   latestCompleted(companyId: string): Promise<any>
   latestApplication(companyId: string): Promise<any>

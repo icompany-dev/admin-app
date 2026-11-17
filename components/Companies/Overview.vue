@@ -9,11 +9,50 @@
             <td>:</td>
             <td>
               {{ controller.incorporatedAtDate }}
+
+              <Transition name="fade">
+                <span
+                  v-if="controller.hasAnnualReturnDue"
+                  class="annual-return-bell"
+                  :title="controller.annualReturnDues"
+                >
+                  <i class="fa-solid fa-bell" />
+                </span>
+              </Transition>
+
               <div
-                class="annual-returs-due"
                 v-if="controller.hasAnnualReturnDue"
+                class="annual-returs-due"
               >
                 {{ controller.annualReturnDues }}
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>{{ controller.businessDescriptionLabel }}</td>
+            <td>:</td>
+            <td>
+              {{ controller.businessDescription || "-" }}
+              <CopyValue
+                v-if="controller.businessDescription"
+                :value="controller.businessDescription"
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>{{ controller.msicCodesLabel }}</td>
+            <td>:</td>
+            <td>
+              <span v-if="controller.msicCodeAssigns.length === 0">-</span>
+
+              <div
+                v-for="(msicCodeAssign, i) in controller.msicCodeAssigns"
+                :key="i"
+              >
+                <span class="fa-solid fa-dot" />
+                {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
+                <CopyValue :value="msicCodeAssign.msicCode.code" />
               </div>
             </td>
           </tr>
@@ -377,9 +416,74 @@
               </template>
             </td>
           </tr>
+
+          <tr>
+            <td>{{ controller.tagsLabel }}</td>
+            <td>:</td>
+            <td>
+              <Tags
+                v-if="controller.company.value.id"
+                v-bind="controller.tagsProps"
+              />
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
+
+    <div class="company-overview-section">
+      <div class="overview-title">
+        {{ controller.annualReturnLabel }}
+      </div>
+
+      <div class="annual-return-compliance">
+        <div
+          v-for="(group, groupIndex) in controller.annualReturnGroups"
+          :key="groupIndex"
+          class="compliance"
+        >
+          <div class="label">
+            {{ group.label }}
+          </div>
+
+          <div v-if="group.records.length === 0">-</div>
+
+          <ul v-else>
+            <li
+              v-for="record in group.records"
+              :key="record.year"
+            >
+              {{ record.date }}
+
+              <span
+                v-if="controller.getAnnualReturnStatus(record) === 'overdue'"
+                class="text-danger"
+                title="Not Paid & Overdue"
+              >
+                <i class="fa-solid fa-circle-exclamation" />
+              </span>
+
+              <span
+                v-if="controller.getAnnualReturnStatus(record) === 'pending'"
+                class="text-warning"
+                title="Pending Lodgement"
+              >
+                <i class="fa-solid fa-triangle-exclamation" />
+              </span>
+
+              <span
+                v-if="controller.getAnnualReturnStatus(record) === 'lodged'"
+                class="text-success"
+                title="Lodged"
+              >
+                <i class="fa-solid fa-check" />
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <div class="company-overview-section">
       <div class="company-overview-section-split">
         <div class="split-section-item">
@@ -479,6 +583,7 @@
   import AddressInput from "@/components/Forms/AddressInput.vue"
   import Branch from "./Branch.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
+  import Tags from "../Tags/Tags.vue"
   import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"

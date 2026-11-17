@@ -23,10 +23,6 @@
               </div>
             </div>
             <div class="application-details">
-              <!-- <template v-for="invitation in controller.auditorInvitations">
-                <Auditor v-bind="controller.getInvitationDetailProp(invitation)" />
-              </template> -->
-
               <template v-if="controller.hasOtherRequirements">
                 <b>{{ controller.itemsToPrepareLabel }}</b>
                 <ol>
@@ -127,6 +123,8 @@
           <template #nodeActions>
             <button
               class="btn btn-pill btn-submit"
+              :class="{ 'is-loading': controller.isCompleting.value }"
+              :disabled="controller.isCompleting.value"
               @click="controller.onCompleteClicked()"
             >
               {{ controller.markCompletedLabel }}

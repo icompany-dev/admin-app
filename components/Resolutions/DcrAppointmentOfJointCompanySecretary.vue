@@ -37,6 +37,26 @@
       type: String,
       required: true,
     },
+    selectedDirectorId: {
+      type: String,
+      default: "",
+    },
+    secretaryName: {
+      type: String,
+      default: "",
+    },
+    secretaryIc: {
+      type: String,
+      default: "",
+    },
+    secretaryLicense: {
+      type: String,
+      default: "",
+    },
+    secretaryCertificate: {
+      type: String,
+      default: "",
+    },
   })
 
   const emit = defineEmits([])
@@ -56,6 +76,46 @@
     documentRef,
     (newVal) => {
       controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => props.selectedDirectorId,
+    (newVal) => {
+      controller.setSelectedDirectorId(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => props.secretaryName,
+    (newVal) => {
+      controller.setSecretaryName(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => props.secretaryIc,
+    (newVal) => {
+      controller.setSecretaryIc(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => props.secretaryLicense,
+    (newVal) => {
+      controller.setSecretaryLicense(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => props.secretaryCertificate,
+    (newVal) => {
+      controller.setSecretaryCertificate(newVal)
     },
     { immediate: true }
   )

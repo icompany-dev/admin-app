@@ -31,7 +31,7 @@
     transform: scaleY(0);
     transform-origin: top;
     opacity: 0;
-    background-color: var(--bs-white);
+    background-color: var(--bs-white) !important;
     border-radius: 5px;
     box-shadow: var(--box-shadow);
     transition: all 0.7s ease 0.2s;
