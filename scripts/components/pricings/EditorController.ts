@@ -307,9 +307,9 @@ export class EditorController {
       ? this.language.isMalay()
         ? this.isService.value
           ? "Servis"
-          : "Service"
+          : "Application"
         : this.isService.value
-          ? "Aplikasi"
+          ? "Service"
           : "Application"
       : this.servicePricing.value.serviceName
 

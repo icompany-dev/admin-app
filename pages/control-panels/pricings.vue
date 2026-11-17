@@ -15,6 +15,12 @@
         >
           <i class="fa-solid fa-circle-plus" />
         </div>
+        <div
+          class="view-services"
+          @click="pageController.onViewServicesClicked()"
+        >
+          View Services
+        </div>
       </div>
     </div>
     <All

@@ -17,6 +17,7 @@ export class AllController {
   editorRef: any | null = null
   confirmToDeleteRef: any | null = null
   groupedThemeRef: any | null = null
+  servicesRef: any | null = null
 
   language = useLanguage()
 
@@ -50,6 +51,10 @@ export class AllController {
 
   setGroupedThemeRef(groupedThemeRef: any): void {
     this.groupedThemeRef = groupedThemeRef
+  }
+
+  setServicesRef(servicesRef: any): void {
+    this.servicesRef = servicesRef
   }
 
   async init(): Promise<void> {
@@ -268,6 +273,29 @@ export class AllController {
     this.moduleApplications.value = this.moduleApplications.value.filter((application: LabelItem) => {
       return application.id !== labelItemId
     })
+  }
+
+  showServices(): void {
+    if (this.servicesRef) {
+      this.servicesRef.show()
+    }
+  }
+
+  onEditServices(servicePricing: ServicePricing): void {
+    this.servicePricingForEditor.value = new ServicePricing(servicePricing)
+    this.isAddingService.value = true
+
+    if (this.editorRef) {
+      this.editorRef.show()
+    }
+  }
+
+  onServicePricingUpdated(servicePricing: ServicePricing): void {
+    if (this.isAddingService.value) {
+      if (this.servicesRef) {
+        this.servicesRef.handlePostCreateUpdate(servicePricing)
+      }
+    }
   }
 
   //getters

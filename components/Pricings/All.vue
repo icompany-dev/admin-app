@@ -82,6 +82,7 @@
       <Editor
         v-bind="controller.editorProps"
         ref="editorRef"
+        @updated="controller.onServicePricingUpdated($event)"
       />
       <ConfirmToDelete
         :remove-item-name="controller.itemToRemoveName"
@@ -97,6 +98,11 @@
         @applications-added="controller.onApplicationsUpdated($event)"
         @application-removed="controller.onApplicationRemoved($event)"
       />
+      <Services
+        ref="servicesRef"
+        @edit="controller.onEditServices($event)"
+        @create="controller.addNewPricing()"
+      />
     </div>
   </div>
 </template>
@@ -109,6 +115,7 @@
   import ModuleApplications from "./ModuleApplications.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import SearchableDropdown from "../Forms/SearchableDropdown.vue"
+  import Services from "./Services.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
   import { AllController } from "~/scripts/components/pricings/AllController"
   import { NumberUtil } from "~/scripts/utils/Number"
@@ -130,6 +137,7 @@
   const confirmToDeleteRef = ref(null)
   const confirmToDeleteLabelRef = ref(null)
   const groupedThemeRef = ref(null)
+  const servicesRef = ref(null)
 
   const controller = new AllController(emit)
 
@@ -179,8 +187,17 @@
     { immediate: true }
   )
 
+  watch(
+    servicesRef,
+    (newVal) => {
+      controller.setServicesRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     addNewPricing: controller.addNewPricing.bind(controller),
+    showServices: controller.showServices.bind(controller),
   })
 </script>
 
