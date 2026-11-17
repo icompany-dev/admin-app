@@ -11,6 +11,7 @@ import { StringUtil } from "~/scripts/utils/String"
 
 export class EditorController {
   servicePricing: Ref<ServicePricing> = ref<ServicePricing>(new ServicePricing())
+  isService: Ref<boolean> = ref<boolean>(false)
 
   language = useLanguage()
 
@@ -39,6 +40,10 @@ export class EditorController {
     if (this.servicePricing.value.breakdowns.length <= 0) {
       this.servicePricing.value.breakdowns.push(new ServicePricingBreakdown())
     }
+  }
+
+  setIsService(isService: boolean): void {
+    this.isService.value = isService
   }
 
   async fetchServicePricings(): Promise<void> {
@@ -300,8 +305,12 @@ export class EditorController {
 
     let serviceName = StringUtil.isNullOrEmpty(this.servicePricing.value.serviceName)
       ? this.language.isMalay()
-        ? "Harga"
-        : "Pricing"
+        ? this.isService.value
+          ? "Servis"
+          : "Service"
+        : this.isService.value
+          ? "Aplikasi"
+          : "Application"
       : this.servicePricing.value.serviceName
 
     return `${action} ${serviceName}`

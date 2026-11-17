@@ -32,6 +32,8 @@ export class AllController {
   isSubmittingNewModule: Ref<boolean> = ref<boolean>(false)
   newModule: Ref<Label> = ref<Label>(new Label())
 
+  isAddingService: Ref<boolean> = ref<boolean>(false)
+
   constructor(emitEvents: any | null) {
     this.emitEvents = emitEvents
 
@@ -112,6 +114,18 @@ export class AllController {
   }
 
   addNewPricing(): void {
+    this.isAddingService.value = true
+    this.servicePricingForEditor.value = new ServicePricing()
+
+    if (this.editorRef) {
+      this.editorRef.show()
+    }
+  }
+
+  onAddNewApplication(): void {
+    this.isAddingService.value = false
+    this.servicePricingForEditor.value = new ServicePricing()
+
     if (this.editorRef) {
       this.editorRef.show()
     }
@@ -247,7 +261,7 @@ export class AllController {
   }
 
   get editorProps(): PropsServicePricingEditor {
-    return new PropsServicePricingEditor(this.servicePricingForEditor.value)
+    return new PropsServicePricingEditor(this.servicePricingForEditor.value, this.isAddingService.value)
   }
 
   get itemToRemoveName(): string {

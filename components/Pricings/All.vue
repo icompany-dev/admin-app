@@ -95,7 +95,7 @@
       <Grouped
         ref="groupedThemeRef"
         v-bind="controller.groupedServicePricingProps"
-        @add-pricing="controller.addNewPricing()"
+        @add-pricing="controller.onAddNewApplication()"
         @hide="controller.onCancelModuleClicked()"
         @label-updated="controller.onModuleUpdated($event)"
       />
