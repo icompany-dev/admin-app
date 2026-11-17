@@ -27,8 +27,6 @@ export class ModuleApplicationsController {
       return new LabelItem(d)
     })
 
-    console.log("in props", this.applications.value)
-
     this.fetchServicePricings()
   }
 
