@@ -36,4 +36,13 @@ export class LabelRepository extends Repository<Label> {
       throw e
     }
   }
+
+  async fetchForServicePricings(): Promise<any> {
+    try {
+      let response = this.get(`${this.singleResourceUrl}/service-pricings`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }

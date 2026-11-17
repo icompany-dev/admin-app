@@ -33,6 +33,21 @@ export const useLabelStore = defineStore("label", () => {
     }
   }
 
+  async function fetchForServicePricings(): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const response = $repositories.labels.fetchForServicePricings()
+      return response
+    } catch (e) {
+      error.value = `Failed to fetch for service pricings: ${e}`
+      return []
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   async function addItem(data: object): Promise<any> {
     isLoading.value = true
     error.value = null
@@ -75,5 +90,6 @@ export const useLabelStore = defineStore("label", () => {
     fetchItemsForLabel,
     addItem,
     deleteItem,
+    fetchForServicePricings,
   }
 })
