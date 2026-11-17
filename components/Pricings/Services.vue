@@ -24,6 +24,7 @@
               </div>
               <template v-if="!controller.tableDataFetcher.value.isLoading">
                 <div class="services-list">
+                  <div class="service-count">Number of Services: {{ controller.totalRecords }}</div>
                   <div class="search-container">
                     <input
                       type="text"
@@ -55,6 +56,12 @@
                         >
                           <i class="fa-regular fa-edit" />
                         </div>
+                        <div
+                          class="clickable remove"
+                          @click="controller.onRemoveClicked(servicePricing)"
+                        >
+                          <i class="fa-regular fa-trash-alt" />
+                        </div>
                       </div>
                       <Pricing v-bind="controller.getPropsPricing(servicePricing)" />
                     </div>
@@ -70,10 +77,16 @@
         </Transition>
       </div>
     </Teleport>
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :remove-item-name="controller.itemRemoveName"
+      @proceed="controller.onProceedRemove()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Pricing from "./Pricing.vue"
   import TablePagination from "../Paginations/TablePagination.vue"
@@ -83,7 +96,17 @@
 
   const emit = defineEmits(["edit", "create"])
 
+  const confirmToDeleteRef = ref(null)
+
   const controller = new ServicesController(emit)
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
+    },
+    { immediate: true }
+  )
 
   defineExpose({
     show: controller.show.bind(controller),

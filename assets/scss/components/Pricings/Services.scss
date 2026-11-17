@@ -11,6 +11,12 @@
     align-items: stretch;
     gap: 20px;
 
+    .service-count {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--bs-icompany-purple);
+    }
+
     .search-container {
       width: 100%;
       display: flex;
@@ -87,8 +93,15 @@
 
         .clickable {
           cursor: pointer;
-          color: var(--bs-icompany-blue);
           font-size: 16px;
+
+          &.edit {
+            color: var(--bs-icompany-blue);
+          }
+
+          &.remove {
+            color: var(--bs-danger);
+          }
         }
       }
 

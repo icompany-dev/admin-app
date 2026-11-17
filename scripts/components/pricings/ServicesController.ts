@@ -1,5 +1,7 @@
+import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { TableDataFetcher } from "~/scripts/library/TableDataFetcher"
+import { Toast } from "~/scripts/library/Toast"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
 import { PropsPricing } from "~/scripts/props/PropsPricing"
 import { PropsTablePagination } from "~/scripts/props/PropsTablePagination"
@@ -23,11 +25,19 @@ export class ServicesController {
 
   language = useLanguage()
 
+  confirmToDeleteRef: any | null = null
+
+  servicePricingToRemove: Ref<ServicePricing> = ref<ServicePricing>(new ServicePricing())
+
   constructor(emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.tableDataFetcher.value.filter.takeAll = true
     this.tableDataFetcher.value.fetchData()
+  }
+
+  setConfirmToDeleteRef(confirmToDeleteRef: any): void {
+    this.confirmToDeleteRef = confirmToDeleteRef
   }
 
   show(): void {
@@ -61,7 +71,6 @@ export class ServicesController {
   async onGoToPage(page: number): Promise<void> {
     let divTarget = document.getElementById("services-container")
     if (divTarget) {
-      console.log("target found", divTarget)
       divTarget.scrollIntoView({
         behavior: "smooth",
         block: "start",
@@ -102,6 +111,42 @@ export class ServicesController {
   onCreateNew(): void {
     this.hide()
     this.emitEvents("create")
+  }
+
+  onRemoveClicked(servicePricing: ServicePricing): void {
+    this.servicePricingToRemove.value = new ServicePricing(servicePricing)
+
+    if (this.confirmToDeleteRef) {
+      this.confirmToDeleteRef.show()
+    }
+  }
+
+  async onProceedRemove(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.servicePricingToRemove.value.id)) {
+      return
+    }
+
+    try {
+      this.tableDataFetcher.value.data = this.tableDataFetcher.value.data.filter((sp: ServicePricing) => {
+        return sp.id !== this.servicePricingToRemove.value.id
+      })
+
+      await this.servicePricingToRemove.value.remove(useServicePricingStore())
+
+      let toastTitle = this.language.isMalay() ? "Servis telah dipadamkan." : "The Service is removed."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.isMalay = this.language.isMalay()
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    }
   }
 
   get servicePricings(): ServicePricing[] {
@@ -174,5 +219,9 @@ export class ServicesController {
 
   get loaderSublabel(): string {
     return this.language.isMalay() ? "Servis" : "Services"
+  }
+
+  get itemRemoveName(): string {
+    return this.language.isMalay() ? "Servis" : "Service"
   }
 }
