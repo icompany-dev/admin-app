@@ -13,75 +13,79 @@
           >
             <div class="drawer-title">{{ controller.heading }}</div>
             <div class="drawer-content">
-              <div class="grouped-pricing">
-                <LoaderPrepare
-                  v-if="controller.isFetchingPricings.value"
-                  :label="controller.loaderLabel"
-                  :sublabel="controller.loaderSublabel"
-                />
-                <template v-if="!controller.isFetchingPricings.value">
-                  <div class="group-items">
-                    <div
-                      class="group-item"
-                      v-for="(labelItem, x) in controller.existingLabelItems.value"
-                    >
+              <LoaderPrepare
+                v-if="controller.isFetchingPricings.value"
+                :label="controller.loaderLabel"
+                :sublabel="controller.loaderSublabel"
+              />
+              <div
+                class="grouped-pricing"
+                v-if="
+                  !controller.isFetchingPricings.value &&
+                  (controller.existingLabelItems.value.length > 0 || controller.labelItems.value.length > 0)
+                "
+              >
+                <div class="group-items">
+                  <div
+                    class="group-item"
+                    v-for="(labelItem, x) in controller.existingLabelItems.value"
+                  >
+                    <div class="remove">
+                      <span
+                        class="clickable"
+                        @click="controller.onRemoveLabelItem(labelItem)"
+                      >
+                        <i class="fa-regular fa-trash-alt" />
+                      </span>
+                    </div>
+                    <div class="name">
+                      <Pricing
+                        :service-pricing="controller.getServicePricing(labelItem)"
+                        :is-show-service-name="true"
+                      />
+                    </div>
+                  </div>
+                  <template v-for="(newLabelItem, i) in controller.labelItems.value">
+                    <div class="group-item">
                       <div class="remove">
                         <span
                           class="clickable"
-                          @click="controller.onRemoveLabelItem(labelItem)"
+                          @click="controller.onRemoveFromAddToTheme(i)"
                         >
                           <i class="fa-regular fa-trash-alt" />
                         </span>
                       </div>
                       <div class="name">
-                        <Pricing
-                          :service-pricing="controller.getServicePricing(labelItem)"
-                          :is-show-service-name="true"
+                        <SearchableDropdown
+                          :options="controller.getPricingOptions(i)"
+                          :selected-item-name="controller.getSelectedServicePricingName(i)"
+                          :label-key="'label'"
+                          :value-key="'value'"
+                          @selected="controller.onSelectedPricingId($event, i)"
+                          @search="controller.onSearch($event, i)"
                         />
+
+                        <template v-if="controller.getSelectedPricingFor(i)">
+                          <Pricing v-bind="controller.getPropsPricingFor(i)" />
+                        </template>
                       </div>
                     </div>
-                    <template v-for="(newLabelItem, i) in controller.labelItems.value">
-                      <div class="group-item">
-                        <div class="remove">
-                          <span
-                            class="clickable"
-                            @click="controller.onRemoveFromAddToTheme(i)"
-                          >
-                            <i class="fa-regular fa-trash-alt" />
-                          </span>
-                        </div>
-                        <div class="name">
-                          <SearchableDropdown
-                            :options="controller.getPricingOptions(i)"
-                            :selected-item-name="controller.getSelectedServicePricingName(i)"
-                            :label-key="'label'"
-                            :value-key="'value'"
-                            @selected="controller.onSelectedPricingId($event, i)"
-                            @search="controller.onSearch($event, i)"
-                          />
-
-                          <template v-if="controller.getSelectedPricingFor(i)">
-                            <Pricing v-bind="controller.getPropsPricingFor(i)" />
-                          </template>
-                        </div>
-                      </div>
-                    </template>
-                  </div>
-                  <div class="add-items">
-                    <button
-                      class="btn btn-submit invert"
-                      @click="controller.onAddPricingClicked()"
-                    >
-                      + Add Application
-                    </button>
-                    <button
-                      class="btn btn-submit invert"
-                      @click="controller.onAddNew()"
-                    >
-                      Create New Application
-                    </button>
-                  </div>
-                </template>
+                  </template>
+                </div>
+              </div>
+              <div class="add-items">
+                <button
+                  class="btn btn-submit invert"
+                  @click="controller.onAddPricingClicked()"
+                >
+                  + Add Application
+                </button>
+                <button
+                  class="btn btn-submit invert"
+                  @click="controller.onAddNew()"
+                >
+                  Create New Application
+                </button>
               </div>
               <div class="drawer-footer">
                 <div class="cta">

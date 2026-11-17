@@ -59,13 +59,9 @@ export class ServicePricing implements IModel<ServicePricing> {
     this.isDefault = data.is_default
     this.breakdowns =
       data.breakdowns && Array.isArray(data.breakdowns)
-        ? data.breakdowns
-            .map((bd: any) => {
-              return new ServicePricingBreakdown(bd)
-            })
-            .filter((bd: ServicePricingBreakdown) => {
-              return bd.price > 0
-            })
+        ? data.breakdowns.map((bd: any) => {
+            return new ServicePricingBreakdown(bd)
+          })
         : []
     this.mandatoryServices =
       data.mandatory_services && Array.isArray(data.mandatory_services)

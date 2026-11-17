@@ -201,6 +201,7 @@ export class AllController {
   }
 
   onAddNewModuleClicked(): void {
+    this.moduleInView.value = new Label()
     this.newModule.value = new Label()
     this.isAddingNewModule.value = true
   }

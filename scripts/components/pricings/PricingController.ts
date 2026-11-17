@@ -40,7 +40,11 @@ export class PricingController {
   get pricingDetails(): PricingDetail[] {
     let details: PricingDetail[] = []
 
-    this.servicePricing.value.breakdowns.forEach((spb: ServicePricingBreakdown) => {
+    let breakdowns = this.servicePricing.value.breakdowns.filter((spb: ServicePricingBreakdown) => {
+      return spb.price > 0
+    })
+
+    breakdowns.forEach((spb: ServicePricingBreakdown) => {
       details.push(new PricingDetail(spb.itemName, spb.price))
     })
 
