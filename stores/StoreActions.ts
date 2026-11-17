@@ -150,10 +150,10 @@ export function useStoreActions<T extends { id?: string | number }>(
     }
   }
 
-  async function complete(id: string | null) {
+  async function complete(id: string | null, isNotifyUser: boolean) {
     setProcessingState(true)
     try {
-      const response = await repository.complete<any>(id)
+      const response = await repository.complete<any>(id, isNotifyUser)
       return response.data
     } catch (e: any) {
       setProcessingState(false, e.message || `Failed to complete item with ID: ${id}.`)

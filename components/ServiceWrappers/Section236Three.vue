@@ -17,7 +17,10 @@
         />
       </TransitionGroup>
     </div>
-    <ActionTray :actions="controller.actionTrayElements" />
+    <ActionTray
+      :actions="controller.actionTrayElements"
+      v-if="props.isShowTray"
+    />
   </div>
 </template>
 
@@ -38,6 +41,10 @@
     registrationNumberOld: {
       type: String,
       required: true,
+    },
+    isShowTray: {
+      type: Boolean,
+      default: true,
     },
   })
 
@@ -80,6 +87,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    getPdfPages: controller.getPdfPages.bind(controller),
+  })
 </script>
 
 <style lang="scss">

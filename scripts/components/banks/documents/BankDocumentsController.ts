@@ -381,7 +381,7 @@ export class BankDocumentsController {
           break
 
         case this.documentFetcher.value.section58FileUrl:
-          filename = "Section 58 - Register of Directors.pdf"
+          filename = "Section 58 & 236(2) - Appointment of First Company Secretary.pdf"
           break
 
         case this.documentFetcher.value.section78FileUrl:

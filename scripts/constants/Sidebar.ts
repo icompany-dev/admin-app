@@ -54,11 +54,12 @@ export class SidebarGroup {
 export class PageSidebar {
   static commandCentre: Sidebar = new Sidebar("Command Centre", "Pusat Kawalan", "", false)
   static analytics: Sidebar = new Sidebar("Analytics", "Analytics", "command-centre/analytics", false)
+  static payments: Sidebar = new Sidebar("Transactions", "Transaction", "transactions", false)
   static announcements: Sidebar = new Sidebar("Announcements", "Announcements", "command-centre/announcements", false)
   static dashboardGroup: SidebarGroup = new SidebarGroup(
     "Dashboard",
     "Dashboard",
-    [this.commandCentre, this.analytics],
+    [this.commandCentre, this.analytics, this.payments],
     true
   )
 
@@ -250,28 +251,28 @@ export class PageSidebar {
     [this.personsDraft, this.personsRegistered, this.personsAuditors, this.personsAccountants]
   )
 
-  static controlPanelPricing: Sidebar = new Sidebar("Pricing", "Harga", "control-panel/pricings", false)
-  static controlPanelMailroom: Sidebar = new Sidebar("Mail Room", "Bilik Surat", "control-panel/mail-room", false)
+  static controlPanelPricing: Sidebar = new Sidebar("Pricing", "Harga", "control-panels/pricings", false)
+  static controlPanelMailroom: Sidebar = new Sidebar("Mail Room", "Bilik Surat", "control-panels/mail-room", false)
   static controlPanelLocation: Sidebar = new Sidebar(
     "Location and Postal Address",
     "Lokasi dan Alamat Menyurat",
-    "control-panel/postal-location",
+    "control-panels/postal-location",
     true
   )
   static controlPanelServiceGeneralSettings: Sidebar = new Sidebar(
     "Service General Settings",
     "Tetapan Umum Perkhidmatan",
-    "control-panel/service-settings",
+    "control-panels/service-settings",
     false
   )
-  static controlPanelRonda: Sidebar = new Sidebar("RONDA", "RONDA", "control-panel/ronda", false)
+  static controlPanelRonda: Sidebar = new Sidebar("RONDA", "RONDA", "control-panels/ronda", false)
   static controlPanelMSICCode: Sidebar = new Sidebar(
     "MSIC Codes Assist",
     "Bantuan Kod MSIC",
-    "control-panel/msic-code-assists",
+    "control-panels/msic-code-assists",
     true
   )
-  static controlPanelAppearance: Sidebar = new Sidebar("Appearance", "Tetapan Rupa", "control-panel/appearance", true)
+  static controlPanelAppearance: Sidebar = new Sidebar("Appearance", "Tetapan Rupa", "control-panels/appearance", true)
   static controlPanelGroup: SidebarGroup = new SidebarGroup("Control Panel", "Panel Tetapan", [
     this.controlPanelPricing,
     this.controlPanelMailroom,

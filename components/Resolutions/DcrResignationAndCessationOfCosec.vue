@@ -85,6 +85,8 @@
 <script setup lang="ts">
   import { StringUtil } from "~/scripts/utils/String.js"
   import Resolution from "./Resolution.vue"
+  import type { PropType } from "vue"
+  import type { Director } from "~/scripts/models/Director"
   import { DcrResignationAndCessationOfCosecController } from "~/scripts/components/resolutions/DcrResignationAndCessationOfCosecController"
 
   const props = defineProps({
@@ -92,9 +94,13 @@
       type: String,
       required: true,
     },
-    directorId: {
-      type: String,
-      default: "",
+    directors: {
+      type: Array as PropType<Director[]>,
+      default: () => [],
+    },
+    directorIds: {
+      type: Array as PropType<string[]>,
+      default: () => [],
     },
     resigningSecretaryName: {
       type: String,
@@ -126,9 +132,17 @@
   const controller = new DcrResignationAndCessationOfCosecController()
 
   watch(
-    () => [props.companyId, props.directorId] as const,
-    ([companyId, directorId]) => {
-      controller.load(companyId, directorId)
+    () => props.companyId,
+    (companyId) => {
+      void controller.load(companyId)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => [props.directors, props.directorIds] as const,
+    ([directors, directorIds]) => {
+      controller.setSelectedDirectors(directors, directorIds)
     },
     { immediate: true }
   )

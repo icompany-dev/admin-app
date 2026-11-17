@@ -223,7 +223,7 @@ export class Company implements IModel<Company> {
     const dayjs = useDayjs()
     const subscriptionEndDate = dayjs(this.subscription.subscriptionEndDate)
 
-    return subscriptionEndDate.format("D MMM YYYY")
+    return subscriptionEndDate.format("D MMMM YYYY")
   }
 
   async updateLogoFile(fileId: string, repository: ReturnType<typeof useCompanyStore>): Promise<void> {

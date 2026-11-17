@@ -1,0 +1,117 @@
+#pricings-pricing {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5px;
+
+  .service-name {
+    font-weight: 600;
+  }
+
+  .service-pricing-details {
+    width: 100%;
+  }
+
+  .service-price-details {
+    width: 100%;
+    padding: 0px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 5px;
+
+    .service-price-detail {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      .item {
+        max-width: 80%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-wrap: nowrap;
+      }
+
+      .searchable-dropdown {
+        width: 60%;
+      }
+
+      .price {
+        text-align: right;
+      }
+
+      &.optional {
+        width: 80%;
+      }
+
+      .form-control {
+        width: 60%;
+      }
+
+      &:has(.searchable-dropdown) {
+        align-items: centers;
+      }
+    }
+
+    .optional-title {
+      padding-top: 20px;
+    }
+
+    .service-price-configuration {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      .item {
+        max-width: 70%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-wrap: nowrap;
+        font-weight: 600;
+      }
+
+      .price {
+        text-align: right;
+      }
+
+      &.first {
+        padding-top: 5px;
+        border-top: 1px solid var(--bs-gray-600);
+      }
+    }
+
+    .service-price-total {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+
+      .item {
+        width: 70%;
+        max-width: 70%;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-wrap: nowrap;
+        font-weight: 600;
+        text-align: right;
+      }
+
+      .price {
+        text-align: right;
+      }
+
+      &.first {
+        padding-top: 5px;
+        border-top: 1px solid var(--bs-gray-600);
+      }
+    }
+  }
+}

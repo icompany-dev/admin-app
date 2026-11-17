@@ -52,6 +52,7 @@ export enum StatutoryFormKeywords {
   S15 = "S. 15,Notification of Incorporation,Section 15,S 15",
   S78 = "S. 78,Return of Allotment,Section 78,S 78",
   S58 = "S. 58,Register of Directors,Section 58,S 58",
+  S58ForBanks = "Section 58 & 236(2)",
   S46 = "S. 46,Notification of Change Registered Address, S 46,Section 46",
   S51 = "S. 51,Register of Member, S 51,Section 51",
   AnnualReturn = "Annual Return,Section 68,S 68",
@@ -72,4 +73,6 @@ export enum StatutoryFormKeywords {
   Constitution = "Constitution",
   SetFye = "Financial Year End",
   AppointNewDirector = "Section 58 - Appoint New Director, Section 58 - Appointment of New Director",
+  Pd2ChangeNature = "PD2 - Change of Business Nature, PD2 - Change Business Nature",
+  Pd2ChangeBranch = "PD2 - Change of Business Branch, PD2 - Add Business Branch",
 }

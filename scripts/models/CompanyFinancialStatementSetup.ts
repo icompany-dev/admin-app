@@ -1,6 +1,7 @@
 import { Error } from "../library/Error"
 import { StringUtil } from "../utils/String"
 import { Company } from "./Company"
+import type { CompanyFinancialStatementAuthorisedPerson } from "./CompanyFinancialStatementAuthorisedPerson"
 import type { IModel } from "./IModel"
 
 export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialStatementSetup> {
@@ -16,6 +17,8 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
   createdAt: string | null = null
   updatedAt: string | null = null
   deletedAt: string | null = null
+
+  authorisedPerson: CompanyFinancialStatementAuthorisedPerson | null = null
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -75,7 +78,7 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
 
   async create(repository: ReturnType<typeof useCompanyFinancialStatementSetupStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -88,7 +91,7 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
 
       this.convertFromResponse(response)
     } catch (error) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForCUD()
       throw errorMessage
     }
@@ -96,7 +99,7 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
 
   async update(repository: ReturnType<typeof useCompanyFinancialStatementSetupStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id) || !this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -109,7 +112,7 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
 
       this.convertFromResponse(response)
     } catch (error) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForCUD()
       throw errorMessage
     }
@@ -117,7 +120,7 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
 
   async remove(repository: ReturnType<typeof useCompanyFinancialStatementSetupStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -128,7 +131,7 @@ export class CompanyFinancialStatementSetup implements IModel<CompanyFinancialSt
         throw repository.error
       }
     } catch (error) {
-      let errorMessage: Error = new Error("", "")
+      let errorMessage: Error = new Error()
       errorMessage.setForCUD()
       throw errorMessage
     }

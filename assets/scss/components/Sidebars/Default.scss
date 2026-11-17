@@ -53,10 +53,35 @@
     align-items: center;
     gap: 20px;
     width: 90%;
-    max-height: fit-content;
+    max-height: 90%;
     margin: auto;
     margin-top: 80px;
     transition: all 0.7s ease;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 10px;
+      transition: background 0.3s ease;
+    }
+
+    &:hover {
+      &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2); // Visible thumb
+      }
+
+      scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
 
     .sidebar-group {
       width: 100%;

@@ -184,7 +184,7 @@ export class BankDocumentFetcher {
       if (!f.file) {
         return false
       }
-      let splitKeywords = StatutoryFormKeywords.S58.split(",")
+      let splitKeywords = StatutoryFormKeywords.S58ForBanks.split(",")
 
       return splitKeywords.some((s: string) => {
         if (!f.file) {

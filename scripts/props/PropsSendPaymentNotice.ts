@@ -4,6 +4,7 @@ import type { DeliveryInfo } from "../models/DeliveryInfo"
 export interface IPropsSendPaymentNotice {
   entityType: string
   entityId: string
+  entityName: string
   target: string
   targetId: string
   billingInfo: BillingInfo
@@ -13,6 +14,7 @@ export interface IPropsSendPaymentNotice {
 export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
   entityType: string
   entityId: string
+  entityName: string
   target: string
   targetId: string
   billingInfo: BillingInfo
@@ -21,6 +23,7 @@ export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
   constructor(
     entityType: string,
     entityId: string,
+    entityName: string,
     target: string,
     targetId: string,
     billingInfo: BillingInfo,
@@ -28,6 +31,7 @@ export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
   ) {
     this.entityType = entityType
     this.entityId = entityId
+    this.entityName = entityName
     this.target = target
     this.targetId = targetId
     this.billingInfo = billingInfo

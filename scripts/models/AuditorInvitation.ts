@@ -74,7 +74,7 @@ export class AuditorInvitation extends Invitation implements IInvitation<Auditor
 
   async create(repository: ReturnType<typeof useAuditorInvitationStore>): Promise<void> {
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -82,7 +82,7 @@ export class AuditorInvitation extends Invitation implements IInvitation<Auditor
     let data = this.getRequestBody()
     let response = await repository.create(data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }
@@ -92,13 +92,13 @@ export class AuditorInvitation extends Invitation implements IInvitation<Auditor
 
   async update(repository: ReturnType<typeof useAuditorInvitationStore>): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.id)) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
 
     if (!this.canSubmit()) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForIncompleteData()
       throw error
     }
@@ -106,7 +106,7 @@ export class AuditorInvitation extends Invitation implements IInvitation<Auditor
     let data = this.getRequestBody()
     let response = await repository.update(this.id, data)
     if (repository.error !== null) {
-      let error: Error = new Error("", "")
+      let error: Error = new Error()
       error.setForCUD()
       throw error
     }

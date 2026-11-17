@@ -9,6 +9,8 @@ import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturn
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
+import { PropsSendEmail } from "~/scripts/props/PropsSendEmail"
+import { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNotice"
 import { PropsServiceWrapper } from "~/scripts/props/PropsServiceWrapper"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { PdfPaperUtil } from "~/scripts/utils/PdfPaper"
@@ -51,6 +53,12 @@ export class SelectedSdnBhdController {
   spineRef: any | null = null
   generateAuditExemptionCertificateRef: any | null = null
   generateResignationAndAppointmentOfCosecRef: any | null = null
+  sendPaymentNoticeRef: any | null = null
+  section236ThreeRef: any | null = null
+  letterCosecResignRef: any | null = null
+  appointCosecRef: any | null = null
+  sendEmailRef: any | null = null
+
   isPrintingSpine: Ref<boolean> = ref<boolean>(false)
 
   isNotifyingRegularise: Ref<boolean> = ref<boolean>(false)
@@ -97,6 +105,26 @@ export class SelectedSdnBhdController {
 
   setApplicationRefs(index: number, ref: any): void {
     this.applicationRefs[index] = ref
+  }
+
+  setSendPaymentNoticeRef(sendPaymentNoticeRef: any): void {
+    this.sendPaymentNoticeRef = sendPaymentNoticeRef
+  }
+
+  setSection236ThreeRef(section236ThreeRef: any): void {
+    this.section236ThreeRef = section236ThreeRef
+  }
+
+  setLetterCosecResignRef(letterCosecResignRef: any): void {
+    this.letterCosecResignRef = letterCosecResignRef
+  }
+
+  setAppointCosecRef(appointCosecRef: any): void {
+    this.appointCosecRef = appointCosecRef
+  }
+
+  setSendEmailRef(sendEmailRef: any): void {
+    this.sendEmailRef = sendEmailRef
   }
 
   async fetchCompany(): Promise<void> {
@@ -434,6 +462,52 @@ export class SelectedSdnBhdController {
     this.annualReturnYear.value = yearToLodge
   }
 
+  onAskPaymentClicked(): void {
+    this.isShowOptions.value = false
+
+    if (this.sendPaymentNoticeRef) {
+      this.sendPaymentNoticeRef.show()
+    }
+  }
+
+  onGenerateSection236Clicked(): void {
+    this.isShowOptions.value = false
+    if (this.section236ThreeRef) {
+      this.section236ThreeRef.show()
+    }
+  }
+
+  onGenerateLetterCosecResignClicked(): void {
+    this.isShowOptions.value = false
+    if (this.letterCosecResignRef) {
+      this.letterCosecResignRef.show()
+    }
+  }
+
+  onGenerateAppointCosecClicked(): void {
+    this.isShowOptions.value = false
+    if (this.appointCosecRef) {
+      this.appointCosecRef.show()
+    }
+  }
+
+  onSendEmailClicked(): void {
+    this.isShowOptions.value = false
+    if (this.sendEmailRef) {
+      this.sendEmailRef.show()
+    }
+  }
+
+  get companyName(): string {
+    let companyName = this.company.value.getFullName()
+    companyName = companyName.replace("SDN BHD", "SDN. BHD.")
+    return companyName
+  }
+
+  get companyDashboardUrl(): string {
+    return `https://cosec.icompany.my/sdnbhd/${this.companyId.value}`
+  }
+
   get hasCompanyLogo(): boolean {
     return this.company.value.companyLogo !== null && !StringUtil.isNullOrEmpty(this.company.value.companyLogo.url)
   }
@@ -472,6 +546,10 @@ export class SelectedSdnBhdController {
 
   get auditExemption(): string {
     return this.language.isMalay() ? "Switched Out" : "Switched Out"
+  }
+
+  get paymentOrder(): string {
+    return this.language.isMalay() ? "+ Payment Order" : "+ Payment Order"
   }
 
   get overview(): string {
@@ -619,11 +697,40 @@ export class SelectedSdnBhdController {
   get financialStatementSubmissionsProp(): PropsFinancialStatementSubmissions {
     return new PropsFinancialStatementSubmissions(
       this.company.value.id,
+      this.company.value,
       this.company.value.name,
       this.company.value.createdAt,
       null,
       false,
       false
     )
+  }
+
+  get sendPaymentNoticeProps(): PropsSendPaymentNotice {
+    return new PropsSendPaymentNotice(
+      "Company",
+      this.company.value.id,
+      this.company.value.getFullName(),
+      "company",
+      this.company.value.id,
+      this.company.value.billingInfo(),
+      this.company.value.deliveryInfo()
+    )
+  }
+
+  get subscriptionExpiryDate(): string {
+    if (this.subscriptionStatus === "active") {
+      return `Due ${this.company.value.subscriptionExpiryDate()}`
+    }
+
+    return `${StringUtil.capitalize(this.subscriptionStatus)} on ${this.company.value.subscriptionExpiryDate()}`
+  }
+
+  get subscriptionStatus(): string {
+    return this.company.value.subscriptionStatus()
+  }
+
+  get sendEmailProps(): PropsSendEmail {
+    return new PropsSendEmail([], "", "", [])
   }
 }

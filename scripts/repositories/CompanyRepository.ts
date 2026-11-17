@@ -90,11 +90,12 @@ export class CompanyRepository extends Repository<Company> {
     }
   }
 
-  async postService(targetType: string, targetId: string): Promise<any> {
+  async postService(targetType: string, targetId: string, isNotifyUser: boolean): Promise<any> {
     try {
       let data = {
         target: targetType,
         target_id: targetId,
+        is_notify_user: isNotifyUser,
       }
       const response = this.post<any>(`/api/company/post-services`, data)
       return response
