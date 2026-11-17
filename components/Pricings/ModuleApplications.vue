@@ -22,6 +22,15 @@
             class="application"
             v-for="(servicePricing, i) in controller.servicePricings.value"
           >
+            <div class="application-name">
+              <div class="name">#{{ i + 1 }} {{ servicePricing.serviceName }}</div>
+              <div class="edit clickable">
+                <i
+                  class="fa-regular fa-edit"
+                  @click="emit('editApplication', servicePricing)"
+                />
+              </div>
+            </div>
             <Pricing v-bind="controller.getPropsPricing(servicePricing)" />
           </div>
           <div
@@ -44,7 +53,7 @@
 
   const props = defineProps<IPropsPricingsModuleApplications>()
 
-  const emit = defineEmits(["addApplication"])
+  const emit = defineEmits(["addApplication", "editApplication"])
 
   const controller = new ModuleApplicationsController(props, emit)
 

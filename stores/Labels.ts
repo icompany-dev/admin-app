@@ -23,7 +23,7 @@ export const useLabelStore = defineStore("label", () => {
     error.value = null
 
     try {
-      const response = $repositories.labels.fetchItemsForLabel(id)
+      const response = await $repositories.labels.fetchItemsForLabel(id)
       return response
     } catch (e) {
       error.value = `Failed to fetch all items for label: ${e}`
@@ -38,7 +38,7 @@ export const useLabelStore = defineStore("label", () => {
     error.value = null
 
     try {
-      const response = $repositories.labels.fetchForServicePricings()
+      const response = await $repositories.labels.fetchForServicePricings()
       return response
     } catch (e) {
       error.value = `Failed to fetch for service pricings: ${e}`
@@ -53,8 +53,8 @@ export const useLabelStore = defineStore("label", () => {
     error.value = null
 
     try {
-      const response = $repositories.labels.addItem(data)
-      return response
+      const response = await $repositories.labels.addItem(data)
+      return response.data ?? null
     } catch (e) {
       error.value = `Failed to add label to target: ${e}`
       return null
@@ -68,7 +68,7 @@ export const useLabelStore = defineStore("label", () => {
     error.value = null
 
     try {
-      const response = $repositories.labels.deleteItem(itemId)
+      const response = await $repositories.labels.deleteItem(itemId)
       return response
     } catch (e) {
       error.value = `Failed to delete label for target: ${e}`

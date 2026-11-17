@@ -27,7 +27,7 @@
                 class="btn btn-submit"
                 @click="controller.onViewApplications(label)"
               >
-                View
+                {{ controller.isViewingApplications(label) ? "Hide" : "View" }}
               </button>
             </div>
           </div>
@@ -35,6 +35,7 @@
             <ModuleApplications
               v-bind="controller.getPricingsModuleApplicationsProps(label)"
               @addApplication="controller.onAddApplicationsClicked()"
+              @editApplication="controller.onEditApplicationClicked($event)"
             />
           </div>
         </div>
@@ -87,17 +88,14 @@
         ref="confirmToDeleteRef"
         @proceed="controller.onProceedRemove()"
       />
-      <!-- <ConfirmToDelete
-        :remove-item-name="controller.itemToRemoveLabelName"
-        ref="confirmToDeleteLabelRef"
-        @proceed="controller.onProceedRemoveLabel()"
-      /> -->
       <Grouped
         ref="groupedThemeRef"
         v-bind="controller.groupedServicePricingProps"
         @add-pricing="controller.onAddNewApplication()"
         @hide="controller.onCancelModuleClicked()"
         @label-updated="controller.onModuleUpdated($event)"
+        @applications-added="controller.onApplicationsUpdated($event)"
+        @application-removed="controller.onApplicationRemoved($event)"
       />
     </div>
   </div>

@@ -216,10 +216,10 @@ export class AllController {
 
       this.modules.value.push(new Label(this.newModule.value))
 
-      let toastTitle = this.language.isMalay() ? "Tema Baharu telah ditambah." : "The New Theme is added."
+      let toastTitle = this.language.isMalay() ? "Modul Baharu telah ditambah." : "The New Module is added."
       let toastMessage = this.language.isMalay()
-        ? "Anda boleh tambah item ke dalam Tema baharu."
-        : "You can add items to the Theme."
+        ? "Anda boleh tambah aplikasi ke dalam Modul baharu."
+        : "You can add Applicstions to the Module."
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
 
@@ -249,6 +249,25 @@ export class AllController {
     if (this.groupedThemeRef) {
       this.groupedThemeRef.show()
     }
+  }
+
+  onEditApplicationClicked(servicePricing: ServicePricing): void {
+    this.servicePricingForEditor.value = new ServicePricing(servicePricing)
+    this.isAddingService.value = false
+
+    if (this.editorRef) {
+      this.editorRef.show()
+    }
+  }
+
+  onApplicationsUpdated(labelItems: LabelItem[]): void {
+    this.moduleApplications.value = this.moduleApplications.value.concat(labelItems)
+  }
+
+  onApplicationRemoved(labelItemId: string): void {
+    this.moduleApplications.value = this.moduleApplications.value.filter((application: LabelItem) => {
+      return application.id !== labelItemId
+    })
   }
 
   //getters

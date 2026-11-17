@@ -129,8 +129,8 @@ export class GroupedController {
       let toastTitle = ""
       let toastMessage = ""
       if (this.labelItems.value.length > 0) {
-        let itemsString = this.labelItems.value.length > 1 ? "Items are" : "Item is"
-        toastTitle = this.language.isMalay() ? "Item ditambah ke Tema." : `The ${itemsString} added to the Theme.`
+        let itemsString = this.labelItems.value.length > 1 ? "Applications are" : "Application is"
+        toastTitle = this.language.isMalay() ? "Item ditambah ke Tema." : `The ${itemsString} added to the Module.`
         toastMessage = this.language.isMalay() ? "" : ""
       } else {
         toastTitle = this.language.isMalay() ? "Maklumat telah dikemaskini." : "Your changes is recorded."
@@ -143,6 +143,7 @@ export class GroupedController {
 
       this.hide()
     } catch (e) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {
@@ -295,7 +296,9 @@ export class GroupedController {
 
       await this.labelItemToRemove.value.deleteItem(useLabelStore())
 
-      let toastTitle = this.language.isMalay() ? "Item telah dipadamkan dari Tema." : "Item is removed from the Theme."
+      let toastTitle = this.language.isMalay()
+        ? "Aplikasi telah dikeluarkan dari Modul."
+        : "Application is removed from the Module."
       let toast = new Toast(toastTitle, "")
       toast.success()
     } catch (e) {

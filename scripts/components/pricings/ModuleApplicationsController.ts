@@ -69,7 +69,7 @@ export class ModuleApplicationsController {
   }
 
   getPropsPricing(servicePricing: ServicePricing): PropsPricing {
-    return new PropsPricing(servicePricing, true)
+    return new PropsPricing(servicePricing, false)
   }
 
   get loaderLabel(): string {

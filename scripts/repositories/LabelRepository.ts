@@ -23,6 +23,7 @@ export class LabelRepository extends Repository<Label> {
   async addItem(data: any): Promise<any> {
     try {
       const response = this.post(`${this.singleResourceUrl}/item/add`, data)
+      return response
     } catch (e) {
       throw e
     }
