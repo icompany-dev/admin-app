@@ -18,6 +18,7 @@
                   <input
                     type="text"
                     class="form-control"
+                    :placeholder="controller.isService.value ? 'Name of Service' : 'Name of Application'"
                     v-model="controller.servicePricing.value.serviceName"
                   />
                 </div>
@@ -37,7 +38,9 @@
                         type="text"
                         class="form-control"
                         v-model="breakdown.itemName"
-                        placeholder="Item Name"
+                        :placeholder="
+                          controller.isService.value ? 'Description of Service' : 'Description of Application'
+                        "
                       />
                     </div>
                     <div class="price">
@@ -49,76 +52,78 @@
                       />
                     </div>
                   </div>
-                  <div
-                    class="service-pricing-detail"
-                    v-for="(mandatory, index) in controller.servicePricing.value.mandatoryServices"
-                  >
-                    <div class="label">
-                      <SearchableDropdown
-                        :options="controller.getMandatoryPricingOptions(index)"
-                        :selectedItemName="controller.getSelectedMandatoryItemName(mandatory)"
-                        :placeholder="'Select One'"
-                        :labelKey="'label'"
-                        :valueKey="'value'"
-                        :isSearchable="true"
-                        @search="controller.onSeearchMandatory($event, index)"
-                        @selected="controller.onMandatoryPricingSelected($event, index)"
-                      />
-                    </div>
-                    <span
-                      class="clickable remove"
-                      @click="controller.removeMandatory(mandatory, index)"
+                  <template v-if="!controller.isService.value">
+                    <div
+                      class="service-pricing-detail"
+                      v-for="(mandatory, index) in controller.servicePricing.value.mandatoryServices"
                     >
-                      <i class="fa-regular fa-trash-alt"></i>
-                    </span>
-                    <div class="price">
-                      {{ NumberUtil.currency(mandatory.basePrice ?? 0) }}
+                      <div class="label">
+                        <SearchableDropdown
+                          :options="controller.getMandatoryPricingOptions(index)"
+                          :selectedItemName="controller.getSelectedMandatoryItemName(mandatory)"
+                          :placeholder="'Select One'"
+                          :labelKey="'label'"
+                          :valueKey="'value'"
+                          :isSearchable="true"
+                          @search="controller.onSeearchMandatory($event, index)"
+                          @selected="controller.onMandatoryPricingSelected($event, index)"
+                        />
+                      </div>
+                      <span
+                        class="clickable remove"
+                        @click="controller.removeMandatory(mandatory, index)"
+                      >
+                        <i class="fa-regular fa-trash-alt"></i>
+                      </span>
+                      <div class="price">
+                        {{ NumberUtil.currency(mandatory.basePrice ?? 0) }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="item-detail-button">
-                    <button
-                      class="btn btn-submit invert"
-                      @click="controller.addMandatory()"
-                    >
-                      Add Existing Service
-                    </button>
-                  </div>
-                  <div class="other-requirement-title">Other Requirements (Optional)</div>
-                  <div
-                    class="service-pricing-detail other-requirement"
-                    :class="{ 'last-child': index === controller.servicePricing.value.optionals.length - 1 }"
-                    v-for="(optional, index) in controller.servicePricing.value.optionals"
-                  >
-                    <div class="label">
-                      <SearchableDropdown
-                        :options="controller.getOptionalPricingOptions(index)"
-                        :selectedItemName="controller.getSelectedOptionalItemName(optional)"
-                        :placeholder="'Select One'"
-                        :labelKey="'label'"
-                        :valueKey="'value'"
-                        :isSearchable="true"
-                        @search="controller.onSeearchOptional($event, index)"
-                        @selected="controller.onOptionalPricingSelected($event, index)"
-                      />
+                    <div class="item-detail-button">
+                      <button
+                        class="btn btn-submit invert"
+                        @click="controller.addMandatory()"
+                      >
+                        Add Existing Service
+                      </button>
                     </div>
-                    <span
-                      class="clickable remove"
-                      @click="controller.removeOptional(optional, index)"
+                    <div class="other-requirement-title">Other Requirements (Optional)</div>
+                    <div
+                      class="service-pricing-detail other-requirement"
+                      :class="{ 'last-child': index === controller.servicePricing.value.optionals.length - 1 }"
+                      v-for="(optional, index) in controller.servicePricing.value.optionals"
                     >
-                      <i class="fa-regular fa-trash-alt"></i>
-                    </span>
-                    <div class="price">
-                      {{ controller.getOptionalBasePrice(optional) }}
+                      <div class="label">
+                        <SearchableDropdown
+                          :options="controller.getOptionalPricingOptions(index)"
+                          :selectedItemName="controller.getSelectedOptionalItemName(optional)"
+                          :placeholder="'Select One'"
+                          :labelKey="'label'"
+                          :valueKey="'value'"
+                          :isSearchable="true"
+                          @search="controller.onSeearchOptional($event, index)"
+                          @selected="controller.onOptionalPricingSelected($event, index)"
+                        />
+                      </div>
+                      <span
+                        class="clickable remove"
+                        @click="controller.removeOptional(optional, index)"
+                      >
+                        <i class="fa-regular fa-trash-alt"></i>
+                      </span>
+                      <div class="price">
+                        {{ controller.getOptionalBasePrice(optional) }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="item-detail-button">
-                    <button
-                      class="btn btn-submit invert"
-                      @click="controller.addOptional()"
-                    >
-                      Add Other Requirements
-                    </button>
-                  </div>
+                    <div class="item-detail-button">
+                      <button
+                        class="btn btn-submit invert"
+                        @click="controller.addOptional()"
+                      >
+                        Add Other Requirements
+                      </button>
+                    </div>
+                  </template>
                   <div class="service-pricing-detail config-row">
                     <div class="label">Cosec Service Fee</div>
                     <div class="price">
@@ -283,6 +288,14 @@
       controller.setServicePricing(newVal)
     },
     { deep: true }
+  )
+
+  watch(
+    () => props.isAddingService,
+    (newVal) => {
+      controller.setIsService(newVal)
+    },
+    { immediate: true }
   )
 
   defineExpose({

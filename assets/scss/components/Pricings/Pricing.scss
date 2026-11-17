@@ -93,6 +93,7 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: flex-start;
+      padding-top: 10px;
 
       .item {
         width: 70%;
@@ -106,6 +107,7 @@
 
       .price {
         text-align: right;
+        font-weight: 600;
       }
 
       &.first {

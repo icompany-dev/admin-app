@@ -13,20 +13,19 @@
           >
             <div class="drawer-title">{{ controller.heading }}</div>
             <div class="drawer-content">
-              <div class="grouped-pricing">
-                <div class="label-name">
-                  <input
-                    type="text"
-                    class="form-control"
-                    v-model="controller.label.value.name"
-                  />
-                </div>
+              <LoaderPrepare
+                v-if="controller.isFetchingPricings.value"
+                :label="controller.loaderLabel"
+                :sublabel="controller.loaderSublabel"
+              />
+              <div
+                class="grouped-pricing"
+                v-if="
+                  !controller.isFetchingPricings.value &&
+                  (controller.existingLabelItems.value.length > 0 || controller.labelItems.value.length > 0)
+                "
+              >
                 <div class="group-items">
-                  <div class="group-item">
-                    <div class="remove"></div>
-                    <div class="name"><b>Items</b></div>
-                    <div class="price"><b>RM</b></div>
-                  </div>
                   <div
                     class="group-item"
                     v-for="(labelItem, x) in controller.existingLabelItems.value"
@@ -44,9 +43,6 @@
                         :service-pricing="controller.getServicePricing(labelItem)"
                         :is-show-service-name="true"
                       />
-                    </div>
-                    <div class="price">
-                      {{ controller.getServicePricingPrice(labelItem) }}
                     </div>
                   </div>
                   <template v-for="(newLabelItem, i) in controller.labelItems.value">
@@ -73,26 +69,23 @@
                           <Pricing v-bind="controller.getPropsPricingFor(i)" />
                         </template>
                       </div>
-                      <div class="price">
-                        {{ controller.getSelectedServicePricingPrice(i) }}
-                      </div>
                     </div>
                   </template>
                 </div>
-                <div class="add-items">
-                  <button
-                    class="btn btn-submit invert"
-                    @click="controller.onAddPricingClicked()"
-                  >
-                    + Add Item
-                  </button>
-                  <button
-                    class="btn btn-submit invert"
-                    @click="controller.onAddNew()"
-                  >
-                    Create New Pricing
-                  </button>
-                </div>
+              </div>
+              <div class="add-items">
+                <button
+                  class="btn btn-submit invert"
+                  @click="controller.onAddPricingClicked()"
+                >
+                  + Add Application
+                </button>
+                <button
+                  class="btn btn-submit invert"
+                  @click="controller.onAddNew()"
+                >
+                  Create New Application
+                </button>
               </div>
               <div class="drawer-footer">
                 <div class="cta">
@@ -108,7 +101,7 @@
                   <button
                     class="btn btn-submit"
                     :class="{ 'is-loading': controller.isSubmittingNewItemsToLabel.value }"
-                    :disabled="!controller.canProceed"
+                    :disabled="!controller.canProceed || controller.isFetchingPricings.value"
                     @click="controller.onProceedClicked()"
                   >
                     {{ controller.proceedLabel }}
@@ -130,6 +123,7 @@
 
 <script lang="ts" setup>
   import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
+  import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Pricing from "./Pricing.vue"
   import SearchableDropdown from "../Forms/SearchableDropdown.vue"
   import { GroupedController } from "~/scripts/components/pricings/GroupedController"
@@ -137,7 +131,7 @@
 
   const props = defineProps<IPropsGroupedServicePricing>()
 
-  const emit = defineEmits(["add-pricing", "hide", "labelUpdated"])
+  const emit = defineEmits(["add-pricing", "hide", "labelUpdated", "applicationsAdded", "applicationRemoved"])
 
   const confirmToDeleteRef = ref(null)
 

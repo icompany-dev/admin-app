@@ -48,17 +48,35 @@ export class ActivitiesController {
       this.isLoading.value = true
       let repository = useAdminToDoStore()
 
-      let activityResponse = await repository.fetchActivities(this.filter.value)
-      this.activities.value = activityResponse.data.map((d: any) => {
-        return new DailyActivity(d)
-      })
+      let promises = []
+      this.activities.value = []
 
-      let response = await repository.fetchAll(this.filter.value)
-      this.todos.value = response.data.map((d: any) => {
-        return new AdminToDo(d)
-      })
+      this.filter.value.startDate = this.startDate
+      this.filter.value.endDate = this.endDate
 
-      this.todos.value = ObjectUtil.sort<AdminToDo>(this.todos.value, "paidAt", "desc")
+      promises.push(
+        repository.fetchActivities(this.filter.value).then((r) => {
+          r.data.forEach((d: any) => {
+            this.activities.value.push(new DailyActivity(d))
+          })
+        }),
+        repository.fetchPaymentReceivedToDate(this.filter.value).then((r) => {
+          r.data.forEach((d: any) => {
+            let newActivity = new DailyActivity(d)
+            newActivity.actionAt = this.dayjs(newActivity.actionAt).add(8, "hours").format("YYYY-MM-DD HH:mm::ss")
+            this.activities.value.push(newActivity)
+          })
+        }),
+        repository.fetchSignatureReceivedToDate(this.filter.value).then((r) => {
+          r.data.forEach((d: any) => {
+            this.activities.value.push(new DailyActivity(d))
+          })
+        })
+      )
+
+      await Promise.allSettled(promises)
+
+      this.activities.value = ObjectUtil.sort<DailyActivity>(this.activities.value, "actionAt", "desc")
 
       this.setFilteredToDos()
     } catch (e) {
@@ -84,7 +102,8 @@ export class ActivitiesController {
 
   onPeriodSelected(value: FilterDateShortCuts): void {
     this.selectedPeriod.value = value
-    this.setFilteredToDos()
+
+    this.fetchToDos()
   }
 
   activityStatus(todo: AdminToDo): string {
@@ -171,10 +190,10 @@ export class ActivitiesController {
     return endDate
   }
 
-  get activitiesOnPage(): AdminToDo[] {
+  get activitiesOnPage(): DailyActivity[] {
     let startIndex = (this.filter.value.page - 1) * this.filter.value.take
     let endIndex = startIndex + this.filter.value.take
 
-    return this.filteredTodos.value.slice(startIndex, endIndex)
+    return this.activities.value.slice(startIndex, endIndex)
   }
 }

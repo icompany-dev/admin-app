@@ -36,6 +36,36 @@ export const useAdminToDoStore = defineStore("adminToDo", () => {
     }
   }
 
+  async function fetchPaymentReceivedToDate(filter: Filter): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.adminToDos.fetchPaymentReceivedToDate(filter)
+      return response
+    } catch (e) {
+      console.error(e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  async function fetchSignatureReceivedToDate(filter: Filter): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.adminToDos.fetchSignatureReceivedToDate(filter)
+      return response
+    } catch (e) {
+      console.error(e)
+      return null
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     adminToDos,
     adminToDo,
@@ -44,5 +74,7 @@ export const useAdminToDoStore = defineStore("adminToDo", () => {
     totalAdminToDos,
     ...crudActions,
     fetchActivities,
+    fetchPaymentReceivedToDate,
+    fetchSignatureReceivedToDate,
   }
 })

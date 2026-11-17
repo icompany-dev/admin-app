@@ -147,10 +147,34 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
-    gap: 20px;
+    gap: 5px;
+
+    .label-wrapper {
+      width: calc(100% - 20px);
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      transition: all 0.5s ease;
+
+      &.selected {
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+
+      .label {
+        width: 20%;
+      }
+
+      .application-wrapper {
+        width: calc(80% - 10px);
+      }
+    }
 
     .label {
-      width: calc(100% - 40px);
+      width: 30%;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -159,12 +183,6 @@
       padding: 20px;
       border-radius: 10px;
       transition: all 0.5s ease;
-
-      &:hover {
-        width: calc(100% - 40px);
-        padding: 20px;
-        background-color: rgba(255, 255, 255, 0.3);
-      }
 
       .label-title {
         font-size: 1.2rem;

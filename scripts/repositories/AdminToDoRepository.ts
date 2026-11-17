@@ -30,4 +30,22 @@ export class AdminToDoRepository extends Repository<AdminToDo> {
       throw e
     }
   }
+
+  async fetchSignatureReceivedToDate(filter: Filter): Promise<any> {
+    try {
+      let response = this.get(`api/admin/signatures-to-date?${filter.getSlug()}`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async fetchPaymentReceivedToDate(filter: Filter): Promise<any> {
+    try {
+      let response = this.get(`api/admin/payments-to-date?${filter.getSlug()}`)
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
 }

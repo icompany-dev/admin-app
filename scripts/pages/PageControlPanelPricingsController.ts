@@ -36,6 +36,12 @@ export class PageControlPanelPricingsController extends PageController {
     }
   }
 
+  onViewServicesClicked(): void {
+    if (this.allRef) {
+      this.allRef.showServices()
+    }
+  }
+
   get breadCrumbProps(): PropsBreadCrumb {
     return new PropsBreadCrumb([new PropsBreadCrumbItem("Control Panel", ""), new PropsBreadCrumbItem("Pricings", "")])
   }
