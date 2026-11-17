@@ -1,6 +1,7 @@
 import _ from "lodash"
 import { StringUtil } from "../utils/String"
 import { ServiceName, ServiceNames } from "../constants/ServiceNames"
+import { NumberUtil } from "../utils/Number"
 
 export class DailyActivity {
   companyName: string = ""
@@ -64,7 +65,7 @@ export class DailyActivity {
 
   get actionDescription(): string {
     if (this.action === "payment") {
-      return "Payment Received"
+      return `Made Payment of RM${NumberUtil.currency(this.details.amount ?? 0)}`
     }
 
     if (this.action === "update") {
@@ -72,14 +73,18 @@ export class DailyActivity {
     }
 
     if (this.action === "incorporation") {
-      return "Incorporating New Sdn Bhd"
+      return "Incorporation in Progress"
     }
 
     if (this.action === "switch") {
       return "Switch in Progress"
     }
 
-    return "Updated Application"
+    if (this.action === "signature") {
+      return "Affixed Signture"
+    }
+
+    return "Updated Details of Application"
   }
 
   get applicationName(): string {

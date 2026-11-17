@@ -51,6 +51,9 @@ export class ActivitiesController {
       let promises = []
       this.activities.value = []
 
+      this.filter.value.startDate = this.startDate
+      this.filter.value.endDate = this.endDate
+
       promises.push(
         repository.fetchActivities(this.filter.value).then((r) => {
           r.data.forEach((d: any) => {
@@ -59,7 +62,9 @@ export class ActivitiesController {
         }),
         repository.fetchPaymentReceivedToDate(this.filter.value).then((r) => {
           r.data.forEach((d: any) => {
-            this.activities.value.push(new DailyActivity(d))
+            let newActivity = new DailyActivity(d)
+            newActivity.actionAt = this.dayjs(newActivity.actionAt).add(8, "hours").format("YYYY-MM-DD HH:mm::ss")
+            this.activities.value.push(newActivity)
           })
         }),
         repository.fetchSignatureReceivedToDate(this.filter.value).then((r) => {
@@ -72,13 +77,6 @@ export class ActivitiesController {
       await Promise.allSettled(promises)
 
       this.activities.value = ObjectUtil.sort<DailyActivity>(this.activities.value, "actionAt", "desc")
-
-      // let response = await repository.fetchAll(this.filter.value)
-      // this.todos.value = response.data.map((d: any) => {
-      //   return new AdminToDo(d)
-      // })
-
-      // this.todos.value = ObjectUtil.sort<AdminToDo>(this.todos.value, "paidAt", "desc")
 
       this.setFilteredToDos()
     } catch (e) {
@@ -104,7 +102,8 @@ export class ActivitiesController {
 
   onPeriodSelected(value: FilterDateShortCuts): void {
     this.selectedPeriod.value = value
-    this.setFilteredToDos()
+
+    this.fetchToDos()
   }
 
   activityStatus(todo: AdminToDo): string {
