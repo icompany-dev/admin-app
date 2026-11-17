@@ -48,17 +48,37 @@ export class ActivitiesController {
       this.isLoading.value = true
       let repository = useAdminToDoStore()
 
-      let activityResponse = await repository.fetchActivities(this.filter.value)
-      this.activities.value = activityResponse.data.map((d: any) => {
-        return new DailyActivity(d)
-      })
+      let promises = []
+      this.activities.value = []
 
-      let response = await repository.fetchAll(this.filter.value)
-      this.todos.value = response.data.map((d: any) => {
-        return new AdminToDo(d)
-      })
+      promises.push(
+        repository.fetchActivities(this.filter.value).then((r) => {
+          r.data.forEach((d: any) => {
+            this.activities.value.push(new DailyActivity(d))
+          })
+        }),
+        repository.fetchPaymentReceivedToDate(this.filter.value).then((r) => {
+          r.data.forEach((d: any) => {
+            this.activities.value.push(new DailyActivity(d))
+          })
+        }),
+        repository.fetchSignatureReceivedToDate(this.filter.value).then((r) => {
+          r.data.forEach((d: any) => {
+            this.activities.value.push(new DailyActivity(d))
+          })
+        })
+      )
 
-      this.todos.value = ObjectUtil.sort<AdminToDo>(this.todos.value, "paidAt", "desc")
+      await Promise.allSettled(promises)
+
+      this.activities.value = ObjectUtil.sort<DailyActivity>(this.activities.value, "actionAt", "desc")
+
+      // let response = await repository.fetchAll(this.filter.value)
+      // this.todos.value = response.data.map((d: any) => {
+      //   return new AdminToDo(d)
+      // })
+
+      // this.todos.value = ObjectUtil.sort<AdminToDo>(this.todos.value, "paidAt", "desc")
 
       this.setFilteredToDos()
     } catch (e) {
@@ -171,10 +191,10 @@ export class ActivitiesController {
     return endDate
   }
 
-  get activitiesOnPage(): AdminToDo[] {
+  get activitiesOnPage(): DailyActivity[] {
     let startIndex = (this.filter.value.page - 1) * this.filter.value.take
     let endIndex = startIndex + this.filter.value.take
 
-    return this.filteredTodos.value.slice(startIndex, endIndex)
+    return this.activities.value.slice(startIndex, endIndex)
   }
 }
