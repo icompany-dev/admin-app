@@ -8,25 +8,34 @@
     <div v-if="!controller.isLoading.value">
       <div class="labels">
         <div
-          class="label"
+          class="label-wrapper"
           v-for="(label, i) in controller.modules.value"
+          :class="{ selected: controller.isViewingApplications(label) }"
         >
-          <div class="label-title">
-            {{ label.name }}
+          <div class="label">
+            <div class="label-title">
+              {{ label.name }}
+            </div>
+            <div class="action-buttons">
+              <button
+                class="btn btn-danger"
+                @click="controller.onRemoveModule(label)"
+              >
+                Remove
+              </button>
+              <button
+                class="btn btn-submit"
+                @click="controller.onViewApplications(label)"
+              >
+                View
+              </button>
+            </div>
           </div>
-          <div class="action-buttons">
-            <button
-              class="btn btn-danger"
-              @click="controller.onRemoveModule(label)"
-            >
-              Remove
-            </button>
-            <button
-              class="btn btn-submit"
-              @click="controller.onViewApplications(label)"
-            >
-              View
-            </button>
+          <div class="application-wrapper">
+            <ModuleApplications
+              v-bind="controller.getPricingsModuleApplicationsProps(label)"
+              @addApplication="controller.onAddApplicationsClicked()"
+            />
           </div>
         </div>
         <div
@@ -83,13 +92,13 @@
         ref="confirmToDeleteLabelRef"
         @proceed="controller.onProceedRemoveLabel()"
       /> -->
-      <!-- <Grouped
+      <Grouped
         ref="groupedThemeRef"
         v-bind="controller.groupedServicePricingProps"
         @add-pricing="controller.addNewPricing()"
-        @hide="controller.onCancelAddPricingClicked()"
-        @label-updated="controller.onLabelUpdated($event)"
-      /> -->
+        @hide="controller.onCancelModuleClicked()"
+        @label-updated="controller.onModuleUpdated($event)"
+      />
     </div>
   </div>
 </template>
@@ -99,6 +108,7 @@
   import Editor from "./Editor.vue"
   import Grouped from "./Grouped.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import ModuleApplications from "./ModuleApplications.vue"
   import NoRecord from "../Placeholders/NoRecord.vue"
   import SearchableDropdown from "../Forms/SearchableDropdown.vue"
   import TablePagination from "~/components/Paginations/TablePagination.vue"
@@ -163,13 +173,13 @@
   //   { immediate: true }
   // )
 
-  // watch(
-  //   groupedThemeRef,
-  //   (newVal) => {
-  //     controller.setGroupedThemeRef(newVal)
-  //   },
-  //   { immediate: true }
-  // )
+  watch(
+    groupedThemeRef,
+    (newVal) => {
+      controller.setGroupedThemeRef(newVal)
+    },
+    { immediate: true }
+  )
 
   defineExpose({
     addNewPricing: controller.addNewPricing.bind(controller),

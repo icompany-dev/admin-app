@@ -3,6 +3,8 @@ import { Toast } from "~/scripts/library/Toast"
 import { Label } from "~/scripts/models/Label"
 import { LabelItem } from "~/scripts/models/LabelItem"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
+import { PropsGroupedServicePricing } from "~/scripts/props/PropsGroupedServicePricing"
+import { PropsPricingsModuleApplications } from "~/scripts/props/PropsPricingsModuleApplications"
 import { PropsServicePricingEditor } from "~/scripts/props/PropsServicePricingEditor"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -14,6 +16,7 @@ export class AllController {
 
   editorRef: any | null = null
   confirmToDeleteRef: any | null = null
+  groupedThemeRef: any | null = null
 
   language = useLanguage()
 
@@ -43,6 +46,10 @@ export class AllController {
     this.confirmToDeleteRef = confirmToDeleteRef
   }
 
+  setGroupedThemeRef(groupedThemeRef: any): void {
+    this.groupedThemeRef = groupedThemeRef
+  }
+
   async init(): Promise<void> {
     if (this.isLoading.value) {
       return
@@ -67,6 +74,8 @@ export class AllController {
       this.moduleApplications.value = response.data.label_items.map((d: any) => {
         return new LabelItem(d)
       })
+
+      console.log(this.moduleApplications.value)
     } catch (e) {
       if (e instanceof Error) {
         e.isMalay = this.language.isMalay()
@@ -156,6 +165,22 @@ export class AllController {
     return this.moduleInView.value.id === module.id
   }
 
+  onCancelModuleClicked(): void {
+    //
+  }
+
+  onModuleUpdated(newData: Label): void {
+    this.modules.value.forEach((d: Label) => {
+      if (d.id === newData.id) {
+        d.name = newData.name
+      }
+    })
+
+    if (this.moduleInView.value.id === newData.id) {
+      this.moduleInView.value.name = newData.name
+    }
+  }
+
   onAddNewModuleClicked(): void {
     this.newModule.value = new Label()
     this.isAddingNewModule.value = true
@@ -199,6 +224,19 @@ export class AllController {
     }
   }
 
+  getPricingsModuleApplicationsProps(module: Label): PropsPricingsModuleApplications {
+    return new PropsPricingsModuleApplications(
+      this.getApplicationsForModules(module),
+      this.isViewingApplications(module)
+    )
+  }
+
+  onAddApplicationsClicked(): void {
+    if (this.groupedThemeRef) {
+      this.groupedThemeRef.show()
+    }
+  }
+
   //getters
   get loaderLabel(): string {
     return this.language.isMalay() ? "Sedang Memaut" : "Retrieving the"
@@ -214,5 +252,11 @@ export class AllController {
 
   get itemToRemoveName(): string {
     return this.language.isMalay() ? "Harga" : "Pricing"
+  }
+
+  get groupedServicePricingProps(): PropsGroupedServicePricing {
+    let labelItems = this.getApplicationsForModules(this.moduleInView.value)
+
+    return new PropsGroupedServicePricing(this.moduleInView.value, labelItems)
   }
 }

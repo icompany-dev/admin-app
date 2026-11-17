@@ -1,0 +1,42 @@
+#pricings-module-applications {
+  .module-applications {
+    width: 100%;
+
+    .applications {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 20px;
+      width: 100%;
+
+      .application {
+        width: calc((100% / 3) - 60px);
+        padding: 20px;
+        border: solid 1px transparent;
+        border-radius: 10px;
+
+        &.empty {
+          min-height: 180px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          transition: all 0.7s ease;
+          border-style: dashed;
+          border-color: var(--bs-gray-600);
+
+          .fa-plus {
+            font-size: 3rem;
+          }
+
+          &:hover {
+            border-width: 3px;
+          }
+        }
+      }
+    }
+  }
+}

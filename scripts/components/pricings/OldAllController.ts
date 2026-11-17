@@ -530,6 +530,6 @@ export class AllController {
   get groupedServicePricingProps(): PropsGroupedServicePricing {
     let labelItems = this.labelAndPricings.value[this.labelToAddItemsTo.value.id] ?? []
 
-    return new PropsGroupedServicePricing(this.labelToAddItemsTo.value, labelItems, this.tableDataFetcher.value.data)
+    return new PropsGroupedServicePricing(this.labelToAddItemsTo.value, labelItems)
   }
 }
