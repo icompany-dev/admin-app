@@ -1,3 +1,4 @@
+import { PDFDocument, PDFPage } from "pdf-lib"
 import ThirdSchedule from "~/components/LegalDocuments/ThirdSchedule.vue"
 import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
@@ -32,6 +33,7 @@ export class DocumentsController {
   selectedDocuments: Ref<CompanyDocument[]> = ref<CompanyDocument[]>([])
 
   isDownloading: Ref<boolean> = ref<boolean>(false)
+  isPrinting: Ref<boolean> = ref<boolean>(false)
   isDeleting: Ref<boolean> = ref<boolean>(false)
   isUpdating: Ref<boolean> = ref<boolean>(false)
 
@@ -233,6 +235,74 @@ export class DocumentsController {
     }
   }
 
+  async onPrintClicked(): Promise<void> {
+    if (this.isPrinting.value) {
+      return
+    }
+
+    this.isPrinting.value = true
+
+    try {
+      let promises = this.selectedDocuments.value
+        .filter((cd: CompanyDocument) => {
+          return !StringUtil.isNullOrEmpty(cd.fileUrl)
+        })
+        .map(async (cd: CompanyDocument) => {
+          try {
+            let response = await fetch(cd.fileUrl ?? "")
+            if (!response.ok) {
+              return
+            }
+
+            return await response.arrayBuffer()
+          } catch (e) {
+            //
+          }
+        })
+
+      let pdfBuffers = await Promise.all(promises)
+
+      const mergedPdf = await PDFDocument.create()
+      for (const buffer of pdfBuffers) {
+        if (!buffer) {
+          continue
+        }
+        const sourcePdf = await PDFDocument.load(buffer)
+        const copiedPages = await mergedPdf.copyPages(sourcePdf, sourcePdf.getPageIndices())
+        copiedPages.forEach((page: PDFPage) => {
+          mergedPdf.addPage(page)
+        })
+      }
+
+      const mergedBytes = await mergedPdf.save()
+      const blob = new Blob([mergedBytes], { type: "application/pdf" })
+
+      const printWindow = window.open("", "_blank")
+      if (printWindow) {
+        printWindow.document.write("Please wait, prepraing the documents for printing...")
+      } else {
+        throw "Fail to open new window"
+      }
+
+      const blobUrl = URL.createObjectURL(blob)
+      printWindow.location.href = blobUrl
+      setTimeout(() => {
+        printWindow.print()
+      }, 500)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isPrinting.value = false
+    }
+  }
+
   onCancelUpdateFilenameClicked(): void {
     this.isUpdating.value = false
   }
@@ -389,6 +459,12 @@ export class DocumentsController {
         isDisabled: !this.canCarryOutActions,
         iconClass: this.isDownloading.value ? "fa-regular fa-spin fa-spinner" : "",
         isIconStart: this.isDownloading.value,
+      }),
+      new ActionTrayElement("print", this.onPrintClicked.bind(this), {
+        label: new ActionTrayLabel("Print", "Cetak"),
+        isDisabled: !this.canCarryOutActions,
+        iconClass: this.isPrinting.value ? "fa-regular fa-spin fa-spinner" : "",
+        isIconStart: this.isPrinting.value,
       }),
       new ActionTrayElement("delete", this.onRemoveDocumentsClicked.bind(this), {
         label: new ActionTrayLabel("Remove", "Padam"),
