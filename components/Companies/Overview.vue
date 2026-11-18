@@ -416,7 +416,7 @@
             </td>
             <td>:</td>
             <td>
-              <b>Past FYE:</b>
+              <b>First FYE:</b>
               <br />
               <template v-if="!controller.isPastEditFYE.value">
                 {{ controller.previousFYE }}
@@ -456,47 +456,49 @@
                   <i class="fa-solid fa-xmark"></i>
                 </span>
               </template>
-              <br />
-              <br />
-              <b>Current FYE:</b>
-              <br />
-              <template v-if="!controller.isEditFYE.value">
-                {{ controller.currentFYE }}
-                <span
-                  class="action-link"
-                  @click="controller.onEditFyeClicked()"
-                >
-                  <i class="fa-regular fa-edit"></i>
-                </span>
-              </template>
-              <template v-if="controller.isEditFYE.value">
-                <input
-                  type="date"
-                  class="form-control"
-                  v-model="controller.fyeStartDate.value"
-                />
-                <i class="fa-solid fa-minus" />
-                <input
-                  type="date"
-                  class="form-control"
-                  v-model="controller.fyeEndDate.value"
-                />
-                <span
-                  class="action-link"
-                  @click="controller.onSaveFYEDatesClicked()"
-                >
-                  <i
-                    class="fa-regular"
-                    :class="controller.isEditingFYE.value ? 'fa-spin fa-spinner' : 'fa-save'"
-                  ></i>
-                </span>
-                <span
-                  v-if="!controller.isEditingFYE.value"
-                  class="action-link remove"
-                  @click="controller.onCancelEditFyeClicked()"
-                >
-                  <i class="fa-solid fa-xmark"></i>
-                </span>
+              <template v-if="controller.isShowCurrentFYE">
+                <br />
+                <br />
+                <b>Current FYE:</b>
+                <br />
+                <template v-if="!controller.isEditFYE.value">
+                  {{ controller.currentFYE }}
+                  <span
+                    class="action-link"
+                    @click="controller.onEditFyeClicked()"
+                  >
+                    <i class="fa-regular fa-edit"></i>
+                  </span>
+                </template>
+                <template v-if="controller.isEditFYE.value">
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="controller.fyeStartDate.value"
+                  />
+                  <i class="fa-solid fa-minus" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="controller.fyeEndDate.value"
+                  />
+                  <span
+                    class="action-link"
+                    @click="controller.onSaveFYEDatesClicked()"
+                  >
+                    <i
+                      class="fa-regular"
+                      :class="controller.isEditingFYE.value ? 'fa-spin fa-spinner' : 'fa-save'"
+                    ></i>
+                  </span>
+                  <span
+                    v-if="!controller.isEditingFYE.value"
+                    class="action-link remove"
+                    @click="controller.onCancelEditFyeClicked()"
+                  >
+                    <i class="fa-solid fa-xmark"></i>
+                  </span>
+                </template>
               </template>
             </td>
           </tr>

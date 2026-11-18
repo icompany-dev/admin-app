@@ -997,17 +997,25 @@ ${detailsOfBO.join("\n")}
     return this.language.isMalay() ? "Tarikh Akhir Tahun Kewangan" : "Financial Year End"
   }
 
+  // This will always be financial year end
   get previousFYE(): string {
+    // get first
+    let ascendingOrdered = ObjectUtil.sort<CompanyFinancialPeriod>(this.companyFinancialPeriods.value, "endDate", "asc")
+
     let past =
-      this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+      ascendingOrdered.find((cp: CompanyFinancialPeriod) => {
         return cp.status === "past"
       }) ?? null
 
     if (!past) {
-      return this.language.isMalay() ? "Tiada FYE yang terdahulu" : "No Past FYE"
+      let eighteenMonthsLater = this.dayjs(this.company.value.incorporatedAt ?? "")
+        .add(17, "months")
+        .endOf("month")
+        .format("YYYY-MM-DD")
+      return `${this.time.formatDateOnlyShort(this.incorporatedAtDate)} - ${this.time.formatDateOnlyShort(eighteenMonthsLater)}`
     }
 
-    return `${this.time.formatDateOnlyShort(past.startDate)} - ${this.time.formatDateOnlyShort(past.endDate)}`
+    return `${this.time.formatDateOnlyShort(this.incorporatedAtDate)}  - ${this.time.formatDateOnlyShort(past.endDate)}`
   }
 
   get currentFYE(): string {
@@ -1021,6 +1029,10 @@ ${detailsOfBO.join("\n")}
     }
 
     return `${this.time.formatDateOnlyShort(current.startDate)} - ${this.time.formatDateOnlyShort(current.endDate)}`
+  }
+
+  get isShowCurrentFYE(): boolean {
+    return this.currentFYE !== this.previousFYE
   }
 
   get orderedFinancialPeriods(): CompanyFinancialPeriod[] {
