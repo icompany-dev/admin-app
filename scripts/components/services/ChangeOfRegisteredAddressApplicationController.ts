@@ -269,12 +269,27 @@ export class ChangeOfRegisteredAddressApplicationController extends ApplicationC
 
     try {
       this.isCompleting.value = true
-      let companyId = this.application.value?.companyId
 
-      await this.application.value?.complete(useCompanyAmendmentRegisteredAddressStore())
+      let targetId = this.application.value?.id ?? ""
+      let repository = useCompanyStore()
+      await repository.postService(CompanyConstants.TARGET_AMENDMENT_REGISTERED_ADDRESS, targetId, true)
+
+      if (repository.error !== null) {
+        throw repository.error
+      }
+
+      let toastTitle = this.language.isMalay()
+        ? "Permohonan telah Selesai. Alamat Berdaftar telah dikemaskini."
+        : "Application is Completed. The Registered Address is updated."
+      // let toastMessage = this.language.isMalay()
+      //   ? "Pengarah telah diberitahu melalui emel dan WhatsApp."
+      //   : "Directors are notified via Email and WhatsApp."
+
+      let toast = new Toast(toastTitle, "")
+      toast.success()
 
       let router = useRouter()
-      router.push({ path: `/sdnbhds/${companyId}` })
+      router.push({ path: `/services/change-registered-address` })
     } catch (e) {
       if (e instanceof Error) {
         e.handle()
@@ -290,7 +305,7 @@ export class ChangeOfRegisteredAddressApplicationController extends ApplicationC
 
   // getters
   get serviceName(): string {
-    return this.language.isMalay() ? "Tukar Alamat Perniagaan" : "Change Business Address"
+    return this.language.isMalay() ? "Tukar Alamat Berdaftar" : "Change Registered Address"
   }
 
   get paymentApplicationNodeProps(): PropsServiceApplicationNode {
