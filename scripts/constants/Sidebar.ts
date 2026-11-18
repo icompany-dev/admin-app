@@ -170,6 +170,12 @@ export class PageSidebar {
     "services/change-business-address",
     false
   )
+  static changeRegisteredAddress: Sidebar = new Sidebar(
+    "Change of Registered Address",
+    "Penukaran Alamat Berdaftar",
+    "services/change-registered-address",
+    false
+  )
   static auditorAppointment: Sidebar = new Sidebar(
     "Appointment of Auditor",
     "Perlantikan Juruaudit",
@@ -213,6 +219,7 @@ export class PageSidebar {
     this.changeBusinessName,
     this.changeBusinessDescription,
     this.changeAddress,
+    this.changeRegisteredAddress,
     this.openBankAccount,
     this.appointDirector,
     this.resignDirector,

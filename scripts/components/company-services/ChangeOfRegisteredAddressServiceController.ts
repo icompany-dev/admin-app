@@ -141,8 +141,8 @@ export class ChangeOfRegisteredAddressServiceController extends CompanyServiceCo
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage = new Error(Error.ERROR_TYPE_API, "Unable to fetch registered address amendment for company")
-        errorMessage.handle()
+        // let errorMessage = new Error(Error.ERROR_TYPE_API, "Unable to fetch registered address amendment for company")
+        // errorMessage.handle()
       }
     }
   }
@@ -170,8 +170,8 @@ export class ChangeOfRegisteredAddressServiceController extends CompanyServiceCo
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage = new Error(Error.ERROR_TYPE_API, "Unable to fetch registered address amendment for company")
-        errorMessage.handle()
+        // let errorMessage = new Error(Error.ERROR_TYPE_API, "Unable to fetch registered address amendment for company")
+        // errorMessage.handle()
       }
     }
   }
@@ -222,8 +222,8 @@ export class ChangeOfRegisteredAddressServiceController extends CompanyServiceCo
         e.handle()
       } else {
         console.error(e)
-        let error: Error = new Error(Error.ERROR_TYPE_API, "Unable to proceed with payment. Please try again")
-        error.handle()
+        // let error: Error = new Error(Error.ERROR_TYPE_API, "Unable to proceed with payment. Please try again")
+        // error.handle()
       }
     } finally {
       this.isSubmitting.value = false

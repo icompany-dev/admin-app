@@ -22,6 +22,8 @@
         <div v-if="controller.isDocumentEditable()">
           <AddressInput
             :is-disabled="props.isInPreviewMode"
+            :is-show-labels="false"
+            :location="controller.location"
             @update-address-line1="controller.handleAddressLine1Change($event)"
             @update-address-line2="controller.handleAddressLine2Change($event)"
             @update-postcode="controller.handlePostcodeChange($event)"
