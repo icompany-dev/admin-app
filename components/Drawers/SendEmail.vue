@@ -39,6 +39,26 @@
                     />
                   </div>
                   <div class="note">Use Comma ( , ) to separate the emails.</div>
+                  <div
+                    class="shortcuts"
+                    v-if="controller.hasAnyQuickActions"
+                  >
+                    <span class="shortcut-label">Quick Actions :</span>
+                    <div
+                      v-if="controller.isShowDirectorEmailsShortCut"
+                      class="shortcut-pill"
+                      @click="controller.onAddDirectorEmailsClicked()"
+                    >
+                      Send to Directors
+                    </div>
+                    <div
+                      v-if="controller.isShowShareholderEmailsShortCut"
+                      class="shortcut-pill"
+                      @click="controller.onAddShareholderEmailsClicked()"
+                    >
+                      Send to Shareholders
+                    </div>
+                  </div>
                 </div>
                 <div class="email-subject-row">
                   <span><b>Subject :</b></span>
@@ -59,10 +79,6 @@
                     <div class="quill-editor">
                       <div ref="editorNode"></div>
                     </div>
-                    <!-- <textarea
-                      class="form-control"
-                      v-model="controller.adminEmail.value.content"
-                    /> -->
                   </div>
                   <div class="email-sign-off">
                     <b>Best wishes,</b>

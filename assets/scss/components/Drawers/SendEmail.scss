@@ -89,6 +89,35 @@
             font-size: 0.9rem;
             color: var(--bs-gray-500);
           }
+
+          .shortcuts {
+            padding-top: 5px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 5px;
+
+            .shortcut-label {
+              color: var(--bs-gray-500);
+            }
+
+            .shortcut-pill {
+              padding: 5px 10px;
+              color: var(--bs-icompany-purple);
+              background-color: transparent;
+              border: solid 1px var(--bs-icompany-purple);
+              cursor: pointer;
+              border-radius: 5px;
+              transition: all 0.7s ease;
+
+              &:hover {
+                color: var(--bs-white);
+                background-color: var(--bs-icompany-purple);
+              }
+            }
+          }
         }
 
         .email-content {

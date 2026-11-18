@@ -438,7 +438,6 @@
   watch(
     () => controller.eventManager.isSendingEmail,
     (newVal) => {
-      console.log("watcher", newVal)
       controller.onEmailTriggered()
     },
     { immediate: true }

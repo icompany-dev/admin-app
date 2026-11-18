@@ -6,6 +6,8 @@ import { Toast } from "~/scripts/library/Toast"
 import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
+import type { Director } from "~/scripts/models/Director"
+import type { Shareholder } from "~/scripts/models/Shareholder"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
@@ -19,6 +21,9 @@ import { StringUtil } from "~/scripts/utils/String"
 export class SelectedSdnBhdController {
   companyId: Ref<string> = ref<string>("")
   company: Ref<Company> = ref<Company>(new Company())
+
+  directorEmails: Ref<string[]> = ref<string[]>([])
+  shareholderEmails: Ref<string[]> = ref<string[]>([])
 
   emitEvents: any | null = null
 
@@ -36,12 +41,6 @@ export class SelectedSdnBhdController {
   isAnnualReturn: Ref<boolean> = ref<boolean>(false)
   isFinancialStatement: Ref<boolean> = ref<boolean>(false)
   isRolesAndAccess: Ref<boolean> = ref<boolean>(false)
-
-  //TODO: To remove
-  isBusiness: Ref<boolean> = ref<boolean>(false)
-  isDirectors: Ref<boolean> = ref<boolean>(false)
-  isShareholders: Ref<boolean> = ref<boolean>(false)
-  isAccounting: Ref<boolean> = ref<boolean>(false)
 
   selectedApplicationName: Ref<string> = ref<string>("")
   selectedApplicationId: Ref<string> = ref<string>("")
@@ -86,7 +85,7 @@ export class SelectedSdnBhdController {
     }
 
     this.companyId.value = companyId
-    await this.fetchCompany()
+    await Promise.all([this.fetchCompany(), this.fetchDirectors(), this.fetchShareholders()])
   }
 
   setDocumentRef(documentRef: any): void {
@@ -170,6 +169,40 @@ export class SelectedSdnBhdController {
       }
     } finally {
       this.isLoading.value = false
+    }
+  }
+
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    try {
+      let repository = useDirectorStore()
+      let response = await repository.fetchAllForCompany(this.companyId.value)
+
+      this.directorEmails.value = response.map((d: Director) => {
+        return d.email
+      })
+    } catch (e) {
+      //
+    }
+  }
+
+  async fetchShareholders(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    try {
+      let repository = useShareholderStore()
+      let response = await repository.fetchAllForCompany(this.companyId.value)
+
+      this.shareholderEmails.value = response.map((d: Shareholder) => {
+        return d.email
+      })
+    } catch (e) {
+      //
     }
   }
 
@@ -745,10 +778,14 @@ export class SelectedSdnBhdController {
   }
 
   get sendEmailProps(): PropsSendEmail {
+    let props = new PropsSendEmail([], "", "", [])
     if (this.eventManager.isSendingEmail && this.eventManager.propsSendEmail) {
-      return this.eventManager.propsSendEmail
+      props = this.eventManager.propsSendEmail
     }
 
-    return new PropsSendEmail([], "", "", [])
+    props.directorEmails = this.directorEmails.value
+    props.shareholderEmails = this.shareholderEmails.value
+
+    return props
   }
 }
