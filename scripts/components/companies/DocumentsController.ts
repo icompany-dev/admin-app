@@ -11,6 +11,7 @@ import { PropsEditFilenames } from "~/scripts/props/PropsEditFilenames"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
+import { ActionTrayDropdown } from "~/scripts/types/action-trays/ActionTrayDropdown"
 import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 import { FileZipper } from "~/scripts/utils/FileZipper"
 import { StringUtil } from "~/scripts/utils/String"
@@ -36,6 +37,8 @@ export class DocumentsController {
   isPrinting: Ref<boolean> = ref<boolean>(false)
   isDeleting: Ref<boolean> = ref<boolean>(false)
   isUpdating: Ref<boolean> = ref<boolean>(false)
+
+  isSelectAll: Ref<boolean> = ref<boolean>(false)
 
   pdfUrlToView: Ref<string> = ref<string>("")
 
@@ -316,6 +319,17 @@ export class DocumentsController {
     this.editFilenamesRef.show()
   }
 
+  onSelectUnselectClicked(): void {
+    this.isSelectAll.value = !this.isSelectAll.value
+    if (this.isSelectAll.value) {
+      this.selectedDocuments.value = this.documentsAndForms.value.documents.map((cd: CompanyDocument) => {
+        return cd
+      })
+    } else {
+      this.selectedDocuments.value = []
+    }
+  }
+
   async onCompleteUpdateFilename(): Promise<void> {
     try {
       this.selectedDocuments.value = []
@@ -339,7 +353,7 @@ export class DocumentsController {
   get resolutions(): CompanyDocument[] {
     let documents = this.documentsAndForms.value.getResolutions()
     documents.forEach((cd: CompanyDocument) => {
-      cd.isSelected = false
+      cd.isSelected = this.isSelectAll.value
     })
 
     return documents
@@ -348,7 +362,7 @@ export class DocumentsController {
   get statutoryForms(): CompanyDocument[] {
     let documents = this.documentsAndForms.value.getStatutoryForms()
     documents.forEach((cd: CompanyDocument) => {
-      cd.isSelected = false
+      cd.isSelected = this.isSelectAll.value
     })
 
     return documents
@@ -357,7 +371,7 @@ export class DocumentsController {
   get others(): CompanyDocument[] {
     let documents = this.documentsAndForms.value.getNonResolutionStatutoryForms()
     documents.forEach((cd: CompanyDocument) => {
-      cd.isSelected = false
+      cd.isSelected = this.isSelectAll.value
     })
 
     return documents
@@ -366,7 +380,7 @@ export class DocumentsController {
   get vouchersAndCerts(): CompanyDocument[] {
     let documents = this.documentsAndForms.value.getVouchersAndCertificates()
     documents.forEach((cd: CompanyDocument) => {
-      cd.isSelected = false
+      cd.isSelected = this.isSelectAll.value
     })
 
     return documents
@@ -377,7 +391,7 @@ export class DocumentsController {
   }
 
   get numberOfDocuments(): number {
-    return this.statutoryForms.length + this.resolutions.length + this.others.length
+    return this.statutoryForms.length + this.resolutions.length + this.others.length + this.vouchersAndCerts.length
   }
 
   get resolutionsLabel(): string {
@@ -447,13 +461,19 @@ export class DocumentsController {
   }
 
   get actionTrayElements(): ActionTrayElement[] {
+    let prependElements = []
+    if (this.canCarryOutActions) {
+      let titleEn = this.isSelectAll.value ? "Clear Selection" : "Select All"
+      let titleBm = this.isSelectAll.value ? "Clear Selection" : "Pilih Semua"
+      prependElements.push(
+        new ActionTrayElement("select", this.onSelectUnselectClicked.bind(this), {
+          label: new ActionTrayLabel(titleEn, titleBm),
+        })
+      )
+    }
+
     return [
-      new ActionTrayElement("edit", this.onUpdateFilenameClicked.bind(this), {
-        label: new ActionTrayLabel("Update Name", "Kemaskini Nama"),
-        isDisabled: !this.canCarryOutActions,
-        iconClass: this.isUpdating.value ? "fa-regular fa-spin fa-spinner" : "",
-        isIconStart: this.isUpdating.value,
-      }),
+      ...prependElements,
       new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
         label: new ActionTrayLabel("Download", "Muat Turun"),
         isDisabled: !this.canCarryOutActions,
@@ -466,13 +486,32 @@ export class DocumentsController {
         iconClass: this.isPrinting.value ? "fa-regular fa-spin fa-spinner" : "",
         isIconStart: this.isPrinting.value,
       }),
-      new ActionTrayElement("delete", this.onRemoveDocumentsClicked.bind(this), {
-        label: new ActionTrayLabel("Remove", "Padam"),
-        isDisabled: !this.canCarryOutActions,
-        iconClass: this.isDeleting.value ? "fa-regular fa-spin fa-spinner" : "",
-        isIconStart: this.isDeleting.value,
-      }),
+      new ActionTrayDropdown(
+        "more",
+        {
+          iconClass: this.isAnyMoreActionsOngoing ? "fa-regular fa-spin fa-spinner" : "fa-solid fa-ellipsis",
+          isIconOnly: true,
+        },
+        [
+          new ActionTrayElement("edit", this.onUpdateFilenameClicked.bind(this), {
+            label: new ActionTrayLabel("Update Name", "Kemaskini Nama"),
+            isDisabled: !this.canCarryOutActions,
+            iconClass: this.isUpdating.value ? "fa-regular fa-spin fa-spinner" : "",
+            isIconStart: this.isUpdating.value,
+          }),
+          new ActionTrayElement("delete", this.onRemoveDocumentsClicked.bind(this), {
+            label: new ActionTrayLabel("Remove", "Padam"),
+            isDisabled: !this.canCarryOutActions,
+            iconClass: this.isDeleting.value ? "fa-regular fa-spin fa-spinner" : "",
+            isIconStart: this.isDeleting.value,
+          }),
+        ]
+      ),
     ]
+  }
+
+  get isAnyMoreActionsOngoing(): boolean {
+    return this.isUpdating.value || this.isDeleting.value
   }
 
   get numberOfSelection(): number {
