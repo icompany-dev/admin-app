@@ -71,6 +71,7 @@ export class OverviewController {
   registeredAddressLocation: Ref<Location> = ref<Location>(new Location())
 
   isAddingNewBranch: Ref<boolean> = ref<boolean>(false)
+  isAddingNewBank: Ref<boolean> = ref<boolean>(false)
 
   isEditFYE: Ref<boolean> = ref<boolean>(false)
   isEditingFYE: Ref<boolean> = ref<boolean>(false)
@@ -682,6 +683,37 @@ ${detailsOfBO.join("\n")}
     })
   }
 
+  // banks
+  onBankUpdated(companyBank: CompanyBank): void {
+    // let matchedCompanyBank = this.companyBanks.value.find((cb: CompanyBank) => {
+    //   return cb.id === companyBank.id
+    // })
+    // if (matchedCompanyBank) {
+    //   matchedCompanyBank.clone(companyBank)
+    // } else {
+    //   this.companyBanks.value.push(companyBank)
+    // }
+  }
+
+  onAddBank(): void {
+    this.isAddingNewBank.value = true
+  }
+
+  onCancelAddBank(): void {
+    this.isAddingNewBank.value = false
+  }
+
+  onNewBankAdded(companyBank: CompanyBank): void {
+    this.companyBanks.value.push(companyBank)
+    this.isAddingNewBank.value = false
+  }
+
+  onRemoved(companyBankId: string): void {
+    this.companyBanks.value = this.companyBanks.value.filter((cb: CompanyBank) => {
+      return cb.id !== companyBankId
+    })
+  }
+
   // getters
   get noneText(): string {
     return this.language.isMalay() ? "TIADA" : "NONE"
@@ -965,6 +997,14 @@ ${detailsOfBO.join("\n")}
     return this.company.value.branches.every((cb: CompanyBranch) => {
       return !StringUtil.isNullOrEmpty(cb.id)
     })
+  }
+
+  get canAddNewBank(): boolean {
+    return (
+      this.companyBanks.value.every((cb: CompanyBank) => {
+        return !StringUtil.isNullOrEmpty(cb.id)
+      }) && !this.isAddingNewBank.value
+    )
   }
 
   get businessDescriptionLabel(): string {

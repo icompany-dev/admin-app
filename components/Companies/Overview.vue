@@ -261,21 +261,32 @@
                   v-for="(companyBank, i) in controller.bankDetails"
                   :key="i"
                 >
-                  <div class="bank-account-detail">
-                    <div class="name">
-                      <b>{{ companyBank.bank.name }}</b>
-                    </div>
-                    <div class="branch-details">
-                      {{ companyBank.bankBranch.name }}
-                      <br />
-                      {{ companyBank.bankBranch.address }}
-                    </div>
-                    <div class="account-number">
-                      {{ controller.accountNumberLabel }}: {{ companyBank.accountNumber }}
-                    </div>
-                  </div>
+                  <Bank
+                    :company-id="controller.companyId.value"
+                    :company-bank="companyBank"
+                    @removed="controller.onRemoved($event)"
+                  />
                 </li>
+                <Transition name="fade">
+                  <li v-if="controller.isAddingNewBank.value">
+                    <Bank
+                      :company-id="controller.companyId.value"
+                      :company-bank="new CompanyBank()"
+                      @added="controller.onNewBankAdded($event)"
+                      @cancel="controller.onCancelAddBank()"
+                    />
+                  </li>
+                </Transition>
               </ol>
+              <div class="action-button-container">
+                <button
+                  v-if="controller.canAddNewBank"
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onAddBank()"
+                >
+                  Add Bank Account
+                </button>
+              </div>
             </td>
           </tr>
           <tr>
@@ -581,6 +592,7 @@
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import AddressInput from "@/components/Forms/AddressInput.vue"
+  import Bank from "./Bank.vue"
   import Branch from "./Branch.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import Tags from "../Tags/Tags.vue"
@@ -588,6 +600,7 @@
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
   import { CompanyBranch } from "~/scripts/models/CompanyBranch"
+  import { CompanyBank } from "~/scripts/models/CompanyBank"
 
   const props = defineProps({
     companyId: {
