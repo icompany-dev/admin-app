@@ -31,6 +31,8 @@ export class ChangeOfRegisteredAddressServiceController extends CompanyServiceCo
     this.target = CompanyConstants.TARGET_AMENDMENT_REGISTERED_ADDRESS
     this.setViewType(viewType)
     this.initializeData()
+
+    this.documentName.value = "DCR - Change of Registered Address.pdf"
   }
 
   async initializeData(): Promise<void> {

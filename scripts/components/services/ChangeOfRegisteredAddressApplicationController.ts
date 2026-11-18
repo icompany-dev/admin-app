@@ -124,8 +124,8 @@ export class ChangeOfRegisteredAddressApplicationController extends ApplicationC
   }
 
   async onDownloadClicked(): Promise<void> {
-    await nextTick()
     this.emitEvents("download")
+    // await nextTick()
   }
 
   onShowSection27ActionClicked(): void {
@@ -537,13 +537,13 @@ export class ChangeOfRegisteredAddressApplicationController extends ApplicationC
   // document checkers
   get isPD2Uploaded(): boolean {
     return this.uploadedDocumentChecker.value.isDocumentUploaded(
-      DocumentTargets.TARGET_PD2,
+      DocumentTargets.TARGET_AMENDMENT_REGISTERED_ADDRESS_PD2,
       this.application.value?.paidAt ?? ""
     )
   }
 
   get pd2FileLabel(): string {
-    return "PD2 - Change of Business Address"
+    return "PD2 - Change of Registered Address"
   }
 
   get uplaodedPD2(): CompanyDocument | null {
@@ -552,7 +552,7 @@ export class ChangeOfRegisteredAddressApplicationController extends ApplicationC
     }
 
     let companyDocument = this.uploadedDocumentChecker.value.latestDocument(
-      DocumentTargets.TARGET_PD2,
+      DocumentTargets.TARGET_AMENDMENT_REGISTERED_ADDRESS_PD2,
       this.application.value?.paidAt ?? ""
     )
 

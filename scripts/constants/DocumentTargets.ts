@@ -9,6 +9,7 @@ export class DocumentTargets {
 
   static TARGET_AMENDMENT_REGISTERED_ADDRESS: string = "company_amendment_registered_address"
   static TARGET_AMENDMENT_REGISTERED_ADDRESS_RESOLUTIONS: string = "company_amendment_registered_address_resolutions"
+  static TARGET_AMENDMENT_REGISTERED_ADDRESS_PD2: string = "company_amendment_registered_address_pd2"
 
   static TARGET_AMENDMENT_BRANCH: string = "company_amendment_branch"
   static TARGET_AMENDMENT_BRANCH_RESOLUTIONS: string = "company_amendment_branch_resolutions"

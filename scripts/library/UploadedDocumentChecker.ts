@@ -81,6 +81,8 @@ export class UploadedDocumentChecker {
         return StatutoryFormKeywords.ChangeOfRegisteredAddress
       case DocumentTargets.TARGET_AMENDMENT_REGISTERED_ADDRESS_RESOLUTIONS:
         return StatutoryFormKeywords.ChangeOfRegisteredAddress
+      case DocumentTargets.TARGET_AMENDMENT_REGISTERED_ADDRESS_RESOLUTIONS:
+        return "PD2 - Change of Registered Address"
       case DocumentTargets.TARGET_AMENDMENT_BRANCH:
         return StatutoryFormKeywords.ChangeOfBranch
       case DocumentTargets.TARGET_AMENDMENT_BRANCH_RESOLUTIONS:

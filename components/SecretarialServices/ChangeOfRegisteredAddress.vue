@@ -53,6 +53,14 @@
     const target = controller.selectedDocumentTarget.value
     return target && componentMap[target] ? componentMap[target] : null
   })
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style lang="scss">
