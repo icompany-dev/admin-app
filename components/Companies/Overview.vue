@@ -380,14 +380,51 @@
             </td>
             <td>:</td>
             <td>
-              <template v-if="!controller.isEditFYE.value">
-                <b>Previous FYE:</b>
-                <br />
+              <b>Past FYE:</b>
+              <br />
+              <template v-if="!controller.isPastEditFYE.value">
                 {{ controller.previousFYE }}
-                <br />
-                <br />
-                <b>Current FYE:</b>
-                <br />
+                <span
+                  class="action-link"
+                  @click="controller.onEditPastFyeClicked()"
+                >
+                  <i class="fa-regular fa-edit"></i>
+                </span>
+              </template>
+              <template v-if="controller.isPastEditFYE.value">
+                <input
+                  type="date"
+                  class="form-control"
+                  v-model="controller.fyeStartDate.value"
+                />
+                <i class="fa-solid fa-minus" />
+                <input
+                  type="date"
+                  class="form-control"
+                  v-model="controller.fyeEndDate.value"
+                />
+                <span
+                  class="action-link"
+                  @click="controller.onSaveFYEDatesClicked()"
+                >
+                  <i
+                    class="fa-regular"
+                    :class="controller.isEditingFYE.value ? 'fa-spin fa-spinner' : 'fa-save'"
+                  ></i>
+                </span>
+                <span
+                  v-if="!controller.isEditingFYE.value"
+                  class="action-link remove"
+                  @click="controller.onCancelEditFyeClicked()"
+                >
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+              </template>
+              <br />
+              <br />
+              <b>Current FYE:</b>
+              <br />
+              <template v-if="!controller.isEditFYE.value">
                 {{ controller.currentFYE }}
                 <span
                   class="action-link"

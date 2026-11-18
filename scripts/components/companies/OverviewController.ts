@@ -73,7 +73,9 @@ export class OverviewController {
   isAddingNewBranch: Ref<boolean> = ref<boolean>(false)
   isAddingNewBank: Ref<boolean> = ref<boolean>(false)
 
+  isPastEditFYE: Ref<boolean> = ref<boolean>(false)
   isEditFYE: Ref<boolean> = ref<boolean>(false)
+  isPastEditingFYE: Ref<boolean> = ref<boolean>(false)
   isEditingFYE: Ref<boolean> = ref<boolean>(false)
   companyFinancialPeriods = ref<CompanyFinancialPeriod[]>([])
   fyeStartDate: Ref<string> = ref<string>("")
@@ -594,6 +596,20 @@ ${detailsOfBO.join("\n")}
   }
 
   // Edit FYE
+  onEditPastFyeClicked(): void {
+    this.isEditFYE.value = false
+    this.isEditingFYE.value = false
+
+    let past = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+      return cp.status === "past"
+    })
+
+    this.fyeStartDate.value = past ? this.dayjs(past.startDate).format("YYYY-MM-MM") : ""
+    this.fyeEndDate.value = past ? this.dayjs(past.endDate).format("YYYY-MM-MM") : ""
+
+    this.isPastEditFYE.value = true
+  }
+
   onEditFyeClicked(): void {
     let current = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
       return cp.status === "active"
@@ -602,10 +618,12 @@ ${detailsOfBO.join("\n")}
     this.fyeEndDate.value = current ? this.dayjs(current.endDate).format("YYYY-MM-MM") : ""
 
     this.isEditFYE.value = true
+    this.isPastEditFYE.value = false
   }
 
   onCancelEditFyeClicked(): void {
     this.isEditFYE.value = false
+    this.isPastEditFYE.value = false
   }
 
   async onSaveFYEDatesClicked(): Promise<void> {
@@ -615,22 +633,41 @@ ${detailsOfBO.join("\n")}
 
     this.isEditingFYE.value = true
     try {
-      let current = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
-        return cp.status === "active"
-      })
-
       let repository = useCompanyFinancialPeriodStore()
       let promises = []
-      if (current) {
-        promises.push(repository.remove(current.id))
-      }
+      if (this.isEditFYE.value) {
+        let current = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+          return cp.status === "active"
+        })
 
-      let newCompanyFinancialPeriod = new CompanyFinancialPeriod()
-      newCompanyFinancialPeriod.companyId = this.companyId.value
-      newCompanyFinancialPeriod.startDate = this.fyeStartDate.value
-      newCompanyFinancialPeriod.endDate = this.fyeEndDate.value
-      newCompanyFinancialPeriod.status = "active"
-      promises.push(newCompanyFinancialPeriod.create(repository))
+        if (current) {
+          promises.push(repository.remove(current.id))
+        }
+
+        let newCompanyFinancialPeriod = new CompanyFinancialPeriod()
+        newCompanyFinancialPeriod.companyId = this.companyId.value
+        newCompanyFinancialPeriod.startDate = this.fyeStartDate.value
+        newCompanyFinancialPeriod.endDate = this.fyeEndDate.value
+        newCompanyFinancialPeriod.status = "active"
+        promises.push(newCompanyFinancialPeriod.create(repository))
+      } else if (this.isPastEditFYE.value) {
+        let past = this.orderedFinancialPeriods.find((cp: CompanyFinancialPeriod) => {
+          return cp.status === "past"
+        })
+
+        if (past) {
+          past.startDate = this.fyeStartDate.value
+          past.endDate = this.fyeEndDate.value
+          promises.push(past.update(useCompanyFinancialPeriodStore()))
+        } else {
+          let newCompanyFinancialPeriod = new CompanyFinancialPeriod()
+          newCompanyFinancialPeriod.companyId = this.companyId.value
+          newCompanyFinancialPeriod.startDate = this.fyeStartDate.value
+          newCompanyFinancialPeriod.endDate = this.fyeEndDate.value
+          newCompanyFinancialPeriod.status = "past"
+          promises.push(newCompanyFinancialPeriod.create(repository))
+        }
+      }
 
       await Promise.allSettled(promises)
 
@@ -645,6 +682,7 @@ ${detailsOfBO.join("\n")}
     } finally {
       this.isEditingFYE.value = false
       this.isEditFYE.value = false
+      this.isPastEditFYE.value = false
     }
   }
 
