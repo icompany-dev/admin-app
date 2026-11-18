@@ -746,7 +746,7 @@ export class SelectedSdnBhdController {
       this.company.value.id,
       this.company.value,
       this.company.value.name,
-      this.company.value.createdAt,
+      this.company.value.incorporatedAt,
       null,
       false,
       false
