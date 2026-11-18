@@ -27,7 +27,7 @@
               </div>
               <div class="application-details">
                 <br />
-                <b>New Business Address:</b>
+                <b>New Registered Address:</b>
                 <br />
                 <template v-if="controller.isAddressCompleted">
                   {{ controller.addressLine1 }}
