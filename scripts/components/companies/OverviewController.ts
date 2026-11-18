@@ -1007,12 +1007,24 @@ ${detailsOfBO.join("\n")}
         return cp.status === "past"
       }) ?? null
 
+    let eighteenMonthsLater = this.dayjs(this.company.value.incorporatedAt ?? "")
+      .add(17, "months")
+      .endOf("month")
+
     if (!past) {
-      let eighteenMonthsLater = this.dayjs(this.company.value.incorporatedAt ?? "")
-        .add(17, "months")
-        .endOf("month")
-        .format("YYYY-MM-DD")
-      return `${this.time.formatDateOnlyShort(this.incorporatedAtDate)} - ${this.time.formatDateOnlyShort(eighteenMonthsLater)}`
+      return `${this.time.formatDateOnlyShort(this.incorporatedAtDate)} - ${this.time.formatDateOnlyShort(eighteenMonthsLater.format("YYYY-MM-DD"))}`
+    }
+
+    let isMoreThanEighteenMonths = this.dayjs(this.company.value.incorporatedAt ?? "")
+      .add(18, "months")
+      .isBefore(this.dayjs(past.endDate))
+    if (isMoreThanEighteenMonths) {
+      let endDate = this.dayjs(past.endDate).year(eighteenMonthsLater.year())
+      let isStillMoreThanEighteenMonths = eighteenMonthsLater.isBefore(endDate)
+      if (isStillMoreThanEighteenMonths) {
+        endDate = endDate.subtract(1, "year")
+      }
+      return `${this.time.formatDateOnlyShort(this.incorporatedAtDate)}  - ${this.time.formatDateOnlyShort(endDate.format("YYYY-MM-DD"))}`
     }
 
     return `${this.time.formatDateOnlyShort(this.incorporatedAtDate)}  - ${this.time.formatDateOnlyShort(past.endDate)}`
