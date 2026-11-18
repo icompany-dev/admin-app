@@ -375,6 +375,42 @@
             </td>
           </tr>
           <tr>
+            <td>Auditor</td>
+            <td>:</td>
+            <td>
+              <ol>
+                <li
+                  v-for="(auditor, i) in controller.auditors.value"
+                  :key="i"
+                >
+                  <div class="human-details">
+                    <div class="name">{{ auditor.auditorCompanyName }}</div>
+                    <div class="human-detail">
+                      <i class="fa-regular fa-envelope"></i>
+                      <span class="email">{{ auditor.auditorEmail }}</span>
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-brands fa-whatsapp" />
+                      <span class="phone">{{ auditor.auditorPhone }}</span>
+                    </div>
+                  </div>
+                  <button
+                    class="btn btn-pill btn-primary"
+                    @click="controller.onEditCompanyAuditor(auditor)"
+                  >
+                    Edit
+                  </button>
+                </li>
+              </ol>
+              <button
+                class="btn btn-pill btn-primary"
+                @click="controller.onAddCompanyAuditorClicked()"
+              >
+                {{ controller.addAuditorLabel }}
+              </button>
+            </td>
+          </tr>
+          <tr>
             <td>
               {{ controller.financialYearEndLabel }}
             </td>
@@ -566,45 +602,7 @@
         </div>
       </div>
     </div>
-    <div class="company-overview-section">
-      <div class="company-overview-section-split">
-        <div class="split-section-item">
-          <div class="overview-title">Auditor</div>
-          <ol>
-            <li
-              v-for="(auditor, i) in controller.auditors.value"
-              :key="i"
-            >
-              <div class="human-details">
-                <div class="name">{{ auditor.auditorCompanyName }}</div>
-                <div class="human-detail">
-                  <i class="fa-regular fa-envelope"></i>
-                  <span class="email">{{ auditor.auditorEmail }}</span>
-                </div>
-                <div class="human-detail">
-                  <i class="fa-brands fa-whatsapp" />
-                  <span class="phone">{{ auditor.auditorPhone }}</span>
-                </div>
-              </div>
-              <button
-                class="btn btn-pill btn-primary"
-                @click="controller.onEditCompanyAuditor(auditor)"
-              >
-                Edit
-              </button>
-            </li>
-            <li>
-              <button
-                class="btn btn-pill btn-submit"
-                @click="controller.onAddCompanyAuditorClicked()"
-              >
-                {{ controller.addAuditorLabel }}
-              </button>
-            </li>
-          </ol>
-        </div>
-      </div>
-    </div>
+
     <div class="company-overview-section">
       Order Chop
       <br />

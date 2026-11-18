@@ -126,6 +126,9 @@ export class AddCompanyAuditorController extends BasePopupController {
 
       let promises: any[] = []
 
+      this.companyAuditor.value.auditorEmail = this.email.value
+      this.companyAuditor.value.auditorPhone = this.phone.value
+
       if (StringUtil.isNullOrEmpty(this.companyAuditor.value.id)) {
         promises.push(this.companyAuditor.value.create(useCompanyAuditorStore()))
       } else {
@@ -144,8 +147,8 @@ export class AddCompanyAuditorController extends BasePopupController {
       let toastMessage = ""
       if (this.isGrantAccess.value) {
         toastMessage = this.language.isMalay()
-          ? `Emel telah dihantar ke ${this.companyAuditor.value.auditorEmail}.`
-          : `Email was sent to ${this.companyAuditor.value.auditorEmail}.`
+          ? `Emel telah dihantar ke ${this.email.value}.`
+          : `Email was sent to ${this.email.value}.`
       }
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
