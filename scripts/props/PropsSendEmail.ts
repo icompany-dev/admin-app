@@ -5,6 +5,7 @@ export interface IPropsSendEmail {
   subject: string
   content: string
   fileAttachments: EmailAttachment[]
+  files: File[]
 }
 
 export class PropsSendEmail {
@@ -12,16 +13,19 @@ export class PropsSendEmail {
   subject: string = ""
   content: string = ""
   fileAttachments: EmailAttachment[] = []
+  files: File[] = []
 
   constructor(
     recipients: string[] = [],
     subject: string = "",
     content: string = "",
-    fileAttachments: EmailAttachment[] = []
+    fileAttachments: EmailAttachment[] = [],
+    files: File[] = []
   ) {
     this.recipients = recipients
     this.subject = subject
     this.content = content
     this.fileAttachments = fileAttachments
+    this.files = files
   }
 }

@@ -25,6 +25,8 @@ export class SendEmailController extends BaseDrawerController {
 
   isSendingEmail: Ref<boolean> = ref<boolean>(false)
 
+  eventManager = useEventManagerStore()
+
   maxSize: number = 10 * 1024 * 1024
 
   constructor(props: PropsSendEmail, emitEvents: any) {
@@ -41,6 +43,8 @@ export class SendEmailController extends BaseDrawerController {
     this.adminEmail.value.fileAttachments = props.fileAttachments.map((d: any) => {
       return new EmailAttachment(d)
     })
+
+    this.files.value = props.files
   }
 
   setFileInputRef(fileInputRef: any): void {
@@ -56,6 +60,12 @@ export class SendEmailController extends BaseDrawerController {
       this.removeEventListeners()
       this.addEventListeners()
     }
+  }
+
+  override hide(): void {
+    this.isShowing.value = false
+    this.eventManager.setIsSendingEmail(false)
+    this.eventManager.setPropsSendEmail(null)
   }
 
   resetValues(): void {

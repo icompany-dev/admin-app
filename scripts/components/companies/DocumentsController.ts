@@ -4,10 +4,12 @@ import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { Toast } from "~/scripts/library/Toast"
+import { EmailAttachment } from "~/scripts/models/AdminEmail"
 import { File } from "~/scripts/models/File"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsDocument } from "~/scripts/props/PropsDocument"
 import { PropsEditFilenames } from "~/scripts/props/PropsEditFilenames"
+import { PropsSendEmail } from "~/scripts/props/PropsSendEmail"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyDocument } from "~/scripts/types/CompanyDocument"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
@@ -37,12 +39,14 @@ export class DocumentsController {
   isPrinting: Ref<boolean> = ref<boolean>(false)
   isDeleting: Ref<boolean> = ref<boolean>(false)
   isUpdating: Ref<boolean> = ref<boolean>(false)
+  isEmailing: Ref<boolean> = ref<boolean>(false)
 
   isSelectAll: Ref<boolean> = ref<boolean>(false)
 
   pdfUrlToView: Ref<string> = ref<string>("")
 
   language = useLanguage()
+  eventManager = useEventManagerStore()
 
   constructor(props: PropsCompanyDocument, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -306,6 +310,61 @@ export class DocumentsController {
     }
   }
 
+  async onEmailClicked(): Promise<void> {
+    if (this.isEmailing.value) {
+      return
+    }
+
+    try {
+      let files: globalThis.File[] = []
+      let promises = this.selectedDocuments.value
+        .filter((cd: CompanyDocument) => {
+          return !StringUtil.isNullOrEmpty(cd.fileUrl)
+        })
+        .map((cd: CompanyDocument) => {
+          return fetch(cd.fileUrl ?? "").then(async (response) => {
+            if (!response.ok) {
+              return
+            }
+
+            let blob = await response.blob()
+            files.push(new globalThis.File([blob], cd.documentName, { type: "application/pdf" }))
+          })
+        })
+
+      await Promise.all(promises)
+
+      // let emailAttachments: EmailAttachment[] = this.selectedDocuments.value
+      //   .filter((cd: CompanyDocument) => {
+      //     return !StringUtil.isNullOrEmpty(cd.fileUrl)
+      //   })
+      //   .map((cd: CompanyDocument) => {
+      //     let emailAttachment = new EmailAttachment()
+      //     emailAttachment.url = cd.fileUrl ?? ""
+      //     emailAttachment.fileName = cd.documentName
+      //     emailAttachment.mimeType = `application/pdf`
+      //     return emailAttachment
+      //   })
+
+      let propsSendEmail = new PropsSendEmail([], "", "", [], files)
+      this.eventManager.setPropsSendEmail(propsSendEmail)
+      this.eventManager.setIsSendingEmail(true)
+
+      console.log(this.eventManager.propsSendEmail)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isEmailing.value = false
+    }
+  }
+
   onCancelUpdateFilenameClicked(): void {
     this.isUpdating.value = false
   }
@@ -485,6 +544,12 @@ export class DocumentsController {
         isDisabled: !this.canCarryOutActions,
         iconClass: this.isPrinting.value ? "fa-regular fa-spin fa-spinner" : "",
         isIconStart: this.isPrinting.value,
+      }),
+      new ActionTrayElement("email", this.onEmailClicked.bind(this), {
+        label: new ActionTrayLabel("Email", "Emel"),
+        isDisabled: !this.canCarryOutActions,
+        iconClass: this.isEmailing.value ? "fa-regular fa-spin fa-spinner" : "",
+        isIconStart: this.isEmailing.value,
       }),
       new ActionTrayDropdown(
         "more",

@@ -24,6 +24,8 @@ export class SelectedSdnBhdController {
 
   language = useLanguage()
 
+  eventManager = useEventManagerStore()
+
   isLoading: Ref<boolean> = ref<boolean>(false)
   isShowOptions: Ref<boolean> = ref<boolean>(false)
   isUpdatingDetails: Ref<boolean> = ref<boolean>(false)
@@ -498,6 +500,18 @@ export class SelectedSdnBhdController {
     }
   }
 
+  onEmailTriggered(): void {
+    if (!this.eventManager.isSendingEmail || !this.eventManager.propsSendEmail) {
+      return
+    }
+
+    if (!this.sendEmailRef) {
+      return
+    }
+
+    this.sendEmailRef.show()
+  }
+
   get companyName(): string {
     let companyName = this.company.value.getFullName()
     companyName = companyName.replace("SDN BHD", "SDN. BHD.")
@@ -731,6 +745,10 @@ export class SelectedSdnBhdController {
   }
 
   get sendEmailProps(): PropsSendEmail {
+    if (this.eventManager.isSendingEmail && this.eventManager.propsSendEmail) {
+      return this.eventManager.propsSendEmail
+    }
+
     return new PropsSendEmail([], "", "", [])
   }
 }
