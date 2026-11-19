@@ -170,7 +170,7 @@
 
   const props = defineProps<IPropsSendEmail>()
 
-  const emit = defineEmits([])
+  const emit = defineEmits(["close"])
 
   const dropZoneRef = ref(null)
 

@@ -72,6 +72,8 @@ export class SendEmailController extends BaseDrawerController {
     this.isShowing.value = false
     this.eventManager.setIsSendingEmail(false)
     this.eventManager.setPropsSendEmail(null)
+
+    this.emitEvents("close")
   }
 
   resetValues(): void {

@@ -73,6 +73,8 @@ export class SelectedSdnBhdController {
 
   applicationRefs: any[] = []
 
+  isSendingTaxAgentDetails: Ref<boolean> = ref<boolean>(false)
+
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
@@ -545,6 +547,20 @@ export class SelectedSdnBhdController {
     this.sendEmailRef.show()
   }
 
+  onSendTaxAgentNotice(): void {
+    this.isSendingTaxAgentDetails.value = true
+
+    if (!this.sendEmailRef) {
+      return
+    }
+
+    this.sendEmailRef.show()
+  }
+
+  onEmailClosed(): void {
+    this.isSendingTaxAgentDetails.value = false
+  }
+
   get companyName(): string {
     let companyName = this.company.value.getFullName()
     companyName = companyName.replace("SDN BHD", "SDN. BHD.")
@@ -783,9 +799,33 @@ export class SelectedSdnBhdController {
       props = this.eventManager.propsSendEmail
     }
 
+    if (this.isSendingTaxAgentDetails.value) {
+      props.recipients = this.directorEmails.value
+      props.subject = this.taxAgentEmailTitle
+      props.content = this.taxAgentEmailContent
+    }
+
     props.directorEmails = this.directorEmails.value
     props.shareholderEmails = this.shareholderEmails.value
 
     return props
+  }
+
+  get taxAgentEmailContent(): string {
+    let paragraphs = [
+      `Hello ${this.directorEmails.value.length <= 1 ? "Director" : "Directors"},`,
+      `We have just received this from HASIL and thought it may warrant your attention.`,
+      `We note that there is no Directors’ Circular Resolution (DCR) for the Appointment of the Tax Agent on record. While this appears to be a procedural irregularity, it may be regularised by clicking <a href="https://cosec.icompany.my/sdnbhd/${this.companyId.value}/compliance/appointment-of-tax-agent">here</a>.`,
+      `We are bringing this to your attention for your information and consideration.`,
+      `Thank you.`,
+      "",
+      `Best Wishes<br><b>iCompany Systems</b>`,
+      `------------------------------------------------`,
+    ]
+    return paragraphs.join("<br>")
+  }
+
+  get taxAgentEmailTitle(): string {
+    return "[FORWARDING] - TAJUK : TAWARAN PELANTIKAN DAN PEMBERIAN KUASA MEMFAIL SECARA ELEKTRONIK KEPADA EJEN CUKAI"
   }
 }
