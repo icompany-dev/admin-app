@@ -1,7 +1,13 @@
 #users-user-detail {
+
   // Styles go here
   .human-detail {
     margin-bottom: 3px;
+    gap: 10px !important;
+
+    &.align-start {
+      align-items: flex-start !important;
+    }
   }
 
   .action-icon {

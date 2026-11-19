@@ -25,6 +25,7 @@ import { CompanyFinancialPeriod } from "~/scripts/models/CompanyFinancialPeriod"
 import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { PropsTags } from "~/scripts/props/PropsTags"
 import { AnnualReturnRecord } from "~/scripts/types/AnnualReturnRecord"
+import { PropsShareholderDetail } from "~/scripts/props/PropsShareholderDetail"
 
 export class OverviewController {
   companyId: Ref<string> = ref<string>("")
@@ -464,6 +465,10 @@ ${detailsOfBO.join("\n")}
 
   getPropsUserDetail(human: Director | Shareholder): PropsUserDetail {
     return new PropsUserDetail(human.user ?? new User(), human.user?.detail ?? new UserDetail())
+  }
+
+  getPropsShareholderDetails(human: Shareholder): PropsShareholderDetail {
+    return new PropsShareholderDetail(human)
   }
 
   //Update business address

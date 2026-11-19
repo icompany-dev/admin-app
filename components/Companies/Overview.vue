@@ -592,7 +592,8 @@
               v-for="(shareholder, i) in controller.shareholdersDetails"
               :key="i"
             >
-              <UserDetail v-bind="controller.getPropsUserDetail(shareholder)" />
+              <Shareholder v-bind="controller.getPropsShareholderDetails(shareholder)" />
+              <!-- <UserDetail v-bind="controller.getPropsUserDetail(shareholder)" /> -->
             </li>
           </ol>
           <button
@@ -633,6 +634,7 @@
   import Branch from "./Branch.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import Tags from "../Tags/Tags.vue"
+  import Shareholder from "../Users/Shareholder.vue"
   import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
