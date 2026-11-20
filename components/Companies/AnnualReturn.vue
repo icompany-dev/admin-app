@@ -90,6 +90,16 @@
                 </tr>
                 <tr>
                   <td>
+                    <b>{{ controller.companyNameLabel }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>
+                    {{ controller.companyName }}
+                    <CopyValue :value="controller.companyName" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     <b>{{ controller.businessAddressLabel }}</b>
                   </td>
                   <td>:</td>
@@ -214,19 +224,11 @@
                   <td>
                     <div
                       class="shareholder"
-                      v-for="shareholder in controller.shareholdersForAnnualReturn"
+                      v-for="shareholderAnnualReturn in controller.shareholdersForAnnualReturn"
                     >
-                      <Shareholder v-bind="controller.getShareholderProps(shareholder)" />
-                      <!-- <UserDetail v-bind="controller.getUserDetailProps(shareholder)" />
-                      <br />
-                      <b>{{ controller.totalOrdinarySharesLabel }}</b>
-                      : {{ NumberUtil.thousandSeparator(shareholder.ordinaryShares) }}
-                      <CopyValue :value="shareholder.ordinaryShares.toString()" />
-                      <br />
-                      <b>{{ controller.totalPreferenceSharesLabel }}</b>
-                      : {{ NumberUtil.thousandSeparator(shareholder.preferenceShares) }}
-                      <CopyValue :value="shareholder.preferenceShares.toString()" />
-                      <br /> -->
+                      <Shareholder
+                        v-bind="controller.getShareholderProps(shareholderAnnualReturn.shareholderForDisplay)"
+                      />
                     </div>
                   </td>
                 </tr>

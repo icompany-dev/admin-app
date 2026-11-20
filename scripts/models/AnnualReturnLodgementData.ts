@@ -4,7 +4,7 @@ import { MsicCode } from "./MsicCode"
 import { Shareholder } from "./Shareholder"
 import { User } from "./User"
 
-export class AnnualReturnData {
+export class AnnualReturnLodgementData {
   id: string = ""
   registrationNumberNew: string = ""
   registrationNumberOld: string = ""
@@ -20,6 +20,18 @@ export class AnnualReturnData {
   totalOrdinaryShares: number = 0
   totalPreferenceShares: number = 0
   totalShares: number = 0
+
+  constructor(data: any | null = null) {
+    if (!data) {
+      return
+    }
+
+    if (data instanceof AnnualReturnLodgementData) {
+      this.clone(data)
+    } else {
+      this.convertFromResponse(data)
+    }
+  }
 
   convertFromResponse(data: any): void {
     this.id = data.id ?? ""
@@ -54,7 +66,7 @@ export class AnnualReturnData {
     this.totalShares = data.total_shares ?? 0
   }
 
-  clone(data: AnnualReturnData): void {
+  clone(data: AnnualReturnLodgementData): void {
     this.id = data.id
     this.registrationNumberNew = data.registrationNumberNew
     this.registrationNumberOld = data.registrationNumberOld
@@ -124,5 +136,13 @@ export class AnnualReturnShareholder {
     this.preferenceSharesAtStart = data.preferenceSharesAtStart
     this.preferenceSharesReceived = data.preferenceSharesReceived
     this.preferenceSharesTransferredOut = data.preferenceSharesTransferredOut
+  }
+
+  get shareholderForDisplay(): Shareholder {
+    let copyShareholder = new Shareholder(this.shareholder)
+    copyShareholder.ordinaryShares = this.ordinarySharesAtDate
+    copyShareholder.preferenceShares = this.preferenceSharesAtDate
+
+    return copyShareholder
   }
 }
