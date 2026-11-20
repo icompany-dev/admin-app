@@ -179,6 +179,49 @@
                 </tr>
                 <tr>
                   <td>
+                    <b>{{ controller.branchesLabel }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>
+                    <span v-if="controller.annualReturnDataForYear.value.branches.length <= 0">(No Branch)</span>
+                    <ol v-if="controller.annualReturnDataForYear.value.branches.length > 0">
+                      <li v-for="(branch, i) in controller.annualReturnDataForYear.value.branches">
+                        {{ controller.getBranchAddressLine1(branch) }}
+                        <CopyValue :value="controller.getBranchAddressLine1(branch)" />
+                        <br />
+                        <template v-if="controller.getBranchAddressLine2(branch).length > 0">
+                          {{ controller.getBranchAddressLine2(branch) }}
+                          <CopyValue :value="controller.getBranchAddressLine2(branch)" />
+                          <br />
+                        </template>
+                        <template v-if="controller.getBranchAddressLine3(branch).length > 0">
+                          {{ controller.getBranchAddressLine3(branch) }}
+                          <CopyValue :value="controller.getBranchAddressLine3(branch)" />
+                          <br />
+                        </template>
+                        {{ controller.getBranchAddressPostcode(branch) }}
+                        <CopyValue :value="controller.getBranchAddressPostcode(branch)" />
+                        <br />
+                        {{ controller.getBranchAddressCity(branch) }}
+                        <CopyValue :value="controller.getBranchAddressCity(branch)" />
+                        <br />
+                        {{ controller.getBranchAddressState(branch) }}
+                        <CopyValue :value="controller.getBranchAddressState(branch)" />
+                        <br />
+                        {{ controller.getBranchAddressCountry(branch) }}
+                        <CopyValue :value="controller.getBranchAddressCountry(branch)" />
+                        <br />
+                      </li>
+                    </ol>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
                     <b>{{ controller.totalSharesLabel }}</b>
                   </td>
                   <td>:</td>

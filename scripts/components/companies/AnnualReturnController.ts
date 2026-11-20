@@ -11,6 +11,7 @@ import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentCheck
 import { AnnualReturnLodgementData, AnnualReturnShareholder } from "~/scripts/models/AnnualReturnLodgementData"
 import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
+import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 import { Director } from "~/scripts/models/Director"
 import type { MsicCode } from "~/scripts/models/MsicCode"
 import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
@@ -244,6 +245,34 @@ export class AnnualReturnController {
 
   onHideSection68(): void {
     this.isViewingDocument.value = false
+  }
+
+  getBranchAddressLine1(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.addressLine1?.toUpperCase() ?? ""
+  }
+
+  getBranchAddressLine2(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.addressLine2?.toUpperCase() ?? ""
+  }
+
+  getBranchAddressLine3(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.addressLine3?.toUpperCase() ?? ""
+  }
+
+  getBranchAddressPostcode(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.postcode ?? ""
+  }
+
+  getBranchAddressCity(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.city?.name.toUpperCase() ?? ""
+  }
+
+  getBranchAddressState(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.state?.name.toUpperCase() ?? ""
+  }
+
+  getBranchAddressCountry(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.country?.name.toUpperCase() ?? ""
   }
 
   async onGenerateXBRLClicked(): Promise<void> {
@@ -515,6 +544,10 @@ ${detailsOfBO.join("\n")}
 
   get registeredAddressLabel(): string {
     return this.language.isMalay() ? "Alamat Berdaftar" : "Registered Address"
+  }
+
+  get branchesLabel(): string {
+    return this.language.isMalay() ? "Cawangan" : "Branches"
   }
 
   get totalSharesLabel(): string {
