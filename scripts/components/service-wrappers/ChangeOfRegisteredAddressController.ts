@@ -7,6 +7,7 @@ import { useCompanyAmendmentRegisteredAddressStore } from "~/stores/CompanyAmend
 import { useCompanyStore } from "~/stores/Companies"
 import { Company } from "~/scripts/models/Company"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { PropsResolutionDocument } from "~/scripts/props/PropsResolutionDocument"
 
 export class ChangeOfRegisteredAddressController
   extends ServiceController
@@ -14,6 +15,7 @@ export class ChangeOfRegisteredAddressController
     IServiceController<CompanyAmendmentRegisteredAddress, ReturnType<typeof useCompanyAmendmentRegisteredAddressStore>>
 {
   application: CompanyAmendmentRegisteredAddress = new CompanyAmendmentRegisteredAddress()
+  applicationRef = ref<CompanyAmendmentRegisteredAddress>(new CompanyAmendmentRegisteredAddress())
   applicationId: string | null = null
   repository = useCompanyAmendmentRegisteredAddressStore()
   companyRepository = useCompanyStore()
@@ -28,11 +30,12 @@ export class ChangeOfRegisteredAddressController
   }
 
   async fetchApplication(id: string): Promise<void> {
+    this.applicationId = id
+    this.targetId = id
     let response = await this.repository.fetch(id)
     if (!this.repository.error) {
       this.application = new CompanyAmendmentRegisteredAddress(response)
-      this.applicationId = this.application.id
-      this.targetId = this.application.id
+      this.applicationRef.value = new CompanyAmendmentRegisteredAddress(response)
     }
   }
 
@@ -68,7 +71,7 @@ export class ChangeOfRegisteredAddressController
       if (error instanceof Error) {
         error.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForCUD()
         errorMessage.handle()
       }
@@ -117,5 +120,26 @@ export class ChangeOfRegisteredAddressController
             <li>Purchase & Download SSM Corporate Profile as confirmation of the change (optional).</li>
           </ul>
         `
+  }
+
+  get isDraft(): boolean {
+    return this.application.signatureGroups.length <= 0
+  }
+
+  get resolutionDocumentProps() {
+    return new PropsResolutionDocument<CompanyAmendmentRegisteredAddress>(
+      this.companyId,
+      this.applicationId,
+      this.applicationRef.value as CompanyAmendmentRegisteredAddress,
+      this.isDraft,
+      "DRAFT",
+      false,
+      false,
+      null,
+      null,
+      [],
+      null,
+      null
+    )
   }
 }

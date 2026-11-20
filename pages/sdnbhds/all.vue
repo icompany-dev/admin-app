@@ -2,13 +2,25 @@
   <div id="page-all-sdn-bhd">
     <div class="page-header">
       <BreadCrumb v-bind="pageController.breadCrumbProps" />
-      <TableFilters
-        v-bind="pageController.tableFilterProps"
-        @search="pageController.onSearchInput($event)"
-        @order="pageController.onSortOrderChanged($event)"
-        @clearSearch="pageController.onSearchInput('')"
-        @unMinimize="pageController.onSdnBhdUnselected()"
-      />
+      <div class="filters">
+        <TableFilters
+          v-bind="pageController.tableFilterProps"
+          @search="pageController.onSearchInput($event)"
+          @order="pageController.onSortOrderChanged($event)"
+          @clearSearch="pageController.onSearchInput('')"
+          @unMinimize="pageController.onSdnBhdUnselected()"
+        />
+        <div class="alphabet-filters">
+          <div
+            v-for="(alphabet, i) in pageController.alphabetsList"
+            class="alphabet"
+            :class="{ selected: pageController.isAlphabetSelected(alphabet) }"
+            @click="pageController.onAlphabetClicked(alphabet)"
+          >
+            {{ alphabet }}
+          </div>
+        </div>
+      </div>
     </div>
     <All
       :search-text="pageController.searchText.value"
@@ -16,6 +28,7 @@
       :is-include-demo="pageController.isIncludeDemo.value"
       :is-unselect-sdn-bhd="!pageController.isSdnBhdSelected.value"
       :is-overdue-annual-return="pageController.isOverdueAnnualReturn.value"
+      :selected-start-with="pageController.selectedStartWith.value"
       @sdnbhd-selected="pageController.onSdnBhdSelected()"
     />
   </div>

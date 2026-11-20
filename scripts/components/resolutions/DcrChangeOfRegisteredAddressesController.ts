@@ -3,7 +3,7 @@ import { ResolutionController } from "./ResolutionController"
 import { useCompanyAmendmentRegisteredAddressStore } from "~/stores/CompanyAmendmentRegisteredAddresses"
 import { useCompanyStore } from "#imports"
 import { Company } from "~/scripts/models/Company"
-import { City, Country, State } from "~/scripts/models/Location"
+import { City, Country, Location, State } from "~/scripts/models/Location"
 import { StringUtil } from "~/scripts/utils/String"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
@@ -162,5 +162,13 @@ export class DcrChangeOfRegisteredAddressesController extends ResolutionControll
     let sorted = ObjectUtil.sort<SignatureGroup>(this.application.value.signatureGroups, "createdAt", "desc")
 
     return time.formatDateOnlyFull(sorted[0].createdAt ?? "")
+  }
+
+  get location(): Location {
+    if (!this.application.value || !this.application.value.newRegisteredAddressLocation) {
+      return new Location()
+    }
+
+    return this.application.value.newRegisteredAddressLocation
   }
 }

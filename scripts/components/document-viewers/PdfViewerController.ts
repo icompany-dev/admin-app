@@ -171,7 +171,7 @@ export class PdfViewerController {
       return ""
     }
 
-    let scaledHeight = this.documentHeight.value * scaleFactor
+    let scaledHeight = this.documentHeight.value * scaleFactor + 40
 
     return `transform: scale(${scaleFactor}); max-height: ${scaledHeight}px;`
   }
@@ -185,7 +185,8 @@ export class PdfViewerController {
       return "min-height: 535px;"
     }
 
-    return `max-height: ${this.documentHeight.value * this.documentScaler.value.scaleFactor}px;`
+    // 40px is the padding-bottom
+    return `max-height: ${this.documentHeight.value * this.documentScaler.value.scaleFactor + 40}px;`
   }
 
   getEnlargedClass(): string {

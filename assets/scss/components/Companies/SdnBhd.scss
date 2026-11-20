@@ -43,28 +43,39 @@
       font-size: 1.5rem;
       font-weight: 600;
       line-height: 1.8rem;
-      cursor: pointer;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 5px;
+
+      .name {
+        cursor: pointer;
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.8rem;
+      }
 
       .notification {
         font-size: 1.5rem;
         line-height: 1.8rem;
         color: var(--bs-icompany-orange-dark);
       }
+    }
 
-      .registration-numbers {
-        font-weight: normal;
-        font-size: 1.1rem;
+    .registration-numbers {
+      font-weight: normal;
+      font-size: 1.1rem;
 
-        .subscription-status {
-          &.expiring {
-            font-weight: 600;
-            color: var(--bs-icompany-orange);
-          }
+      .subscription-status {
+        &.expiring {
+          font-weight: 600;
+          color: var(--bs-icompany-orange-dark);
+        }
 
-          &.expired {
-            font-weight: 600;
-            color: var(--bs-danger);
-          }
+        &.expired {
+          font-weight: 600;
+          color: var(--bs-danger);
         }
       }
     }
@@ -136,9 +147,28 @@
     }
   }
 
+  .badges {
+    font-size: 11px;
+    line-height: 11px;
+    padding: 5px 15px;
+    border-radius: 5px;
+    text-align: center;
+    letter-spacing: 0.1pt;
+
+    &.switched-out {
+      background-color: var(--bs-black);
+      color: var(--bs-white);
+    }
+
+    &.striked-out {
+      background-color: var(--bs-gray-800);
+      color: var(--bs-white);
+    }
+  }
+
   &:hover {
     width: calc(100% - 40px);
-    padding: 20px;
+    // padding: 10px 0;
     background-color: rgba(255, 255, 255, 0.3);
   }
 }

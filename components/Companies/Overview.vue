@@ -261,21 +261,32 @@
                   v-for="(companyBank, i) in controller.bankDetails"
                   :key="i"
                 >
-                  <div class="bank-account-detail">
-                    <div class="name">
-                      <b>{{ companyBank.bank.name }}</b>
-                    </div>
-                    <div class="branch-details">
-                      {{ companyBank.bankBranch.name }}
-                      <br />
-                      {{ companyBank.bankBranch.address }}
-                    </div>
-                    <div class="account-number">
-                      {{ controller.accountNumberLabel }}: {{ companyBank.accountNumber }}
-                    </div>
-                  </div>
+                  <Bank
+                    :company-id="controller.companyId.value"
+                    :company-bank="companyBank"
+                    @removed="controller.onRemoved($event)"
+                  />
                 </li>
+                <Transition name="fade">
+                  <li v-if="controller.isAddingNewBank.value">
+                    <Bank
+                      :company-id="controller.companyId.value"
+                      :company-bank="new CompanyBank()"
+                      @added="controller.onNewBankAdded($event)"
+                      @cancel="controller.onCancelAddBank()"
+                    />
+                  </li>
+                </Transition>
               </ol>
+              <div class="action-button-container">
+                <button
+                  v-if="controller.canAddNewBank"
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onAddBank()"
+                >
+                  Add Bank Account
+                </button>
+              </div>
             </td>
           </tr>
           <tr>
@@ -364,28 +375,59 @@
             </td>
           </tr>
           <tr>
+            <td>Auditor</td>
+            <td>:</td>
+            <td>
+              <ol>
+                <li
+                  v-for="(auditor, i) in controller.auditors.value"
+                  :key="i"
+                >
+                  <div class="human-details">
+                    <div class="name">{{ auditor.auditorCompanyName }}</div>
+                    <div class="human-detail">
+                      <i class="fa-regular fa-envelope"></i>
+                      <span class="email">{{ auditor.auditorEmail }}</span>
+                    </div>
+                    <div class="human-detail">
+                      <i class="fa-brands fa-whatsapp" />
+                      <span class="phone">{{ auditor.auditorPhone }}</span>
+                    </div>
+                  </div>
+                  <button
+                    class="btn btn-pill btn-primary"
+                    @click="controller.onEditCompanyAuditor(auditor)"
+                  >
+                    Edit
+                  </button>
+                </li>
+              </ol>
+              <button
+                class="btn btn-pill btn-primary"
+                @click="controller.onAddCompanyAuditorClicked()"
+              >
+                {{ controller.addAuditorLabel }}
+              </button>
+            </td>
+          </tr>
+          <tr>
             <td>
               {{ controller.financialYearEndLabel }}
             </td>
             <td>:</td>
             <td>
-              <template v-if="!controller.isEditFYE.value">
-                <b>Previous FYE:</b>
-                <br />
+              <b>First FYE:</b>
+              <br />
+              <template v-if="!controller.isPastEditFYE.value">
                 {{ controller.previousFYE }}
-                <br />
-                <br />
-                <b>Current FYE:</b>
-                <br />
-                {{ controller.currentFYE }}
                 <span
                   class="action-link"
-                  @click="controller.onEditFyeClicked()"
+                  @click="controller.onEditPastFyeClicked()"
                 >
                   <i class="fa-regular fa-edit"></i>
                 </span>
               </template>
-              <template v-if="controller.isEditFYE.value">
+              <template v-if="controller.isPastEditFYE.value">
                 <input
                   type="date"
                   class="form-control"
@@ -413,6 +455,50 @@
                 >
                   <i class="fa-solid fa-xmark"></i>
                 </span>
+              </template>
+              <template v-if="controller.isShowCurrentFYE">
+                <br />
+                <br />
+                <b>Current FYE:</b>
+                <br />
+                <template v-if="!controller.isEditFYE.value">
+                  {{ controller.currentFYE }}
+                  <span
+                    class="action-link"
+                    @click="controller.onEditFyeClicked()"
+                  >
+                    <i class="fa-regular fa-edit"></i>
+                  </span>
+                </template>
+                <template v-if="controller.isEditFYE.value">
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="controller.fyeStartDate.value"
+                  />
+                  <i class="fa-solid fa-minus" />
+                  <input
+                    type="date"
+                    class="form-control"
+                    v-model="controller.fyeEndDate.value"
+                  />
+                  <span
+                    class="action-link"
+                    @click="controller.onSaveFYEDatesClicked()"
+                  >
+                    <i
+                      class="fa-regular"
+                      :class="controller.isEditingFYE.value ? 'fa-spin fa-spinner' : 'fa-save'"
+                    ></i>
+                  </span>
+                  <span
+                    v-if="!controller.isEditingFYE.value"
+                    class="action-link remove"
+                    @click="controller.onCancelEditFyeClicked()"
+                  >
+                    <i class="fa-solid fa-xmark"></i>
+                  </span>
+                </template>
               </template>
             </td>
           </tr>
@@ -506,7 +592,8 @@
               v-for="(shareholder, i) in controller.shareholdersDetails"
               :key="i"
             >
-              <UserDetail v-bind="controller.getPropsUserDetail(shareholder)" />
+              <Shareholder v-bind="controller.getPropsShareholderDetails(shareholder)" />
+              <!-- <UserDetail v-bind="controller.getPropsUserDetail(shareholder)" /> -->
             </li>
           </ol>
           <button
@@ -518,45 +605,7 @@
         </div>
       </div>
     </div>
-    <div class="company-overview-section">
-      <div class="company-overview-section-split">
-        <div class="split-section-item">
-          <div class="overview-title">Auditor</div>
-          <ol>
-            <li
-              v-for="(auditor, i) in controller.auditors.value"
-              :key="i"
-            >
-              <div class="human-details">
-                <div class="name">{{ auditor.auditorCompanyName }}</div>
-                <div class="human-detail">
-                  <i class="fa-regular fa-envelope"></i>
-                  <span class="email">{{ auditor.auditorEmail }}</span>
-                </div>
-                <div class="human-detail">
-                  <i class="fa-brands fa-whatsapp" />
-                  <span class="phone">{{ auditor.auditorPhone }}</span>
-                </div>
-              </div>
-              <button
-                class="btn btn-pill btn-primary"
-                @click="controller.onEditCompanyAuditor(auditor)"
-              >
-                Edit
-              </button>
-            </li>
-            <li>
-              <button
-                class="btn btn-pill btn-submit"
-                @click="controller.onAddCompanyAuditorClicked()"
-              >
-                {{ controller.addAuditorLabel }}
-              </button>
-            </li>
-          </ol>
-        </div>
-      </div>
-    </div>
+
     <div class="company-overview-section">
       Order Chop
       <br />
@@ -581,13 +630,16 @@
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import AddressInput from "@/components/Forms/AddressInput.vue"
+  import Bank from "./Bank.vue"
   import Branch from "./Branch.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import Tags from "../Tags/Tags.vue"
+  import Shareholder from "../Users/Shareholder.vue"
   import UserDetail from "../Users/UserDetail.vue"
   import { Pie } from "vue-chartjs"
   import { OverviewController } from "~/scripts/components/companies/OverviewController"
   import { CompanyBranch } from "~/scripts/models/CompanyBranch"
+  import { CompanyBank } from "~/scripts/models/CompanyBank"
 
   const props = defineProps({
     companyId: {

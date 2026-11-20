@@ -74,6 +74,11 @@ export class CompanyAuditor {
   }
 
   getRequestBody(): object {
+    if (StringUtil.isNullOrEmpty(this.appointmentDate)) {
+      let dayjs = useDayjs()
+      this.appointmentDate = dayjs().format("YYYY-MM-DD")
+    }
+
     return {
       company_id: this.companyId,
       appointment_date: this.appointmentDate,
@@ -102,10 +107,7 @@ export class CompanyAuditor {
     return (
       !StringUtil.isNullOrEmpty(this.companyId) &&
       !StringUtil.isNullOrEmpty(this.auditorCompanyName) &&
-      !StringUtil.isNullOrEmpty(this.auditorLicense) &&
-      !StringUtil.isNullOrEmpty(this.auditorEmail) &&
-      !StringUtil.isNullOrEmpty(this.auditorPhone) &&
-      !StringUtil.isNullOrEmpty(this.appointmentDate)
+      !StringUtil.isNullOrEmpty(this.auditorLicense)
     )
   }
 

@@ -1,18 +1,22 @@
 <template>
-  <div id="dcr-change-of-registered-addresses">
+  <div
+    id="dcr-change-of-registered-addresses"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionProps"
       @signed="emit('signed', $event)"
     >
       <template #page1>
         <p>
-          <b>RESOLVED:</b>
+          <b>IT IS HEREBY RESOLVED :</b>
           <br />
-          <b>CHANGE OF REGISTERED ADDRESS</b>
+          <b><u>CHANGE OF REGISTERED ADDRESS</u></b>
         </p>
         <p>
-          WHEREAS pursuant to Section 46(1) of the Companies Act 2016, the registered office of the Company be and is
-          hereby changed from:
+          <b>WHEREAS</b>
+          pursuant to Section 46(1) of the Companies Act 2016, the registered office of the Company be and is hereby
+          changed from:
         </p>
         <div
           v-html="controller.getOldAddress()"
@@ -22,6 +26,8 @@
         <div v-if="controller.isDocumentEditable()">
           <AddressInput
             :is-disabled="props.isInPreviewMode"
+            :is-show-labels="false"
+            :location="controller.location"
             @update-address-line1="controller.handleAddressLine1Change($event)"
             @update-address-line2="controller.handleAddressLine2Change($event)"
             @update-postcode="controller.handlePostcodeChange($event)"
@@ -37,6 +43,7 @@
           :class="{ placeholder: controller.isInPreviewMode.value }"
         />
         <p>
+          <br />
           with effect from
           <span v-html="controller.signatureDate()" />
           .
@@ -59,6 +66,8 @@
   const props = defineProps<IPropsResolutionDocument<CompanyAmendmentRegisteredAddress>>()
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed"])
+
+  const documentRef = ref(null)
 
   const controller = new DcrChangeOfRegisteredAddressesController(props, emit)
 
@@ -92,10 +101,19 @@
     }
   )
 
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
   defineExpose({
     totalPages: controller.totalPages.bind(controller),
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
+    getPdfPages: controller.getPdfPages.bind(controller),
   })
 </script>
 

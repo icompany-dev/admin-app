@@ -42,56 +42,9 @@
           />
         </TransitionGroup>
       </template>
-      <template #step-status>
-        <div v-if="controller.isStepStatusVisible()">
-          <div v-if="!controller.isSubmittedToSSM()">
-            {{ controller.processingLabel() }}
-            <i class="fa-solid fa-loader fa-spin"></i>
-          </div>
-          <div v-if="controller.isSubmittedToSSM()">
-            <b>{{ controller.submittedToSsmLabel() }}:</b>
-            <div class="step-date">
-              {{ controller.getSubmissionDate() }}
-              <i class="check-icon fa-solid fa-circle-check"></i>
-            </div>
-            <div class="step-buttons">
-              <button
-                class="btn btn-submit"
-                @click="controller.onPayForAccess()"
-              >
-                {{ controller.payForAccessLabel() }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </template>
-      <template #cornerButton>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-primary"
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </button>
-        <button
-          v-if="controller.showCornerButton()"
-          class="btn btn-standard btn-pay"
-          @click="controller.onProceedClicked()"
-        >
-          {{ controller.payLabel() }}
-        </button>
-      </template>
-      <template #learnMoreButton>
-        <div
-          class="learn-more"
-          @click="controller.onMoreInfoClicked()"
-        >
-          {{ controller.learnMoreLabel() }}
-        </div>
-      </template>
     </CompanyServiceWrapper>
 
-    <ActionTray
+    <!-- <ActionTray
       v-if="controller.showActionTray()"
       ref="actionTrayRef"
       :actions="controller.actionTrayElements.value"
@@ -131,18 +84,18 @@
           </Alert>
         </Transition>
       </div>
-    </Teleport>
+    </Teleport> -->
   </div>
 </template>
 
 <script setup lang="ts">
   import ActionTray from "../ActionTrays/ActionTray.vue"
-  import Alert from "../Alerts/Alert.vue"
+  // import Alert from "../Alerts/Alert.vue"
   import { EmitMessages } from "~/scripts/constants/EmitMessages"
   import DcrChangeOfRegisteredAddress from "../Resolutions/DcrChangeOfRegisteredAddress.vue"
   import CompanyServiceWrapper from "@/components/CompanyServices/CompanyServiceWrapper.vue"
-  import RegisteredAddressConfirmation from "@/components/Popups/RegisteredAddressConfirmation.vue"
-  import HandoverDocumentConfirmation from "@/components/Popups/HandoverDocumentConfirmation.vue"
+  // import RegisteredAddressConfirmation from "@/components/Popups/RegisteredAddressConfirmation.vue"
+  // import HandoverDocumentConfirmation from "@/components/Popups/HandoverDocumentConfirmation.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import { ChangeOfRegisteredAddressServiceController } from "~/scripts/components/company-services/ChangeOfRegisteredAddressServiceController"
 
@@ -219,6 +172,10 @@
     },
     { immediate: true }
   )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+  })
 </script>
 
 <style lang="scss">

@@ -6,7 +6,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .selected-company {
@@ -32,6 +32,42 @@
       &:hover {
         opacity: 1;
         font-size: 22px;
+      }
+    }
+  }
+
+  .alphabet-filters {
+    margin-top: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0px;
+
+    .alphabet {
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.7s ease;
+      border-radius: 5px;
+      border: solid 1px transparent;
+
+      &:hover {
+        background-color: var(--bs-gray-400);
+      }
+
+      &.selected {
+        background-color: var(--bs-gray-400);
+        border-color: var(--bs-icompany-purple);
+        font-weight: 600;
+      }
+    }
+
+    &:has(.selected) {
+      .alphabet {
+        &:not(.selected) {
+          opacity: 0.5;
+        }
       }
     }
   }

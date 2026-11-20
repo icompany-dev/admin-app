@@ -100,6 +100,7 @@
   import { ChangeBankSignatoriesController } from "~/scripts/components/secretarial-services/ChangeBankSignatoriesController"
   import { ChangeOfAddressesController } from "~/scripts/components/secretarial-services/ChangeOfAddressesController"
   import { ChangeOfDescriptionsController } from "~/scripts/components/secretarial-services/ChangeOfDescriptionsController"
+  import { ChangeOfRegisteredAddressesController } from "~/scripts/components/secretarial-services/ChangeOfRegisteredAddressesController"
   import { ChangeOfNamesController } from "~/scripts/components/secretarial-services/ChangeOfNamesController"
   import { DividendDeclarationsController } from "~/scripts/components/secretarial-services/DividendDeclarationsController"
   import { DocumentRequestsController } from "~/scripts/components/secretarial-services/DocumentRequestsController"
@@ -127,6 +128,9 @@
   switch (props.target) {
     case CompanyConstants.TARGET_AMENDMENT_ADDRESS:
       controller = new ChangeOfAddressesController(props, emit)
+      break
+    case CompanyConstants.TARGET_AMENDMENT_REGISTERED_ADDRESS:
+      controller = new ChangeOfRegisteredAddressesController(props, emit)
       break
     case CompanyConstants.TARGET_AMENDMENT_DESCRIPTION:
       controller = new ChangeOfDescriptionsController(props, emit)

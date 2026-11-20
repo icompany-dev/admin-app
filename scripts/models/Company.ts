@@ -12,6 +12,7 @@ import { Error } from "~/scripts/library/Error"
 import { StringUtil } from "../utils/String"
 import { Tag } from "./Tag"
 import { DeliveryInfo } from "./DeliveryInfo"
+import fa from "zod/v4/locales/fa.cjs"
 
 export class Company implements IModel<Company> {
   id: string = ""
@@ -42,6 +43,8 @@ export class Company implements IModel<Company> {
   applicationIncorporationId: string | null = null
   applicationSwitchId: string | null = null
   companySecretaryId: string | null = null
+  hasSwitchedOut: boolean = false
+  hasStrikedOut: boolean = false
   createdAt: string | null = null
   updatedAt: string | null = null
   isDemo: boolean = false
@@ -99,6 +102,8 @@ export class Company implements IModel<Company> {
         : []
     this.companySecretaryId = data.company_secretary_id ?? null
     this.isDemo = data.is_demo ?? false
+    this.hasSwitchedOut = data.has_switched_out ?? false
+    this.hasStrikedOut = data.has_striked_out ?? false
     this.tags =
       data.tags && Array.isArray(data.tags)
         ? data.tags.map((t: any) => {
@@ -143,6 +148,8 @@ export class Company implements IModel<Company> {
     })
     this.companySecretaryId = data.companySecretaryId
     this.isDemo = data.isDemo
+    this.hasSwitchedOut = data.hasSwitchedOut
+    this.hasStrikedOut = data.hasStrikedOut
     this.tags = data.tags.map((t: any) => {
       return new Tag(t)
     })
