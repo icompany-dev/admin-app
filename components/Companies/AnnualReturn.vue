@@ -216,7 +216,8 @@
                       class="shareholder"
                       v-for="shareholder in controller.shareholdersForAnnualReturn"
                     >
-                      <UserDetail v-bind="controller.getUserDetailProps(shareholder)" />
+                      <Shareholder v-bind="controller.getShareholderProps(shareholder)" />
+                      <!-- <UserDetail v-bind="controller.getUserDetailProps(shareholder)" />
                       <br />
                       <b>{{ controller.totalOrdinarySharesLabel }}</b>
                       : {{ NumberUtil.thousandSeparator(shareholder.ordinaryShares) }}
@@ -225,7 +226,7 @@
                       <b>{{ controller.totalPreferenceSharesLabel }}</b>
                       : {{ NumberUtil.thousandSeparator(shareholder.preferenceShares) }}
                       <CopyValue :value="shareholder.preferenceShares.toString()" />
-                      <br />
+                      <br /> -->
                     </div>
                   </td>
                 </tr>
@@ -299,6 +300,7 @@
 <script lang="ts" setup>
   import CopyValue from "../Buttons/CopyValue.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import Shareholder from "../Users/Shareholder.vue"
   import UploadDocument from "../Popups/UploadDocument.vue"
   import UserDetail from "@/components/Users/UserDetail.vue"
   import ViewDocument from "@/components/Documents/ViewDocument.vue"

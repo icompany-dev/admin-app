@@ -16,6 +16,7 @@ import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
+import { PropsShareholderDetail } from "~/scripts/props/PropsShareholderDetail"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import type { ARShareCapital, AnnualReturnData } from "~/scripts/types/AnnualReturnXBRLGenerator"
@@ -81,6 +82,7 @@ export class AnnualReturnController {
       this.isLoading.value = true
 
       await Promise.all([
+        this.fetchDataForLodgeYear(),
         this.fetchAnnualReturn(),
         this.fetchDirectors(),
         this.fetchShareholders(),
@@ -144,6 +146,22 @@ export class AnnualReturnController {
     this.companyAnnualReturnRequest.value = new CompanyAnnualReturnRequest(paidForYear)
   }
 
+  async fetchDataForLodgeYear(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let dayjs = useDayjs()
+    let repository = useCompanyAnnualReturnStore()
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    filter.startDate = dayjs(this.company.value.incorporatedAt).year(dayjs().year()).format("YYYY-MM-DD")
+
+    let response = await repository.fetchDataForLodgeYear(filter)
+
+    console.log(response)
+  }
+
   async fetchDirectors(): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       return
@@ -192,6 +210,10 @@ export class AnnualReturnController {
 
   getUserDetailProps(human: Director | Shareholder): PropsUserDetail {
     return new PropsUserDetail(human.user ?? new User(), human.user?.detail ?? new UserDetail())
+  }
+
+  getShareholderProps(shareholder: Shareholder): PropsShareholderDetail {
+    return new PropsShareholderDetail(shareholder)
   }
 
   setEmptyApplication(): void {
