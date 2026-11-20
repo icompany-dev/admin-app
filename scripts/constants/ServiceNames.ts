@@ -291,6 +291,13 @@ export class ServiceNames {
     "payment-to-directors",
     "director"
   )
+  static userPaymentTokens: ServiceName = new ServiceName(
+    "Add Tokens",
+    "Tambah Token",
+    "user_payment_token_transaction",
+    "payment-to-directors",
+    "director"
+  )
 
   static names: ServiceName[] = [
     this.applicationIncorporation,
@@ -333,5 +340,6 @@ export class ServiceNames {
     this.tekunApplications,
     this.switchOuts,
     this.paymentToDirectors,
+    this.userPaymentTokens,
   ]
 }

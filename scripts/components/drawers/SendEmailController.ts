@@ -12,6 +12,9 @@ export class SendEmailController extends BaseDrawerController {
 
   recipientEmail: Ref<string> = ref<string>("")
 
+  directorEmails: Ref<string[]> = ref<string[]>([])
+  shareholderEmails: Ref<string[]> = ref<string[]>([])
+
   fileInputRef: any | null = null
   dropZoneRef: any | null = null
 
@@ -24,6 +27,8 @@ export class SendEmailController extends BaseDrawerController {
   isDragEnter: Ref<boolean> = ref<boolean>(false)
 
   isSendingEmail: Ref<boolean> = ref<boolean>(false)
+
+  eventManager = useEventManagerStore()
 
   maxSize: number = 10 * 1024 * 1024
 
@@ -41,6 +46,11 @@ export class SendEmailController extends BaseDrawerController {
     this.adminEmail.value.fileAttachments = props.fileAttachments.map((d: any) => {
       return new EmailAttachment(d)
     })
+
+    this.files.value = props.files
+
+    this.directorEmails.value = props.directorEmails
+    this.shareholderEmails.value = props.shareholderEmails
   }
 
   setFileInputRef(fileInputRef: any): void {
@@ -56,6 +66,14 @@ export class SendEmailController extends BaseDrawerController {
       this.removeEventListeners()
       this.addEventListeners()
     }
+  }
+
+  override hide(): void {
+    this.isShowing.value = false
+    this.eventManager.setIsSendingEmail(false)
+    this.eventManager.setPropsSendEmail(null)
+
+    this.emitEvents("close")
   }
 
   resetValues(): void {
@@ -176,6 +194,8 @@ export class SendEmailController extends BaseDrawerController {
 
     let recipientEmail = this.recipientEmail.value.replace(",", "").trim()
     this.adminEmail.value.recipients.push(recipientEmail)
+    this.cleanRecipientEmails()
+
     setTimeout(() => {
       this.recipientEmail.value = ""
     }, 200)
@@ -197,6 +217,7 @@ export class SendEmailController extends BaseDrawerController {
 
     if (emails.length > 0) {
       this.adminEmail.value.recipients = this.adminEmail.value.recipients.concat(emails)
+      this.cleanRecipientEmails()
     }
 
     this.recipientEmail.value = ""
@@ -204,6 +225,20 @@ export class SendEmailController extends BaseDrawerController {
 
   onRemoveRecipientEmail(index: number): void {
     this.adminEmail.value.recipients.splice(index, 1)
+  }
+
+  onAddDirectorEmailsClicked(): void {
+    this.adminEmail.value.recipients = this.adminEmail.value.recipients.concat(this.directorEmails.value)
+    this.cleanRecipientEmails()
+  }
+
+  onAddShareholderEmailsClicked(): void {
+    this.adminEmail.value.recipients = this.adminEmail.value.recipients.concat(this.shareholderEmails.value)
+    this.cleanRecipientEmails()
+  }
+
+  cleanRecipientEmails(): void {
+    this.adminEmail.value.recipients = [...new Set(this.adminEmail.value.recipients)]
   }
 
   // attachments
@@ -306,5 +341,17 @@ export class SendEmailController extends BaseDrawerController {
     return this.language.isMalay()
       ? "Letakkan fail anda di sini atau klik untuk layar."
       : "Drop your files here or click to browse."
+  }
+
+  get isShowDirectorEmailsShortCut(): boolean {
+    return this.directorEmails.value.length > 0
+  }
+
+  get isShowShareholderEmailsShortCut(): boolean {
+    return this.shareholderEmails.value.length > 0
+  }
+
+  get hasAnyQuickActions(): boolean {
+    return this.isShowDirectorEmailsShortCut || this.isShowShareholderEmailsShortCut
   }
 }

@@ -123,11 +123,15 @@
               }
 
               &.status {
-                width: 50%;
+                width: 30%;
 
                 b {
                   font-weight: 600;
                 }
+              }
+
+              &.date {
+                text-align: end;
               }
             }
           }

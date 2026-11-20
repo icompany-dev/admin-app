@@ -95,6 +95,17 @@ export class CompanyFinancialPeriod implements IModel<CompanyFinancialPeriod> {
     }
   }
 
+  async update(repository: ReturnType<typeof useCompanyFinancialPeriodStore>): Promise<void> {
+    let data = this.getRequestBody()
+
+    let response = await repository.update(this.id, data)
+    if (response instanceof CompanyFinancialPeriod) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
+  }
+
   getRequestBodyForStatementPreparation(): object {
     return {
       statement_preparation_method: this.statementPreparationMethod,

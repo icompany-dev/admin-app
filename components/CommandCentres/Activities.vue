@@ -38,14 +38,14 @@
               <img src="/img/logo/default-logo.png" />
             </td>
             <td class="company-name">
-              {{ todo.companyName }}
+              {{ todo.companyNameForDisplay }}
             </td>
             <td class="status">
-              <b>{{ todo.name }}</b>
+              <b>{{ todo.applicationName }}</b>
               <br />
-              {{ controller.activityStatus(todo) }}
+              {{ todo.actionDescription }}
             </td>
-            <td>// actions?</td>
+            <td class="date">{{ todo.actionAtFormatted }}</td>
             <td>
               <button class="btn btn-standard btn-submit">Next Step</button>
             </td>

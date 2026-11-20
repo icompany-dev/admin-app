@@ -99,7 +99,9 @@ export abstract class SecretarialServiceController<T, R> {
   }
 
   async onDownloadClicked(): Promise<void> {
+    console.log("called?? downloads")
     if (this.isDownloading.value || !this.documentRef) {
+      console.log("skipping?", this.isDownloading.value, this.documentRef)
       return
     }
 

@@ -84,11 +84,7 @@ export class CompanyBank implements IModel<CompanyBank> {
       !StringUtil.isNullOrEmpty(this.companyId) &&
       !StringUtil.isNullOrEmpty(this.bankId) &&
       !StringUtil.isNullOrEmpty(this.bankBranchId) &&
-      !StringUtil.isNullOrEmpty(this.accountNumber) &&
-      this.signatories.length > 0 &&
-      this.signatories.every((cbs: CompanyBankSignatory) => {
-        return cbs.canCreate()
-      })
+      !StringUtil.isNullOrEmpty(this.accountNumber)
     )
   }
 
@@ -99,7 +95,11 @@ export class CompanyBank implements IModel<CompanyBank> {
       throw error
     }
 
-    await repository.create(this.getRequestBodyToCreate())
+    let response = await repository.create(this.getRequestBodyToCreate())
+
+    if (response) {
+      this.convertFromResponse(response)
+    }
   }
 
   async update(repository: ReturnType<typeof useCompanyBankStore>): Promise<void> {

@@ -46,10 +46,10 @@
           <div class="item">{{ detail.name }}</div>
           <div class="price">{{ detail.formattedPrice }}</div>
         </div>
-        <!-- <div class="service-price-total">
+        <div class="service-price-total">
           <div class="item">TOTAL</div>
           <div class="price">{{ controller.grandTotal }}</div>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>

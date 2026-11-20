@@ -58,6 +58,9 @@ export class DocumentRequestController extends SecretarialServiceController<
   }
 
   get isShowReceipt(): boolean {
-    return this.selectedDocumentTarget.value === DocumentTargets.TARGET_RECEIPT
+    return (
+      this.selectedDocumentTarget.value === DocumentTargets.TARGET_RECEIPT &&
+      StringUtil.isNullOrEmpty(this.pdfUrl.value)
+    )
   }
 }

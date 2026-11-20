@@ -20,16 +20,24 @@
 
     .overview-table {
       width: 100%;
+      border-collapse: collapse;
 
       tbody {
         tr {
           td {
+            transition: all 0.7s ease;
             vertical-align: top;
-            padding: 2px 5px;
+            padding: 5px;
 
             &:first-child {
-              padding-left: 0;
               font-weight: 600;
+              width: 150px;
+            }
+          }
+
+          &:hover {
+            td {
+              // background-color: rgba(255, 255, 255, 0.8);
             }
           }
         }

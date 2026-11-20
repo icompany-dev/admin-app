@@ -1,4 +1,7 @@
 import _ from "lodash"
+import { StringUtil } from "../utils/String"
+import { ServiceName, ServiceNames } from "../constants/ServiceNames"
+import { NumberUtil } from "../utils/Number"
 
 export class DailyActivity {
   companyName: string = ""
@@ -42,5 +45,62 @@ export class DailyActivity {
     this.targetId = data.targetId
     this.details = _.cloneDeep(data.details)
     this.actionAt = data.actionAt
+  }
+
+  get companyNameForDisplay(): string {
+    if (StringUtil.isNullOrEmpty(this.companyName)) {
+      if (this.targetType === "application_incorporate") {
+        return "Incorporation of New Sdn Bhd"
+      }
+
+      if (this.targetType === "application_switch") {
+        return "Sdn Bhd Switching to iCompany"
+      }
+
+      return "Unknown Company"
+    }
+
+    return this.companyName
+  }
+
+  get actionDescription(): string {
+    if (this.action === "payment") {
+      return `Made Payment of RM${NumberUtil.currency(this.details.amount ?? 0)}`
+    }
+
+    if (this.action === "update") {
+      return "Updated Details of Application"
+    }
+
+    if (this.action === "incorporation") {
+      return "Incorporation in Progress"
+    }
+
+    if (this.action === "switch") {
+      return "Switch in Progress"
+    }
+
+    if (this.action === "signature") {
+      return "Affixed Signture"
+    }
+
+    return "Updated Details of Application"
+  }
+
+  get applicationName(): string {
+    let serviceName = ServiceNames.names.find((sn: ServiceName) => {
+      return sn.target === this.targetType
+    })
+
+    if (!serviceName) {
+      return this.targetType
+    }
+
+    return serviceName.en
+  }
+
+  get actionAtFormatted(): string {
+    let time = useLocalTime()
+    return time.formatDateTimeFull(this.actionAt)
   }
 }

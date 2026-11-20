@@ -8,6 +8,7 @@ export class PageAllSdnBhdController extends PageController {
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
   isSdnBhdSelected: Ref<boolean> = ref<boolean>(false)
   isOverdueAnnualReturn: Ref<boolean> = ref<boolean>(false)
+  selectedStartWith: Ref<string> = ref<string>("")
 
   constructor() {
     let title: string = "Admin Dashboard - iCompany Malaysia"
@@ -44,6 +45,18 @@ export class PageAllSdnBhdController extends PageController {
     this.isSdnBhdSelected.value = false
   }
 
+  onAlphabetClicked(alphabet: string): void {
+    if (this.isAlphabetSelected(alphabet)) {
+      this.selectedStartWith.value = ""
+    } else {
+      this.selectedStartWith.value = alphabet
+    }
+  }
+
+  isAlphabetSelected(alphabet: string): boolean {
+    return this.selectedStartWith.value === alphabet
+  }
+
   get breadCrumbProps(): PropsBreadCrumb {
     return new PropsBreadCrumb([new PropsBreadCrumbItem("Companies", ""), new PropsBreadCrumbItem("All", "")])
   }
@@ -70,5 +83,11 @@ export class PageAllSdnBhdController extends PageController {
       new PropsDataDateFilter("", "", ""),
       false
     )
+  }
+
+  get alphabetsList(): string[] {
+    let alphabets = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i))
+
+    return ["#", ...alphabets]
   }
 }

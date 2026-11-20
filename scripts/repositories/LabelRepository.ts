@@ -23,6 +23,7 @@ export class LabelRepository extends Repository<Label> {
   async addItem(data: any): Promise<any> {
     try {
       const response = this.post(`${this.singleResourceUrl}/item/add`, data)
+      return response
     } catch (e) {
       throw e
     }
@@ -31,6 +32,15 @@ export class LabelRepository extends Repository<Label> {
   async deleteItem(itemId: string): Promise<any> {
     try {
       const response = this.post(`${this.singleResourceUrl}/item/delete/${itemId}`, {})
+      return response
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async fetchForServicePricings(): Promise<any> {
+    try {
+      let response = this.get(`${this.singleResourceUrl}/service-pricings`)
       return response
     } catch (e) {
       throw e

@@ -9,6 +9,32 @@
     justify-content: flex-start;
     align-items: stretch;
     gap: 10px;
+    height: 90%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+      border-radius: 10px;
+      transition: background 0.3s ease;
+    }
+
+    &:hover {
+      &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2); // Visible thumb
+      }
+
+      scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
 
     .form-control {
       width: calc(100% - 40px);
@@ -18,7 +44,7 @@
 
     .group-items {
       padding-top: 20px;
-      width: 100%;
+      width: calc(100% - 20px);
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -34,7 +60,7 @@
         gap: 10px;
 
         .name {
-          width: 70%;
+          width: calc(100% - 30px);
         }
 
         .price {
@@ -53,7 +79,7 @@
         }
 
         .searchable-dropdown {
-          width: 100%;
+          width: calc(100% - 30px);
           border: solid 1px var(--bs-gray-500);
           border-radius: 5px;
           margin-bottom: 5px;
@@ -68,16 +94,15 @@
         }
       }
     }
+  }
 
-    .add-items {
-      padding-top: 20px;
-      padding-left: 30px;
-
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 20px;
-    }
+  .add-items {
+    padding-top: 20px;
+    padding-left: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
   }
 }
