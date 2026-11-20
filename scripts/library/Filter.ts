@@ -34,6 +34,9 @@ export class Filter {
 
   statuses: string[] = []
 
+  // this is for filtering the row based on the column starts with
+  startsWith: string | null = null
+
   constructor() {
     this.takeAll = false
     this.orderBy = null
@@ -134,6 +137,10 @@ export class Filter {
 
     if (this.isAnnualReturnIncoming !== null) {
       slugElements.push(`is_annual_return_incoming=${this.isAnnualReturnIncoming ? "1" : "0"}`)
+    }
+
+    if (!StringUtil.isNullOrEmpty(this.startsWith)) {
+      slugElements.push(`starts_with=${this.startsWith}`)
     }
 
     return slugElements.join("&")

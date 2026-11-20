@@ -6,6 +6,8 @@ import { Toast } from "~/scripts/library/Toast"
 import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
 import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
+import type { Director } from "~/scripts/models/Director"
+import type { Shareholder } from "~/scripts/models/Shareholder"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
 import { PropsFinancialStatementSubmissions } from "~/scripts/props/PropsFinancialStatementSubmissions"
@@ -20,9 +22,14 @@ export class SelectedSdnBhdController {
   companyId: Ref<string> = ref<string>("")
   company: Ref<Company> = ref<Company>(new Company())
 
+  directorEmails: Ref<string[]> = ref<string[]>([])
+  shareholderEmails: Ref<string[]> = ref<string[]>([])
+
   emitEvents: any | null = null
 
   language = useLanguage()
+
+  eventManager = useEventManagerStore()
 
   isLoading: Ref<boolean> = ref<boolean>(false)
   isShowOptions: Ref<boolean> = ref<boolean>(false)
@@ -34,12 +41,6 @@ export class SelectedSdnBhdController {
   isAnnualReturn: Ref<boolean> = ref<boolean>(false)
   isFinancialStatement: Ref<boolean> = ref<boolean>(false)
   isRolesAndAccess: Ref<boolean> = ref<boolean>(false)
-
-  //TODO: To remove
-  isBusiness: Ref<boolean> = ref<boolean>(false)
-  isDirectors: Ref<boolean> = ref<boolean>(false)
-  isShareholders: Ref<boolean> = ref<boolean>(false)
-  isAccounting: Ref<boolean> = ref<boolean>(false)
 
   selectedApplicationName: Ref<string> = ref<string>("")
   selectedApplicationId: Ref<string> = ref<string>("")
@@ -72,6 +73,8 @@ export class SelectedSdnBhdController {
 
   applicationRefs: any[] = []
 
+  isSendingTaxAgentDetails: Ref<boolean> = ref<boolean>(false)
+
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
 
@@ -84,7 +87,7 @@ export class SelectedSdnBhdController {
     }
 
     this.companyId.value = companyId
-    await this.fetchCompany()
+    await Promise.all([this.fetchCompany(), this.fetchDirectors(), this.fetchShareholders()])
   }
 
   setDocumentRef(documentRef: any): void {
@@ -168,6 +171,40 @@ export class SelectedSdnBhdController {
       }
     } finally {
       this.isLoading.value = false
+    }
+  }
+
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    try {
+      let repository = useDirectorStore()
+      let response = await repository.fetchAllForCompany(this.companyId.value)
+
+      this.directorEmails.value = response.map((d: Director) => {
+        return d.email
+      })
+    } catch (e) {
+      //
+    }
+  }
+
+  async fetchShareholders(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    try {
+      let repository = useShareholderStore()
+      let response = await repository.fetchAllForCompany(this.companyId.value)
+
+      this.shareholderEmails.value = response.map((d: Shareholder) => {
+        return d.email
+      })
+    } catch (e) {
+      //
     }
   }
 
@@ -498,6 +535,32 @@ export class SelectedSdnBhdController {
     }
   }
 
+  onEmailTriggered(): void {
+    if (!this.eventManager.isSendingEmail || !this.eventManager.propsSendEmail) {
+      return
+    }
+
+    if (!this.sendEmailRef) {
+      return
+    }
+
+    this.sendEmailRef.show()
+  }
+
+  onSendTaxAgentNotice(): void {
+    this.isSendingTaxAgentDetails.value = true
+
+    if (!this.sendEmailRef) {
+      return
+    }
+
+    this.sendEmailRef.show()
+  }
+
+  onEmailClosed(): void {
+    this.isSendingTaxAgentDetails.value = false
+  }
+
   get companyName(): string {
     let companyName = this.company.value.getFullName()
     companyName = companyName.replace("SDN BHD", "SDN. BHD.")
@@ -699,7 +762,7 @@ export class SelectedSdnBhdController {
       this.company.value.id,
       this.company.value,
       this.company.value.name,
-      this.company.value.createdAt,
+      this.company.value.incorporatedAt,
       null,
       false,
       false
@@ -731,6 +794,38 @@ export class SelectedSdnBhdController {
   }
 
   get sendEmailProps(): PropsSendEmail {
-    return new PropsSendEmail([], "", "", [])
+    let props = new PropsSendEmail([], "", "", [])
+    if (this.eventManager.isSendingEmail && this.eventManager.propsSendEmail) {
+      props = this.eventManager.propsSendEmail
+    }
+
+    if (this.isSendingTaxAgentDetails.value) {
+      props.recipients = this.directorEmails.value
+      props.subject = this.taxAgentEmailTitle
+      props.content = this.taxAgentEmailContent
+    }
+
+    props.directorEmails = this.directorEmails.value
+    props.shareholderEmails = this.shareholderEmails.value
+
+    return props
+  }
+
+  get taxAgentEmailContent(): string {
+    let paragraphs = [
+      `Hello ${this.directorEmails.value.length <= 1 ? "Director" : "Directors"},`,
+      `We have just received this from HASIL and thought it may warrant your attention.`,
+      `We note that there is no Directors’ Circular Resolution (DCR) for the Appointment of the Tax Agent on record. While this appears to be a procedural irregularity, it may be regularised by clicking <a href="https://cosec.icompany.my/sdnbhd/${this.companyId.value}/compliance/appointment-of-tax-agent">here</a>.`,
+      `We are bringing this to your attention for your information and consideration.`,
+      `Thank you.`,
+      "",
+      `Best Wishes<br><b>iCompany Systems</b>`,
+      `------------------------------------------------`,
+    ]
+    return paragraphs.join("<br>")
+  }
+
+  get taxAgentEmailTitle(): string {
+    return "[FORWARDING] - TAJUK : TAWARAN PELANTIKAN DAN PEMBERIAN KUASA MEMFAIL SECARA ELEKTRONIK KEPADA EJEN CUKAI"
   }
 }

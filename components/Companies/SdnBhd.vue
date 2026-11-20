@@ -8,19 +8,33 @@
     </div>
     <div class="name-actions">
       <div
-        class="company-name"
+        class="company-name-details"
         @click="controller.onCompanyClicked()"
       >
-        {{ controller.company.value.getFullName() }}
-        <Transition name="fade">
-          <span
-            class="notification"
-            v-if="controller.hasAnnualReturnDue"
-            :title="controller.annualReturnDueYears"
-          >
-            <i class="fa-solid fa-bell" />
-          </span>
-        </Transition>
+        <div class="company-name">
+          <span class="name">{{ controller.company.value.getFullName() }}</span>
+          <TransitionGroup name="fade">
+            <span
+              class="notification"
+              v-if="controller.hasAnnualReturnDue"
+              :title="controller.annualReturnDueYears"
+            >
+              <i class="fa-solid fa-bell" />
+            </span>
+            <span
+              class="badges striked-out"
+              v-if="controller.company.value.hasStrikedOut"
+            >
+              Striked Off
+            </span>
+            <span
+              class="badges switched-out"
+              v-if="controller.company.value.hasSwitchedOut"
+            >
+              Switched Out
+            </span>
+          </TransitionGroup>
+        </div>
         <div class="details">
           <div class="registration-numbers">
             {{ controller.company.value.registrationNumberNew }} ({{ controller.company.value.registrationNumberOld }})

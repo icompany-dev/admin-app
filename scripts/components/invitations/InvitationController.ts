@@ -236,7 +236,7 @@ export abstract class InvitationController {
       return "-"
     }
 
-    return detail.location?.addressLine1 ?? "-"
+    return detail.location?.addressLine1.toUpperCase() ?? "-"
   }
 
   get addressLine2(): string {
@@ -249,7 +249,20 @@ export abstract class InvitationController {
       return "-"
     }
 
-    return detail.location?.addressLine2 ?? "-"
+    return detail.location?.addressLine2?.toUpperCase() ?? "-"
+  }
+
+  get addressLine3(): string {
+    if (!this.invitation.value.user) {
+      return "-"
+    }
+
+    let detail = this.invitation.value.user.detail
+    if (!detail) {
+      return "-"
+    }
+
+    return detail.location?.addressLine3?.toUpperCase() ?? "-"
   }
 
   get addressPostcode(): string {

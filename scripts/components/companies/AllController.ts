@@ -42,6 +42,11 @@ export class AllController {
     await this.tableDataFetcher.value.fetchData()
   }
 
+  async setSelectedStartWith(selectedStartWith: string): Promise<void> {
+    this.tableDataFetcher.value.filter.startsWith = selectedStartWith
+    await this.tableDataFetcher.value.fetchData()
+  }
+
   async setIsOverdueAnnualReturn(isOverdueAnnualReturn: boolean): Promise<void> {
     this.tableDataFetcher.value.filter.isOverdueAnnualReturn = isOverdueAnnualReturn
     if (isOverdueAnnualReturn) {

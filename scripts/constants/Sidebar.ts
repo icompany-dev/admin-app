@@ -170,6 +170,12 @@ export class PageSidebar {
     "services/change-business-address",
     false
   )
+  static changeRegisteredAddress: Sidebar = new Sidebar(
+    "Change of Registered Address",
+    "Penukaran Alamat Berdaftar",
+    "services/change-registered-address",
+    false
+  )
   static auditorAppointment: Sidebar = new Sidebar(
     "Appointment of Auditor",
     "Perlantikan Juruaudit",
@@ -188,24 +194,6 @@ export class PageSidebar {
     "services/payment-to-directors",
     false
   )
-  static switchOut: Sidebar = new Sidebar("Switch Outs", "Switch Out", "services/switch-outs", false)
-  static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
-    this.changeBusinessName,
-    this.changeBusinessDescription,
-    this.changeAddress,
-    this.openBankAccount,
-    this.appointDirector,
-    this.resignDirector,
-    this.paymentToDirectors,
-    this.transferOfShares,
-    this.allotNewShares,
-    this.purchaseAssets,
-    this.declareDividends,
-    this.changeBankSignatories,
-    this.auditorAppointment,
-    this.taxAgentAppointment,
-    this.switchOut,
-  ])
 
   static documentRequests: Sidebar = new Sidebar(
     "Document Requests",
@@ -225,6 +213,30 @@ export class PageSidebar {
     "services/management-accounts/new",
     false
   )
+
+  static switchOut: Sidebar = new Sidebar("Switch Outs", "Switch Out", "services/switch-outs", false)
+  static servicesGroup: SidebarGroup = new SidebarGroup("Secretarial Services", "Servis Setiausaha", [
+    this.changeBusinessName,
+    this.changeBusinessDescription,
+    this.changeAddress,
+    this.changeRegisteredAddress,
+    this.openBankAccount,
+    this.appointDirector,
+    this.resignDirector,
+    this.paymentToDirectors,
+    this.transferOfShares,
+    this.allotNewShares,
+    this.purchaseAssets,
+    this.declareDividends,
+    this.changeBankSignatories,
+    this.auditorAppointment,
+    this.taxAgentAppointment,
+    this.switchOut,
+    this.documentRequests,
+    this.tekunApplications,
+    this.newManagementAccount,
+  ])
+
   static otherServiceGroup: SidebarGroup = new SidebarGroup("Others Services", "Servis Lain Lain", [
     this.documentRequests,
     this.tekunApplications,
@@ -289,7 +301,7 @@ export class PageSidebar {
     this.switchGroup,
     this.sdnbhdGroup,
     this.servicesGroup,
-    this.otherServiceGroup,
+    // this.otherServiceGroup,
     this.personsGroup,
     this.controlPanelGroup,
   ]

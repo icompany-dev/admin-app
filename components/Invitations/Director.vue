@@ -55,6 +55,11 @@
           <CopyValue :value="controller.addressLine2" />
           <br />
         </span>
+        <span v-if="controller.addressLine3.length > 0">
+          {{ controller.addressLine3 }}
+          <CopyValue :value="controller.addressLine3" />
+          <br />
+        </span>
         {{ controller.addressPostcode }}
         <CopyValue :value="controller.addressPostcode" />
         <br />

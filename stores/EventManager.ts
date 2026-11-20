@@ -6,6 +6,7 @@
 // 5. The messages are specific to their purpose. Should never be used for other things.
 import { defineStore } from "pinia"
 import { PaymentCart } from "~/scripts/models/PaymentCart"
+import { PropsSendEmail } from "~/scripts/props/PropsSendEmail"
 
 export const useEventManagerStore = defineStore("eventManager", () => {
   const makePayment = ref<boolean>(false)
@@ -61,6 +62,9 @@ export const useEventManagerStore = defineStore("eventManager", () => {
   const isSidebarLoaded = ref<boolean>(false)
 
   const isCentreStageLoaded = ref<boolean>(true) // default to true
+
+  const isSendingEmail = ref<boolean>(false)
+  const propsSendEmail = ref<PropsSendEmail | null>(null)
 
   function setMakePayment(value: boolean): void {
     makePayment.value = value
@@ -229,6 +233,14 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     isCentreStageLoaded.value = value
   }
 
+  function setIsSendingEmail(value: boolean): void {
+    isSendingEmail.value = value
+  }
+
+  function setPropsSendEmail(value: PropsSendEmail | null): void {
+    propsSendEmail.value = value
+  }
+
   return {
     makePayment,
     entityTypeToMakePayment,
@@ -268,6 +280,8 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     isHeaderLoaded,
     isSidebarLoaded,
     isCentreStageLoaded,
+    isSendingEmail,
+    propsSendEmail,
     setMakePayment,
     setEntityTypeToMakePayment,
     setEntityIdToMakePayment,
@@ -308,5 +322,7 @@ export const useEventManagerStore = defineStore("eventManager", () => {
     setIsHeaderLoaded,
     setIsSidebarLoaded,
     setIsCentreStageLoaded,
+    setIsSendingEmail,
+    setPropsSendEmail,
   }
 })

@@ -57,8 +57,12 @@
     },
     isOverdueAnnualReturn: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+    selectedStartWith: {
+      type: String,
+      default: "",
+    },
   })
 
   const emit = defineEmits(["sdnbhdSelected"])
@@ -95,9 +99,19 @@
     }
   )
 
-  watch(() => props.isOverdueAnnualReturn, (newVal) => {
-    controller.setIsOverdueAnnualReturn(newVal)
-  })
+  watch(
+    () => props.isOverdueAnnualReturn,
+    (newVal) => {
+      controller.setIsOverdueAnnualReturn(newVal)
+    }
+  )
+
+  watch(
+    () => props.selectedStartWith,
+    (newVal) => {
+      controller.setSelectedStartWith(newVal)
+    }
+  )
 
   defineExpose({
     onCompanyUnselected: controller.onCompanyUnselected.bind(controller),

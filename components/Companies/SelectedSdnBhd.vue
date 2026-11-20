@@ -158,6 +158,13 @@
               >
                 Send Email
               </button>
+
+              <button
+                class="btn btn-pill btn-submit invert"
+                @click="controller.onSendTaxAgentNotice()"
+              >
+                Forward Notice from HASIL
+              </button>
             </div>
           </div>
         </div>
@@ -289,6 +296,7 @@
       <SendEmail
         ref="sendEmailRef"
         v-bind="controller.sendEmailProps"
+        @close="controller.onEmailClosed()"
       />
     </template>
   </div>
@@ -431,6 +439,14 @@
     sendEmailRef,
     (newVal) => {
       controller.setSendEmailRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    () => controller.eventManager.isSendingEmail,
+    (newVal) => {
+      controller.onEmailTriggered()
     },
     { immediate: true }
   )
