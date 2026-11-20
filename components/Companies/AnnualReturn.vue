@@ -100,6 +100,19 @@
                 </tr>
                 <tr>
                   <td>
+                    <b>{{ controller.registeredAddressLabel }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>
+                    {{ controller.annualReturnDataForYear.value.registrationNumberNew }}
+                    <CopyValue :value="controller.annualReturnDataForYear.value.registrationNumberNew" />
+                    ({{ controller.annualReturnDataForYear.value.registrationNumberOld }}
+                    <CopyValue :value="controller.annualReturnDataForYear.value.registrationNumberOld" />
+                    )
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     <b>{{ controller.businessAddressLabel }}</b>
                   </td>
                   <td>:</td>

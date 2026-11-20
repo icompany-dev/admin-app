@@ -505,6 +505,10 @@ ${detailsOfBO.join("\n")}
     return this.language.isMalay() ? "Nama Syarikat" : "Name of Sdn Bhd"
   }
 
+  get registrationNumberLabel(): string {
+    return this.language.isMalay() ? "No Pendaftaran SSM" : "SSM Registration No"
+  }
+
   get businessAddressLabel(): string {
     return this.language.isMalay() ? "Alamat Perniagaan" : "Business Address"
   }
@@ -550,7 +554,8 @@ ${detailsOfBO.join("\n")}
   }
 
   get companyName(): string {
-    return `${this.annualReturnDataForYear.value.name.toUpperCase()} SDN. BHD.`
+    let baseName = this.annualReturnDataForYear.value.name.toUpperCase().replace("SDN BHD", "")
+    return `${baseName} SDN. BHD.`
   }
 
   get businessDescription(): string {
@@ -559,9 +564,6 @@ ${detailsOfBO.join("\n")}
 
   get msicCodes(): MsicCode[] {
     return this.annualReturnDataForYear.value.msicCodes
-    // return this.company.value.msicCodeAssigns.map((d: MsicCodeAssign) => {
-    //   return d.msicCode
-    // })
   }
 
   get businessAddressLine1(): string {
