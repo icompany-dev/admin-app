@@ -151,13 +151,12 @@ export class DocumentsAndForms {
 
     // current list that we have - superform, s15, coi, s32, s51, s78, s58, s105, s352
     let section28s = this.getAllSection28s(false, false)
-    if (section28s.length > 0) {
-      selectedDocuments = selectedDocuments.concat(section28s)
-    } else {
-      selectedDocuments.push(
-        this.getCertificateOfIncorporation("Section 17 - Certificate of Incorporation", false, false)
-      )
-    }
+    selectedDocuments = selectedDocuments.concat(section28s)
+    selectedDocuments = selectedDocuments.concat(this.getAllCois(false, false))
+    // selectedDocuments.push(
+    //   this.getCertificateOfIncorporation("Section 17 - Certificate of Incorporation", false, false)
+    // )
+
     // selectedDocuments.push(this.getSection14("Section 14 - Superform", false, false))
     selectedDocuments = selectedDocuments.concat(this.getAllSection14s())
     selectedDocuments.push(this.getSection15("Section 15 - Notice of Registration", false, false))
@@ -594,6 +593,31 @@ export class DocumentsAndForms {
       isDisabled,
       isPriority
     )
+  }
+
+  getAllCois(isDisabled: boolean, isPriority: boolean): CompanyDocument[] {
+    return this.forms
+      .filter((cd: Form) => {
+        if (!cd.file) {
+          return false
+        }
+
+        return StringUtil.contains(cd.file.name, StatutoryFormKeywords.COI) && !StringUtil.contains(cd.file.name, "ctc")
+      })
+      .map((doc: Form) => {
+        return new CompanyDocument(
+          doc.id,
+          false,
+          doc.file?.name ?? "Section 17 - Certificate of Incorporation",
+          doc.file?.url ?? "",
+          false,
+          this.defaultDocumentDate,
+          doc.file?.id,
+          doc.noOfPages ?? 1,
+          isDisabled,
+          isPriority
+        )
+      })
   }
 
   getLatestSection78(documentName: string, isDisabled: boolean, isPriority: boolean): CompanyDocument | null {
