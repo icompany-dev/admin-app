@@ -1,3 +1,4 @@
+import { CompanyBranch } from "./CompanyBranch"
 import { Director } from "./Director"
 import { Location } from "./Location"
 import { MsicCode } from "./MsicCode"
@@ -13,6 +14,7 @@ export class AnnualReturnLodgementData {
   nameType: string = ""
   businessAddress: Location | null = null
   registeredAddress: Location | null = null
+  branches: CompanyBranch[] = []
   description: string = ""
   msicCodes: MsicCode[] = []
   directors: Director[] = []
@@ -42,6 +44,12 @@ export class AnnualReturnLodgementData {
     this.nameType = data.name_type ?? ""
     this.businessAddress = data.business_address ? new Location(data.business_address) : null
     this.registeredAddress = data.registered_address ? new Location(data.registered_address) : null
+    this.branches =
+      data.branches && Array.isArray(data.branches)
+        ? data.branches.map((d: any) => {
+            return new CompanyBranch(d)
+          })
+        : []
     this.description = data.description ?? ""
     this.msicCodes =
       data.msic_codes && Array.isArray(data.msic_codes)
@@ -75,6 +83,9 @@ export class AnnualReturnLodgementData {
     this.nameType = data.nameType
     this.businessAddress = data.businessAddress ? new Location(data.businessAddress) : null
     this.registeredAddress = data.registeredAddress ? new Location(data.registeredAddress) : null
+    this.branches = data.branches.map((d: any) => {
+      return new CompanyBranch(d)
+    })
     this.description = data.description
     this.msicCodes = data.msicCodes.map((d: any) => {
       return new MsicCode(d)
