@@ -258,45 +258,57 @@ export class DocumentsController {
           try {
             let response = await fetch(cd.fileUrl ?? "")
             if (!response.ok) {
-              return
+              return null
             }
 
-            return await response.arrayBuffer()
+            return {
+              name: cd.documentName || "Document",
+              buffer: await response.arrayBuffer(),
+            }
           } catch (e) {
-            //
+            return null
           }
         })
 
-      let pdfBuffers = await Promise.all(promises)
+      const fetchedDocs = (await Promise.all(promises)).filter(Boolean)
 
       const mergedPdf = await PDFDocument.create()
-      for (const buffer of pdfBuffers) {
-        if (!buffer) {
+      const encryptedBuffers: ArrayBuffer[] = []
+      let hasMergeablePages = false
+
+      for (const doc of fetchedDocs) {
+        if (!doc?.buffer) {
           continue
         }
-        const sourcePdf = await PDFDocument.load(buffer)
-        const copiedPages = await mergedPdf.copyPages(sourcePdf, sourcePdf.getPageIndices())
-        copiedPages.forEach((page: PDFPage) => {
-          mergedPdf.addPage(page)
-        })
+
+        try {
+          const sourcedPdf = await PDFDocument.load(doc.buffer)
+
+          if (sourcedPdf.isEncrypted) {
+            encryptedBuffers.push(doc.buffer)
+            continue
+          }
+
+          const copiedPages = await mergedPdf.copyPages(sourcedPdf, sourcedPdf.getPageIndices())
+          copiedPages.forEach((page: PDFPage) => {
+            mergedPdf.addPage(page)
+          })
+          hasMergeablePages = true
+        } catch (e) {
+          encryptedBuffers.push(doc.buffer)
+        }
       }
 
-      const mergedBytes = await mergedPdf.save()
-      const blob = new Blob([mergedBytes], { type: "application/pdf" })
-
-      const printWindow = window.open("", "_blank")
-      if (printWindow) {
-        printWindow.document.write("Please wait, prepraing the documents for printing...")
-      } else {
-        throw "Fail to open new window"
+      if (hasMergeablePages) {
+        const mergedBytes = await mergedPdf.save()
+        this.openAndPrintBlob(new Blob([mergedBytes], { type: "application/pdf" }))
       }
 
-      const blobUrl = URL.createObjectURL(blob)
-      printWindow.location.href = blobUrl
-      setTimeout(() => {
-        printWindow.print()
-      }, 500)
+      for (const encBuffer of encryptedBuffers) {
+        this.openAndPrintBlob(new Blob([encBuffer], { type: "application/pdf" }))
+      }
     } catch (e) {
+      console.error(e)
       if (e instanceof Error) {
         e.handle()
       } else {
@@ -307,6 +319,20 @@ export class DocumentsController {
       }
     } finally {
       this.isPrinting.value = false
+    }
+  }
+
+  private openAndPrintBlob(blob: Blob): void {
+    const blobUrl = URL.createObjectURL(blob)
+
+    const printWindow = window.open(blobUrl, "_blank")
+    if (!printWindow) {
+      throw "Fail to open new window"
+    }
+
+    printWindow.onload = () => {
+      printWindow.focus()
+      printWindow.print()
     }
   }
 

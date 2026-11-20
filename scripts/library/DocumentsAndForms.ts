@@ -770,26 +770,34 @@ export class DocumentsAndForms {
   }
 
   getAllSection28s(isDisabled: boolean, isPriority: boolean): CompanyDocument[] {
-    return this.documents
-      .filter((cd: CompanyDocument) => {
+    return this.forms
+      .filter((cd: Form) => {
+        if (!cd.file) {
+          return false
+        }
+
         let keyword = StatutoryFormKeywords.S28.split(",")
 
         return (
           keyword.some((k: string) => {
-            return StringUtil.contains(cd.documentName, k)
-          }) && !StringUtil.contains(cd.documentName, "ctc")
+            if (!cd.file) {
+              return false
+            }
+
+            return StringUtil.contains(cd.file.name, k)
+          }) && !StringUtil.contains(cd.file.name, "ctc")
         )
       })
-      .map((doc: CompanyDocument) => {
+      .map((doc: Form) => {
         return new CompanyDocument(
           doc.id,
           false,
-          doc.documentName,
-          doc.fileUrl,
-          doc.isFromMyData,
-          doc.documentDate,
-          doc.fileId,
-          doc.totalPages,
+          doc.file?.name ?? "",
+          doc.file?.url ?? "",
+          false,
+          doc.documentDate ? new Date(doc.documentDate) : this.defaultDocumentDate,
+          doc.file?.id ?? "",
+          doc.noOfPages,
           isDisabled,
           isPriority
         )
@@ -938,21 +946,29 @@ export class DocumentsAndForms {
   }
 
   getSection46(documentName: string, isDisabled: boolean, isPriority: boolean): CompanyDocument | null {
-    let selectedDocuments = this.documents.filter((cd: CompanyDocument) => {
+    let selectedDocuments = this.forms.filter((cd: Form) => {
+      if (!cd.file) {
+        return false
+      }
+
       let keyword = StatutoryFormKeywords.S46.split(",")
 
       return (
         keyword.some((k: string) => {
-          return StringUtil.contains(cd.documentName, k)
-        }) && !StringUtil.contains(cd.documentName, "ctc")
+          if (!cd.file) {
+            return false
+          }
+
+          return StringUtil.contains(cd.file.name, k)
+        }) && !StringUtil.contains(cd.file.name, "ctc")
       )
     })
     if (selectedDocuments.length <= 0) {
       return null
     }
 
-    selectedDocuments.sort((a: CompanyDocument, b: CompanyDocument) => {
-      return new Date(a.documentDate).getTime() - new Date(b.documentDate).getTime()
+    selectedDocuments.sort((a: Form, b: Form) => {
+      return new Date(a.documentDate ?? "").getTime() - new Date(b.documentDate ?? "").getTime()
     })
 
     let latest = selectedDocuments[0]
@@ -960,12 +976,12 @@ export class DocumentsAndForms {
     return new CompanyDocument(
       latest.id,
       true,
-      documentName,
-      latest.fileUrl,
-      latest.isFromMyData,
-      latest.documentDate,
-      latest.fileId,
-      latest.totalPages,
+      latest.file?.name ?? documentName,
+      latest.file?.url ?? "",
+      false,
+      latest.documentDate ? new Date(latest.documentDate) : this.defaultDocumentDate,
+      latest.file?.id ?? "",
+      latest.noOfPages,
       isDisabled,
       isPriority
     )
