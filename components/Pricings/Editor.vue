@@ -167,7 +167,7 @@
                           class="form-check"
                           v-model="controller.servicePricing.value.ctcConfig.isCosecAvailablePerPage"
                         />
-                        Cosec CTC (per page)
+                        Certify True Copy by Company Secretary (per page)
                       </div>
                     </div>
                     <div class="price">
@@ -187,7 +187,7 @@
                           class="form-check"
                           v-model="controller.servicePricing.value.ctcConfig.isSsmAvailablePerApplication"
                         />
-                        Enable SSM CTC (per application)
+                        Certify True Copy by SSM (per application)
                       </div>
                     </div>
                     <div class="price">
@@ -199,6 +199,51 @@
                       />
                     </div>
                   </div>
+                  <template v-if="controller.canAddCtcDiscounts">
+                    <div class="ctc-discount-configuration-title">Discount Configurations</div>
+                    <div class="ctc-discount-configuration">
+                      <div
+                        class="ctc-discounts"
+                        v-if="controller.servicePricing.value.ctcDiscounts.length > 0"
+                      >
+                        <div
+                          class="ctc-discount"
+                          v-for="(ctcDiscount, index) in controller.servicePricing.value.ctcDiscounts"
+                        >
+                          <div class="ctc-discount-label">
+                            <span>Less than</span>
+                            <input
+                              type="number"
+                              class="form-control"
+                              v-model="ctcDiscount.maxNumberPages"
+                            />
+                            <span>pages</span>
+                            <span
+                              class="clickable remove"
+                              @click="controller.onRemoveCtcDiscount(index)"
+                            >
+                              <i class="fa-regular fa-trash-alt" />
+                            </span>
+                          </div>
+                          <div class="ctc-discount-amount">
+                            <input
+                              type="number"
+                              class="form-control"
+                              v-model="ctcDiscount.discountAmount"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-detail-button">
+                        <button
+                          class="btn btn-submit invert"
+                          @click="controller.onAddCtcDiscount()"
+                        >
+                          Add Discount for CTC
+                        </button>
+                      </div>
+                    </div>
+                  </template>
                   <div class="delivery-method-title">Delivery Methods</div>
                   <div class="service-pricing-detail delivery-options">
                     <div class="label">

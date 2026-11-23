@@ -34,7 +34,7 @@
           <div class="application-wrapper">
             <ModuleApplications
               v-bind="controller.getPricingsModuleApplicationsProps(label)"
-              @addApplication="controller.onAddNewApplication()"
+              @addApplication="controller.onAddApplicationsClicked()"
               @editApplication="controller.onEditApplicationClicked($event)"
             />
           </div>

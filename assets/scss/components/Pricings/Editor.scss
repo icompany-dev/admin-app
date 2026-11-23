@@ -52,6 +52,17 @@
           }
         }
 
+        .clickable {
+          display: inline-block;
+          margin-left: 5px;
+          cursor: pointer;
+          width: 18%;
+
+          &.remove {
+            color: var(--bs-danger);
+          }
+        }
+
         .searchable-dropdown {
           width: 100%;
           border: solid 1px var(--bs-gray-500);
@@ -92,17 +103,6 @@
 
               .form-control {
                 text-align: left;
-              }
-            }
-
-            .clickable {
-              display: inline-block;
-              margin-left: 5px;
-              cursor: pointer;
-              width: 18%;
-
-              &.remove {
-                color: var(--bs-danger);
               }
             }
 
@@ -215,6 +215,58 @@
           .ctc-method-title {
             font-weight: 600;
             padding-top: 20px;
+          }
+
+          .ctc-discount-configuration-title {
+            font-weight: 600;
+            padding-top: 10px;
+            padding-left: 30px;
+          }
+
+          .ctc-discount-configuration {
+            padding-left: 30px;
+
+            .ctc-discounts {
+              width: calc(100% - 200px);
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              align-items: stretch;
+              gap: 5px;
+              margin-bottom: 10px;
+
+              .ctc-discount {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+
+                .ctc-discount-label {
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: flex-start;
+                  align-items: center;
+                  gap: 5px;
+                  width: 60%;
+
+                  .form-control {
+                    width: 20%;
+                    text-align: right;
+                  }
+                }
+
+                .ctc-discount-amount {
+                  width: 15%;
+
+                  .form-control {
+                    width: calc(100% - 22px);
+                    text-align: right;
+                  }
+                }
+              }
+            }
           }
 
           .divider {

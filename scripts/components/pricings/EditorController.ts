@@ -2,6 +2,7 @@ import { Filter } from "~/scripts/library/Filter"
 import { Toast } from "~/scripts/library/Toast"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
 import { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
+import { ServicePricingCtcDiscount } from "~/scripts/models/ServicePricingCtcDiscount"
 import { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
 import { ServicePricingOptional } from "~/scripts/models/ServicePricingOptional"
 import { ServicePricingPpp } from "~/scripts/models/ServicePricingPpp"
@@ -348,6 +349,14 @@ export class EditorController {
     return NumberUtil.currency(pppItem.price)
   }
 
+  onAddCtcDiscount(): void {
+    this.servicePricing.value.ctcDiscounts.push(new ServicePricingCtcDiscount())
+  }
+
+  onRemoveCtcDiscount(index: number): void {
+    this.servicePricing.value.ctcDiscounts.splice(index, 1)
+  }
+
   onCancelClicked(): void {
     this.servicePricing.value = new ServicePricing()
     this.hide()
@@ -442,5 +451,12 @@ export class EditorController {
     let total = this.baseGrandTotal + Number(this.servicePricing.value.config.handlingFees)
 
     return NumberUtil.currency(total)
+  }
+
+  get canAddCtcDiscounts(): boolean {
+    return (
+      this.servicePricing.value.ctcConfig.isCosecAvailablePerPage ||
+      this.servicePricing.value.ctcConfig.isSsmAvailablePerApplication
+    )
   }
 }
