@@ -1,6 +1,8 @@
 import { Compliance } from "~/scripts/library/Compliance"
+import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Company } from "~/scripts/models/Company"
 import { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
+import type { MyDataDocument } from "~/scripts/models/MyDataDocuments"
 import { PropsTags } from "~/scripts/props/PropsTags"
 import { AnnualReturnRecord } from "~/scripts/types/AnnualReturnRecord"
 import { StringUtil } from "~/scripts/utils/String"
@@ -8,6 +10,7 @@ import { StringUtil } from "~/scripts/utils/String"
 export class SdnBhdController {
   company = ref<Company>(new Company())
   compliance = ref<Compliance>(new Compliance(""))
+  documentsAndForms = ref<DocumentsAndForms>(new DocumentsAndForms(""))
 
   emitEvents: any | null = null
 
@@ -37,7 +40,8 @@ export class SdnBhdController {
     }
 
     this.compliance.value = new Compliance(this.company.value.id)
-    await this.compliance.value.setupAnnualReturn()
+    this.documentsAndForms.value = new DocumentsAndForms(this.company.value.id)
+    await Promise.all([this.compliance.value.setupAnnualReturn(), this.documentsAndForms.value.fetchMyDataDocuments()])
   }
 
   onEditClicked(): void {
@@ -148,9 +152,13 @@ export class SdnBhdController {
           record.isLodged = false
         }
       } else {
+        // check has actually lodged or not
+        let isLodged = this.myDataAnnualReturnDocuments.some((mdd: MyDataDocument) => {
+          return dayjs(mdd.documentDate).year() === annualReturnYear
+        })
         record.isOverdue = false
         record.isPaid = annualReturnYear <= currentYear
-        record.isLodged = daysTillLodgment >= 0
+        record.isLodged = isLodged //daysTillLodgment >= 0
         record.noOfDaysOverDue = 0
       }
 
@@ -158,6 +166,14 @@ export class SdnBhdController {
     }
 
     return annualReturns
+  }
+
+  get myDataAnnualReturnDocuments(): MyDataDocument[] {
+    return this.documentsAndForms.value.myDataDocuments.documents.filter((mdd: MyDataDocument) => {
+      return (
+        mdd.formType.includes("559") || mdd.formType.includes("AR") || mdd.formDescription.includes("annual return")
+      )
+    })
   }
 
   get pastAnnualReturnLabel(): string {
