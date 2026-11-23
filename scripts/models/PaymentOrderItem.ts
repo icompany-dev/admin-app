@@ -8,6 +8,7 @@ import { PaymentOrderItemBreakdown } from "./PaymentOrderItemBreakdown"
 import { PaymentOrderItemDelivery } from "./PaymentOrderItemDelivery"
 import { PaymentOrderItemMandatory } from "./PaymentOrderItemMandatory"
 import { PaymentOrderItemOptional } from "./PaymentOrderItemOptional"
+import type { PaymentOrderItemPpp } from "./PaymentOrderItemPpp"
 import { ServicePricing } from "./ServicePricing"
 import { ServicePricingBreakdown } from "./ServicePricingBreakdown"
 import type { ServicePricingMandatory } from "./ServicePricingMandatory"
@@ -24,6 +25,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   targetType: string = ""
   targetId: string = ""
   discountId: string | null = null
+  discountName: string | null = null
   discountPercent: number = 0
   discountAmount: number = 0
   isExpressFilingRequired: boolean = false
@@ -52,6 +54,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   breakdowns: PaymentOrderItemBreakdown[] = []
   mandatories: PaymentOrderItemMandatory[] = []
   optionals: PaymentOrderItemOptional[] = []
+  ppps: PaymentOrderItemPpp[] = []
   delivery: PaymentOrderItemDelivery | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
@@ -91,6 +94,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.targetType = data.target_type
     this.targetId = data.target_id
     this.discountId = data.discount_id ?? null
+    this.discountName = data.discount_name ?? []
     this.discountPercent = data.discount_percent
     this.discountAmount = data.discount_amount
     this.isExpressFilingRequired = data.is_express_filing_required
@@ -154,6 +158,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.targetType = data.targetType
     this.targetId = data.targetId
     this.discountId = data.discountId
+    this.discountName = data.discountName
     this.discountPercent = data.discountPercent
     this.discountAmount = data.discountAmount
     this.isExpressFilingRequired = data.isExpressFilingRequired
@@ -225,6 +230,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.targetType = data.targetType
     this.targetId = data.targetId
     this.discountId = data.discountId
+    this.discountName = data.discountName
     this.discountPercent = data.discountPercent
     this.discountAmount = data.discountAmount
     this.isExpressFilingRequired = data.isExpressFilingRequired
@@ -295,6 +301,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       target_type: StringUtil.snakeToPascal(this.targetType),
       target_id: this.targetId,
       discount_id: this.discountId,
+      discount_name: this.discountName,
       discount_percent: this.discountPercent,
       discount_amount: this.discountAmount,
       is_express_filing_required: this.isExpressFilingRequired,
