@@ -8,11 +8,14 @@ import { PaymentOrderItemBreakdown } from "./PaymentOrderItemBreakdown"
 import { PaymentOrderItemDelivery } from "./PaymentOrderItemDelivery"
 import { PaymentOrderItemMandatory } from "./PaymentOrderItemMandatory"
 import { PaymentOrderItemOptional } from "./PaymentOrderItemOptional"
-import type { PaymentOrderItemPpp } from "./PaymentOrderItemPpp"
+import { PaymentOrderItemPpp } from "./PaymentOrderItemPpp"
+import { PaymentOrderItemPppItem } from "./PaymentOrderItemPppItem"
 import { ServicePricing } from "./ServicePricing"
 import { ServicePricingBreakdown } from "./ServicePricingBreakdown"
 import type { ServicePricingMandatory } from "./ServicePricingMandatory"
 import type { ServicePricingOptional } from "./ServicePricingOptional"
+import type { ServicePricingPpp } from "./ServicePricingPpp"
+import { ServicePricingPppItem } from "./ServicePricingPppItem"
 
 export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   id: string = ""
@@ -289,6 +292,35 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
 
         return newOptional
       })
+
+    if (
+      this.deliveryType === DeliveryConstants.DELIVERY_COURIER ||
+      this.deliveryType === DeliveryConstants.DELIVERY_THIRD_PARTY ||
+      this.deliveryType === DeliveryConstants.DELIVERY_THIRD_PARTY
+    ) {
+      this.ppps = data.servicePricing.paperPrintingPackagings.map((ppp: ServicePricingPpp) => {
+        let newPaymentOrderItemPpp = new PaymentOrderItemPpp()
+        newPaymentOrderItemPpp.standardPackagingMinLimit = ppp.standardPackagingMinLimit
+        newPaymentOrderItemPpp.standardPackagingMaxLimit = ppp.standardPackagingMaxLimit
+        newPaymentOrderItemPpp.standardPackagingPrice = ppp.standardPackagingPrice
+        newPaymentOrderItemPpp.premiumPackagingMinLimit = ppp.premiumPackagingMinLimit
+        newPaymentOrderItemPpp.premiumPackagingMaxLimit = ppp.premiumPackagingMaxLimit
+        newPaymentOrderItemPpp.premiumPackagingPrice = ppp.premiumPackagingPrice
+        newPaymentOrderItemPpp.bulkPackagingMinLimit = ppp.bulkPackagingMinLimit
+        newPaymentOrderItemPpp.bulkPackagingPrice = ppp.bulkPackagingPrice
+        newPaymentOrderItemPpp.totalAmount = data.totalPackaging ?? 0
+        newPaymentOrderItemPpp.packagingType = data.packagingType ?? "standard"
+        newPaymentOrderItemPpp.items = ppp.items.map((item: ServicePricingPppItem) => {
+          let newPaymentOrderItemPppItem = new PaymentOrderItemPppItem()
+          newPaymentOrderItemPppItem.servicePricingId = item.servicePricingId
+
+          return newPaymentOrderItemPppItem
+        })
+        return newPaymentOrderItemPpp
+      })
+    } else {
+      this.ppps = []
+    }
   }
 
   getRequestBody(): object {
