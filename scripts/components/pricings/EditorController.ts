@@ -4,6 +4,8 @@ import { ServicePricing } from "~/scripts/models/ServicePricing"
 import { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
 import { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
 import { ServicePricingOptional } from "~/scripts/models/ServicePricingOptional"
+import { ServicePricingPpp } from "~/scripts/models/ServicePricingPpp"
+import { ServicePricingPppItem } from "~/scripts/models/ServicePricingPppItem"
 import { SelectOption } from "~/scripts/types/SelectOption"
 import { NumberUtil } from "~/scripts/utils/Number"
 import { ObjectUtil } from "~/scripts/utils/Object"
@@ -25,6 +27,7 @@ export class EditorController {
 
   mandatorySearchTexts: Ref<string[]> = ref<string[]>([])
   optionalSearchTexts: Ref<string[]> = ref<string[]>([])
+  pppSearchTexts: Ref<string[]> = ref<string[]>([])
 
   constructor(servicePricing: ServicePricing, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -39,6 +42,12 @@ export class EditorController {
 
     if (this.servicePricing.value.breakdowns.length <= 0) {
       this.servicePricing.value.breakdowns.push(new ServicePricingBreakdown())
+    }
+
+    if (this.servicePricing.value.paperPrintingPackagings.length <= 0) {
+      let newServicePricingPpp = new ServicePricingPpp()
+      newServicePricingPpp.items.push(new ServicePricingPppItem())
+      this.servicePricing.value.paperPrintingPackagings.push(newServicePricingPpp)
     }
   }
 
@@ -256,6 +265,87 @@ export class EditorController {
       this.servicePricing.value.config.handlingFees = 0
     }
     this.servicePricing.value.config.isDsfMandatory = this.servicePricing.value.config.handlingFees > 0
+  }
+
+  onAddPppItem(): void {
+    if (this.servicePricing.value.paperPrintingPackagings.length <= 0) {
+      let newServicePricingPpp = new ServicePricingPpp()
+      this.servicePricing.value.paperPrintingPackagings.push(newServicePricingPpp)
+    }
+    this.servicePricing.value.paperPrintingPackagings[0].items.push(new ServicePricingPppItem())
+    this.pppSearchTexts.value.push("")
+  }
+
+  onRemovePppItem(index: number): void {
+    if (this.servicePricing.value.paperPrintingPackagings.length <= 0) {
+      return
+    }
+    this.servicePricing.value.paperPrintingPackagings[0].items.splice(index, 1)
+    this.pppSearchTexts.value.splice(index, 1)
+  }
+
+  onPppItemPricingSelected(pricingId: string, index: number): void {
+    if (this.servicePricing.value.paperPrintingPackagings.length <= 0) {
+      return
+    }
+
+    let matched =
+      this.servicePricings.value.find((sp: ServicePricing) => {
+        return sp.id === pricingId
+      }) ?? null
+
+    this.servicePricing.value.paperPrintingPackagings[0].items[index].servicePricingId = pricingId
+    if (matched) {
+      this.servicePricing.value.paperPrintingPackagings[0].items[index].price =
+        Number(matched.baseGrandTotal) + Number(matched.config.handlingFees)
+    }
+  }
+
+  onSearchPppItemOptions(searchText: string, index: number): void {
+    this.pppSearchTexts.value[index] = searchText
+  }
+
+  getPppItemOptions(index: number): SelectOption[] {
+    if (this.isFetchingPricings.value) {
+      return [new SelectOption("", "", "Loading...", false)]
+    }
+
+    let searchText = this.pppSearchTexts.value[index] ?? ""
+
+    return this.servicePricings.value
+      .filter((sp: ServicePricing) => {
+        if (StringUtil.isNullOrEmpty(searchText)) {
+          return true
+        }
+
+        return StringUtil.contains(sp.serviceName, searchText)
+      })
+      .map((sp: ServicePricing) => {
+        let total = Number(sp.baseGrandTotal) + Number(sp.config.handlingFees)
+
+        return new SelectOption(sp.id, sp.id, `${sp.serviceName} (RM ${NumberUtil.currency(total)})`)
+      })
+  }
+
+  getSelectedPppItemName(pppItem: ServicePricingPppItem): string {
+    if (this.isFetchingPricings.value) {
+      return "Loading..."
+    }
+
+    if (StringUtil.isNullOrEmpty(pppItem.servicePricingId)) {
+      return this.language.isMalay() ? "Pilih Satu" : "Select One"
+    }
+
+    let matched =
+      this.servicePricings.value.find((sp: ServicePricing) => {
+        return sp.id === pppItem.servicePricingId
+      }) ?? null
+
+    return matched?.serviceName ?? ""
+  }
+
+  getSelectedPppItemPrice(pppItem: ServicePricingPppItem): string {
+    return NumberUtil.currency(pppItem.price)
   }
 
   onCancelClicked(): void {

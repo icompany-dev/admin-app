@@ -232,6 +232,98 @@
                       />
                     </div>
                   </div>
+                  <div class="delivery-method-title">Paper, Printing and Packaging</div>
+                  <div
+                    class="service-pricing-detail"
+                    v-for="(pppItem, index) in controller.servicePricing.value.paperPrintingPackagings[0].items"
+                  >
+                    <div class="label">
+                      <SearchableDropdown
+                        :options="controller.getPppItemOptions(index)"
+                        :selectedItemName="controller.getSelectedPppItemName(pppItem)"
+                        :placeholder="'Select One'"
+                        :labelKey="'label'"
+                        :valueKey="'value'"
+                        :isSearchable="true"
+                        @search="controller.onSearchPppItemOptions($event, index)"
+                        @selected="controller.onPppItemPricingSelected($event, index)"
+                      />
+                    </div>
+                    <span
+                      class="clickable remove"
+                      @click="controller.onRemovePppItem(index)"
+                    >
+                      <i class="fa-regular fa-trash-alt"></i>
+                    </span>
+                    <div class="price">
+                      {{ controller.getSelectedPppItemPrice(pppItem) }}
+                    </div>
+                  </div>
+                  <div class="item-detail-button">
+                    <button
+                      class="btn btn-submit invert"
+                      @click="controller.onAddPppItem()"
+                    >
+                      Add More
+                    </button>
+                  </div>
+                  <div class="service-pricing-detail paper-printing-package">
+                    <div class="label">Standard Packaging</div>
+                    <div class="limit price">
+                      <span>Less than</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].standardPackagingMaxLimit"
+                      />
+                      <span>pages</span>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].standardPackagingPrice"
+                      />
+                    </div>
+                  </div>
+                  <div class="service-pricing-detail paper-printing-package">
+                    <div class="label">Premium Packaging</div>
+                    <div class="limit price">
+                      <span>More than</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].premiumPackagingMinLimit"
+                      />
+                      <span>pages</span>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].premiumPackagingPrice"
+                      />
+                    </div>
+                  </div>
+                  <div class="service-pricing-detail paper-printing-package">
+                    <div class="label">Bulk Packaging</div>
+                    <div class="limit price">
+                      <span>More than</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].bulkPackagingMinLimit"
+                      />
+                      <span>pages</span>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].bulkPackagingPrice"
+                      />
+                    </div>
+                  </div>
                   <div class="service-pricing-detail total-row">
                     <div class="label">Total</div>
                     <div class="price">
