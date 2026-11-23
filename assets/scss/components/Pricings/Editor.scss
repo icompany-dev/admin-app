@@ -118,19 +118,6 @@
               &:has(.form-control) {
                 padding-right: 0;
               }
-
-              &.limit {
-                width: 20%;
-                display: flex;
-                flex-direction: row;
-                justify-content: flex-end;
-                align-items: center;
-                gap: 5px;
-
-                .form-control {
-                  width: 30%;
-                }
-              }
             }
 
             &.config-row {
@@ -196,6 +183,29 @@
 
               &.last-child {
                 padding-bottom: 10px;
+              }
+            }
+
+            &.paper-printing {
+              width: calc(100% - 200px);
+
+              .label {
+                width: calc(40% + 120px);
+              }
+
+              .price {
+                &.limit {
+                  width: 30%;
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: flex-end;
+                  align-items: center;
+                  gap: 5px;
+
+                  .form-control {
+                    width: 30%;
+                  }
+                }
               }
             }
           }

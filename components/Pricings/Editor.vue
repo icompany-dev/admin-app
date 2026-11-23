@@ -53,6 +53,7 @@
                     </div>
                   </div>
                   <template v-if="!controller.isService.value">
+                    <div class="other-requirement-title">Other Mandatory Requirements</div>
                     <div
                       class="service-pricing-detail"
                       v-for="(mandatory, index) in controller.servicePricing.value.mandatoryServices"
@@ -84,10 +85,10 @@
                         class="btn btn-submit invert"
                         @click="controller.addMandatory()"
                       >
-                        Add Existing Service
+                        Add Mandatory Requirement
                       </button>
                     </div>
-                    <div class="other-requirement-title">Other Requirements (Optional)</div>
+                    <div class="other-requirement-title">Other Optional Requirements</div>
                     <div
                       class="service-pricing-detail other-requirement"
                       :class="{ 'last-child': index === controller.servicePricing.value.optionals.length - 1 }"
@@ -120,7 +121,7 @@
                         class="btn btn-submit invert"
                         @click="controller.addOptional()"
                       >
-                        Add Other Requirements
+                        Add Other Requirement
                       </button>
                     </div>
                   </template>
@@ -234,7 +235,7 @@
                   </div>
                   <div class="delivery-method-title">Paper, Printing and Packaging</div>
                   <div
-                    class="service-pricing-detail"
+                    class="service-pricing-detail paper-printing"
                     v-for="(pppItem, index) in controller.servicePricing.value.paperPrintingPackagings[0].items"
                   >
                     <div class="label">
@@ -267,8 +268,8 @@
                       Add More
                     </button>
                   </div>
-                  <div class="service-pricing-detail paper-printing-package">
-                    <div class="label">Standard Packaging</div>
+                  <div class="service-pricing-detail paper-printing">
+                    <div class="label"><b>Standard Delivery Packaging</b></div>
                     <div class="limit price">
                       <span>Less than</span>
                       <input
@@ -286,8 +287,8 @@
                       />
                     </div>
                   </div>
-                  <div class="service-pricing-detail paper-printing-package">
-                    <div class="label">Premium Packaging</div>
+                  <div class="service-pricing-detail paper-printing">
+                    <div class="label"><b>Premium Delivery Packaging</b></div>
                     <div class="limit price">
                       <span>More than</span>
                       <input
@@ -305,8 +306,8 @@
                       />
                     </div>
                   </div>
-                  <div class="service-pricing-detail paper-printing-package">
-                    <div class="label">Bulk Packaging</div>
+                  <div class="service-pricing-detail paper-printing">
+                    <div class="label"><b>Bulk Delivery Packaging</b></div>
                     <div class="limit price">
                       <span>More than</span>
                       <input
