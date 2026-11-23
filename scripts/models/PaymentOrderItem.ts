@@ -292,7 +292,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   }
 
   getRequestBody(): object {
-    return {
+    let data = {
       id: this.paymentCartItemId, // backend treats it this way
       service_pricing_id: this.servicePricingId,
       additional_service_pricing_ids: this.additionalServicePricingIds,
@@ -328,7 +328,14 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       optionals: this.optionals.map((d: PaymentOrderItemOptional) => {
         return d.getRequestBody()
       }),
+      ppp: {},
     }
+
+    if (this.ppps.length > 0) {
+      data.ppp = this.ppps[0].getRequestBody()
+    }
+
+    return data
   }
 
   setSubtotal(): void {
