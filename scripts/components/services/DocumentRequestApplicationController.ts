@@ -73,6 +73,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
     this.isShowResolutions.value = false
     this.isShowCompleted.value = false
 
+    this.emitEvents("show", "")
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
   }
 
@@ -203,6 +204,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
       return
     }
 
+    this.emitEvents("documentSelected", "")
     this.emitEvents("show", item.iCompanyFile?.url)
   }
 
