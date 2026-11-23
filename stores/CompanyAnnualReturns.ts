@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import type { CompanyAnnualReturn } from "~/scripts/models/CompanyAnnualReturn"
 import { useNuxtApp } from "#app"
 import { useStoreActions } from "~/stores/StoreActions"
+import type { Filter } from "~/scripts/library/Filter"
 
 export const useCompanyAnnualReturnStore = defineStore("companyAnnualReturn", () => {
   const { $repositories } = useNuxtApp()
@@ -38,6 +39,21 @@ export const useCompanyAnnualReturnStore = defineStore("companyAnnualReturn", ()
     }
   }
 
+  async function fetchDataForLodgeYear(filter: Filter): Promise<any> {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      let response = await $repositories.companyAnnualReturns.fetchDataForLodgeYear(filter)
+      return response.data ?? []
+    } catch (e: any) {
+      error.value = e.message || "Unable to fetch data"
+      return []
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   const totalCompanyAnnualReturns = computed(() => companyAnnualReturns.value.length)
 
   return {
@@ -48,5 +64,6 @@ export const useCompanyAnnualReturnStore = defineStore("companyAnnualReturn", ()
     totalCompanyAnnualReturns,
     ...crudActions,
     fetchDues,
+    fetchDataForLodgeYear,
   }
 })

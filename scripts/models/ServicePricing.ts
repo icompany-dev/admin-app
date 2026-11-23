@@ -9,6 +9,8 @@ import { ServicePricingMandatory } from "./ServicePricingMandatory"
 import { ServicePricingOptional } from "./ServicePricingOptional"
 import type { IModel } from "./IModel"
 import { Error } from "../library/Error"
+import { ServicePricingPpp } from "./ServicePricingPpp"
+import { ServicePricingCtcDiscount } from "./ServicePricingCtcDiscount"
 
 export class ServicePricing implements IModel<ServicePricing> {
   id: string = ""
@@ -25,12 +27,14 @@ export class ServicePricing implements IModel<ServicePricing> {
   expressFilingFee: number = 0.0
   config: ServicePricingConfig = new ServicePricingConfig()
   ctcConfig: ServicePricingCtcConfig = new ServicePricingCtcConfig()
+  ctcDiscounts: ServicePricingCtcDiscount[] = []
   deliveryConfig: ServicePricingDeliveryConfig = new ServicePricingDeliveryConfig()
   optionConfig: ServicePricingOptionConfig = new ServicePricingOptionConfig()
   optionals: ServicePricingOptional[] = []
   volume: number = 0.0
   weight: number = 0.0
   discount: ServicePricingDiscount = new ServicePricingDiscount()
+  paperPrintingPackagings: ServicePricingPpp[] = []
   baseGrandTotal: number = 0.0
   status = "draft"
   createdAt: string = ""
@@ -77,6 +81,12 @@ export class ServicePricing implements IModel<ServicePricing> {
     this.expressFilingFee = parseFloat(data.express_filing_fee)
     this.config = new ServicePricingConfig(data.config)
     this.ctcConfig = new ServicePricingCtcConfig(data.ctc_config)
+    this.ctcDiscounts =
+      data.ctc_discounts && Array.isArray(data.ctc_discounts)
+        ? data.ctc_discounts.map((d: any) => {
+            return new ServicePricingCtcDiscount(d)
+          })
+        : []
     this.deliveryConfig = new ServicePricingDeliveryConfig(data.delivery_config)
     this.optionConfig = new ServicePricingOptionConfig(data.option_config)
     this.optionals =
@@ -88,6 +98,12 @@ export class ServicePricing implements IModel<ServicePricing> {
     this.volume = data.volume ?? 0.0
     this.weight = data.weight ?? 0.0
     this.discount = new ServicePricingDiscount(data.discount)
+    this.paperPrintingPackagings =
+      data.paper_printing_packagings && Array.isArray(data.paper_printing_packagings)
+        ? data.paper_printing_packagings.map((d: any) => {
+            return new ServicePricingPpp(d)
+          })
+        : []
     this.baseGrandTotal = parseFloat(data.base_grand_total)
     this.status = data.status
     this.createdAt = data.created_at
@@ -115,6 +131,9 @@ export class ServicePricing implements IModel<ServicePricing> {
     this.expressFilingFee = data.expressFilingFee
     this.config = new ServicePricingConfig(data.config)
     this.ctcConfig = new ServicePricingCtcConfig(data.ctcConfig)
+    this.ctcDiscounts = data.ctcDiscounts.map((d: any) => {
+      return new ServicePricingCtcDiscount(d)
+    })
     this.deliveryConfig = new ServicePricingDeliveryConfig(data.deliveryConfig)
     this.optionConfig = new ServicePricingOptionConfig(data.optionConfig)
     this.optionals = data.optionals.map((opt: ServicePricingOptional) => {
@@ -123,6 +142,9 @@ export class ServicePricing implements IModel<ServicePricing> {
     this.volume = data.volume ?? 0.0
     this.weight = data.weight ?? 0.0
     this.discount = new ServicePricingDiscount(data.discount)
+    this.paperPrintingPackagings = data.paperPrintingPackagings.map((d: ServicePricingPpp) => {
+      return new ServicePricingPpp(d)
+    })
     this.baseGrandTotal = data.baseGrandTotal
     this.status = data.status
     this.createdAt = data.createdAt
@@ -153,6 +175,9 @@ export class ServicePricing implements IModel<ServicePricing> {
       express_filing_fee: this.expressFilingFee,
       config: this.config.getRequestBody(),
       ctc_config: this.ctcConfig.getRequestBody(),
+      ctc_discounts: this.ctcDiscounts.map((d: ServicePricingCtcDiscount) => {
+        return d.getRequestBody()
+      }),
       delivery_config: this.deliveryConfig.getRequestBody(),
       option_config: this.optionConfig.getRequestBody(),
       optionals:
@@ -162,6 +187,9 @@ export class ServicePricing implements IModel<ServicePricing> {
             })
           : null,
       discount: this.discount.getRequestBody(),
+      ppps: this.paperPrintingPackagings.map((d: ServicePricingPpp) => {
+        return d.getRequestBody()
+      }),
       base_grand_total: this.baseGrandTotal,
       status: this.status,
       is_custom: this.isCustom,

@@ -169,11 +169,11 @@ export class UserDetailController {
   }
 
   get addressLine2(): string {
-    return this.userDetail.value.location?.addressLine2?.toUpperCase() ?? "-"
+    return this.userDetail.value.location?.addressLine2?.toUpperCase() ?? ""
   }
 
   get addressLine3(): string {
-    return this.userDetail.value.location?.addressLine3?.toUpperCase() ?? "-"
+    return this.userDetail.value.location?.addressLine3?.toUpperCase() ?? ""
   }
 
   get addressPostcode(): string {

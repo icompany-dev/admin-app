@@ -53,6 +53,7 @@
                     </div>
                   </div>
                   <template v-if="!controller.isService.value">
+                    <div class="other-requirement-title">Other Mandatory Requirements</div>
                     <div
                       class="service-pricing-detail"
                       v-for="(mandatory, index) in controller.servicePricing.value.mandatoryServices"
@@ -84,10 +85,10 @@
                         class="btn btn-submit invert"
                         @click="controller.addMandatory()"
                       >
-                        Add Existing Service
+                        Add Mandatory Requirement
                       </button>
                     </div>
-                    <div class="other-requirement-title">Other Requirements (Optional)</div>
+                    <div class="other-requirement-title">Other Optional Requirements</div>
                     <div
                       class="service-pricing-detail other-requirement"
                       :class="{ 'last-child': index === controller.servicePricing.value.optionals.length - 1 }"
@@ -120,7 +121,7 @@
                         class="btn btn-submit invert"
                         @click="controller.addOptional()"
                       >
-                        Add Other Requirements
+                        Add Other Requirement
                       </button>
                     </div>
                   </template>
@@ -166,7 +167,7 @@
                           class="form-check"
                           v-model="controller.servicePricing.value.ctcConfig.isCosecAvailablePerPage"
                         />
-                        Cosec CTC (per page)
+                        Certify True Copy by Company Secretary (per page)
                       </div>
                     </div>
                     <div class="price">
@@ -186,7 +187,7 @@
                           class="form-check"
                           v-model="controller.servicePricing.value.ctcConfig.isSsmAvailablePerApplication"
                         />
-                        Enable SSM CTC (per application)
+                        Certify True Copy by SSM (per application)
                       </div>
                     </div>
                     <div class="price">
@@ -198,6 +199,51 @@
                       />
                     </div>
                   </div>
+                  <template v-if="controller.canAddCtcDiscounts">
+                    <div class="ctc-discount-configuration-title">Discount Configurations</div>
+                    <div class="ctc-discount-configuration">
+                      <div
+                        class="ctc-discounts"
+                        v-if="controller.servicePricing.value.ctcDiscounts.length > 0"
+                      >
+                        <div
+                          class="ctc-discount"
+                          v-for="(ctcDiscount, index) in controller.servicePricing.value.ctcDiscounts"
+                        >
+                          <div class="ctc-discount-label">
+                            <span>Less than</span>
+                            <input
+                              type="number"
+                              class="form-control"
+                              v-model="ctcDiscount.maxNumberPages"
+                            />
+                            <span>pages</span>
+                            <span
+                              class="clickable remove"
+                              @click="controller.onRemoveCtcDiscount(index)"
+                            >
+                              <i class="fa-regular fa-trash-alt" />
+                            </span>
+                          </div>
+                          <div class="ctc-discount-amount">
+                            <input
+                              type="number"
+                              class="form-control"
+                              v-model="ctcDiscount.discountAmount"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-detail-button">
+                        <button
+                          class="btn btn-submit invert"
+                          @click="controller.onAddCtcDiscount()"
+                        >
+                          Add Discount for CTC
+                        </button>
+                      </div>
+                    </div>
+                  </template>
                   <div class="delivery-method-title">Delivery Methods</div>
                   <div class="service-pricing-detail delivery-options">
                     <div class="label">
@@ -229,6 +275,98 @@
                         class="form-control"
                         v-model="controller.servicePricing.value.deliveryConfig.courierPrice"
                         :disabled="!controller.servicePricing.value.deliveryConfig.canCourier"
+                      />
+                    </div>
+                  </div>
+                  <div class="delivery-method-title">Paper, Printing and Packaging</div>
+                  <div
+                    class="service-pricing-detail paper-printing"
+                    v-for="(pppItem, index) in controller.servicePricing.value.paperPrintingPackagings[0].items"
+                  >
+                    <div class="label">
+                      <SearchableDropdown
+                        :options="controller.getPppItemOptions(index)"
+                        :selectedItemName="controller.getSelectedPppItemName(pppItem)"
+                        :placeholder="'Select One'"
+                        :labelKey="'label'"
+                        :valueKey="'value'"
+                        :isSearchable="true"
+                        @search="controller.onSearchPppItemOptions($event, index)"
+                        @selected="controller.onPppItemPricingSelected($event, index)"
+                      />
+                    </div>
+                    <span
+                      class="clickable remove"
+                      @click="controller.onRemovePppItem(index)"
+                    >
+                      <i class="fa-regular fa-trash-alt"></i>
+                    </span>
+                    <div class="price">
+                      {{ controller.getSelectedPppItemPrice(pppItem) }}
+                    </div>
+                  </div>
+                  <div class="item-detail-button">
+                    <button
+                      class="btn btn-submit invert"
+                      @click="controller.onAddPppItem()"
+                    >
+                      Add More
+                    </button>
+                  </div>
+                  <div class="service-pricing-detail paper-printing">
+                    <div class="label"><b>Standard Delivery Packaging</b></div>
+                    <div class="limit price">
+                      <span>Less than</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].standardPackagingMaxLimit"
+                      />
+                      <span>pages</span>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].standardPackagingPrice"
+                      />
+                    </div>
+                  </div>
+                  <div class="service-pricing-detail paper-printing">
+                    <div class="label"><b>Premium Delivery Packaging</b></div>
+                    <div class="limit price">
+                      <span>More than</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].premiumPackagingMinLimit"
+                      />
+                      <span>pages</span>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].premiumPackagingPrice"
+                      />
+                    </div>
+                  </div>
+                  <div class="service-pricing-detail paper-printing">
+                    <div class="label"><b>Bulk Delivery Packaging</b></div>
+                    <div class="limit price">
+                      <span>More than</span>
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].bulkPackagingMinLimit"
+                      />
+                      <span>pages</span>
+                    </div>
+                    <div class="price">
+                      <input
+                        type="number"
+                        class="form-control"
+                        v-model="controller.servicePricing.value.paperPrintingPackagings[0].bulkPackagingPrice"
                       />
                     </div>
                   </div>
