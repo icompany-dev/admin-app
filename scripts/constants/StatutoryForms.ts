@@ -46,7 +46,7 @@ export class StatutoryFormBundles {
 }
 
 export enum StatutoryFormKeywords {
-  COI = "certificate of incorporation",
+  COI = "section 17, certificate of incorporation",
   S14 = "S. 14,Superform,Section 14,S 14,Section 14",
   S28 = "S. 28,Certificate of Change of Name,Section 28,S 28",
   S15 = "S. 15,Notification of Incorporation,Section 15,S 15",
