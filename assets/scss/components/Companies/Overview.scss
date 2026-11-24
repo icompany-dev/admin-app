@@ -58,6 +58,23 @@
       }
     }
 
+    .auditor-details {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 10px;
+
+      .human-details {
+        width: fit-content;
+      }
+
+      .action-icons {
+        width: fit-content;
+      }
+    }
+
     .human-details {
       display: flex;
       flex-direction: column;

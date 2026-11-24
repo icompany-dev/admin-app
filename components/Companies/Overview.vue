@@ -479,23 +479,29 @@
                   v-for="(auditor, i) in controller.auditors.value"
                   :key="i"
                 >
-                  <div class="human-details">
-                    <div class="name">{{ auditor.auditorCompanyName }}</div>
-                    <div class="human-detail">
-                      <i class="fa-regular fa-envelope"></i>
-                      <span class="email">{{ auditor.auditorEmail }}</span>
+                  <div class="auditor-details">
+                    <div class="human-details">
+                      <div class="name">{{ auditor.auditorCompanyName }}</div>
+                      <div class="human-detail">
+                        <i class="fa-regular fa-envelope"></i>
+                        <span class="email">{{ auditor.auditorEmail }}</span>
+                      </div>
+                      <div class="human-detail">
+                        <i class="fa-brands fa-whatsapp" />
+                        <span class="phone">{{ auditor.auditorPhone }}</span>
+                      </div>
                     </div>
-                    <div class="human-detail">
-                      <i class="fa-brands fa-whatsapp" />
-                      <span class="phone">{{ auditor.auditorPhone }}</span>
+                    <div class="action-icons">
+                      <i
+                        class="fa-regular fa-edit clickable edit"
+                        @click="controller.onEditCompanyAuditor(auditor)"
+                      />
+                      <i
+                        class="fa-regular fa-trash-alt clickable cancel"
+                        @click="controller.onRemoveCompanyAuditor(auditor)"
+                      />
                     </div>
                   </div>
-                  <button
-                    class="btn btn-pill btn-primary"
-                    @click="controller.onEditCompanyAuditor(auditor)"
-                  >
-                    Edit
-                  </button>
                 </li>
               </ol>
               <button
@@ -720,6 +726,11 @@
       v-bind="controller.addCompanyAuditorProps"
       @proceed="controller.fetchCompanyAuditors()"
     />
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :remove-item-name="controller.removeAuditorName"
+      @proceed="controller.onProceedRemoveCompanyAuditor()"
+    />
   </div>
 </template>
 
@@ -729,6 +740,7 @@
   import AssignMsicCode from "./AssignMsicCode.vue"
   import Bank from "./Bank.vue"
   import Branch from "./Branch.vue"
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import Tags from "../Tags/Tags.vue"
   import Shareholder from "../Users/Shareholder.vue"
@@ -750,6 +762,7 @@
   const addCompanyAuditorRef = ref(null)
   const businessAddressRef = ref(null)
   const registeredAddressRef = ref(null)
+  const confirmToDeleteRef = ref(null)
 
   const controller = new OverviewController(props.companyId, emit)
 
@@ -780,6 +793,14 @@
     registeredAddressRef,
     (newVal) => {
       controller.setRegisteredAddressRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
     },
     { immediate: true }
   )

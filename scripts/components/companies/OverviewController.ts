@@ -48,6 +48,7 @@ export class OverviewController {
   addCompanyAuditorRef: any | null = null
   businessAddressRef: any | null = null
   registeredAddressRef: any | null = null
+  confirmToDeleteRef: any | null = null
 
   companyAuditor = ref<CompanyAuditor>(new CompanyAuditor())
 
@@ -92,6 +93,8 @@ export class OverviewController {
   auditMonth: Ref<string> = ref<string>("")
   auditYear: Ref<string> = ref<string>("")
 
+  companyAuditorToRemove = ref<CompanyAuditor>(new CompanyAuditor())
+
   language = useLanguage()
   time = useLocalTime()
   dayjs = useDayjs()
@@ -117,6 +120,10 @@ export class OverviewController {
 
   setRegisteredAddressRef(registeredAddressRef: any): void {
     this.registeredAddressRef = registeredAddressRef
+  }
+
+  setConfirmToDeleteRef(confirmToDeleteRef: any): void {
+    this.confirmToDeleteRef = confirmToDeleteRef
   }
 
   async init(): Promise<void> {
@@ -299,6 +306,45 @@ export class OverviewController {
 
     if (this.addCompanyAuditorRef) {
       this.addCompanyAuditorRef.show()
+    }
+  }
+
+  onRemoveCompanyAuditor(companyAuditor: any): void {
+    this.companyAuditorToRemove.value = new CompanyAuditor(companyAuditor)
+
+    if (this.confirmToDeleteRef) {
+      this.confirmToDeleteRef.show()
+    }
+  }
+
+  async onProceedRemoveCompanyAuditor(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyAuditorToRemove.value.id)) {
+      return
+    }
+
+    try {
+      this.auditors.value = this.auditors.value.filter((ca: any) => {
+        return ca.id !== this.companyAuditorToRemove.value.id
+      })
+
+      await this.companyAuditorToRemove.value.remove(useCompanyAuditorStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Juruaudit telah dikeluarkan dari Sdn Bhd ini."
+        : "The Auditor is removed from this Sdn Bhd."
+      let toastMessage = this.language.isMalay()
+        ? "Sila ke Peranan & Akses bagi menarik balik akses yang telah diberi."
+        : "Please go to Roles & Accesses to revoke any access granted."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
     }
   }
 
@@ -1322,5 +1368,9 @@ ${detailsOfBO.join("\n")}
     }
 
     return ""
+  }
+
+  get removeAuditorName(): string {
+    return this.language.isMalay() ? "Juruaudit" : "Auditor"
   }
 }
