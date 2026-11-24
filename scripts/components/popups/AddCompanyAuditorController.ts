@@ -484,7 +484,7 @@ export class AddCompanyAuditorController extends BasePopupController {
   }
 
   get emailTitleForPerson(): string {
-    return `Access to ${this.company.value.getFullName().toUpperCase()}`
+    return `[NOTICE] Access to ${this.company.value.getFullName().toUpperCase()}`
   }
 
   get emailContentForDirectors(): string {
@@ -505,6 +505,6 @@ export class AddCompanyAuditorController extends BasePopupController {
   }
 
   get emailTitleForDirectors(): string {
-    return `Access to ${this.company.value.getFullName().toUpperCase()} is granted to ${this.name.value.toUpperCase()}`
+    return `[NOTICE] Access to ${this.company.value.getFullName().toUpperCase()} is granted to ${this.name.value.toUpperCase()}`
   }
 }
