@@ -32,6 +32,38 @@
       {{ controller.identificationNumber }}
       <CopyValue :value="controller.identificationNumber" />
     </div>
+    <div
+      class="human-detail"
+      v-if="props.isEditable && controller.isForeigner"
+    >
+      <i class="fa-regular fa-calendar" />
+      <span class="human-detail-content">
+        Passport Expires On:
+        <input
+          type="date"
+          class="form-control"
+          v-model="controller.userDetail.value.passportExpiryDate"
+          @change="emit('updatePassportExpiry', controller.passportExpiryDate)"
+        />
+      </span>
+      <CopyValue :value="controller.passportExpiryDate" />
+    </div>
+    <div
+      class="human-detail date-of-birth"
+      v-if="props.isEditable"
+    >
+      <i class="fa-regular fa-calendar" />
+      <span class="human-detail-content">
+        Date of Birth
+        <input
+          type="date"
+          class="form-control"
+          v-model="controller.userDetail.value.birthdate"
+          @change="emit('updateDateOfBirth', controller.dateOfBirth)"
+        />
+      </span>
+      <CopyValue :value="controller.dateOfBirth" />
+    </div>
     <div class="human-detail">
       <i class="fa-regular fa-user" />
       <span class="human-detail-content">
@@ -39,10 +71,28 @@
       </span>
       <CopyValue :value="controller.race" />
     </div>
-    <div class="human-detail">
+    <div
+      class="human-detail"
+      v-if="!props.isEditable"
+    >
       <i class="fa-regular fa-globe" />
       <span class="human-detail-content">
         {{ controller.nationality }}
+      </span>
+      <CopyValue :value="controller.nationality" />
+    </div>
+    <div
+      class="human-detail"
+      v-if="props.isEditable"
+    >
+      <i class="fa-regular fa-globe" />
+      <span class="human-detail-content">
+        <input
+          type="text"
+          class="form-control"
+          v-model="controller.userDetail.value.citizenship"
+          @change="emit('updateCitizenship', controller.nationality)"
+        />
       </span>
       <CopyValue :value="controller.nationality" />
     </div>
@@ -163,7 +213,8 @@
   import type { IPropsUserDetail } from "~/scripts/props/PropsUserDetail"
 
   const props = defineProps<IPropsUserDetail>()
-  const emit = defineEmits([])
+
+  const emit = defineEmits(["updateDateOfBirth", "updateCitizenship", "updatePassportExpiry"])
 
   const identificationRef = ref(null)
 

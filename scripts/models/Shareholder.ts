@@ -17,7 +17,7 @@ export class Shareholder implements IModel<Shareholder> {
   profileImage: File | null = null
   email: string = ""
   phone: string = ""
-  location: Location | null = null
+  location: Location = new Location()
   type: string = ""
   company: Company | null = null
 
@@ -31,6 +31,14 @@ export class Shareholder implements IModel<Shareholder> {
   companyId: string | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
+
+  // NOTE: data for annual return lodgement
+  passportExpiryDate: string = ""
+  citizenship: string = ""
+  race: string = ""
+  gender: string = ""
+  birthdate: string = ""
+  shareholdingCategory: string = ""
 
   constructor(data: any | null = null) {
     if (!data) {
@@ -52,7 +60,7 @@ export class Shareholder implements IModel<Shareholder> {
     this.profileImage = data.profile_image ? new File(data.profile_image) : null
     this.email = data.email
     this.phone = data.phone
-    this.location = data.location ? new Location(data.location) : null
+    this.location = new Location(data.location)
     this.type = data.type
     this.company = data.company ? new Company(data.company) : null
 
@@ -83,7 +91,7 @@ export class Shareholder implements IModel<Shareholder> {
     this.profileImage = data.profileImage ? new File(data.profileImage) : null
     this.email = data.email
     this.phone = data.phone
-    this.location = data.location ? new Location(data.location) : null
+    this.location = new Location(data.location)
     this.type = data.type
     this.company = data.company ? new Company(data.company) : null
 

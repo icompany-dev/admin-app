@@ -217,4 +217,20 @@ export class UserDetailController {
       PaperSize.A4
     )
   }
+
+  get dateOfBirth(): string {
+    let dayjs = useDayjs()
+
+    return dayjs(this.userDetail.value.birthdate).format("YYYY-MM-DD")
+  }
+
+  get passportExpiryDate(): string {
+    let dayjs = useDayjs()
+
+    return dayjs(this.userDetail.value.passportExpiryDate).format("YYYY-MM-DD")
+  }
+
+  get isForeigner(): boolean {
+    return this.userDetail.value.identificationType !== "ic"
+  }
 }

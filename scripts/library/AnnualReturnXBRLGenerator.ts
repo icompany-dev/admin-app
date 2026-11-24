@@ -1,4 +1,4 @@
-import type { AnnualReturnData, GeneratedXBRLPackage } from "~/scripts/types/AnnualReturnXBRLGenerator"
+import type { ARShareholder, AnnualReturnData, GeneratedXBRLPackage } from "~/scripts/types/AnnualReturnXBRLGenerator"
 import JSZip from "jszip"
 
 export class AnnualReturnXBRLGenerator {
@@ -19,10 +19,16 @@ export class AnnualReturnXBRLGenerator {
     const returnYear = this.annualReturnData.annualReturnDate
       ? this.annualReturnData.annualReturnDate.substring(0, 4)
       : "2024"
-    const instanceFilename = `MBRS_AR_${sanitizedCompanyNo}_${returnYear}.xbrl`
-    const zipFilename = `MBRS_AR_PACKAGE_${sanitizedCompanyNo}_${returnYear}.zip`
+    let dayjs = useDayjs()
+    const annualReturnDate = dayjs(this.annualReturnData.annualReturnDate).format("YYYYMMDD")
+    const instanceFilename = `SCM_AR1_${sanitizedCompanyNo}_${annualReturnDate}.xml`
+    const scmCsvFileName = `SCM_AR1_${sanitizedCompanyNo}_${annualReturnDate}.csv`
+    const pmCsvFileName = `PM_AR1_${sanitizedCompanyNo}_${annualReturnDate}.csv`
+    const zipFilename = `AR1_${sanitizedCompanyNo}_${annualReturnDate}.zip`
 
     const xbrlXml = this.buildARXBRLXml(this.annualReturnData)
+    const pmCsv = this.buildShareholdingCsv(this.annualReturnData)
+    const scmCsv = this.buildScmCsv()
     const manifestXml = this.buildARManifestXml(this.annualReturnData, instanceFilename)
     const calculationXml = this.buildARCalculationSummaryXml(this.annualReturnData)
     const validationReport = this.validateARDocuments(this.annualReturnData)
@@ -30,11 +36,15 @@ export class AnnualReturnXBRLGenerator {
     return {
       filename: zipFilename,
       xbrlFilename: instanceFilename,
+      scmCsvFileName: scmCsvFileName,
+      pmCsvFileName: pmCsvFileName,
       zipBlob: new Blob([]),
       sizeBytes: 0,
       xbrlXml,
-      manifestXml,
-      calculationXml,
+      pmCsv,
+      scmCsv,
+      // manifestXml,
+      // calculationXml,
       validationReport,
     }
   }
@@ -213,6 +223,33 @@ export class AnnualReturnXBRLGenerator {
   </mbrs:calculationAudit>`
   }
 
+  buildShareholdingCsv(arData: AnnualReturnData): string {
+    let rows = arData.shareholders.map((s: ARShareholder, index: number) => {
+      let numbering = String(index + 1).padStart(4, "0")
+      let holdingType = s.isCorporate ? "Corporate" : "Individual"
+      if (s.isMalaysian) {
+        let identificationType = s.isCorporate ? "Registration Number" : "MyKad"
+        return `${numbering}	${numbering}	${holdingType}			${s.name}	${identificationType}	${s.idOrRegNumber}		MALAYSIA	${s.race}	${s.gender}	${s.birthdate}	${s.address1}	 ${s.address2}	${s.postcode}	${s.city}	${s.state}	${s.country}	${s.numberOfShares}	${s.shareClass} shares	${s.shareholdingCategory}`
+      }
+
+      let identificationType = s.isCorporate ? "Registration Number" : "Passport number"
+
+      return `${numbering}	${numbering}	${holdingType}			${s.name}	${identificationType}	${s.idOrRegNumber}	${s.passportExpiryDate}	${s.nationalityOrCountry}	FOREIGNER	${s.gender}	${s.birthdate}	${s.address1}	${s.address2}	${s.postcode}	${s.city}	${s.state}	${s.country}	${s.numberOfShares}	${s.shareClass} shares	Non-citizens`
+    })
+
+    let totalOrdinary = arData.shareholders.reduce((a: number, s: ARShareholder) => {
+      return a + s.numberOfShares
+    }, 0)
+
+    let combined = ["D	E	F	G	H	I	J	K	L	M	N	O	P	Q	R	S	T	U	V	W	X	Y	Z", ...rows, `Total																				${totalOrdinary}`]
+
+    return combined.join("\n")
+  }
+
+  buildScmCsv(): string {
+    return `D	E	F	G	H	I	J	K	L	M	N	O	P	Q	R	S	T	U	V`
+  }
+
   validateARDocuments(arData: AnnualReturnData) {
     const errors: string[] = []
     const warnings: string[] = []
@@ -261,36 +298,38 @@ export class AnnualReturnXBRLGenerator {
 
   async createZipBlobFromPackage(
     instanceFilename: string,
+    scmCsvFileName: string,
+    pmCsvFileName: string,
     xbrlXml: string,
-    manifestXml: string,
-    calculationXml: string,
+    pmCsv: string,
+    scmCsv: string,
     extraFiles: Record<string, string> = {}
   ): Promise<{ zipBlob: Blob; sizeBytes: number }> {
     const zip = new JSZip()
     zip.file(instanceFilename, xbrlXml)
-    zip.file("manifest.xml", manifestXml)
-    zip.file("calculation_summary.xml", calculationXml)
+    zip.file(pmCsvFileName, pmCsv)
+    zip.file(scmCsvFileName, scmCsv)
 
-    zip.file(
-      "filing_metadata.json",
-      JSON.stringify(
-        {
-          system: "Malaysian Business Reporting System (MBRS)",
-          authority: "Suruhanjaya Syarikat Malaysia (SSM)",
-          filingType: "Annual Return",
-          statutorySection: "Section 68 Companies Act 2016",
-          companyName: this.annualReturnData?.companyName,
-          companyNumber: `${this.annualReturnData?.companyNumber} (${this.annualReturnData?.oldCompanyNumber})`,
-          annualReturnDate: this.annualReturnData?.annualReturnDate,
-          generatedAt: new Date().toISOString(),
-          directorsCount: this.annualReturnData?.directors.length ?? 1,
-          shareholdersCount: this.annualReturnData?.shareholders.length ?? 1,
-          issuedCapital: this.annualReturnData?.shareCapital,
-        },
-        null,
-        2
-      )
-    )
+    // zip.file(
+    //   "filing_metadata.json",
+    //   JSON.stringify(
+    //     {
+    //       system: "Malaysian Business Reporting System (MBRS)",
+    //       authority: "Suruhanjaya Syarikat Malaysia (SSM)",
+    //       filingType: "Annual Return",
+    //       statutorySection: "Section 68 Companies Act 2016",
+    //       companyName: this.annualReturnData?.companyName,
+    //       companyNumber: `${this.annualReturnData?.companyNumber} (${this.annualReturnData?.oldCompanyNumber})`,
+    //       annualReturnDate: this.annualReturnData?.annualReturnDate,
+    //       generatedAt: new Date().toISOString(),
+    //       directorsCount: this.annualReturnData?.directors.length ?? 1,
+    //       shareholdersCount: this.annualReturnData?.shareholders.length ?? 1,
+    //       issuedCapital: this.annualReturnData?.shareCapital,
+    //     },
+    //     null,
+    //     2
+    //   )
+    // )
 
     for (const [name, content] of Object.entries(extraFiles)) {
       zip.file(name, content)

@@ -280,10 +280,21 @@
                   <td>
                     <div
                       class="shareholder"
-                      v-for="shareholderAnnualReturn in controller.shareholdersForAnnualReturn"
+                      v-for="(shareholderAnnualReturn, index) in controller.shareholdersForAnnualReturn"
                     >
                       <Shareholder
                         v-bind="controller.getShareholderProps(shareholderAnnualReturn.shareholderForDisplay)"
+                        @updateAddressLine1="controller.onUpdateShareholderAddressLine1($event, index)"
+                        @updateAddressLine2="controller.onUpdateShareholderAddressLine2($event, index)"
+                        @updateAddressLine3="controller.onUpdateShareholderAddressLine3($event, index)"
+                        @updateAddressPostcode="controller.onUpdateShareholderAddressPostcode($event, index)"
+                        @updateAddressCity="controller.onUpdateShareholderAddressCity($event, index)"
+                        @updateAddressState="controller.onUpdateShareholderAddressState($event, index)"
+                        @updateAddressCountry="controller.onUpdateShareholderAddressCountry($event, index)"
+                        @updateBirthdate="controller.onInputShareholderBirthdate($event, index)"
+                        @updatePassportExpiry="controller.onInputPassportExpiryDate($event, index)"
+                        @updateCitizenship="controller.onInputShareholderNationality($event, index)"
+                        @updateShareholdingCategory="controller.onSelectedShareholdingCategory($event, index)"
                       />
                     </div>
                   </td>
@@ -295,17 +306,25 @@
                   <td>:</td>
                   <td>
                     <div
-                      class="secretary"
+                      class="form-check"
                       v-for="secretary in SecretaryInformation.SECRETARY_NAME_LIST"
                     >
-                      <b>{{ secretary.name }}</b>
-                      <CopyValue :value="secretary.name" />
-                      <br />
-                      {{ secretary.nric }}
-                      <CopyValue :value="secretary.nric" />
-                      <br />
-                      {{ secretary.license }}
-                      <CopyValue :value="secretary.license" />
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        :checked="controller.isSecretarySelected(secretary)"
+                        @click="controller.onSecretaryClicked(secretary)"
+                      />
+                      <div class="secretary">
+                        <b>{{ secretary.name }}</b>
+                        <CopyValue :value="secretary.name" />
+                        <br />
+                        {{ secretary.nric }}
+                        <CopyValue :value="secretary.nric" />
+                        <br />
+                        {{ secretary.license }}
+                        <CopyValue :value="secretary.license" />
+                      </div>
                     </div>
                   </td>
                 </tr>
