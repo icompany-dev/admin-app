@@ -22,6 +22,53 @@
                     v-model="controller.servicePricing.value.serviceName"
                   />
                 </div>
+                <div class="form-check attach-to-service">
+                  <input
+                    type="checkbox"
+                    class="form-check"
+                    :value="true"
+                    :checked="controller.isAttachableToService.value"
+                    @click="controller.onAttachToServiceClicked()"
+                  />
+                  <span :class="{ enabled: controller.isAttachableToService.value }">
+                    Attach Pricing to Secretarial Service
+                  </span>
+                </div>
+                <Transition name="fade">
+                  <div
+                    class="attached-services"
+                    v-if="controller.isAttachableToService.value"
+                  >
+                    <div class="link-to-service">
+                      <span class="label"><b>Secretarial Service</b></span>
+                      <select
+                        class="form-control"
+                        v-model="controller.servicePricing.value.serviceTarget"
+                      >
+                        <option
+                          value=""
+                          disabled
+                        ></option>
+                        <option
+                          v-for="(opt, i) in controller.serviceTargetOptions"
+                          :value="opt.id"
+                        >
+                          {{ opt.label }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-check">
+                      <input
+                        type="checkbox"
+                        class="form-check"
+                        :value="true"
+                        :checked="controller.servicePricing.value.isDefault"
+                        @click="controller.onIsDefaultClicked()"
+                      />
+                      <span>This is{{ !controller.servicePricing.value.isDefault ? " not" : "" }} default value</span>
+                    </div>
+                  </div>
+                </Transition>
                 <div class="service-pricing-details">
                   <div class="service-pricing-detail">
                     <div class="label">

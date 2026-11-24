@@ -1,3 +1,5 @@
+import { CompanyConstants } from "~/scripts/constants/Company"
+import { ServiceName, ServiceNames } from "~/scripts/constants/ServiceNames"
 import { Filter } from "~/scripts/library/Filter"
 import { Toast } from "~/scripts/library/Toast"
 import { ServicePricing } from "~/scripts/models/ServicePricing"
@@ -29,6 +31,8 @@ export class EditorController {
   mandatorySearchTexts: Ref<string[]> = ref<string[]>([])
   optionalSearchTexts: Ref<string[]> = ref<string[]>([])
   pppSearchTexts: Ref<string[]> = ref<string[]>([])
+
+  isAttachableToService: Ref<boolean> = ref<boolean>(false)
 
   constructor(servicePricing: ServicePricing, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -90,6 +94,16 @@ export class EditorController {
 
   hide(): void {
     this.isShowing.value = false
+  }
+
+  onAttachToServiceClicked(): void {
+    this.isAttachableToService.value = !this.isAttachableToService.value
+
+    if (!this.isAttachableToService.value) [(this.servicePricing.value.serviceTarget = "")]
+  }
+
+  onIsDefaultClicked(): void {
+    this.servicePricing.value.isDefault = !this.servicePricing.value.isDefault
   }
 
   onBreakdownPriceChanged(index: number): void {
@@ -458,5 +472,27 @@ export class EditorController {
       this.servicePricing.value.ctcConfig.isCosecAvailablePerPage ||
       this.servicePricing.value.ctcConfig.isSsmAvailablePerApplication
     )
+  }
+
+  get serviceTargetOptions(): SelectOption[] {
+    let targets = CompanyConstants.DOCUMENT_TARGETS // Is this the right option?
+
+    let options: SelectOption[] = []
+
+    targets.forEach((t: string) => {
+      let serviceName = ServiceNames.names.find((sn: ServiceName) => {
+        return sn.target === t
+      })
+
+      if (!serviceName) {
+        return
+      }
+
+      options.push(new SelectOption(t, t, serviceName.en))
+    })
+
+    options = ObjectUtil.sort<SelectOption>(options, "label", "asc")
+
+    return options
   }
 }
