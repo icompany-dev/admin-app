@@ -191,7 +191,7 @@ export class BankDocumentsController {
       `${this.company.value.registrationNumberNew} (${this.company.value.registrationNumberOld})`,
       userDetail?.verificationFile?.url ?? "",
       userDetail?.verificationFileAlt?.url ?? "",
-      "FOR OPENING BANK ONLY",
+      "BANK ACCOUNT OPENING PURPOSES ONLY",
       PaperOrientation.Portrait,
       PaperSize.A4
     )
