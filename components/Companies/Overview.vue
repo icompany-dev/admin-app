@@ -109,6 +109,46 @@
                 <span class="fa-solid fa-dot" />
                 {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
                 <CopyValue :value="msicCodeAssign.msicCode.code" />
+                <span
+                  class="clickable cancel"
+                  @click="controller.onRemoveMsicCode(msicCodeAssign)"
+                >
+                  <i class="fa-regular fa-trash-alt" />
+                </span>
+              </div>
+              <template v-if="controller.isAssignNewMsicCode.value">
+                <div class="msic-code-assign-new">
+                  <AssignMsicCode
+                    :target="'company'"
+                    :target-id="controller.companyId.value"
+                    @selected="controller.onSelectedNewMsicCode($event)"
+                  />
+                  <div class="action-icons is-editing">
+                    <i
+                      v-if="controller.isAssignNewMsicCode.value && !controller.isUpdatingMsicCode.value"
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelAddMsicCodeClicked()"
+                    />
+                    <i
+                      v-if="controller.isAssignNewMsicCode.value && !controller.isUpdatingMsicCode.value"
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.assignMsicCode()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingMsicCode.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </div>
+              </template>
+              <div class="action-button-container">
+                <button
+                  v-if="!controller.isAssignNewMsicCode.value"
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onAddMsicCodeClicked()"
+                >
+                  Add MSIC Code
+                </button>
               </div>
             </td>
           </tr>
@@ -686,6 +726,7 @@
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import AddressInput from "@/components/Forms/AddressInput.vue"
+  import AssignMsicCode from "./AssignMsicCode.vue"
   import Bank from "./Bank.vue"
   import Branch from "./Branch.vue"
   import CopyValue from "../Buttons/CopyValue.vue"

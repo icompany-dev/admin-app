@@ -37,6 +37,7 @@
         class="dropdown-item"
         v-for="(option, index) in controller.options.value"
         :key="index"
+        :class="{ disabled: option.isDisabled ?? false }"
         @click="controller.onItemClicked(option[props.valueKey])"
       >
         {{ option[props.labelKey] }}

@@ -133,22 +133,22 @@
     &.is-editing {
       padding-bottom: 10px;
     }
+  }
 
-    .clickable {
-      font-size: 14px;
-      cursor: pointer;
+  .clickable {
+    font-size: 14px;
+    cursor: pointer;
 
-      &.edit {
-        color: var(--bs-icompany-blue);
-      }
+    &.edit {
+      color: var(--bs-icompany-blue);
+    }
 
-      &.save {
-        color: var(--bs-icompany-green);
-      }
+    &.save {
+      color: var(--bs-icompany-green);
+    }
 
-      &.cancel {
-        color: var(--bs-danger);
-      }
+    &.cancel {
+      color: var(--bs-danger);
     }
   }
 
@@ -276,6 +276,23 @@
       resize: vertical;
       border-color: var(--bs-gray-500);
       border-radius: 5px;
+    }
+
+    .action-icons {
+      width: fit-content;
+    }
+  }
+
+  .msic-code-assign-new {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+
+    #companies-assign-msic-code {
+      width: 60%;
     }
 
     .action-icons {

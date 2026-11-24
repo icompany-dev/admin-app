@@ -75,6 +75,10 @@ export class OverviewController {
   isUpdatingDescription: Ref<boolean> = ref<boolean>(false)
   newBusinessDescription: Ref<string> = ref<string>("")
 
+  isAssignNewMsicCode: Ref<boolean> = ref<boolean>(false)
+  isUpdatingMsicCode: Ref<boolean> = ref<boolean>(false)
+  newMsicCodeAssign: Ref<MsicCodeAssign> = ref<MsicCodeAssign>(new MsicCodeAssign())
+
   isAddingNewBranch: Ref<boolean> = ref<boolean>(false)
   isAddingNewBank: Ref<boolean> = ref<boolean>(false)
 
@@ -640,6 +644,75 @@ ${detailsOfBO.join("\n")}
       }
     } finally {
       this.isUpdatingDescription.value = false
+    }
+  }
+
+  //Update MSIC Codes
+  async onRemoveMsicCode(msicCodeAssign: MsicCodeAssign): Promise<void> {
+    try {
+      let idToDelete = msicCodeAssign.id
+      this.company.value.msicCodeAssigns = this.company.value.msicCodeAssigns.filter(
+        (msicCodeAssign: MsicCodeAssign) => {
+          return msicCodeAssign.id !== idToDelete
+        }
+      )
+
+      let repository = useMsicCodeAssignStore()
+      await repository.remove(idToDelete)
+
+      let toastTitle = this.language.isMalay() ? "Kod MSIC telah dipadamkan." : "The MSIC Code is removed"
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    }
+  }
+
+  onAddMsicCodeClicked(): void {
+    this.newMsicCodeAssign.value = new MsicCodeAssign()
+    this.isAssignNewMsicCode.value = true
+  }
+
+  onCancelAddMsicCodeClicked(): void {
+    this.isAssignNewMsicCode.value = false
+  }
+
+  onSelectedNewMsicCode(newMsicCodeAssign: MsicCodeAssign): void {
+    this.newMsicCodeAssign.value = new MsicCodeAssign(newMsicCodeAssign)
+  }
+
+  async assignMsicCode(): Promise<void> {
+    if (this.isUpdatingMsicCode.value) {
+      return
+    }
+
+    this.isUpdatingMsicCode.value = true
+    try {
+      await this.newMsicCodeAssign.value.create(useMsicCodeAssignStore())
+
+      this.company.value.msicCodeAssigns.push(new MsicCodeAssign(this.newMsicCodeAssign.value))
+
+      let toastTitle = this.language.isMalay() ? "Kod MSIC telah ditambah." : "The MSIC Code is added"
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isAssignNewMsicCode.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingMsicCode.value = false
     }
   }
 
