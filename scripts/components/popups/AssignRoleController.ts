@@ -8,9 +8,13 @@ import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
 import { Toast } from "~/scripts/library/Toast"
 import { EmitMessages } from "~/scripts/constants/EmitMessages"
+import { Company } from "~/scripts/models/Company"
+import { Director } from "~/scripts/models/Director"
+import { AdminEmail } from "~/scripts/models/AdminEmail"
 
 export class AssignRoleController extends BasePopupController {
   companyId: Ref<string> = ref<string>("")
+  company: Ref<Company> = ref<Company>(new Company())
   accessRoles: Ref<AccessRole[]> = ref<AccessRole[]>([])
 
   selectedAccessRole: Ref<string> = ref<string>("")
@@ -27,6 +31,9 @@ export class AssignRoleController extends BasePopupController {
 
   isSubmitting: Ref<boolean> = ref<boolean>(false)
 
+  directors: Ref<Director[]> = ref<Director[]>([])
+  numberOfDirectors: Ref<number> = ref<number>(1)
+
   constructor(props: PropsAssignRole, emitEvents: any) {
     super(emitEvents)
 
@@ -35,10 +42,65 @@ export class AssignRoleController extends BasePopupController {
   }
 
   setDataFromProps(props: PropsAssignRole): void {
-    this.companyId.value = props.companyId
+    if (this.companyId.value !== props.companyId) {
+      this.companyId.value = props.companyId
+      this.fetchCompany()
+      this.fetchDirectors()
+    }
+
     this.accessRoles.value = props.accessRoles.map((ar: AccessRole) => {
       return new AccessRole(ar)
     })
+  }
+
+  async fetchCompany(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    try {
+      let repository = useCompanyStore()
+      let response = await repository.fetch(this.companyId.value)
+
+      if (response && repository.error === null) {
+        this.company.value = new Company(response)
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFetch()
+        error.handle()
+      }
+    }
+  }
+
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      this.numberOfDirectors.value = 1
+      return
+    }
+
+    try {
+      let repository = useDirectorStore()
+      let response = await repository.fetchAllForCompany(this.companyId.value)
+
+      if (response && repository.error === null) {
+        this.numberOfDirectors.value = response.length
+        this.directors.value = response.map((d: any) => {
+          return new Director(d)
+        })
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFetch()
+        error.handle()
+      }
+    }
   }
 
   async onProceedClicked(): Promise<void> {
@@ -52,18 +114,26 @@ export class AssignRoleController extends BasePopupController {
 
       await repository.adminGrantAccess(this.requestPayload)
 
+      let promises = []
+
       let toastTitle = this.language.isMalay()
-        ? `Akses diberikan kepada ${this.name.value}.`
-        : `New Access is Granted to ${this.name.value}.`
+        ? `Akses diberikan kepada ${this.name.value.toUpperCase()}.`
+        : `New Access is Granted to ${this.name.value.toUpperCase()}.`
       let toastMessage = ""
       if (this.isSendInvitation.value || this.isNotifyDirectors.value) {
         let emailTo: string[] = []
         if (this.isSendInvitation.value) {
           emailTo.push(this.name.value)
+          promises.push(this.sendEmailToPerson())
         }
 
         if (this.isNotifyDirectors.value) {
           emailTo.push(this.language.isMalay() ? "Pengarah" : "Directors")
+          promises.push(this.sendEmailToDirectors())
+        }
+
+        if (promises.length > 0) {
+          await Promise.all(promises)
         }
 
         let names = StringUtil.oxfordJoin("&", emailTo)
@@ -86,6 +156,34 @@ export class AssignRoleController extends BasePopupController {
     } finally {
       this.isSubmitting.value = false
     }
+  }
+
+  async sendEmailToPerson(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.email.value)) {
+      return
+    }
+
+    let adminEmail = new AdminEmail()
+    adminEmail.recipients = [this.email.value]
+    adminEmail.subject = this.emailTitleForPerson
+    adminEmail.content = this.emailContentForPerson
+    await adminEmail.sendEmail(useAdminEmailStore())
+  }
+
+  async sendEmailToDirectors(): Promise<void> {
+    let directorEmails = this.directors.value.map((d: Director) => {
+      return d.email
+    })
+
+    if (directorEmails.length <= 0) {
+      return
+    }
+
+    let adminEmail = new AdminEmail()
+    adminEmail.recipients = [...new Set(directorEmails)]
+    adminEmail.subject = this.emailTitleForDirectors
+    adminEmail.content = this.emailContentForDirectors
+    await adminEmail.sendEmail(useAdminEmailStore())
   }
 
   get title(): string {
@@ -141,9 +239,72 @@ export class AssignRoleController extends BasePopupController {
       phone: this.phone.value,
       is_require_ekyc: this.isRequireEkyc.value,
       license: this.license.value,
-      send_out_invitation: this.isSendInvitation.value,
-      notify_directors: this.isNotifyDirectors.value,
+      send_out_invitation: false, // this.isSendInvitation.value - we need the frontend to control the emails for now,
+      notify_directors: false, //this.isNotifyDirectors.value,
     }
+  }
+
+  get selectedAccessRoleName(): string {
+    return (
+      this.accessRoles.value.find((ar: AccessRole) => {
+        return ar.id === this.selectedAccessRole.value
+      })?.name ?? "Officer"
+    )
+  }
+
+  get emailContentForPerson(): string {
+    let additionalClause = this.isRequireEkyc
+      ? "Upon login, please complete the eKYC process. For compliance purposes, iCompany Systems require every user to complete the eKYC process on the systems,"
+      : 'Upon login, click "<b>Proceed</b>" on the notification pop-up. You will be redirected to Company Documents, where you may view and download all documents currently available to you.'
+
+    let content = `<p>Dear ${this.name.value.toUpperCase()},</p>
+      <p>Please go to this URL: https://cosec.icompany.my</p>
+      <p>
+        <b>${this.name.value.toUpperCase()}</b> registered account details are as follows:
+      </p>
+      <p>
+        <b>Default Username:</b><br>
+        ${this.email.value}<br>
+        <b>Default Password:</b><br>
+        ${this.password.value}
+      </p>
+      <p>
+        ${additionalClause}
+      </p>
+      <p>
+        Please note that we are not aware of any additional documents other than those already available on the platform.
+      </p>
+      <p>
+        If you require assistance, please contant use via WhatsApp at +6017 778 3266.
+      </p>
+      <p>
+        Thank You.
+      </p>
+    `
+
+    return content
+  }
+
+  get emailTitleForPerson(): string {
+    return `Access to ${this.company.value.getFullName().toUpperCase()}`
+  }
+
+  get emailContentForDirectors(): string {
+    return `<p>Dear Director${this.numberOfDirectors.value > 1 ? "s" : ""},</p>
+      <p>
+        Access to <b>${this.company.value.getFullName().toUpperCase()}</b> is granted to ${this.name.value.toUpperCase()} / ${this.email.value}. 
+      </p>
+      <p>
+        Please go to <a href="https://cosec.icompany.my/sdnbhd/${this.companyId.value}/roles-and-accesses">Roles & Access</a> to view, edit and/or revoke the access.
+      </p>
+      <p>
+        Thank You.
+      </p>
+    `
+  }
+
+  get emailTitleForDirectors(): string {
+    return `Access to ${this.company.value.getFullName().toUpperCase()} is granted to ${this.name.value.toUpperCase()}`
   }
 
   //labels

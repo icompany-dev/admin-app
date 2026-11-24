@@ -11,11 +11,15 @@ import { Error } from "~/scripts/library/Error"
 import { Toast } from "~/scripts/library/Toast"
 import { SelectOption } from "~/scripts/types/SelectOption"
 import { StringUtil } from "~/scripts/utils/String"
+import { Director } from "~/scripts/models/Director"
+import { Company } from "~/scripts/models/Company"
+import { AdminEmail } from "~/scripts/models/AdminEmail"
 
 export class AddCompanyAuditorController extends BasePopupController {
   auditorPartners: Ref<AuditorPartner[]> = ref<AuditorPartner[]>([])
   companyAuditor = ref<CompanyAuditor>(new CompanyAuditor())
   companyId: Ref<string> = ref<string>("")
+  company: Ref<Company> = ref<Company>(new Company())
   email: Ref<string> = ref<string>("")
 
   name: Ref<string> = ref<string>("")
@@ -34,6 +38,9 @@ export class AddCompanyAuditorController extends BasePopupController {
 
   auditorAccessRole: Ref<AccessRole> = ref<AccessRole>(new AccessRole())
 
+  directors: Ref<Director[]> = ref<Director[]>([])
+  numberOfDirectors: Ref<number> = ref<number>(1)
+
   constructor(props: PropsAddCompanyAuditor, emitEvents: any) {
     super(emitEvents)
 
@@ -45,7 +52,12 @@ export class AddCompanyAuditorController extends BasePopupController {
   }
 
   async setDataProps(props: PropsAddCompanyAuditor): Promise<void> {
-    this.companyId.value = props.companyId
+    if (this.companyId.value !== props.companyId) {
+      this.companyId.value = props.companyId
+      this.fetchCompany()
+      this.fetchDirectors()
+      await this.fetchAuditorAccessRole()
+    }
 
     this.companyAuditor.value = new CompanyAuditor(props.auditor)
     this.companyAuditor.value.companyId = this.companyId.value
@@ -54,8 +66,6 @@ export class AddCompanyAuditorController extends BasePopupController {
     this.email.value = this.companyAuditor.value.auditorEmail
     this.phone.value = this.companyAuditor.value.auditorPhone
     this.license.value = this.companyAuditor.value.auditorLicense
-
-    await this.fetchAuditorAccessRole()
   }
 
   async init(): Promise<void> {
@@ -88,6 +98,56 @@ export class AddCompanyAuditorController extends BasePopupController {
       await this.auditorAccessRole.value.create(accessRolesRepository)
     } catch (e) {
       console.error(e)
+    }
+  }
+
+  async fetchCompany(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    try {
+      let repository = useCompanyStore()
+      let response = await repository.fetch(this.companyId.value)
+
+      if (response && repository.error === null) {
+        this.company.value = new Company(response)
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFetch()
+        error.handle()
+      }
+    }
+  }
+
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      this.numberOfDirectors.value = 1
+      return
+    }
+
+    try {
+      let repository = useDirectorStore()
+      let response = await repository.fetchAllForCompany(this.companyId.value)
+
+      if (response && repository.error === null) {
+        this.numberOfDirectors.value = response.length
+        this.directors.value = response.map((d: any) => {
+          return new Director(d)
+        })
+      }
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForFetch()
+        error.handle()
+      }
     }
   }
 
@@ -178,13 +238,20 @@ export class AddCompanyAuditorController extends BasePopupController {
         : `New Access is Granted to ${this.name.value}.`
       let toastMessage = ""
       if (this.isSendInvitation.value || this.isNotifyDirectors.value) {
+        let promises = []
         let emailTo: string[] = []
         if (this.isSendInvitation.value) {
           emailTo.push(this.name.value)
+          promises.push(this.sendEmailToPerson())
         }
 
         if (this.isNotifyDirectors.value) {
           emailTo.push(this.language.isMalay() ? "Pengarah" : "Directors")
+          promises.push(this.sendEmailToDirectors())
+        }
+
+        if (promises.length > 0) {
+          await Promise.all(promises)
         }
 
         let names = StringUtil.oxfordJoin("&", emailTo)
@@ -200,6 +267,34 @@ export class AddCompanyAuditorController extends BasePopupController {
       error.setForCUD()
       throw error
     }
+  }
+
+  async sendEmailToPerson(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.email.value)) {
+      return
+    }
+
+    let adminEmail = new AdminEmail()
+    adminEmail.recipients = [this.email.value]
+    adminEmail.subject = this.emailTitleForPerson
+    adminEmail.content = this.emailContentForPerson
+    await adminEmail.sendEmail(useAdminEmailStore())
+  }
+
+  async sendEmailToDirectors(): Promise<void> {
+    let directorEmails = this.directors.value.map((d: Director) => {
+      return d.email
+    })
+
+    if (directorEmails.length <= 0) {
+      return
+    }
+
+    let adminEmail = new AdminEmail()
+    adminEmail.recipients = [...new Set(directorEmails)]
+    adminEmail.subject = this.emailTitleForDirectors
+    adminEmail.content = this.emailContentForDirectors
+    await adminEmail.sendEmail(useAdminEmailStore())
   }
 
   onAuditorPartnerSelected(auditorPartnerId: string): void {
@@ -356,8 +451,60 @@ export class AddCompanyAuditorController extends BasePopupController {
       phone: this.phone.value,
       is_require_ekyc: false,
       license: this.license.value,
-      send_out_invitation: this.isSendInvitation.value,
-      notify_directors: this.isNotifyDirectors.value,
+      send_out_invitation: false, //this.isSendInvitation.value,
+      notify_directors: false, // this.isNotifyDirectors.value,
     }
+  }
+
+  get emailContentForPerson(): string {
+    return `<p>Dear ${this.name.value.toUpperCase()},</p>
+      <p>Please go to this URL: https://cosec.icompany.my</p>
+      <p>
+        <b>${this.name.value.toUpperCase()}</b> registered account details are as follows:
+      </p>
+      <p>
+        <b>Default Username:</b><br>
+        ${this.email.value}<br>
+        <b>Default Password:</b><br>
+        ${this.password.value}
+      </p>
+      <p>
+        Upon login, click "<b>Proceed</b>" on the notification pop-up. You will be redirected to Company Documents, where you may view and download all documents currently available to you.
+      </p>
+      <p>
+        Please note that we are not aware of any additional documents other than those already available on the platform.
+      </p>
+      <p>
+        If you require assistance, please contant use via WhatsApp at +6017 778 3266.
+      </p>
+      <p>
+        Thank You.
+      </p>
+    `
+  }
+
+  get emailTitleForPerson(): string {
+    return `Access to ${this.company.value.getFullName().toUpperCase()}`
+  }
+
+  get emailContentForDirectors(): string {
+    return `<p>Dear Director${this.numberOfDirectors.value > 1 ? "s" : ""},</p>
+      <p>
+        Please be informed that <b>${this.name.value.toUpperCase()}</b>, is granted limited access to <b>${this.company.value.getFullName().toUpperCase()}</b> in iCompany Systems.
+      </p>
+      <p>
+        A separate email is also sent to your Auditor’s Email with the relevant access instructions.
+      </p>
+      <p>
+        No further action is required from you.
+      </p>
+      <p>
+        Thank You.
+      </p>
+    `
+  }
+
+  get emailTitleForDirectors(): string {
+    return `Access to ${this.company.value.getFullName().toUpperCase()} is granted to ${this.name.value.toUpperCase()}`
   }
 }
