@@ -30,14 +30,70 @@
           </tr>
 
           <tr>
-            <td>{{ controller.businessDescriptionLabel }}</td>
+            <td>
+              <div class="editable-column">
+                {{ controller.businessDescriptionLabel }}
+                <Transition name="fade">
+                  <div
+                    v-if="!controller.isEditingDescription.value"
+                    class="action-icons"
+                  >
+                    <i
+                      v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelEditBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.onSaveBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="!controller.isUpdatingDescription.value"
+                      class="fa-regular fa-edit clickable edit"
+                      @click="controller.onEditBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingDescription.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </Transition>
+              </div>
+            </td>
             <td>:</td>
             <td>
-              {{ controller.businessDescription || "-" }}
-              <CopyValue
-                v-if="controller.businessDescription"
-                :value="controller.businessDescription"
-              />
+              <template v-if="!controller.isEditingDescription.value">
+                {{ controller.businessDescription || "-" }}
+                <CopyValue
+                  v-if="controller.businessDescription"
+                  :value="controller.businessDescription"
+                />
+              </template>
+              <template v-if="controller.isEditingDescription.value">
+                <div class="edit-business-description">
+                  <textarea
+                    class="form-control"
+                    v-model="controller.newBusinessDescription.value"
+                  />
+                  <div class="action-icons is-editing">
+                    <i
+                      v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelEditBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.onSaveBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingDescription.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </div>
+              </template>
             </td>
           </tr>
           <tr>

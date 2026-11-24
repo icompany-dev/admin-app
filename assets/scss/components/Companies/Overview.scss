@@ -261,4 +261,25 @@
       }
     }
   }
+
+  .edit-business-description {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+
+    .form-control {
+      width: 90%;
+      min-height: 100px;
+      text-align: left;
+      resize: vertical;
+      border-color: var(--bs-gray-500);
+      border-radius: 5px;
+    }
+
+    .action-icons {
+      width: fit-content;
+    }
+  }
 }

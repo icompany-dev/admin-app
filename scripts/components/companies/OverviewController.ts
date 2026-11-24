@@ -71,6 +71,10 @@ export class OverviewController {
   isUpdatingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
   registeredAddressLocation: Ref<Location> = ref<Location>(new Location())
 
+  isEditingDescription: Ref<boolean> = ref<boolean>(false)
+  isUpdatingDescription: Ref<boolean> = ref<boolean>(false)
+  newBusinessDescription: Ref<string> = ref<string>("")
+
   isAddingNewBranch: Ref<boolean> = ref<boolean>(false)
   isAddingNewBank: Ref<boolean> = ref<boolean>(false)
 
@@ -598,6 +602,45 @@ ${detailsOfBO.join("\n")}
 
   onUpdateRegisteredCountry(data: any): void {
     this.registeredAddressLocation.value.country = data
+  }
+
+  // Update description
+  onEditBusinessDescriptionClicked(): void {
+    this.newBusinessDescription.value = this.businessDescription
+    this.isEditingDescription.value = true
+    this.isUpdatingDescription.value = false
+  }
+
+  onCancelEditBusinessDescriptionClicked(): void {
+    this.newBusinessDescription.value = ""
+    this.isEditingDescription.value = false
+    this.isUpdatingDescription.value = false
+  }
+
+  async onSaveBusinessDescriptionClicked(): Promise<void> {
+    try {
+      this.isUpdatingDescription.value = true
+      this.company.value.businessDescription = this.newBusinessDescription.value
+      await this.company.value.onUpdateDescription(useCompanyStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Perihal Perniagaan telah dikemaskini."
+        : "The Business Description is Updated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isEditingDescription.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingDescription.value = false
+    }
   }
 
   // Edit FYE
