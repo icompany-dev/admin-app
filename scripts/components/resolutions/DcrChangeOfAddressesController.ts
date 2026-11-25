@@ -40,6 +40,7 @@ export class DcrChangeOfAddressesController extends ResolutionController<Company
   }
 
   async fetchApplication(id: string): Promise<void> {
+    console.log("called?? dcr")
     let response = await this.companyAmendmentAddressRepository.fetch(id)
     if (!this.companyAmendmentAddressRepository.error) {
       this.application.value = new CompanyAmendmentAddress(response)

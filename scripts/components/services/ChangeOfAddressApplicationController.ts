@@ -113,6 +113,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
         "success"
       )
       this.isEditBusinessAddress.value = false
+      this.emitEvents("dataUpdated")
     } catch (e) {
       if (e instanceof Error) {
         e.handle()

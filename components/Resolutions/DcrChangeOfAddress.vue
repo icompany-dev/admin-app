@@ -110,6 +110,7 @@
     getApplication: controller.getApplication.bind(controller),
     updateApplicationContent: controller.updateApplicationContent.bind(controller),
     getPdfPages: controller.getPdfPages.bind(controller),
+    fetchApplication: controller.fetchApplication.bind(controller),
   })
 </script>
 

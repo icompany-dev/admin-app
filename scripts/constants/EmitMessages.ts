@@ -50,6 +50,7 @@ export class EmitMessages {
     "show",
     "hide",
     "convertToForms",
+    "dataUpdated",
   ]
   static POPUPS: string[] = [this.BACK, this.PROCEED, this.UPLOADED, this.SUCCESS]
 }

@@ -4,6 +4,7 @@ import { CompanyAmendmentAddress } from "~/scripts/models/CompanyAmendmentAddres
 import { StringUtil } from "~/scripts/utils/String"
 import { Error } from "~/scripts/library/Error"
 import { CompanyConstants } from "~/scripts/constants/Company"
+import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 
 export class ChangeOfAddressController extends SecretarialServiceController<
   CompanyAmendmentAddress,
@@ -32,5 +33,23 @@ export class ChangeOfAddressController extends SecretarialServiceController<
     }
 
     await this.documentRef.onMoveToForms()
+  }
+
+  onDataUpdated(): void {
+    if (this.selectedDocumentTarget.value !== DocumentTargets.TARGET_AMENDMENT_ADDRESS_RESOLUTIONS) {
+      return
+    }
+
+    if (!this.documentRef) {
+      return
+    }
+
+    try {
+      this.documentRef.refreshDocumentData()
+      console.log("called??")
+    } catch (e) {
+      console.error(e)
+      // do nothing
+    }
   }
 }

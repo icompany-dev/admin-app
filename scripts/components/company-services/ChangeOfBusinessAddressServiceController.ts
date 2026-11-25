@@ -121,6 +121,16 @@ export class ChangeOfBusinessAddressServiceController extends CompanyServiceCont
     }
   }
 
+  refreshDocumentData(): void {
+    console.log("called?? services")
+    if (!this.dcrRef) {
+      console.log("skipping service")
+      return
+    }
+
+    this.dcrRef.fetchApplication(this.companyAmendmentAddress.value.id)
+  }
+
   async onApplicationUpdated(application: CompanyAmendmentAddress): Promise<void> {
     await this.fetchOngoingApplication()
 

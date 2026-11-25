@@ -164,6 +164,8 @@
 
   defineExpose({
     onDownloadClicked: controller.onDownloadClicked.bind(controller),
+    onApplicationUpdated: controller.onApplicationUpdated.bind(controller),
+    refreshDocumentData: controller.refreshDocumentData.bind(controller),
   })
 </script>
 

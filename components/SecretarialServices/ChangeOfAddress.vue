@@ -11,6 +11,7 @@
         @documentSelected="controller.onDocumentTargetSelected($event)"
         @download="controller.onDownloadClicked()"
         @convertToForms="controller.onConvertToForms()"
+        @dataUpdated="controller.onDataUpdated()"
       />
     </div>
     <div class="document-container">
