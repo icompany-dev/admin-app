@@ -103,4 +103,24 @@ export class DailyActivity {
     let time = useLocalTime()
     return time.formatDateTimeFull(this.actionAt)
   }
+
+  get applicationPage(): string {
+    let serviceName = ServiceNames.names.find((sn: ServiceName) => {
+      return sn.target === this.targetType
+    })
+
+    if (!serviceName) {
+      return ""
+    }
+
+    if (this.targetType === "application_incorporate") {
+      return `/incorporations/ongoings/${this.targetId}`
+    }
+
+    if (this.targetType === "application_switch") {
+      return `/switches/ongoings/${this.targetId}`
+    }
+
+    return `/services/${serviceName.link}/${this.targetId}`
+  }
 }

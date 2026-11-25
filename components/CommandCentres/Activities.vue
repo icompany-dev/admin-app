@@ -47,7 +47,12 @@
             </td>
             <td class="date">{{ todo.actionAtFormatted }}</td>
             <td>
-              <button class="btn btn-standard btn-submit">Next Step</button>
+              <button
+                class="btn btn-standard btn-submit"
+                @click="controller.onNextStepClicked(todo)"
+              >
+                <NuxtLink :to="todo.applicationPage">Next Step</NuxtLink>
+              </button>
             </td>
           </tr>
         </tbody>

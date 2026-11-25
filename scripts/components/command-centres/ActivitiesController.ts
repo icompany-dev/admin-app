@@ -127,6 +127,11 @@ export class ActivitiesController {
     this.filter.value.totalPages = Math.ceil(this.filter.value.totalRecords / this.filter.value.take)
   }
 
+  onNextStepClicked(todo: DailyActivity): void {
+    let router = useRouter()
+    router.push(todo.applicationPage)
+  }
+
   get tablePaginationProps(): PropsTablePagination {
     return new PropsTablePagination(this.filter.value)
   }
