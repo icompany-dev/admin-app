@@ -391,6 +391,7 @@ export class SendPaymentNoticeController extends BasePopupController {
           return StringUtil.isNullOrEmpty(sp.id)
         })
         .map((sp: ServicePricing) => {
+          sp.isCustom = true
           return sp.create(useServicePricingStore())
         })
 
@@ -496,7 +497,7 @@ export class SendPaymentNoticeController extends BasePopupController {
     return this.servicePricings.value
       .filter((pricing: ServicePricing) => {
         if (StringUtil.isNullOrEmpty(this.searchText.value)) {
-          return true
+          return pricing.mandatoryServices.length > 0
         }
 
         return StringUtil.contains(pricing.serviceName, this.searchText.value) && pricing.mandatoryServices.length > 0
@@ -590,18 +591,26 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   get canProceed(): boolean {
-    if (this.isCustomPricing.value) {
-      return (
-        !this.isFetchingServicePricings.value && !this.isSubmitting.value && this.newServicePricing.value.canSubmit()
-      )
-    }
+    let areSelectedPricingValid = this.selectedPricings.value.every((sp: ServicePricing) => {
+      // if custom
+      if (StringUtil.isNullOrEmpty(sp.id)) {
+        return sp.canSubmit()
+      }
+
+      return !StringUtil.isNullOrEmpty(sp.id)
+    })
+
+    let arePaymentNoticesValid = this.paymentNotices.every((pn: PaymentNotice) => {
+      return pn.canSubmit()
+    })
 
     return (
       !this.isFetchingServicePricings.value &&
       !this.isSubmitting.value &&
-      !StringUtil.isNullOrEmpty(this.selectedPricingId.value) &&
+      this.selectedPricings.value.length > 0 &&
+      areSelectedPricingValid &&
       this.paymentCart.canSubmit() &&
-      this.paymentNotice.canSubmit()
+      arePaymentNoticesValid
     )
   }
 
@@ -686,7 +695,7 @@ export class SendPaymentNoticeController extends BasePopupController {
       <p>Payment Order is ready for your settlement for the following:</p>
       <table>
         <tr>
-          <td><b>Application/Services</b></td>
+          <td style="vertical-align: top;"><b>Application/Services</b></td>
           <td>:</td>
           <td>${this.paymentFor}</td>
         </tr>
@@ -702,7 +711,7 @@ export class SendPaymentNoticeController extends BasePopupController {
         </tr>
       </table>
       <p>Please <a target="_blank" style="font-weight: bold; text-decoration: none;" href="https://cosec.icompany.my">Login</a> to view the Payment Order in details and make payment.</p>
-      <p>Thank You.</p>s
+      <p>Thank You.</p>
     `
   }
 

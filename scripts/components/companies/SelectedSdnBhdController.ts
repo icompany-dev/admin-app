@@ -770,7 +770,7 @@ export class SelectedSdnBhdController {
   }
 
   get sendPaymentNoticeProps(): PropsSendPaymentNotice {
-    return new PropsSendPaymentNotice(
+    let props = new PropsSendPaymentNotice(
       "Company",
       this.company.value.id,
       this.company.value.getFullName(),
@@ -779,6 +779,10 @@ export class SelectedSdnBhdController {
       this.company.value.billingInfo(),
       this.company.value.deliveryInfo()
     )
+
+    props.emailRecipients = this.directorEmails.value
+
+    return props
   }
 
   get subscriptionExpiryDate(): string {
