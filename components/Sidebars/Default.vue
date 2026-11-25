@@ -32,7 +32,7 @@
             @click="item.onClick()"
             :class="{ selected: item.isShowing, disabled: item.isDisabled }"
           >
-            {{ item.labelEn }}
+            <NuxtLink :to="item.path">{{ item.labelEn }}</NuxtLink>
           </div>
         </template>
       </div>

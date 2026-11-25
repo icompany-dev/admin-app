@@ -25,6 +25,10 @@ export class Sidebar {
 
     return route.fullPath.includes(this.route)
   }
+
+  get path(): string {
+    return `/${this.route}`
+  }
 }
 
 export class SidebarGroup {

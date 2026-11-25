@@ -99,8 +99,6 @@
         color: var(--sidebar-group-color);
         border-radius: 5px;
         cursor: pointer;
-
-
       }
 
       .sidebar-item {
@@ -127,6 +125,11 @@
           cursor: default;
           background-color: var(--sidebar-item-disabled-bg-color);
           color: var(--sidebar-item-disabled-color);
+        }
+
+        a {
+          color: var(--sidebar-item-color);
+          text-decoration: none;
         }
       }
     }
