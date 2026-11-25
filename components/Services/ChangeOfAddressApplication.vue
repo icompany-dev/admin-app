@@ -102,6 +102,15 @@
                 </template>
                 <template v-if="!controller.isAddressCompleted">Address is incomplete.</template>
                 <br />
+                <br />
+                <b>Document Date:</b>
+                &nbsp;
+                <input
+                  type="date"
+                  class="form-control"
+                  v-model="controller.documentDate.value"
+                  @change="controller.onDocumentDateChanged()"
+                />
               </div>
             </div>
           </template>

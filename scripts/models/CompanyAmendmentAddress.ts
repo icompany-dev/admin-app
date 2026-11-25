@@ -45,6 +45,7 @@ export class CompanyAmendmentAddress
   getRequestBody(): object {
     let data: any = {
       company_id: this.companyId,
+      document_date: this.documentDate,
     }
 
     if (this.businessAddressLocation.canCreate()) {

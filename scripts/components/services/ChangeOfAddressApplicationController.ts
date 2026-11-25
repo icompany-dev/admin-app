@@ -156,6 +156,35 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
     this.addressLocation.value.country = data
   }
 
+  async onDocumentDateChanged(): Promise<void> {
+    if (!this.application.value) {
+      return
+    }
+
+    try {
+      this.application.value.documentDate = this.dayjs(this.documentDate.value).format("YYYY-MM-DD")
+      // this.application.value.businessAddressLocation = new Location(this.addressLocation.value)
+      await this.application.value.update(useCompanyAmendmentAddressStore())
+
+      this.activityLogger.value.addUpdateLog(
+        this.application.value.companyId,
+        this.target.value,
+        this.application.value.id,
+        "success"
+      )
+      this.emitEvents("dataUpdated")
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    }
+  }
+
   onPaymentStepClicked(): void {
     this.isShowReceipt.value = true
     this.isShowResolutions.value = false

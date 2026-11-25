@@ -105,6 +105,12 @@
         }
       }
     }
+
+    .form-control {
+      padding: 4px 15px;
+      background-color: var(--bs-white);
+      border-radius: 5px;
+    }
   }
 
   .node-options-actions {

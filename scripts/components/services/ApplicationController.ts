@@ -68,6 +68,8 @@ export abstract class ApplicationController<Application> {
 
   activityLogger = ref<ActivityLogger>(new ActivityLogger())
 
+  documentDate: Ref<string> = ref<string>("")
+
   constructor(
     companyId: string,
     repository: IRepositoryStore,
@@ -109,6 +111,8 @@ export abstract class ApplicationController<Application> {
         this.fetchShareholders(),
         this.uploadedDocumentChecker.value.fetchDocuments(),
       ])
+
+      this.documentDate.value = this.application.value?.documentDate ?? this.dayjs().format("YYYY-MM-DD")
 
       await this.fetchPaymentOrder()
 
