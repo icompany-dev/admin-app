@@ -27,8 +27,6 @@ export class DcrBankAccountOpeningController extends ResolutionController<Compan
 
   documentTemplate = ref<DocumentTemplate>(new DocumentTemplate())
 
-  resolutionContent = ref<string>("")
-
   originalTemplateContent: string = ""
 
   bankBranchSearchText = ref<string>("")
@@ -210,7 +208,7 @@ export class DcrBankAccountOpeningController extends ResolutionController<Compan
       if (e instanceof Error) {
         e.handle()
       } else {
-        let errorMessage: Error = new Error("", "")
+        let errorMessage: Error = new Error()
         errorMessage.setForFetch()
         errorMessage.handle()
       }
@@ -237,6 +235,47 @@ export class DcrBankAccountOpeningController extends ResolutionController<Compan
     }
 
     return template
+  }
+
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    if (!this.documentRef) {
+      return []
+    }
+
+    const screenContent = this.resolutionContent.value
+
+    try {
+      this.isGettingPdfPages.value = true
+      this.setContent()
+      await nextTick()
+
+      return await super.getPdfPages()
+    } finally {
+      this.isGettingPdfPages.value = false
+      this.resolutionContent.value = screenContent
+    }
+  }
+
+  getSelectedCompanyAddress(showAddress: boolean | undefined): string {
+    const application = this.application.value
+    const company = application?.company
+    const locationId = application?.metaData?.location_id
+
+    if (showAddress === false || !company || !locationId) {
+      return ""
+    }
+
+    const addresses = [
+      company.businessAddressLocation,
+      company.registeredAddressLocation,
+      ...(company.branches ?? []).map((branch) => branch.location),
+    ]
+
+    const selectedAddress = addresses.find((address) => {
+      return address?.id === locationId
+    })
+
+    return selectedAddress?.getMultilineAddress() ?? ""
   }
 
   processCustomPlaceholders(content: string): string {
@@ -749,10 +788,39 @@ export class DcrBankAccountOpeningController extends ResolutionController<Compan
 
   // Online access methods
   getOnlineAccessDisplayText(): string {
-    if (this.onlineAccessPersons.value.length === 0) {
+    const rows: string[] = []
+
+    for (const person of this.onlineAccessPersons.value) {
+      const director = this.directors.value.find((item) => {
+        return item.id === person.id
+      })
+
+      const name = person.name?.trim() || director?.name?.trim()
+
+      if (!name) {
+        continue
+      }
+
+      let role = person.role?.trim() || ""
+
+      if (!role && director) {
+        role = this.getOnlineAccessRole(director.id).trim()
+      }
+
+      const displayName = _.escape(name)
+
+      if (role) {
+        rows.push(`${displayName} (${_.escape(_.upperFirst(role))})`)
+      } else {
+        rows.push(displayName)
+      }
+    }
+
+    if (rows.length === 0) {
       return this.language.isMalay() ? "Tiada dipilih" : "None selected"
     }
-    return this.onlineAccessPersons.value.map((p) => `${p.name} (${_.upperFirst(p.role)})`).join(", ")
+
+    return rows.join(", ")
   }
 
   isOnlineAccessSelected(directorId: string): boolean {

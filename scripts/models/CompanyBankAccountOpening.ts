@@ -59,7 +59,11 @@ export class CompanyBankAccountOpening
             return new CompanyBankSignatory(d)
           })
         : []
-    this.metaData = data.meta_data ? JSON.parse(JSON.stringify(data.meta_data)) : {}
+    this.metaData = _.cloneDeep(data.meta_data ?? {})
+
+    if (this.metaData.location_id == null && data.location_id != null) {
+      this.metaData.location_id = data.location_id
+    }
     this.requirements = data.requirements ? JSON.parse(JSON.stringify(data.requirements)) : []
 
     if (data.meta_data) {
@@ -131,6 +135,9 @@ export class CompanyBankAccountOpening
       meta_data: {
         type: this.signatoryType,
         online_banking: this.onlineBanking,
+        ...(this.metaData.location_id != null && {
+          location_id: this.metaData.location_id,
+        }),
         ...(this.allianceBankApplicationDetails !== null && {
           alliance_bank_details: this.allianceBankApplicationDetails,
         }),

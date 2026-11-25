@@ -1,7 +1,11 @@
 <template>
-  <div id="dcr-bank-account-opening">
+  <div
+    id="dcr-bank-account-opening"
+    ref="documentRef"
+  >
     <Resolution
       v-bind="controller.resolutionPropsForBank"
+      :company-address-multiline="controller.getSelectedCompanyAddress(props.isShowCompanyAddress)"
       @signed="emit('signed', $event)"
     >
       <template #page1>
@@ -24,6 +28,7 @@
   const props = defineProps<IPropsResolutionDocument<CompanyBankAccountOpening>>()
 
   const resolutionContent = ref(null)
+  const documentRef = ref<HTMLElement | null>(null)
 
   const emit = defineEmits(["startLoading", "doneLoading", "signed", "updated"])
 
@@ -42,6 +47,14 @@
       controller.setIsInPreviewMode(newVal)
       controller.setContent()
     }
+  )
+
+  watch(
+    documentRef,
+    (element) => {
+      controller.setDocumentRef(element)
+    },
+    { immediate: true }
   )
 
   watch(
