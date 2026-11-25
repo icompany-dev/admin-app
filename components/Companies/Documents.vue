@@ -105,9 +105,11 @@
       <ViewDocument
         ref="viewDocumentRef"
         :pdf-url="controller.pdfUrlToView.value"
+        :filename="controller.pdfFileNameToView.value"
         @hide="controller.onHideViewDocument()"
       />
       <ActionTray
+        v-if="!controller.isShowingDocument.value"
         :actions="controller.actionTrayElements"
         :is-lock-position="true"
       />

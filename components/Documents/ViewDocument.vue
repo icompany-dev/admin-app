@@ -18,14 +18,25 @@
         "
       />
     </div>
+    <Teleport to="body">
+      <ActionTray
+        :actions="controller.actionTrayElements"
+        v-if="controller.isShowing.value"
+      />
+    </Teleport>
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ActionTray from "../ActionTrays/ActionTray.vue"
   import { ViewDocumentController } from "~/scripts/components/documents/ViewDocumentController"
 
   const props = defineProps({
     pdfUrl: {
+      type: String,
+      required: true,
+    },
+    filename: {
       type: String,
       required: true,
     },
@@ -35,7 +46,7 @@
 
   const pdfCanvasRef = ref(null)
 
-  const controller = new ViewDocumentController(props.pdfUrl, emit)
+  const controller = new ViewDocumentController(props.pdfUrl, props.filename, emit)
 
   onMounted(() => {
     controller.addEventListeners()
@@ -49,6 +60,13 @@
     () => props.pdfUrl,
     (newVal) => {
       controller.setPdfUrl(newVal)
+    }
+  )
+
+  watch(
+    () => props.filename,
+    (newVal) => {
+      controller.setFilename(newVal)
     }
   )
 

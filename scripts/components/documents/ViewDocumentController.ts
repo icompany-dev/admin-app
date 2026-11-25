@@ -1,9 +1,13 @@
 import * as pdfjsLib from "pdfjs-dist"
 import { StringUtil } from "~/scripts/utils/String"
 import type { PDFPageProxy } from "pdfjs-dist"
+import { Error } from "~/scripts/library/Error"
+import { PDFDocument, PDFPage } from "pdf-lib"
+import { ActionTrayElement, ActionTrayLabel } from "~/scripts/types/action-trays/ActionTrayElement"
 
 export class ViewDocumentController {
   pdfUrl = ref<string>("")
+  filename = ref<string>("")
   isShowing = ref<boolean>(false)
   isRendering = ref<boolean>(false)
 
@@ -14,13 +18,18 @@ export class ViewDocumentController {
 
   pageCanvases: Record<number, HTMLCanvasElement | null> = {}
 
+  language = useLanguage()
   eventManager = useEventManagerStore()
 
   emitEvents: any | null = null
 
-  constructor(pdfUrl: string, emitEvents: any | null) {
+  isDownloading: Ref<boolean> = ref<boolean>(false)
+  isPrinting: Ref<boolean> = ref<boolean>(false)
+
+  constructor(pdfUrl: string, filename: string, emitEvents: any | null) {
     this.emitEvents = emitEvents
     this.setPdfUrl(pdfUrl)
+    this.setFilename(filename)
   }
 
   addEventListeners(): void {
@@ -29,6 +38,10 @@ export class ViewDocumentController {
 
   removeEventListeners(): void {
     document.removeEventListener("keydown", this.handleKeyDown.bind(this))
+  }
+
+  setFilename(filename: string): void {
+    this.filename.value = filename
   }
 
   async setPdfUrl(pdfUrl: string): Promise<void> {
@@ -123,5 +136,134 @@ export class ViewDocumentController {
     if (this.pdfCanvasRef && !this.pdfCanvasRef.contains(e.target as Node)) {
       this.hide()
     }
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (this.isDownloading.value) {
+      return
+    }
+
+    try {
+      this.isDownloading.value = true
+
+      if (StringUtil.isNullOrEmpty(this.pdfUrl.value)) {
+        let error = new Error()
+        error.title = this.language.isMalay()
+          ? "Tidak berjaya untuk muat turun dokumen."
+          : "Unable to download the document."
+        error.message = this.language.isMalay()
+          ? "Sila pastikan dokumen ini wujud."
+          : "Please check if the document exists."
+        throw error
+      }
+
+      const response = await fetch(this.pdfUrl.value)
+      if (!response.ok) {
+        let error = new Error()
+        error.title = this.language.isMalay()
+          ? "Tidak berjaya untuk muat turun dokumen."
+          : "Unable to download the document."
+        error.message = this.language.isMalay()
+          ? "Sila pastikan dokumen ini wujud."
+          : "Please check if the document exists."
+        throw error
+      }
+
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = blobUrl
+      link.setAttribute("download", this.filename.value)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      }
+    } finally {
+      this.isDownloading.value = false
+    }
+  }
+
+  async onPrintClicked(): Promise<void> {
+    if (this.isPrinting.value) {
+      return
+    }
+
+    this.isPrinting.value = true
+
+    try {
+      if (StringUtil.isNullOrEmpty(this.pdfUrl.value)) {
+        let error = new Error()
+        error.title = this.language.isMalay()
+          ? "Tidak berjaya untuk muat turun dokumen."
+          : "Unable to download the document."
+        error.message = this.language.isMalay()
+          ? "Sila pastikan dokumen ini wujud."
+          : "Please check if the document exists."
+        throw error
+      }
+
+      const response = await fetch(this.pdfUrl.value)
+      if (!response.ok) {
+        let error = new Error()
+        error.title = this.language.isMalay()
+          ? "Tidak berjaya untuk muat turun dokumen."
+          : "Unable to download the document."
+        error.message = this.language.isMalay()
+          ? "Sila pastikan dokumen ini wujud."
+          : "Please check if the document exists."
+        throw error
+      }
+
+      let blob = new Blob([await response.arrayBuffer()], { type: "application/pdf" })
+      const blobUrl = URL.createObjectURL(blob)
+
+      const printWindow = window.open(blobUrl, "_blank")
+      if (!printWindow) {
+        throw "Fail to open new window"
+      }
+
+      printWindow.onload = () => {
+        printWindow.focus()
+        printWindow.print()
+      }
+    } catch (e) {
+      console.error(e)
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isPrinting.value = false
+    }
+  }
+
+  get actionTrayElements(): ActionTrayElement[] {
+    return [
+      new ActionTrayElement("back", this.hide.bind(this), {
+        label: new ActionTrayLabel("Back", "Kembali"),
+        iconClass: "fa-solid fa-circle-arrow-left",
+        isIconStart: true,
+      }),
+      new ActionTrayElement("download", this.onDownloadClicked.bind(this), {
+        label: new ActionTrayLabel("Download", "Muat Turun"),
+        isDisabled: this.isDownloading.value,
+        iconClass: this.isDownloading.value ? "fa-solid fa-spin fa-spinner" : "",
+        isIconStart: this.isDownloading.value,
+      }),
+      new ActionTrayElement("print", this.onPrintClicked.bind(this), {
+        label: new ActionTrayLabel("Print", "Cetak"),
+        isDisabled: this.isPrinting.value,
+        iconClass: this.isPrinting.value ? "fa-solid fa-spin fa-spinner" : "",
+        isIconStart: this.isPrinting.value,
+      }),
+    ]
   }
 }

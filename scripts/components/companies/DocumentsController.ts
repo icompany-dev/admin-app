@@ -44,6 +44,8 @@ export class DocumentsController {
   isSelectAll: Ref<boolean> = ref<boolean>(false)
 
   pdfUrlToView: Ref<string> = ref<string>("")
+  pdfFileNameToView: Ref<string> = ref<string>("")
+  isShowingDocument: Ref<boolean> = ref<boolean>(false)
 
   language = useLanguage()
   eventManager = useEventManagerStore()
@@ -120,19 +122,18 @@ export class DocumentsController {
   }
 
   onDocumentClicked(companyDocument: CompanyDocument): void {
-    console.log("called onDocumentClicked")
     this.pdfUrlToView.value = companyDocument.fileUrl ?? ""
-
+    this.pdfFileNameToView.value = companyDocument.documentName ?? ""
+    this.isShowingDocument.value = true
     if (this.viewDocumentRef && !StringUtil.isNullOrEmpty(this.pdfUrlToView.value)) {
       this.viewDocumentRef.show()
-    } else {
-      console.log(this.pdfUrlToView.value, "url")
-      console.log(this.viewDocumentRef)
     }
   }
 
   onHideViewDocument(): void {
     this.pdfUrlToView.value = ""
+    this.pdfFileNameToView.value = ""
+    this.isShowingDocument.value = false
   }
 
   onSelectionChanged(value: boolean, companyDocument: CompanyDocument): void {
