@@ -44,6 +44,9 @@ export class SendPaymentNoticeController extends BasePopupController {
 
   discountAmount: Ref<number> = ref<number>(0)
 
+  selectedPricings: Ref<ServicePricing[]> = ref<ServicePricing[]>([])
+  indexOfPricingInEdit: Ref<number | null> = ref<number | null>(null)
+
   constructor(props: PropsSendPaymentNotice, emitEvents: any) {
     super(emitEvents)
 
@@ -61,6 +64,8 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.selectedServicePricing.value = new ServicePricing()
     this.searchText.value = ""
     this.searchTexts.value = []
+
+    this.selectedPricings.value = [new ServicePricing()]
   }
 
   override hide(): void {
@@ -100,6 +105,96 @@ export class SendPaymentNoticeController extends BasePopupController {
     } finally {
       this.isFetchingServicePricings.value = false
     }
+  }
+
+  onAddPricing(): void {
+    this.selectedPricings.value.push(new ServicePricing())
+  }
+
+  onRemovePricing(index: number): void {
+    if (this.indexOfPricingInEdit.value === index) {
+      this.indexOfPricingInEdit.value = null
+    }
+
+    this.selectedPricings.value.splice(index, 1)
+  }
+
+  onSelectedPricingId(selectedId: string, index: number): void {
+    let pricing = this.selectedPricings.value[index] ?? null
+    if (!pricing) {
+      return
+    }
+
+    let selectedPricing =
+      this.servicePricings.value.find((sp: ServicePricing) => {
+        return sp.id === selectedId
+      }) ?? null
+    if (!selectedPricing) {
+      return
+    }
+
+    this.selectedPricings.value[index] = new ServicePricing(selectedPricing)
+  }
+
+  onEditSelectedPricingClicked(index: number): void {
+    if (this.indexOfPricingInEdit.value !== null) {
+      this.selectedPricings.value[this.indexOfPricingInEdit.value] = new ServicePricing(this.newServicePricing.value)
+
+      if (this.indexOfPricingInEdit.value === index) {
+        this.indexOfPricingInEdit.value = null
+        return
+      }
+    }
+
+    let pricingToEdit = this.selectedPricings.value[index]
+    if (!pricingToEdit) {
+      return
+    }
+
+    this.selectedPricingId.value = pricingToEdit.id
+    this.onEditPricingClicked()
+
+    this.indexOfPricingInEdit.value = index
+  }
+
+  isEditingPricing(index: number): boolean {
+    return this.indexOfPricingInEdit.value === index
+  }
+
+  getSelectedPricingName(pricing: ServicePricing): string {
+    if (this.isFetchingServicePricings.value) {
+      return "Loading..."
+    }
+
+    if (StringUtil.isNullOrEmpty(pricing.serviceName)) {
+      return "Select One"
+    }
+
+    return pricing.serviceName
+  }
+
+  getSelectedBreakdowns(pricing: ServicePricing): ServicePricingBreakdown[] {
+    return pricing.breakdowns.filter((breakdown: ServicePricingBreakdown) => {
+      return breakdown.price > 0
+    })
+  }
+
+  getSelectedMandatories(pricing: ServicePricing): ServicePricingMandatory[] {
+    return pricing.mandatoryServices
+  }
+
+  getEditLabel(index: number): string {
+    if (this.isEditingPricing(index)) {
+      return this.language.isMalay() ? "Batal" : "Cancel"
+    }
+
+    return this.language.isMalay() ? "Tukar" : "Edit"
+  }
+
+  getSubtotal(pricing: ServicePricing): string {
+    let total = Number(pricing.baseGrandTotal) + Number(pricing.config.handlingFees)
+
+    return NumberUtil.currency(total)
   }
 
   onServicePricingSelected(selectedId: string): void {
@@ -283,6 +378,8 @@ export class SendPaymentNoticeController extends BasePopupController {
       await cart.create(usePaymentCartStore())
 
       if (this.isNotify.value) {
+        // Create custom notice using admin Email
+
         await notice.notify(usePaymentNoticeStore())
       }
 
@@ -467,11 +564,25 @@ export class SendPaymentNoticeController extends BasePopupController {
     return NumberUtil.currency(this.cartTotal)
   }
 
+  get grandTotal(): string {
+    let totalPricings = this.selectedPricings.value.reduce((a: number, b: ServicePricing) => {
+      return a + (Number(b.baseGrandTotal) + Number(b.config.handlingFees))
+    }, 0)
+
+    let finalPrice = totalPricings - this.discountAmount.value
+
+    return NumberUtil.currency(finalPrice)
+  }
+
   get editLabel(): string {
     if (this.language.isMalay()) {
       return this.isCustomPricing.value ? "Batal" : "Kemas Kini"
     }
 
     return this.isCustomPricing.value ? "Cancel Edit" : "Edit"
+  }
+
+  get canRemove(): boolean {
+    return this.selectedPricings.value.length > 1 && this.indexOfPricingInEdit.value === null
   }
 }

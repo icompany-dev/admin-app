@@ -18,197 +18,234 @@
                   <div class="title">Payment Order</div>
                   <div class="subtitle">for {{ controller.entityName.value }}</div>
                 </div>
-                <div class="payment-order-details">
-                  <div class="service-pricing">
-                    <Transition name="fade">
-                      <SearchableDropdown
-                        v-if="!controller.isCustomPricing.value"
-                        :options="controller.pricingOptions"
-                        :selectedItemName="controller.selectedPricingName"
-                        :placeholder="'Select One'"
-                        :labelKey="'label'"
-                        :valueKey="'value'"
-                        :isSearchable="true"
-                        @search="controller.onSearchPrice($event)"
-                        @selected="controller.onServicePricingSelected($event)"
-                      />
-                    </Transition>
-                    <Transition name="fade">
-                      <input
-                        v-if="controller.isCustomPricing.value"
-                        type="text"
-                        class="form-control"
-                        v-model="controller.newServicePricing.value.serviceName"
-                        placeholder="Name"
-                      />
-                    </Transition>
-                    <button
-                      class="btn invert"
-                      :class="!controller.isCustomPricing.value ? 'btn-submit' : 'btn-primary'"
-                      @click="controller.onEditPricingClicked()"
+                <div class="payment-order-wrapper">
+                  <div class="payment-order-details-wrapper">
+                    <div
+                      class="payment-order-details"
+                      v-for="(pricing, i) in controller.selectedPricings.value"
                     >
-                      {{ controller.editLabel }}
-                    </button>
-                  </div>
-                  <div class="service-pricing-details">
-                    <div class="service-pricing-detail">
-                      <div class="label">
-                        <b>Item</b>
-                      </div>
-                      <div class="price"><b>RM</b></div>
-                    </div>
-                    <template v-if="!controller.isCustomPricing.value">
-                      <div
-                        class="service-pricing-detail"
-                        v-for="(breakdown, index) in controller.selectedServicePricingBreakdowns"
-                      >
-                        <div class="label">
-                          <span>{{ breakdown.itemName }}</span>
-                        </div>
-                        <div class="price">{{ NumberUtil.currency(breakdown.price) }}</div>
-                      </div>
-                      <div
-                        class="service-pricing-detail"
-                        v-for="(mandatory, index) in controller.selectedServicePricingMandatories"
-                      >
-                        <div class="label">
-                          <span>{{ mandatory.mandatoryServicePrice.serviceName }}</span>
-                        </div>
-                        <div class="price">{{ NumberUtil.currency(mandatory.basePrice ?? 0) }}</div>
-                      </div>
-                      <div class="service-pricing-detail config-row">
-                        <div class="label">Cosec Service Fee</div>
-                        <div class="price">
-                          {{ NumberUtil.currency(controller.selectedServicePricing.value.config.cosecServiceFee) }}
-                        </div>
-                      </div>
-                      <div class="service-pricing-detail config-row">
-                        <div class="label">Digital Service Fee</div>
-                        <div class="price">
-                          {{ NumberUtil.currency(controller.selectedServicePricing.value.config.digitalServiceFee) }}
-                        </div>
-                      </div>
-                      <div class="service-pricing-detail config-row">
-                        <div class="label">Handling Fees</div>
-                        <div class="price">
-                          {{ NumberUtil.currency(controller.selectedServicePricing.value.config.handlingFees) }}
-                        </div>
-                      </div>
-                    </template>
-                    <template v-if="controller.isCustomPricing.value">
-                      <div
-                        class="service-pricing-detail"
-                        v-for="(breakdown, index) in controller.newServicePricing.value.breakdowns"
-                      >
-                        <div class="label">
-                          <input
-                            type="text"
-                            class="form-control"
-                            v-model="breakdown.itemName"
-                            placeholder="Item Name"
-                          />
-                        </div>
-                        <span
-                          class="clickable remove"
-                          @click="controller.onRemoveBreakdown(index)"
-                        >
-                          <i
-                            class="fa-regular fa-trash-alt"
-                            v-if="index > 0"
-                          ></i>
-                        </span>
-                        <div class="price">
-                          <input
-                            type="number"
-                            class="form-control"
-                            v-model="breakdown.price"
-                            @change="controller.onPriceChange(breakdown.price)"
-                          />
-                        </div>
-                      </div>
-                      <div class="item-detail-button">
-                        <button
-                          class="btn btn-submit invert"
-                          @click="controller.onAddBreakdown()"
-                        >
-                          Add Items
-                        </button>
-                      </div>
-                      <div class="divider"></div>
-                      <div
-                        class="service-pricing-detail"
-                        v-for="(mandatory, index) in controller.newServicePricing.value.mandatoryServices"
-                      >
-                        <div class="label">
+                      <div class="service-pricing">
+                        <Transition name="fade">
                           <SearchableDropdown
-                            :options="controller.getMandatoryPricingOptions(index)"
-                            :selectedItemName="controller.getMandatoryPricingName(index)"
+                            v-if="!controller.isEditingPricing(i)"
+                            :options="controller.pricingOptions"
+                            :selectedItemName="controller.getSelectedPricingName(pricing)"
                             :placeholder="'Select One'"
                             :labelKey="'label'"
                             :valueKey="'value'"
                             :isSearchable="true"
-                            @search="controller.onSearchMandatory($event, index)"
-                            @selected="controller.onMandatoryPricingSelected($event, index)"
+                            @search="controller.onSearchPrice($event)"
+                            @selected="controller.onSelectedPricingId($event, i)"
                           />
-                        </div>
-                        <span
-                          class="clickable remove"
-                          @click="controller.onRemoveMandatory(index)"
-                        >
-                          <i class="fa-regular fa-trash-alt"></i>
-                        </span>
-                        <div class="price">
+                        </Transition>
+                        <Transition name="fade">
                           <input
-                            type="number"
+                            v-if="controller.isEditingPricing(i)"
+                            type="text"
                             class="form-control"
-                            v-model="mandatory.basePrice"
-                            @change="controller.onPriceChange(mandatory.basePrice ?? 0)"
+                            v-model="controller.newServicePricing.value.serviceName"
+                            placeholder="Name"
                           />
+                        </Transition>
+                        <div class="action-icons">
+                          <div
+                            class="clickable"
+                            :class="!controller.isEditingPricing(i) ? 'edit' : 'cancel'"
+                            @click="controller.onEditSelectedPricingClicked(i)"
+                          >
+                            <i
+                              class="fa-regular"
+                              :class="!controller.isEditingPricing(i) ? 'fa-edit' : 'fa-xmark'"
+                            />
+                          </div>
+                          <div
+                            class="clickable remove"
+                            v-if="!controller.isEditingPricing(i) && controller.canRemove"
+                            @click="controller.onRemovePricing(i)"
+                          >
+                            <i class="fa-regular fa-trash-alt" />
+                          </div>
                         </div>
                       </div>
-                      <div class="item-detail-button">
-                        <button
-                          class="btn btn-submit invert"
-                          @click="controller.onAddMandatory()"
-                        >
-                          Add Existing Service
-                        </button>
-                      </div>
-                      <div class="service-pricing-detail config-row">
-                        <div class="label">Cosec Service Fee</div>
-                        <div class="price">
-                          <input
-                            type="number"
-                            class="form-control"
-                            v-model="controller.newServicePricing.value.config.cosecServiceFee"
-                            @change="controller.onCosecServiceFeeChanged()"
-                          />
+                      <div class="service-pricing-details">
+                        <div class="service-pricing-detail">
+                          <div class="label">
+                            <b>Item</b>
+                          </div>
+                          <div class="price"><b>RM</b></div>
+                        </div>
+                        <template v-if="!controller.isEditingPricing(i) && !controller.indexOfPricingInEdit.value">
+                          <div
+                            class="service-pricing-detail"
+                            v-for="(breakdown, index) in controller.getSelectedBreakdowns(pricing)"
+                          >
+                            <div class="label">
+                              <span>{{ breakdown.itemName }}</span>
+                            </div>
+                            <div class="price">{{ NumberUtil.currency(breakdown.price) }}</div>
+                          </div>
+                          <div
+                            class="service-pricing-detail"
+                            v-for="(mandatory, index) in controller.getSelectedMandatories(pricing)"
+                          >
+                            <div class="label">
+                              <span>{{ mandatory.mandatoryServicePrice.serviceName }}</span>
+                            </div>
+                            <div class="price">{{ NumberUtil.currency(mandatory.basePrice ?? 0) }}</div>
+                          </div>
+                          <div class="service-pricing-detail config-row">
+                            <div class="label">Cosec Service Fee</div>
+                            <div class="price">
+                              {{ NumberUtil.currency(controller.selectedServicePricing.value.config.cosecServiceFee) }}
+                            </div>
+                          </div>
+                          <div class="service-pricing-detail config-row">
+                            <div class="label">Digital Service Fee</div>
+                            <div class="price">
+                              {{
+                                NumberUtil.currency(controller.selectedServicePricing.value.config.digitalServiceFee)
+                              }}
+                            </div>
+                          </div>
+                          <div class="service-pricing-detail config-row">
+                            <div class="label">Handling Fees</div>
+                            <div class="price">
+                              {{ NumberUtil.currency(controller.selectedServicePricing.value.config.handlingFees) }}
+                            </div>
+                          </div>
+                        </template>
+                        <template v-if="controller.isEditingPricing(i)">
+                          <div
+                            class="service-pricing-detail"
+                            v-for="(breakdown, index) in controller.newServicePricing.value.breakdowns"
+                          >
+                            <div class="label">
+                              <input
+                                type="text"
+                                class="form-control"
+                                v-model="breakdown.itemName"
+                                placeholder="Item Name"
+                              />
+                            </div>
+                            <span
+                              class="clickable remove"
+                              @click="controller.onRemoveBreakdown(index)"
+                            >
+                              <i
+                                class="fa-regular fa-trash-alt"
+                                v-if="index > 0"
+                              ></i>
+                            </span>
+                            <div class="price">
+                              <input
+                                type="number"
+                                class="form-control"
+                                v-model="breakdown.price"
+                                @change="controller.onPriceChange(breakdown.price)"
+                              />
+                            </div>
+                          </div>
+                          <div class="item-detail-button">
+                            <button
+                              class="btn btn-submit invert"
+                              @click="controller.onAddBreakdown()"
+                            >
+                              Add Items
+                            </button>
+                          </div>
+                          <div class="divider"></div>
+                          <div
+                            class="service-pricing-detail"
+                            v-for="(mandatory, index) in controller.newServicePricing.value.mandatoryServices"
+                          >
+                            <div class="label">
+                              <SearchableDropdown
+                                :options="controller.getMandatoryPricingOptions(index)"
+                                :selectedItemName="controller.getMandatoryPricingName(index)"
+                                :placeholder="'Select One'"
+                                :labelKey="'label'"
+                                :valueKey="'value'"
+                                :isSearchable="true"
+                                @search="controller.onSearchMandatory($event, index)"
+                                @selected="controller.onMandatoryPricingSelected($event, index)"
+                              />
+                            </div>
+                            <span
+                              class="clickable remove"
+                              @click="controller.onRemoveMandatory(index)"
+                            >
+                              <i class="fa-regular fa-trash-alt"></i>
+                            </span>
+                            <div class="price">
+                              <input
+                                type="number"
+                                class="form-control"
+                                v-model="mandatory.basePrice"
+                                @change="controller.onPriceChange(mandatory.basePrice ?? 0)"
+                              />
+                            </div>
+                          </div>
+                          <div class="item-detail-button">
+                            <button
+                              class="btn btn-submit invert"
+                              @click="controller.onAddMandatory()"
+                            >
+                              Add Existing Service
+                            </button>
+                          </div>
+                          <div class="service-pricing-detail config-row">
+                            <div class="label">Cosec Service Fee</div>
+                            <div class="price">
+                              <input
+                                type="number"
+                                class="form-control"
+                                v-model="controller.newServicePricing.value.config.cosecServiceFee"
+                                @change="controller.onCosecServiceFeeChanged()"
+                              />
+                            </div>
+                          </div>
+                          <div class="service-pricing-detail config-row">
+                            <div class="label">Digital Service Fee</div>
+                            <div class="price">
+                              <input
+                                type="number"
+                                class="form-control"
+                                v-model="controller.newServicePricing.value.config.digitalServiceFee"
+                                @change="controller.onDigitalServiceFeeChanged()"
+                              />
+                            </div>
+                          </div>
+                          <div class="service-pricing-detail config-row">
+                            <div class="label">Handling Fees</div>
+                            <div class="price">
+                              <input
+                                type="number"
+                                class="form-control"
+                                v-model="controller.newServicePricing.value.config.handlingFees"
+                                @change="controller.onHandlingFeesChanged()"
+                              />
+                            </div>
+                          </div>
+                        </template>
+                        <div class="service-pricing-detail total-row">
+                          <div class="label">Subtotal</div>
+                          <div class="price">
+                            {{ controller.getSubtotal(pricing) }}
+                          </div>
                         </div>
                       </div>
-                      <div class="service-pricing-detail config-row">
-                        <div class="label">Digital Service Fee</div>
-                        <div class="price">
-                          <input
-                            type="number"
-                            class="form-control"
-                            v-model="controller.newServicePricing.value.config.digitalServiceFee"
-                            @change="controller.onDigitalServiceFeeChanged()"
-                          />
-                        </div>
-                      </div>
-                      <div class="service-pricing-detail config-row">
-                        <div class="label">Handling Fees</div>
-                        <div class="price">
-                          <input
-                            type="number"
-                            class="form-control"
-                            v-model="controller.newServicePricing.value.config.handlingFees"
-                            @change="controller.onHandlingFeesChanged()"
-                          />
-                        </div>
-                      </div>
-                    </template>
-                    <div class="service-pricing-detail discount-row">
+                    </div>
+                    <div class="add-more-button">
+                      <button
+                        class="btn btn-primary"
+                        @click="controller.onAddPricing()"
+                      >
+                        Add More
+                      </button>
+                    </div>
+                  </div>
+                  <div class="payment-order-footer">
+                    <div class="grand-discount-row">
                       <div class="label">Discount</div>
                       <div class="price">
                         <input
@@ -219,21 +256,21 @@
                         />
                       </div>
                     </div>
-                    <div class="service-pricing-detail total-row">
-                      <div class="label">Total</div>
+                    <div class="grand-total-row">
+                      <div class="label">Grand Total</div>
                       <div class="price">
-                        {{ controller.paymentOrderTotal }}
+                        {{ controller.grandTotal }}
                       </div>
                     </div>
+                    <div class="form-check">
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        v-model="controller.isNotify.value"
+                      />
+                      <span>Notify via Email and WhatsApp</span>
+                    </div>
                   </div>
-                </div>
-                <div class="form-check">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    v-model="controller.isNotify.value"
-                  />
-                  <span>Notify via Email and WhatsApp</span>
                 </div>
               </div>
               <div class="drawer-footer">
