@@ -27,35 +27,78 @@
               </div>
               <div class="application-details">
                 <br />
-                <b>New Business Address:</b>
-                <br />
+                <div class="detail-title">
+                  <b>New Business Address:</b>
+                  <div class="action-icons">
+                    <span
+                      class="clickable edit"
+                      @click="controller.onEditAddressClicked()"
+                      v-if="!controller.isEditBusinessAddress.value"
+                    >
+                      <i class="fa-regular fa-edit" />
+                    </span>
+                    <span
+                      class="clickable cancel"
+                      @click="controller.onCancelEditClicked()"
+                      v-if="controller.isEditBusinessAddress.value && !controller.isUpdatingBusinessAddress.value"
+                    >
+                      <i class="fa-regular fa-xmark" />
+                    </span>
+                    <span
+                      class="clickable save"
+                      @click="controller.onSaveAddressClicked()"
+                      v-if="controller.isEditBusinessAddress.value && !controller.isUpdatingBusinessAddress.value"
+                    >
+                      <i class="fa-regular fa-save" />
+                    </span>
+                    <span
+                      class="clickable loading"
+                      v-if="controller.isEditBusinessAddress.value && controller.isUpdatingBusinessAddress.value"
+                    >
+                      <i class="fa-regular fa-spinner fa-spin" />
+                    </span>
+                  </div>
+                </div>
                 <template v-if="controller.isAddressCompleted">
-                  {{ controller.addressLine1 }}
-                  <CopyValue :value="controller.addressLine1" />
-                  <br />
-                  <span :class="{ placeholder: !controller.hasAddressLine2 }">{{ controller.addressLine2 }}</span>
-                  <CopyValue
-                    :value="controller.addressLine2"
-                    v-if="controller.hasAddressLine2"
+                  <div v-if="!controller.isEditBusinessAddress.value">
+                    {{ controller.addressLine1 }}
+                    <CopyValue :value="controller.addressLine1" />
+                    <br />
+                    <span :class="{ placeholder: !controller.hasAddressLine2 }">{{ controller.addressLine2 }}</span>
+                    <CopyValue
+                      :value="controller.addressLine2"
+                      v-if="controller.hasAddressLine2"
+                    />
+                    <br />
+                    <span :class="{ placeholder: !controller.hasAddressLine3 }">{{ controller.addressLine3 }}</span>
+                    <CopyValue
+                      :value="controller.addressLine3"
+                      v-if="controller.hasAddressLine3"
+                    />
+                    <br />
+                    {{ controller.postcode }}
+                    <CopyValue :value="controller.postcode" />
+                    <br />
+                    {{ controller.cityName }}
+                    <CopyValue :value="controller.cityName" />
+                    <br />
+                    {{ controller.stateName }}
+                    <CopyValue :value="controller.stateName" />
+                    <br />
+                    {{ controller.countryName }}
+                    <CopyValue :value="controller.countryName" />
+                  </div>
+                  <AddressInput
+                    v-if="controller.isEditBusinessAddress.value"
+                    :location="controller.addressLocation.value"
+                    @updateAddressLine1="controller.onUpdateAddressLine1($event)"
+                    @updateAddressLine2="controller.onUpdateAddressLine2($event)"
+                    @updateAddressLine3="controller.onUpdateAddressLine3($event)"
+                    @updateState="controller.onUpdateState($event)"
+                    @updateCity="controller.onUpdateCity($event)"
+                    @updatePostcode="controller.onUpdatePostcode($event)"
+                    @updateCountry="controller.onUpdateCountry($event)"
                   />
-                  <br />
-                  <span :class="{ placeholder: !controller.hasAddressLine3 }">{{ controller.addressLine3 }}</span>
-                  <CopyValue
-                    :value="controller.addressLine3"
-                    v-if="controller.hasAddressLine3"
-                  />
-                  <br />
-                  {{ controller.postcode }}
-                  <CopyValue :value="controller.postcode" />
-                  <br />
-                  {{ controller.cityName }}
-                  <CopyValue :value="controller.cityName" />
-                  <br />
-                  {{ controller.stateName }}
-                  <CopyValue :value="controller.stateName" />
-                  <br />
-                  {{ controller.countryName }}
-                  <CopyValue :value="controller.countryName" />
                 </template>
                 <template v-if="!controller.isAddressCompleted">Address is incomplete.</template>
                 <br />
@@ -135,16 +178,7 @@
               </span>
             </div>
           </template>
-          <template #nodeActions>
-            <!-- <button
-              class="btn btn-pill btn-submit"
-              :class="{ 'is-loading': controller.isUpdatingPd2.value }"
-              :disabled="controller.isUpdatingPd2.value"
-              @click="controller.onSubmitToSSMClicked()"
-            >
-              {{ controller.registrationOfAddressButtonLabel }}
-            </button> -->
-          </template>
+          <template #nodeActions></template>
         </ApplicationNode>
         <ApplicationNode
           v-bind="controller.completeApplicationProps"
@@ -182,6 +216,7 @@
 </template>
 
 <script lang="ts" setup>
+  import AddressInput from "../Forms/AddressInput.vue"
   import ApplicationNode from "./ApplicationNode.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import PopupShipApplication from "@/components/Popups/ShipApplication.vue"

@@ -1,5 +1,6 @@
 import { DeliveryConstants } from "~/scripts/constants/Payment"
 import { StatusConstants } from "~/scripts/constants/Status"
+import { ActivityLogger } from "~/scripts/library/ActivityLogger"
 import { DocumentsAndForms } from "~/scripts/library/DocumentsAndForms"
 import { Error } from "~/scripts/library/Error"
 import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
@@ -11,9 +12,11 @@ import { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { SignatureGroup } from "~/scripts/models/SignatureGroup"
+import { User } from "~/scripts/models/User"
 import { PropsServiceApplication } from "~/scripts/props/PropsServiceApplication"
 import { PropsShipApplication } from "~/scripts/props/PropsShipApplication"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
+import { CurrentUser } from "~/scripts/utils/CurrentUser"
 import { ObjectUtil } from "~/scripts/utils/Object"
 import { StringUtil } from "~/scripts/utils/String"
 
@@ -63,6 +66,8 @@ export abstract class ApplicationController<Application> {
   shipApplicationRef: any | null = null
   uploadDocumentRef: any | null = null
 
+  activityLogger = ref<ActivityLogger>(new ActivityLogger())
+
   constructor(
     companyId: string,
     repository: IRepositoryStore,
@@ -92,6 +97,9 @@ export abstract class ApplicationController<Application> {
 
     try {
       this.isLoading.value = true
+
+      this.activityLogger.value.role = "admin" //always
+      this.activityLogger.value.init()
 
       this.uploadedDocumentChecker.value.companyId = this.companyId.value
 

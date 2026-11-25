@@ -12,6 +12,7 @@ import { File } from "~/scripts/models/File"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { CompanyConstants } from "~/scripts/constants/Company"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
+import { Location } from "~/scripts/models/Location"
 
 export class ChangeOfAddressApplicationController extends ApplicationController<CompanyAmendmentAddress> {
   isShowApprovalAction: Ref<boolean> = ref<boolean>(false)
@@ -41,6 +42,10 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   isShowComplete: Ref<boolean> = ref<boolean>(false)
 
   isDownloadingPD2: Ref<boolean> = ref<boolean>(false)
+
+  isEditBusinessAddress: Ref<boolean> = ref<boolean>(false)
+  isUpdatingBusinessAddress: Ref<boolean> = ref<boolean>(false)
+  addressLocation: Ref<Location> = ref<Location>(new Location())
 
   resolutionsRef: any | null = null
   fileInputRef: any | null = null
@@ -74,6 +79,80 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
 
   setUploadDocumentPopup(uploadDocumentPopup: any): void {
     this.uploadDocumentPopup = uploadDocumentPopup
+  }
+
+  //edit details region
+  onEditAddressClicked(): void {
+    if (!this.application.value) {
+      return
+    }
+
+    this.addressLocation.value = new Location(this.application.value?.businessAddressLocation)
+    this.isEditBusinessAddress.value = true
+  }
+
+  onCancelEditClicked(): void {
+    this.isEditBusinessAddress.value = false
+  }
+
+  async onSaveAddressClicked(): Promise<void> {
+    if (this.isUpdatingBusinessAddress.value || !this.application.value) {
+      return
+    }
+
+    this.isUpdatingBusinessAddress.value = true
+
+    try {
+      this.application.value.businessAddressLocation = new Location(this.addressLocation.value)
+      await this.application.value.update(useCompanyAmendmentAddressStore())
+
+      this.activityLogger.value.addUpdateLog(
+        this.application.value.companyId,
+        this.target.value,
+        this.application.value.id,
+        "success"
+      )
+      this.isEditBusinessAddress.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingBusinessAddress.value = false
+    }
+  }
+
+  onUpdateAddressLine1(data: any): void {
+    this.addressLocation.value.addressLine1 = data
+  }
+
+  onUpdateAddressLine2(data: any): void {
+    this.addressLocation.value.addressLine2 = data
+  }
+
+  onUpdateAddressLine3(data: any): void {
+    this.addressLocation.value.addressLine3 = data
+  }
+
+  onUpdateState(data: any): void {
+    this.addressLocation.value.state = data
+  }
+
+  onUpdateCity(data: any): void {
+    this.addressLocation.value.city = data
+  }
+
+  onUpdatePostcode(data: any): void {
+    this.addressLocation.value.postcode = data
+  }
+
+  onUpdateCountry(data: any): void {
+    this.addressLocation.value.country = data
   }
 
   onPaymentStepClicked(): void {

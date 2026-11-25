@@ -74,10 +74,10 @@ export class ActivityLogger {
   }
 
   async addCreateLog(companyId: string, targetType: string, targetId: string, status: string): Promise<void> {
-    if (this.companyId !== companyId) {
-      this.companyId = companyId
-      await this.setRole()
-    }
+    // if (this.companyId !== companyId) {
+    //   this.companyId = companyId
+    //   await this.setRole()
+    // }
     this.action = AuditTrailAction.Initiate
     this.additionalInfo = ""
     this.targetType = targetType
@@ -88,10 +88,10 @@ export class ActivityLogger {
   }
 
   async addUpdateLog(companyId: string, targetType: string, targetId: string, status: string): Promise<void> {
-    if (this.companyId !== companyId) {
-      this.companyId = companyId
-      await this.setRole()
-    }
+    // if (this.companyId !== companyId) {
+    //   this.companyId = companyId
+    //   await this.setRole()
+    // }
     this.action = AuditTrailAction.Update
     this.additionalInfo = ""
     this.targetType = targetType
@@ -128,10 +128,10 @@ export class ActivityLogger {
     targetId: string,
     status: string
   ): Promise<void> {
-    if (this.companyId !== companyId) {
-      this.companyId = companyId
-      await this.setRole()
-    }
+    // if (this.companyId !== companyId) {
+    //   this.companyId = companyId
+    //   await this.setRole()
+    // }
     this.action = AuditTrailAction.MakePayment
     this.additionalInfo = `payment link: ${paymentLink}`
     this.targetType = targetType
@@ -142,10 +142,10 @@ export class ActivityLogger {
   }
 
   async addPostPaymentLog(companyId: string, targetType: string, targetId: string, status: string): Promise<void> {
-    if (this.companyId !== companyId) {
-      this.companyId = companyId
-      await this.setRole()
-    }
+    // if (this.companyId !== companyId) {
+    //   this.companyId = companyId
+    //   await this.setRole()
+    // }
     this.action = AuditTrailAction.MadePayment
     this.additionalInfo = "post payment"
     this.targetType = targetType
@@ -156,10 +156,10 @@ export class ActivityLogger {
   }
 
   async addRevokeLog(companyId: string, targetType: string, targetId: string, status: string): Promise<void> {
-    if (this.companyId !== companyId) {
-      this.companyId = companyId
-      await this.setRole()
-    }
+    // if (this.companyId !== companyId) {
+    //   this.companyId = companyId
+    //   await this.setRole()
+    // }
     this.action = AuditTrailAction.Revoke
     this.additionalInfo = ""
     this.targetType = targetType
@@ -170,10 +170,10 @@ export class ActivityLogger {
   }
 
   async addDeleteLog(companyId: string, targetType: string, targetId: string, status: string): Promise<void> {
-    if (this.companyId !== companyId) {
-      this.companyId = companyId
-      await this.setRole()
-    }
+    // if (this.companyId !== companyId) {
+    //   this.companyId = companyId
+    //   await this.setRole()
+    // }
     this.action = AuditTrailAction.Delete
     this.additionalInfo = ""
     this.targetType = targetType
@@ -235,7 +235,7 @@ export class ActivityLogger {
       })
 
       if (!matchedUser) {
-        throw new Error("", "")
+        throw new Error()
       }
 
       this.role = new UserAccessRole(matchedUser).accessRole.name
