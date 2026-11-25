@@ -152,6 +152,11 @@ export abstract class SecretarialServicesController<T> {
     }
   }
 
+  getApplicationFullPath(application: any): string {
+    let route = useRoute()
+    return `${route.fullPath}/${application.id ?? ""}`
+  }
+
   get sendPaymentNoticeProps(): PropsSendPaymentNotice {
     return new PropsSendPaymentNotice(
       "Company",

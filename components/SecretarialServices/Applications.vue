@@ -29,7 +29,7 @@
               class="company-name"
               @click="controller.onCompanyNameClicked(application.companyId)"
             >
-              {{ controller.companyName(application) }}
+              <NuxtLink :to="`/sdnbhds/${application.companyId}`">{{ controller.companyName(application) }}</NuxtLink>
             </div>
             <div
               v-if="controller.isShowDetails.value"
@@ -52,7 +52,9 @@
             class="btn btn-submit btn-pill"
             @click="controller.onApplicationClicked(application)"
           >
-            {{ controller.viewApplicationLabel }}
+            <NuxtLink :to="controller.getApplicationFullPath(application)">
+              {{ controller.viewApplicationLabel }}
+            </NuxtLink>
           </button>
           <button
             class="btn btn-danger btn-pill"
