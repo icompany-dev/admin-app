@@ -293,8 +293,7 @@ export class DividendDeclarationApplicationController extends ApplicationControl
     return (
       this.application.value.status === StatusConstants.SHIPPED ||
       this.application.value.status === StatusConstants.DELIVERED ||
-      this.application.value.status === StatusConstants.CONVERTED ||
-      this.application.value.status === StatusConstants.COMPLETED
+      this.application.value.status === StatusConstants.CONVERTED
     )
   }
 
@@ -317,10 +316,7 @@ export class DividendDeclarationApplicationController extends ApplicationControl
       return false
     }
 
-    return (
-      this.application.value.status === StatusConstants.CONVERTED ||
-      this.application.value.status === StatusConstants.COMPLETED
-    )
+    return this.application.value.status === StatusConstants.CONVERTED
   }
 
   get applicationCompletedLabel(): string {
