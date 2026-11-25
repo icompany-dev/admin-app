@@ -49,12 +49,20 @@
             </div>
           </template>
           <template #nodeOptions>
-            <button
-              class="btn btn-pill btn-primary"
-              @click="controller.onDownloadClicked()"
-            >
-              {{ controller.downloadLabel }}
-            </button>
+            <div class="action-buttons">
+              <button
+                class="btn btn-pill btn-primary"
+                @click="controller.onDownloadClicked()"
+              >
+                {{ controller.downloadLabel }}
+              </button>
+              <button
+                class="btn btn-pill btn-primary"
+                @click="controller.onPrintClicked()"
+              >
+                {{ controller.printLabel }}
+              </button>
+            </div>
           </template>
           <template #nodeActions>
             <button

@@ -18,11 +18,13 @@ import { CtcConstants, DeliveryConstants } from "~/scripts/constants/Payment"
 import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
 import { FileZipper } from "~/scripts/utils/FileZipper"
+import { PDFDocument, PDFPage } from "pdf-lib"
 
 export class DocumentRequestApplicationController extends ApplicationController<CompanyDocumentRequest> {
   resolutionsRef: any | null = null
 
   isDownloading: Ref<boolean> = ref<boolean>(false)
+  isPrinting: Ref<boolean> = ref<boolean>(false)
 
   isShowResolutions: Ref<boolean> = ref<boolean>(false)
   isShowCompleted: Ref<boolean> = ref<boolean>(false)
@@ -121,7 +123,97 @@ export class DocumentRequestApplicationController extends ApplicationController<
   }
 
   async onPrintClicked(): Promise<void> {
-    //
+    if (this.isPrinting.value || !this.application.value) {
+      return
+    }
+
+    this.isPrinting.value = true
+
+    try {
+      let promises = this.application.value.items
+        .filter((d: CompanyDocumentRequestItem) => {
+          return !StringUtil.isNullOrEmpty(d.iCompanyFile?.url ?? "")
+        })
+        .map(async (cd: CompanyDocumentRequestItem) => {
+          try {
+            let response = await fetch(cd.iCompanyFile?.url ?? "")
+            if (!response.ok) {
+              return null
+            }
+
+            return {
+              name: cd.documentName || "Document",
+              buffer: await response.arrayBuffer(),
+            }
+          } catch (e) {
+            return null
+          }
+        })
+
+      const fetchedDocs = (await Promise.all(promises)).filter(Boolean)
+
+      const mergedPdf = await PDFDocument.create()
+      const encryptedBuffers: ArrayBuffer[] = []
+      let hasMergeablePages = false
+
+      for (const doc of fetchedDocs) {
+        if (!doc?.buffer) {
+          continue
+        }
+
+        try {
+          const sourcedPdf = await PDFDocument.load(doc.buffer)
+
+          if (sourcedPdf.isEncrypted) {
+            encryptedBuffers.push(doc.buffer)
+            continue
+          }
+
+          const copiedPages = await mergedPdf.copyPages(sourcedPdf, sourcedPdf.getPageIndices())
+          copiedPages.forEach((page: PDFPage) => {
+            mergedPdf.addPage(page)
+          })
+          hasMergeablePages = true
+        } catch (e) {
+          encryptedBuffers.push(doc.buffer)
+        }
+      }
+
+      if (hasMergeablePages) {
+        const mergedBytes = await mergedPdf.save()
+        this.openAndPrintBlob(new Blob([mergedBytes], { type: "application/pdf" }))
+      }
+
+      for (const encBuffer of encryptedBuffers) {
+        this.openAndPrintBlob(new Blob([encBuffer], { type: "application/pdf" }))
+      }
+    } catch (e) {
+      console.error(e)
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.isMalay = this.language.isMalay()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isPrinting.value = false
+    }
+  }
+
+  private openAndPrintBlob(blob: Blob): void {
+    const blobUrl = URL.createObjectURL(blob)
+
+    const printWindow = window.open(blobUrl, "_blank")
+    if (!printWindow) {
+      throw "Fail to open new window"
+    }
+
+    printWindow.onload = () => {
+      printWindow.focus()
+      printWindow.print()
+    }
   }
 
   async onShippedClicked(): Promise<void> {
@@ -275,6 +367,10 @@ export class DocumentRequestApplicationController extends ApplicationController<
 
   get downloadLabel(): string {
     return this.language.isMalay() ? "Muat Turun" : "Download"
+  }
+
+  get printLabel(): string {
+    return this.language.isMalay() ? "Cetak" : "Print"
   }
 
   get shipLabel(): string {
