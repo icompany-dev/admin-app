@@ -12,7 +12,7 @@
       align-items: stretch;
 
       .pricing-editor {
-        max-height: calc(100% - 100px);
+        height: calc(100% - 100px);
         overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: transparent transparent;
@@ -52,6 +52,17 @@
           }
         }
 
+        .clickable {
+          display: inline-block;
+          margin-left: 5px;
+          cursor: pointer;
+          width: 18%;
+
+          &.remove {
+            color: var(--bs-danger);
+          }
+        }
+
         .searchable-dropdown {
           width: 100%;
           border: solid 1px var(--bs-gray-500);
@@ -69,6 +80,39 @@
 
         .service-pricing {
           margin-bottom: 5px;
+        }
+
+        .link-to-service {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 20px;
+
+          .form-control {
+            width: 70%;
+          }
+        }
+
+        .attached-services {
+          margin: 10px 0;
+          padding: 20px;
+          background-color: var(--bs-gray-200);
+          border-radius: 5px;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 20px;
+          width: calc(100% - 40px);
+        }
+
+        .attach-to-service {
+          margin: 10px 0;
+
+          .enabled {
+            font-weight: 600;
+          }
         }
 
         .service-pricing-details {
@@ -92,17 +136,6 @@
 
               .form-control {
                 text-align: left;
-              }
-            }
-
-            .clickable {
-              display: inline-block;
-              margin-left: 5px;
-              cursor: pointer;
-              width: 18%;
-
-              &.remove {
-                color: var(--bs-danger);
               }
             }
 
@@ -185,6 +218,29 @@
                 padding-bottom: 10px;
               }
             }
+
+            &.paper-printing {
+              width: calc(100% - 200px);
+
+              .label {
+                width: calc(40% + 120px);
+              }
+
+              .price {
+                &.limit {
+                  width: 30%;
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: flex-end;
+                  align-items: center;
+                  gap: 5px;
+
+                  .form-control {
+                    width: 30%;
+                  }
+                }
+              }
+            }
           }
 
           .other-requirement-title,
@@ -192,6 +248,58 @@
           .ctc-method-title {
             font-weight: 600;
             padding-top: 20px;
+          }
+
+          .ctc-discount-configuration-title {
+            font-weight: 600;
+            padding-top: 10px;
+            padding-left: 30px;
+          }
+
+          .ctc-discount-configuration {
+            padding-left: 30px;
+
+            .ctc-discounts {
+              width: calc(100% - 200px);
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              align-items: stretch;
+              gap: 5px;
+              margin-bottom: 10px;
+
+              .ctc-discount {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+
+                .ctc-discount-label {
+                  display: flex;
+                  flex-direction: row;
+                  justify-content: flex-start;
+                  align-items: center;
+                  gap: 5px;
+                  width: 60%;
+
+                  .form-control {
+                    width: 20%;
+                    text-align: right;
+                  }
+                }
+
+                .ctc-discount-amount {
+                  width: 15%;
+
+                  .form-control {
+                    width: calc(100% - 22px);
+                    text-align: right;
+                  }
+                }
+              }
+            }
           }
 
           .divider {

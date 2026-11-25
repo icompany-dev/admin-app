@@ -8,19 +8,23 @@ import { Error } from "~/scripts/library/Error"
 import { Filter } from "~/scripts/library/Filter"
 import { Toast } from "~/scripts/library/Toast"
 import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentChecker"
+import { AnnualReturnLodgementData, AnnualReturnShareholder } from "~/scripts/models/AnnualReturnLodgementData"
 import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
+import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 import { Director } from "~/scripts/models/Director"
+import { City, Country, State } from "~/scripts/models/Location"
 import type { MsicCode } from "~/scripts/models/MsicCode"
 import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { Shareholder } from "~/scripts/models/Shareholder"
 import { User } from "~/scripts/models/User"
 import { UserDetail } from "~/scripts/models/UserDetail"
+import { PropsShareholderDetail } from "~/scripts/props/PropsShareholderDetail"
 import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import type { ARShareCapital, AnnualReturnData } from "~/scripts/types/AnnualReturnXBRLGenerator"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
-import type { Secretary } from "~/scripts/types/Secretary"
+import { Secretary } from "~/scripts/types/Secretary"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class AnnualReturnController {
@@ -48,6 +52,12 @@ export class AnnualReturnController {
 
   language = useLanguage()
 
+  companySecretaries: Ref<Secretary[]> = ref<Secretary[]>([])
+
+  annualReturnDataForYear: Ref<AnnualReturnLodgementData> = ref<AnnualReturnLodgementData>(
+    new AnnualReturnLodgementData()
+  )
+
   constructor(company: Company, emitEvents: any) {
     this.setCompany(company)
     this.emitEvents = emitEvents
@@ -55,6 +65,8 @@ export class AnnualReturnController {
 
   async setCompany(company: Company): Promise<void> {
     this.company.value = new Company(company)
+
+    this.companySecretaries.value = this.secretaries
 
     if (this.company.value.id !== this.companyId.value) {
       this.companyId.value = this.company.value.id
@@ -81,9 +93,8 @@ export class AnnualReturnController {
       this.isLoading.value = true
 
       await Promise.all([
+        this.fetchDataForLodgeYear(),
         this.fetchAnnualReturn(),
-        this.fetchDirectors(),
-        this.fetchShareholders(),
         this.documentsAndForms.value.init(),
         this.uploadedDocumentChecker.value.fetchDocuments(),
       ])
@@ -144,6 +155,29 @@ export class AnnualReturnController {
     this.companyAnnualReturnRequest.value = new CompanyAnnualReturnRequest(paidForYear)
   }
 
+  async fetchDataForLodgeYear(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyId.value)) {
+      return
+    }
+
+    let dayjs = useDayjs()
+    let repository = useCompanyAnnualReturnStore()
+    let filter = new Filter()
+    filter.companyId = this.companyId.value
+    filter.startDate = this.annualReturnDate
+
+    let response = await repository.fetchDataForLodgeYear(filter)
+
+    this.annualReturnDataForYear.value = new AnnualReturnLodgementData(response)
+    this.directors.value = this.annualReturnDataForYear.value.directors.map((d: Director) => {
+      return new Director(d)
+    })
+
+    this.shareholders.value = this.annualReturnDataForYear.value.shareholders.map((s: AnnualReturnShareholder) => {
+      return new Shareholder(s.shareholder)
+    })
+  }
+
   async fetchDirectors(): Promise<void> {
     if (StringUtil.isNullOrEmpty(this.companyId.value)) {
       return
@@ -194,6 +228,13 @@ export class AnnualReturnController {
     return new PropsUserDetail(human.user ?? new User(), human.user?.detail ?? new UserDetail())
   }
 
+  getShareholderProps(shareholder: Shareholder): PropsShareholderDetail {
+    let props = new PropsShareholderDetail(shareholder)
+    props.isEditable = true
+
+    return props
+  }
+
   setEmptyApplication(): void {
     this.companyAnnualReturnRequest.value = new CompanyAnnualReturnRequest()
     this.companyAnnualReturnRequest.value.companyId = this.companyId.value
@@ -218,6 +259,149 @@ export class AnnualReturnController {
     this.isViewingDocument.value = false
   }
 
+  getBranchAddressLine1(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.addressLine1?.toUpperCase() ?? ""
+  }
+
+  getBranchAddressLine2(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.addressLine2?.toUpperCase() ?? ""
+  }
+
+  getBranchAddressLine3(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.addressLine3?.toUpperCase() ?? ""
+  }
+
+  getBranchAddressPostcode(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.postcode ?? ""
+  }
+
+  getBranchAddressCity(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.city?.name.toUpperCase() ?? ""
+  }
+
+  getBranchAddressState(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.state?.name.toUpperCase() ?? ""
+  }
+
+  getBranchAddressCountry(companyBranch: CompanyBranch): string {
+    return companyBranch.location?.country?.name.toUpperCase() ?? ""
+  }
+
+  onInputShareholderBirthdate(date: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.birthdate = date
+  }
+
+  onInputPassportExpiryDate(date: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.passportExpiryDate = date
+  }
+
+  onSelectedShareholdingCategory(category: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.shareholdingCategory = category
+  }
+
+  onInputShareholderNationality(nationality: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.citizenship = nationality
+  }
+
+  onUpdateShareholderAddressLine1(addressLine1: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.addressLine1 = addressLine1
+  }
+
+  onUpdateShareholderAddressLine2(addressLine2: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.addressLine2 = addressLine2
+  }
+
+  onUpdateShareholderAddressLine3(addressLine3: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.addressLine3 = addressLine3
+  }
+
+  onUpdateShareholderAddressPostcode(addressPostcode: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.postcode = addressPostcode
+  }
+
+  onUpdateShareholderAddressCity(city: City, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.city = new City(city)
+  }
+
+  onUpdateShareholderAddressState(state: State, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.state = new State(state)
+  }
+
+  onUpdateShareholderAddressCountry(country: Country, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.country = new Country(country)
+  }
+
+  onSecretaryClicked(secretary: Secretary): void {
+    if (this.isSecretarySelected(secretary)) {
+      this.companySecretaries.value = this.companySecretaries.value.filter((s: Secretary) => {
+        return s.nric !== secretary.nric
+      })
+    } else {
+      this.companySecretaries.value.push(secretary)
+    }
+  }
+
+  isSecretarySelected(secretary: Secretary): boolean {
+    return this.companySecretaries.value.some((s: Secretary) => {
+      return s.nric === secretary.nric
+    })
+  }
+
   async onGenerateXBRLClicked(): Promise<void> {
     if (this.isGenerating.value) {
       return
@@ -239,9 +423,11 @@ export class AnnualReturnController {
 
       let { zipBlob, sizeBytes } = await generator.createZipBlobFromPackage(
         xbrlPackage.xbrlFilename,
+        xbrlPackage.scmCsvFileName,
+        xbrlPackage.pmCsvFileName,
         xbrlPackage.xbrlXml,
-        xbrlPackage.manifestXml,
-        xbrlPackage.calculationXml
+        xbrlPackage.pmCsv,
+        xbrlPackage.scmCsv
       )
       const blobUrl = window.URL.createObjectURL(zipBlob)
       const link = document.createElement("a")
@@ -440,10 +626,10 @@ ${detailsOfBO.join("\n")}
     // })
   }
 
-  get shareholdersForAnnualReturn(): Shareholder[] {
+  get shareholdersForAnnualReturn(): AnnualReturnShareholder[] {
     let dayjs = useDayjs()
 
-    return this.shareholders.value
+    return this.annualReturnDataForYear.value.shareholders
     // return this.shareholders.value.filter((d: Shareholder) => {
     //   return dayjs(d.dateAppointed).isBefore(dayjs(this.annualReturnDate))
     // })
@@ -473,12 +659,24 @@ ${detailsOfBO.join("\n")}
     return this.language.isMalay() ? "Perihal Perniagaan" : "Business Description"
   }
 
+  get companyNameLabel(): string {
+    return this.language.isMalay() ? "Nama Syarikat" : "Name of Sdn Bhd"
+  }
+
+  get registrationNumberLabel(): string {
+    return this.language.isMalay() ? "No Pendaftaran SSM" : "SSM Registration No"
+  }
+
   get businessAddressLabel(): string {
     return this.language.isMalay() ? "Alamat Perniagaan" : "Business Address"
   }
 
   get registeredAddressLabel(): string {
     return this.language.isMalay() ? "Alamat Berdaftar" : "Registered Address"
+  }
+
+  get branchesLabel(): string {
+    return this.language.isMalay() ? "Cawangan" : "Branches"
   }
 
   get totalSharesLabel(): string {
@@ -517,90 +715,95 @@ ${detailsOfBO.join("\n")}
     return this.language.isMalay() ? "Telah Diserah Simpan" : "Annual Return Lodged"
   }
 
+  get companyName(): string {
+    let baseName = this.annualReturnDataForYear.value.name.toUpperCase().replace("SDN BHD", "")
+    return `${baseName} SDN. BHD.`
+  }
+
   get businessDescription(): string {
-    return this.company.value.businessDescription
+    return this.annualReturnDataForYear.value.description
   }
 
   get msicCodes(): MsicCode[] {
-    return this.company.value.msicCodeAssigns.map((d: MsicCodeAssign) => {
-      return d.msicCode
-    })
+    return this.annualReturnDataForYear.value.msicCodes
   }
 
   get businessAddressLine1(): string {
-    return this.company.value.businessAddressLocation?.addressLine1?.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.businessAddress?.addressLine1?.toUpperCase() ?? ""
   }
 
   get businessAddressLine2(): string {
-    return this.company.value.businessAddressLocation?.addressLine2?.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.businessAddress?.addressLine2?.toUpperCase() ?? ""
   }
 
   get businessAddressLine3(): string {
-    return this.company.value.businessAddressLocation?.addressLine3?.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.businessAddress?.addressLine3?.toUpperCase() ?? ""
   }
 
   get businessAddressPostcode(): string {
-    return this.company.value.businessAddressLocation?.postcode ?? ""
+    return this.annualReturnDataForYear.value.businessAddress?.postcode ?? ""
   }
 
   get businessAddressCity(): string {
-    return this.company.value.businessAddressLocation?.city?.name.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.businessAddress?.city?.name.toUpperCase() ?? ""
   }
 
   get businessAddressState(): string {
-    return this.company.value.businessAddressLocation?.state?.name.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.businessAddress?.state?.name.toUpperCase() ?? ""
   }
 
   get businessAddressCountry(): string {
-    return this.company.value.businessAddressLocation?.country?.name.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.businessAddress?.country?.name.toUpperCase() ?? ""
   }
 
   get registeredAddressLine1(): string {
-    return this.company.value.registeredAddressLocation?.addressLine1?.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.registeredAddress?.addressLine1?.toUpperCase() ?? ""
   }
 
   get registeredAddressLine2(): string {
-    return this.company.value.registeredAddressLocation?.addressLine2?.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.registeredAddress?.addressLine2?.toUpperCase() ?? ""
   }
 
   get registeredAddressLine3(): string {
-    return this.company.value.registeredAddressLocation?.addressLine3?.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.registeredAddress?.addressLine3?.toUpperCase() ?? ""
   }
 
   get registeredAddressPostcode(): string {
-    return this.company.value.registeredAddressLocation?.postcode ?? ""
+    return this.annualReturnDataForYear.value.registeredAddress?.postcode ?? ""
   }
 
   get registeredAddressCity(): string {
-    return this.company.value.registeredAddressLocation?.city?.name.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.registeredAddress?.city?.name.toUpperCase() ?? ""
   }
 
   get registeredAddressState(): string {
-    return this.company.value.registeredAddressLocation?.state?.name.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.registeredAddress?.state?.name.toUpperCase() ?? ""
   }
 
   get registeredAddressCountry(): string {
-    return this.company.value.registeredAddressLocation?.country?.name.toUpperCase() ?? ""
+    return this.annualReturnDataForYear.value.registeredAddress?.country?.name.toUpperCase() ?? ""
   }
 
   get totalOrdinaryShares(): number {
-    return this.shareholders.value
-      .map((s: Shareholder) => {
-        return Number(s.ordinaryShares)
-      })
-      .reduce((a, b) => {
-        return a + b
-      }, 0)
+    return this.annualReturnDataForYear.value.totalOrdinaryShares
+    // return this.shareholders.value
+    //   .map((s: Shareholder) => {
+    //     return Number(s.ordinaryShares)
+    //   })
+    //   .reduce((a, b) => {
+    //     return a + b
+    //   }, 0)
   }
 
   get totalPreferenceShares(): number {
-    return this.shareholders.value
-      .map((s: Shareholder) => {
-        return Number(s.preferenceShares)
-      })
-      .reduce((a, b) => {
-        return a + b
-      }, 0)
+    return this.annualReturnDataForYear.value.totalPreferenceShares
+    // return this.shareholders.value
+    //   .map((s: Shareholder) => {
+    //     return Number(s.preferenceShares)
+    //   })
+    //   .reduce((a, b) => {
+    //     return a + b
+    //   }, 0)
   }
 
   get annualReturnData(): AnnualReturnData {
@@ -625,7 +828,7 @@ ${detailsOfBO.join("\n")}
     }
 
     return {
-      companyName: this.company.value.getFullName().replace("SDN BHD", "SDN. BHD."),
+      companyName: this.companyName.replace("SDN BHD", "SDN. BHD."),
       companyNumber: this.company.value.registrationNumberNew,
       oldCompanyNumber: this.company.value.registrationNumberOld,
       companyType: "Private Limited (Sdn. Bhd.)",
@@ -668,13 +871,13 @@ ${detailsOfBO.join("\n")}
           appointmentDate: dayjs(d.dateAppointed).format("YYYY-MM-DD"),
         }
       }),
-      secretaries: SecretaryInformation.SECRETARY_NAME_LIST.map((s: Secretary) => {
+      secretaries: this.companySecretaries.value.map((s: Secretary) => {
         return {
           id: "",
           name: s.name,
           idNumber: s.nric,
           licenseNumber: s.license,
-          registeredAddress: this.company.value.registeredAddressLocation?.getOnelineAddress() ?? "",
+          registeredAddress: this.annualReturnDataForYear.value.registeredAddress?.getOnelineAddress() ?? "",
           appointmentDate: dayjs().format("YYYY-MM-DD"),
         }
       }),
@@ -690,10 +893,23 @@ ${detailsOfBO.join("\n")}
           name: s.fullName(),
           idOrRegNumber: s.identification,
           address: s.getAddress().replaceAll("<br>", ", "),
+          address1: s.location?.addressLine1 ?? "",
+          address2: s.location?.addressLine2 ?? "",
+          postcode: s.location?.postcode ?? "",
+          city: s.location?.city?.name ?? "",
+          state: s.location?.state?.name ?? "",
+          country: s.location?.country?.name ?? "",
           nationalityOrCountry: s.isCorporateRepresentative() ? "" : (s.user?.detail?.citizenship ?? ""),
           shareClass: s.ordinaryShares > 0 ? "Ordinary" : "Preference",
           numberOfShares: s.ordinaryShares,
           percentage: s.percentageShares,
+          isCorporate: s.isCorporateRepresentative(),
+          isMalaysian: s.user?.detail?.identificationType === "ic",
+          race: (s.race ?? "").toUpperCase(),
+          gender: s.gender === "male" ? "Male" : "Female",
+          birthdate: dayjs(s.birthdate).format("DD/MM/YYYY"),
+          passportExpiryDate: dayjs(s.passportExpiryDate).format("DD/MM/YYYY"),
+          shareholdingCategory: s.shareholdingCategory,
         }
       }),
       indebtedness: {
@@ -760,5 +976,17 @@ ${detailsOfBO.join("\n")}
     props.canUploadPdf = true
 
     return props
+  }
+
+  get secretaries(): Secretary[] {
+    let dayjs = useDayjs()
+    let threshold = dayjs("2026-08-01")
+    let isAfterThreshold = dayjs(this.company.value.createdAt).isAfter(threshold)
+
+    if (isAfterThreshold) {
+      return [SecretaryInformation.SECRETARY_NAME_LIST[0]]
+    }
+
+    return SecretaryInformation.SECRETARY_NAME_LIST
   }
 }

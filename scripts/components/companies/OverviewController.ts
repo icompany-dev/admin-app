@@ -48,6 +48,7 @@ export class OverviewController {
   addCompanyAuditorRef: any | null = null
   businessAddressRef: any | null = null
   registeredAddressRef: any | null = null
+  confirmToDeleteRef: any | null = null
 
   companyAuditor = ref<CompanyAuditor>(new CompanyAuditor())
 
@@ -71,6 +72,14 @@ export class OverviewController {
   isUpdatingRegisteredAddress: Ref<boolean> = ref<boolean>(false)
   registeredAddressLocation: Ref<Location> = ref<Location>(new Location())
 
+  isEditingDescription: Ref<boolean> = ref<boolean>(false)
+  isUpdatingDescription: Ref<boolean> = ref<boolean>(false)
+  newBusinessDescription: Ref<string> = ref<string>("")
+
+  isAssignNewMsicCode: Ref<boolean> = ref<boolean>(false)
+  isUpdatingMsicCode: Ref<boolean> = ref<boolean>(false)
+  newMsicCodeAssign: Ref<MsicCodeAssign> = ref<MsicCodeAssign>(new MsicCodeAssign())
+
   isAddingNewBranch: Ref<boolean> = ref<boolean>(false)
   isAddingNewBank: Ref<boolean> = ref<boolean>(false)
 
@@ -83,6 +92,8 @@ export class OverviewController {
   fyeEndDate: Ref<string> = ref<string>("")
   auditMonth: Ref<string> = ref<string>("")
   auditYear: Ref<string> = ref<string>("")
+
+  companyAuditorToRemove = ref<CompanyAuditor>(new CompanyAuditor())
 
   language = useLanguage()
   time = useLocalTime()
@@ -109,6 +120,10 @@ export class OverviewController {
 
   setRegisteredAddressRef(registeredAddressRef: any): void {
     this.registeredAddressRef = registeredAddressRef
+  }
+
+  setConfirmToDeleteRef(confirmToDeleteRef: any): void {
+    this.confirmToDeleteRef = confirmToDeleteRef
   }
 
   async init(): Promise<void> {
@@ -291,6 +306,45 @@ export class OverviewController {
 
     if (this.addCompanyAuditorRef) {
       this.addCompanyAuditorRef.show()
+    }
+  }
+
+  onRemoveCompanyAuditor(companyAuditor: any): void {
+    this.companyAuditorToRemove.value = new CompanyAuditor(companyAuditor)
+
+    if (this.confirmToDeleteRef) {
+      this.confirmToDeleteRef.show()
+    }
+  }
+
+  async onProceedRemoveCompanyAuditor(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.companyAuditorToRemove.value.id)) {
+      return
+    }
+
+    try {
+      this.auditors.value = this.auditors.value.filter((ca: any) => {
+        return ca.id !== this.companyAuditorToRemove.value.id
+      })
+
+      await this.companyAuditorToRemove.value.remove(useCompanyAuditorStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Juruaudit telah dikeluarkan dari Sdn Bhd ini."
+        : "The Auditor is removed from this Sdn Bhd."
+      let toastMessage = this.language.isMalay()
+        ? "Sila ke Peranan & Akses bagi menarik balik akses yang telah diberi."
+        : "Please go to Roles & Accesses to revoke any access granted."
+      let toast = new Toast(toastTitle, toastMessage)
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
     }
   }
 
@@ -598,6 +652,114 @@ ${detailsOfBO.join("\n")}
 
   onUpdateRegisteredCountry(data: any): void {
     this.registeredAddressLocation.value.country = data
+  }
+
+  // Update description
+  onEditBusinessDescriptionClicked(): void {
+    this.newBusinessDescription.value = this.businessDescription
+    this.isEditingDescription.value = true
+    this.isUpdatingDescription.value = false
+  }
+
+  onCancelEditBusinessDescriptionClicked(): void {
+    this.newBusinessDescription.value = ""
+    this.isEditingDescription.value = false
+    this.isUpdatingDescription.value = false
+  }
+
+  async onSaveBusinessDescriptionClicked(): Promise<void> {
+    try {
+      this.isUpdatingDescription.value = true
+      this.company.value.businessDescription = this.newBusinessDescription.value
+      await this.company.value.onUpdateDescription(useCompanyStore())
+
+      let toastTitle = this.language.isMalay()
+        ? "Perihal Perniagaan telah dikemaskini."
+        : "The Business Description is Updated."
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isEditingDescription.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingDescription.value = false
+    }
+  }
+
+  //Update MSIC Codes
+  async onRemoveMsicCode(msicCodeAssign: MsicCodeAssign): Promise<void> {
+    try {
+      let idToDelete = msicCodeAssign.id
+      this.company.value.msicCodeAssigns = this.company.value.msicCodeAssigns.filter(
+        (msicCodeAssign: MsicCodeAssign) => {
+          return msicCodeAssign.id !== idToDelete
+        }
+      )
+
+      let repository = useMsicCodeAssignStore()
+      await repository.remove(idToDelete)
+
+      let toastTitle = this.language.isMalay() ? "Kod MSIC telah dipadamkan." : "The MSIC Code is removed"
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    }
+  }
+
+  onAddMsicCodeClicked(): void {
+    this.newMsicCodeAssign.value = new MsicCodeAssign()
+    this.isAssignNewMsicCode.value = true
+  }
+
+  onCancelAddMsicCodeClicked(): void {
+    this.isAssignNewMsicCode.value = false
+  }
+
+  onSelectedNewMsicCode(newMsicCodeAssign: MsicCodeAssign): void {
+    this.newMsicCodeAssign.value = new MsicCodeAssign(newMsicCodeAssign)
+  }
+
+  async assignMsicCode(): Promise<void> {
+    if (this.isUpdatingMsicCode.value) {
+      return
+    }
+
+    this.isUpdatingMsicCode.value = true
+    try {
+      await this.newMsicCodeAssign.value.create(useMsicCodeAssignStore())
+
+      this.company.value.msicCodeAssigns.push(new MsicCodeAssign(this.newMsicCodeAssign.value))
+
+      let toastTitle = this.language.isMalay() ? "Kod MSIC telah ditambah." : "The MSIC Code is added"
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+
+      this.isAssignNewMsicCode.value = false
+    } catch (e) {
+      if (e instanceof Error) {
+        e.handle()
+      } else {
+        let error = new Error()
+        error.setForCUD()
+        error.handle()
+      }
+    } finally {
+      this.isUpdatingMsicCode.value = false
+    }
   }
 
   // Edit FYE
@@ -1206,5 +1368,9 @@ ${detailsOfBO.join("\n")}
     }
 
     return ""
+  }
+
+  get removeAuditorName(): string {
+    return this.language.isMalay() ? "Juruaudit" : "Auditor"
   }
 }

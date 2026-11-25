@@ -60,6 +60,9 @@
                 Email: {{ controller.recipientEmail }}
                 <CopyValue :value="controller.recipientEmail" />
                 <br />
+                Phone: {{ controller.recipientPhone }}
+                <CopyValue :value="controller.recipientPhone" />
+                <br />
                 <br />
                 <div>
                   {{ controller.deliveryAddressLine1 }}

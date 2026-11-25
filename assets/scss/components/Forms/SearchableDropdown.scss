@@ -112,6 +112,10 @@
       min-height: 30px;
       padding: 5px;
       width: calc(100% - 10px);
+
+      &.disabled {
+        color: var(--bs-gray-500);
+      }
     }
 
     .search-field {
@@ -119,6 +123,7 @@
 
       .form-control {
         width: 100%;
+        text-align: left;
       }
     }
   }

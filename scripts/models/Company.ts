@@ -370,4 +370,27 @@ export class Company implements IModel<Company> {
       this.convertFromResponse(response)
     }
   }
+
+  async onUpdateDescription(repository: ReturnType<typeof useCompanyStore>): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.id)) {
+      let error: Error = new Error()
+      error.setForIncompleteData()
+      throw error
+    }
+
+    let data = {
+      business_description: this.businessDescription,
+    }
+
+    let response = await repository.update(this.id, data)
+    if (repository.error !== null) {
+      throw repository.error
+    }
+
+    if (response instanceof Company) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
+  }
 }

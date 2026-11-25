@@ -90,6 +90,29 @@
                 </tr>
                 <tr>
                   <td>
+                    <b>{{ controller.companyNameLabel }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>
+                    {{ controller.companyName }}
+                    <CopyValue :value="controller.companyName" />
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <b>{{ controller.registeredAddressLabel }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>
+                    {{ controller.annualReturnDataForYear.value.registrationNumberNew }}
+                    <CopyValue :value="controller.annualReturnDataForYear.value.registrationNumberNew" />
+                    ({{ controller.annualReturnDataForYear.value.registrationNumberOld }}
+                    <CopyValue :value="controller.annualReturnDataForYear.value.registrationNumberOld" />
+                    )
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     <b>{{ controller.businessAddressLabel }}</b>
                   </td>
                   <td>:</td>
@@ -156,6 +179,49 @@
                 </tr>
                 <tr>
                   <td>
+                    <b>{{ controller.branchesLabel }}</b>
+                  </td>
+                  <td>:</td>
+                  <td>
+                    <span v-if="controller.annualReturnDataForYear.value.branches.length <= 0">(No Branch)</span>
+                    <ol v-if="controller.annualReturnDataForYear.value.branches.length > 0">
+                      <li v-for="(branch, i) in controller.annualReturnDataForYear.value.branches">
+                        {{ controller.getBranchAddressLine1(branch) }}
+                        <CopyValue :value="controller.getBranchAddressLine1(branch)" />
+                        <br />
+                        <template v-if="controller.getBranchAddressLine2(branch).length > 0">
+                          {{ controller.getBranchAddressLine2(branch) }}
+                          <CopyValue :value="controller.getBranchAddressLine2(branch)" />
+                          <br />
+                        </template>
+                        <template v-if="controller.getBranchAddressLine3(branch).length > 0">
+                          {{ controller.getBranchAddressLine3(branch) }}
+                          <CopyValue :value="controller.getBranchAddressLine3(branch)" />
+                          <br />
+                        </template>
+                        {{ controller.getBranchAddressPostcode(branch) }}
+                        <CopyValue :value="controller.getBranchAddressPostcode(branch)" />
+                        <br />
+                        {{ controller.getBranchAddressCity(branch) }}
+                        <CopyValue :value="controller.getBranchAddressCity(branch)" />
+                        <br />
+                        {{ controller.getBranchAddressState(branch) }}
+                        <CopyValue :value="controller.getBranchAddressState(branch)" />
+                        <br />
+                        {{ controller.getBranchAddressCountry(branch) }}
+                        <CopyValue :value="controller.getBranchAddressCountry(branch)" />
+                        <br />
+                      </li>
+                    </ol>
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>
                     <b>{{ controller.totalSharesLabel }}</b>
                   </td>
                   <td>:</td>
@@ -214,18 +280,22 @@
                   <td>
                     <div
                       class="shareholder"
-                      v-for="shareholder in controller.shareholdersForAnnualReturn"
+                      v-for="(shareholderAnnualReturn, index) in controller.shareholdersForAnnualReturn"
                     >
-                      <UserDetail v-bind="controller.getUserDetailProps(shareholder)" />
-                      <br />
-                      <b>{{ controller.totalOrdinarySharesLabel }}</b>
-                      : {{ NumberUtil.thousandSeparator(shareholder.ordinaryShares) }}
-                      <CopyValue :value="shareholder.ordinaryShares.toString()" />
-                      <br />
-                      <b>{{ controller.totalPreferenceSharesLabel }}</b>
-                      : {{ NumberUtil.thousandSeparator(shareholder.preferenceShares) }}
-                      <CopyValue :value="shareholder.preferenceShares.toString()" />
-                      <br />
+                      <Shareholder
+                        v-bind="controller.getShareholderProps(shareholderAnnualReturn.shareholderForDisplay)"
+                        @updateAddressLine1="controller.onUpdateShareholderAddressLine1($event, index)"
+                        @updateAddressLine2="controller.onUpdateShareholderAddressLine2($event, index)"
+                        @updateAddressLine3="controller.onUpdateShareholderAddressLine3($event, index)"
+                        @updateAddressPostcode="controller.onUpdateShareholderAddressPostcode($event, index)"
+                        @updateAddressCity="controller.onUpdateShareholderAddressCity($event, index)"
+                        @updateAddressState="controller.onUpdateShareholderAddressState($event, index)"
+                        @updateAddressCountry="controller.onUpdateShareholderAddressCountry($event, index)"
+                        @updateBirthdate="controller.onInputShareholderBirthdate($event, index)"
+                        @updatePassportExpiry="controller.onInputPassportExpiryDate($event, index)"
+                        @updateCitizenship="controller.onInputShareholderNationality($event, index)"
+                        @updateShareholdingCategory="controller.onSelectedShareholdingCategory($event, index)"
+                      />
                     </div>
                   </td>
                 </tr>
@@ -236,17 +306,25 @@
                   <td>:</td>
                   <td>
                     <div
-                      class="secretary"
+                      class="form-check"
                       v-for="secretary in SecretaryInformation.SECRETARY_NAME_LIST"
                     >
-                      <b>{{ secretary.name }}</b>
-                      <CopyValue :value="secretary.name" />
-                      <br />
-                      {{ secretary.nric }}
-                      <CopyValue :value="secretary.nric" />
-                      <br />
-                      {{ secretary.license }}
-                      <CopyValue :value="secretary.license" />
+                      <input
+                        type="checkbox"
+                        class="form-check-input"
+                        :checked="controller.isSecretarySelected(secretary)"
+                        @click="controller.onSecretaryClicked(secretary)"
+                      />
+                      <div class="secretary">
+                        <b>{{ secretary.name }}</b>
+                        <CopyValue :value="secretary.name" />
+                        <br />
+                        {{ secretary.nric }}
+                        <CopyValue :value="secretary.nric" />
+                        <br />
+                        {{ secretary.license }}
+                        <CopyValue :value="secretary.license" />
+                      </div>
                     </div>
                   </td>
                 </tr>
@@ -299,6 +377,7 @@
 <script lang="ts" setup>
   import CopyValue from "../Buttons/CopyValue.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
+  import Shareholder from "../Users/Shareholder.vue"
   import UploadDocument from "../Popups/UploadDocument.vue"
   import UserDetail from "@/components/Users/UserDetail.vue"
   import ViewDocument from "@/components/Documents/ViewDocument.vue"

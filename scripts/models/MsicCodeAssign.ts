@@ -71,7 +71,11 @@ export class MsicCodeAssign extends BaseModel<MsicCodeAssign> implements IModel<
       throw repository.error
     }
 
-    this.clone(response)
+    if (response instanceof MsicCodeAssign) {
+      this.clone(response)
+    } else {
+      this.convertFromResponse(response)
+    }
   }
 }
 
@@ -104,7 +108,7 @@ export class MsicCodeAssignTarget extends BaseModel<MsicCodeAssignTarget> {
 
   getRequestBody(): object {
     return {
-      id: this.id,
+      target_id: this.id,
       target: this.target,
     }
   }

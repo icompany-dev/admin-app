@@ -46,7 +46,7 @@ export class StatutoryFormBundles {
 }
 
 export enum StatutoryFormKeywords {
-  COI = "certificate of incorporation",
+  COI = "section 17, certificate of incorporation",
   S14 = "S. 14,Superform,Section 14,S 14,Section 14",
   S28 = "S. 28,Certificate of Change of Name,Section 28,S 28",
   S15 = "S. 15,Notification of Incorporation,Section 15,S 15",
@@ -55,7 +55,7 @@ export enum StatutoryFormKeywords {
   S58ForBanks = "Section 58 & 236(2)",
   S46 = "S. 46,Notification of Change Registered Address, S 46,Section 46",
   S51 = "S. 51,Register of Member, S 51,Section 51",
-  AnnualReturn = "Annual Return,Section 68,S 68",
+  AnnualReturn = "Section 68,S 68",
   BankAccountResolution = "Bank Account",
   PD2 = "Notification of change in the Business Address and / or Nature of Business, PD2, Practice Directive 2",
   ChangeOfName = "Change of Business Name, Change of Name, Change Co Name, Change Business Name",

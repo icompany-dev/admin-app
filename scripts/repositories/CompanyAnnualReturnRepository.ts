@@ -34,4 +34,13 @@ export class CompanyAnnualReturnRepository extends Repository<CompanyAnnualRetur
       throw error
     }
   }
+
+  async fetchDataForLodgeYear(filter: Filter): Promise<any> {
+    try {
+      const response = this.get<any>(`/api/admin/annual-returns/company/year?${filter.getSlug()}`)
+      return response
+    } catch (error) {
+      throw error
+    }
+  }
 }

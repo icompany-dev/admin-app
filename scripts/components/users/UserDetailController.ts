@@ -169,11 +169,11 @@ export class UserDetailController {
   }
 
   get addressLine2(): string {
-    return this.userDetail.value.location?.addressLine2?.toUpperCase() ?? "-"
+    return this.userDetail.value.location?.addressLine2?.toUpperCase() ?? ""
   }
 
   get addressLine3(): string {
-    return this.userDetail.value.location?.addressLine3?.toUpperCase() ?? "-"
+    return this.userDetail.value.location?.addressLine3?.toUpperCase() ?? ""
   }
 
   get addressPostcode(): string {
@@ -216,5 +216,21 @@ export class UserDetailController {
       PaperOrientation.Portrait,
       PaperSize.A4
     )
+  }
+
+  get dateOfBirth(): string {
+    let dayjs = useDayjs()
+
+    return dayjs(this.userDetail.value.birthdate).format("YYYY-MM-DD")
+  }
+
+  get passportExpiryDate(): string {
+    let dayjs = useDayjs()
+
+    return dayjs(this.userDetail.value.passportExpiryDate).format("YYYY-MM-DD")
+  }
+
+  get isForeigner(): boolean {
+    return this.userDetail.value.identificationType !== "ic"
   }
 }

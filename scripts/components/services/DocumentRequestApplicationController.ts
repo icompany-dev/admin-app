@@ -14,9 +14,6 @@ import { CompanyDocumentRequest } from "~/scripts/models/CompanyDocumentRequest"
 import { Bank } from "~/scripts/models/Bank"
 import { Filter } from "~/scripts/library/Filter"
 import { PaymentOrderItem } from "~/scripts/models/PaymentOrderItem"
-import type { PaymentOrderItemMandatory } from "~/scripts/models/PaymentOrderItemMandatory"
-import type { PaymentOrderItemOptional } from "~/scripts/models/PaymentOrderItemOptional"
-import type { PaymentOrder } from "~/scripts/models/PaymentOrder"
 import { CtcConstants, DeliveryConstants } from "~/scripts/constants/Payment"
 import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
 import { DownloadFileData } from "~/scripts/types/DownloadFileData"
@@ -24,8 +21,6 @@ import { FileZipper } from "~/scripts/utils/FileZipper"
 
 export class DocumentRequestApplicationController extends ApplicationController<CompanyDocumentRequest> {
   resolutionsRef: any | null = null
-
-  banks: Ref<Bank[]> = ref<Bank[]>([])
 
   isDownloading: Ref<boolean> = ref<boolean>(false)
 
@@ -45,27 +40,10 @@ export class DocumentRequestApplicationController extends ApplicationController<
 
     this.minimumMajorityRequired.value = 0
     this.selectedApprovalType.value = "director" // this is fixed for this service
-
-    this.fetchBanks()
   }
 
   setResolutionsRef(resolutionsRef: any): void {
     this.resolutionsRef = resolutionsRef
-  }
-
-  async fetchBanks(): Promise<void> {
-    try {
-      let repository = useBankStore()
-      let filter = new Filter()
-      filter.takeAll = true
-      let response = await repository.fetchAll(filter)
-
-      this.banks.value = response.data.map((d: any) => {
-        return new Bank(d)
-      })
-    } catch (e) {
-      console.error(e)
-    }
   }
 
   onPaymentStepClicked(): void {
@@ -73,6 +51,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
     this.isShowResolutions.value = false
     this.isShowCompleted.value = false
 
+    this.emitEvents("show", "")
     this.emitEvents("documentSelected", DocumentTargets.TARGET_RECEIPT)
   }
 
@@ -203,6 +182,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
       return
     }
 
+    this.emitEvents("documentSelected", "")
     this.emitEvents("show", item.iCompanyFile?.url)
   }
 
@@ -309,8 +289,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
     return (
       this.application.value.status === StatusConstants.SHIPPED ||
       this.application.value.status === StatusConstants.DELIVERED ||
-      this.application.value.status === StatusConstants.CONVERTED ||
-      this.application.value.status === StatusConstants.COMPLETED
+      this.application.value.status === StatusConstants.CONVERTED
     )
   }
 
@@ -335,10 +314,7 @@ export class DocumentRequestApplicationController extends ApplicationController<
       return false
     }
 
-    return (
-      this.application.value.status === StatusConstants.CONVERTED ||
-      this.application.value.status === StatusConstants.COMPLETED
-    )
+    return this.application.value.status === StatusConstants.CONVERTED
   }
 
   get applicationCompletedLabel(): string {

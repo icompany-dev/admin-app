@@ -5,6 +5,7 @@ import { Company } from "~/scripts/models/Company"
 import { StatusConstants } from "~/scripts/constants/Status"
 import type { CompanyDocumentRequestItem } from "~/scripts/models/CompanyDocumentRequestItem"
 import { StringUtil } from "~/scripts/utils/String"
+import { Filter } from "~/scripts/library/Filter"
 
 export class DocumentRequestsController extends SecretarialServicesController<CompanyDocumentRequest> {
   constructor(props: PropsSecretarialServices, emitEvents: any | null) {
@@ -24,15 +25,33 @@ export class DocumentRequestsController extends SecretarialServicesController<Co
         return new CompanyDocumentRequest(d)
       })
       .filter((d: CompanyDocumentRequest) => {
-        return (
-          (d.items.some((cdi: CompanyDocumentRequestItem) => {
+        let isRequestCorporateProfileWithCtc =
+          d.items.some((cdi: CompanyDocumentRequestItem) => {
             return StringUtil.contains(cdi.documentName, "corporate profile")
-          }) &&
-            d.isCtcRequired) ||
-          d.items.every((cdi: CompanyDocumentRequestItem) => {
-            return !StringUtil.contains(cdi.documentName, "corporate profile")
-          })
-        )
+          }) && d.isCtcRequired
+
+        let isNotRequestingCorporateProfile = d.items.every((cdi: CompanyDocumentRequestItem) => {
+          return !StringUtil.contains(cdi.documentName, "corporate profile")
+        })
+
+        if (!this.isShowCustomReso.value) {
+          return isRequestCorporateProfileWithCtc || isNotRequestingCorporateProfile
+        }
+
+        let isRequestingCustomResolution = d.items.some((cdi: CompanyDocumentRequestItem) => {
+          return StringUtil.contains(cdi.documentName, "custom resolution")
+        })
+
+        if (this.isShowPaidOnly.value) {
+          return (
+            (d.status !== StatusConstants.DRAFT &&
+              d.status !== StatusConstants.PENDING &&
+              (isRequestCorporateProfileWithCtc || isNotRequestingCorporateProfile)) ||
+            isRequestingCustomResolution
+          )
+        }
+
+        return true
       })
 
     this.tableDataFetcher.value.data = data
@@ -57,18 +76,49 @@ export class DocumentRequestsController extends SecretarialServicesController<Co
       })
       .join("")
 
-    return `
+    let content = `
       <b>${this.language.isMalay() ? "Dokumen yang Diminta" : "Documents Requested"}</b>
       <ul>
         ${documents}
       </ul>
     `
+
+    if (this.isCtcByCosecRequired(data) && this.isCtcBySSMRequired(data)) {
+      content = `${content}<b>Requested CTC By Cosec & SSM</b>`
+    } else if (this.isCtcByCosecRequired(data)) {
+      content = `${content}<b>Requested CTC By Cosec</b>`
+    } else if (this.isCtcBySSMRequired(data)) {
+      content = `${content}<b>Requested CTC By SSM</b>`
+    }
+
+    return content
+  }
+
+  isCtcByCosecRequired(data: any): boolean {
+    let application = new CompanyDocumentRequest(data)
+
+    return application.isCtcRequired
+  }
+
+  isCtcBySSMRequired(data: any): boolean {
+    let application = new CompanyDocumentRequest(data)
+
+    return application.isSsmCtcRequired
   }
 
   applicationDate(data: any): string {
     let application = new CompanyDocumentRequest(data)
     if (!application.paidAt) {
-      return this.language.isMalay() ? "Belum Dibayar" : "(Unpaid)"
+      let isRequestingCustomResolution = application.items.some((cdri: CompanyDocumentRequestItem) => {
+        return StringUtil.contains(cdri.documentName, "custom resolution")
+      })
+
+      if (isRequestingCustomResolution) {
+        let requestdate = this.time.formatDateTimeFull(application.createdAt ?? "")
+        return this.language.isMalay() ? `Dimohon pada ${requestdate}` : `Requested at ${requestdate}`
+      }
+
+      return this.language.isMalay() ? "Belum Dibayar" : "Pending Payment"
     }
 
     return this.time.formatDateTimeFull(application.paidAt)
@@ -115,5 +165,38 @@ export class DocumentRequestsController extends SecretarialServicesController<Co
     if (this.createDocumentRequestRef) {
       this.createDocumentRequestRef.show()
     }
+  }
+
+  override get filter(): Filter {
+    let filter = new Filter()
+    filter.take = 20
+    filter.takeAll = this.isShowCustomReso.value
+    filter.sortOrder = "desc"
+    filter.orderBy = "created_at"
+    filter.includeTestAccount = this.isIncludeDemo.value
+    filter.statuses = [
+      StatusConstants.READY,
+      StatusConstants.PAID,
+      StatusConstants.CONFIRMED,
+      StatusConstants.NAME_REJECTED,
+      StatusConstants.STAMPING,
+      StatusConstants.SHIPPED,
+      StatusConstants.APPROVED,
+      StatusConstants.REJECTED,
+      StatusConstants.SUBMITTED,
+      StatusConstants.COMPLETED,
+      StatusConstants.CANCELLED,
+    ]
+
+    if (!this.isShowPaidOnly.value || this.isShowCustomReso.value) {
+      filter.statuses.push(StatusConstants.DRAFT)
+      filter.statuses.push(StatusConstants.PENDING)
+    }
+
+    if (!StringUtil.isNullOrEmpty(this.searchText.value)) {
+      filter.searchText = this.searchText.value
+    }
+
+    return filter
   }
 }

@@ -291,12 +291,28 @@ export class AllController {
     }
   }
 
-  onServicePricingUpdated(servicePricing: ServicePricing): void {
+  async onServicePricingUpdated(servicePricing: ServicePricing): Promise<void> {
     if (this.isAddingService.value) {
       if (this.servicesRef) {
         this.servicesRef.handlePostCreateUpdate(servicePricing)
       }
+    } else {
+      // Add to the module!
+      let newLabelItem = new LabelItem()
+      newLabelItem.label = new Label(this.moduleInView.value)
+      newLabelItem.labelId = this.moduleInView.value.id
+      newLabelItem.targetType = "service_pricing"
+      newLabelItem.targetId = servicePricing.id
+
+      await newLabelItem.addItem(useLabelStore())
+      this.moduleApplications.value.push(newLabelItem)
     }
+  }
+
+  onApplicationRemovedFromModule(labelItem: LabelItem): void {
+    this.moduleApplications.value = this.moduleApplications.value.filter((li: LabelItem) => {
+      return li.id !== labelItem.id
+    })
   }
 
   //getters
@@ -320,5 +336,9 @@ export class AllController {
     let labelItems = this.getApplicationsForModules(this.moduleInView.value)
 
     return new PropsGroupedServicePricing(this.moduleInView.value, labelItems)
+  }
+
+  get isShowingAnyModule(): boolean {
+    return !StringUtil.isNullOrEmpty(this.moduleInView.value.id)
   }
 }

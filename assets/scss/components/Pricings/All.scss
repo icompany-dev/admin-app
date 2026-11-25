@@ -144,13 +144,15 @@
 
   .labels {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     justify-content: flex-start;
     align-items: stretch;
     gap: 5px;
+    transition: all 1s ease;
 
     .label-wrapper {
-      width: calc(100% - 20px);
+      width: calc(30% - 5px);
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
@@ -165,11 +167,11 @@
       }
 
       .label {
-        width: 20%;
+        width: 100%;
       }
 
       .application-wrapper {
-        width: calc(80% - 10px);
+        display: none;
       }
     }
 
@@ -223,6 +225,23 @@
             gap: 10px;
             color: var(--color-text-primary);
           }
+        }
+      }
+    }
+
+    &.showing {
+      flex-direction: column;
+
+      .label-wrapper {
+        width: calc(100% - 20px);
+
+        .label {
+          width: 20%;
+        }
+
+        .application-wrapper {
+          width: calc(80% - 10px);
+          display: block;
         }
       }
     }
