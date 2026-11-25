@@ -170,8 +170,19 @@
             gap: 20px;
             width: 100%;
 
+            .number {
+              font-weight: 600;
+              font-size: 14px;
+              padding-bottom: 4px;
+            }
+
             .searchable-dropdown {
               width: 70% !important;
+            }
+
+            .form-control {
+              width: 70% !important;
+              font-weight: 600;
             }
 
             .action-icons {
@@ -197,6 +208,10 @@
 
                 &.remove {
                   color: var(--bs-danger);
+                }
+
+                &.save {
+                  color: var(--bs-icompany-green);
                 }
               }
             }

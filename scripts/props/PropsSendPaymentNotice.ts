@@ -9,6 +9,8 @@ export interface IPropsSendPaymentNotice {
   targetId: string
   billingInfo: BillingInfo
   deliveryInfo: DeliveryInfo
+
+  emailRecipients: string[]
 }
 
 export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
@@ -19,6 +21,7 @@ export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
   targetId: string
   billingInfo: BillingInfo
   deliveryInfo: DeliveryInfo
+  emailRecipients: string[] = []
 
   constructor(
     entityType: string,

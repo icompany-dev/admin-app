@@ -25,38 +25,46 @@
                       v-for="(pricing, i) in controller.selectedPricings.value"
                     >
                       <div class="service-pricing">
-                        <Transition name="fade">
-                          <SearchableDropdown
-                            v-if="!controller.isEditingPricing(i)"
-                            :options="controller.pricingOptions"
-                            :selectedItemName="controller.getSelectedPricingName(pricing)"
-                            :placeholder="'Select One'"
-                            :labelKey="'label'"
-                            :valueKey="'value'"
-                            :isSearchable="true"
-                            @search="controller.onSearchPrice($event)"
-                            @selected="controller.onSelectedPricingId($event, i)"
-                          />
-                        </Transition>
-                        <Transition name="fade">
-                          <input
-                            v-if="controller.isEditingPricing(i)"
-                            type="text"
-                            class="form-control"
-                            v-model="controller.newServicePricing.value.serviceName"
-                            placeholder="Name"
-                          />
-                        </Transition>
+                        <span class="number"># {{ i + 1 }}</span>
+                        <SearchableDropdown
+                          v-if="!controller.isEditingPricing(i)"
+                          :options="controller.pricingOptions"
+                          :selectedItemName="controller.getSelectedPricingName(pricing)"
+                          :placeholder="'Select One'"
+                          :labelKey="'label'"
+                          :valueKey="'value'"
+                          :isSearchable="true"
+                          @search="controller.onSearchPrice($event)"
+                          @selected="controller.onSelectedPricingId($event, i)"
+                        />
+                        <input
+                          v-if="controller.isEditingPricing(i)"
+                          type="text"
+                          class="form-control"
+                          v-model="controller.newServicePricing.value.serviceName"
+                          placeholder="Name"
+                        />
                         <div class="action-icons">
                           <div
-                            class="clickable"
-                            :class="!controller.isEditingPricing(i) ? 'edit' : 'cancel'"
+                            class="clickable edit"
+                            v-if="!controller.isEditingPricing(i) && controller.indexOfPricingInEdit.value === null"
                             @click="controller.onEditSelectedPricingClicked(i)"
                           >
-                            <i
-                              class="fa-regular"
-                              :class="!controller.isEditingPricing(i) ? 'fa-edit' : 'fa-xmark'"
-                            />
+                            <i class="fa-regular fa-edit" />
+                          </div>
+                          <div
+                            class="clickable cancel"
+                            v-if="controller.isEditingPricing(i)"
+                            @click="controller.onCancelEditClicked(i)"
+                          >
+                            <i class="fa-regular fa-xmark" />
+                          </div>
+                          <div
+                            class="clickable save"
+                            v-if="controller.isEditingPricing(i)"
+                            @click="controller.onSaveEditClicked(i)"
+                          >
+                            <i class="fa-regular fa-check" />
                           </div>
                           <div
                             class="clickable remove"
@@ -74,7 +82,7 @@
                           </div>
                           <div class="price"><b>RM</b></div>
                         </div>
-                        <template v-if="!controller.isEditingPricing(i) && !controller.indexOfPricingInEdit.value">
+                        <template v-if="!controller.isEditingPricing(i)">
                           <div
                             class="service-pricing-detail"
                             v-for="(breakdown, index) in controller.getSelectedBreakdowns(pricing)"
@@ -96,21 +104,19 @@
                           <div class="service-pricing-detail config-row">
                             <div class="label">Cosec Service Fee</div>
                             <div class="price">
-                              {{ NumberUtil.currency(controller.selectedServicePricing.value.config.cosecServiceFee) }}
+                              {{ NumberUtil.currency(pricing.config.cosecServiceFee) }}
                             </div>
                           </div>
                           <div class="service-pricing-detail config-row">
                             <div class="label">Digital Service Fee</div>
                             <div class="price">
-                              {{
-                                NumberUtil.currency(controller.selectedServicePricing.value.config.digitalServiceFee)
-                              }}
+                              {{ NumberUtil.currency(pricing.config.digitalServiceFee) }}
                             </div>
                           </div>
                           <div class="service-pricing-detail config-row">
                             <div class="label">Handling Fees</div>
                             <div class="price">
-                              {{ NumberUtil.currency(controller.selectedServicePricing.value.config.handlingFees) }}
+                              {{ NumberUtil.currency(pricing.config.handlingFees) }}
                             </div>
                           </div>
                         </template>
@@ -150,7 +156,7 @@
                               class="btn btn-submit invert"
                               @click="controller.onAddBreakdown()"
                             >
-                              Add Items
+                              Add Custom Items
                             </button>
                           </div>
                           <div class="divider"></div>
@@ -190,7 +196,7 @@
                               class="btn btn-submit invert"
                               @click="controller.onAddMandatory()"
                             >
-                              Add Existing Service
+                              Add Mandatory Requirements
                             </button>
                           </div>
                           <div class="service-pricing-detail config-row">
@@ -268,7 +274,7 @@
                         class="form-check-input"
                         v-model="controller.isNotify.value"
                       />
-                      <span>Notify via Email and WhatsApp</span>
+                      <span>Notify via Email</span>
                     </div>
                   </div>
                 </div>
