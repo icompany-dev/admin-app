@@ -16,6 +16,7 @@ import type { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNot
 import { ServicePricingBreakdown } from "~/scripts/models/ServicePricingBreakdown"
 import { ServicePricingMandatory } from "~/scripts/models/ServicePricingMandatory"
 import { NumberUtil } from "~/scripts/utils/Number"
+import { AdminEmail } from "~/scripts/models/AdminEmail"
 
 export class SendPaymentNoticeController extends BasePopupController {
   entityType: Ref<string> = ref<string>("")
@@ -44,6 +45,11 @@ export class SendPaymentNoticeController extends BasePopupController {
 
   discountAmount: Ref<number> = ref<number>(0)
 
+  selectedPricings: Ref<ServicePricing[]> = ref<ServicePricing[]>([])
+  indexOfPricingInEdit: Ref<number | null> = ref<number | null>(null)
+
+  emailRecipients: Ref<string[]> = ref<string[]>([])
+
   constructor(props: PropsSendPaymentNotice, emitEvents: any) {
     super(emitEvents)
 
@@ -61,6 +67,8 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.selectedServicePricing.value = new ServicePricing()
     this.searchText.value = ""
     this.searchTexts.value = []
+
+    this.selectedPricings.value = [new ServicePricing()]
   }
 
   override hide(): void {
@@ -76,6 +84,7 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.targetId.value = props.targetId || ""
     this.billingInfo.value = props.billingInfo
     this.deliveryInfo.value = props.deliveryInfo
+    this.emailRecipients.value = props.emailRecipients
   }
 
   async fetchServicePricings(): Promise<void> {
@@ -100,6 +109,114 @@ export class SendPaymentNoticeController extends BasePopupController {
     } finally {
       this.isFetchingServicePricings.value = false
     }
+  }
+
+  onAddPricing(): void {
+    this.selectedPricings.value.push(new ServicePricing())
+  }
+
+  onRemovePricing(index: number): void {
+    if (this.indexOfPricingInEdit.value === index) {
+      this.indexOfPricingInEdit.value = null
+    }
+
+    this.selectedPricings.value.splice(index, 1)
+  }
+
+  onSelectedPricingId(selectedId: string, index: number): void {
+    let pricing = this.selectedPricings.value[index] ?? null
+    if (!pricing) {
+      return
+    }
+
+    let selectedPricing =
+      this.servicePricings.value.find((sp: ServicePricing) => {
+        return sp.id === selectedId
+      }) ?? null
+    if (!selectedPricing) {
+      return
+    }
+
+    this.selectedPricings.value[index] = new ServicePricing(selectedPricing)
+  }
+
+  onEditSelectedPricingClicked(index: number): void {
+    if (this.indexOfPricingInEdit.value !== null) {
+      this.selectedPricings.value[this.indexOfPricingInEdit.value] = new ServicePricing(this.newServicePricing.value)
+
+      if (this.indexOfPricingInEdit.value === index) {
+        this.indexOfPricingInEdit.value = null
+        return
+      }
+    }
+
+    let pricingToEdit = this.selectedPricings.value[index]
+    if (!pricingToEdit) {
+      return
+    }
+
+    this.selectedPricingId.value = pricingToEdit.id
+    this.selectedServicePricing.value = new ServicePricing(pricingToEdit)
+    this.onEditPricingClicked()
+
+    this.indexOfPricingInEdit.value = index
+  }
+
+  onCancelEditClicked(index: number): void {
+    this.indexOfPricingInEdit.value = null
+  }
+
+  onSaveEditClicked(index: number): void {
+    if (this.indexOfPricingInEdit.value !== index) {
+      return
+    }
+
+    this.selectedPricings.value[this.indexOfPricingInEdit.value] = new ServicePricing(this.newServicePricing.value)
+    this.indexOfPricingInEdit.value = null
+  }
+
+  isPricingEditable(index: number): boolean {
+    return this.indexOfPricingInEdit.value !== null && this.indexOfPricingInEdit.value === index
+  }
+
+  isEditingPricing(index: number): boolean {
+    return this.indexOfPricingInEdit.value !== null && this.indexOfPricingInEdit.value === index
+  }
+
+  getSelectedPricingName(pricing: ServicePricing): string {
+    if (this.isFetchingServicePricings.value) {
+      return "Loading..."
+    }
+
+    if (StringUtil.isNullOrEmpty(pricing.serviceName)) {
+      return "Select One"
+    }
+
+    return pricing.serviceName
+  }
+
+  getSelectedBreakdowns(pricing: ServicePricing): ServicePricingBreakdown[] {
+    return pricing.breakdowns.filter((breakdown: ServicePricingBreakdown) => {
+      return breakdown.price > 0
+    })
+  }
+
+  getSelectedMandatories(pricing: ServicePricing): ServicePricingMandatory[] {
+    return pricing.mandatoryServices
+  }
+
+  getEditLabel(index: number): string {
+    if (this.isEditingPricing(index)) {
+      return this.language.isMalay() ? "Batal" : "Cancel"
+    }
+
+    return this.language.isMalay() ? "Tukar" : "Edit"
+  }
+
+  getSubtotal(pricing: ServicePricing): string {
+    let total = Number(pricing.baseGrandTotal) + Number(pricing.config.handlingFees)
+
+    return NumberUtil.currency(total)
   }
 
   onServicePricingSelected(selectedId: string): void {
@@ -268,30 +385,68 @@ export class SendPaymentNoticeController extends BasePopupController {
     try {
       this.isSubmitting.value = true
 
-      if (this.isCustomPricing.value) {
-        await this.newServicePricing.value.create(useServicePricingStore())
+      // find the ones that need to create first
+      let promises = this.selectedPricings.value
+        .filter((sp: ServicePricing) => {
+          return StringUtil.isNullOrEmpty(sp.id)
+        })
+        .map((sp: ServicePricing) => {
+          sp.isCustom = true
+          return sp.create(useServicePricingStore())
+        })
+
+      if (promises.length > 0) {
+        await Promise.all(promises)
       }
 
-      let notice = this.paymentNotice
-      await notice.create(usePaymentNoticeStore())
+      // create notices
+      let notices = this.paymentNotices
+      let promiseNotices = notices.map((pn: PaymentNotice) => {
+        return pn.create(usePaymentNoticeStore())
+      })
+
+      await Promise.all(promiseNotices)
+
+      // let notice = this.paymentNotice
+      // await notice.create(usePaymentNoticeStore())
 
       let cart = this.paymentCart
       cart.items.forEach((pci) => {
+        let notice = notices.find((pn: PaymentNotice) => {
+          return pn.servicePricingId === pci.servicePricingId
+        })
+
+        if (!notice) {
+          return
+        }
+
         pci.targetType = "payment_notice"
         pci.targetId = notice.id
       })
+
+      // Remove the ones without targetId
+      cart.items = cart.items.filter((pci: PaymentCartItem) => {
+        return pci.targetId !== ""
+      })
+
       await cart.create(usePaymentCartStore())
 
       if (this.isNotify.value) {
-        await notice.notify(usePaymentNoticeStore())
+        // Create custom notice using admin Email
+        let adminEmail = new AdminEmail()
+        adminEmail.subject = this.emailTitle
+        adminEmail.content = this.emailContent
+        adminEmail.recipients = this.emailRecipients.value
+
+        await adminEmail.sendEmail(useAdminEmailStore())
       }
 
       let toastTitle = this.language.isMalay() ? "Arahan Bayaran telah dibuat." : "Payment Order is Created."
       let toastMessage = ""
       if (this.isNotify.value) {
         toastMessage = this.language.isMalay()
-          ? "Penerima telah dimaklumkan melalui e-mel dan WhatsApp."
-          : "Recipient has been notified via email and WhatsApp."
+          ? "Penerima telah dimaklumkan melalui e-mel."
+          : "Recipients is notified via email."
       }
       let toast = new Toast(toastTitle, toastMessage)
       toast.success()
@@ -342,10 +497,10 @@ export class SendPaymentNoticeController extends BasePopupController {
     return this.servicePricings.value
       .filter((pricing: ServicePricing) => {
         if (StringUtil.isNullOrEmpty(this.searchText.value)) {
-          return true
+          return pricing.mandatoryServices.length > 0
         }
 
-        return StringUtil.contains(pricing.serviceName, this.searchText.value)
+        return StringUtil.contains(pricing.serviceName, this.searchText.value) && pricing.mandatoryServices.length > 0
       })
       .map((pricing: ServicePricing) => {
         let price = Number(pricing.baseGrandTotal ?? 0) + Number(pricing.config.handlingFees ?? 0)
@@ -369,6 +524,36 @@ export class SendPaymentNoticeController extends BasePopupController {
     return notice
   }
 
+  get paymentNotices(): PaymentNotice[] {
+    return this.selectedPricings.value.map((sp: ServicePricing) => {
+      let notice = new PaymentNotice()
+      notice.entityType = this.entityType.value
+      notice.entityId = this.entityId.value
+      notice.target = this.target.value
+      notice.targetId = this.targetId.value
+
+      notice.servicePricingId = sp.id
+
+      return notice
+    })
+  }
+
+  get paymentCartItems(): PaymentCartItem[] {
+    return this.selectedPricings.value.map((sp: ServicePricing) => {
+      let item = new PaymentCartItem()
+      item.targetType = this.target.value
+      item.targetId = this.targetId.value
+      item.discountAmount = this.discountAmount.value
+
+      item.servicePricingId = sp.id
+      item.servicePricing = sp
+
+      item.setSubtotal()
+
+      return item
+    })
+  }
+
   get paymentCartItem(): PaymentCartItem {
     let item = new PaymentCartItem()
     item.targetType = this.target.value
@@ -388,8 +573,9 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   get cartTotal(): number {
-    let item = this.paymentCartItem
-    return Number(item.subtotal ?? 0)
+    return this.paymentCartItems.reduce((a: number, b: PaymentCartItem) => {
+      return a + Number(b.subtotal)
+    }, 0)
   }
 
   get paymentCart(): PaymentCart {
@@ -398,25 +584,33 @@ export class SendPaymentNoticeController extends BasePopupController {
     cart.entityId = this.entityId.value
     cart.billingInfo = this.billingInfo.value
     cart.deliveryInfo = this.deliveryInfo.value
-    cart.items = [this.paymentCartItem]
+    cart.items = this.paymentCartItems
     cart.total = this.cartTotal
 
     return cart
   }
 
   get canProceed(): boolean {
-    if (this.isCustomPricing.value) {
-      return (
-        !this.isFetchingServicePricings.value && !this.isSubmitting.value && this.newServicePricing.value.canSubmit()
-      )
-    }
+    let areSelectedPricingValid = this.selectedPricings.value.every((sp: ServicePricing) => {
+      // if custom
+      if (StringUtil.isNullOrEmpty(sp.id)) {
+        return sp.canSubmit()
+      }
+
+      return !StringUtil.isNullOrEmpty(sp.id)
+    })
+
+    let arePaymentNoticesValid = this.paymentNotices.every((pn: PaymentNotice) => {
+      return pn.canSubmit()
+    })
 
     return (
       !this.isFetchingServicePricings.value &&
       !this.isSubmitting.value &&
-      !StringUtil.isNullOrEmpty(this.selectedPricingId.value) &&
+      this.selectedPricings.value.length > 0 &&
+      areSelectedPricingValid &&
       this.paymentCart.canSubmit() &&
-      this.paymentNotice.canSubmit()
+      arePaymentNoticesValid
     )
   }
 
@@ -467,11 +661,65 @@ export class SendPaymentNoticeController extends BasePopupController {
     return NumberUtil.currency(this.cartTotal)
   }
 
+  get grandTotal(): string {
+    let totalPricings = this.selectedPricings.value.reduce((a: number, b: ServicePricing) => {
+      return a + (Number(b.baseGrandTotal) + Number(b.config.handlingFees))
+    }, 0)
+
+    let finalPrice = totalPricings - this.discountAmount.value
+
+    return NumberUtil.currency(finalPrice)
+  }
+
   get editLabel(): string {
     if (this.language.isMalay()) {
       return this.isCustomPricing.value ? "Batal" : "Kemas Kini"
     }
 
     return this.isCustomPricing.value ? "Cancel Edit" : "Edit"
+  }
+
+  get canRemove(): boolean {
+    return this.selectedPricings.value.length > 1 && this.indexOfPricingInEdit.value === null
+  }
+
+  get emailTitle(): string {
+    return `[NOTICE] - Payment Order for ${this.entityName.value}`
+  }
+
+  get emailContent(): string {
+    let greetings = this.emailRecipients.value.length > 1 ? "Directors" : "Director"
+
+    return `
+      <p>Dear ${greetings},</p>
+      <p>Payment Order is ready for your settlement for the following:</p>
+      <table>
+        <tr>
+          <td style="vertical-align: top;"><b>Application/Services</b></td>
+          <td>:</td>
+          <td>${this.paymentFor}</td>
+        </tr>
+        <tr>
+          <td><b>Company Name</b></td>
+          <td>:</td>
+          <td>${this.entityName.value}</td>
+        </tr>
+        <tr>
+          <td><b>Grand Total</b></td>
+          <td>:</td>
+          <td>${this.grandTotal}</td>
+        </tr>
+      </table>
+      <p>Please <a target="_blank" style="font-weight: bold; text-decoration: none;" href="https://cosec.icompany.my">Login</a> to view the Payment Order in details and make payment.</p>
+      <p>Thank You.</p>
+    `
+  }
+
+  get paymentFor(): string {
+    let names = this.selectedPricings.value.map((sp: ServicePricing) => {
+      return sp.serviceName
+    })
+
+    return StringUtil.oxfordJoin("&", names)
   }
 }
