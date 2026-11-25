@@ -1,5 +1,6 @@
 import { DocumentTargets } from "~/scripts/constants/DocumentTargets"
 import { StatusConstants } from "~/scripts/constants/Status"
+import { Error } from "~/scripts/library/Error"
 import { Application } from "~/scripts/models/Application"
 import type { ApplicationIncorporate } from "~/scripts/models/ApplicationIncorporate"
 import type { ApplicationSwitch } from "~/scripts/models/ApplicationSwitch"
@@ -66,6 +67,17 @@ export class ServiceApplicationController {
   }
 
   async onDownloaReceiptClicked(): Promise<void> {
+    if (!this.hasPaid) {
+      let error = new Error()
+      error.type = Error.ERROR_TYPE_DATA
+      error.title = this.language.isMalay()
+        ? "Anda masih belum terima sebarang bayaran."
+        : "You have not received any payment."
+      error.message = this.language.isMalay() ? "Tiada resit untuk dimuat turun." : "There is no receipt to download."
+      error.handle()
+      return
+    }
+
     this.emitEvents("download", DocumentTargets.TARGET_RECEIPT)
   }
 
@@ -100,7 +112,10 @@ export class ServiceApplicationController {
       return this.language.isMalay() ? "Tiada Bayaran Diterima" : "No Payment Received"
     }
 
-    return this.language.isMalay() ? "Bayaran Diterima" : "Payment Received"
+    let time = useLocalTime()
+
+    let date = time.formatDateTimeFull(this.application.value?.paidAt ?? "")
+    return this.language.isMalay() ? `Dibayar pada ${date}` : `Paid at ${date}`
   }
 
   get paymentSublabel(): string {

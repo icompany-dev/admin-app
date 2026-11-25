@@ -10,15 +10,29 @@ export class ReceiptInvoiceServiceController {
 
   emitEvents: any | null = null
 
+  documentRef: any | null = null
+
   constructor(props: IPropsDocumentService, emitEvents: any) {
     this.emitEvents = emitEvents
 
     this.setValuesProps(props)
   }
 
+  setDocumentRef(documentRef: any): void {
+    this.documentRef = documentRef
+  }
+
   setValuesProps(props: IPropsDocumentService): void {
     this.companyId.value = props.companyId ?? ""
     this.paymentOrderId.value = props.targetId ?? ""
+  }
+
+  async onDownloadClicked(): Promise<void> {
+    if (!this.documentRef) {
+      return
+    }
+
+    await this.documentRef.downloadReceipt()
   }
 
   get serviceWrapperProps(): PropsCompanyServiceWrapper {

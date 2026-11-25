@@ -12,34 +12,29 @@
           class="name"
           v-html="controller.serviceName.value"
         />
-        <slot name="titleOptions" />
+        <div class="payment-info">
+          <div
+            class="payment-details"
+            @click.self="controller.onPaymentNodeClicked()"
+          >
+            {{ controller.paymentLabel }}
+            <Transition name="fade">
+              <span
+                v-if="controller.hasPaid"
+                class="paid"
+                @click="controller.onDownloaReceiptClicked()"
+              >
+                <i class="fa-solid fa-circle-check" />
+              </span>
+            </Transition>
+          </div>
+        </div>
       </div>
       <Transition name="fade">
         <div
           class="panel-content"
           v-if="!controller.isCollapsed.value"
         >
-          <ApplicationNode
-            v-bind="controller.receiptApplicationNodeProps"
-            @click="controller.onPaymentNodeClicked()"
-          >
-            <template #nodeContent>
-              <div class="application-container">
-                <div class="node-title">{{ controller.paymentLabel }}</div>
-                <div class="node-subtitle">({{ controller.paymentSublabel }})</div>
-              </div>
-            </template>
-            <template #nodeOptions>
-              <button
-                v-if="controller.hasPaid"
-                class="btn btn-pill btn-primary"
-                :class="{ 'is-loading': controller.isDownloadingReceipt.value }"
-                @click="controller.onDownloaReceiptClicked()"
-              >
-                {{ controller.downloadLabel }}
-              </button>
-            </template>
-          </ApplicationNode>
           <slot name="application"></slot>
         </div>
       </Transition>

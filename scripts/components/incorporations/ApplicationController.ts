@@ -316,6 +316,16 @@ export class ApplicationController {
     this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
   }
 
+  async onDownloadReceipt(): Promise<void> {
+    this.selectedDocumentTarget.value = DocumentTargets.TARGET_RECEIPT
+
+    if (!this.documentRef) {
+      return
+    }
+
+    await this.documentRef.onDownloadClicked()
+  }
+
   async onUploadDocumentClicked(targetForDocumentUpload: string): Promise<void> {
     if (!this.uploadFilePopup) {
       return

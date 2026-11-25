@@ -14,6 +14,7 @@
         <ServiceApplication
           v-bind="controller.serviceApplicationProps"
           @paymentNodeSelected="controller.onPaymentStepClicked()"
+          @download="controller.onDownloadReceipt()"
         >
           <template #application>
             <ApplicationNode v-bind="controller.nameReservationNodeProps">

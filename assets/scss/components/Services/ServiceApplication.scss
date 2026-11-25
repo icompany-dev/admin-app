@@ -31,6 +31,19 @@
         padding-left: 15px;
         cursor: pointer;
       }
+
+      .payment-info {
+        .payment-details {
+          font-size: 14px;
+          font-weight: 600;
+
+          .paid {
+            color: var(--bs-icompany-green);
+            font-size: 16px;
+            cursor: pointer;
+          }
+        }
+      }
     }
 
     .panel-content {

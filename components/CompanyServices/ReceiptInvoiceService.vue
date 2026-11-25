@@ -10,7 +10,10 @@
           tag="div"
           class="documents"
         >
-          <ReceiptInvoice :payment-order-id="controller.paymentOrderId.value" />
+          <ReceiptInvoice
+            ref="documentRef"
+            :payment-order-id="controller.paymentOrderId.value"
+          />
         </TransitionGroup>
       </template>
     </CompanyServiceWrapper>
@@ -27,6 +30,8 @@
 
   const emit = defineEmits([])
 
+  const documentRef = ref(null)
+
   const controller = new ReceiptInvoiceServiceController(props, emit)
 
   watch(
@@ -36,6 +41,18 @@
     },
     { deep: true }
   )
+
+  watch(
+    documentRef,
+    (newVal) => {
+      controller.setDocumentRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  defineExpose({
+    onDownloadClicked: controller.onDownloadClicked.bind(controller),
+  })
 </script>
 
 <style lang="scss">
