@@ -426,7 +426,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   get addressLine1(): string {
-    return this.application.value?.businessAddressLocation?.addressLine1 ?? "(Address Incomplete)"
+    return this.application.value?.businessAddressLocation?.addressLine1.toUpperCase() ?? "(Address Incomplete)"
   }
 
   get hasAddressLine2(): boolean {
@@ -438,7 +438,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
       return "(No Address Line 2)"
     }
 
-    return this.application.value?.businessAddressLocation?.addressLine2 ?? "(No Address Line 2)"
+    return this.application.value?.businessAddressLocation?.addressLine2?.toUpperCase() ?? "(No Address Line 2)"
   }
 
   get hasAddressLine3(): boolean {
@@ -450,7 +450,7 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
       return "(No Address Line 3)"
     }
 
-    return this.application.value?.businessAddressLocation?.addressLine3 ?? "(No Address Line 3)"
+    return this.application.value?.businessAddressLocation?.addressLine3?.toUpperCase() ?? "(No Address Line 3)"
   }
 
   get postcode(): string {
@@ -458,15 +458,15 @@ export class ChangeOfAddressApplicationController extends ApplicationController<
   }
 
   get cityName(): string {
-    return this.application.value?.businessAddressLocation?.city?.name ?? ""
+    return this.application.value?.businessAddressLocation?.city?.name?.toUpperCase() ?? ""
   }
 
   get stateName(): string {
-    return this.application.value?.businessAddressLocation?.state?.name ?? ""
+    return this.application.value?.businessAddressLocation?.state?.name?.toUpperCase() ?? ""
   }
 
   get countryName(): string {
-    return this.application.value?.businessAddressLocation?.country?.name ?? ""
+    return this.application.value?.businessAddressLocation?.country?.name?.toUpperCase() ?? ""
   }
 
   get AddressReservationNodeProps(): PropsServiceApplicationNode {
