@@ -20,6 +20,9 @@ export class UserDetail {
   createdAt: string | null = null
   updatedAt: string | null = null
 
+  passportExpiryDate: string = ""
+  birthdate: string = ""
+
   constructor(data: any = null) {
     if (data !== null) {
       if (data instanceof UserDetail) {

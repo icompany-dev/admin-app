@@ -7,6 +7,7 @@ import { NumberUtil } from "~/scripts/utils/Number"
 
 export class ShareholderController {
   shareholder: Ref<Shareholder> = ref<Shareholder>(new Shareholder())
+  isEditable: Ref<boolean> = ref<boolean>(false)
 
   emitEvents: any | null = null
 
@@ -20,13 +21,18 @@ export class ShareholderController {
 
   setDataFromProps(props: PropsShareholderDetail): void {
     this.shareholder.value = new Shareholder(props.shareholder)
+    this.isEditable.value = props.isEditable
   }
 
   get userDetailProps(): PropsUserDetail {
-    return new PropsUserDetail(
+    let props = new PropsUserDetail(
       this.shareholder.value.user ?? new User(),
       this.shareholder.value.user?.detail ?? new UserDetail()
     )
+
+    props.isEditable = this.isEditable.value
+
+    return props
   }
 
   get isCorporateShareholder(): boolean {

@@ -95,10 +95,23 @@ export interface ARShareholder {
   name: string
   idOrRegNumber: string
   address: string
+  address1: string
+  address2: string
+  postcode: string
+  city: string
+  state: string
+  country: string
   nationalityOrCountry: string
   shareClass: "Ordinary" | "Preference"
   numberOfShares: number
   percentage: number
+  isCorporate: boolean
+  isMalaysian: boolean
+  race: string
+  gender: string
+  birthdate: string
+  passportExpiryDate: string
+  shareholdingCategory: string
 }
 
 export interface ARIndebtedness {
@@ -151,11 +164,15 @@ export interface AnnualReturnData {
 export interface GeneratedXBRLPackage {
   filename: string
   xbrlFilename: string
+  scmCsvFileName: string
+  pmCsvFileName: string
   zipBlob: Blob
   sizeBytes: number
   xbrlXml: string
-  manifestXml: string
-  calculationXml: string
+  scmCsv: string
+  pmCsv: string
+  // manifestXml: string
+  // calculationXml: string
   validationReport: {
     isValid: boolean
     errors: string[]

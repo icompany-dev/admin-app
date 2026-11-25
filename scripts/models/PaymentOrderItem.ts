@@ -8,10 +8,14 @@ import { PaymentOrderItemBreakdown } from "./PaymentOrderItemBreakdown"
 import { PaymentOrderItemDelivery } from "./PaymentOrderItemDelivery"
 import { PaymentOrderItemMandatory } from "./PaymentOrderItemMandatory"
 import { PaymentOrderItemOptional } from "./PaymentOrderItemOptional"
+import { PaymentOrderItemPpp } from "./PaymentOrderItemPpp"
+import { PaymentOrderItemPppItem } from "./PaymentOrderItemPppItem"
 import { ServicePricing } from "./ServicePricing"
 import { ServicePricingBreakdown } from "./ServicePricingBreakdown"
 import type { ServicePricingMandatory } from "./ServicePricingMandatory"
 import type { ServicePricingOptional } from "./ServicePricingOptional"
+import type { ServicePricingPpp } from "./ServicePricingPpp"
+import { ServicePricingPppItem } from "./ServicePricingPppItem"
 
 export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   id: string = ""
@@ -24,6 +28,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   targetType: string = ""
   targetId: string = ""
   discountId: string | null = null
+  discountName: string | null = null
   discountPercent: number = 0
   discountAmount: number = 0
   isExpressFilingRequired: boolean = false
@@ -52,6 +57,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
   breakdowns: PaymentOrderItemBreakdown[] = []
   mandatories: PaymentOrderItemMandatory[] = []
   optionals: PaymentOrderItemOptional[] = []
+  ppps: PaymentOrderItemPpp[] = []
   delivery: PaymentOrderItemDelivery | null = null
   createdAt: string | null = null
   updatedAt: string | null = null
@@ -91,6 +97,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.targetType = data.target_type
     this.targetId = data.target_id
     this.discountId = data.discount_id ?? null
+    this.discountName = data.discount_name ?? []
     this.discountPercent = data.discount_percent
     this.discountAmount = data.discount_amount
     this.isExpressFilingRequired = data.is_express_filing_required
@@ -154,6 +161,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.targetType = data.targetType
     this.targetId = data.targetId
     this.discountId = data.discountId
+    this.discountName = data.discountName
     this.discountPercent = data.discountPercent
     this.discountAmount = data.discountAmount
     this.isExpressFilingRequired = data.isExpressFilingRequired
@@ -225,6 +233,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
     this.targetType = data.targetType
     this.targetId = data.targetId
     this.discountId = data.discountId
+    this.discountName = data.discountName
     this.discountPercent = data.discountPercent
     this.discountAmount = data.discountAmount
     this.isExpressFilingRequired = data.isExpressFilingRequired
@@ -283,10 +292,39 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
 
         return newOptional
       })
+
+    if (
+      this.deliveryType === DeliveryConstants.DELIVERY_COURIER ||
+      this.deliveryType === DeliveryConstants.DELIVERY_THIRD_PARTY ||
+      this.deliveryType === DeliveryConstants.DELIVERY_THIRD_PARTY
+    ) {
+      this.ppps = data.servicePricing.paperPrintingPackagings.map((ppp: ServicePricingPpp) => {
+        let newPaymentOrderItemPpp = new PaymentOrderItemPpp()
+        newPaymentOrderItemPpp.standardPackagingMinLimit = ppp.standardPackagingMinLimit
+        newPaymentOrderItemPpp.standardPackagingMaxLimit = ppp.standardPackagingMaxLimit
+        newPaymentOrderItemPpp.standardPackagingPrice = ppp.standardPackagingPrice
+        newPaymentOrderItemPpp.premiumPackagingMinLimit = ppp.premiumPackagingMinLimit
+        newPaymentOrderItemPpp.premiumPackagingMaxLimit = ppp.premiumPackagingMaxLimit
+        newPaymentOrderItemPpp.premiumPackagingPrice = ppp.premiumPackagingPrice
+        newPaymentOrderItemPpp.bulkPackagingMinLimit = ppp.bulkPackagingMinLimit
+        newPaymentOrderItemPpp.bulkPackagingPrice = ppp.bulkPackagingPrice
+        newPaymentOrderItemPpp.totalAmount = data.totalPackaging ?? 0
+        newPaymentOrderItemPpp.packagingType = data.packagingType ?? "standard"
+        newPaymentOrderItemPpp.items = ppp.items.map((item: ServicePricingPppItem) => {
+          let newPaymentOrderItemPppItem = new PaymentOrderItemPppItem()
+          newPaymentOrderItemPppItem.servicePricingId = item.servicePricingId
+
+          return newPaymentOrderItemPppItem
+        })
+        return newPaymentOrderItemPpp
+      })
+    } else {
+      this.ppps = []
+    }
   }
 
   getRequestBody(): object {
-    return {
+    let data = {
       id: this.paymentCartItemId, // backend treats it this way
       service_pricing_id: this.servicePricingId,
       additional_service_pricing_ids: this.additionalServicePricingIds,
@@ -295,6 +333,7 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       target_type: StringUtil.snakeToPascal(this.targetType),
       target_id: this.targetId,
       discount_id: this.discountId,
+      discount_name: this.discountName,
       discount_percent: this.discountPercent,
       discount_amount: this.discountAmount,
       is_express_filing_required: this.isExpressFilingRequired,
@@ -321,7 +360,14 @@ export class PaymentOrderItem implements IModel<PaymentOrderItem> {
       optionals: this.optionals.map((d: PaymentOrderItemOptional) => {
         return d.getRequestBody()
       }),
+      ppp: {},
     }
+
+    if (this.ppps.length > 0) {
+      data.ppp = this.ppps[0].getRequestBody()
+    }
+
+    return data
   }
 
   setSubtotal(): void {

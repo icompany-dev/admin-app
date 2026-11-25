@@ -30,6 +30,12 @@
                   @click="emit('editApplication', servicePricing)"
                 />
               </div>
+              <div class="remove clickable">
+                <i
+                  class="fa-regular fa-trash-alt"
+                  @click="controller.onRemoveApplicationClicked(servicePricing)"
+                />
+              </div>
             </div>
             <Pricing v-bind="controller.getPropsPricing(servicePricing)" />
           </div>
@@ -42,10 +48,16 @@
         </div>
       </div>
     </Transition>
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :remove-item-name="controller.itemRemoveName"
+      @proceed="controller.onProceedRemoved()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
+  import ConfirmToDelete from "@/components/Popups/ConfirmToDelete.vue"
   import LoaderPrepare from "@/components/Loaders/Prepare.vue"
   import Pricing from "./Pricing.vue"
   import { ModuleApplicationsController } from "~/scripts/components/pricings/ModuleApplicationsController"
@@ -53,7 +65,9 @@
 
   const props = defineProps<IPropsPricingsModuleApplications>()
 
-  const emit = defineEmits(["addApplication", "editApplication"])
+  const emit = defineEmits(["addApplication", "editApplication", "remove"])
+
+  const confirmToDeleteRef = ref(null)
 
   const controller = new ModuleApplicationsController(props, emit)
 
@@ -70,6 +84,14 @@
     (newVal) => {
       controller.setIsShowing(newVal)
     }
+  )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
+    },
+    { immediate: true }
   )
 </script>
 

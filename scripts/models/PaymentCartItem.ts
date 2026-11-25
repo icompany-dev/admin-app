@@ -29,6 +29,7 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
   hasStampDuty: boolean = false
   stampDuty: number | null = null
   discountId: string | null = null
+  discountName: string | null = null
   discountPercent: number = 0.0
   discountAmount: number = 0.0
   subtotal: number = 0.0
@@ -40,6 +41,8 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
   numberOfPages: number = 1
   isDeliveryRequired: boolean = false
   deliveryType: string | null = DeliveryConstants.DELIVERY_NONE
+  packagingType: string | null = null
+  totalPackaging: number | null = null
   deletedBy: User | null = null
   createdAt: string = ""
   updatedAt: string = ""
@@ -83,6 +86,7 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     this.targetType = data.target_type
     this.targetId = data.target_id
     this.discountId = data.discount_id ?? null
+    this.discountName = data.discount_name ?? null
     this.target = _.cloneDeep(data.target)
     this.isExpressFilingRequired = data.is_express_filing_required
     this.expressFilingAmount = data.express_filing_amount
@@ -100,6 +104,8 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     this.ctcAmount = Number(data.ctc_amount) ?? 0
     this.isDeliveryRequired = data.is_delivery_required
     this.deliveryType = data.delivery_type
+    this.packagingType = data.packaging_type ?? null
+    this.totalPackaging = data.total_packaging ?? null
     this.numberOfPages = data.number_of_pages ?? 1
     this.deletedBy = data.deleted_by !== null ? new User(data.deleted_by) : null
     this.createdAt = data.created_at
@@ -130,6 +136,7 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     this.targetId = data.targetId
     this.target = _.cloneDeep(data.target)
     this.discountId = data.discountId
+    this.discountName = data.discountName
     this.isExpressFilingRequired = data.isExpressFilingRequired
     this.expressFilingAmount = data.expressFilingAmount
     this.isLateLodgement = data.isLateLodgement
@@ -146,6 +153,8 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
     this.ctcAmount = data.ctcAmount
     this.isDeliveryRequired = data.isDeliveryRequired
     this.deliveryType = data.deliveryType
+    this.packagingType = data.packagingType
+    this.totalPackaging = data.totalPackaging
     this.numberOfPages = data.numberOfPages ?? 1
     this.deletedBy = data.deletedBy !== null ? new User(data.deletedBy) : null
     this.createdAt = data.createdAt
@@ -174,6 +183,7 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
       target_id: this.targetId,
       quantity: this.quantity,
       discount_id: this.discountId,
+      discount_name: this.discountName,
       discount_percent: this.discountPercent,
       discount_amount: this.discountAmount,
       is_express_filing_required: this.isExpressFilingRequired,
@@ -190,6 +200,8 @@ export class PaymentCartItem implements IModel<PaymentCartItem> {
       ctc_amount: this.ctcAmount,
       is_delivery_required: this.isDeliveryRequired,
       delivery_type: this.deliveryType,
+      packaging_type: this.packagingType,
+      total_packaging: this.totalPackaging,
       additional_service_pricing_ids: this.additionalServicePricingIds,
     }
   }

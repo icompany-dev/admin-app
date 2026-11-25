@@ -16,6 +16,7 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   sortOrder: Ref<string> = ref<string>("asc")
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
   isShowPaidOnly: Ref<boolean> = ref<boolean>(true)
+  isShowCustomResolution: Ref<boolean> = ref<boolean>(false)
 
   applicationsRef: any | null = null
 
@@ -51,6 +52,11 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
 
     if (data.orderColumn === "Show Paid Only") {
       this.isShowPaidOnly.value = data.sortOrder ? true : false
+      return
+    }
+
+    if (data.orderColumn === "Show Custom Reso") {
+      this.isShowCustomResolution.value = data.sortOrder ? true : false
       return
     }
   }
@@ -235,11 +241,17 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   }
 
   get propsDataOrders(): PropsDataOrders[] {
-    return [
+    let props = [
       new PropsDataOrders(this.sortOrderLabel, "asc"),
       new PropsDataOrders("Show Demo", "false"),
       new PropsDataOrders("Show Paid Only", "true"),
     ]
+
+    if (this.isDocumentRequestPage) {
+      props.push(new PropsDataOrders("Show Custom Reso", "false"))
+    }
+
+    return props
   }
 
   get tableFilterProps(): PropsTableFilter {
@@ -259,6 +271,7 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
       this.searchText.value,
       this.isIncludeDemo.value,
       this.isShowPaidOnly.value,
+      this.isShowCustomResolution.value,
       this.targetName.value
     )
   }
@@ -269,5 +282,9 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
 
   get createNewApplicationProps(): PropsCreateNewApplication {
     return new PropsCreateNewApplication(this.repositoryByTarget)
+  }
+
+  get isDocumentRequestPage(): boolean {
+    return this.targetName.value === CompanyConstants.TARGET_DOCUMENT_REQUEST
   }
 }

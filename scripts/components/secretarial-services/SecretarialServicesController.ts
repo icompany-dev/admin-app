@@ -25,6 +25,7 @@ export abstract class SecretarialServicesController<T> {
   searchText: Ref<string | null> = ref<string | null>(null)
   isIncludeDemo: Ref<boolean> = ref<boolean>(false)
   isShowPaidOnly: Ref<boolean> = ref<boolean>(true)
+  isShowCustomReso: Ref<boolean> = ref<boolean>(false)
 
   isShowDetails: Ref<boolean> = ref<boolean>(true)
 
@@ -64,6 +65,7 @@ export abstract class SecretarialServicesController<T> {
     this.searchText.value = props.searchText
     this.isIncludeDemo.value = props.isIncludeDemo
     this.isShowPaidOnly.value = props.isShowPaidOnly
+    this.isShowCustomReso.value = props.isShowCustomResolution
     this.target.value = props.target
 
     await this.init()

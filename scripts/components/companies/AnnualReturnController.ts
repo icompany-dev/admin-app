@@ -13,6 +13,7 @@ import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
 import type { CompanyBranch } from "~/scripts/models/CompanyBranch"
 import { Director } from "~/scripts/models/Director"
+import { City, Country, State } from "~/scripts/models/Location"
 import type { MsicCode } from "~/scripts/models/MsicCode"
 import type { MsicCodeAssign } from "~/scripts/models/MsicCodeAssign"
 import { Shareholder } from "~/scripts/models/Shareholder"
@@ -23,7 +24,7 @@ import { PropsUploadDocument } from "~/scripts/props/PropsUploadDocument"
 import { PropsUserDetail } from "~/scripts/props/PropsUserDetail"
 import type { ARShareCapital, AnnualReturnData } from "~/scripts/types/AnnualReturnXBRLGenerator"
 import type { CompanyDocument } from "~/scripts/types/CompanyDocument"
-import type { Secretary } from "~/scripts/types/Secretary"
+import { Secretary } from "~/scripts/types/Secretary"
 import { StringUtil } from "~/scripts/utils/String"
 
 export class AnnualReturnController {
@@ -51,6 +52,8 @@ export class AnnualReturnController {
 
   language = useLanguage()
 
+  companySecretaries: Ref<Secretary[]> = ref<Secretary[]>([])
+
   annualReturnDataForYear: Ref<AnnualReturnLodgementData> = ref<AnnualReturnLodgementData>(
     new AnnualReturnLodgementData()
   )
@@ -62,6 +65,8 @@ export class AnnualReturnController {
 
   async setCompany(company: Company): Promise<void> {
     this.company.value = new Company(company)
+
+    this.companySecretaries.value = this.secretaries
 
     if (this.company.value.id !== this.companyId.value) {
       this.companyId.value = this.company.value.id
@@ -167,6 +172,10 @@ export class AnnualReturnController {
     this.directors.value = this.annualReturnDataForYear.value.directors.map((d: Director) => {
       return new Director(d)
     })
+
+    this.shareholders.value = this.annualReturnDataForYear.value.shareholders.map((s: AnnualReturnShareholder) => {
+      return new Shareholder(s.shareholder)
+    })
   }
 
   async fetchDirectors(): Promise<void> {
@@ -220,7 +229,10 @@ export class AnnualReturnController {
   }
 
   getShareholderProps(shareholder: Shareholder): PropsShareholderDetail {
-    return new PropsShareholderDetail(shareholder)
+    let props = new PropsShareholderDetail(shareholder)
+    props.isEditable = true
+
+    return props
   }
 
   setEmptyApplication(): void {
@@ -275,6 +287,121 @@ export class AnnualReturnController {
     return companyBranch.location?.country?.name.toUpperCase() ?? ""
   }
 
+  onInputShareholderBirthdate(date: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.birthdate = date
+  }
+
+  onInputPassportExpiryDate(date: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.passportExpiryDate = date
+  }
+
+  onSelectedShareholdingCategory(category: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.shareholdingCategory = category
+  }
+
+  onInputShareholderNationality(nationality: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.citizenship = nationality
+  }
+
+  onUpdateShareholderAddressLine1(addressLine1: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.addressLine1 = addressLine1
+  }
+
+  onUpdateShareholderAddressLine2(addressLine2: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.addressLine2 = addressLine2
+  }
+
+  onUpdateShareholderAddressLine3(addressLine3: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.addressLine3 = addressLine3
+  }
+
+  onUpdateShareholderAddressPostcode(addressPostcode: string, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.postcode = addressPostcode
+  }
+
+  onUpdateShareholderAddressCity(city: City, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.city = new City(city)
+  }
+
+  onUpdateShareholderAddressState(state: State, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.state = new State(state)
+  }
+
+  onUpdateShareholderAddressCountry(country: Country, index: number): void {
+    let shareholder = this.shareholders.value[index] ?? null
+    if (!shareholder) {
+      return
+    }
+
+    shareholder.location.country = new Country(country)
+  }
+
+  onSecretaryClicked(secretary: Secretary): void {
+    if (this.isSecretarySelected(secretary)) {
+      this.companySecretaries.value = this.companySecretaries.value.filter((s: Secretary) => {
+        return s.nric !== secretary.nric
+      })
+    } else {
+      this.companySecretaries.value.push(secretary)
+    }
+  }
+
+  isSecretarySelected(secretary: Secretary): boolean {
+    return this.companySecretaries.value.some((s: Secretary) => {
+      return s.nric === secretary.nric
+    })
+  }
+
   async onGenerateXBRLClicked(): Promise<void> {
     if (this.isGenerating.value) {
       return
@@ -296,9 +423,11 @@ export class AnnualReturnController {
 
       let { zipBlob, sizeBytes } = await generator.createZipBlobFromPackage(
         xbrlPackage.xbrlFilename,
+        xbrlPackage.scmCsvFileName,
+        xbrlPackage.pmCsvFileName,
         xbrlPackage.xbrlXml,
-        xbrlPackage.manifestXml,
-        xbrlPackage.calculationXml
+        xbrlPackage.pmCsv,
+        xbrlPackage.scmCsv
       )
       const blobUrl = window.URL.createObjectURL(zipBlob)
       const link = document.createElement("a")
@@ -742,7 +871,7 @@ ${detailsOfBO.join("\n")}
           appointmentDate: dayjs(d.dateAppointed).format("YYYY-MM-DD"),
         }
       }),
-      secretaries: SecretaryInformation.SECRETARY_NAME_LIST.map((s: Secretary) => {
+      secretaries: this.companySecretaries.value.map((s: Secretary) => {
         return {
           id: "",
           name: s.name,
@@ -764,10 +893,23 @@ ${detailsOfBO.join("\n")}
           name: s.fullName(),
           idOrRegNumber: s.identification,
           address: s.getAddress().replaceAll("<br>", ", "),
+          address1: s.location?.addressLine1 ?? "",
+          address2: s.location?.addressLine2 ?? "",
+          postcode: s.location?.postcode ?? "",
+          city: s.location?.city?.name ?? "",
+          state: s.location?.state?.name ?? "",
+          country: s.location?.country?.name ?? "",
           nationalityOrCountry: s.isCorporateRepresentative() ? "" : (s.user?.detail?.citizenship ?? ""),
           shareClass: s.ordinaryShares > 0 ? "Ordinary" : "Preference",
           numberOfShares: s.ordinaryShares,
           percentage: s.percentageShares,
+          isCorporate: s.isCorporateRepresentative(),
+          isMalaysian: s.user?.detail?.identificationType === "ic",
+          race: (s.race ?? "").toUpperCase(),
+          gender: s.gender === "male" ? "Male" : "Female",
+          birthdate: dayjs(s.birthdate).format("DD/MM/YYYY"),
+          passportExpiryDate: dayjs(s.passportExpiryDate).format("DD/MM/YYYY"),
+          shareholdingCategory: s.shareholdingCategory,
         }
       }),
       indebtedness: {
@@ -834,5 +976,17 @@ ${detailsOfBO.join("\n")}
     props.canUploadPdf = true
 
     return props
+  }
+
+  get secretaries(): Secretary[] {
+    let dayjs = useDayjs()
+    let threshold = dayjs("2026-08-01")
+    let isAfterThreshold = dayjs(this.company.value.createdAt).isAfter(threshold)
+
+    if (isAfterThreshold) {
+      return [SecretaryInformation.SECRETARY_NAME_LIST[0]]
+    }
+
+    return SecretaryInformation.SECRETARY_NAME_LIST
   }
 }

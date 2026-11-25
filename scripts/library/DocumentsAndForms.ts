@@ -578,7 +578,17 @@ export class DocumentsAndForms {
         return false
       }
 
-      return StringUtil.contains(cd.file.name, StatutoryFormKeywords.COI) && !StringUtil.contains(cd.file.name, "ctc")
+      let keyword = StatutoryFormKeywords.COI.split(",")
+
+      return (
+        keyword.some((k: string) => {
+          if (!cd.file) {
+            return false
+          }
+
+          return StringUtil.contains(cd.file.name, k)
+        }) && !StringUtil.contains(cd.file.name, "ctc")
+      )
     })
 
     return new CompanyDocument(
@@ -602,7 +612,17 @@ export class DocumentsAndForms {
           return false
         }
 
-        return StringUtil.contains(cd.file.name, StatutoryFormKeywords.COI) && !StringUtil.contains(cd.file.name, "ctc")
+        let keyword = StatutoryFormKeywords.COI.split(",")
+
+        return (
+          keyword.some((k: string) => {
+            if (!cd.file) {
+              return false
+            }
+
+            return StringUtil.contains(cd.file.name, k)
+          }) && !StringUtil.contains(cd.file.name, "ctc")
+        )
       })
       .map((doc: Form) => {
         return new CompanyDocument(

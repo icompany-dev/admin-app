@@ -82,6 +82,39 @@
           margin-bottom: 5px;
         }
 
+        .link-to-service {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 20px;
+
+          .form-control {
+            width: 70%;
+          }
+        }
+
+        .attached-services {
+          margin: 10px 0;
+          padding: 20px;
+          background-color: var(--bs-gray-200);
+          border-radius: 5px;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 20px;
+          width: calc(100% - 40px);
+        }
+
+        .attach-to-service {
+          margin: 10px 0;
+
+          .enabled {
+            font-weight: 600;
+          }
+        }
+
         .service-pricing-details {
           padding: 20px 0;
           display: flex;

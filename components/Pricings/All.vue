@@ -6,7 +6,10 @@
       :sublabel="controller.loaderSublabel"
     />
     <div v-if="!controller.isLoading.value">
-      <div class="labels">
+      <div
+        class="labels"
+        :class="{ showing: controller.isShowingAnyModule }"
+      >
         <div
           class="label-wrapper"
           v-for="(label, i) in controller.modules.value"
@@ -34,8 +37,9 @@
           <div class="application-wrapper">
             <ModuleApplications
               v-bind="controller.getPricingsModuleApplicationsProps(label)"
-              @addApplication="controller.onAddApplicationsClicked()"
+              @addApplication="controller.onAddNewApplication()"
               @editApplication="controller.onEditApplicationClicked($event)"
+              @remove="controller.onApplicationRemovedFromModule($event)"
             />
           </div>
         </div>
@@ -141,20 +145,6 @@
 
   const controller = new AllController(emit)
 
-  // watch(
-  //   () => props.searchText,
-  //   (newVal) => {
-  //     controller.setSearch(newVal)
-  //   }
-  // )
-
-  // watch(
-  //   () => props.sortOrder,
-  //   (newVal) => {
-  //     controller.setSortOrder(newVal)
-  //   }
-  // )
-
   watch(
     editorRef,
     (newVal) => {
@@ -170,14 +160,6 @@
     },
     { immediate: true }
   )
-
-  // watch(
-  //   confirmToDeleteLabelRef,
-  //   (newVal) => {
-  //     controller.setConfirmToDeleteLabelRef(newVal)
-  //   },
-  //   { immediate: true }
-  // )
 
   watch(
     groupedThemeRef,

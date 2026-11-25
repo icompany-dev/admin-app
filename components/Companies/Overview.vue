@@ -30,14 +30,70 @@
           </tr>
 
           <tr>
-            <td>{{ controller.businessDescriptionLabel }}</td>
+            <td>
+              <div class="editable-column">
+                {{ controller.businessDescriptionLabel }}
+                <Transition name="fade">
+                  <div
+                    v-if="!controller.isEditingDescription.value"
+                    class="action-icons"
+                  >
+                    <i
+                      v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelEditBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.onSaveBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="!controller.isUpdatingDescription.value"
+                      class="fa-regular fa-edit clickable edit"
+                      @click="controller.onEditBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingDescription.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </Transition>
+              </div>
+            </td>
             <td>:</td>
             <td>
-              {{ controller.businessDescription || "-" }}
-              <CopyValue
-                v-if="controller.businessDescription"
-                :value="controller.businessDescription"
-              />
+              <template v-if="!controller.isEditingDescription.value">
+                {{ controller.businessDescription || "-" }}
+                <CopyValue
+                  v-if="controller.businessDescription"
+                  :value="controller.businessDescription"
+                />
+              </template>
+              <template v-if="controller.isEditingDescription.value">
+                <div class="edit-business-description">
+                  <textarea
+                    class="form-control"
+                    v-model="controller.newBusinessDescription.value"
+                  />
+                  <div class="action-icons is-editing">
+                    <i
+                      v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelEditBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="controller.isEditingDescription.value && !controller.isUpdatingDescription.value"
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.onSaveBusinessDescriptionClicked()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingDescription.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </div>
+              </template>
             </td>
           </tr>
           <tr>
@@ -53,6 +109,46 @@
                 <span class="fa-solid fa-dot" />
                 {{ msicCodeAssign.msicCode.code }} - {{ msicCodeAssign.msicCode.descriptionEn }}
                 <CopyValue :value="msicCodeAssign.msicCode.code" />
+                <span
+                  class="clickable cancel"
+                  @click="controller.onRemoveMsicCode(msicCodeAssign)"
+                >
+                  <i class="fa-regular fa-trash-alt" />
+                </span>
+              </div>
+              <template v-if="controller.isAssignNewMsicCode.value">
+                <div class="msic-code-assign-new">
+                  <AssignMsicCode
+                    :target="'company'"
+                    :target-id="controller.companyId.value"
+                    @selected="controller.onSelectedNewMsicCode($event)"
+                  />
+                  <div class="action-icons is-editing">
+                    <i
+                      v-if="controller.isAssignNewMsicCode.value && !controller.isUpdatingMsicCode.value"
+                      class="fa-regular fa-xmark clickable cancel"
+                      @click="controller.onCancelAddMsicCodeClicked()"
+                    />
+                    <i
+                      v-if="controller.isAssignNewMsicCode.value && !controller.isUpdatingMsicCode.value"
+                      class="fa-regular fa-save clickable save"
+                      @click="controller.assignMsicCode()"
+                    />
+                    <i
+                      v-if="controller.isUpdatingMsicCode.value"
+                      class="fa-regular fa-spin fa-spinner edit"
+                    />
+                  </div>
+                </div>
+              </template>
+              <div class="action-button-container">
+                <button
+                  v-if="!controller.isAssignNewMsicCode.value"
+                  class="btn btn-primary btn-pill"
+                  @click="controller.onAddMsicCodeClicked()"
+                >
+                  Add MSIC Code
+                </button>
               </div>
             </td>
           </tr>
@@ -383,23 +479,29 @@
                   v-for="(auditor, i) in controller.auditors.value"
                   :key="i"
                 >
-                  <div class="human-details">
-                    <div class="name">{{ auditor.auditorCompanyName }}</div>
-                    <div class="human-detail">
-                      <i class="fa-regular fa-envelope"></i>
-                      <span class="email">{{ auditor.auditorEmail }}</span>
+                  <div class="auditor-details">
+                    <div class="human-details">
+                      <div class="name">{{ auditor.auditorCompanyName }}</div>
+                      <div class="human-detail">
+                        <i class="fa-regular fa-envelope"></i>
+                        <span class="email">{{ auditor.auditorEmail }}</span>
+                      </div>
+                      <div class="human-detail">
+                        <i class="fa-brands fa-whatsapp" />
+                        <span class="phone">{{ auditor.auditorPhone }}</span>
+                      </div>
                     </div>
-                    <div class="human-detail">
-                      <i class="fa-brands fa-whatsapp" />
-                      <span class="phone">{{ auditor.auditorPhone }}</span>
+                    <div class="action-icons">
+                      <i
+                        class="fa-regular fa-edit clickable edit"
+                        @click="controller.onEditCompanyAuditor(auditor)"
+                      />
+                      <i
+                        class="fa-regular fa-trash-alt clickable cancel"
+                        @click="controller.onRemoveCompanyAuditor(auditor)"
+                      />
                     </div>
                   </div>
-                  <button
-                    class="btn btn-pill btn-primary"
-                    @click="controller.onEditCompanyAuditor(auditor)"
-                  >
-                    Edit
-                  </button>
                 </li>
               </ol>
               <button
@@ -624,14 +726,21 @@
       v-bind="controller.addCompanyAuditorProps"
       @proceed="controller.fetchCompanyAuditors()"
     />
+    <ConfirmToDelete
+      ref="confirmToDeleteRef"
+      :remove-item-name="controller.removeAuditorName"
+      @proceed="controller.onProceedRemoveCompanyAuditor()"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
   import AddCompanyAuditor from "../Popups/AddCompanyAuditor.vue"
   import AddressInput from "@/components/Forms/AddressInput.vue"
+  import AssignMsicCode from "./AssignMsicCode.vue"
   import Bank from "./Bank.vue"
   import Branch from "./Branch.vue"
+  import ConfirmToDelete from "../Popups/ConfirmToDelete.vue"
   import CopyValue from "../Buttons/CopyValue.vue"
   import Tags from "../Tags/Tags.vue"
   import Shareholder from "../Users/Shareholder.vue"
@@ -653,6 +762,7 @@
   const addCompanyAuditorRef = ref(null)
   const businessAddressRef = ref(null)
   const registeredAddressRef = ref(null)
+  const confirmToDeleteRef = ref(null)
 
   const controller = new OverviewController(props.companyId, emit)
 
@@ -683,6 +793,14 @@
     registeredAddressRef,
     (newVal) => {
       controller.setRegisteredAddressRef(newVal)
+    },
+    { immediate: true }
+  )
+
+  watch(
+    confirmToDeleteRef,
+    (newVal) => {
+      controller.setConfirmToDeleteRef(newVal)
     },
     { immediate: true }
   )

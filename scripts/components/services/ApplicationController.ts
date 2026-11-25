@@ -264,6 +264,13 @@ export abstract class ApplicationController<Application> {
   }
 
   async onProceedShipped(): Promise<void> {
+    if (
+      this.application.value.status === StatusConstants.PAID ||
+      this.application.value.status === StatusConstants.COMPLETED
+    ) {
+      this.application.value.status = StatusConstants.SHIPPED // set for UI purposes, so that we don't have to refresh
+    }
+
     await this.fetchOngoing()
   }
 

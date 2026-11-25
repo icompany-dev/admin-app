@@ -54,7 +54,10 @@ export class DocumentRequestController extends SecretarialServiceController<
   }
 
   get showPdfViewer(): boolean {
-    return !StringUtil.isNullOrEmpty(this.pdfUrl.value)
+    return (
+      !StringUtil.isNullOrEmpty(this.pdfUrl.value) &&
+      this.selectedDocumentTarget.value !== DocumentTargets.TARGET_RECEIPT
+    )
   }
 
   get isShowReceipt(): boolean {
