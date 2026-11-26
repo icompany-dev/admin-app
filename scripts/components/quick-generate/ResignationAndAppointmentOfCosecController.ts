@@ -20,7 +20,7 @@ export class ResignationAndAppointmentOfCosecController {
   directors = ref<Director[]>([])
   selectedDirectorIds = ref<string[]>([])
 
-  resigningSecretaryName = ref("NUR ASHIKIN BINTI SHAHARUDDIN")
+  resigningSecretaryName = ref("NUR ASHIKIN BINTI SHAHARUDIN")
   resigningSecretaryIdentification = ref("941024-04-5428")
   resigningSecretaryPractisingCertificateNumber = ref("202408000763")
 

@@ -74,21 +74,38 @@ export class DcrBankAccountOpeningRhbBankController extends OpenBankAccountResol
     return this.uniquePeople(this.getAuthorisedPersonsForOnlineBanking())
   }
 
-  private uniquePeople(people: RhbPerson[]): RhbPerson[] {
+  private uniquePeople(
+    people: ReadonlyArray<{
+      id?: string | null
+      name?: string | null
+      identification?: string | null
+    }>
+  ): RhbPerson[] {
     const result: RhbPerson[] = []
     const seen = new Set<string>()
 
     for (const person of people) {
-      const name = person.name.trim()
-      const identification = person.identification.trim()
+      const personId = person.id?.trim() ?? ""
+      const savedIdentification = person.identification?.trim() ?? ""
+
+      const director = this.directorRepository.directors.find((item) => {
+        return Boolean(personId) && item.id === personId
+      })
+
+      const name = person.name?.trim() || director?.name?.trim() || ""
+
+      let identification = savedIdentification
+      if (!identification || identification === personId) {
+        identification = director?.identification?.trim() ?? ""
+      }
 
       if (!name && !identification) {
         continue
       }
 
-      if (identification) {
-        const key = identification.replace(/[\s-]/g, "").toUpperCase()
+      const key = identification ? `identification:${identification.replace(/[\s-]/g, "").toUpperCase()}` : personId
 
+      if (key) {
         if (seen.has(key)) {
           continue
         }
