@@ -41,6 +41,7 @@
               >
                 <span
                   class="selected-address"
+                  :style="controller.isPrinting.value ? `white-space: pre-line` : ''"
                   v-html="controller.selectedAddress"
                 />
                 <i
