@@ -46,7 +46,8 @@ export class UserDetailController {
   onOpenNricClicked(): void {
     this.isShowNric.value = true
 
-    this.nricDownloadPurpose.value = `Copy of ${this.userDetail.value.identificationType === "passport" ? "Passport" : "MYKAD"}`
+    this.nricDownloadPurpose.value = `BANK ACCOUNT OPENING ONLY`
+    // this.nricDownloadPurpose.value = `Copy of ${this.userDetail.value.identificationType === "passport" ? "Passport" : "MYKAD"}`
     this.nricDownloadTitle.value = `${this.name}`
     this.nricDownloadSubtitle.value = `${this.identificationNumber}`
   }
