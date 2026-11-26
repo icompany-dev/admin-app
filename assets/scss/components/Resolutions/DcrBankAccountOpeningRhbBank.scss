@@ -1,0 +1,138 @@
+.rhb-body {
+  --rhb-indent: 2.5em;
+
+  line-height: 1.25;
+
+  p,
+  ol {
+    margin: 0 0 0.55em;
+  }
+
+  ol {
+    padding-inline-start: var(--rhb-indent);
+  }
+
+  li {
+    margin-bottom: 0.8em;
+  }
+
+  li > ol {
+    margin-top: 0.8em;
+  }
+
+  .rhb-alpha > li {
+    list-style-type: upper-alpha;
+  }
+
+  .rhb-roman {
+    counter-reset: rhb-roman;
+  }
+
+  .rhb-roman[start="3"] {
+    counter-reset: rhb-roman 2;
+  }
+
+  .rhb-roman > li {
+    position: relative;
+    list-style: none;
+    counter-increment: rhb-roman;
+
+    &::before {
+      content: "(" counter(rhb-roman, lower-roman) ")";
+      position: absolute;
+      inset-inline-start: calc(-1 * var(--rhb-indent));
+    }
+  }
+
+  .rhb-people > li {
+    list-style-type: lower-alpha;
+    break-inside: avoid;
+  }
+
+  &.rhb-mandate-page {
+    // Continue inside clause C at the same depth as page 1.
+    padding-inline-start: var(--rhb-indent);
+
+    // Align “Provided they be signed…” with the text of clause (v).
+    > p {
+      margin-inline-start: var(--rhb-indent);
+    }
+
+    // The two numbered conditions belong inside clause (v).
+    > div {
+      margin-inline-start: var(--rhb-indent);
+
+      > p {
+        padding-inline-start: var(--rhb-indent);
+        text-indent: calc(-1 * var(--rhb-indent));
+      }
+
+      > .rhb-people {
+        margin-inline-start: var(--rhb-indent);
+      }
+    }
+  }
+}
+
+.paper .rhb-body {
+  --rhb-indent: 2.5em;
+
+  ol.rhb-alpha,
+  ol.rhb-roman {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+
+  ol.rhb-alpha {
+    counter-reset: rhb-letter;
+  }
+
+  ol.rhb-alpha[start="4"] {
+    counter-reset: rhb-letter 3;
+  }
+
+  ol.rhb-roman {
+    counter-reset: rhb-clause;
+  }
+
+  ol.rhb-roman[start="3"] {
+    counter-reset: rhb-clause 2;
+  }
+
+  ol.rhb-alpha > li,
+  ol.rhb-roman > li {
+    display: block;
+    position: relative;
+    list-style: none;
+    margin-inline: 0;
+    padding-inline-start: var(--rhb-indent);
+    text-indent: 0;
+
+    &::before {
+      position: absolute;
+      inset-inline-start: 0;
+      top: 0;
+      text-indent: 0;
+    }
+  }
+
+  ol.rhb-alpha > li {
+    counter-increment: rhb-letter;
+
+    &::before {
+      content: counter(rhb-letter, upper-alpha) ".";
+    }
+  }
+
+  ol.rhb-roman > li {
+    counter-increment: rhb-clause;
+
+    &::before {
+      content: "(" counter(rhb-clause, lower-roman) ")";
+    }
+  }
+
+  &.rhb-mandate-page {
+    padding-inline-start: var(--rhb-indent);
+  }
+}
