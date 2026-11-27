@@ -16,6 +16,7 @@ export class CompanySetting implements IModel<CompanySetting> {
   tax: CompanySettingTaxDetails | null = null
   trademark: object | null = null
   isPrnRequired: boolean = true
+  hasCommonSeal: boolean = true
 
   createdAt: string | null = null
   updatedAt: string | null = null
@@ -45,6 +46,7 @@ export class CompanySetting implements IModel<CompanySetting> {
     this.tax = data.tax ? new CompanySettingTaxDetails(data.tax) : null
     this.trademark = data.trademark
     this.isPrnRequired = data.is_prn_required ?? false
+    this.hasCommonSeal = data.has_common_seal ?? false
 
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
@@ -63,6 +65,7 @@ export class CompanySetting implements IModel<CompanySetting> {
     this.tax = data.tax ? new CompanySettingTaxDetails(data.tax) : null
     this.trademark = data.trademark
     this.isPrnRequired = data.isPrnRequired
+    this.hasCommonSeal = data.hasCommonSeal
 
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
@@ -82,6 +85,7 @@ export class CompanySetting implements IModel<CompanySetting> {
       tax: this.tax?.getRequestBody() ?? null,
       // trademark: this.trademark,
       // is_prn_required: this.isPrnRequired,
+      has_common_seal: this.hasCommonSeal,
     }
   }
 

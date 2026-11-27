@@ -1,5 +1,6 @@
 import type { BillingInfo } from "../models/BillingInfo"
 import type { DeliveryInfo } from "../models/DeliveryInfo"
+import type { ServicePricing } from "../models/ServicePricing"
 
 export interface IPropsSendPaymentNotice {
   entityType: string
@@ -11,6 +12,8 @@ export interface IPropsSendPaymentNotice {
   deliveryInfo: DeliveryInfo
 
   emailRecipients: string[]
+  selectedServicePricings: ServicePricing[]
+  servicePricingFilter: string
 }
 
 export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
@@ -22,6 +25,8 @@ export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
   billingInfo: BillingInfo
   deliveryInfo: DeliveryInfo
   emailRecipients: string[] = []
+  selectedServicePricings: ServicePricing[] = []
+  servicePricingFilter: string = ""
 
   constructor(
     entityType: string,

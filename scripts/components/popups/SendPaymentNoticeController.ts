@@ -48,6 +48,8 @@ export class SendPaymentNoticeController extends BasePopupController {
   selectedPricings: Ref<ServicePricing[]> = ref<ServicePricing[]>([])
   indexOfPricingInEdit: Ref<number | null> = ref<number | null>(null)
 
+  searchTextFromProps: Ref<string> = ref<string>("")
+
   emailRecipients: Ref<string[]> = ref<string[]>([])
 
   constructor(props: PropsSendPaymentNotice, emitEvents: any) {
@@ -68,12 +70,16 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.searchText.value = ""
     this.searchTexts.value = []
 
-    this.selectedPricings.value = [new ServicePricing()]
+    if (this.selectedPricings.value.length <= 0) {
+      this.selectedPricings.value = [new ServicePricing()]
+      this.searchTexts.value.push("")
+    }
   }
 
   override hide(): void {
     this.isShowDrawer.value = false
     this.newServicePricing.value = new ServicePricing()
+    this.selectedPricings.value = []
   }
 
   setDataFromProps(props: PropsSendPaymentNotice): void {
@@ -85,6 +91,17 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.billingInfo.value = props.billingInfo
     this.deliveryInfo.value = props.deliveryInfo
     this.emailRecipients.value = props.emailRecipients
+    this.searchTextFromProps.value = props.servicePricingFilter
+
+    if (props.selectedServicePricings.length > 0) {
+      this.selectedPricings.value = props.selectedServicePricings.map((sp: ServicePricing) => {
+        return new ServicePricing(sp)
+      })
+
+      this.selectedPricings.value.forEach((sp: ServicePricing) => {
+        this.searchTexts.value.push("")
+      })
+    }
   }
 
   async fetchServicePricings(): Promise<void> {
@@ -496,8 +513,19 @@ export class SendPaymentNoticeController extends BasePopupController {
 
     return this.servicePricings.value
       .filter((pricing: ServicePricing) => {
-        if (StringUtil.isNullOrEmpty(this.searchText.value)) {
+        if (
+          StringUtil.isNullOrEmpty(this.searchText.value) &&
+          StringUtil.isNullOrEmpty(this.searchTextFromProps.value)
+        ) {
           return pricing.mandatoryServices.length > 0
+        }
+
+        if (!StringUtil.isNullOrEmpty(this.searchTextFromProps.value)) {
+          return (
+            StringUtil.contains(pricing.serviceName, this.searchText.value) &&
+            StringUtil.contains(pricing.serviceName, this.searchTextFromProps.value) &&
+            pricing.mandatoryServices.length > 0
+          )
         }
 
         return StringUtil.contains(pricing.serviceName, this.searchText.value) && pricing.mandatoryServices.length > 0

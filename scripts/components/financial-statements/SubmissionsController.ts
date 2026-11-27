@@ -702,7 +702,7 @@ export class SubmissionsController {
   get sendPaymentNoticeProps(): PropsSendPaymentNotice {
     let financialStatementSetup = this.getFinancialStatementSetup(this.selectedFinancialPeriodForPayment.value)
     if (financialStatementSetup !== null) {
-      return new PropsSendPaymentNotice(
+      let props = new PropsSendPaymentNotice(
         "Company",
         this.companyId.value ?? "",
         this.company.value.getFullName(),
@@ -711,10 +711,16 @@ export class SubmissionsController {
         this.company.value.billingInfo(),
         this.company.value.deliveryInfo()
       )
+
+      props.servicePricingFilter = "financial statement"
+
+      console.log(props, "props")
+
+      return props
     }
 
     let financialStatement = this.getFinancialStatement(this.selectedFinancialPeriodForPayment.value)
-    return new PropsSendPaymentNotice(
+    let props = new PropsSendPaymentNotice(
       "Company",
       this.companyId.value ?? "",
       this.company.value.getFullName(),
@@ -723,5 +729,11 @@ export class SubmissionsController {
       this.company.value.billingInfo(),
       this.company.value.deliveryInfo()
     )
+
+    props.servicePricingFilter = "financial statement"
+
+    console.log(props, "props alt")
+
+    return props
   }
 }

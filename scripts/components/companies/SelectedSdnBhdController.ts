@@ -7,6 +7,7 @@ import { UploadedDocumentChecker } from "~/scripts/library/UploadedDocumentCheck
 import { Company } from "~/scripts/models/Company"
 import { CompanyAnnualReturnRequest } from "~/scripts/models/CompanyAnnualReturnRequest"
 import type { Director } from "~/scripts/models/Director"
+import { ServicePricing } from "~/scripts/models/ServicePricing"
 import type { Shareholder } from "~/scripts/models/Shareholder"
 import { PropsApplication } from "~/scripts/props/PropsApplication"
 import { PropsCompanyDocument } from "~/scripts/props/PropsCompanyDocument"
@@ -74,6 +75,9 @@ export class SelectedSdnBhdController {
   applicationRefs: any[] = []
 
   isSendingTaxAgentDetails: Ref<boolean> = ref<boolean>(false)
+
+  servicePricingForPage: Ref<ServicePricing> = ref<ServicePricing>(new ServicePricing())
+  searchTextForServicePricingPage: Ref<string> = ref<string>("")
 
   constructor(companyId: string, emitEvents: any) {
     this.emitEvents = emitEvents
@@ -267,12 +271,27 @@ export class SelectedSdnBhdController {
     this.isRolesAndAccess.value = false
   }
 
-  onAnnualReturnClicked(): void {
+  async onAnnualReturnClicked(): Promise<void> {
     this.isOverview.value = false
     this.isDocuments.value = false
     this.isAnnualReturn.value = true
     this.isFinancialStatement.value = false
     this.isRolesAndAccess.value = false
+
+    // Fetch service pricing
+    try {
+      let repository = useServicePricingStore()
+      let response = await repository.fetchDefault(CompanyConstants.TARGET_LODGE_ANNUAL_RETURN)
+
+      if (response) {
+        this.servicePricingForPage.value = new ServicePricing(response)
+      } else {
+        this.servicePricingForPage.value = new ServicePricing()
+      }
+    } catch (e) {
+      this.servicePricingForPage.value = new ServicePricing()
+    }
+    this.searchTextForServicePricingPage.value = "annual return"
   }
 
   onFinancialStatementClicked(): void {
@@ -281,6 +300,9 @@ export class SelectedSdnBhdController {
     this.isAnnualReturn.value = false
     this.isFinancialStatement.value = true
     this.isRolesAndAccess.value = false
+
+    this.searchTextForServicePricingPage.value = "financial statement"
+    this.servicePricingForPage.value = new ServicePricing()
   }
 
   onRolesAndAccessesClicked(): void {
@@ -781,6 +803,8 @@ export class SelectedSdnBhdController {
     )
 
     props.emailRecipients = this.directorEmails.value
+    props.selectedServicePricings = [this.servicePricingForPage.value]
+    props.servicePricingFilter = this.searchTextForServicePricingPage.value
 
     return props
   }
