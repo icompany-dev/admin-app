@@ -140,6 +140,10 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.uploadDocumentPopup.show()
   }
 
+  async onUploadedDocument(): Promise<void> {
+    await this.uploadedDocumentChecker.value.fetchDocuments()
+  }
+
   async onDownloadSection28Clicked(): Promise<void> {
     ///
   }
@@ -161,7 +165,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     this.isShowSection28.value = false
     this.isShowCON.value = false
     this.isShowComplete.value = false
-    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_SECTION27)
+    this.emitEvents("documentSelected", DocumentTargets.TARGET_AMENDMENT_NAME_RESOLUTIONS)
   }
 
   onRegistrationOfNameChangedClicked(): void {
@@ -523,12 +527,12 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
     return this.language.isMalay() ? "Persetujuan dari" : "Approval from"
   }
 
+  get isMcrCompleted(): boolean {
+    return this.isShareholderSignatureCompleted || this.isSection27Uploaded
+  }
+
   get approvalApplicationNodeProps(): PropsServiceApplicationNode {
-    return new PropsServiceApplicationNode(
-      !this.isShareholderSignatureCompleted,
-      this.isShareholderSignatureCompleted,
-      this.isShowResolutions.value
-    )
+    return new PropsServiceApplicationNode(!this.isMcrCompleted, this.isMcrCompleted, this.isShowResolutions.value)
   }
 
   get isNameReservationApproved(): boolean {
@@ -547,7 +551,7 @@ export class ChangeOfNameApplicationController extends ApplicationController<Com
 
   get nameReservationNodeProps(): PropsServiceApplicationNode {
     return new PropsServiceApplicationNode(
-      this.isShareholderSignatureCompleted,
+      this.isMcrCompleted,
       this.isNameReservationApproved,
       this.isShowSection27.value
     )
