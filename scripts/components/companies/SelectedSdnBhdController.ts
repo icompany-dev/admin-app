@@ -261,6 +261,9 @@ export class SelectedSdnBhdController {
     this.isAnnualReturn.value = false
     this.isFinancialStatement.value = false
     this.isRolesAndAccess.value = false
+
+    this.servicePricingForPage.value = new ServicePricing()
+    this.searchTextForServicePricingPage.value = ""
   }
 
   onDocumentsClicked(): void {
@@ -269,6 +272,9 @@ export class SelectedSdnBhdController {
     this.isAnnualReturn.value = false
     this.isFinancialStatement.value = false
     this.isRolesAndAccess.value = false
+
+    this.servicePricingForPage.value = new ServicePricing()
+    this.searchTextForServicePricingPage.value = ""
   }
 
   async onAnnualReturnClicked(): Promise<void> {
@@ -311,6 +317,9 @@ export class SelectedSdnBhdController {
     this.isAnnualReturn.value = false
     this.isFinancialStatement.value = false
     this.isRolesAndAccess.value = true
+
+    this.servicePricingForPage.value = new ServicePricing()
+    this.searchTextForServicePricingPage.value = ""
   }
 
   onOptionsClicked(): void {
