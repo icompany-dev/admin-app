@@ -95,6 +95,8 @@ export class OverviewController {
 
   companyAuditorToRemove = ref<CompanyAuditor>(new CompanyAuditor())
 
+  hasCommonSeal: Ref<boolean> = ref<boolean>(false)
+
   language = useLanguage()
   time = useLocalTime()
   dayjs = useDayjs()
@@ -156,6 +158,8 @@ export class OverviewController {
 
       this.addressLocation.value = new Location(this.company.value.businessAddressLocation)
       this.registeredAddressLocation.value = new Location(this.company.value.registeredAddressLocation)
+
+      this.hasCommonSeal.value = this.companySetting.hasCommonSeal
 
       this.fetchPaymentOrderItems()
     } catch (e) {
@@ -917,6 +921,26 @@ ${detailsOfBO.join("\n")}
     this.companyBanks.value = this.companyBanks.value.filter((cb: CompanyBank) => {
       return cb.id !== companyBankId
     })
+  }
+
+  // update has common seal
+  async onHasCommonSealChanged(): Promise<void> {
+    try {
+      let repository = useCompanySettingStore()
+      let data = {
+        has_common_seal: this.hasCommonSeal.value,
+      }
+
+      await repository.update(this.companySetting.id, data)
+
+      let toastTitle = this.language.isMalay()
+        ? "Anda telah kemas kini status common seal syarikat ini."
+        : `You have updated the status of this Sdn Bhd Common Seal.`
+      let toast = new Toast(toastTitle, "")
+      toast.success()
+    } catch (e) {
+      //
+    }
   }
 
   // getters

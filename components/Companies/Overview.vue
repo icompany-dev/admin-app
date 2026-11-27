@@ -604,7 +604,23 @@
               </template>
             </td>
           </tr>
-
+          <tr>
+            <td>Common Seal</td>
+            <td>:</td>
+            <td>
+              <div class="form-check">
+                <input
+                  type="checkbox"
+                  class="form-check"
+                  v-model="controller.hasCommonSeal.value"
+                  @change="controller.onHasCommonSealChanged()"
+                />
+                <span>
+                  This Sdn Bhd {{ controller.hasCommonSeal.value ? "has adopted" : "has not adopted" }} any common seal.
+                </span>
+              </div>
+            </td>
+          </tr>
           <tr>
             <td>{{ controller.tagsLabel }}</td>
             <td>:</td>
