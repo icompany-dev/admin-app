@@ -8,20 +8,34 @@ import { Toast } from "~/scripts/library/Toast"
 import { SelectOption } from "~/scripts/types/SelectOption"
 import { StringUtil } from "~/scripts/utils/String"
 import { PropsCreateNewApplication } from "~/scripts/props/PropsCreateNewApplication"
+import { Director } from "~/scripts/models/Director"
+import { Shareholder } from "~/scripts/models/Shareholder"
+import { CompanyConstants } from "~/scripts/constants/Company"
 
 export class CreateNewApplicationController extends BasePopupController {
   repository: Ref<IRepositoryStore | null> = ref<IRepositoryStore | null>(null)
 
-  searchText: Ref<string> = ref<string>("")
+  target: Ref<string> = ref<string>("")
+
+  searchTextCompany: Ref<string> = ref<string>("")
+  searchTextDirector: Ref<string> = ref<string>("")
 
   selectedCompanyId: Ref<string> = ref<string>("")
   companies: Ref<Company[]> = ref<Company[]>([])
 
+  directors: Ref<Director[]> = ref<Director[]>([])
+  shareholders: Ref<Shareholder[]> = ref<Shareholder[]>([])
+
+  selectedDirectorId: Ref<string> = ref<string>("")
+
   isFetchingCompanies: Ref<boolean> = ref<boolean>(false)
   isSubmitting: Ref<boolean> = ref<boolean>(false)
+  isFetchingDirectors: Ref<boolean> = ref<boolean>(false)
 
   constructor(props: PropsCreateNewApplication, emitEvents: any) {
     super(emitEvents)
+
+    this.isCompliance.value = false
 
     this.setDataFromProps(props)
     this.fetchCompanies()
@@ -29,6 +43,7 @@ export class CreateNewApplicationController extends BasePopupController {
 
   setDataFromProps(props: PropsCreateNewApplication): void {
     this.repository.value = props.repository
+    this.target.value = props.target
   }
 
   async fetchCompanies(): Promise<void> {
@@ -53,12 +68,45 @@ export class CreateNewApplicationController extends BasePopupController {
     }
   }
 
-  onSelected(companyId: string): void {
-    this.selectedCompanyId.value = companyId
+  async fetchDirectors(): Promise<void> {
+    if (StringUtil.isNullOrEmpty(this.selectedCompanyId.value) || !this.isDirectorListRequired) {
+      return
+    }
+
+    this.isFetchingDirectors.value = true
+
+    try {
+      let repository = useDirectorStore()
+      let response = await repository.fetchAllForCompany(this.selectedCompanyId.value)
+
+      this.directors.value = response.map((d: any) => {
+        return new Director(d)
+      })
+    } catch (e) {
+      this.directors.value = []
+    } finally {
+      this.isFetchingDirectors.value = false
+    }
   }
 
-  onSearch(searchText: string): void {
-    this.searchText.value = searchText
+  async onSelected(companyId: string): Promise<void> {
+    this.selectedCompanyId.value = companyId
+
+    if (this.isDirectorListRequired) {
+      await this.fetchDirectors()
+    }
+  }
+
+  onSearchCompany(searchText: string): void {
+    this.searchTextCompany.value = searchText
+  }
+
+  onSearchDirector(searchText: string): void {
+    this.searchTextDirector.value = searchText
+  }
+
+  onSelectedDirector(directorId: string): void {
+    this.selectedDirectorId.value = directorId
   }
 
   async onProceedClicked(): Promise<void> {
@@ -72,6 +120,11 @@ export class CreateNewApplicationController extends BasePopupController {
       let data = {
         company_id: this.selectedCompanyId.value,
         status: "draft",
+        director_id: "",
+      }
+
+      if (this.isDirectorListRequired) {
+        data.director_id = this.selectedDirectorId.value
       }
 
       await this.repository.value.create(data)
@@ -118,21 +171,55 @@ export class CreateNewApplicationController extends BasePopupController {
     }
 
     return `
-      Select A Company:
+      Select a Company:
+    `
+  }
+
+  get directorLabel(): string {
+    if (this.language.isMalay()) {
+      return `
+        Pilih Pengarah:
+      `
+    }
+
+    return `
+      Select a Director:
     `
   }
 
   get companyOptions(): SelectOption[] {
     return this.companies.value
       .filter((c: Company) => {
-        if (!StringUtil.isNullOrEmpty(this.searchText.value)) {
-          return StringUtil.contains(c.name, this.searchText.value)
+        if (!StringUtil.isNullOrEmpty(this.searchTextCompany.value)) {
+          return StringUtil.contains(c.name, this.searchTextCompany.value)
         }
 
         return true
       })
       .map((c: Company) => {
         return new SelectOption(c.id, c.id, c.name, false, c.id === this.selectedCompanyId.value)
+      })
+  }
+
+  get directorOptions(): SelectOption[] {
+    if (this.isFetchingDirectors.value) {
+      return [new SelectOption("", "", "Loading List of Directors...")]
+    }
+
+    if (StringUtil.isNullOrEmpty(this.selectedCompanyId.value)) {
+      return [new SelectOption("", "", "Select a Company")]
+    }
+
+    return this.directors.value
+      .filter((d: Director) => {
+        if (StringUtil.isNullOrEmpty(this.searchTextDirector.value)) {
+          return true
+        }
+
+        return StringUtil.contains(d.name, this.searchTextDirector.value)
+      })
+      .map((d: Director) => {
+        return new SelectOption(d.id, d.id, d.name)
       })
   }
 
@@ -145,6 +232,15 @@ export class CreateNewApplicationController extends BasePopupController {
     return matched?.name ?? "(Select a Company)"
   }
 
+  get selectedDirectorName(): string {
+    let matched =
+      this.directors.value.find((d: Director) => {
+        return d.id === this.selectedDirectorId.value
+      }) ?? null
+
+    return matched?.name ?? "(Select a Director)"
+  }
+
   get canProceed(): boolean {
     return !StringUtil.isNullOrEmpty(this.selectedCompanyId.value)
   }
@@ -155,5 +251,9 @@ export class CreateNewApplicationController extends BasePopupController {
 
   get loaderSublabel(): string {
     return this.language.isMalay() ? "Senarai Syarikat" : "List of Companies"
+  }
+
+  get isDirectorListRequired(): boolean {
+    return this.target.value === CompanyConstants.TARGET_DIRECTOR_RESIGNATION
   }
 }

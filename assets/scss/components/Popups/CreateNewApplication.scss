@@ -2,12 +2,29 @@
 //   // Styles go here
 // }
 
-.form-group {
-  margin: auto;
+.application-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 
-  .searchable-dropdown {
-    .dropdown-menu {
-      background-color: var(--bs-white) !important;
+  .form-group {
+    margin: auto;
+    max-width: 500px;
+    justify-content: center !important;
+
+    .searchable-dropdown {
+      .dropdown {
+        .fa-caret-down {
+          top: 10px !important;
+        }
+      }
+
+      .dropdown-menu {
+        background-color: var(--bs-white) !important;
+      }
     }
   }
 }

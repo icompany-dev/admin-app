@@ -14,6 +14,7 @@ export interface IPropsSendPaymentNotice {
   emailRecipients: string[]
   selectedServicePricings: ServicePricing[]
   servicePricingFilter: string
+  targetIds: string[]
 }
 
 export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
@@ -27,6 +28,7 @@ export class PropsSendPaymentNotice implements IPropsSendPaymentNotice {
   emailRecipients: string[] = []
   selectedServicePricings: ServicePricing[] = []
   servicePricingFilter: string = ""
+  targetIds: string[] = []
 
   constructor(
     entityType: string,

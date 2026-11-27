@@ -281,7 +281,7 @@ export class PageSdnBhdSecretarialServicesController extends PageController {
   }
 
   get createNewApplicationProps(): PropsCreateNewApplication {
-    return new PropsCreateNewApplication(this.repositoryByTarget)
+    return new PropsCreateNewApplication(this.repositoryByTarget, this.targetName.value)
   }
 
   get isDocumentRequestPage(): boolean {

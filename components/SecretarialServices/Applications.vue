@@ -19,55 +19,63 @@
         :subtitle="controller.noRecordSubtitle"
       />
       <div
-        class="application"
+        class="form-check"
         v-for="(application, i) in controller.tableDataFetcher.value?.data"
         :key="i"
       >
-        <div class="application-details">
-          <div class="application-information">
-            <div
-              class="company-name"
-              @click="controller.onCompanyNameClicked(application.companyId)"
-            >
-              <NuxtLink :to="`/sdnbhds/${application.companyId}`">{{ controller.companyName(application) }}</NuxtLink>
+        <!-- <input
+          type="checkbox"
+          class="form-check-input"
+          :checked="controller.isApplicationSelected(application.id)"
+          @click="controller.onCheckboxClicked(application.id)"
+        /> -->
+        <div class="application">
+          <div class="application-details">
+            <div class="application-information">
+              <div
+                class="company-name"
+                @click="controller.onCompanyNameClicked(application.companyId)"
+              >
+                <NuxtLink :to="`/sdnbhds/${application.companyId}`">{{ controller.companyName(application) }}</NuxtLink>
+              </div>
+              <div
+                v-if="controller.isShowDetails.value"
+                class="app-info"
+                v-html="controller.applicationDetails(application)"
+              />
+            </div>
+            <div class="application-date">
+              {{ controller.applicationDate(application) }}
             </div>
             <div
-              v-if="controller.isShowDetails.value"
-              class="app-info"
-              v-html="controller.applicationDetails(application)"
-            />
+              class="application-status"
+              :class="controller.applicationStatusClass(application)"
+            >
+              {{ controller.applicationStatus(application) }}
+            </div>
           </div>
-          <div class="application-date">
-            {{ controller.applicationDate(application) }}
+          <div class="application-actions">
+            <button
+              class="btn btn-submit btn-pill"
+              @click="controller.onApplicationClicked(application)"
+            >
+              <NuxtLink :to="controller.getApplicationFullPath(application)">
+                {{ controller.viewApplicationLabel }}
+              </NuxtLink>
+            </button>
+            <button
+              class="btn btn-danger btn-pill"
+              @click="controller.onRemoveClicked(application)"
+            >
+              {{ controller.removeApplicationLabel }}
+            </button>
+            <button
+              class="btn btn-primary btn-pill"
+              @click="controller.onSendPaymentNoticeClicked(application)"
+            >
+              {{ controller.askPaymentApplicationLabel }}
+            </button>
           </div>
-          <div
-            class="application-status"
-            :class="controller.applicationStatusClass(application)"
-          >
-            {{ controller.applicationStatus(application) }}
-          </div>
-        </div>
-        <div class="application-actions">
-          <button
-            class="btn btn-submit btn-pill"
-            @click="controller.onApplicationClicked(application)"
-          >
-            <NuxtLink :to="controller.getApplicationFullPath(application)">
-              {{ controller.viewApplicationLabel }}
-            </NuxtLink>
-          </button>
-          <button
-            class="btn btn-danger btn-pill"
-            @click="controller.onRemoveClicked(application)"
-          >
-            {{ controller.removeApplicationLabel }}
-          </button>
-          <button
-            class="btn btn-primary btn-pill"
-            @click="controller.onSendPaymentNoticeClicked(application)"
-          >
-            {{ controller.askPaymentApplicationLabel }}
-          </button>
         </div>
       </div>
     </div>

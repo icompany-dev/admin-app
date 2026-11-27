@@ -15,6 +15,8 @@ import type { st } from "vue-router/dist/router-CWoNjPRp.mjs"
 import { PropsSendPaymentNotice } from "~/scripts/props/PropsSendPaymentNotice"
 import { BillingInfo } from "~/scripts/models/BillingInfo"
 import { DeliveryInfo } from "~/scripts/models/DeliveryInfo"
+import { ServicePricing } from "~/scripts/models/ServicePricing"
+import { Director } from "~/scripts/models/Director"
 
 export abstract class SecretarialServicesController<T> {
   tableDataFetcher = ref<TableDataFetcher<T> | null>(null)
@@ -42,6 +44,12 @@ export abstract class SecretarialServicesController<T> {
   selectedApplicationForPayment = ref<Application | null>(null)
 
   sendPaymentNoticeRef: any | null = null
+
+  selectedApplicationIds: Ref<string[]> = ref<string[]>([])
+
+  servicePricingForPaymentOrder: Ref<ServicePricing> = ref<ServicePricing>(new ServicePricing())
+
+  directorEmails: Ref<string[]> = ref<string[]>([])
 
   language = useLanguage()
   router = useRouter()
@@ -80,8 +88,25 @@ export abstract class SecretarialServicesController<T> {
       return
     }
 
+    this.fetchServicePricing()
+
     this.tableDataFetcher.value.filter = this.filter
     await this.tableDataFetcher.value.fetchData()
+  }
+
+  async fetchServicePricing(): Promise<void> {
+    try {
+      let repository = useServicePricingStore()
+      let response = await repository.fetchDefault(this.target.value)
+
+      if (response) {
+        this.servicePricingForPaymentOrder.value = new ServicePricing(response)
+      } else {
+        this.servicePricingForPaymentOrder.value = new ServicePricing()
+      }
+    } catch (e) {
+      this.servicePricingForPaymentOrder.value = new ServicePricing()
+    }
   }
 
   abstract onApplicationClicked(application: any): void
@@ -144,8 +169,23 @@ export abstract class SecretarialServicesController<T> {
     }
   }
 
-  onSendPaymentNoticeClicked(application: any): void {
+  async onSendPaymentNoticeClicked(application: any): Promise<void> {
     this.selectedApplicationForPayment.value = application
+
+    if (application.companyId && !StringUtil.isNullOrEmpty(application.companyId)) {
+      let repository = useDirectorStore()
+      let response = await repository.fetchAllForCompany(application.companyId)
+      this.directorEmails.value = response
+        .map((d: any) => {
+          return new Director(d)
+        })
+        .map((d: Director) => {
+          return d.email
+        })
+        .filter((s: string) => {
+          return !StringUtil.isNullOrEmpty(s)
+        })
+    }
 
     if (this.sendPaymentNoticeRef) {
       this.sendPaymentNoticeRef.show()
@@ -157,8 +197,22 @@ export abstract class SecretarialServicesController<T> {
     return `${route.fullPath}/${application.id ?? ""}`
   }
 
+  onCheckboxClicked(applicationId: string): void {
+    if (this.isApplicationSelected(applicationId)) {
+      this.selectedApplicationIds.value = this.selectedApplicationIds.value.filter((id: string) => {
+        return id !== applicationId
+      })
+    } else {
+      this.selectedApplicationIds.value.push(applicationId)
+    }
+  }
+
+  isApplicationSelected(applicationId: string): boolean {
+    return this.selectedApplicationIds.value.includes(applicationId)
+  }
+
   get sendPaymentNoticeProps(): PropsSendPaymentNotice {
-    return new PropsSendPaymentNotice(
+    let props = new PropsSendPaymentNotice(
       "Company",
       this.selectedApplicationForPayment.value?.companyId ?? "",
       this.selectedApplicationForPayment.value?.company?.getFullName() ?? "",
@@ -167,6 +221,18 @@ export abstract class SecretarialServicesController<T> {
       this.selectedApplicationForPayment.value?.company?.billingInfo() ?? new BillingInfo(),
       this.selectedApplicationForPayment.value?.company?.deliveryInfo() ?? new DeliveryInfo()
     )
+
+    props.selectedServicePricings = [this.servicePricingForPaymentOrder.value]
+    props.targetIds = this.selectedApplicationIds.value
+    props.emailRecipients = this.directorEmails.value
+
+    if (this.selectedApplicationIds.value.length > 0) {
+      props.selectedServicePricings = this.selectedApplicationIds.value.map((s: string) => {
+        return this.servicePricingForPaymentOrder.value
+      })
+    }
+
+    return props
   }
 
   //getters
@@ -248,7 +314,7 @@ export abstract class SecretarialServicesController<T> {
   }
 
   get addApplicationProps(): PropsCreateNewApplication {
-    return new PropsCreateNewApplication(this.repository.value)
+    return new PropsCreateNewApplication(this.repository.value, this.target.value)
   }
 
   get itemToRemoveName(): string {

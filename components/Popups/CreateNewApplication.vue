@@ -17,7 +17,7 @@
             class="action"
             v-html="controller.content"
           />
-          <div class="action">
+          <div class="action application-details">
             <div class="form-group">
               <SearchableDropdown
                 :options="controller.companyOptions"
@@ -25,7 +25,27 @@
                 :value-key="'value'"
                 :label-key="'label'"
                 @selected="controller.onSelected($event)"
-                @search="controller.onSearch($event)"
+                @search="controller.onSearchCompany($event)"
+              />
+            </div>
+          </div>
+          <div
+            class="action"
+            v-html="controller.directorLabel"
+            v-if="controller.isDirectorListRequired"
+          />
+          <div class="action application-details">
+            <div
+              v-if="controller.isDirectorListRequired"
+              class="form-group"
+            >
+              <SearchableDropdown
+                :options="controller.directorOptions"
+                :selected-item-name="controller.selectedDirectorName"
+                :value-key="'value'"
+                :label-key="'label'"
+                @selected="controller.onSelectedDirector($event)"
+                @search="controller.onSearchDirector($event)"
               />
             </div>
           </div>

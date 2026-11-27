@@ -24,6 +24,7 @@ export class SendPaymentNoticeController extends BasePopupController {
   entityName: Ref<string> = ref<string>("")
   target: Ref<string> = ref<string>("")
   targetId: Ref<string> = ref<string>("")
+  targetIds: Ref<string[]> = ref<string[]>([])
   billingInfo: Ref<BillingInfo> = ref<BillingInfo>(new BillingInfo())
   deliveryInfo: Ref<DeliveryInfo> = ref<DeliveryInfo>(new DeliveryInfo())
 
@@ -88,6 +89,7 @@ export class SendPaymentNoticeController extends BasePopupController {
     this.entityName.value = props.entityName || ""
     this.target.value = props.target || ""
     this.targetId.value = props.targetId || ""
+    this.targetIds.value = props.targetIds || []
     this.billingInfo.value = props.billingInfo
     this.deliveryInfo.value = props.deliveryInfo
     this.emailRecipients.value = props.emailRecipients
@@ -97,11 +99,22 @@ export class SendPaymentNoticeController extends BasePopupController {
       this.selectedPricings.value = props.selectedServicePricings.map((sp: ServicePricing) => {
         return new ServicePricing(sp)
       })
+    }
 
-      this.selectedPricings.value.forEach((sp: ServicePricing) => {
-        this.searchTexts.value.push("")
+    if (this.targetIds.value.length > 0) {
+      this.targetIds.value.forEach((s: string, index: number) => {
+        let existingPricing = this.selectedPricings.value[index] ?? null
+        if (existingPricing) {
+          return
+        }
+
+        this.selectedPricings.value.push(new ServicePricing())
       })
     }
+
+    this.selectedPricings.value.forEach((sp: ServicePricing) => {
+      this.searchTexts.value.push("")
+    })
   }
 
   async fetchServicePricings(): Promise<void> {
@@ -553,6 +566,52 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   get paymentNotices(): PaymentNotice[] {
+    if (this.targetIds.value.length > 0) {
+      let paymentNotices = this.targetIds.value.map((s: string, index: number) => {
+        let pricing = this.selectedPricings.value[index] ?? null
+
+        if (!pricing) {
+          return null
+        }
+
+        let notice = new PaymentNotice()
+        notice.entityType = this.entityType.value
+        notice.entityId = this.entityId.value
+        notice.target = this.target.value
+        notice.targetId = s
+
+        notice.servicePricingId = pricing.id
+
+        return notice
+      })
+
+      if (paymentNotices.length < this.selectedPricings.value.length) {
+        let startIndex = paymentNotices.length
+        let otherPricings = this.selectedPricings.value.slice(startIndex)
+        let otherPaymentNotices = otherPricings.map((sp: ServicePricing) => {
+          let notice = new PaymentNotice()
+          notice.entityType = this.entityType.value
+          notice.entityId = this.entityId.value
+          notice.target = this.target.value
+          notice.targetId = this.targetId.value
+
+          notice.servicePricingId = sp.id
+
+          return notice
+        })
+
+        paymentNotices = paymentNotices.concat(otherPaymentNotices)
+      }
+
+      return paymentNotices
+        .filter((pn: PaymentNotice | null) => {
+          return pn !== null
+        })
+        .map((pn: PaymentNotice | null) => {
+          return new PaymentNotice(pn)
+        })
+    }
+
     return this.selectedPricings.value.map((sp: ServicePricing) => {
       let notice = new PaymentNotice()
       notice.entityType = this.entityType.value
@@ -567,6 +626,56 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   get paymentCartItems(): PaymentCartItem[] {
+    if (this.targetIds.value.length > 0) {
+      let paymentCartItems = this.targetIds.value.map((s: string, index: number) => {
+        let pricing = this.selectedPricings.value[index]
+
+        if (!pricing) {
+          return null
+        }
+
+        let item = new PaymentCartItem()
+        item.targetType = this.target.value
+        item.targetId = s
+        item.discountAmount = this.discountAmount.value
+
+        item.servicePricingId = pricing.id
+        item.servicePricing = pricing
+
+        item.setSubtotal()
+
+        return item
+      })
+
+      if (paymentCartItems.length < this.selectedPricings.value.length) {
+        let startIndex = paymentCartItems.length
+        let otherPricings = this.selectedPricings.value.slice(startIndex)
+        let otherPaymentCartItems = otherPricings.map((sp: ServicePricing) => {
+          let item = new PaymentCartItem()
+          item.targetType = this.target.value
+          item.targetId = this.targetId.value
+          item.discountAmount = this.discountAmount.value
+
+          item.servicePricingId = sp.id
+          item.servicePricing = sp
+
+          item.setSubtotal()
+
+          return item
+        })
+
+        paymentCartItems = paymentCartItems.concat(otherPaymentCartItems)
+      }
+
+      return paymentCartItems
+        .filter((pci: PaymentCartItem | null) => {
+          return pci !== null
+        })
+        .map((pci: PaymentCartItem | null) => {
+          return new PaymentCartItem(pci)
+        })
+    }
+
     return this.selectedPricings.value.map((sp: ServicePricing) => {
       let item = new PaymentCartItem()
       item.targetType = this.target.value
@@ -749,5 +858,9 @@ export class SendPaymentNoticeController extends BasePopupController {
     })
 
     return StringUtil.oxfordJoin("&", names)
+  }
+
+  get canNotify(): boolean {
+    return this.emailRecipients.value.length > 0
   }
 }

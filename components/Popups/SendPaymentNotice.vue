@@ -273,6 +273,8 @@
                         type="checkbox"
                         class="form-check-input"
                         v-model="controller.isNotify.value"
+                        :disabled="!controller.canNotify"
+                        :title="controller.canNotify ? 'Tiada Penerima ' : 'No Recipient to send Email to'"
                       />
                       <span>Notify via Email</span>
                     </div>
