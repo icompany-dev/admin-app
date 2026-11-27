@@ -22,6 +22,8 @@ export class PaymentCart implements IModel<PaymentCart> {
   createdAt: string = ""
   updatedAt: string = ""
 
+  canDelete: boolean = false // every admin created values cannot be deleted
+
   //UI values, not from database
   entityName: string = ""
   entityNameType: string = ""
@@ -57,6 +59,7 @@ export class PaymentCart implements IModel<PaymentCart> {
         : []
     this.status = data.status
     this.assignTo = data.assign_to !== null ? new User(data.assign_to) : null
+    this.canDelete = data.can_delete ?? false
     this.createdAt = data.created_at
     this.updatedAt = data.updated_at
   }
@@ -78,6 +81,7 @@ export class PaymentCart implements IModel<PaymentCart> {
         : []
     this.status = data.status
     this.assignTo = data.assignTo !== null ? new User(data.assignTo) : null
+    this.canDelete = data.canDelete
     this.createdAt = data.createdAt
     this.updatedAt = data.updatedAt
 
@@ -93,11 +97,11 @@ export class PaymentCart implements IModel<PaymentCart> {
       entity_id: this.entityId,
       ...this.billingInfo.getRequestBody(),
       delivery: this.deliveryInfo.getRequestBody(),
+      can_delete: this.canDelete,
       total: this.total,
       items: this.items.map((item: PaymentCartItem) => {
         return item.getRequestBody()
       }),
-      can_delete: true, //the logic is handled in the backend to determine if the cart can be deleted or not
     }
   }
 
