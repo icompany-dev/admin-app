@@ -178,7 +178,8 @@ export class DocumentsAndForms {
       return (
         (StringUtil.contains(cd.documentName, "resolution") ||
           StringUtil.contains(cd.documentName, "dcr") ||
-          StringUtil.contains(cd.documentName, "mcr")) &&
+          StringUtil.contains(cd.documentName, "mcr") ||
+          StringUtil.contains(cd.documentName, "mwr")) &&
         !StringUtil.contains(cd.documentName, "ctc")
       )
     })
