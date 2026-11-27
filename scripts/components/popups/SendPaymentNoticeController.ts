@@ -53,6 +53,9 @@ export class SendPaymentNoticeController extends BasePopupController {
 
   emailRecipients: Ref<string[]> = ref<string[]>([])
 
+  selectedPackagingTypes: Ref<string[]> = ref<string[]>([])
+  totalPackaging: Ref<number> = ref<number>(0)
+
   constructor(props: PropsSendPaymentNotice, emitEvents: any) {
     super(emitEvents)
 
@@ -202,6 +205,7 @@ export class SendPaymentNoticeController extends BasePopupController {
     }
 
     this.selectedPricings.value[this.indexOfPricingInEdit.value] = new ServicePricing(this.newServicePricing.value)
+    this.selectedPricings.value[this.indexOfPricingInEdit.value].isCustom = true
     this.indexOfPricingInEdit.value = null
   }
 
@@ -244,6 +248,7 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   getSubtotal(pricing: ServicePricing): string {
+    pricing.setBaseGrandTotal()
     let total = Number(pricing.baseGrandTotal) + Number(pricing.config.handlingFees)
 
     return NumberUtil.currency(total)
@@ -371,6 +376,8 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   onPriceChange(price: string | number): void {
+    this.newServicePricing.value.setBaseGrandTotal()
+
     if (typeof price == "string") {
       price = Number(price)
     }
@@ -381,6 +388,8 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   onCosecServiceFeeChanged(): void {
+    this.newServicePricing.value.setBaseGrandTotal()
+
     this.newServicePricing.value.config.cosecServiceFee = Number(this.newServicePricing.value.config.cosecServiceFee)
     if (this.newServicePricing.value.config.cosecServiceFee < 0) {
       this.newServicePricing.value.config.cosecServiceFee = 0
@@ -390,6 +399,8 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   onDigitalServiceFeeChanged(): void {
+    this.newServicePricing.value.setBaseGrandTotal()
+
     this.newServicePricing.value.config.digitalServiceFee = Number(
       this.newServicePricing.value.config.digitalServiceFee
     )
@@ -400,6 +411,8 @@ export class SendPaymentNoticeController extends BasePopupController {
   }
 
   onHandlingFeesChanged(): void {
+    this.newServicePricing.value.setBaseGrandTotal()
+
     this.newServicePricing.value.config.handlingFees = Number(this.newServicePricing.value.config.handlingFees)
     if (this.newServicePricing.value.config.handlingFees < 0) {
       this.newServicePricing.value.config.handlingFees = 0
@@ -418,7 +431,7 @@ export class SendPaymentNoticeController extends BasePopupController {
       // find the ones that need to create first
       let promises = this.selectedPricings.value
         .filter((sp: ServicePricing) => {
-          return StringUtil.isNullOrEmpty(sp.id)
+          return sp.isCustom
         })
         .map((sp: ServicePricing) => {
           sp.isCustom = true
@@ -844,7 +857,7 @@ export class SendPaymentNoticeController extends BasePopupController {
         <tr>
           <td><b>Grand Total</b></td>
           <td>:</td>
-          <td>${this.grandTotal}</td>
+          <td>RM${this.grandTotal}</td>
         </tr>
       </table>
       <p>Please <a target="_blank" style="font-weight: bold; text-decoration: none;" href="https://cosec.icompany.my">Login</a> to view the Payment Order in details and make payment.</p>

@@ -154,6 +154,8 @@ export class ServicePricing implements IModel<ServicePricing> {
   }
 
   getRequestBody() {
+    this.setBaseGrandTotal()
+
     return {
       service_name: this.serviceName,
       service_target: this.serviceTarget,
@@ -272,5 +274,18 @@ export class ServicePricing implements IModel<ServicePricing> {
     }
 
     return response
+  }
+
+  setBaseGrandTotal(): void {
+    let totalBreakdowns = this.breakdowns.reduce((a: number, b: ServicePricingBreakdown) => {
+      return a + Number(b.price)
+    }, 0)
+
+    let totalMandatories = this.mandatoryServices.reduce((a: number, b: ServicePricingMandatory) => {
+      return a + Number(b.basePrice)
+    }, 0)
+
+    this.baseGrandTotal =
+      totalBreakdowns + totalMandatories + Number(this.config.cosecServiceFee) + Number(this.config.digitalServiceFee)
   }
 }
