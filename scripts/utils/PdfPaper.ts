@@ -8,78 +8,78 @@ export class PdfPaperUtil {
     let fileRepository = useFileStore()
 
     const paperNodes = parentNode.getElementsByClassName("print paper")
-    const pages = []
+    const pages: HTMLElement[] = []
 
-    for (let i = 0; i < paperNodes.length; i++) {
-      const paper = paperNodes[i].cloneNode(true) as HTMLElement
-
+    for (const originalPaper of Array.from(paperNodes)) {
+      const paper = originalPaper.cloneNode(true) as HTMLElement
       paper.classList.add("is-printing")
 
-      const watermarks = paper.getElementsByClassName("no-print")
-      while (watermarks.length > 0) {
-        watermarks[0].parentNode?.removeChild(watermarks[0])
-      }
+      // Copy the drawn pixels into the print copy.
+      const originalCanvases = originalPaper.querySelectorAll("canvas")
+      const clonedCanvases = paper.querySelectorAll("canvas")
+
+      originalCanvases.forEach((canvas, index) => {
+        clonedCanvases[index].getContext("2d")?.drawImage(canvas, 0, 0)
+      })
+
+      paper.querySelectorAll(".no-print").forEach((element) => {
+        element.remove()
+      })
 
       const dateInputs = paper.querySelectorAll<HTMLInputElement>('input[type="date"]')
       dateInputs.forEach((input) => {
-        let dateObj: Date
+        const textNode = document.createElement("span")
+        textNode.className = input.className
 
         if (input.value) {
           const [year, month, day] = input.value.split("-").map(Number)
-          dateObj = new Date(year, month - 1, day)
-          const formattedDate = dateObj.toLocaleDateString("en-GB", {
+          const date = new Date(year, month - 1, day)
+
+          textNode.textContent = date.toLocaleDateString("en-GB", {
             day: "numeric",
             month: "long",
             year: "numeric",
           })
-
-          const textNode = document.createElement("span")
-          textNode.className = input.className
-          textNode.textContent = formattedDate
-          input.parentNode?.replaceChild(textNode, input)
-        } else {
-          const textNode = document.createElement("span")
-          textNode.className = input.className
-          textNode.textContent = ""
-          input.parentNode?.replaceChild(textNode, input)
         }
+
+        input.replaceWith(textNode)
       })
 
       const textInputs = paper.querySelectorAll<HTMLInputElement>('input[type="text"]')
       textInputs.forEach((input) => {
-        const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(input.value)
-        const value = input.value //isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(input.value)) : input.value
         const textNode = document.createElement("span")
         textNode.className = input.className
-        textNode.textContent = value
-        input.parentNode?.replaceChild(textNode, input)
+        textNode.textContent = input.value
+        input.replaceWith(textNode)
       })
 
-      const selectInputs = paper.querySelectorAll<HTMLInputElement>("select")
+      const selectInputs = paper.querySelectorAll("select")
       selectInputs.forEach((input) => {
         const isNumericOrDecimal = /^\d+(\.\d+)?$/.test(input.value)
-        const value = isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(input.value)) : input.value
         const textNode = document.createElement("span")
         textNode.className = input.className
-        textNode.textContent = value
-        input.parentNode?.replaceChild(textNode, input)
+        textNode.textContent = isNumericOrDecimal ? NumberUtil.thousandSeparator(Number(input.value)) : input.value
+
+        input.replaceWith(textNode)
       })
 
-      const imgElements = paper.getElementsByTagName("img")
-      for (let j = 0; j < imgElements.length; j++) {
-        if (imgElements[j].id !== "signatureBackground") {
-          const fileUrl = imgElements[j].getAttribute("src")
-          if (!fileUrl) {
-            continue
-          }
-
-          const fileBase64: FileBase64Response | null = await fileRepository.convertImgToBase64(fileUrl)
-          if (!fileBase64) {
-            continue
-          }
-
-          imgElements[j].setAttribute("src", `data:image/png;base64, ${fileBase64.base64}`)
+      const imgElements = paper.querySelectorAll("img")
+      for (const image of Array.from(imgElements)) {
+        if (image.id === "signatureBackground") {
+          continue
         }
+
+        const fileUrl = image.getAttribute("src")
+        if (!fileUrl) {
+          continue
+        }
+
+        const fileBase64: FileBase64Response | null = await fileRepository.convertImgToBase64(fileUrl)
+        if (!fileBase64) {
+          continue
+        }
+
+        image.src = `data:image/png;base64,${fileBase64.base64}`
       }
 
       pages.push(paper)

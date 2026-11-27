@@ -26,6 +26,8 @@ export class IdentificationDocumentWatermarkController {
   currentPage = ref<number>(1)
   pageCanvases: Record<number, HTMLCanvasElement | null> = {}
 
+  private renderTask: Promise<void> = Promise.resolve()
+
   constructor(props: PropsIdentificationDocumentWatermark, emitEvents: any) {
     this.emitEvents = emitEvents
 
@@ -41,7 +43,8 @@ export class IdentificationDocumentWatermarkController {
     this.paperOrientation.value = props.paperOrientation
     this.paperSize.value = props.paperSize
 
-    await this.renderAllPages()
+    this.renderTask = this.renderAllPages()
+    await this.renderTask
   }
 
   setDocumentRef(documentRef: any): void {
@@ -61,6 +64,7 @@ export class IdentificationDocumentWatermarkController {
       return []
     }
 
+    await this.renderTask
     let pages = await PdfPaperUtil.getPdfElements(this.documentRef)
 
     return pages
@@ -115,9 +119,7 @@ export class IdentificationDocumentWatermarkController {
       }
 
       const page = await pdf.getPage(pageNumber)
-      nextTick(async () => {
-        await this.renderPage(page, canvas)
-      })
+      await this.renderPage(page, canvas)
     }
   }
 

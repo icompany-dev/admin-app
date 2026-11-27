@@ -41,7 +41,6 @@
               >
                 <span
                   class="selected-address"
-                  :style="controller.isPrinting.value ? `white-space: pre-line` : ''"
                   v-html="controller.selectedAddress"
                 />
                 <i
@@ -64,10 +63,14 @@
               </div>
             </div>
           </template>
-          <span
-            v-if="controller.isPrinting.value"
-            v-html="controller.selectedAddress"
-          />
+          <div v-else>
+            <div
+              v-for="(line, index) in controller.printAddressLines"
+              :key="index"
+            >
+              {{ line }}
+            </div>
+          </div>
         </div>
         <p>Dear Sirs,</p>
         <p>

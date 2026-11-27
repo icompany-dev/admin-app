@@ -25,20 +25,46 @@ export class LetterResignationSecretaryController extends SdnBhdLegalDocumentCon
     this.emitEvents("cosecSelected", this.selectedSecretary)
   }
 
-  override async getPdfPages(): Promise<HTMLElement[]> {
-    if (!this.documentRef) {
-      return []
+  get printAddressLines(): string[] {
+    const addressLines = this.selectedAddress.split(/<br\s*\/?>|\r?\n/gi)
+    const lines: string[] = []
+    const maxLength = 35
+
+    for (const addressLine of addressLines) {
+      let line = ""
+
+      for (const word of addressLine.trim().split(/\s+/)) {
+        if (!word) {
+          continue
+        }
+
+        const next = line ? `${line} ${word}` : word
+
+        if (line && next.length > maxLength) {
+          lines.push(line)
+          line = word
+        } else {
+          line = next
+        }
+      }
+
+      if (line) {
+        lines.push(line)
+      }
     }
 
+    return lines
+  }
+
+  override async getPdfPages(): Promise<HTMLElement[]> {
+    const wasPrinting = this.isPrinting.value
     this.isPrinting.value = true
-    await nextTick()
-    let pdfPages = await PdfPaperUtil.getPdfElements(this.documentRef)
 
-    setTimeout(() => {
-      this.isPrinting.value = false
-    }, 1000)
-
-    return pdfPages
+    try {
+      return await super.getPdfPages()
+    } finally {
+      this.isPrinting.value = wasPrinting
+    }
   }
 
   get secretaryOptions(): SelectOption[] {
